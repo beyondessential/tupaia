@@ -24,7 +24,6 @@ interface MatrixPaginationProps {
   pageIndex: number;
   columnsCount: number;
   handleChangePage: (newPage: number) => void;
-  handleChangePageSize: (pageSize: number) => void;
 }
 
 export const MatrixPagination = ({
@@ -32,7 +31,6 @@ export const MatrixPagination = ({
   pageSize,
   pageIndex,
   handleChangePage,
-  handleChangePageSize,
 }: MatrixPaginationProps) => {
   const pageCount = Math.ceil(totalRows / pageSize);
   if (pageCount === 1) return null;
@@ -43,7 +41,6 @@ export const MatrixPagination = ({
         onChangePage={handleChangePage}
         pageCount={pageCount}
         pageSize={pageSize}
-        setPageSize={handleChangePageSize}
         totalRecords={totalRows}
         pageSizeOptions={[5, 10, 20, 25, 50, -1]}
         applyRowsPerPage={false}

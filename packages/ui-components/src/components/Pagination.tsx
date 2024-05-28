@@ -128,7 +128,7 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectCompon
 
 interface RowsSelectComponentProps {
   pageSize: number;
-  setPageSize: (pageSize: number) => void;
+  setPageSize?: (pageSize: number) => void;
   pageSizeOptions: number[];
 }
 
@@ -143,11 +143,16 @@ const RowsSelectComponent = ({
     }
     return { label: `Rows per page: ${size}`, value: size };
   });
+
+  const handlePageSizeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    if (!setPageSize) return;
+    setPageSize(Number(event.target.value));
+  };
   return (
     <ActionsWrapper>
       <RowsSelect
         value={pageSize}
-        onChange={event => setPageSize(Number(event.target.value))}
+        onChange={handlePageSizeChange}
         options={displayOptions}
         variant="standard"
       />
@@ -160,7 +165,7 @@ interface PaginationProps {
   pageCount: number;
   onChangePage: PageSelectComponentProps['onChangePage'];
   pageSize: number;
-  setPageSize: (pageSize: number) => void;
+  setPageSize?: RowsSelectComponentProps['setPageSize'];
   totalRecords: number;
   pageSizeOptions?: RowsSelectComponentProps['pageSizeOptions'];
   applyRowsPerPage?: boolean;

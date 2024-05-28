@@ -35,17 +35,18 @@ interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
   rowHeaderColumnTitle?: ReactNode;
 }
 
+const DEFAULT_PAGE_SIZE = 50;
+
 export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
   const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(50);
   const [{ expandedRows }, dispatch] = useReducer(matrixReducer, {
     expandedRows: [],
   });
   const tableEl = useRef<HTMLTableElement | null>(null);
 
-  const pageStart = pageIndex * pageSize;
-  const pageEnd = pageStart + pageSize;
-  const visibleRows = pageSize === -1 ? rows : rows.slice(pageStart, pageEnd);
+  const pageStart = pageIndex * DEFAULT_PAGE_SIZE;
+  const pageEnd = pageStart + DEFAULT_PAGE_SIZE;
+  const visibleRows = DEFAULT_PAGE_SIZE === -1 ? rows : rows.slice(pageStart, pageEnd);
 
   const onPageChange = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
@@ -79,10 +80,9 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
         </ScrollContainer>
         <MatrixPagination
           totalRows={rows.length}
-          pageSize={pageSize}
+          pageSize={DEFAULT_PAGE_SIZE}
           pageIndex={pageIndex}
           handleChangePage={onPageChange}
-          handleChangePageSize={setPageSize}
           columnsCount={columns.length}
         />
       </MatrixDispatchContext.Provider>
