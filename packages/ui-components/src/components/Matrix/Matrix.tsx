@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useReducer, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody, TableContainer } from '@material-ui/core';
 import { MatrixHeader } from './MatrixHeader';
@@ -61,7 +61,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
         <MatrixLegend />
         <ScrollContainer>
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
-            <MatrixHeader />
+            <MatrixHeader onPageChange={onPageChange} />
             <TableBody>
               {visibleRows.map((row, i) => (
                 <MatrixRow row={row} key={`${row.title}-${i}`} parents={[]} index={i + 1} />

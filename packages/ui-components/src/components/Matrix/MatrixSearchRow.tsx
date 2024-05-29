@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { IconButton, TableRow } from '@material-ui/core';
 import { Clear, Search as SearchIcon } from '@material-ui/icons';
 import styled from 'styled-components';
@@ -34,20 +34,34 @@ interface SearchProps {
 }
 
 const Search = ({ value, onChange, onClear, columnKey }: SearchProps) => {
+  const [searchValue, setSearchValue] = useState(value);
   const clearSearchFilter = () => {
-    onClear(columnKey);
+    setSearchValue('');
   };
 
   const changeSearchFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({
-      key: columnKey,
-      value: event.target.value,
-    });
+    setSearchValue(event.target.value);
   };
+
+  // debounce the search filter
+  useEffect(() => {
+    if (searchValue === value) return;
+    const timeout = setTimeout(() => {
+      if (!searchValue) {
+        onClear(columnKey);
+      } else
+        onChange({
+          key: columnKey,
+          value: searchValue,
+        });
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [searchValue]);
+
   return (
     <SearchInput
       placeholder="Search"
-      value={value}
+      value={searchValue}
       onChange={changeSearchFilter}
       InputProps={{
         startAdornment: <SearchIcon />,
@@ -64,7 +78,11 @@ const Search = ({ value, onChange, onClear, columnKey }: SearchProps) => {
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
-export const MatrixSearchRow = () => {
+export const MatrixSearchRow = ({
+  onPageChange,
+}: {
+  onPageChange: (newPageIndex: number) => void;
+}) => {
   const { columns, enableSearch, searchFilters, updateSearchFilter, clearSearchFilter } =
     useContext(MatrixContext);
 
@@ -75,11 +93,13 @@ export const MatrixSearchRow = () => {
   const onClear = (key: SearchFilter['key']) => {
     if (!clearSearchFilter) return;
     clearSearchFilter(key);
+    onPageChange(0);
   };
 
   const onUpdate = (newFilter: SearchFilter) => {
     if (!updateSearchFilter) return;
     updateSearchFilter(newFilter);
+    onPageChange(0);
   };
 
   return (

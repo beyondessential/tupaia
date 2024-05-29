@@ -23,7 +23,11 @@ const THead = styled(TableHead)`
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
-export const MatrixHeader = () => {
+export const MatrixHeader = ({
+  onPageChange,
+}: {
+  onPageChange: (newPageIndex: number) => void;
+}) => {
   const { columns, hideColumnTitles = false } = useContext(MatrixContext);
   // Get the grouped columns
   const columnGroups = columns.reduce((result: MatrixColumnType[], column: MatrixColumnType) => {
@@ -78,7 +82,7 @@ export const MatrixHeader = () => {
           ))}
         </TableRow>
 
-        <MatrixSearchRow />
+        <MatrixSearchRow onPageChange={onPageChange} />
       </THead>
     </>
   );

@@ -48,14 +48,15 @@ const NoResultsMessage = styled(Typography)`
 const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value']) => {
   if (typeof value !== 'string' && typeof value !== 'number') return false;
   const stringifiedValue = value.toString().toLowerCase();
+  const lowercaseSearchTerm = searchTerm.toLowerCase();
   // handle % search - if the search term starts with %, then we want to check if the value includes the search term
-  if (searchTerm.startsWith('%')) {
-    const searchTermWithoutPercent = searchTerm.slice(1);
+  if (lowercaseSearchTerm.startsWith('%')) {
+    const searchTermWithoutPercent = lowercaseSearchTerm.slice(1);
     return stringifiedValue.includes(searchTermWithoutPercent);
   }
 
   // otherwise, check if the value starts with the search term
-  return stringifiedValue.startsWith(searchTerm);
+  return stringifiedValue.startsWith(lowercaseSearchTerm);
 };
 
 const getRowMatchesSearchFilter = (row: MatrixReportRow, searchFilters: SearchFilter[]) => {
