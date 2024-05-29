@@ -53,8 +53,8 @@ export class ApiConnection {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 
-  public async delete(endpoint: string) {
-    return this.request('DELETE', endpoint);
+  public async delete(endpoint: string, queryParameters?: QueryParameters | null) {
+    return this.request('DELETE', endpoint, queryParameters);
   }
 
   private async request(

@@ -6,7 +6,8 @@
 
 import { Request, NextFunction } from 'express';
 import { TranslatableResponse, TranslatableRoute } from '@tupaia/server-boilerplate';
-import { EntityConnection } from '../connections';
+import { LESMIS_PROJECT_NAME } from '../constants';
+import { camelcaseKeys } from '@tupaia/tsutils';
 
 export type EntityRequest = Request<{ entityCode: string }, any, any, any>;
 
@@ -14,8 +15,6 @@ export class EntityRoute extends TranslatableRoute<
   EntityRequest,
   TranslatableResponse<EntityRequest>
 > {
-  private readonly entityConnection: EntityConnection;
-
   public constructor(
     req: EntityRequest,
     res: TranslatableResponse<EntityRequest>,
@@ -23,7 +22,6 @@ export class EntityRoute extends TranslatableRoute<
   ) {
     super(req, res, next);
 
-    this.entityConnection = new EntityConnection(req.session);
     this.translationSchema = {
       domain: 'lesmis',
       layout: {
@@ -35,6 +33,13 @@ export class EntityRoute extends TranslatableRoute<
 
   public async buildResponse() {
     const { entityCode } = this.req.params;
-    return this.entityConnection.getEntity(entityCode);
+    const queryParameters = this.req.query;
+    const entity = await this.req.ctx.services.entity.getEntity(
+      LESMIS_PROJECT_NAME,
+      entityCode,
+      queryParameters,
+    );
+
+    return camelcaseKeys(entity);
   }
 }

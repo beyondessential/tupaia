@@ -12193,6 +12193,7 @@ __metadata:
   resolution: "@tupaia/lesmis-server@workspace:packages/lesmis-server"
   dependencies:
     "@tupaia/access-policy": "workspace:*"
+    "@tupaia/api-client": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
@@ -12346,6 +12347,7 @@ __metadata:
   resolution: "@tupaia/psss-server@workspace:packages/psss-server"
   dependencies:
     "@tupaia/access-policy": "workspace:*"
+    "@tupaia/api-client": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/server-utils": "workspace:*"

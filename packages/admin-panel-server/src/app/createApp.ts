@@ -2,8 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
-import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
+import {
+  OrchestratorApiBuilder,
+  RequiresSessionAuthHandler,
+  forwardRequest,
+  handleWith,
+} from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
@@ -45,8 +51,8 @@ import {
   ExportEntityHierarchiesRequest,
   ExportEntityHierarchiesRoute,
 } from '../routes';
-import { authHandlerProvider } from '../auth';
 
+const authHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
 /**
  * Set up express server with middleware,
  */

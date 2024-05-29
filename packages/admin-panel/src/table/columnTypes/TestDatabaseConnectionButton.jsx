@@ -64,11 +64,13 @@ export const TestDatabaseConnectionButton = ({ row }) => {
   };
 
   const TestConnectionButton = ({ disabled = false }) => (
-    <Tooltip title="Click to test database connection">
-      <ColumnActionButton disabled={disabled} onClick={testConnection}>
-        <NetworkCheck />
-      </ColumnActionButton>
-    </Tooltip>
+    <ColumnActionButton
+      disabled={disabled}
+      onClick={testConnection}
+      title="Click to test database connection"
+    >
+      <NetworkCheck />
+    </ColumnActionButton>
   );
 
   if (buttonState === BUTTON_STATES.SUCCESS) {

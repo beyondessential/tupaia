@@ -23,6 +23,8 @@ const BUTTON_COLUMN_OPTIONS = {
   filterable: false,
   disableSortBy: true,
   isButtonColumn: true,
+  disableResizing: true,
+  width: 60,
 };
 
 const CUSTOM_CELL_COMPONENTS = {
@@ -49,22 +51,27 @@ const BUTTON_COLUMN_TYPES = [
   'qrCode',
   'testDatabaseConnection',
   'bulkEdit',
+  'sync',
 ];
 
-export const generateConfigForColumnType = (type, actionConfig, reduxId) => {
+export const generateConfigForColumnType = (type = 'tooltip', actionConfig, reduxId) => {
   const CustomCellComponent = CUSTOM_CELL_COMPONENTS[type];
   if (!CustomCellComponent) {
     return {};
   }
-  let config = {
-    Cell: generateCustomCell(CustomCellComponent, actionConfig, reduxId),
-  };
+
+  const Cell = generateCustomCell(CustomCellComponent, actionConfig, reduxId);
+
   if (BUTTON_COLUMN_TYPES.includes(type)) {
-    config = {
-      ...config,
+    return {
+      Cell,
       ...BUTTON_COLUMN_OPTIONS,
     };
   }
+  let config = {
+    Cell,
+    minWidth: 120, // so that the filter input is not too small
+  };
   if (type === 'boolean') {
     config = {
       ...config,
