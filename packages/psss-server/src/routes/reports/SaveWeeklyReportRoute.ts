@@ -4,7 +4,7 @@
  */
 
 import { Request } from 'express';
-import { RespondingError, UnauthenticatedError } from '@tupaia/utils';
+import { RespondingError } from '@tupaia/utils';
 import { Route } from '../Route';
 
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
@@ -19,8 +19,6 @@ export type SaveWeeklyReportRequest = Request<
 
 export class SaveWeeklyReportRoute extends Route<SaveWeeklyReportRequest> {
   public async buildResponse() {
-    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const { week } = this.req.query;
     const { countryCode, siteCode } = this.req.params;
 

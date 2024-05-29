@@ -14,15 +14,16 @@ import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPa
 
 const PageWrapper = styled.div`
   display: flex;
+  overflow: hidden;
+  flex: 1;
 `;
 
 const Main = styled.main`
   overflow-x: auto;
-  height: 100vh;
   // This is so that we can make the PageBody component fill the whole remaining height of the screen
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 1 0%;
 `;
 
 const ArrowButton = styled(IconButton)`
@@ -50,6 +51,7 @@ const ArrowButton = styled(IconButton)`
 
 const NavWrapper = styled.div`
   position: relative;
+  transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   width: ${props =>
     props.$navOpen
       ? NAV_PANEL_OPEN_WIDTH

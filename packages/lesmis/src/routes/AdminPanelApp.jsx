@@ -65,24 +65,10 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
             element={<LesmisAdminRedirect hasAdminPanelAccess={userHasAdminPanelAccess} />}
           >
             <Route
-              path="/viz-builder/*"
-              hasAdminPanelAccess={userHasAdminPanelAccess}
-              element={
-                <VizBuilderApp
-                  logo={{
-                    url: '/lesmis-logo-white.svg',
-                    alt: 'LESMIS Admin Panel Logo',
-                  }}
-                  homeLink={`${adminUrl}/survey-responses`}
-                  Footer={Footer}
-                />
-              }
-            />
-            <Route
               element={
                 <AppPageLayout
-                  user={user}
                   routes={routes}
+                  user={user}
                   logo={{
                     url: '/lesmis-logo-white.svg',
                     alt: 'LESMIS Admin Panel Logo',
@@ -113,7 +99,11 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
                         childRoute.Component ? (
                           <childRoute.Component />
                         ) : (
-                          <ResourcePage {...childRoute} hasBESAdminAccess={isBESAdmin} />
+                          <ResourcePage
+                            actionLabel={translate('admin.action')}
+                            {...childRoute}
+                            hasBESAdminAccess={isBESAdmin}
+                          />
                         )
                       }
                     />
@@ -122,9 +112,38 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
               ))}
               <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
             </Route>
+            <Route
+              path="/viz-builder/*"
+              hasAdminPanelAccess={userHasAdminPanelAccess}
+              element={
+                <VizBuilderApp
+                  logo={{
+                    url: '/lesmis-logo-white.svg',
+                    alt: 'LESMIS Admin Panel Logo',
+                  }}
+                  homeLink={`${adminUrl}/survey-responses`}
+                  Footer={Footer}
+                />
+              }
+            />
           </Route>
+          <Route
+            path="/viz-builder/*"
+            hasAdminPanelAccess={userHasAdminPanelAccess}
+            element={
+              <VizBuilderApp
+                logo={{
+                  url: '/lesmis-logo-white.svg',
+                  alt: 'LESMIS Admin Panel Logo',
+                }}
+                homeLink={`${adminUrl}/survey-responses`}
+                Footer={Footer}
+              />
+            }
+          />
         </Route>
         <Route path="not-authorised" element={<NotAuthorisedView />} />
+
         <Route
           path="*"
           element={

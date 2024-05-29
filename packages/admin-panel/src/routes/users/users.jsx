@@ -38,7 +38,6 @@ const EDIT_FIELDS = [
   {
     Header: 'Email address',
     source: 'email',
-    type: 'tooltip',
   },
   {
     Header: 'Phone number',
@@ -51,12 +50,10 @@ const EDIT_FIELDS = [
   {
     Header: 'Employer',
     source: 'employer',
-    type: 'tooltip',
   },
   {
     Header: 'Verified',
     source: 'verified_email',
-    type: 'tooltip',
     editConfig: {
       options: [
         {
@@ -94,12 +91,10 @@ const COLUMNS = [
   {
     Header: 'Email Address',
     source: 'email',
-    type: 'tooltip',
   },
   {
     Header: 'Employer',
     source: 'employer',
-    type: 'tooltip',
   },
   {
     Header: 'Verified',

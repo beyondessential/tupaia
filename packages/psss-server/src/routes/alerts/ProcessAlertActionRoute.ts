@@ -4,7 +4,7 @@
  */
 
 import { Request } from 'express';
-import { RespondingError, UnauthenticatedError } from '@tupaia/utils';
+import { RespondingError } from '@tupaia/utils';
 import { Route } from '../Route';
 
 const ACTION_TO_ANSWER = {
@@ -30,8 +30,6 @@ export type ProcessAlertActionRequest = Request<
 
 export class ProcessAlertActionRoute extends Route<ProcessAlertActionRequest> {
   public async buildResponse() {
-    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const { alertId, action } = this.req.params;
 
     validateAction(action);
