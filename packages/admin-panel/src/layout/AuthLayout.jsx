@@ -5,10 +5,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Outlet, Navigate } from 'react-router';
+import { Outlet, Navigate, useMatch } from 'react-router';
 import { useUser } from '../api/queries';
 import { SimplePageLayout } from './SimplePageLayout';
 import { GREY_B8 } from '../theme/colors';
+import { AUTH_ROUTES } from '../routes';
 
 export const CenteredPageContent = styled.section`
   display: flex;
@@ -42,7 +43,8 @@ export const CenteredPageContent = styled.section`
 
 export const AuthLayout = ({ logo, homeLink }) => {
   const { isLoggedIn } = useUser();
-  if (isLoggedIn) {
+  const isResetPasswordPage = useMatch(AUTH_ROUTES.RESET_PASSWORD);
+  if (isLoggedIn && !isResetPasswordPage) {
     return <Navigate to={homeLink} />;
   }
   return (
