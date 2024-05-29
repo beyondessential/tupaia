@@ -695,15 +695,31 @@ function addJoin(baseQuery, recordType, joinOptions) {
 
 function getColSelector(connection, inputColStr) {
   const jsonOperatorPattern = /->>?/g;
-  if (!jsonOperatorPattern.test(inputColStr)) return inputColStr;
+  if (jsonOperatorPattern.test(inputColStr)) {
+    const params = inputColStr.split(jsonOperatorPattern);
+    const allButFirst = params.slice(1);
+    const lastIndexOfLookupAsText = inputColStr.lastIndexOf('->>');
+    const lastIndexOfLookupAsJson = inputColStr.lastIndexOf('->');
+    const selector = lastIndexOfLookupAsText >= lastIndexOfLookupAsJson ? '#>>' : '#>';
 
-  const params = inputColStr.split(jsonOperatorPattern);
-  const allButFirst = params.slice(1);
-  const lastIndexOfLookupAsText = inputColStr.lastIndexOf('->>');
-  const lastIndexOfLookupAsJson = inputColStr.lastIndexOf('->');
-  const selector = lastIndexOfLookupAsText >= lastIndexOfLookupAsJson ? '#>>' : '#>';
+    // Turn `config->item->>colour` into `config #>> '{item,colour}'`
+    // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
+    return connection.raw(`?? ${selector} '{${allButFirst.map(() => '??').join(',')}}'`, params);
+  }
 
-  // Turn `config->item->>colour` into `config #>> '{item,colour}'`
-  // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
-  return connection.raw(`?? ${selector} '{${allButFirst.map(() => '??').join(',')}}'`, params);
+  /**
+   * Special handling of COALESCE() - one of the {@link supportedFunctions} - to treat its arguments
+   * as identifiers individually rather than trying to treat ‘COALESCE(foo, bar)’ as a single
+   * identifier.
+   */
+  const coalescePattern = /^COALESCE\(.+\)$/;
+  if (coalescePattern.test(inputColStr)) {
+    const [, argsString] = inputColStr.match(/^COALESCE\((.+)\)$/);
+    const bindings = argsString.split(',').map(arg => arg.trim());
+    const identifiers = bindings.map(() => '??');
+
+    return connection.raw(`COALESCE(${identifiers})`, bindings);
+  }
+
+  return inputColStr;
 }
