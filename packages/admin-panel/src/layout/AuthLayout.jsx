@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Outlet, Navigate } from 'react-router';
 import { useUser } from '../api/queries';
 import { SimplePageLayout } from './SimplePageLayout';
+import { GREY_B8 } from '../theme/colors';
 
 export const CenteredPageContent = styled.section`
   display: flex;
@@ -25,6 +26,17 @@ export const CenteredPageContent = styled.section`
     .MuiPaper-root {
       border: none;
     }
+  }
+  .MuiFormLabel-asterisk,
+  .MuiFormLabel-root.MuiInputLabel-root {
+    color: ${GREY_B8};
+    font-weight: normal;
+  }
+  .MuiInput-underline:before {
+    border-bottom: 1px solid ${GREY_B8};
+  }
+  .MuiFormControl-root + a {
+    color: ${GREY_B8};
   }
 `;
 
