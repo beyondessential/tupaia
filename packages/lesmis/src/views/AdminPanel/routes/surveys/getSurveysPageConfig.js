@@ -143,7 +143,7 @@ export const getSurveysPageConfig = translate => {
     {
       Header: translate('admin.code'),
       source: 'question.code',
-      type: 'tooltip',
+
       editable: false,
     },
     {
@@ -153,27 +153,22 @@ export const getSurveysPageConfig = translate => {
     {
       Header: translate('admin.name'),
       source: 'question.name',
-      type: 'tooltip',
     },
     {
       Header: translate('admin.question'),
       source: 'question.text',
-      type: 'tooltip',
     },
     {
       Header: translate('admin.detail'),
       source: 'question.detail',
-      type: 'tooltip',
     },
     {
       Header: translate('admin.questionLabel'),
       source: 'question_label',
-      type: 'tooltip',
     },
     {
       Header: translate('admin.detailLabel'),
       source: 'detail_label',
-      type: 'tooltip',
     },
   ];
 

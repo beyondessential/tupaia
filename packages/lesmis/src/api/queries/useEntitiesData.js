@@ -26,7 +26,17 @@ export const useEntitiesData = (entityCode, params = DEFAULT_PARAMS) => {
 };
 
 const PROJECT_PARAMS = {
-  fields: 'id,child_codes,code,country_code,image_url,name,type,parent_code,attributes',
+  fields: [
+    'id',
+    'child_codes',
+    'code',
+    'country_code',
+    'image_url',
+    'name',
+    'type',
+    'parent_code',
+    'attributes',
+  ],
 };
 
 export const useProjectEntitiesData = () => {

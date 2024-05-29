@@ -6,7 +6,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ExportIcon from '@material-ui/icons/GetApp';
-import { IconButton } from '../widgets';
 import { makeSubstitutionsInString } from '../utilities';
 import { useApiContext } from '../utilities/ApiProvider';
 import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';
@@ -23,9 +22,12 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
 export const ExportButton = ({ actionConfig, row }) => {
   const api = useApiContext();
 
+  const { title = 'Export record' } = actionConfig;
+
   return (
     <ColumnActionButton
       className="export-button"
+      title={title}
       onClick={async () => {
         const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } =
           actionConfig;
