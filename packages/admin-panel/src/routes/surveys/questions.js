@@ -18,17 +18,14 @@ const QUESTION_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
-    type: 'tooltip',
   },
   {
     Header: 'Question',
     source: 'text',
-    type: 'tooltip',
   },
   {
     Header: 'Legacy options',
     source: 'options',
-    type: 'tooltip',
     editConfig: {
       type: 'jsonArray',
     },
@@ -36,12 +33,10 @@ const QUESTION_FIELDS = [
   {
     Header: 'Detail',
     source: 'detail',
-    type: 'tooltip',
   },
   {
     Header: 'Hook',
     source: 'hook',
-    type: 'tooltip',
   },
   {
     Header: 'Option set ID',
@@ -108,6 +103,7 @@ export const questions = {
   nestedViews: [
     {
       title: 'Options',
+      resourceName: { singular: 'option' },
       endpoint: 'optionSets/{option_set_id}/options',
       columns: OPTION_COLUMNS,
       path: '/:id/options',
