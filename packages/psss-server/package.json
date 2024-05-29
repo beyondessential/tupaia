@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
+    "@tupaia/api-client": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
