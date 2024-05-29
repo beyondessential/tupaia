@@ -12,7 +12,7 @@ import { useLogout } from '../../api/mutations';
 
 const Wrapper = styled.div`
   background-color: ${props => props.theme.palette.secondary.main};
-  padding-block: 0.9rem;
+  padding-block: 1rem;
   padding-inline: 1.25rem;
   display: flex;
   justify-content: space-between;
