@@ -37,6 +37,10 @@ const PageContentContainerComponent = styled(PageContentWrapper)`
 `;
 
 const AdminPanelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 30rem;
   nav a {
     font-size: 0.875rem; // make the font size smaller to fit more text in the nav and match the default font size
   }
@@ -69,7 +73,7 @@ const AdminPanelApp = () => {
           <Route path={AUTH_ROUTES.LOGIN} element={<AdminPanelLoginPage />} />
         </Route>
 
-        <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
+        <Route path="/" element={<PrivateRoute basePath={adminUrl} />}>
           <Route path="/" element={<LesmisAdminRedirect />}>
             <Route
               element={
