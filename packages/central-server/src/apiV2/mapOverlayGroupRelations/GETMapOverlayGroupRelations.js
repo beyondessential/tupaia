@@ -52,7 +52,6 @@ export class GETMapOverlayGroupRelations extends GETHandler {
 
   async getDbQueryOptions() {
     const { multiJoin, sort, ...restOfOptions } = await super.getDbQueryOptions();
-    console.log('sort', sort);
     return {
       ...restOfOptions,
       // Strip table prefix from `child_code` as it’s a `customColumn`
