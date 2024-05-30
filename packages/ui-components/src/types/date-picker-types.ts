@@ -23,6 +23,6 @@ export type WeekPickerProps = BaseDatePickerProps & {
 
 export type GranularityType = ValueOf<typeof GRANULARITIES>;
 
-export type ModifierType = 'startOfWeek' | 'endOfWeek' | undefined;
+export type ModifierType = 'startOfWeek' | 'endOfWeek';
 
 export type WeekDisplayFormatType = ValueOf<typeof WEEK_DISPLAY_FORMATS>;
