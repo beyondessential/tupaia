@@ -8,6 +8,9 @@ function mapStateToProps() {
 
 function mapDispatchToProps(dispatch) {
   return {
+    /**
+     * This page is accessible only from the login screen
+     */
     onBackToLogin: () => dispatch(NavigationActions.back()),
   };
 }
