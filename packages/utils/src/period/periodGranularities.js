@@ -249,8 +249,9 @@ const getDefaultDatesForSingleDateGranularities = (
  * }
  * @param {*} periodGranularity
  * @param {*} defaultTimePeriod
+ * @param {*} dateOffset
  */
-const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeriod) => {
+const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeriod, dateOffset) => {
   if (defaultTimePeriod) {
     let startDate = moment();
     let endDate = startDate;
@@ -277,7 +278,15 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
     return roundStartEndDates(periodGranularity, startDate, endDate);
   }
 
-  return { startDate: moment(DEFAULT_MIN_DATE), endDate: moment() };
+  let defaultStartDate = moment(DEFAULT_MIN_DATE);
+  let defaultEndDate = moment();
+
+  if (dateOffset) {
+    defaultStartDate = addMomentOffset(defaultStartDate, dateOffset);
+    defaultEndDate = addMomentOffset(defaultEndDate, dateOffset);
+  }
+
+  return { startDate: defaultStartDate, endDate: defaultEndDate };
 };
 
 export function getDefaultDates(viewConfig) {
@@ -296,7 +305,7 @@ export function getDefaultDates(viewConfig) {
       dateOffset,
     );
   }
-  return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod);
+  return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod, dateOffset);
 }
 
 export const getDefaultDrillDownDates = (drillDownViewConfig, previousStartDate) => {

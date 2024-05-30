@@ -129,6 +129,12 @@ export type BaseConfig = {
    * @default 'WEEK_COMMENCING_ABBR'
    */
   weekDisplayFormat?: WeekDisplayFormat;
+
+  /**
+   * @description If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'
+   */
+
+  dateRangeDelimiter?: string;
 };
 
 export type ValueType =

@@ -18,6 +18,7 @@ export type YearPickerProps = Pick<
   onChange: (date: Moment | number) => void;
   dateOffset?: DateOffsetSpec;
   granularity: GranularityType;
+  dateRangeDelimiter?: string;
 };
 
 export type WeekPickerProps = BaseDatePickerProps & {

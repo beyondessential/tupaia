@@ -79,7 +79,6 @@ const RowLegend = styled(Typography).attrs({
 type DateRowProps = (BaseDatePickerProps | YearPickerProps | WeekPickerProps) & {
   granularity: typeof GRANULARITY_SHAPE;
   title?: string;
-  dateOffset?: DateOffsetSpec;
 };
 
 const DateRow = ({ title, granularity, ...props }: DateRowProps) => {
@@ -171,6 +170,7 @@ type DatePickerDialogProps = {
   weekDisplayFormat?: string;
   muiDialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
   dateOffset?: DateOffsetSpec;
+  dateRangeDelimiter?: string;
 };
 
 export const DatePickerDialog = ({
@@ -185,6 +185,7 @@ export const DatePickerDialog = ({
   weekDisplayFormat,
   muiDialogProps = {},
   dateOffset,
+  dateRangeDelimiter,
 }: DatePickerDialogProps) => {
   const momentStartDate = moment(startDate);
   const momentEndDate = moment(endDate);
@@ -266,6 +267,7 @@ export const DatePickerDialog = ({
             weekDisplayFormat={weekDisplayFormat}
             title="Start date"
             dateOffset={dateOffset}
+            dateRangeDelimiter={dateRangeDelimiter}
           />
         )}
         <DateRow
@@ -277,6 +279,7 @@ export const DatePickerDialog = ({
           weekDisplayFormat={weekDisplayFormat}
           title={isSingleDate ? '' : 'End date'}
           dateOffset={dateOffset}
+          dateRangeDelimiter={dateRangeDelimiter}
         />
         {errorMessage ? <Error>{errorMessage}</Error> : null}
       </StyledDialogContent>

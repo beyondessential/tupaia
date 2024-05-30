@@ -85,6 +85,7 @@ interface DateRangePickerProps {
   weekDisplayFormat?: WeekDisplayFormatType;
   dialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
   dateOffset?: DateOffsetSpec;
+  dateRangeDelimiter?: string;
 }
 
 export const DateRangePicker = ({
@@ -98,6 +99,7 @@ export const DateRangePicker = ({
   weekDisplayFormat,
   dialogProps,
   dateOffset,
+  dateRangeDelimiter,
 }: DateRangePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -118,6 +120,7 @@ export const DateRangePicker = ({
     onSetDates,
     weekDisplayFormat,
     dateOffset,
+    dateRangeDelimiter,
   });
 
   const handleOpen = () => {
@@ -169,6 +172,7 @@ export const DateRangePicker = ({
         weekDisplayFormat={weekDisplayFormat}
         muiDialogProps={dialogProps}
         dateOffset={dateOffset}
+        dateRangeDelimiter={dateRangeDelimiter}
       />
     </>
   );

@@ -85,6 +85,7 @@ interface DateRangePickerProps {
   onResetDate?: () => void;
   weekDisplayFormat?: string;
   dateOffset?: DateOffsetSpec;
+  dateRangeDelimiter?: string;
 }
 
 export const DateRangePicker = ({
@@ -97,6 +98,7 @@ export const DateRangePicker = ({
   onResetDate,
   weekDisplayFormat,
   dateOffset,
+  dateRangeDelimiter,
 }: DateRangePickerProps) => {
   return (
     <Wrapper>
@@ -112,6 +114,7 @@ export const DateRangePicker = ({
           PaperComponent: DialogPaperComponent,
         }}
         dateOffset={dateOffset}
+        dateRangeDelimiter={dateRangeDelimiter}
       />
       <ResetButton onClick={onResetDate}>Reset to default</ResetButton>
     </Wrapper>

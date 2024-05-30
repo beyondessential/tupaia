@@ -4,12 +4,12 @@
  *
  */
 import React from 'react';
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
+import { roundEndDate, roundStartDate } from '@tupaia/utils';
+import { YearPickerProps } from '../../types';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
-import { YearPickerProps } from '../../types';
 import { getDatesAsString } from './useDateRangePicker';
-import { roundEndDate, roundStartDate } from '@tupaia/utils';
 
 export const YearPicker = ({
   momentDateValue,
@@ -19,6 +19,7 @@ export const YearPicker = ({
   onChange,
   dateOffset,
   granularity,
+  dateRangeDelimiter,
 }: YearPickerProps) => {
   const momentToYear = (momentInstance: Moment, ...args: any[]) =>
     isIsoYear ? momentInstance.isoWeekYear(...(args as [])) : momentInstance.year(...(args as []));
@@ -35,25 +36,44 @@ export const YearPicker = ({
     const startDate = offsetMinDate.clone().add(y, 'years');
     const endDate = startDate.clone().add(1, 'years').subtract(1, 'days');
 
-    const displayString = dateOffset
-      ? getDatesAsString(false, dateOffset.unit, startDate, endDate)
+    const displayValue = dateOffset
+      ? getDatesAsString(
+          false,
+          dateOffset.unit,
+          startDate,
+          endDate,
+          undefined,
+          undefined,
+          dateRangeDelimiter,
+        )
       : startDate.format('YYYY');
 
-    const endDateString = momentToYear(endDate);
-
-    yearOptions.push(
-      <MenuItem value={endDateString} key={endDateString}>
-        {displayString}
-      </MenuItem>,
-    );
+    yearOptions.push({
+      startDate,
+      endDate,
+      displayValue,
+      value: momentToYear(startDate),
+    });
   }
+
+  const menuItems = yearOptions.map(({ displayValue, value }) => (
+    <MenuItem value={value} key={displayValue}>
+      {displayValue}
+    </MenuItem>
+  ));
+
+  const selectedOption = yearOptions.find(
+    ({ startDate, endDate }) =>
+      momentDateValue.clone().isSameOrBefore(endDate) &&
+      momentDateValue.clone().isSameOrAfter(startDate),
+  );
 
   return (
     <DatePicker
       label="Year"
-      selectedValue={momentToYear(momentDateValue)}
+      selectedValue={selectedOption?.value}
       onChange={e => onChange(momentToYear(momentDateValue.clone(), e.target.value))}
-      menuItems={yearOptions}
+      menuItems={menuItems}
     />
   );
 };
