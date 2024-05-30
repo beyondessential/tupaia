@@ -7,8 +7,8 @@ import { respond } from '@tupaia/utils';
 import { CRUDHandler } from '../CRUDHandler';
 import {
   getQueryOptionsForColumns,
-  fullyQualifyColumnSelector,
   processColumns,
+  processColumnSelector,
   processColumnSelectorKeys,
   generateLinkHeader,
 } from './helpers';
