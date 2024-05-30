@@ -4,10 +4,12 @@
  *
  */
 import React from 'react';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
 import { YearPickerProps } from '../../types';
+import { getDatesAsString } from './useDateRangePicker';
+import { roundEndDate, roundStartDate } from '@tupaia/utils';
 
 export const YearPicker = ({
   momentDateValue,
@@ -15,18 +17,33 @@ export const YearPicker = ({
   maxMomentDate,
   isIsoYear = false,
   onChange,
+  dateOffset,
+  granularity,
 }: YearPickerProps) => {
   const momentToYear = (momentInstance: Moment, ...args: any[]) =>
     isIsoYear ? momentInstance.isoWeekYear(...(args as [])) : momentInstance.year(...(args as []));
 
-  const minYear = momentToYear(minMomentDate);
-  const maxYear = momentToYear(maxMomentDate);
   const yearOptions = [];
 
-  for (let y = minYear; y <= maxYear; y++) {
+  const offsetMinDate = roundStartDate(granularity, minMomentDate, dateOffset);
+
+  const offsetMaxDate = roundEndDate(granularity, maxMomentDate, dateOffset);
+
+  const yearsToDisplay = offsetMaxDate.clone().diff(offsetMinDate, 'years');
+
+  for (let y = 0; y <= yearsToDisplay; y++) {
+    const startDate = offsetMinDate.clone().add(y, 'years');
+    const endDate = startDate.clone().add(1, 'years').subtract(1, 'days');
+
+    const displayString = dateOffset
+      ? getDatesAsString(false, dateOffset.unit, startDate, endDate)
+      : startDate.format('YYYY');
+
+    const endDateString = momentToYear(endDate);
+
     yearOptions.push(
-      <MenuItem value={y} key={y}>
-        {y}
+      <MenuItem value={endDateString} key={endDateString}>
+        {displayString}
       </MenuItem>,
     );
   }

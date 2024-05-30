@@ -23,7 +23,7 @@ import { GranularityType, ModifierType } from '../../types';
 
 const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 
-const getDatesAsString = (
+export const getDatesAsString = (
   isSingleDate: boolean,
   granularity: GranularityType = DEFAULT_GRANULARITY,
   startDate: Moment,

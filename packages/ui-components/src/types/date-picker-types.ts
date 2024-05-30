@@ -1,6 +1,7 @@
 import { Moment } from 'moment';
 import { GRANULARITIES, WEEK_DISPLAY_FORMATS } from '@tupaia/utils';
 import { ValueOf } from './helpers';
+import { DateOffsetSpec } from '@tupaia/types';
 
 export type BaseDatePickerProps = {
   momentDateValue: Moment;
@@ -15,6 +16,8 @@ export type YearPickerProps = Pick<
 > & {
   isIsoYear?: boolean;
   onChange: (date: Moment | number) => void;
+  dateOffset?: DateOffsetSpec;
+  granularity: GranularityType;
 };
 
 export type WeekPickerProps = BaseDatePickerProps & {

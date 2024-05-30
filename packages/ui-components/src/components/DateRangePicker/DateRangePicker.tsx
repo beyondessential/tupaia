@@ -168,6 +168,7 @@ export const DateRangePicker = ({
         onSetNewDates={handleDateChange}
         weekDisplayFormat={weekDisplayFormat}
         muiDialogProps={dialogProps}
+        dateOffset={dateOffset}
       />
     </>
   );
