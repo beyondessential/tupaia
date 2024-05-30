@@ -22,7 +22,6 @@ const sendResponseAsEmail = (
   message: string,
   attachments?: { filename: string; content: Buffer }[],
 ) => {
-  console.log("Sending email to user's email address", user.email);
   const text = `Hi ${user.first_name},
 
 ${message}
@@ -45,6 +44,10 @@ const setupEmailResponse = async (
     return;
   }
 
+  // If the request has a flagPermissionsChecked function, call it to bypass permissions
+  if (req.flagPermissionsChecked) {
+    req.flagPermissionsChecked(); // any permissions error will be emailed; bypass permissions assertion
+  }
   // respond with timeout status
   respond(res, { emailTimeoutHit: true }, 200);
 
