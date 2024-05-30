@@ -5,11 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Outlet, Navigate, useMatch } from 'react-router';
-import { useUser } from '../api/queries';
+import { Outlet } from 'react-router';
 import { SimplePageLayout } from './SimplePageLayout';
-import { GREY_B8 } from '../theme/colors';
-import { AUTH_ROUTES } from '../routes';
 
 export const CenteredPageContent = styled.section`
   display: flex;
@@ -18,7 +15,7 @@ export const CenteredPageContent = styled.section`
   align-items: center;
   flex-grow: 1;
   .MuiPaper-root {
-    border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+    border: 1px solid ${({ theme }) => theme.palette.divider};
     box-shadow: none;
     height: auto;
     .MuiTypography-colorError {
@@ -30,23 +27,18 @@ export const CenteredPageContent = styled.section`
   }
   .MuiFormLabel-asterisk,
   .MuiFormLabel-root.MuiInputLabel-root {
-    color: ${GREY_B8};
+    color: ${({ theme }) => theme.palette.text.tertiary};
     font-weight: normal;
   }
   .MuiInput-underline:before {
-    border-bottom: 1px solid ${GREY_B8};
+    border-bottom: 1px solid ${({ theme }) => theme.palette.text.tertiary};
   }
   .MuiFormControl-root + a {
-    color: ${GREY_B8};
+    color: ${({ theme }) => theme.palette.text.secondary};
   }
 `;
 
-export const AuthLayout = ({ logo, homeLink }) => {
-  const { isLoggedIn } = useUser();
-  const isResetPasswordPage = useMatch(AUTH_ROUTES.RESET_PASSWORD);
-  if (isLoggedIn && !isResetPasswordPage) {
-    return <Navigate to={homeLink} />;
-  }
+export const AuthLayout = ({ logo }) => {
   return (
     <SimplePageLayout logo={logo}>
       <CenteredPageContent>
@@ -57,14 +49,12 @@ export const AuthLayout = ({ logo, homeLink }) => {
 };
 
 AuthLayout.propTypes = {
-  logo: {
+  logo: PropTypes.shape({
     url: PropTypes.string,
     alt: PropTypes.string,
-  },
-  homeLink: PropTypes.string,
+  }),
 };
 
 AuthLayout.defaultProps = {
   logo: undefined,
-  homeLink: '/',
 };

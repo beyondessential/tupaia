@@ -4,9 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
 import { Button, SmallAlert, TextField, ImageUploadField } from '@tupaia/ui-components';
@@ -145,15 +143,3 @@ export const ProfilePage = React.memo(() => {
     </>
   );
 });
-
-ProfilePage.propTypes = {
-  user: PropTypes.PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    employer: PropTypes.string,
-    position: PropTypes.string,
-    profileImage: PropTypes.string,
-  }).isRequired,
-};

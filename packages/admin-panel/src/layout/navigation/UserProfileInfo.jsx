@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Avatar, Divider, Typography } from '@material-ui/core';
 import { Tooltip } from '@tupaia/ui-components';
-import { UserLink } from './UserLink';
+import { UserButton } from './UserButton';
 import { useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
 
@@ -49,9 +49,9 @@ export const UserProfileInfo = ({ profileLink, isFullWidth }) => {
     }`;
     return (
       <Tooltip title={profileLink.label}>
-        <UserLink to={profileLink.to} aria-label={profileLink.label}>
+        <UserButton to={profileLink.to} aria-label={profileLink.label} as={Link}>
           <Avatar>{initials}</Avatar>
-        </UserLink>
+        </UserButton>
       </Tooltip>
     );
   }
@@ -61,11 +61,11 @@ export const UserProfileInfo = ({ profileLink, isFullWidth }) => {
       <UserEmail>{user.email}</UserEmail>
       <Divider />
       {profileLink && (
-        <UserLink key={profileLink.to} to={profileLink.to}>
+        <UserButton key={profileLink.to} to={profileLink.to} component={Link}>
           {profileLink.label}
-        </UserLink>
+        </UserButton>
       )}
-      {isLoggedIn && <UserLink onClick={logout}>Log out</UserLink>}
+      {isLoggedIn && <UserButton onClick={logout}>Log out</UserButton>}
     </Wrapper>
   );
 };

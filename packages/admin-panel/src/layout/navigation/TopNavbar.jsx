@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { UserLink } from './UserLink';
+import { UserButton } from './UserButton';
 import { HomeLink } from './HomeLink';
 import { useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   position: sticky;
   top: 0;
   z-index: 1000;
-  ${UserLink} {
+  ${UserButton} {
     font-size: 0.875rem;
   }
   img {
@@ -34,7 +34,7 @@ export const TopNavbar = ({ logo, homeLink }) => {
   return (
     <Wrapper>
       <HomeLink logo={logo} homeLink={homeLink} />
-      {isLoggedIn && <UserLink onClick={logout}>Logout</UserLink>}
+      {isLoggedIn && <UserButton onClick={logout}>Logout</UserButton>}
     </Wrapper>
   );
 };

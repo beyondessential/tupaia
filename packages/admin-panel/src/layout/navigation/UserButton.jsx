@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 import { WHITE } from '../../theme/colors';
 
-export const UserLink = styled(Button).attrs({
+export const UserButton = styled(Button).attrs({
   variant: 'text',
   color: 'inherit',
 })`

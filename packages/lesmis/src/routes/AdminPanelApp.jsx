@@ -63,7 +63,6 @@ const AdminPanelApp = () => {
                 url: '/lesmis-logo-white.svg',
                 alt: 'LESMIS Admin Panel Logo',
               }}
-              homeLink={`${adminUrl}/survey-responses`}
             />
           }
         >

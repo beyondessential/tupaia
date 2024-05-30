@@ -135,7 +135,12 @@ export const NavPanel = ({ links, logo, homeLink, profileLink, basePath, isOpen 
             <Nav>
               <List>
                 {links.map(link => (
-                  <NavListItem link={link} basePath={basePath} navPanelOpen={isOpen} />
+                  <NavListItem
+                    link={link}
+                    basePath={basePath}
+                    navPanelOpen={isOpen}
+                    key={link.id}
+                  />
                 ))}
               </List>
             </Nav>
