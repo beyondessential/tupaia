@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import { LoginPage } from './LoginPage';
 import { changeEmailAddress, changePassword, login } from './actions';
-import { goToCreateAccount } from '../navigation/actions';
+import { goToCreateAccount, loadWebsite } from '../navigation/actions';
 import { AUTH_STATUSES } from './constants';
 
 const { AUTHENTICATING, UNAUTHENTICATED, ERROR } = AUTH_STATUSES;
@@ -55,6 +55,8 @@ function mapDispatchToProps(dispatch) {
     onChangeEmailAddress: newEmailAddress => dispatch(changeEmailAddress(newEmailAddress)),
     onChangePassword: newPassword => dispatch(changePassword(newPassword)),
     onCreateAccount: () => dispatch(goToCreateAccount()),
+    onForgotPassword: () =>
+      dispatch(loadWebsite('https://tupaia.org/explore/explore/General#forgot-password')),
   };
 }
 
