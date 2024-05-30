@@ -76,9 +76,9 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'export/surveyResponses',
       handleWith(routes.ExportSurveyResponsesRoute),
     )
-    .get<routes.ExportSurveyResponsesRequest>(
+    .get<routes.ExportSurveyDataRequest>(
       'export/surveyDataDownload',
-      handleWith(routes.ExportSurveyResponsesRoute),
+      handleWith(routes.ExportSurveyDataRoute),
     )
     .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
     .post<routes.SubscribeDashboardRequest>(

@@ -4,7 +4,8 @@
  */
 
 import { Router } from 'express';
-
+import { emailAfterTimeout } from '@tupaia/server-boilerplate';
+import { constructExportEmail } from '@tupaia/server-utils';
 import {
   appRequestCountryAccess,
   appRequestResetPassword,
@@ -36,7 +37,11 @@ export const getRoutesForApiV1 = () => {
   api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail()));
   api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
   api.get('/export/chart', catchAsyncErrors(exportChartHandler));
-  api.get('/export/surveyDataDownload', handleWith(ExportSurveyDataHandler));
+  api.get(
+    '/export/surveyDataDownload',
+    emailAfterTimeout(constructExportEmail),
+    handleWith(ExportSurveyDataHandler),
+  );
   api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
   api.get('/measures', handleWith(MeasuresHandler));
   api.get('/measureData', handleWith(MeasuresDataHandler));

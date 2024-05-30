@@ -22,4 +22,7 @@ export class MockWebConfigApi implements WebConfigApiInterface {
   public fetchDashboards(query: QueryParameters): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  public fetchExport(query: QueryParameters): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }

@@ -6,6 +6,8 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
+import { QueryParams } from './types';
+import { EMAIL_TIMEOUT_SETTINGS, handleExportResponse } from './utils';
 
 export type ExportSurveyResponsesRequest = Request<
   TupaiaWebExportSurveyResponsesRequest.Params,
@@ -14,7 +16,6 @@ export type ExportSurveyResponsesRequest = Request<
   TupaiaWebExportSurveyResponsesRequest.ReqQuery
 >;
 
-const EMAIL_TIMEOUT = 30 * 1000; // 30 seconds
 export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesRequest> {
   protected readonly type = 'download';
 
@@ -40,12 +41,10 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       throw new Error(`Invalid itemCode ${itemCode}`);
     }
 
-    const centralQuery: TupaiaWebExportSurveyResponsesRequest.ReqQuery & {
+    const centralQuery: QueryParams<TupaiaWebExportSurveyResponsesRequest.ReqQuery> & {
       reportName: string;
       countryCode?: string;
       entityCode?: string;
-      respondWithEmailTimeout: number;
-      emailExportFileMode?: string;
     } = {
       latest,
       surveyCodes,
@@ -54,8 +53,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       timeZone,
       reportName: dashboardItem.config?.name,
       easyReadingMode,
-      respondWithEmailTimeout: EMAIL_TIMEOUT,
-      emailExportFileMode: 'attachment',
+      ...EMAIL_TIMEOUT_SETTINGS,
     };
 
     if (organisationUnitCode?.length === 2) {
@@ -74,15 +72,6 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       return response;
     }
 
-    // Extract the filename from the content-disposition header
-    const contentDispositionHeader = response.headers.get('content-disposition');
-    const regex = /filename="(?<filename>.*)"/; // Find the value between quotes after filename=
-    const filePath: string | undefined = regex.exec(contentDispositionHeader)?.groups?.filename;
-
-    return {
-      contents: await response.buffer(),
-      filePath,
-      type: '.xlsx',
-    };
+    return handleExportResponse(response);
   }
 }
