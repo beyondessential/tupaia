@@ -29,8 +29,11 @@ export const getDatesAsString = (
   startDate: Moment,
   endDate: Moment,
   weekDisplayFormat?: string | number,
+  dateOffset?: DateOffsetSpec,
 ) => {
   const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
+
+  const displayGranularity = dateOffset?.unit ?? granularity;
 
   const { rangeFormat, modifier } = (
     isWeek && weekDisplayFormat
@@ -43,11 +46,24 @@ export const getDatesAsString = (
 
   const formattedStartDate = momentToDateDisplayString(
     startDate,
-    granularity,
+    displayGranularity,
     rangeFormat,
     modifier,
   );
-  const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, modifier);
+  const formattedEndDate = momentToDateDisplayString(
+    endDate,
+    displayGranularity,
+    rangeFormat,
+    modifier,
+  );
+
+  if (isSingleDate && !dateOffset) {
+    return formattedEndDate;
+  }
+
+  // TODO: Handle dateOffset
+  if (dateOffset) {
+  }
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} – ${formattedEndDate}`; // En dash
 };
@@ -148,11 +164,12 @@ export const useDateRangePicker = ({
   const nextDisabled = currentEndDate.isSameOrAfter(maxMomentDate);
   const prevDisabled = currentStartDate.isSameOrBefore(minMomentDate);
   const labelText = getDatesAsString(
-    !dateOffset && isSingleDate, // if the dateOffset is set, we want to display like a range
-    displayGranularity,
+    isSingleDate, // if the dateOffset is set, we want to display like a range
+    granularity,
     currentStartDate,
     currentEndDate,
     weekDisplayFormat,
+    dateOffset,
   );
 
   /**

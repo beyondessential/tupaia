@@ -265,6 +265,7 @@ export const DatePickerDialog = ({
             onChange={setSelectedStartDate}
             weekDisplayFormat={weekDisplayFormat}
             title="Start date"
+            dateOffset={dateOffset}
           />
         )}
         <DateRow
