@@ -9,7 +9,11 @@ import { createStackNavigator, CardStyleInterpolators } from 'react-navigation-s
 import { HeaderToolbar } from './HeaderToolbar';
 import { HeaderLeftButton } from './HeaderLeftButton';
 
-import { LoginContainer, WelcomeContainer } from '../authentication';
+import {
+  LoginContainer,
+  NoInternetForgotPasswordContainer,
+  WelcomeContainer,
+} from '../authentication';
 import { RequestCountryAccessContainer } from '../country';
 import { CreateUserContainer } from '../user';
 import { HomeScreenContainer } from '../home';
@@ -21,6 +25,7 @@ import { SurveyScreen, SurveysMenuScreen, QrCodeScreen } from '../assessment';
 import {
   CREATE_ACCOUNT_SCREEN,
   LOGIN_SCREEN,
+  NO_INTERNET_FORGOT_PASSWORD_SCREEN,
   REALM_EXPLORER_SCREEN,
   REQUEST_COUNTRY_ACCESS_SCREEN,
   SURVEY_SCREEN,
@@ -43,7 +48,14 @@ const routes = {
   [CHANGE_PASSWORD_SCREEN]: { screen: ChangePasswordContainer },
   [DELETE_ACCOUNT_REQUEST_SCREEN]: { screen: RequestAccountDeletionContainer },
   [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: () => ({ headerShown: false }) },
-  [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
+  [NO_INTERNET_FORGOT_PASSWORD_SCREEN]: {
+    screen: NoInternetForgotPasswordContainer,
+    navigationOptions: () => ({ headerShown: false }),
+  },
+  [REQUEST_COUNTRY_ACCESS_SCREEN]: {
+    screen: RequestCountryAccessContainer,
+    navigationOptions: () => ({ headerShown: false, animationEnabled: false }),
+  },
   [WELCOME_SCREEN]: {
     screen: WelcomeContainer,
     navigationOptions: () => ({ headerShown: false, animationEnabled: false }),
