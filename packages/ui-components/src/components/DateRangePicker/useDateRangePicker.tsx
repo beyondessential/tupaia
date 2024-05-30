@@ -39,10 +39,10 @@ export const getDatesAsString = (
   const { rangeFormat, modifier } = (
     isWeek && weekDisplayFormat
       ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
-      : GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG]
+      : GRANULARITY_CONFIG[displayGranularity as keyof typeof GRANULARITY_CONFIG]
   ) as {
     rangeFormat: string;
-    modifier?: ModifierType; // casting here because TS is identifying modifier as string | undefined instead of `${ModifierType}` | undefined
+    modifier?: ModifierType; // casting here because TS is identifying modifier as string | undefined instead of ModifierType | undefined
   };
 
   const formattedStartDate = momentToDateDisplayString(
@@ -60,10 +60,6 @@ export const getDatesAsString = (
 
   if (isSingleDate && !dateOffset) {
     return formattedEndDate;
-  }
-
-  // TODO: Handle dateOffset
-  if (dateOffset) {
   }
 
   return isSingleDate
@@ -175,7 +171,6 @@ export const useDateRangePicker = ({
     currentEndDate,
     weekDisplayFormat,
     dateOffset,
-    dateRangeDelimiter,
   );
 
   /**
