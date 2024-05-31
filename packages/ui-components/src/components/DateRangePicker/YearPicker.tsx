@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import { Moment } from 'moment';
-import { roundEndDate, roundStartDate } from '@tupaia/utils';
+import { GRANULARITIES_WITH_ONE_DATE, roundEndDate, roundStartDate } from '@tupaia/utils';
 import { YearPickerProps } from '../../types';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
@@ -20,9 +20,38 @@ export const YearPicker = ({
   dateOffset,
   granularity,
   dateRangeDelimiter,
+  valueKey,
 }: YearPickerProps) => {
+  const isSetRangeGranularity = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+
   const momentToYear = (momentInstance: Moment, ...args: any[]) =>
     isIsoYear ? momentInstance.isoWeekYear(...(args as [])) : momentInstance.year(...(args as []));
+
+  const getDisplayValue = (dates: { startDate: Moment; endDate: Moment }) => {
+    // if no dateOffset, just display the year as usual
+    if (!dateOffset) {
+      return momentToYear(dates.endDate);
+    }
+
+    // Otherwise, use the valueKey to determine which date to display, then display as the unit + year, e.g Jul 2021
+    // because in this case, it means the user will be selecting a range of years that each start from a particular offset
+
+    const currentDateMoment = dates[valueKey];
+
+    // when it's a single date, we give the startDate and endDate so that a range is displayed.
+    // otherwise we give the currentDateMoment so that only one date is displayed. This is slightly backwards to what you would expect,but when there is a dateOffset set, since we can't display just the year name, we need to display a range when selecting 1 year at a time, and just the unit + year when selecting a range
+    const startDateToUse = isSetRangeGranularity ? dates.startDate : currentDateMoment;
+
+    return getDatesAsString(
+      isSetRangeGranularity,
+      dateOffset.unit,
+      startDateToUse,
+      currentDateMoment,
+      undefined,
+      dateOffset,
+      dateRangeDelimiter,
+    );
+  };
 
   const yearOptions = [];
 
@@ -35,22 +64,15 @@ export const YearPicker = ({
   for (let y = 0; y <= yearsToDisplay; y++) {
     const startDate = offsetMinDate.clone().add(y, 'years');
     const endDate = startDate.clone().add(1, 'years').subtract(1, 'days');
-
-    const displayValue = dateOffset
-      ? getDatesAsString(
-          false,
-          dateOffset.unit,
-          startDate,
-          endDate,
-          undefined,
-          undefined,
-          dateRangeDelimiter,
-        )
-      : startDate.format('YYYY');
-
-    yearOptions.push({
+    const dates = {
       startDate,
       endDate,
+    };
+
+    const displayValue = getDisplayValue({ startDate, endDate });
+
+    yearOptions.push({
+      ...dates,
       displayValue,
       value: momentToYear(startDate),
     });
@@ -68,9 +90,17 @@ export const YearPicker = ({
       momentDateValue.clone().isSameOrAfter(startDate),
   );
 
+  const getLabel = () => {
+    if (!dateOffset || isSetRangeGranularity) return 'Year';
+    if (valueKey === 'startDate') return 'Year starting';
+    return 'Year ending';
+  };
+
+  const label = getLabel();
+
   return (
     <DatePicker
-      label="Year"
+      label={label}
       selectedValue={selectedOption?.value}
       onChange={e => onChange(momentToYear(momentDateValue.clone(), e.target.value))}
       menuItems={menuItems}

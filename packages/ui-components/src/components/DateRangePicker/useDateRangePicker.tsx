@@ -24,7 +24,7 @@ import { GranularityType, ModifierType } from '../../types';
 const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 
 export const getDatesAsString = (
-  isSingleDate: boolean,
+  isSetRangeGranularity: boolean,
   granularity: GranularityType = DEFAULT_GRANULARITY,
   startDate: Moment,
   endDate: Moment,
@@ -32,8 +32,11 @@ export const getDatesAsString = (
   dateOffset?: DateOffsetSpec,
   dateRangeDelimiter = ' - ',
 ) => {
+  const displayAsRange = !startDate.isSame(endDate);
   const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
 
+  // when it's a single date, we use the preferred range delimiter, otherwise use the default delimiter because this indicates multiple offset dates selected
+  const delimiterToUse = isSetRangeGranularity && !!dateOffset ? dateRangeDelimiter : ' - ';
   const displayGranularity = dateOffset?.unit ?? granularity;
 
   const { rangeFormat, modifier } = (
@@ -45,12 +48,6 @@ export const getDatesAsString = (
     modifier?: ModifierType; // casting here because TS is identifying modifier as string | undefined instead of ModifierType | undefined
   };
 
-  const formattedStartDate = momentToDateDisplayString(
-    startDate,
-    displayGranularity,
-    rangeFormat,
-    modifier,
-  );
   const formattedEndDate = momentToDateDisplayString(
     endDate,
     displayGranularity,
@@ -58,13 +55,18 @@ export const getDatesAsString = (
     modifier,
   );
 
-  if (isSingleDate && !dateOffset) {
+  if (!displayAsRange) {
     return formattedEndDate;
   }
 
-  return isSingleDate
-    ? formattedEndDate
-    : `${formattedStartDate}${dateRangeDelimiter}${formattedEndDate}`;
+  const formattedStartDate = momentToDateDisplayString(
+    startDate,
+    displayGranularity,
+    rangeFormat,
+    modifier,
+  );
+
+  return `${formattedStartDate}${delimiterToUse}${formattedEndDate}`;
 };
 
 const getCurrentDates = (
@@ -124,7 +126,7 @@ export const useDateRangePicker = ({
     onSetDates(toStandardDateString(newStartDate), toStandardDateString(newEndDate));
   };
 
-  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity ?? '');
+  const isSetRangeGranularity = GRANULARITIES_WITH_ONE_DATE.includes(granularity ?? '');
   const {
     momentShorthand,
   }: {
@@ -164,13 +166,15 @@ export const useDateRangePicker = ({
 
   const nextDisabled = currentEndDate.isSameOrAfter(maxMomentDate);
   const prevDisabled = currentStartDate.isSameOrBefore(minMomentDate);
+
   const labelText = getDatesAsString(
-    isSingleDate, // if the dateOffset is set, we want to display like a range
+    isSetRangeGranularity,
     granularity,
     currentStartDate,
     currentEndDate,
     weekDisplayFormat,
     dateOffset,
+    dateRangeDelimiter,
   );
 
   /**
@@ -178,7 +182,7 @@ export const useDateRangePicker = ({
    * Use a negative number to set backwards
    */
   const changePeriod = (numberOfPeriodsToMove: number) => {
-    if (!isSingleDate) {
+    if (!isSetRangeGranularity) {
       console.warn('Can only change period for single unit date pickers (e.g. one month)');
     }
 
@@ -213,7 +217,7 @@ export const useDateRangePicker = ({
   }, []);
 
   return {
-    isSingleDate,
+    isSingleDate: isSetRangeGranularity,
     currentStartDate: toStandardDateString(currentStartDate),
     currentEndDate: toStandardDateString(currentEndDate),
     handleReset,

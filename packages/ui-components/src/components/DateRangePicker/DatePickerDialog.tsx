@@ -195,7 +195,7 @@ export const DatePickerDialog = ({
   const [selectedStartDate, setSelectedStartDate] = useState(momentStartDate);
   const [selectedEndDate, setSelectedEndDate] = useState(momentEndDate);
   const [errorMessage, setErrorMessage] = useState('');
-  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+  const isSetRangeGranularity = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
 
   const onCancelDateSelection = () => {
     onClose();
@@ -206,13 +206,13 @@ export const DatePickerDialog = ({
   };
 
   const onSubmit = () => {
-    if (!isSingleDate && selectedStartDate.isAfter(selectedEndDate)) {
+    if (!isSetRangeGranularity && selectedStartDate.isAfter(selectedEndDate)) {
       return setErrorMessage('Start date must be before end date');
     }
 
     const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
       granularity,
-      isSingleDate ? selectedEndDate.clone() : selectedStartDate,
+      isSetRangeGranularity ? selectedEndDate.clone() : selectedStartDate,
       selectedEndDate,
       dateOffset,
     );
@@ -240,7 +240,7 @@ export const DatePickerDialog = ({
   }, [momentStartDate?.format('DD/MM/YYYY'), momentEndDate?.format('DD/MM/YYYY')]);
 
   useEffect(() => {
-    if (!isSingleDate) return;
+    if (!isSetRangeGranularity) return;
 
     const { momentUnit } = granularity;
     const newStartDate = selectedEndDate.clone().subtract(1, momentUnit);
@@ -257,7 +257,7 @@ export const DatePickerDialog = ({
     >
       <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
       <StyledDialogContent>
-        {!isSingleDate && (
+        {!isSetRangeGranularity && (
           <DateRow
             granularity={granularity}
             momentDateValue={selectedStartDate}
@@ -268,6 +268,7 @@ export const DatePickerDialog = ({
             title="Start date"
             dateOffset={dateOffset}
             dateRangeDelimiter={dateRangeDelimiter}
+            valueKey="startDate"
           />
         )}
         <DateRow
@@ -277,9 +278,10 @@ export const DatePickerDialog = ({
           maxMomentDate={maxMomentDate}
           onChange={setSelectedEndDate}
           weekDisplayFormat={weekDisplayFormat}
-          title={isSingleDate ? '' : 'End date'}
+          title={isSetRangeGranularity ? '' : 'End date'}
           dateOffset={dateOffset}
           dateRangeDelimiter={dateRangeDelimiter}
+          valueKey="endDate"
         />
         {errorMessage ? <Error>{errorMessage}</Error> : null}
       </StyledDialogContent>
