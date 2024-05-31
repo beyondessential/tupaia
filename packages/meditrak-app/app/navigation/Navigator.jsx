@@ -52,10 +52,7 @@ const routes = {
     screen: NoInternetForgotPasswordContainer,
     navigationOptions: () => ({ headerShown: false }),
   },
-  [REQUEST_COUNTRY_ACCESS_SCREEN]: {
-    screen: RequestCountryAccessContainer,
-    navigationOptions: () => ({ headerShown: false, animationEnabled: false }),
-  },
+  [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
   [WELCOME_SCREEN]: {
     screen: WelcomeContainer,
     navigationOptions: () => ({ headerShown: false, animationEnabled: false }),
