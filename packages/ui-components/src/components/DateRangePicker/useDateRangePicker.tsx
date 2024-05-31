@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import moment, { Moment } from 'moment';
-import { DatatrakWebUserRequest, DateOffsetSpec } from '@tupaia/types';
+import { DateOffsetSpec } from '@tupaia/types';
 import {
   DEFAULT_MIN_DATE,
   getDefaultDates,
