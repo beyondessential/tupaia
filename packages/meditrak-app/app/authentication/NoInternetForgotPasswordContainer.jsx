@@ -2,10 +2,6 @@ import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 import { NoInternetForgotPasswordPage } from './NoInternetForgotPasswordPage';
 
-function mapStateToProps() {
-  return {};
-}
-
 function mapDispatchToProps(dispatch) {
   return {
     /**
@@ -16,7 +12,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 const NoInternetForgotPasswordContainer = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(NoInternetForgotPasswordPage);
 
