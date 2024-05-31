@@ -234,7 +234,35 @@ const getDefaultDatesForSingleDateGranularities = (
     endDate = startDate;
   }
 
-  return roundStartEndDates(periodGranularity, startDate, endDate, dateOffset);
+  const { startDate: defaultStartDate, endDate: defaultEndDate } = roundStartEndDates(
+    periodGranularity,
+    startDate,
+    endDate,
+    dateOffset,
+  );
+  let defaultStartDateMoment = defaultStartDate;
+  let defaultEndDateMoment = defaultEndDate;
+
+  if (dateOffset) {
+    // get the period we are currently in, for example if offset is 6 months, and we are currently in May, the period would be June - July previous year
+    // if the offset start date is after the initial end date, this means we have to make the start date 1 period before today
+    if (defaultStartDateMoment.isAfter(endDate)) {
+      const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
+      const newStartingDate = moment().subtract(1, momentUnit);
+      defaultStartDateMoment = roundStartDate(periodGranularity, newStartingDate, dateOffset);
+      defaultEndDateMoment = roundEndDate(periodGranularity, newStartingDate, dateOffset);
+    }
+
+    // if the offset end date is before the initial start date, this means we have to make the end date 1 period after today
+    if (defaultEndDateMoment.isBefore(startDate)) {
+      const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
+      const newEndingDate = moment().add(1, momentUnit);
+      defaultStartDateMoment = roundStartDate(periodGranularity, newEndingDate, dateOffset);
+      defaultEndDateMoment = roundEndDate(periodGranularity, newEndingDate, dateOffset);
+    }
+  }
+
+  return { startDate: defaultStartDateMoment, endDate: defaultEndDateMoment };
 };
 
 /**
