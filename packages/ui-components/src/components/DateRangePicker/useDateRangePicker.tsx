@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import moment, { Moment } from 'moment';
-import { DateOffsetSpec } from '@tupaia/types';
+import { DatatrakWebUserRequest, DateOffsetSpec } from '@tupaia/types';
 import {
   DEFAULT_MIN_DATE,
   getDefaultDates,
@@ -127,23 +127,39 @@ export const useDateRangePicker = ({
   };
 
   const isSetRangeGranularity = GRANULARITIES_WITH_ONE_DATE.includes(granularity ?? '');
-  const {
-    momentShorthand,
-  }: {
-    momentShorthand: string;
-  } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
+  const { momentShorthand } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
 
-  const getMinDate = () => {
-    const initialMinDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
-    return roundStartDate(granularity, initialMinDate, dateOffset);
-  };
+  const initialMinDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
+
+  // round the start date, including the date offset if it is set
+  const minMomentDate = roundStartDate(granularity, initialMinDate, dateOffset);
 
   const getMaxDate = () => {
+    // Get the moment object for the max date, or if it's not set, use the current date
     const initialMaxDate = maxDate ? moment(maxDate) : moment();
-    return roundEndDate(granularity, initialMaxDate, dateOffset);
+
+    // if there is no offset, just round the end date and return it
+    if (!dateOffset) return roundEndDate(granularity, initialMaxDate);
+
+    // calculate the difference between the min and max dates, and round up to the nearest whole number
+    const differenceBetweenDates = Math.ceil(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - diff types are not compatible with our period momentShorthand type (which is inferred as a string)
+      initialMaxDate.diff(minMomentDate, momentShorthand, true),
+    );
+
+    // add the difference between the min and max dates to the min date to get the new max date
+    const newMaxDate = minMomentDate
+      .clone()
+      .add(differenceBetweenDates, momentShorthand)
+      .subtract(1, 'days'); // subtract one day to make sure the max date is inclusive
+
+    // round the end date, using the date offset if it is set
+    const roundedEndDate = roundEndDate(dateOffset?.unit ?? granularity, newMaxDate);
+
+    return roundedEndDate;
   };
 
-  const minMomentDate = getMinDate();
   const maxMomentDate = getMaxDate();
 
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates({

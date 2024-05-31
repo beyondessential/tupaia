@@ -57,11 +57,9 @@ export const YearPicker = ({
 
   const offsetMinDate = roundStartDate(granularity, minMomentDate, dateOffset);
 
-  const offsetMaxDate = roundEndDate(granularity, maxMomentDate, dateOffset);
+  const yearsToDisplay = Math.ceil(maxMomentDate.clone().diff(offsetMinDate, 'years', true));
 
-  const yearsToDisplay = offsetMaxDate.clone().diff(offsetMinDate, 'years');
-
-  for (let y = 0; y <= yearsToDisplay; y++) {
+  for (let y = 0; y < yearsToDisplay; y++) {
     const startDate = offsetMinDate.clone().add(y, 'years');
     const endDate = startDate.clone().add(1, 'years').subtract(1, 'days');
     const dates = {
