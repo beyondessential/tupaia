@@ -2,10 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { useTable, usePagination, useSortBy } from 'react-table';
+import { useTable, usePagination, useSortBy, useResizeColumns, useFlexLayout } from 'react-table';
 import {
   TableHead,
   TableContainer as MuiTableContainer,
@@ -57,6 +57,12 @@ const TableContainer = styled(MuiTableContainer)`
     z-index: 2;
     background-color: ${({ theme }) => theme.palette.background.paper};
   }
+  tr {
+    display: flex;
+    
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.primary.main};
+  }
 `;
 
 const Wrapper = styled.div`
@@ -80,242 +86,296 @@ const MessageWrapper = styled.div`
   background-color: rgba(255, 255, 255, 0.5);
 `;
 
-const DataFetchingTableComponent = ({
-  columns,
-  data = [],
-  numberOfPages,
-  pageSize,
-  pageIndex,
-  onPageChange,
-  onPageSizeChange,
-  initialiseTable,
-  nestingLevel,
-  filters,
-  sorting,
-  isChangingDataOnServer,
-  errorMessage,
-  onRefreshData,
-  confirmActionMessage,
-  onConfirmAction,
-  onCancelAction,
-  deleteConfig,
-  onFilteredChange,
-  totalRecords,
-  isFetchingData,
-  onSortedChange,
-  detailUrl,
-  getHasNestedView,
-  endpoint,
-  getNestedViewLink,
-  baseFilter,
-  basePath,
-  resourceName,
-  defaultSorting,
-}) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    pageCount,
-    gotoPage,
-    setPageSize,
-    visibleColumns,
-    setSortBy,
-    // Get the state from the instance
-    state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: {
-        pageIndex,
-        pageSize,
-        sortBy: sorting,
-        hiddenColumns: columns.filter(column => column.show === false).map(column => column.id),
-      },
-      manualPagination: true,
-      pageCount: numberOfPages,
-      manualSortBy: true,
-    },
-    useSortBy,
-    usePagination,
-  );
-
-  //  Listen for changes in pagination and use the state to fetch our new data
-  useEffect(() => {
-    onPageChange(tablePageIndex);
-  }, [tablePageIndex]);
-
-  useEffect(() => {
-    onPageSizeChange(tablePageSize);
-    gotoPage(0);
-  }, [tablePageSize]);
-
-  useEffect(() => {
-    onSortedChange(tableSorting);
-    gotoPage(0);
-  }, [tableSorting]);
-
-  useEffect(() => {
-    onRefreshData();
-  }, [filters, pageIndex, pageSize, sorting]);
-
-  useEffect(() => {
-    if (!isChangingDataOnServer && !errorMessage) {
-      onRefreshData();
-    }
-  }, [errorMessage, isChangingDataOnServer]);
-
-  // initial render/re-render when endpoint changes
-  useEffect(() => {
-    if (nestingLevel === 0) {
-      // Page-level filters only apply to top-level data tables
-      const params = queryString.parse(location.search); // set filters from query params
-      const parsedFilters = params.filters ? JSON.parse(params.filters) : undefined;
-      initialiseTable(parsedFilters);
-    } else {
-      initialiseTable();
-    }
-    gotoPage(0);
-    setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
-  }, [endpoint, baseFilter]);
-
-  const onChangeFilters = newFilters => {
-    onFilteredChange(newFilters);
-    gotoPage(0);
+const formatColumnForReactTable = (originalColumn, reduxId) => {
+  const { source, type, actionConfig, filterable, ...restOfColumn } = originalColumn;
+  const id = source || type;
+  return {
+    id,
+    accessor: id?.includes('.') ? row => row[source] : id, // react-table doesn't like .'s
+    actionConfig,
+    reduxId,
+    type,
+    disableSortBy: !source, // disable action columns from being sortable
+    filterable: filterable !== false,
+    ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
+    ...restOfColumn,
   };
+};
 
-  const isLoading = isFetchingData || isChangingDataOnServer;
+const DataFetchingTableComponent = memo(
+  ({
+    columns,
+    data = [],
+    numberOfPages,
+    pageSize,
+    pageIndex = 0,
+    onPageChange,
+    onPageSizeChange,
+    initialiseTable,
+    nestingLevel,
+    filters,
+    sorting,
+    isChangingDataOnServer,
+    errorMessage,
+    onRefreshData,
+    confirmActionMessage,
+    onConfirmAction,
+    onCancelAction,
+    deleteConfig,
+    onFilteredChange,
+    totalRecords,
+    isFetchingData,
+    onSortedChange,
+    detailUrl,
+    getHasNestedView,
+    endpoint,
+    getNestedViewLink,
+    baseFilter,
+    basePath,
+    resourceName,
+    defaultSorting,
+    actionLabel = 'Action',
+  }) => {
+    const formattedColumns = useMemo(
+      () => columns.map(column => formatColumnForReactTable(column)),
+      [JSON.stringify(columns)],
+    );
 
-  const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
-  const { singular = 'record' } = resourceName;
-  return (
-    <Wrapper>
-      {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
-      {isLoading && (
-        <MessageWrapper>
-          <Typography variant="body2">Loading</Typography>
-        </MessageWrapper>
-      )}
-      {data.length === 0 && !isLoading && (
-        <MessageWrapper>
-          <Typography variant="body2">No data to display</Typography>
-        </MessageWrapper>
-      )}
-      <TableContainer>
-        <Table {...getTableProps()} stickyHeader className="data-fetching-table">
-          <TableHead>
-            {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
-                {headers.map(
-                  (
-                    {
-                      getHeaderProps,
-                      render,
-                      isSorted,
-                      isSortedDesc,
-                      getSortByToggleProps,
-                      canSort,
-                      isButtonColumn,
-                    },
-                    i,
-                  ) => {
-                    return (
-                      <HeaderDisplayCell
-                        {...getHeaderProps(getSortByToggleProps())}
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={`header-${i}`}
-                        isButtonColumn={isButtonColumn}
-                        width={visibleColumns[i].colWidth}
-                      >
-                        {render('Header')}
-                        {canSort && (
-                          <TableSortLabel
-                            active={isSorted}
-                            direction={isSortedDesc ? 'asc' : 'desc'}
-                            IconComponent={KeyboardArrowDown}
-                          />
-                        )}
-                      </HeaderDisplayCell>
-                    );
-                  },
-                )}
-              </TableRow>
-            ))}
-            <TableRow>
-              {displayFilterRow &&
-                visibleColumns.map(column => {
-                  return (
-                    <FilterCell
-                      key={column.id}
-                      column={column}
-                      onFilteredChange={onChangeFilters}
-                      filters={filters}
-                      width={column.colWidth}
-                      isButtonColumn={column.isButtonColumn}
-                    />
-                  );
-                })}
-            </TableRow>
-          </TableHead>
-          <TableBody {...getTableBodyProps()}>
-            {rows.map((row, index) => {
-              prepareRow(row);
-              return (
+    const memoisedData = useMemo(() => data, [JSON.stringify(data)]);
+
+    const {
+      getTableProps,
+      getTableBodyProps,
+      headerGroups,
+      prepareRow,
+      rows,
+      pageCount,
+      gotoPage,
+      setPageSize,
+      visibleColumns,
+      setSortBy,
+      // Get the state from the instance
+      state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
+    } = useTable(
+      {
+        columns: formattedColumns,
+        data: memoisedData,
+        initialState: {
+          pageIndex,
+          pageSize,
+          sortBy: sorting,
+          hiddenColumns: columns
+            .filter(column => column.show === false)
+            .map(column => column.source ?? column.type),
+        },
+        manualPagination: true,
+        pageCount: numberOfPages,
+        manualSortBy: true,
+      },
+      useSortBy,
+      usePagination,
+      useFlexLayout,
+      useResizeColumns,
+    );
+
+    //  Listen for changes in pagination and use the state to fetch our new data
+    useEffect(() => {
+      onPageChange(tablePageIndex);
+    }, [tablePageIndex]);
+
+    useEffect(() => {
+      onPageSizeChange(tablePageSize);
+      gotoPage(0);
+    }, [tablePageSize]);
+
+    useEffect(() => {
+      onSortedChange(tableSorting);
+      gotoPage(0);
+    }, [tableSorting]);
+
+    useEffect(() => {
+      onRefreshData();
+    }, [filters, pageIndex, pageSize, sorting]);
+
+    useEffect(() => {
+      if (!isChangingDataOnServer && !errorMessage) {
+        onRefreshData();
+      }
+    }, [errorMessage, isChangingDataOnServer]);
+
+    // initial render/re-render when endpoint changes
+    useEffect(() => {
+      if (nestingLevel === 0) {
+        // Page-level filters only apply to top-level data tables
+        const params = queryString.parse(location.search); // set filters from query params
+        const parsedFilters = params.filters ? JSON.parse(params.filters) : undefined;
+        initialiseTable(parsedFilters);
+      } else {
+        initialiseTable();
+      }
+      gotoPage(0);
+      setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
+    }, [endpoint, JSON.stringify(baseFilter)]);
+
+    const onChangeFilters = newFilters => {
+      onFilteredChange(newFilters);
+      gotoPage(0);
+    };
+
+    const isLoading = isFetchingData || isChangingDataOnServer;
+
+    const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
+
+    const { singular = 'record' } = resourceName;
+
+    const actionColumns = visibleColumns.filter(column => column.isButtonColumn);
+
+    return (
+      <Wrapper>
+        {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
+        {isLoading && (
+          <MessageWrapper>
+            <Typography variant="body2">Loading</Typography>
+          </MessageWrapper>
+        )}
+        {data.length === 0 && !isLoading && (
+          <MessageWrapper>
+            <Typography variant="body2">No data to display</Typography>
+          </MessageWrapper>
+        )}
+        <TableContainer>
+          <Table {...getTableProps()} stickyHeader className="data-fetching-table">
+            <TableHead>
+              {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
-                  {row.cells.map(({ getCellProps, render }, i) => {
+                <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
+                  {headers.map(
+                    (
+                      {
+                        getHeaderProps,
+                        render,
+                        isSorted,
+                        isSortedDesc,
+                        getSortByToggleProps,
+                        canSort,
+                        getResizerProps,
+                        canResize,
+                        isButtonColumn,
+                      },
+                      i,
+                    ) => {
+                      // we will make a separate 'Actions' header
+                      if (isButtonColumn) return null;
+                      return (
+                        <HeaderDisplayCell
+                          {...getHeaderProps()}
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`header-${i}`}
+                          canResize={canResize}
+                          getResizerProps={getResizerProps}
+                        >
+                          {render('Header')}
+                          {canSort && (
+                            <TableSortLabel
+                              active={isSorted}
+                              direction={isSortedDesc ? 'asc' : 'desc'}
+                              IconComponent={KeyboardArrowDown}
+                              {...getSortByToggleProps()}
+                            />
+                          )}
+                        </HeaderDisplayCell>
+                      );
+                    },
+                  )}
+                  {actionColumns.length > 0 && (
+                    <HeaderDisplayCell
+                      key="actions-header"
+                      canResize={false}
+                      colSpan={actionColumns.length}
+                      width={
+                        // if there are multiple action columns, set the width to the sum of their widths, otherwise set it to auto so that the column takes up the remaining space
+                        actionColumns.length > 1
+                          ? actionColumns.reduce((acc, column) => acc + column.totalWidth, 0)
+                          : 'auto'
+                      }
+                      isButtonColumn
+                    >
+                      Action
+                    </HeaderDisplayCell>
+                  )}
+                </TableRow>
+              ))}
+              <TableRow>
+                {displayFilterRow &&
+                  visibleColumns.map(column => {
                     return (
-                      <DisplayCell
-                        {...getCellProps()}
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={`table-row-${index}-cell-${i}`}
-                        row={row}
-                        detailUrl={visibleColumns[i].isButtonColumn ? '' : detailUrl}
-                        getHasNestedView={getHasNestedView}
-                        width={visibleColumns[i].colWidth}
-                        getNestedViewLink={getNestedViewLink}
-                        isButtonColumn={visibleColumns[i].isButtonColumn}
-                        basePath={basePath}
-                      >
-                        {render('Cell')}
-                      </DisplayCell>
+                      <FilterCell
+                        {...column.getHeaderProps()}
+                        key={column.id}
+                        column={column}
+                        onFilteredChange={onChangeFilters}
+                        filters={filters}
+                      />
                     );
                   })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Pagination
-        page={tablePageIndex}
-        pageCount={pageCount}
-        gotoPage={gotoPage}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-        totalRecords={totalRecords}
-      />
+              </TableRow>
+            </TableHead>
+            <TableBody {...getTableBodyProps()}>
+              {rows.map((row, index) => {
+                prepareRow(row);
+                return (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
+                    {row.cells.map(({ getCellProps, render }, i) => {
+                      const col = visibleColumns[i];
+                      return (
+                        <DisplayCell
+                          {...getCellProps()}
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={`table-row-${index}-cell-${i}`}
+                          row={row}
+                          detailUrl={col.isButtonColumn ? '' : detailUrl}
+                          getHasNestedView={getHasNestedView}
+                          getNestedViewLink={getNestedViewLink}
+                          isButtonColumn={col.isButtonColumn}
+                          basePath={basePath}
+                        >
+                          {render('Cell')}
+                        </DisplayCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Pagination
+          page={tablePageIndex}
+          pageCount={pageCount}
+          gotoPage={gotoPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          totalRecords={totalRecords}
+        />
 
-      <ConfirmDeleteModal
-        isOpen={!!confirmActionMessage}
-        onConfirm={onConfirmAction}
-        onCancel={onCancelAction}
-        title={deleteConfig?.title || `Delete ${singular}`}
-        heading={deleteConfig?.heading || `You are about to delete this ${singular}`}
-        description={
-          deleteConfig?.description ||
-          `Are you sure you would like to delete this ${singular}? This cannot be undone.`
-        }
-        confirmButtonText={deleteConfig?.confirmButtonText || `Delete ${singular}`}
-        cancelButtonText={deleteConfig?.cancelButtonText || 'Cancel'}
-      />
-    </Wrapper>
-  );
-};
+        <ConfirmDeleteModal
+          isOpen={!!confirmActionMessage}
+          onConfirm={onConfirmAction}
+          onCancel={onCancelAction}
+          title={deleteConfig?.title || `Delete ${singular}`}
+          heading={deleteConfig?.heading || `You are about to delete this ${singular}`}
+          description={
+            deleteConfig?.description ||
+            `Are you sure you would like to delete this ${singular}? This cannot be undone.`
+          }
+          confirmButtonText={deleteConfig?.confirmButtonText || `Delete ${singular}`}
+          cancelButtonText={deleteConfig?.cancelButtonText || 'Cancel'}
+        />
+      </Wrapper>
+    );
+  },
+);
 
 DataFetchingTableComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
@@ -353,6 +413,7 @@ DataFetchingTableComponent.propTypes = {
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
   defaultSorting: PropTypes.array,
+  actionLabel: PropTypes.string,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -372,11 +433,11 @@ DataFetchingTableComponent.defaultProps = {
   basePath: '',
   resourceName: {},
   defaultSorting: [],
+  actionLabel: 'Action',
 };
 
-const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({
+const mapStateToProps = (state, { reduxId, ...ownProps }) => ({
   isFetchingData: getIsFetchingData(state, reduxId),
-  columns: columns.map(originalColumn => formatColumnForReactTable(originalColumn, reduxId)),
   isChangingDataOnServer: getIsChangingDataOnServer(state),
   ...ownProps,
   ...getTableState(state, reduxId),
@@ -417,22 +478,6 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
     ...dispatchProps,
     onRefreshData,
     initialiseTable,
-  };
-};
-
-const formatColumnForReactTable = (originalColumn, reduxId) => {
-  const { source, type, actionConfig, filterable, ...restOfColumn } = originalColumn;
-  const id = source || type;
-  return {
-    id,
-    accessor: id?.includes('.') ? row => row[source] : id, // react-table doesn't like .'s
-    actionConfig,
-    reduxId,
-    type,
-    disableSortBy: !source, // disable action columns from being sortable
-    filterable: filterable !== false,
-    ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
-    ...restOfColumn,
   };
 };
 

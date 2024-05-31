@@ -6,7 +6,6 @@
 
 import { Request, NextFunction } from 'express';
 import { TranslatableResponse, TranslatableRoute } from '@tupaia/server-boilerplate';
-import { ReportConnection, WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
 
 export type ReportRequest = Request<
@@ -20,9 +19,6 @@ export class ReportRoute extends TranslatableRoute<
   ReportRequest,
   TranslatableResponse<ReportRequest>
 > {
-  private readonly reportConnection: ReportConnection;
-  private readonly webConfigConnection: WebConfigConnection;
-
   public constructor(
     req: ReportRequest,
     res: TranslatableResponse<ReportRequest>,
@@ -30,8 +26,6 @@ export class ReportRoute extends TranslatableRoute<
   ) {
     super(req, res, next);
 
-    this.reportConnection = new ReportConnection(req.session);
-    this.webConfigConnection = new WebConfigConnection(req.session);
     this.translationSchema = {
       domain: 'lesmis',
       layout: {
@@ -62,15 +56,14 @@ export class ReportRoute extends TranslatableRoute<
     if (legacy === 'true') {
       switch (type) {
         case 'dashboard': {
-          return this.webConfigConnection.fetchDashboardReport(reportCode, {
+          return this.req.ctx.services.webConfig.fetchReport(reportCode, {
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
             ...this.req.query,
           });
         }
         case 'mapOverlay': {
-          return this.webConfigConnection.fetchMapOverlayData({
-            mapOverlayCode: reportCode,
+          return this.req.ctx.services.webConfig.fetchMeasureData(reportCode, {
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
             ...this.req.query,
@@ -81,12 +74,15 @@ export class ReportRoute extends TranslatableRoute<
       }
     }
     // Otherwise just pull from report server
-    const { results: data, ...report } = await this.reportConnection.fetchReport(reportCode, {
-      // Report server can accept arrays so the parameters are plural
-      organisationUnitCodes: entityCode,
-      hierarchy: LESMIS_HIERARCHY_NAME,
-      ...this.req.query,
-    });
+    const { results: data, ...report } = await this.req.ctx.services.report.fetchReport(
+      reportCode,
+      {
+        // Report server can accept arrays so the parameters are plural
+        organisationUnitCodes: entityCode,
+        hierarchy: LESMIS_HIERARCHY_NAME,
+        ...this.req.query,
+      },
+    );
     // format to match the legacy response so that the frontend can handle it
     return {
       data,

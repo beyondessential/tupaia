@@ -20,7 +20,7 @@ export const getEntitiesPageConfig = translate => {
     {
       Header: translate('admin.name'),
       source: 'name',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {
@@ -62,30 +62,32 @@ export const getEntitiesPageConfig = translate => {
     title: translate('admin.entities'),
     columns: FIELDS,
     importConfig: IMPORT_CONFIG,
-    nestedView: {
-      ...entities.nestedView,
-      columns: [
-        ...SURVEY_RESPONSE_COLUMNS,
-        {
-          Header: 'Approval Status',
-          source: 'approval_status',
-          show: false,
+    nestedViews: [
+      {
+        ...entities.nestedViews[0],
+        columns: [
+          ...SURVEY_RESPONSE_COLUMNS,
+          {
+            Header: 'Approval Status',
+            source: 'approval_status',
+            show: false,
+          },
+          {
+            Header: 'id',
+            source: 'id',
+            show: false,
+          },
+        ],
+        getNestedViewLink: ({ id, approval_status: approvalStatus }) => {
+          if (approvalStatus === 'pending') {
+            return `../../survey-responses/${id}/answers`;
+          }
+          if (approvalStatus === 'not_required') {
+            return `../../survey-responses/non-approval/${id}/answers`;
+          }
+          return `../../survey-responses/${approvalStatus}/${id}/answers`;
         },
-        {
-          Header: 'id',
-          source: 'id',
-          show: false,
-        },
-      ],
-      getNestedViewLink: ({ id, approval_status: approvalStatus }) => {
-        if (approvalStatus === 'pending') {
-          return `../../survey-responses/${id}/answers`;
-        }
-        if (approvalStatus === 'not_required') {
-          return `../../survey-responses/non-approval/${id}/answers`;
-        }
-        return `../../survey-responses/${approvalStatus}/${id}/answers`;
       },
-    },
+    ],
   };
 };
