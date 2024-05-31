@@ -4,11 +4,9 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:datatrak.tupaia.org?mode=developer</string>
-		<string>webcredentials:tupaia.org</string>
+		<string>applinks:datatrak.tupaia.org</string>
 		<string>webcredentials:datatrak.tupaia.org</string>
-		<string>applinks:waitp-1500-open-ios-links-in-app-datatrak.tupaia.org?mode=developer</string>
-		<string>applinks:localhost:5173?mode=developer</string>
+		<string>webcredentials:tupaia.org</string>
 	</array>
 </dict>
 </plist>
