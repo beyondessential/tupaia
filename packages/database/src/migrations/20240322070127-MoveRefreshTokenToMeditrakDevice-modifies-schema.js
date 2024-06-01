@@ -30,6 +30,11 @@ exports.up = async function (db) {
       WHERE md.user_id = mdt.user_id AND md.id = mdt.meditrak_device_id
   `);
   await db.runSql(`ALTER TABLE refresh_token DROP COLUMN meditrak_device_id`);
+  await db.runSql(`ALTER TABLE meditrak_device DROP CONSTRAINT meditrak_device_install_id_unique`);
+  await db.runSql(
+    `ALTER TABLE meditrak_device ADD CONSTRAINT meditrak_device_install_id_user_id_unique UNIQUE (install_id,user_id)`,
+  );
+
   return null;
 };
 
@@ -39,6 +44,12 @@ exports.down = async function (db) {
   await db.runSql(`ALTER TABLE refresh_token ADD COLUMN meditrak_device_id text`);
   await db.runSql(
     `ALTER TABLE refresh_token ADD CONSTRAINT refresh_token_meditrak_device_id_fk FOREIGN KEY (meditrak_device_id) REFERENCES meditrak_device(id) ON UPDATE CASCADE ON DELETE CASCADE`,
+  );
+  await db.runSql(
+    `ALTER TABLE meditrak_device DROP CONSTRAINT meditrak_device_install_id_user_id_unique`,
+  );
+  await db.runSql(
+    `ALTER TABLE meditrak_device ADD CONSTRAINT meditrak_device_install_id_unique UNIQUE (install_id)`,
   );
   return null;
 };
