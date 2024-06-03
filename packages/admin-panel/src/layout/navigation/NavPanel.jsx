@@ -81,12 +81,12 @@ const Drawer = styled(BaseDrawer)`
   .MuiDrawer-paper {
     width: ${props => (props.open ? NAV_PANEL_OPEN_WIDTH : NAV_PANEL_CLOSED_WIDTH)};
     transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    position: absolute;
   }
 `;
 
 const HeaderContainer = styled.div`
   display: flex;
-  overflow: hidden;
   a {
     overflow: hidden;
   }

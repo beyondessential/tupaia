@@ -64,42 +64,86 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
             path="/"
             element={<LesmisAdminRedirect hasAdminPanelAccess={userHasAdminPanelAccess} />}
           >
-            {routes.map(route => (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={
-                  <TabPageLayout
-                    routes={route.childViews}
-                    basePath={`${adminUrl}${route.path}`}
-                    Footer={<Footer />}
-                    ContainerComponent={PageContentContainerComponent}
-                  />
-                }
-              >
-                {getFlattenedChildViews(route, adminUrl).map(childRoute => (
-                  <Route
-                    key={childRoute.path}
-                    path={childRoute.path}
-                    element={
-                      childRoute.Component ? (
-                        <childRoute.Component />
-                      ) : (
-                        <ResourcePage
-                          actionLabel={translate('admin.action')}
-                          {...childRoute}
-                          hasBESAdminAccess={isBESAdmin}
-                        />
-                      )
-                    }
-                  />
-                ))}
-              </Route>
-            ))}
-            <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
+            <Route
+              element={
+                <AppPageLayout
+                  routes={routes}
+                  user={user}
+                  logo={{
+                    url: '/lesmis-logo-white.svg',
+                    alt: 'LESMIS Admin Panel Logo',
+                  }}
+                  homeLink={`${adminUrl}/survey-responses`}
+                  basePath={adminUrl}
+                />
+              }
+            >
+              {routes.map(route => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={
+                    <TabPageLayout
+                      routes={route.childViews}
+                      basePath={`${adminUrl}${route.path}`}
+                      Footer={<Footer />}
+                      ContainerComponent={PageContentContainerComponent}
+                    />
+                  }
+                >
+                  {getFlattenedChildViews(route, adminUrl).map(childRoute => (
+                    <Route
+                      key={childRoute.path}
+                      path={childRoute.path}
+                      element={
+                        childRoute.Component ? (
+                          <childRoute.Component />
+                        ) : (
+                          <ResourcePage
+                            actionLabel={translate('admin.action')}
+                            {...childRoute}
+                            hasBESAdminAccess={isBESAdmin}
+                          />
+                        )
+                      }
+                    />
+                  ))}
+                </Route>
+              ))}
+              <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
+            </Route>
+            <Route
+              path="/viz-builder/*"
+              hasAdminPanelAccess={userHasAdminPanelAccess}
+              element={
+                <VizBuilderApp
+                  logo={{
+                    url: '/lesmis-logo-white.svg',
+                    alt: 'LESMIS Admin Panel Logo',
+                  }}
+                  homeLink={`${adminUrl}/survey-responses`}
+                  Footer={Footer}
+                />
+              }
+            />
           </Route>
+          <Route
+            path="/viz-builder/*"
+            hasAdminPanelAccess={userHasAdminPanelAccess}
+            element={
+              <VizBuilderApp
+                logo={{
+                  url: '/lesmis-logo-white.svg',
+                  alt: 'LESMIS Admin Panel Logo',
+                }}
+                homeLink={`${adminUrl}/survey-responses`}
+                Footer={Footer}
+              />
+            }
+          />
         </Route>
         <Route path="not-authorised" element={<NotAuthorisedView />} />
+
         <Route
           path="*"
           element={

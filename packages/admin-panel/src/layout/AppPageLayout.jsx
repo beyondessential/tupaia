@@ -14,11 +14,12 @@ import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPa
 
 const PageWrapper = styled.div`
   display: flex;
+  overflow: hidden;
+  flex: 1;
 `;
 
 const Main = styled.main`
   overflow-x: auto;
-  height: 100vh;
   // This is so that we can make the PageBody component fill the whole remaining height of the screen
   display: flex;
   flex-direction: column;
