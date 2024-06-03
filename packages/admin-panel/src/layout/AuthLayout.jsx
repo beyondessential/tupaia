@@ -40,7 +40,7 @@ export const CenteredPageContent = styled.section`
 
 export const AuthLayout = ({ logo }) => {
   return (
-    <SimplePageLayout logo={logo}>
+    <SimplePageLayout logo={logo} displayLogoutButton={false} disableHomeLink>
       <CenteredPageContent>
         <Outlet />
       </CenteredPageContent>

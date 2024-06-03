@@ -28,13 +28,13 @@ const Wrapper = styled.div`
   }
 `;
 
-export const TopNavbar = ({ logo, homeLink }) => {
+export const TopNavbar = ({ logo, homeLink, displayLogoutButton, disableHomeLink }) => {
   const { isLoggedIn } = useUser();
   const { mutate: logout } = useLogout();
   return (
     <Wrapper>
-      <HomeLink logo={logo} homeLink={homeLink} />
-      {isLoggedIn && <UserButton onClick={logout}>Logout</UserButton>}
+      <HomeLink logo={logo} homeLink={homeLink} disableHomeLink={disableHomeLink} />
+      {isLoggedIn && displayLogoutButton && <UserButton onClick={logout}>Logout</UserButton>}
     </Wrapper>
   );
 };
@@ -45,6 +45,8 @@ TopNavbar.propTypes = {
     alt: PropTypes.string.isRequired,
   }),
   homeLink: PropTypes.string,
+  displayLogoutButton: PropTypes.bool,
+  disableHomeLink: PropTypes.bool,
 };
 
 TopNavbar.defaultProps = {
@@ -53,4 +55,6 @@ TopNavbar.defaultProps = {
     alt: 'Tupaia Admin Panel Logo',
   },
   homeLink: '/',
+  displayLogoutButton: true,
+  disableHomeLink: false,
 };
