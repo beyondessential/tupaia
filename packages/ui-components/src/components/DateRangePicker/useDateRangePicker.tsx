@@ -30,23 +30,27 @@ export const getDatesAsString = (
   endDate: Moment,
   weekDisplayFormat?: string | number,
   dateOffset?: DateOffsetSpec,
-  dateRangeDelimiter = ' - ',
+  dateRangeDelimiter = ' – ',
 ) => {
-  const displayAsRange = !startDate.isSame(endDate);
   const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
 
   // when it's a single date, we use the preferred range delimiter, otherwise use the default delimiter because this indicates multiple offset dates selected
-  const delimiterToUse = isSetRangeGranularity && !!dateOffset ? dateRangeDelimiter : ' - ';
+  const delimiterToUse = isSetRangeGranularity && !!dateOffset ? dateRangeDelimiter : ' – ';
   const displayGranularity = dateOffset?.unit ?? granularity;
 
-  const { rangeFormat, modifier } = (
+  const { rangeFormat, modifier, momentUnit } = (
     isWeek && weekDisplayFormat
       ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
       : GRANULARITY_CONFIG[displayGranularity as keyof typeof GRANULARITY_CONFIG]
   ) as {
+    // casting here because TS is inferring the types as different to the Moment types. This will probably be fixed once we use TS in the utils package
     rangeFormat: string;
-    modifier?: ModifierType; // casting here because TS is identifying modifier as string | undefined instead of ModifierType | undefined
+    modifier?: ModifierType;
+    momentUnit: moment.unitOfTime.StartOf;
   };
+
+  // if the start and end dates are the same day, we only need to display one date
+  const displayAsRange = !startDate.clone().isSame(endDate.clone(), momentUnit);
 
   const formattedEndDate = momentToDateDisplayString(
     endDate,
