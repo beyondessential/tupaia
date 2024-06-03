@@ -40,3 +40,5 @@ export {
   UnsubscribeDashboardMailingListRoute,
   UnsubscribeDashboardMailingListRequest,
 } from './UnsubscribeDashboardMailingListRoute';
+
+export { ExportMapOverlayRequest, ExportMapOverlayRoute } from './ExportMapOverlayRoute';

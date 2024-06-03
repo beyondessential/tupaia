@@ -8,3 +8,4 @@ export {
   generateFrontendExcludedFilter,
   getTypesToExclude,
 } from './generateFrontendExcludedFilter';
+export { downloadMapOverlayAsPdf } from './downloadMapOverlayAsPdf';
