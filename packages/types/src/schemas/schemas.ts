@@ -526,6 +526,51 @@ export const BaseConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -719,6 +764,10 @@ export const BaseConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		}
 	},
@@ -962,6 +1011,51 @@ export const MatrixConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -1155,6 +1249,10 @@ export const MatrixConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -1659,6 +1757,51 @@ export const MatrixVizBuilderConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -1852,6 +1995,10 @@ export const MatrixVizBuilderConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -2851,6 +2998,51 @@ export const ComponentConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -3044,6 +3236,10 @@ export const ComponentConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -3373,6 +3569,51 @@ export const BaseChartConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -3566,6 +3807,10 @@ export const BaseChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -4238,6 +4483,51 @@ export const CartesianChartConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -4431,6 +4721,10 @@ export const CartesianChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -5048,6 +5342,51 @@ export const PieChartConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -5241,6 +5580,10 @@ export const PieChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -5598,6 +5941,51 @@ export const BarChartConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -5791,6 +6179,10 @@ export const BarChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -6544,6 +6936,51 @@ export const LineChartConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -6733,6 +7170,10 @@ export const LineChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -7482,6 +7923,51 @@ export const ComposedChartConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -7671,6 +8157,10 @@ export const ComposedChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -8236,6 +8726,51 @@ export const GaugeChartConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -8429,6 +8964,10 @@ export const GaugeChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -8693,6 +9232,51 @@ export const ChartConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -8886,6 +9470,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -9183,6 +9771,51 @@ export const ChartConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -9376,6 +10009,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -9953,6 +10590,51 @@ export const ChartConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -10142,6 +10824,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -10717,6 +11403,51 @@ export const ChartConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -10906,6 +11637,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -11470,6 +12205,51 @@ export const ChartConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -11663,6 +12443,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -12057,6 +12841,51 @@ export const BaseViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -12250,6 +13079,10 @@ export const BaseViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -12509,6 +13342,51 @@ export const MultiValueViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -12702,6 +13580,10 @@ export const MultiValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -13069,6 +13951,51 @@ export const MultiValueRowViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -13262,6 +14189,10 @@ export const MultiValueRowViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -13580,6 +14511,51 @@ export const SingleValueViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -13773,6 +14749,10 @@ export const SingleValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -14005,6 +14985,51 @@ export const MultiPhotographViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -14198,6 +15223,10 @@ export const MultiPhotographViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -14426,6 +15455,51 @@ export const MultiSingleValueViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -14619,6 +15693,10 @@ export const MultiSingleValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -14847,6 +15925,51 @@ export const SingleDownloadLinkViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -15040,6 +16163,10 @@ export const SingleDownloadLinkViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -15268,6 +16395,51 @@ export const DataDownloadViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -15461,6 +16633,10 @@ export const DataDownloadViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -15689,6 +16865,51 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -15882,6 +17103,10 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -16126,6 +17351,51 @@ export const SingleDateViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -16319,6 +17589,10 @@ export const SingleDateViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -16547,6 +17821,51 @@ export const DownloadFilesViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -16740,6 +18059,10 @@ export const DownloadFilesViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -16968,6 +18291,51 @@ export const QRCodeViewConfigSchema = {
 				}
 			]
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"description": "Time unit to offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"description": "Offset distance (can be negative to offset to an earlier date)",
+					"type": "number"
+				},
+				"modifier": {
+					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+					"enum": [
+						"end_of",
+						"start_of"
+					],
+					"type": "string"
+				},
+				"modifierUnit": {
+					"description": "Time unit to modify the offset by",
+					"enum": [
+						"day",
+						"month",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"datePickerLimits": {
 			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
@@ -17161,6 +18529,10 @@ export const QRCodeViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 			"type": "string"
 		},
 		"type": {
@@ -17391,6 +18763,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -17584,6 +19001,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -17824,6 +19245,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -18017,6 +19483,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -18334,6 +19804,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -18527,6 +20042,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -18758,6 +20277,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -18951,6 +20515,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -19178,6 +20746,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -19371,6 +20984,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -19598,6 +21215,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -19791,6 +21453,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -20018,6 +21684,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -20211,6 +21922,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -20438,6 +22153,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -20631,6 +22391,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -20858,6 +22622,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -21051,6 +22860,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -21278,6 +23091,51 @@ export const ViewConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -21471,6 +23329,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -21813,6 +23675,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -22006,6 +23913,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -22510,6 +24421,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -22703,6 +24659,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -22914,6 +24874,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -23107,6 +25112,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -23404,6 +25413,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -23597,6 +25651,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -24174,6 +26232,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -24363,6 +26466,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -24938,6 +27045,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -25127,6 +27279,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -25691,6 +27847,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -25884,6 +28085,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -26144,6 +28349,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -26337,6 +28587,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -26577,6 +28831,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -26770,6 +29069,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -27087,6 +29390,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -27280,6 +29628,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -27511,6 +29863,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -27704,6 +30101,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -27931,6 +30332,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -28124,6 +30570,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -28351,6 +30801,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -28544,6 +31039,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -28771,6 +31270,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -28964,6 +31508,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -29191,6 +31739,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -29384,6 +31977,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -29611,6 +32208,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -29804,6 +32446,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -30031,6 +32677,51 @@ export const DashboardItemConfigSchema = {
 						}
 					]
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"datePickerLimits": {
 					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
@@ -30224,6 +32915,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 					"type": "string"
 				},
 				"type": {
@@ -42918,6 +45613,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -43111,6 +45851,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -43615,6 +46359,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -43808,6 +46597,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -44019,6 +46812,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -44212,6 +47050,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -44509,6 +47351,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -44702,6 +47589,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -45279,6 +48170,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -45468,6 +48404,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -46043,6 +48983,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -46232,6 +49217,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -46796,6 +49785,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -46989,6 +50023,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -47249,6 +50287,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -47442,6 +50525,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -47682,6 +50769,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -47875,6 +51007,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -48192,6 +51328,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -48385,6 +51566,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -48616,6 +51801,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -48809,6 +52039,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -49036,6 +52270,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -49229,6 +52508,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -49456,6 +52739,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -49649,6 +52977,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -49876,6 +53208,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -50069,6 +53446,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -50296,6 +53677,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -50489,6 +53915,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -50716,6 +54146,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -50909,6 +54384,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -51136,6 +54615,51 @@ export const DashboardItemSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -51329,6 +54853,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -51593,6 +55121,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -51786,6 +55359,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -52290,6 +55867,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -52483,6 +56105,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -52694,6 +56320,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -52887,6 +56558,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -53184,6 +56859,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -53377,6 +57097,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -53954,6 +57678,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -54143,6 +57912,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -54718,6 +58491,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -54907,6 +58725,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -55471,6 +59293,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -55664,6 +59531,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -55924,6 +59795,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -56117,6 +60033,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -56357,6 +60277,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -56550,6 +60515,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -56867,6 +60836,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -57060,6 +61074,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -57291,6 +61309,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -57484,6 +61547,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -57711,6 +61778,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -57904,6 +62016,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -58131,6 +62247,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -58324,6 +62485,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -58551,6 +62716,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -58744,6 +62954,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -58971,6 +63185,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -59164,6 +63423,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -59391,6 +63654,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -59584,6 +63892,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -59811,6 +64123,51 @@ export const DashboardItemCreateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -60004,6 +64361,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -60262,6 +64623,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -60455,6 +64861,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -60959,6 +65369,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -61152,6 +65607,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -61363,6 +65822,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -61556,6 +66060,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -61853,6 +66361,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -62046,6 +66599,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -62623,6 +67180,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -62812,6 +67414,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -63387,6 +67993,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -63576,6 +68227,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -64140,6 +68795,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -64333,6 +69033,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -64593,6 +69297,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -64786,6 +69535,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -65026,6 +69779,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -65219,6 +70017,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -65536,6 +70338,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -65729,6 +70576,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -65960,6 +70811,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -66153,6 +71049,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -66380,6 +71280,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -66573,6 +71518,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -66800,6 +71749,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -66993,6 +71987,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -67220,6 +72218,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -67413,6 +72456,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -67640,6 +72687,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -67833,6 +72925,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -68060,6 +73156,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -68253,6 +73394,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -68480,6 +73625,51 @@ export const DashboardItemUpdateSchema = {
 								}
 							]
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"description": "Time unit to offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"description": "Offset distance (can be negative to offset to an earlier date)",
+									"type": "number"
+								},
+								"modifier": {
+									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"description": "Time unit to modify the offset by",
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"datePickerLimits": {
 							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
@@ -68673,6 +73863,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 							"type": "string"
 						},
 						"type": {
@@ -87610,6 +92804,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -87803,6 +93042,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -88307,6 +93550,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -88500,6 +93788,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -88711,6 +94003,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -88904,6 +94241,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -89201,6 +94542,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -89394,6 +94780,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -89971,6 +95361,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -90160,6 +95595,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -90735,6 +96174,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -90924,6 +96408,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -91488,6 +96976,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -91681,6 +97214,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -91941,6 +97478,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -92134,6 +97716,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -92374,6 +97960,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -92567,6 +98198,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -92884,6 +98519,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -93077,6 +98757,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -93308,6 +98992,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -93501,6 +99230,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -93728,6 +99461,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -93921,6 +99699,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -94148,6 +99930,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -94341,6 +100168,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -94568,6 +100399,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -94761,6 +100637,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -94988,6 +100868,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -95181,6 +101106,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -95408,6 +101337,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -95601,6 +101575,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
@@ -95828,6 +101806,51 @@ export const DashboardWithMetadataSchema = {
 											}
 										]
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"description": "Time unit to offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"description": "Offset distance (can be negative to offset to an earlier date)",
+												"type": "number"
+											},
+											"modifier": {
+												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+												"enum": [
+													"end_of",
+													"start_of"
+												],
+												"type": "string"
+											},
+											"modifierUnit": {
+												"description": "Time unit to modify the offset by",
+												"enum": [
+													"day",
+													"month",
+													"quarter",
+													"week",
+													"year"
+												],
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"datePickerLimits": {
 										"description": "Maximum date ranges that the date picker can be used to choose from",
 										"type": "object",
@@ -96021,6 +102044,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
 										"type": "string"
 									},
 									"type": {
