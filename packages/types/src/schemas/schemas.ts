@@ -527,7 +527,7 @@ export const BaseConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -767,7 +767,7 @@ export const BaseConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		}
 	},
@@ -1012,7 +1012,7 @@ export const MatrixConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -1252,7 +1252,7 @@ export const MatrixConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -1758,7 +1758,7 @@ export const MatrixVizBuilderConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -1998,7 +1998,7 @@ export const MatrixVizBuilderConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -2999,7 +2999,7 @@ export const ComponentConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -3239,7 +3239,7 @@ export const ComponentConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -3570,7 +3570,7 @@ export const BaseChartConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -3810,7 +3810,7 @@ export const BaseChartConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -4484,7 +4484,7 @@ export const CartesianChartConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -4724,7 +4724,7 @@ export const CartesianChartConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -5343,7 +5343,7 @@ export const PieChartConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -5583,7 +5583,7 @@ export const PieChartConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -5942,7 +5942,7 @@ export const BarChartConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -6182,7 +6182,7 @@ export const BarChartConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -6937,7 +6937,7 @@ export const LineChartConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -7173,7 +7173,7 @@ export const LineChartConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -7924,7 +7924,7 @@ export const ComposedChartConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -8160,7 +8160,7 @@ export const ComposedChartConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -8727,7 +8727,7 @@ export const GaugeChartConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -8967,7 +8967,7 @@ export const GaugeChartConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -9233,7 +9233,7 @@ export const ChartConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -9473,7 +9473,7 @@ export const ChartConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -9772,7 +9772,7 @@ export const ChartConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -10012,7 +10012,7 @@ export const ChartConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -10591,7 +10591,7 @@ export const ChartConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -10827,7 +10827,7 @@ export const ChartConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -11404,7 +11404,7 @@ export const ChartConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -11640,7 +11640,7 @@ export const ChartConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -12206,7 +12206,7 @@ export const ChartConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -12446,7 +12446,7 @@ export const ChartConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -12842,7 +12842,7 @@ export const BaseViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -13082,7 +13082,7 @@ export const BaseViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -13343,7 +13343,7 @@ export const MultiValueViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -13583,7 +13583,7 @@ export const MultiValueViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -13952,7 +13952,7 @@ export const MultiValueRowViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -14192,7 +14192,7 @@ export const MultiValueRowViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -14512,7 +14512,7 @@ export const SingleValueViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -14752,7 +14752,7 @@ export const SingleValueViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -14986,7 +14986,7 @@ export const MultiPhotographViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -15226,7 +15226,7 @@ export const MultiPhotographViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -15456,7 +15456,7 @@ export const MultiSingleValueViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -15696,7 +15696,7 @@ export const MultiSingleValueViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -15926,7 +15926,7 @@ export const SingleDownloadLinkViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -16166,7 +16166,7 @@ export const SingleDownloadLinkViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -16396,7 +16396,7 @@ export const DataDownloadViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -16636,7 +16636,7 @@ export const DataDownloadViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -16866,7 +16866,7 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -17106,7 +17106,7 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -17352,7 +17352,7 @@ export const SingleDateViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -17592,7 +17592,7 @@ export const SingleDateViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -17822,7 +17822,7 @@ export const DownloadFilesViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -18062,7 +18062,7 @@ export const DownloadFilesViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -18292,7 +18292,7 @@ export const QRCodeViewConfigSchema = {
 			]
 		},
 		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -18532,7 +18532,7 @@ export const QRCodeViewConfigSchema = {
 			"type": "string"
 		},
 		"dateRangeDelimiter": {
-			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -18764,7 +18764,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -19004,7 +19004,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -19246,7 +19246,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -19486,7 +19486,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -19805,7 +19805,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -20045,7 +20045,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -20278,7 +20278,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -20518,7 +20518,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -20747,7 +20747,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -20987,7 +20987,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -21216,7 +21216,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -21456,7 +21456,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -21685,7 +21685,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -21925,7 +21925,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -22154,7 +22154,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -22394,7 +22394,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -22623,7 +22623,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -22863,7 +22863,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -23092,7 +23092,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -23332,7 +23332,7 @@ export const ViewConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -23676,7 +23676,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -23916,7 +23916,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -24422,7 +24422,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -24662,7 +24662,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -24875,7 +24875,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -25115,7 +25115,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -25414,7 +25414,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -25654,7 +25654,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -26233,7 +26233,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -26469,7 +26469,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -27046,7 +27046,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -27282,7 +27282,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -27848,7 +27848,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -28088,7 +28088,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -28350,7 +28350,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -28590,7 +28590,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -28832,7 +28832,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -29072,7 +29072,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -29391,7 +29391,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -29631,7 +29631,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -29864,7 +29864,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -30104,7 +30104,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -30333,7 +30333,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -30573,7 +30573,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -30802,7 +30802,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -31042,7 +31042,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -31271,7 +31271,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -31511,7 +31511,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -31740,7 +31740,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -31980,7 +31980,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -32209,7 +32209,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -32449,7 +32449,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -32678,7 +32678,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -32918,7 +32918,7 @@ export const DashboardItemConfigSchema = {
 					"type": "string"
 				},
 				"dateRangeDelimiter": {
-					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -45614,7 +45614,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -45854,7 +45854,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -46360,7 +46360,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -46600,7 +46600,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -46813,7 +46813,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -47053,7 +47053,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -47352,7 +47352,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -47592,7 +47592,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -48171,7 +48171,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -48407,7 +48407,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -48984,7 +48984,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -49220,7 +49220,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -49786,7 +49786,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -50026,7 +50026,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -50288,7 +50288,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -50528,7 +50528,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -50770,7 +50770,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -51010,7 +51010,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -51329,7 +51329,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -51569,7 +51569,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -51802,7 +51802,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -52042,7 +52042,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -52271,7 +52271,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -52511,7 +52511,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -52740,7 +52740,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -52980,7 +52980,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -53209,7 +53209,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -53449,7 +53449,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -53678,7 +53678,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -53918,7 +53918,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -54147,7 +54147,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -54387,7 +54387,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -54616,7 +54616,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -54856,7 +54856,7 @@ export const DashboardItemSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -55122,7 +55122,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -55362,7 +55362,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -55868,7 +55868,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -56108,7 +56108,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -56321,7 +56321,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -56561,7 +56561,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -56860,7 +56860,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -57100,7 +57100,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -57679,7 +57679,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -57915,7 +57915,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -58492,7 +58492,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -58728,7 +58728,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -59294,7 +59294,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -59534,7 +59534,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -59796,7 +59796,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -60036,7 +60036,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -60278,7 +60278,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -60518,7 +60518,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -60837,7 +60837,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -61077,7 +61077,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -61310,7 +61310,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -61550,7 +61550,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -61779,7 +61779,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -62019,7 +62019,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -62248,7 +62248,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -62488,7 +62488,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -62717,7 +62717,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -62957,7 +62957,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -63186,7 +63186,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -63426,7 +63426,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -63655,7 +63655,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -63895,7 +63895,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -64124,7 +64124,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -64364,7 +64364,7 @@ export const DashboardItemCreateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -64624,7 +64624,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -64864,7 +64864,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -65370,7 +65370,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -65610,7 +65610,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -65823,7 +65823,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -66063,7 +66063,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -66362,7 +66362,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -66602,7 +66602,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -67181,7 +67181,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -67417,7 +67417,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -67994,7 +67994,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -68230,7 +68230,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -68796,7 +68796,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -69036,7 +69036,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -69298,7 +69298,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -69538,7 +69538,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -69780,7 +69780,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -70020,7 +70020,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -70339,7 +70339,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -70579,7 +70579,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -70812,7 +70812,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -71052,7 +71052,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -71281,7 +71281,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -71521,7 +71521,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -71750,7 +71750,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -71990,7 +71990,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -72219,7 +72219,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -72459,7 +72459,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -72688,7 +72688,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -72928,7 +72928,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -73157,7 +73157,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -73397,7 +73397,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -73626,7 +73626,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 							"type": "object",
 							"properties": {
 								"unit": {
@@ -73866,7 +73866,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "string"
 						},
 						"dateRangeDelimiter": {
-							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -92805,7 +92805,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -93045,7 +93045,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -93551,7 +93551,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -93791,7 +93791,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -94004,7 +94004,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -94244,7 +94244,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -94543,7 +94543,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -94783,7 +94783,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -95362,7 +95362,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -95598,7 +95598,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -96175,7 +96175,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -96411,7 +96411,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -96977,7 +96977,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -97217,7 +97217,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -97479,7 +97479,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -97719,7 +97719,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -97961,7 +97961,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -98201,7 +98201,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -98520,7 +98520,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -98760,7 +98760,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -98993,7 +98993,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -99233,7 +99233,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -99462,7 +99462,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -99702,7 +99702,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -99931,7 +99931,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -100171,7 +100171,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -100400,7 +100400,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -100640,7 +100640,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -100869,7 +100869,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -101109,7 +101109,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -101338,7 +101338,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -101578,7 +101578,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -101807,7 +101807,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June",
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
 										"type": "object",
 										"properties": {
 											"unit": {
@@ -102047,7 +102047,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "string"
 									},
 									"dateRangeDelimiter": {
-										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'",
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
