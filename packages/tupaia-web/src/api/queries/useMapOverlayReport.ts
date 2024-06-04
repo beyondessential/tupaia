@@ -75,7 +75,7 @@ export const useMapOverlayReport = (
 ) => {
   // convert moment dates to date strings for the endpoint to use
   const startDate = params?.startDate ? momentToDateString(params.startDate) : undefined;
-  const endDate = params?.startDate ? momentToDateString(params.endDate) : undefined;
+  const endDate = params?.endDate ? momentToDateString(params.endDate) : undefined;
   const mapOverlayCode = mapOverlay?.code;
   const isLegacy = mapOverlay?.legacy ? 'true' : 'false';
 
