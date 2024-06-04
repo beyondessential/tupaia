@@ -6,6 +6,7 @@ import { useMutation } from 'react-query';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { API_URL, post } from '../api';
 import { DashboardName, EntityCode, ProjectCode } from '../../types';
+import { downloadPDF } from '../../utils';
 
 type ExportDashboardBody = {
   projectCode?: ProjectCode;
