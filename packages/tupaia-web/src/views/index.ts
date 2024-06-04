@@ -12,5 +12,5 @@ export { RequestProjectAccessModal } from './RequestProjectAccessModal';
 export { ForgotPasswordModal } from './ForgotPasswordModal';
 export { EmailVerificationModal } from './EmailVerificationModal';
 export { VerifyEmailResendModal } from './VerifyEmailResendModal';
-export { PDFExport } from './PDFExport';
+export { DashboardPDFExport } from './DashboardPDFExport';
 export { Unsubscribe } from './Unsubscribe';

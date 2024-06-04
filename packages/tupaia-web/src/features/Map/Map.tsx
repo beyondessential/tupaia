@@ -22,7 +22,13 @@ import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { MapOverlaysLayer } from './MapOverlaysLayer';
-import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
+import {
+  useHiddenMapValues,
+  useDefaultMapOverlay,
+  useMapOverlayMapData,
+  MapContextProvider,
+  useMapContext,
+} from './utils';
 import { DemoLand } from './DemoLand';
 
 const MapContainer = styled.div`
@@ -150,42 +156,51 @@ const useTileSets = () => {
   };
 };
 
-export const Map = () => {
-  const { projectCode, entityCode } = useParams();
-
-  useDefaultMapOverlay(projectCode, entityCode);
-
+// Separate the map component from the context provider so that we can set the map on creation using the context
+const MapInner = () => {
+  const { setMap } = useMapContext();
   // Setup legend hidden values
   const { serieses } = useMapOverlayMapData();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   const { availableTileSets, activeTileSet, onTileSetChange } = useTileSets();
+  return (
+    <ErrorBoundary>
+      <StyledMap shouldSnapToPosition whenCreated={setMap}>
+        <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+        <MapOverlaysLayer hiddenValues={hiddenValues} />
+        <DemoLand />
+        <ZoomControl position="bottomright" />
+        <MapWatermark />
+      </StyledMap>
+      {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
+      <MapControlWrapper>
+        <MapControlColumn>
+          <MapOverlaySelector hiddenValues={hiddenValues} />
+          <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
+        </MapControlColumn>
+        <TilePickerWrapper>
+          <TilePicker
+            tileSets={availableTileSets}
+            activeTileSet={activeTileSet}
+            onChange={onTileSetChange}
+          />
+        </TilePickerWrapper>
+      </MapControlWrapper>
+    </ErrorBoundary>
+  );
+};
+
+export const Map = () => {
+  const { projectCode, entityCode } = useParams();
+
+  useDefaultMapOverlay(projectCode, entityCode);
 
   return (
     <MapContainer>
-      <ErrorBoundary>
-        <StyledMap shouldSnapToPosition>
-          <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-          <MapOverlaysLayer hiddenValues={hiddenValues} />
-          <DemoLand />
-          <ZoomControl position="bottomright" />
-          <MapWatermark />
-        </StyledMap>
-        {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
-        <MapControlWrapper>
-          <MapControlColumn>
-            <MapOverlaySelector />
-            <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
-          </MapControlColumn>
-          <TilePickerWrapper>
-            <TilePicker
-              tileSets={availableTileSets}
-              activeTileSet={activeTileSet}
-              onChange={onTileSetChange}
-            />
-          </TilePickerWrapper>
-        </MapControlWrapper>
-      </ErrorBoundary>
+      <MapContextProvider>
+        <MapInner />
+      </MapContextProvider>
     </MapContainer>
   );
 };

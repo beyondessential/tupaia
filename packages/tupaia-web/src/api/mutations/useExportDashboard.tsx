@@ -16,7 +16,7 @@ type ExportDashboardBody = {
 };
 
 // Requests a dashboard PDF export from the server, and returns the response
-export const useExportDashboard = ({ onSuccess }: { onSuccess?: (data: Blob) => void }) => {
+export const useExportDashboard = (fileName: string) => {
   return useMutation<any, Error, ExportDashboardBody, unknown>(
     ({
       projectCode,
@@ -41,7 +41,9 @@ export const useExportDashboard = ({ onSuccess }: { onSuccess?: (data: Blob) => 
       });
     },
     {
-      onSuccess,
+      onSuccess: data => {
+        downloadPDF(data, fileName);
+      },
     },
   );
 };

@@ -7,13 +7,14 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { periodToMoment } from '@tupaia/utils';
-import { Tooltip } from '@tupaia/ui-components';
-import { IconButton } from '@tupaia/ui-components';
-import { ArrowDropDown, Layers, Assignment } from '@material-ui/icons';
+import { Tooltip, IconButton } from '@tupaia/ui-components';
+import { LegendProps } from '@tupaia/ui-map-components';
+import { ArrowDropDown, Layers, Assignment, GetApp } from '@material-ui/icons';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { useMapOverlayMapData } from '../utils';
+import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
-import { useMapOverlays } from '../../../api/queries';
+import { useExportMapOverlay } from '../../../api/mutations';
+import { useEntity, useMapOverlays, useProject } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { useGAEffect } from '../../../utils';
 import { MapTableModal } from './MapTableModal';
@@ -21,10 +22,12 @@ import { MapOverlayList } from './MapOverlayList';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 
-const MapTableButton = styled(IconButton)`
-  margin: -0.625rem -0.625rem -0.625rem 0;
-  padding: 0.5rem 0.325rem 0.5rem 0.75rem;
-  color: white;
+const MapButton = styled(IconButton)`
+  color: ${({ theme }) => theme.palette.text.primary};
+  padding: 0.4rem;
+  .MuiSvgIcon-root {
+    font-size: 1.3rem;
+  }
 `;
 
 const MaxHeightContainer = styled.div`
@@ -47,7 +50,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.9rem 1rem;
+  padding: 0.5rem 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   border-radius: 5px 5px 0 0;
   pointer-events: auto;
@@ -59,12 +62,6 @@ const Heading = styled(Typography).attrs({
   font-size: 0.75rem;
   text-transform: uppercase;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-`;
-
-const TableAssignmentIcon = styled(Assignment)`
-  margin-right: 0.5rem;
-  width: 1.2rem;
-  cursor: pointer;
 `;
 
 const Container = styled(MaxHeightContainer)`
@@ -157,20 +154,40 @@ interface DesktopMapOverlaySelectorProps {
   entityName?: Entity['name'];
   overlayLibraryOpen: boolean;
   toggleOverlayLibrary: () => void;
+  hiddenValues: LegendProps['hiddenValues'];
 }
 
 export const DesktopMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
+  hiddenValues,
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { data: project } = useProject(projectCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
   const { period } = useMapOverlayMapData();
+  const { map } = useMapContext();
+  const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
+  const { mutate: exportMapOverlay } = useExportMapOverlay(exportFileName);
+
   const [mapModalOpen, setMapModalOpen] = useState(false);
   // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
   useGAEffect('MapOverlays', 'Change', selectedOverlay?.name);
   const toggleMapTableModal = () => {
     setMapModalOpen(!mapModalOpen);
+  };
+
+  const onExportMapOverlay = () => {
+    if (!map) throw new Error('Map is not ready');
+    const bounds = map.getBounds();
+    exportMapOverlay({
+      projectCode,
+      entityCode,
+      mapOverlayCode: selectedOverlay?.code,
+      bounds,
+      hiddenValues,
+    });
   };
 
   return (
@@ -180,11 +197,18 @@ export const DesktopMapOverlaySelector = ({
         <Header>
           <Heading>Map Overlays</Heading>
           {selectedOverlay && (
-            <Tooltip arrow interactive placement="top" title="Generate Report">
-              <MapTableButton onClick={toggleMapTableModal}>
-                <TableAssignmentIcon />
-              </MapTableButton>
-            </Tooltip>
+            <div>
+              <Tooltip arrow interactive placement="top" title="Export map overlay as PDF">
+                <MapButton onClick={onExportMapOverlay}>
+                  <GetApp />
+                </MapButton>
+              </Tooltip>
+              <Tooltip arrow interactive placement="top" title="Generate report">
+                <MapButton onClick={toggleMapTableModal}>
+                  <Assignment />
+                </MapButton>
+              </Tooltip>
+            </div>
           )}
         </Header>
         <Container>
