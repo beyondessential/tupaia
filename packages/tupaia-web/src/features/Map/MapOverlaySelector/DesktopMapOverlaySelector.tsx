@@ -11,7 +11,7 @@ import { Tooltip, IconButton } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
 import { ArrowDropDown, Layers, Assignment, GetApp } from '@material-ui/icons';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { useMapOverlayMapData, useMapContext } from '../utils';
+import { useMapOverlayMapData, useMapContext, useTilesets } from '../utils';
 import { Entity } from '../../../types';
 import { useExportMapOverlay } from '../../../api/mutations';
 import { useEntity, useMapOverlays, useProject } from '../../../api/queries';
@@ -168,6 +168,7 @@ export const DesktopMapOverlaySelector = ({
   const { data: entity } = useEntity(projectCode, entityCode);
   const { period } = useMapOverlayMapData();
   const { map } = useMapContext();
+  const { activeTileSet } = useTilesets();
   const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
   const { mutate: exportMapOverlay } = useExportMapOverlay(exportFileName);
 
@@ -180,13 +181,14 @@ export const DesktopMapOverlaySelector = ({
 
   const onExportMapOverlay = () => {
     if (!map) throw new Error('Map is not ready');
-    const bounds = map.getBounds();
     exportMapOverlay({
       projectCode,
       entityCode,
       mapOverlayCode: selectedOverlay?.code,
-      bounds,
+      center: map.getCenter(),
+      zoom: map.getZoom(),
       hiddenValues,
+      tileset: activeTileSet.url,
     });
   };
 

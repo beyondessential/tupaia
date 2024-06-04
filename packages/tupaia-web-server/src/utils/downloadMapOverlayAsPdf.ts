@@ -10,20 +10,23 @@ import { stringifyQuery } from '@tupaia/utils';
 export const downloadMapOverlayAsPdf = (
   projectCode: string,
   entityCode: string,
-  dashboardName: string,
+  mapOverlayCode: string,
   baseUrl: TupaiaWebExportMapOverlayRequest.ReqBody['baseUrl'],
   cookie: string,
   cookieDomain: TupaiaWebExportMapOverlayRequest.ReqBody['cookieDomain'],
-  bounds: TupaiaWebExportMapOverlayRequest.ReqBody['bounds'],
-  basemap: TupaiaWebExportMapOverlayRequest.ReqBody['basemap'],
+  zoom: TupaiaWebExportMapOverlayRequest.ReqBody['zoom'],
+  center: TupaiaWebExportMapOverlayRequest.ReqBody['center'],
+  tileset: TupaiaWebExportMapOverlayRequest.ReqBody['tileset'],
   hiddenValues: TupaiaWebExportMapOverlayRequest.ReqBody['hiddenValues'],
 ) => {
-  const endpoint = `${projectCode}/${entityCode}/${dashboardName}/map-overlay-pdf-export`;
+  const endpoint = `${projectCode}/${entityCode}/map-overlay-pdf-export`;
   const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
-    bounds: JSON.stringify(bounds),
-    basemap,
-    hiddenValues: JSON.stringify(hiddenValues),
+    zoom,
+    center,
+    tileset,
+    hiddenValues,
+    overlay: mapOverlayCode,
   });
 
-  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain);
+  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, true);
 };

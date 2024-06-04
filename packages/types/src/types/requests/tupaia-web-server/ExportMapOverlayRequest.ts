@@ -18,8 +18,9 @@ export interface ResBody {
 export type ReqBody = {
   cookieDomain: string;
   baseUrl: string;
-  bounds: string;
-  basemap: string;
+  center: string;
+  zoom: number;
+  tileset: string;
   hiddenValues: string;
 };
 export type ReqQuery = Record<string, string>;

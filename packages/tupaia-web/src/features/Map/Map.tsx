@@ -28,6 +28,7 @@ import {
   useMapOverlayMapData,
   MapContextProvider,
   useMapContext,
+  useTilesets,
 } from './utils';
 import { DemoLand } from './DemoLand';
 
@@ -114,48 +115,6 @@ const MapControlColumn = styled.div`
   }
 `;
 
-const useTileSets = () => {
-  const { projectCode } = useParams();
-  const { data: project } = useProject(projectCode);
-  const initialTileSet = getAutoTileSet();
-  const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
-  const { tileSets = '' } = project?.config || {};
-  const customTilesetNames = tileSets?.split(',') || [];
-  const customTileSets = customTilesetNames
-    .map(
-      tileset =>
-        CUSTOM_TILE_SETS.find(({ key }) => key === tileset) as (typeof CUSTOM_TILE_SETS)[0],
-    )
-    .filter(item => item);
-  const defaultTileSets = [DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite];
-  const availableTileSets = [...defaultTileSets, ...customTileSets];
-
-  useGAEffect('Map', 'Change Tile Set', activeTileSet?.label);
-
-  const onTileSetChange = (tileSetKey: string) => {
-    const newActiveTileSet = availableTileSets.find(
-      ({ key }) => key === tileSetKey,
-    ) as (typeof CUSTOM_TILE_SETS)[0];
-    setActiveTileSet(newActiveTileSet);
-  };
-
-  useEffect(() => {
-    if (
-      activeTileSet &&
-      availableTileSets.length &&
-      !availableTileSets.some(({ key }) => key === activeTileSet.key)
-    ) {
-      setActiveTileSet(initialTileSet);
-    }
-  }, [JSON.stringify(availableTileSets)]);
-
-  return {
-    availableTileSets,
-    activeTileSet,
-    onTileSetChange,
-  };
-};
-
 // Separate the map component from the context provider so that we can set the map on creation using the context
 const MapInner = () => {
   const { setMap } = useMapContext();
@@ -163,7 +122,7 @@ const MapInner = () => {
   const { serieses } = useMapOverlayMapData();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
-  const { availableTileSets, activeTileSet, onTileSetChange } = useTileSets();
+  const { availableTileSets, activeTileSet, onTileSetChange } = useTilesets();
   return (
     <ErrorBoundary>
       <StyledMap shouldSnapToPosition whenCreated={setMap}>
