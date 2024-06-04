@@ -7,7 +7,8 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebExportMapOverlayRequest } from '@tupaia/types';
-import { downloadMapOverlayAsPdf } from '../utils';
+import { stringifyQuery } from '@tupaia/utils';
+import { downloadPageAsPDF } from '@tupaia/server-utils';
 
 export type ExportMapOverlayRequest = Request<
   TupaiaWebExportMapOverlayRequest.Params,
@@ -15,6 +16,30 @@ export type ExportMapOverlayRequest = Request<
   TupaiaWebExportMapOverlayRequest.ReqBody,
   TupaiaWebExportMapOverlayRequest.ReqQuery
 >;
+
+const downloadMapOverlayAsPdf = (
+  projectCode: string,
+  entityCode: string,
+  mapOverlayCode: string,
+  baseUrl: TupaiaWebExportMapOverlayRequest.ReqBody['baseUrl'],
+  cookie: string,
+  cookieDomain: TupaiaWebExportMapOverlayRequest.ReqBody['cookieDomain'],
+  zoom: TupaiaWebExportMapOverlayRequest.ReqBody['zoom'],
+  center: TupaiaWebExportMapOverlayRequest.ReqBody['center'],
+  tileset: TupaiaWebExportMapOverlayRequest.ReqBody['tileset'],
+  hiddenValues: TupaiaWebExportMapOverlayRequest.ReqBody['hiddenValues'],
+) => {
+  const endpoint = `${projectCode}/${entityCode}/map-overlay-pdf-export`;
+  const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
+    zoom,
+    center,
+    tileset,
+    hiddenValues,
+    overlay: mapOverlayCode,
+  });
+
+  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, true);
+};
 
 export class ExportMapOverlayRoute extends Route<ExportMapOverlayRequest> {
   protected type = 'download' as const;
