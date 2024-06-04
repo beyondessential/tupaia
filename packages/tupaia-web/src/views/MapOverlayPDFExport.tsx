@@ -11,10 +11,8 @@ import { Typography } from '@material-ui/core';
 import { LeafletMap, TileLayer, getAutoTileSet } from '@tupaia/ui-map-components';
 import { A4_PAGE_HEIGHT_PX, A4_PAGE_WIDTH_PX } from '@tupaia/ui-components';
 import { periodToMoment } from '@tupaia/utils';
-import { MapOverlaysLayer } from '../features/Map/MapOverlaysLayer';
-import { Legend } from '../features/Map/MapLegend/MapLegend';
+import { MapOverlaysLayer, Legend, useMapOverlayMapData } from '../features/Map';
 import { useMapOverlays } from '../api/queries';
-import { useMapOverlayMapData } from '../features/Map/utils';
 
 const Parent = styled.div`
   // reverse the width and height to make the map landscape
@@ -87,14 +85,9 @@ const LatestDataText = styled(MapOverlayInfoText)`
   margin-block-start: 0.4rem;
 `;
 
-/**
- * This is the view that gets hit by puppeteer when generating a map overlay PDF.
- */
-export const MapOverlayPDFExport = () => {
-  const { projectCode, entityCode } = useParams();
+const useExportParams = () => {
   const [urlSearchParams] = useSearchParams();
 
-  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const initialTileSet = getAutoTileSet();
   const tileset = urlSearchParams.get('tileset') ?? initialTileSet.url;
   const urlCenter = urlSearchParams.get('center');
@@ -103,6 +96,18 @@ export const MapOverlayPDFExport = () => {
   const center = urlCenter ? JSON.parse(urlCenter) : undefined;
   const urlHiddenValues = urlSearchParams.get('hiddenValues');
   const hiddenValues = urlHiddenValues ? JSON.parse(urlHiddenValues) : undefined;
+
+  return { tileset, zoom, center, hiddenValues };
+};
+
+/**
+ * This is the view that gets hit by puppeteer when generating a map overlay PDF.
+ */
+export const MapOverlayPDFExport = () => {
+  const { projectCode, entityCode } = useParams();
+
+  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { tileset, zoom, center, hiddenValues } = useExportParams();
   const { period } = useMapOverlayMapData();
 
   return (

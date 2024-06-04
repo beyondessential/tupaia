@@ -9,7 +9,7 @@ import { useParams } from 'react-router';
 import { periodToMoment } from '@tupaia/utils';
 import { Tooltip, IconButton } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
-import { ArrowDropDown, Layers, Assignment, GetApp } from '@material-ui/icons';
+import { ArrowDropDown, Layers, Assignment, GetApp, Loop } from '@material-ui/icons';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import { useMapOverlayMapData, useMapContext, useTilesets } from '../utils';
 import { Entity } from '../../../types';
@@ -24,7 +24,10 @@ import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 
 const MapButton = styled(IconButton)`
   color: ${({ theme }) => theme.palette.text.primary};
-  padding: 0.4rem;
+  padding: 0.1rem;
+  & + & {
+    margin-inline-start: 0.5rem;
+  }
   .MuiSvgIcon-root {
     font-size: 1.3rem;
   }
@@ -50,7 +53,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   border-radius: 5px 5px 0 0;
   pointer-events: auto;
@@ -150,6 +153,16 @@ const LatestDataText = styled(Typography)`
   line-height: 1.3;
 `;
 
+const LoadingSpinner = styled(Loop)`
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 interface DesktopMapOverlaySelectorProps {
   entityName?: Entity['name'];
   overlayLibraryOpen: boolean;
@@ -170,7 +183,7 @@ export const DesktopMapOverlaySelector = ({
   const { map } = useMapContext();
   const { activeTileSet } = useTilesets();
   const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
-  const { mutate: exportMapOverlay } = useExportMapOverlay(exportFileName);
+  const { mutate: exportMapOverlay, isLoading: isExporting } = useExportMapOverlay(exportFileName);
 
   const [mapModalOpen, setMapModalOpen] = useState(false);
   // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
@@ -200,9 +213,9 @@ export const DesktopMapOverlaySelector = ({
           <Heading>Map Overlays</Heading>
           {selectedOverlay && (
             <div>
-              <Tooltip arrow interactive placement="top" title="Export map overlay as PDF">
-                <MapButton onClick={onExportMapOverlay}>
-                  <GetApp />
+              <Tooltip arrow interactive placement="top" title={'Export map overlay as PDF'}>
+                <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
+                  {isExporting ? <LoadingSpinner /> : <GetApp />}
                 </MapButton>
               </Tooltip>
               <Tooltip arrow interactive placement="top" title="Generate report">
