@@ -3,21 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import {
-  TileLayer,
-  LeafletMap,
-  ZoomControl,
-  TilePicker,
-  getAutoTileSet,
-  DEFAULT_TILESETS,
-} from '@tupaia/ui-map-components';
+import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
-import { useProject } from '../../api/queries';
-import { useGAEffect } from '../../utils';
-import { CUSTOM_TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
+import { MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
