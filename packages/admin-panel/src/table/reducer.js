@@ -22,6 +22,7 @@ import {
   SORTING_CHANGE,
   DATA_CHANGE_REQUEST,
   DEFAULT_TABLE_STATE,
+  CLEAR_ERROR,
 } from './constants';
 import { getFetchId } from './selectors';
 
@@ -86,6 +87,9 @@ const stateChanges = {
   [COLUMNS_RESIZE]: payload => payload,
   [SORTING_CHANGE]: payload => ({
     ...payload,
+  }),
+  [CLEAR_ERROR]: () => ({
+    errorMessage: DEFAULT_TABLE_STATE.errorMessage,
   }),
 };
 

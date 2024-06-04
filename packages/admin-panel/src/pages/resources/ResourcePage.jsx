@@ -172,6 +172,7 @@ ResourcePage.propTypes = {
   basePath: PropTypes.string,
   hasBESAdminAccess: PropTypes.bool.isRequired,
   needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
+  actionLabel: PropTypes.string,
 };
 
 ResourcePage.defaultProps = {
@@ -198,4 +199,5 @@ ResourcePage.defaultProps = {
   getNestedViewLink: null,
   basePath: '',
   needsBESAdminAccess: [],
+  actionLabel: 'Action',
 };
