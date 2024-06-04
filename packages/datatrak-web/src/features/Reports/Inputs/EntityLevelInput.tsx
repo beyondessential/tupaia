@@ -14,6 +14,7 @@ const RadioGroup = styled(BaseRadioGroup)`
   .MuiFormGroup-root {
     width: 100%;
     border: none;
+    flex-wrap: nowrap;
   }
   .MuiFormControlLabel-label {
     font-size: 0.875rem;
@@ -52,7 +53,7 @@ export const EntityLevelInput = () => {
         rules={{ required: 'Required' }}
         render={({ ref, onChange, value }, { invalid }) => (
           <RadioGroup
-            label="Entity level *"
+            label="Entity level"
             name="entityLevel"
             options={[
               { label: 'Country', value: 'country' },
