@@ -42,6 +42,7 @@ const handleDataFetchSuccess = (payload, currentState) => {
     ...payload,
     errorMessage: DEFAULT_TABLE_STATE.errorMessage,
     fetchId: DEFAULT_TABLE_STATE.fetchId,
+    confirmActionMessage: DEFAULT_TABLE_STATE.confirmActionMessage,
   };
 };
 
