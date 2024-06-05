@@ -11,6 +11,7 @@ import { InputWrapper } from './InputWrapper';
 
 const RadioGroup = styled(BaseRadioGroup)`
   margin: 0;
+  max-width: 100%;
   .MuiFormGroup-root {
     width: 100%;
     border: none;
@@ -19,6 +20,7 @@ const RadioGroup = styled(BaseRadioGroup)`
   .MuiFormControlLabel-label {
     font-size: 0.875rem;
   }
+
   .MuiFormControlLabel-root {
     width: 48%;
     border: 1px solid ${({ theme }) => theme.palette.divider};
