@@ -24,7 +24,6 @@ import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
 import {
   cancelAction,
-  changeFilters,
   changePage,
   changePageSize,
   changeResizedColumns,
@@ -36,6 +35,7 @@ import { FilterCell } from './FilterCell';
 import { Pagination } from './Pagination';
 import { DisplayCell, HeaderDisplayCell } from './Cells';
 import { ConfirmDeleteModal } from '../../widgets';
+import { useColumnFilters } from './useColumnFilters';
 
 const ErrorAlert = styled(Alert).attrs({
   severity: 'error',
@@ -192,16 +192,15 @@ const DataFetchingTableComponent = memo(
     }, [JSON.stringify(tableSorting)]);
 
     // Listen for changes in filters in the URL and refresh the data accordingly
-    const urlFilters = urlSearchParams.get('filters');
-    const parsedFilters = urlFilters ? JSON.parse(urlFilters) : defaultFilters;
+    const { filters } = useColumnFilters();
 
     useEffect(() => {
-      onRefreshData(parsedFilters, sorting);
-    }, [urlFilters, pageIndex, pageSize, JSON.stringify(sorting)]);
+      onRefreshData(filters, sorting);
+    }, [JSON.stringify(filters), pageIndex, pageSize, JSON.stringify(sorting)]);
 
     useEffect(() => {
       if (!isChangingDataOnServer && !errorMessage) {
-        onRefreshData(parsedFilters, sorting);
+        onRefreshData(filters, sorting);
       }
     }, [errorMessage, isChangingDataOnServer]);
 
@@ -210,7 +209,7 @@ const DataFetchingTableComponent = memo(
       const initialSorting = defaultSorting ?? [];
       // if we are on the first page or the sorting is the same as the initial sorting, then we should refresh the data manually. If not, changing the sorting/page will trigger a refresh
       if (pageIndex === 0 || JSON.stringify(sorting) === JSON.stringify(initialSorting)) {
-        onRefreshData(parsedFilters, initialSorting);
+        onRefreshData(filters, initialSorting);
       }
       gotoPage(0);
       setSortBy(initialSorting); // reset sorting when table is re-initialised
@@ -377,7 +376,6 @@ DataFetchingTableComponent.propTypes = {
   TableComponent: PropTypes.elementType,
   onCancelAction: PropTypes.func.isRequired,
   onConfirmAction: PropTypes.func.isRequired,
-  onFilteredChange: PropTypes.func.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onPageSizeChange: PropTypes.func.isRequired,
   onRefreshData: PropTypes.func.isRequired,
@@ -438,7 +436,6 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
   onPageSizeChange: (newPageSize, newPageIndex) =>
     dispatch(changePageSize(reduxId, newPageSize, newPageIndex)),
   onSortedChange: newSorting => dispatch(changeSorting(reduxId, newSorting)),
-  onFilteredChange: newFilters => dispatch(changeFilters(reduxId, newFilters)),
   onResizedChange: newResized => dispatch(changeResizedColumns(reduxId, newResized)),
 });
 

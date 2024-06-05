@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { TableCell as MuiTableCell } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Cell = styled(MuiTableCell)`
   font-size: 0.75rem;
@@ -107,10 +107,27 @@ HeaderDisplayCell.defaultProps = {
 };
 
 export const TableCell = ({ children, width, isButtonColumn, url, ...props }) => {
+  const location = useLocation();
+
+  const newState = url
+    ? {
+        ...location.state,
+        prevSearch: {
+          ...location.state?.prevSearch,
+          [location.pathname]: location.search, // key by current pathname so this works for nested routes
+        },
+      }
+    : {};
+
   return (
     <Cell $isButtonColumn={isButtonColumn} {...props}>
       <CellContentWrapper $width={width} $isButtonColumn={isButtonColumn}>
-        <CellContentContainer to={url} as={url ? CellLink : 'div'} $isButtonColumn={isButtonColumn}>
+        <CellContentContainer
+          to={url}
+          as={url ? CellLink : 'div'}
+          $isButtonColumn={isButtonColumn}
+          state={newState}
+        >
           {children}
         </CellContentContainer>
       </CellContentWrapper>

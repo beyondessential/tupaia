@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowBack } from '@material-ui/icons';
 import { Breadcrumbs as MuiBreadcrumbs, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
@@ -44,9 +44,27 @@ export const Breadcrumbs = ({
 
   const parentTitle = parent ? parent.title ?? generateTitle(parent.resourceName) : null;
 
+  const location = useLocation();
+  const { state } = location;
+  const pathname = parent?.to || '/';
+
+  const to = {
+    ...location,
+    pathname,
+    search: state?.prevSearch?.[pathname] ?? '',
+  };
+
+  const newState = {
+    ...state,
+    prevSearch: {
+      ...state?.prevSearch,
+      [pathname]: '',
+    },
+  };
+
   return (
     <Wrapper>
-      <BackButton component={Link} to={parent?.to || '/'} onClick={onClickLinks}>
+      <BackButton component={Link} to={to} onClick={onClickLinks} state={newState}>
         <ArrowBack />
       </BackButton>
       <MuiBreadcrumbs separator="|">

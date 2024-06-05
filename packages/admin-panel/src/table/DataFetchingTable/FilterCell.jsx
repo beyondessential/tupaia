@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { DefaultFilter } from '../columnTypes/columnFilters';
 import { HeaderDisplayCell } from './Cells';
 import { useDebounce } from '../../utilities';
-import { useSearchParams } from 'react-router-dom';
+import { useColumnFilters } from './useColumnFilters';
 
 const FilterWrapper = styled.div`
   .MuiFormControl-root {
@@ -43,35 +43,14 @@ const FilterWrapper = styled.div`
 `;
 
 const useFilter = id => {
-  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-  const urlFilters = urlSearchParams.get('filters');
-  const filters = urlFilters ? JSON.parse(urlFilters) : [];
+  const { onChangeFilter, filters } = useColumnFilters();
   const existingFilter = filters.find(f => f.id === id);
   const [filterValue, setFilterValue] = useState(existingFilter?.value);
 
   const debouncedFilterValue = useDebounce(filterValue, 300);
 
-  const handleUpdate = value => {
-    let updatedFilters = [];
-    if (value === '' || value === undefined) {
-      updatedFilters = filters.filter(f => f.id !== id);
-    } else {
-      updatedFilters = existingFilter
-        ? filters.map(f => (f.id === id ? { ...f, value } : f))
-        : [...filters, { id, value }];
-    }
-
-    if (updatedFilters.length === 0) {
-      urlSearchParams.delete('filters');
-      setUrlSearchParams(urlSearchParams);
-      return;
-    }
-
-    setUrlSearchParams({ filters: JSON.stringify(updatedFilters) });
-  };
-
   useEffect(() => {
-    handleUpdate(debouncedFilterValue);
+    onChangeFilter(id, debouncedFilterValue);
   }, [debouncedFilterValue]);
 
   return {
