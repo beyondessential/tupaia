@@ -5,10 +5,13 @@
       {
         "appIDs": ["352QMCKRKJ.com.tupaia.meditrak"],
         "components": [
-          { "/": "/" },
-          { "/": "/survey/*" },
           { "/": "/account-settings/*", "exclude": true },
-          { "/": "/reports/*", "exclude": true }
+          { "/": "/forgot-password/*", "exclude": true },
+          { "/": "/reports/*", "exclude": true },
+          { "/": "/reset-password/*", "exclude": true },
+          { "/": "/verify-email/*", "exclude": true },
+          { "/": "/verify-email-resend/*", "exclude": true },
+          { "/": "/*" }
         ]
       }
     ]
