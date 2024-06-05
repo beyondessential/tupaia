@@ -20,7 +20,6 @@ import {
   DATA_FETCH_SUCCESS,
   EXPANSIONS_CHANGE,
   EXPANSIONS_TAB_CHANGE,
-  FILTERS_CHANGE,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
   SORTING_CHANGE,
@@ -54,12 +53,6 @@ export const changeExpansionsTab = (reduxId, rowId, tabValue) => ({
   tabValue,
 });
 
-export const changeFilters = (reduxId, filters) => ({
-  type: FILTERS_CHANGE,
-  filters,
-  reduxId,
-});
-
 export const changeResizedColumns = (reduxId, resizedColumns) => ({
   type: COLUMNS_RESIZE,
   resizedColumns,
@@ -73,8 +66,18 @@ export const changeSorting = (reduxId, sorting) => ({
 });
 
 const refreshDataWithDebounce = debounce(
-  async (reduxId, endpoint, columns, baseFilter, tableState, dispatch, api) => {
-    const { pageIndex, pageSize, filters, sorting } = tableState;
+  async (
+    reduxId,
+    endpoint,
+    columns,
+    baseFilter,
+    filters = [],
+    sorting = [],
+    tableState,
+    dispatch,
+    api,
+  ) => {
+    const { pageIndex, pageSize } = tableState;
 
     // Set up filter
     const filterObject = { ...baseFilter };
@@ -134,13 +137,15 @@ const refreshDataWithDebounce = debounce(
 );
 
 export const refreshData =
-  (reduxId, endpoint, columns, baseFilter, tableState) =>
+  (reduxId, endpoint, columns, baseFilter, filters, sorting, tableState) =>
   async (dispatch, getState, { api }) => {
     return refreshDataWithDebounce(
       reduxId,
       endpoint,
       columns,
       baseFilter,
+      filters,
+      sorting,
       tableState,
       dispatch,
       api,

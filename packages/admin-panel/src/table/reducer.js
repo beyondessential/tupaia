@@ -15,7 +15,6 @@ import {
   DATA_CHANGE_ERROR,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
-  FILTERS_CHANGE,
   EXPANSIONS_CHANGE,
   EXPANSIONS_TAB_CHANGE,
   COLUMNS_RESIZE,
@@ -71,9 +70,6 @@ const stateChanges = {
   [DATA_CHANGE_ERROR]: handleErrorMessage,
   [PAGE_INDEX_CHANGE]: payload => payload,
   [PAGE_SIZE_CHANGE]: payload => ({
-    ...payload,
-  }),
-  [FILTERS_CHANGE]: payload => ({
     ...payload,
   }),
   [EXPANSIONS_CHANGE]: payload => payload,

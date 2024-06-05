@@ -15,7 +15,6 @@ export const DATA_CHANGE_SUCCESS = 'DATA_CHANGE_SUCCESS';
 export const DATA_CHANGE_ERROR = 'DATA_CHANGE_ERROR';
 export const PAGE_INDEX_CHANGE = 'PAGE_INDEX_CHANGE';
 export const PAGE_SIZE_CHANGE = 'PAGE_SIZE_CHANGE';
-export const FILTERS_CHANGE = 'FILTERS_CHANGE';
 export const EXPANSIONS_CHANGE = 'EXPANSIONS_CHANGE';
 export const EXPANSIONS_TAB_CHANGE = 'EXPANSIONS_TAB_CHANGE';
 export const COLUMNS_RESIZE = 'COLUMNS_RESIZE';
@@ -37,7 +36,6 @@ export const DEFAULT_TABLE_STATE = {
   fetchId: null,
   pageIndex: 0,
   pageSize: 20,
-  filters: [],
   sorting: [],
   expansions: {},
   expansionTabStates: {},

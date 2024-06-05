@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React, { memo, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTable, usePagination, useSortBy, useResizeColumns, useFlexLayout } from 'react-table';
@@ -16,7 +17,6 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 import { KeyboardArrowDown } from '@material-ui/icons';
-import queryString from 'query-string';
 import PropTypes from 'prop-types';
 import { Alert } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
@@ -111,9 +111,6 @@ const DataFetchingTableComponent = memo(
     pageIndex = 0,
     onPageChange,
     onPageSizeChange,
-    initialiseTable,
-    nestingLevel,
-    filters,
     sorting,
     isChangingDataOnServer,
     errorMessage,
@@ -122,7 +119,6 @@ const DataFetchingTableComponent = memo(
     onConfirmAction,
     onCancelAction,
     deleteConfig,
-    onFilteredChange,
     totalRecords,
     isFetchingData,
     onSortedChange,
@@ -134,8 +130,10 @@ const DataFetchingTableComponent = memo(
     basePath,
     resourceName,
     defaultSorting,
+    defaultFilters,
     actionLabel = 'Action',
   }) => {
+    const [urlSearchParams] = useSearchParams();
     const formattedColumns = useMemo(
       () => columns.map(column => formatColumnForReactTable(column)),
       [JSON.stringify(columns)],
@@ -191,36 +189,32 @@ const DataFetchingTableComponent = memo(
     useEffect(() => {
       onSortedChange(tableSorting);
       gotoPage(0);
-    }, [tableSorting]);
+    }, [JSON.stringify(tableSorting)]);
+
+    // Listen for changes in filters in the URL and refresh the data accordingly
+    const urlFilters = urlSearchParams.get('filters');
+    const parsedFilters = urlFilters ? JSON.parse(urlFilters) : defaultFilters;
 
     useEffect(() => {
-      onRefreshData();
-    }, [filters, pageIndex, pageSize, sorting]);
+      onRefreshData(parsedFilters, sorting);
+    }, [urlFilters, pageIndex, pageSize, JSON.stringify(sorting)]);
 
     useEffect(() => {
       if (!isChangingDataOnServer && !errorMessage) {
-        onRefreshData();
+        onRefreshData(parsedFilters, sorting);
       }
     }, [errorMessage, isChangingDataOnServer]);
 
     // initial render/re-render when endpoint changes
     useEffect(() => {
-      if (nestingLevel === 0) {
-        // Page-level filters only apply to top-level data tables
-        const params = queryString.parse(location.search); // set filters from query params
-        const parsedFilters = params.filters ? JSON.parse(params.filters) : undefined;
-        initialiseTable(parsedFilters);
-      } else {
-        initialiseTable();
+      const initialSorting = defaultSorting ?? [];
+      // if we are on the first page or the sorting is the same as the initial sorting, then we should refresh the data manually. If not, changing the sorting/page will trigger a refresh
+      if (pageIndex === 0 || JSON.stringify(sorting) === JSON.stringify(initialSorting)) {
+        onRefreshData(parsedFilters, initialSorting);
       }
       gotoPage(0);
-      setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
+      setSortBy(initialSorting); // reset sorting when table is re-initialised
     }, [endpoint, JSON.stringify(baseFilter)]);
-
-    const onChangeFilters = newFilters => {
-      onFilteredChange(newFilters);
-      gotoPage(0);
-    };
 
     const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -300,7 +294,7 @@ const DataFetchingTableComponent = memo(
                       }
                       isButtonColumn
                     >
-                      Action
+                      {actionLabel}
                     </HeaderDisplayCell>
                   )}
                 </TableRow>
@@ -309,13 +303,7 @@ const DataFetchingTableComponent = memo(
                 {displayFilterRow &&
                   visibleColumns.map(column => {
                     return (
-                      <FilterCell
-                        {...column.getHeaderProps()}
-                        key={column.id}
-                        column={column}
-                        onFilteredChange={onChangeFilters}
-                        filters={filters}
-                      />
+                      <FilterCell {...column.getHeaderProps()} key={column.id} column={column} />
                     );
                   })}
               </TableRow>
@@ -395,13 +383,11 @@ DataFetchingTableComponent.propTypes = {
   onRefreshData: PropTypes.func.isRequired,
   onResizedChange: PropTypes.func.isRequired,
   onSortedChange: PropTypes.func.isRequired,
-  initialiseTable: PropTypes.func.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   reduxId: PropTypes.string.isRequired,
   resizedColumns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   sorting: PropTypes.array.isRequired,
-  nestingLevel: PropTypes.number,
   deleteConfig: PropTypes.object,
   actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
   totalRecords: PropTypes.number,
@@ -414,6 +400,7 @@ DataFetchingTableComponent.propTypes = {
   resourceName: PropTypes.object,
   defaultSorting: PropTypes.array,
   actionLabel: PropTypes.string,
+  defaultFilters: PropTypes.array,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -421,7 +408,6 @@ DataFetchingTableComponent.defaultProps = {
   data: [],
   errorMessage: '',
   numberOfPages: 0,
-  nestingLevel: 0,
   deleteConfig: {},
   TableComponent: undefined,
   actionColumns: [],
@@ -434,6 +420,7 @@ DataFetchingTableComponent.defaultProps = {
   resourceName: {},
   defaultSorting: [],
   actionLabel: 'Action',
+  defaultFilters: [],
 };
 
 const mapStateToProps = (state, { reduxId, ...ownProps }) => ({
@@ -456,28 +443,16 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
 });
 
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
-  const {
-    baseFilter = {},
-    defaultFilters = [],
-    defaultSorting = [],
-    endpoint,
-    columns,
-    reduxId,
-    ...restOfOwnProps
-  } = ownProps;
-  const onRefreshData = () =>
-    dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
-  const initialiseTable = (filters = defaultFilters) => {
-    dispatch(changeSorting(reduxId, defaultSorting));
-    dispatch(changeFilters(reduxId, filters)); // will trigger a data fetch afterwards
-  };
+  const { baseFilter = {}, endpoint, columns, reduxId, ...restOfOwnProps } = ownProps;
+  const onRefreshData = (filters, sorting) =>
+    dispatch(refreshData(reduxId, endpoint, columns, baseFilter, filters, sorting, stateProps));
+
   return {
     reduxId,
     ...restOfOwnProps,
     ...stateProps,
     ...dispatchProps,
     onRefreshData,
-    initialiseTable,
   };
 };
 

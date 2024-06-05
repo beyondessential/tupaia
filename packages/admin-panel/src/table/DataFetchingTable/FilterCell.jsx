@@ -2,11 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DefaultFilter } from '../columnTypes/columnFilters';
 import { HeaderDisplayCell } from './Cells';
+import { useDebounce } from '../../utilities';
+import { useSearchParams } from 'react-router-dom';
 
 const FilterWrapper = styled.div`
   .MuiFormControl-root {
@@ -40,27 +42,59 @@ const FilterWrapper = styled.div`
   }
 `;
 
-export const FilterCell = ({ column, filters, onFilteredChange, ...props }) => {
-  const { id, Filter } = column;
-  const existingFilter = filters?.find(f => f.id === id);
-  const handleUpdate = value => {
-    const updatedFilters = existingFilter
-      ? filters.map(f => (f.id === id ? { ...f, value } : f))
-      : [...filters, { id, value }];
+const useFilter = id => {
+  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+  const urlFilters = urlSearchParams.get('filters');
+  const filters = urlFilters ? JSON.parse(urlFilters) : [];
+  const existingFilter = filters.find(f => f.id === id);
+  const [filterValue, setFilterValue] = useState(existingFilter?.value);
 
-    onFilteredChange(updatedFilters);
+  const debouncedFilterValue = useDebounce(filterValue, 300);
+
+  const handleUpdate = value => {
+    let updatedFilters = [];
+    if (value === '' || value === undefined) {
+      updatedFilters = filters.filter(f => f.id !== id);
+    } else {
+      updatedFilters = existingFilter
+        ? filters.map(f => (f.id === id ? { ...f, value } : f))
+        : [...filters, { id, value }];
+    }
+
+    if (updatedFilters.length === 0) {
+      urlSearchParams.delete('filters');
+      setUrlSearchParams(urlSearchParams);
+      return;
+    }
+
+    setUrlSearchParams({ filters: JSON.stringify(updatedFilters) });
   };
+
+  useEffect(() => {
+    handleUpdate(debouncedFilterValue);
+  }, [debouncedFilterValue]);
+
+  return {
+    filterValue,
+    setFilterValue,
+  };
+};
+
+export const FilterCell = ({ column, ...props }) => {
+  const { id, Filter } = column;
+  const { filterValue, setFilterValue } = useFilter(id);
+
   if (!column.filterable) return <HeaderDisplayCell {...props} />;
 
   return (
     <HeaderDisplayCell {...props}>
       <FilterWrapper>
         {Filter ? (
-          <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
+          <Filter column={column} onChange={setFilterValue} value={filterValue} />
         ) : (
           <DefaultFilter
-            value={existingFilter?.value || ''}
-            onChange={e => handleUpdate(e.target.value)}
+            value={filterValue ?? ''}
+            onChange={e => setFilterValue(e.target.value)}
             aria-label={`Search ${column.Header}`}
           />
         )}
@@ -70,8 +104,6 @@ export const FilterCell = ({ column, filters, onFilteredChange, ...props }) => {
 };
 
 FilterCell.propTypes = {
-  filters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  onFilteredChange: PropTypes.func.isRequired,
   column: PropTypes.shape({
     id: PropTypes.string.isRequired,
     Header: PropTypes.string.isRequired,

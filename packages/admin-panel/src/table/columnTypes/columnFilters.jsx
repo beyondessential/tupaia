@@ -37,22 +37,20 @@ export const DefaultFilter = styled(TextField).attrs(props => ({
   }
 `;
 
-const StyledSelect = styled(Select)``;
-
 /*
  * Makes boolean fields work with the database filter
  */
 
-export const BooleanSelectFilter = ({ filter, onChange, column }) => (
-  <StyledSelect
+export const BooleanSelectFilter = ({ value, onChange, column }) => (
+  <Select
     id={column.id}
     options={[
       { label: 'Show All', value: '' },
       { label: 'Yes', value: true },
       { label: 'No', value: false },
     ]}
-    onChange={event => onChange(event.target.value)}
-    value={filter ? filter.value : ''}
+    onChange={e => onChange(e.target.value)}
+    value={value ?? ''}
   />
 );
 
@@ -60,20 +58,17 @@ BooleanSelectFilter.propTypes = {
   column: PropTypes.PropTypes.shape({
     id: PropTypes.string,
   }),
-  filter: PropTypes.PropTypes.shape({
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
-  }),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
   onChange: PropTypes.func,
 };
 
 BooleanSelectFilter.defaultProps = {
-  filter: null,
   onChange: null,
   column: {},
 };
 
-export const VerifiedFilter = ({ filter, onChange, column }) => (
-  <StyledSelect
+export const VerifiedFilter = ({ value, onChange, column }) => (
+  <Select
     id={column.id}
     options={[
       { label: 'Show All', value: '' },
@@ -81,8 +76,8 @@ export const VerifiedFilter = ({ filter, onChange, column }) => (
       { label: 'No', value: 'new_user' },
       { label: 'Not Applicable', value: 'unverified' },
     ]}
-    onChange={event => onChange(event.target.value)}
-    value={filter ? filter.value : ''}
+    onChange={e => onChange(e.target.value)}
+    value={value ?? ''}
   />
 );
 
@@ -90,14 +85,12 @@ VerifiedFilter.propTypes = {
   column: PropTypes.PropTypes.shape({
     id: PropTypes.string,
   }),
-  filter: PropTypes.PropTypes.shape({
-    value: PropTypes.string,
-  }),
+  value: PropTypes.string,
   onChange: PropTypes.func,
 };
 
 VerifiedFilter.defaultProps = {
-  filter: null,
+  value: '',
   onChange: null,
   column: {},
 };
@@ -108,30 +101,39 @@ const Chip = styled(MuiChip)`
   }
 `;
 
-export const ArrayFilter = React.memo(({ onChange }) => {
+export const ArrayFilter = React.memo(({ onChange, value }) => {
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [selection, setSelection] = React.useState([]);
 
   const onChangeSelection = (event, newSelection) => {
-    setSelection(newSelection);
-    onChange(
-      newSelection === null
-        ? undefined
-        : {
-            comparator: '@>',
-            comparisonValue: `{${newSelection.join(',')}}`,
-            castAs: 'text[]',
-          },
-    );
+    onChange(newSelection);
+    // onChange(
+    //   newSelection === null
+    //     ? undefined
+    //     : {
+    //         comparator: '@>',
+    //         comparisonValue: `{${newSelection.join(',')}}`,
+    //         castAs: 'text[]',
+    //       },
+    // );
   };
 
+  const getSelection = () => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    return [value];
+  };
+
+  const selection = getSelection();
   return (
     <Autocomplete
-      value={selection || []}
+      value={selection}
       inputValue={searchTerm}
       onInputChange={(event, newSearchTerm) => setSearchTerm(newSearchTerm)}
       options={searchTerm.length > 0 ? [searchTerm] : []}
-      getOptionSelected={(option, selected) => option === selected}
+      getOptionLabel={option => option}
+      getOptionSelected={(option, selected) => {
+        return option === selected;
+      }}
       onChange={onChangeSelection}
       muiProps={{
         freeSolo: true,
@@ -139,10 +141,12 @@ export const ArrayFilter = React.memo(({ onChange }) => {
         selectOnFocus: true,
         clearOnBlur: true,
         handleHomeEndKeys: true,
-        renderTags: (values, getTagProps) =>
-          values.map((option, index) => (
-            <Chip color="primary" label={option} {...getTagProps({ index })} />
-          )),
+        renderTags: (values, getTagProps) => {
+          return values.map((option, index) => {
+            console.log(getTagProps({ index }));
+            return <Chip color="primary" label={option} {...getTagProps({ index })} />;
+          });
+        },
         renderInput: params => <DefaultFilter {...params} />,
         disablePortal: true,
       }}
@@ -152,4 +156,5 @@ export const ArrayFilter = React.memo(({ onChange }) => {
 
 ArrayFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.arrayOf(PropTypes.string),
 };
