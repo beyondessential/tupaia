@@ -17,6 +17,7 @@ import { MatrixPagination } from './MatrixPagination';
 const MatrixTable = styled.table`
   color: ${({ theme }) => theme.palette.text.primary};
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
+  border-collapse: collapse; // necessary to enable borders between column groups
 `;
 
 // wraps the table in a container so that we can set a max-height on it and make it scrollable inside it
