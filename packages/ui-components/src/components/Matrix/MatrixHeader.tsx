@@ -54,7 +54,7 @@ export const MatrixHeader = () => {
      * If there are no parents, then there are only column groups to style for the row header column and the rest of the table. Otherwise, there are column groups for each displayed column group, plus one for the row header column.
      * */
     <>
-      <ColGroup span="1" />
+      <ColGroup span={1} />
       {hasParents ? (
         <>
           {columnGroups.map(({ title, children = [] }) => (
