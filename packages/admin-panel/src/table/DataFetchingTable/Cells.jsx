@@ -7,7 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { TableCell as MuiTableCell } from '@material-ui/core';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useLinkWithSearchState } from '../../utilities';
 
 const Cell = styled(MuiTableCell)`
   font-size: 0.75rem;
@@ -107,12 +108,7 @@ HeaderDisplayCell.defaultProps = {
 };
 
 export const TableCell = ({ children, width, isButtonColumn, url, ...props }) => {
-  const location = useLocation();
-  const to = url ? { pathname: url, search: '' } : null;
-  // key the search by the pathname so that we can have different search values for different pages, so that if multiple pages have the same column ids, they don't share the same search value
-  const newState = url
-    ? { prevSearch: { ...location.state?.prevSearch, [location.pathname]: location.search } }
-    : null;
+  const { to, newState } = useLinkWithSearchState(url);
 
   return (
     <Cell $isButtonColumn={isButtonColumn} {...props}>

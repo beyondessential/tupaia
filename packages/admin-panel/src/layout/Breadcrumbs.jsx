@@ -4,11 +4,12 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ArrowBack } from '@material-ui/icons';
 import { Breadcrumbs as MuiBreadcrumbs, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { generateTitle } from '../pages/resources/resourceName';
+import { useLinkToPreviousSearchState } from '../utilities';
 
 const Wrapper = styled.div`
   display: flex;
@@ -44,25 +45,9 @@ export const Breadcrumbs = ({
 
   const parentTitle = parent ? parent.title ?? generateTitle(parent.resourceName) : null;
 
-  const location = useLocation();
-  const { state } = location;
   const pathname = parent?.to || '/';
 
-  const to = {
-    ...location,
-    pathname,
-    search: state?.prevSearch?.[pathname] ?? '',
-  };
-
-  // reset the search state for the parent page when navigating back so that once the user navigates back to the parent page, the search filter doesn't get reapplied if they navigate to a different page and come back
-  const newState = {
-    ...state,
-    prevSearch: {
-      ...state?.prevSearch,
-      [pathname]: '',
-    },
-  };
-
+  const { to, newState } = useLinkToPreviousSearchState(pathname);
   return (
     <Wrapper>
       <BackButton component={Link} to={to} onClick={onClickLinks} state={newState}>

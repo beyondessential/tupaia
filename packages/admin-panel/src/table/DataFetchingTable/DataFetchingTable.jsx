@@ -221,6 +221,8 @@ const DataFetchingTableComponent = memo(
 
     const actionColumns = visibleColumns.filter(column => column.isButtonColumn);
 
+    const { pathname } = window.location;
+
     return (
       <Wrapper>
         {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
@@ -300,7 +302,12 @@ const DataFetchingTableComponent = memo(
                 {displayFilterRow &&
                   visibleColumns.map(column => {
                     return (
-                      <FilterCell {...column.getHeaderProps()} key={column.id} column={column} />
+                      <FilterCell
+                        {...column.getHeaderProps()}
+                        // apply a key that includes the pathname so that the filter cell is re-rendered when the pathname changes, and the filters don't remain if the column id matches a column id of a previous table
+                        key={`filter-cell-${column.id}-${pathname}`}
+                        column={column}
+                      />
                     );
                   })}
               </TableRow>
