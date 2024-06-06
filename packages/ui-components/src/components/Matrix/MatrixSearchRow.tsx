@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { TextField } from '../Inputs';
 import { MatrixContext, SearchFilter } from './MatrixContext';
 import { HeaderCell } from './Cell';
+import { getFlattenedColumns } from './utils';
 
 const SearchInput = styled(TextField)`
   margin: 0;
@@ -88,7 +89,9 @@ export const MatrixSearchRow = ({
 
   if (!enableSearch) return null;
 
-  const columnsToFilter = [{ key: 'dataElement' }, ...columns];
+  const flattenedColumns = getFlattenedColumns(columns);
+
+  const columnsToFilter = [{ key: 'dataElement' }, ...flattenedColumns];
 
   const onClear = (key: SearchFilter['key']) => {
     if (!clearSearchFilter) return;
