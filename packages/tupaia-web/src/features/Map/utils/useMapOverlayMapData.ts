@@ -12,8 +12,10 @@ import {
 } from '../../../api/queries';
 import { Entity } from '../../../types';
 import { useMapOverlayTableData } from './useMapOverlayTableData';
-import { MapOverlay } from '@tupaia/types';
 
+// if the entity is a point, filter it out so that we don't end up with navigation points showing no data type. This ensures that the only points on the map are from an overlay (see: [RN-1328](https://linear.app/bes/issue/RN-1328/entities-can-appear-as-black-smudges-on-map) for more context)
+const filterOutPointEntities = (entities: Entity[]) =>
+  entities.filter(entity => entity.locationType !== 'point');
 /*
  * This hook is used to get the sibling and immediate child entities for displaying navigation polygons on the map
  */
@@ -38,7 +40,10 @@ const useNavigationEntities = (
         },
       },
     },
-    { enabled: !!rootEntityCode },
+    {
+      enabled: !!rootEntityCode,
+      select: filterOutPointEntities,
+    },
   );
 
   // Get immediate children for the selected entity
@@ -53,16 +58,18 @@ const useNavigationEntities = (
         },
       },
     },
-    { enabled: !!activeEntity?.code && activeEntity?.code !== rootEntityCode },
+    {
+      enabled: !!activeEntity?.code && activeEntity?.code !== rootEntityCode,
+      select: filterOutPointEntities,
+    },
   );
 
   const entitiesData = [...siblings, ...children];
-
   // If display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix. Also, don't show child entities if the current entity is the same as 'displayAtLevel', because we would end up with extra entities on the map
   if (displayOnLevel)
     return activeEntity?.type?.replace('_', '') === displayOnLevel.toLowerCase() ? [] : children;
 
-  // Don't show nav entities for the selected measure level
+  // Don't show nav entities for the selected measure level or for points
   const filteredData = entitiesData?.filter(entity => {
     if (!measureLevel) return true;
     // handle edge cases of array measure levels
@@ -94,8 +101,8 @@ const useRootEntityCode = (entity, measureLevel, displayOnLevel) => {
   // if displayAtLevel is set, look for the entity at that level
   if (displayOnLevel) {
     const measure = entityAncestors?.find(
-      (entity: Entity) => entity.type.replace('_', '') === displayOnLevel?.toLowerCase(),
-    ) as Entity;
+      entityAncestor => entityAncestor.type.replace('_', '') === displayOnLevel?.toLowerCase(),
+    );
     return measure?.code;
   }
   // If the active entity is a country we don't show visuals for neighbouring countries, so just make
@@ -107,8 +114,8 @@ const useRootEntityCode = (entity, measureLevel, displayOnLevel) => {
   // if is non-spatial, find the parent at the measure level and set that as the parent as the rootEntity code, and it will handle getting the correct entities for the selected measure level, similar to how the overlay table does
   if (!entity.point && !entity.bounds) {
     const measure = entityAncestors?.find(
-      (entity: Entity) => entity.type === measureLevel?.toLowerCase(),
-    ) as Entity;
+      entityAncestor => entityAncestor.type === measureLevel?.toLowerCase(),
+    );
 
     return measure?.parentCode;
   }
@@ -154,9 +161,6 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
 
     if (isInVisualEntities) return false;
 
-    const { locationType, type } = entityRelative;
-    // if the entity is a point, only show it if it is the same type as the selected overlay, so we don't end up with a navigation entity under a measure entity with the no-data colour (see: [RN-1328](https://linear.app/bes/issue/RN-1328/entities-can-appear-as-black-smudges-on-map) for more context)
-    if (locationType === 'point') return type === selectedOverlay?.measureLevel;
     return true;
   };
 
