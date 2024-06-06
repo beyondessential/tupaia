@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import MuiBox from '@material-ui/core/Box';
 import { IconKey } from '@tupaia/types';
@@ -37,12 +37,12 @@ const Container = styled(MuiBox)<{
 
   ${({ $isExport, theme }) =>
     !$isExport &&
-    `
-  ${theme.breakpoints.down('sm')} {
-    flex-direction:  column;
-    align-items: flex-start;
-  }
-  `}
+    css`
+      ${theme.breakpoints.down('sm')} {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    `}
 `;
 
 /**

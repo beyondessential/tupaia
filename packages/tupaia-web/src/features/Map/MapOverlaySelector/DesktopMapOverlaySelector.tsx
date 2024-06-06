@@ -9,8 +9,14 @@ import { useParams } from 'react-router';
 import { periodToMoment } from '@tupaia/utils';
 import { Tooltip, IconButton } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
-import { ArrowDropDown, Layers, Assignment, GetApp, Loop } from '@material-ui/icons';
-import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
+import { ArrowDropDown, Layers, Assignment, GetApp } from '@material-ui/icons';
+import {
+  Accordion,
+  Typography,
+  AccordionSummary,
+  AccordionDetails,
+  CircularProgress,
+} from '@material-ui/core';
 import { useMapOverlayMapData, useMapContext, useTilesets } from '../utils';
 import { Entity } from '../../../types';
 import { useExportMapOverlay } from '../../../api/mutations';
@@ -153,14 +159,10 @@ const LatestDataText = styled(Typography)`
   line-height: 1.3;
 `;
 
-const LoadingSpinner = styled(Loop)`
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
+const LoadingSpinner = styled(CircularProgress).attrs({
+  size: 16,
+})`
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 interface DesktopMapOverlaySelectorProps {
@@ -213,7 +215,7 @@ export const DesktopMapOverlaySelector = ({
           <Heading>Map Overlays</Heading>
           {selectedOverlay && (
             <div>
-              <Tooltip arrow interactive placement="top" title={'Export map overlay as PDF'}>
+              <Tooltip arrow interactive placement="top" title="Export map overlay as PDF">
                 <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
                   {isExporting ? <LoadingSpinner /> : <GetApp />}
                 </MapButton>

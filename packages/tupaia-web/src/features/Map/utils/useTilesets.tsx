@@ -16,7 +16,7 @@ export const useTilesets = () => {
   const initialTileSet = getAutoTileSet();
   const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
   const { tileSets = '' } = project?.config || {};
-  const customTilesetNames = tileSets?.split(',') || [];
+  const customTilesetNames = tileSets.split(',');
   const customTileSets = customTilesetNames
     .map(
       tileset =>
@@ -38,7 +38,7 @@ export const useTilesets = () => {
   useEffect(() => {
     if (
       activeTileSet &&
-      availableTileSets.length &&
+      availableTileSets.length > 0 &&
       !availableTileSets.some(({ key }) => key === activeTileSet.key)
     ) {
       setActiveTileSet(initialTileSet);

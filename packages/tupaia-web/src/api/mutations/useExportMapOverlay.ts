@@ -32,8 +32,6 @@ export const useExportMapOverlay = (fileName: string) => {
       hiddenValues,
       tileset,
     }: ExportDashboardBody) => {
-      const baseUrl = `${window.location.protocol}//${window.location.host}`;
-
       // Auth cookies are saved against this domain. Pass this to server, so that when it pretends to be us, it can do the same.
       const cookieDomain = new URL(API_URL).hostname;
 
@@ -41,7 +39,7 @@ export const useExportMapOverlay = (fileName: string) => {
         responseType: 'blob',
         data: {
           cookieDomain,
-          baseUrl,
+          baseUrl: window.location.origin,
           zoom,
           center: JSON.stringify(center),
           hiddenValues: JSON.stringify(hiddenValues),
