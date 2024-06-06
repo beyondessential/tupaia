@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React, { memo, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTable, usePagination, useSortBy, useResizeColumns, useFlexLayout } from 'react-table';
@@ -130,10 +129,9 @@ const DataFetchingTableComponent = memo(
     basePath,
     resourceName,
     defaultSorting,
-    defaultFilters,
     actionLabel = 'Action',
+    defaultFilters,
   }) => {
-    const [urlSearchParams] = useSearchParams();
     const formattedColumns = useMemo(
       () => columns.map(column => formatColumnForReactTable(column)),
       [JSON.stringify(columns)],
@@ -192,7 +190,7 @@ const DataFetchingTableComponent = memo(
     }, [JSON.stringify(tableSorting)]);
 
     // Listen for changes in filters in the URL and refresh the data accordingly
-    const { filters } = useColumnFilters();
+    const { filters } = useColumnFilters(defaultFilters);
 
     useEffect(() => {
       onRefreshData(filters, sorting);

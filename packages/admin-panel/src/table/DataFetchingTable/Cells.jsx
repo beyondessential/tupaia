@@ -108,23 +108,18 @@ HeaderDisplayCell.defaultProps = {
 
 export const TableCell = ({ children, width, isButtonColumn, url, ...props }) => {
   const location = useLocation();
-
+  const to = url ? { pathname: url, search: '' } : null;
+  // key the search by the pathname so that we can have different search values for different pages, so that if multiple pages have the same column ids, they don't share the same search value
   const newState = url
-    ? {
-        ...location.state,
-        prevSearch: {
-          ...location.state?.prevSearch,
-          [location.pathname]: location.search, // key by current pathname so this works for nested routes
-        },
-      }
-    : {};
+    ? { prevSearch: { ...location.state?.prevSearch, [location.pathname]: location.search } }
+    : null;
 
   return (
     <Cell $isButtonColumn={isButtonColumn} {...props}>
       <CellContentWrapper $width={width} $isButtonColumn={isButtonColumn}>
         <CellContentContainer
-          to={url}
-          as={url ? CellLink : 'div'}
+          to={to}
+          as={to ? CellLink : 'div'}
           $isButtonColumn={isButtonColumn}
           state={newState}
         >

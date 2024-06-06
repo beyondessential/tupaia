@@ -54,6 +54,7 @@ export const Breadcrumbs = ({
     search: state?.prevSearch?.[pathname] ?? '',
   };
 
+  // reset the search state for the parent page when navigating back so that once the user navigates back to the parent page, the search filter doesn't get reapplied if they navigate to a different page and come back
   const newState = {
     ...state,
     prevSearch: {
