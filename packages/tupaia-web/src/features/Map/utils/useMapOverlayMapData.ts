@@ -12,6 +12,7 @@ import {
 } from '../../../api/queries';
 import { Entity } from '../../../types';
 import { useMapOverlayTableData } from './useMapOverlayTableData';
+import { MapOverlay } from '@tupaia/types';
 
 /*
  * This hook is used to get the sibling and immediate child entities for displaying navigation polygons on the map
@@ -145,12 +146,23 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
     selectedOverlay?.displayOnLevel,
   );
 
+  const getEntityRelativeIsVisible = (entityRelative: Entity) => {
+    // Check if the entity is already in the main visual entities and return false if it is to deduplicate entities so that we don't end up with a navigation entity under a measure entity
+    const isInVisualEntities = mapOverlayData?.measureData?.find(
+      item => item.code === entityRelative.code,
+    );
+
+    if (isInVisualEntities) return false;
+
+    const { locationType, type } = entityRelative;
+    // if the entity is a point, only show it if it is the same type as the selected overlay, so we don't end up with a navigation entity under a measure entity with the no-data colour (see: [RN-1328](https://linear.app/bes/issue/RN-1328/entities-can-appear-as-black-smudges-on-map) for more context)
+    if (locationType === 'point') return type === selectedOverlay?.measureLevel;
+    return true;
+  };
+
   // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
   const relativesMeasureData = entityRelatives
-    ?.filter(
-      entityRelative =>
-        !mapOverlayData?.measureData?.find(item => item.code === entityRelative.code),
-    ) // deduplicate entities so that we don't end up with a navigation entity under a measure entity
+    ?.filter(getEntityRelativeIsVisible)
     .map(entityRelative => {
       return {
         ...entityRelative,
