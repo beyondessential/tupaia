@@ -1,0 +1,8 @@
+{
+  "overrides": [
+    {
+      "files": ["apple-app-site-association"],
+      "options": { "parser": "json" }
+    }
+  ]
+}

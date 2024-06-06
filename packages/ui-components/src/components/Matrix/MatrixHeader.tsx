@@ -8,18 +8,23 @@ import styled from 'styled-components';
 import { MatrixColumnType } from '../../types';
 import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
+import { getFlattenedColumns } from './utils';
 
 const HeaderCell = styled(Cell)`
   line-height: 1.4;
   z-index: 3; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
-  &:first-child {
+  box-shadow: inset 0 -1px 0 0 ${({ theme }) => theme.palette.divider}; // add a border to the bottom but ise a box shadow so that it doesn't get hidden on scroll
+  &.MuiTableCell-row-head {
     z-index: 4; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
     max-width: 12rem; // set the max-width of the first cell so that on larger screens the row header column doesn't take up too much space
+    box-shadow: inset -1px -1px 0 0 ${({ theme }) => theme.palette.divider}; // add a border to the right of the first cell, but use a box shadow so that it doesn't get hidden on scroll
   }
 `;
 
 const ColGroup = styled.colgroup`
-  border: 2px solid ${({ theme }) => darken(theme.palette.text.primary, 0.4)};
+  &:not(:first-of-type) {
+    border-right: 1px solid ${({ theme }) => darken(theme.palette.text.primary, 0.4)};
+  }
 `;
 
 /**
@@ -41,12 +46,15 @@ export const MatrixHeader = () => {
       {rowHeaderColumnTitle}
     </HeaderCell>
   );
+
+  const flattenedColumns = getFlattenedColumns(columns);
+
   return (
     /**
      * If there are no parents, then there are only column groups to style for the row header column and the rest of the table. Otherwise, there are column groups for each displayed column group, plus one for the row header column.
      * */
     <>
-      <ColGroup />
+      <ColGroup span={1} />
       {hasParents ? (
         <>
           {columnGroups.map(({ title, children = [] }) => (
@@ -70,7 +78,7 @@ export const MatrixHeader = () => {
         <TableRow>
           {/** If hasParents is true, then this row header column cell will have already been rendered. */}
           {!hasParents && RowHeaderColumn}
-          {columns.map(({ title, key }) => (
+          {flattenedColumns.map(({ title, key }) => (
             <HeaderCell
               key={key}
               aria-label={hideColumnTitles ? title : ''}

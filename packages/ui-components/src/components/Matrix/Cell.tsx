@@ -16,4 +16,7 @@ export const Cell = styled(TableCell)<{
   max-width: 30ch; // don't let the text take up too much space;
   word-break: ${({ $characterLength = 0 }) => ($characterLength > 30 ? 'break-word' : 'normal')};
   white-space: pre-line;
+  &.MuiTableCell-row-head {
+    box-shadow: inset -1px 0 0 0 ${({ theme }) => theme.palette.divider}; // add a border to the right of the first cell, but use a box shadow so that it doesn't get hidden on scroll
+  }
 `;
