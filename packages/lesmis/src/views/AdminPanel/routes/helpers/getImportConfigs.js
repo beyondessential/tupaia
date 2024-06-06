@@ -8,7 +8,6 @@ const getImportModalText = translate => ({
   confirmButtonText: translate('admin.import'),
   cancelButtonText: translate('admin.cancel'),
   uploadButtonText: translate('admin.chooseFile'),
-  noFileMessage: translate('admin.noFileChosen'),
 });
 
 export const getImportConfigs = (translate, importConfigs) => ({

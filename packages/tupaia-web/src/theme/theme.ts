@@ -123,13 +123,10 @@ theme.overrides = {
       lineHeight: '1.4',
       borderBottom: 'none', // remove the bottom border from all cells, and it will be applied to the header cells below
       ['&.MuiTableCell-row-head']: {
-        borderRight: `1px solid ${theme.palette.divider}`, // border right for the row header cells
         fontWeight: theme.typography.fontWeightMedium,
       },
     },
-    head: {
-      borderBottom: `1px solid ${theme.palette.divider}`, // header cells have a bottom border
-    },
+
     stickyHeader: {
       backgroundColor: 'inherit', // make the sticky header cells have the row's background color
     },

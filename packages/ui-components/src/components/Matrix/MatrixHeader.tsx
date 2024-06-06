@@ -9,9 +9,12 @@ import { MatrixColumnType } from '../../types';
 import { MatrixContext } from './MatrixContext';
 import { HeaderCell } from './Cell';
 import { MatrixSearchRow } from './MatrixSearchRow';
+import { getFlattenedColumns } from './utils';
 
 const ColGroup = styled.colgroup`
-  border: 2px solid ${({ theme }) => darken(theme.palette.text.primary, 0.4)};
+  &:not(:first-of-type) {
+    border-right: 1px solid ${({ theme }) => darken(theme.palette.text.primary, 0.4)};
+  }
 `;
 
 const THead = styled(TableHead)`
@@ -42,12 +45,14 @@ export const MatrixHeader = ({
     <HeaderCell rowSpan={hasParents ? 2 : 1} scope="row" className="MuiTableCell-row-head" />
   );
 
+  const flattenedColumns = getFlattenedColumns(columns);
+
   return (
     /**
      * If there are no parents, then there are only column groups to style for the row header column and the rest of the table. Otherwise, there are column groups for each displayed column group, plus one for the row header column.
      * */
     <>
-      <ColGroup />
+      <ColGroup span={1} />
       {hasParents ? (
         <>
           {columnGroups.map(({ title, children = [] }) => (
@@ -71,7 +76,7 @@ export const MatrixHeader = ({
         <TableRow>
           {/** If hasParents is true, then this row header column cell will have already been rendered. */}
           {!hasParents && RowHeaderColumn}
-          {columns.map(({ title, key }) => (
+          {flattenedColumns.map(({ title, key }) => (
             <HeaderCell
               key={key}
               aria-label={hideColumnTitles ? title : ''}

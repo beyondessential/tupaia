@@ -78,6 +78,7 @@ export class LoginPage extends React.Component {
           {errorMessage !== '' && renderErrorMessage(errorMessage)}
           <View style={localStyles.horizontalContainer}>
             <TextInput
+              autoComplete="email"
               style={[localStyles.textInput, localStyles.text]}
               placeholder="Email Address"
               placeholderTextColor={THEME_COLOR_ONE}
@@ -94,6 +95,7 @@ export class LoginPage extends React.Component {
           </View>
           <View style={localStyles.horizontalContainer}>
             <TextInput
+              autoComplete="current-password"
               inputRef={reference => {
                 this.passwordInputRef = reference;
               }}
