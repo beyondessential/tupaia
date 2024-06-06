@@ -16,6 +16,27 @@ import { useMapOverlayTableData } from './useMapOverlayTableData';
 // if the entity is a point, filter it out so that we don't end up with navigation points showing no data type. This ensures that the only points on the map are from an overlay (see: [RN-1328](https://linear.app/bes/issue/RN-1328/entities-can-appear-as-black-smudges-on-map) for more context)
 const filterOutPointEntities = (entities: Entity[]) =>
   entities.filter(entity => entity.locationType !== 'point');
+
+const useEntityRelativesWithLocation = (projectCode, entityCode, enabled) => {
+  return useEntitiesWithLocation(
+    projectCode,
+    entityCode,
+    {
+      params: {
+        includeRootEntity: false,
+        filter: {
+          generational_distance: 1,
+        },
+      },
+    },
+    {
+      enabled,
+      // filter the point entities here because location_type is not a valid filter in the entity-server
+      select: filterOutPointEntities,
+    },
+  );
+};
+
 /*
  * This hook is used to get the sibling and immediate child entities for displaying navigation polygons on the map
  */
@@ -29,39 +50,17 @@ const useNavigationEntities = (
   const rootEntityCode = activeEntity?.parentCode || activeEntity?.code;
 
   // Get siblings for the root entity
-  const { data: siblings = [] } = useEntitiesWithLocation(
+  const { data: siblings = [] } = useEntityRelativesWithLocation(
     projectCode,
     rootEntityCode,
-    {
-      params: {
-        includeRootEntity: false,
-        filter: {
-          generational_distance: 1,
-        },
-      },
-    },
-    {
-      enabled: !!rootEntityCode,
-      select: filterOutPointEntities,
-    },
+    !!rootEntityCode,
   );
 
   // Get immediate children for the selected entity
-  const { data: children = [] } = useEntitiesWithLocation(
+  const { data: children = [] } = useEntityRelativesWithLocation(
     projectCode,
     activeEntity?.code,
-    {
-      params: {
-        includeRootEntity: false,
-        filter: {
-          generational_distance: 1,
-        },
-      },
-    },
-    {
-      enabled: !!activeEntity?.code && activeEntity?.code !== rootEntityCode,
-      select: filterOutPointEntities,
-    },
+    !!activeEntity?.code && activeEntity?.code !== rootEntityCode,
   );
 
   const entitiesData = [...siblings, ...children];
