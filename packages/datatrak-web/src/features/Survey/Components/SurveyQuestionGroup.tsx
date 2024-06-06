@@ -2,39 +2,34 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { useLocation } from 'react-router';
-import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { SurveyScreenComponent } from '../../../types';
-import { SurveyQuestion } from './SurveyQuestion';
+import React, { useEffect } from "react";
+import { useFormContext } from "react-hook-form";
+import { useLocation } from "react-router";
+import styled from "styled-components";
+import { SurveyScreenComponent } from "../../../types";
+import { SurveyQuestion } from "./SurveyQuestion";
 
 const QuestionWrapper = styled.div<{
   $isInstruction: boolean;
 }>`
   display: flex;
   &:not(:last-child) {
-    margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1rem' : '2rem')};
+    margin-bottom: ${({ $isInstruction }) =>
+      $isInstruction ? "1rem" : "2rem"};
   }
   .MuiFormLabel-root {
     color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
 
-const QuestionNumber = styled(Typography)`
-  width: 3.5rem;
-  text-transform: lowercase;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
-  }
-`;
-
 /**
  * This is the component that renders questions in a survey.
  */
-export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComponent[] }) => {
+export const SurveyQuestionGroup = ({
+  questions,
+}: {
+  questions: SurveyScreenComponent[];
+}) => {
   const { setError, errors } = useFormContext();
   const location = useLocation() as { state: { errors?: string } };
 
@@ -76,16 +71,13 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
           detailLabel,
           detail,
           optionSetId,
-          questionNumber,
           updateFormDataOnChange,
         }) => {
           return (
-            <QuestionWrapper key={questionId} $isInstruction={type === 'Instruction'}>
-              {type !== 'Instruction' && (
-                <QuestionNumber id={`question_number_${questionId}`}>
-                  {questionNumber}
-                </QuestionNumber>
-              )}
+            <QuestionWrapper
+              key={questionId}
+              $isInstruction={type === "Instruction"}
+            >
               <SurveyQuestion
                 detailLabel={detailLabel || detail}
                 id={questionId}
@@ -102,7 +94,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
               />
             </QuestionWrapper>
           );
-        },
+        }
       )}
     </>
   );
