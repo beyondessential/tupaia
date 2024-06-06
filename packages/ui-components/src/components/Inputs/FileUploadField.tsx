@@ -3,171 +3,151 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useRef, useState } from 'react';
-import { FormLabel } from '@material-ui/core';
-import styled from 'styled-components';
-import MuiFormHelperText from '@material-ui/core/FormHelperText';
-import { Button } from '../Button';
-import { FlexStart } from '../Layout';
+import React from 'react';
+import styled, { css } from 'styled-components';
 import { FilePicker } from '../Icons';
 import { InputLabel } from './InputLabel';
+import { useDropzone } from 'react-dropzone';
+import { FormHelperText } from '@material-ui/core';
 
-const HiddenFileInput = styled.input`
-  display: none; // Hide the input element without applying other styles - setting it to be small and position absolute causes the form to crash when the input is clicked
+const Wrapper = styled.div<{ $isDragActive: boolean; $isDragReject: boolean }>`
+  border-radius: 0.1875rem;
+  border: 0.0625rem dashed ${({ theme }) => theme.palette.grey['400']};
+  cursor: pointer;
+  flex-direction: column;
+  inline-size: 100%;
+  padding: 1.25rem;
+  text-align: center;
+  transition: background-color 100ms ease;
+
+  :hover,
+  :active,
+  :focus-visible {
+    background-color: #f4f9ff;
+  }
+
+  ${({ $isDragActive, $isDragReject }) => {
+    if ($isDragReject)
+      return css`
+        background-color: #fff6f5;
+      `;
+
+    if ($isDragActive)
+      return css`
+        background-color: #f4f9ff;
+      `;
+  }}
 `;
 
-const FileNameAndFileSize = styled.span`
-  font-size: ${props => props.theme.typography.body2.fontSize};
+const PrimaryLabel = styled.p`
+  font-size: ${({ theme }) => theme.typography.body2.fontSize};
+  font-weight: 500;
 `;
 
-const FileUploadContainer = styled(FlexStart)`
-  margin-top: 1rem;
-`;
-
-const RemoveButton = styled(Button).attrs({
-  variant: 'text',
-  color: 'default',
-})`
+const SecondaryLabel = styled.p`
+  color: ${({ theme }) => theme.palette.grey['600']};
+  font-size: 0.6875rem;
   font-weight: 400;
-  text-decoration: underline;
-  padding: 0;
-  margin-left: 0.8rem;
-  .MuiButton-label {
-    font-size: 0.7rem;
+  letter-spacing: 0.02em;
+`;
+
+const ChooseFileButton = styled.span`
+  color: ${({ theme }) => theme.palette.primary.main};
+  &:hover {
+    text-decoration: underline;
   }
 `;
 
+const FileMetadata = styled.li`
+  font-size: ${({ theme }) => theme.typography.body2.fontSize};
+`;
+
+// const RemoveButton = styled(Button).attrs({
+//   variant: 'text',
+//   color: 'default',
+// })`
+//   font-weight: 400;
+//   margin-inline-start: 0.8rem;
+//   padding: 0;
+//   text-decoration: underline;
+//   .MuiButton-label {
+//     font-size: 0.6875rem;
+//   }
+// `;
+
 const humanFileSize = (sizeInBytes: number) => {
   const i = sizeInBytes === 0 ? 0 : Math.floor(Math.log(sizeInBytes) / Math.log(1024));
-  return `${(sizeInBytes / 1024 ** i).toFixed(2)} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`;
+  const value = (sizeInBytes / 1024 ** i).toFixed(2);
+  const unit = ['B', 'kB', 'MB', 'GB', 'TB'][i];
+  return `${value} ${unit}`;
 };
 
 interface FileUploadFieldProps {
-  onChange: (
-    event: React.ChangeEvent<HTMLInputElement> | null,
-    fileName?: string,
-    files?: FileList | null | undefined,
-  ) => void;
   name: string;
   fileName: string;
   multiple?: boolean;
-  textOnButton?: string;
   label?: string;
   tooltip?: string;
   helperText?: string;
-  showFileSize?: boolean;
-  maxSizeInBytes?: number;
+  maxSize?: number;
   FormHelperTextComponent?: React.ElementType;
   required?: boolean;
-  buttonVariant?: 'text' | 'outlined' | 'contained';
   accept?: string;
 }
 
 export const FileUploadField = ({
-  onChange = () => {},
   name,
   fileName,
-  multiple = false,
-  textOnButton,
+  multiple = true,
   label,
   tooltip,
   helperText,
-  showFileSize = false,
-  maxSizeInBytes,
+  maxSize,
   FormHelperTextComponent = 'p',
-  required,
-  buttonVariant = 'contained',
-  accept = '*',
+  required = false,
+  accept,
 }: FileUploadFieldProps) => {
-  const inputEl = useRef<HTMLInputElement | null>(null);
-  const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
+  // const [files, setFiles] = useState([] as File[]);
+  const { acceptedFiles, getRootProps, getInputProps, isDragReject, isDragActive } = useDropzone({
+    maxSize,
+    multiple,
+    // onDrop: droppedFiles => setFiles(droppedFiles),
+  });
 
-  const [error, setError] = useState<string | null>(null);
-  const [sizeInBytes, setSizeInBytes] = useState<number | null>(null);
+  // const clear = () => setFiles([]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let newName;
-    const input = inputEl.current;
-
-    if (!input || !input.files) return;
-
-    if (input.files.length > 1) {
-      newName = `${input.files.length} files selected`;
-    } else {
-      newName = event.target.value.split('\\').pop();
-    }
-
-    if (maxSizeInBytes) {
-      for (const file of Array.from(input.files)) {
-        const { size: newSizeInBytes } = file;
-        if (newSizeInBytes > maxSizeInBytes) {
-          setSizeInBytes(null);
-          setError(
-            `Error: file is too large: ${humanFileSize(
-              newSizeInBytes,
-            )}. Max file size: ${humanFileSize(maxSizeInBytes)}`,
-          );
-          onChange(event, undefined, null);
-          return;
-        }
-      }
-    }
-
-    if (multiple) {
-      onChange(event, newName, input.files);
-      // We don't support file size label if multiple
-    } else {
-      const [file] = Array.from(input.files);
-      setSizeInBytes(file.size);
-      onChange(event, newName, input.files);
-    }
-    setError(null);
-  };
-
-  const removeFile = () => {
-    const input = inputEl.current;
-    if (input) {
-      input.value = '';
-      onChange(null);
-      setSizeInBytes(null);
-    }
+  const fileOrFiles = multiple ? 'files' : 'file';
+  const acceptedFileTypesLabel = accept?.split(',').join(' ') ?? 'any';
+  const getDropzoneLabel = () => {
+    if (isDragReject) return 'File not allowed';
+    if (isDragActive) return `Drop ${fileOrFiles} here`;
+    return (
+      <>
+        Drag & drop or <ChooseFileButton>choose {fileOrFiles}</ChooseFileButton> to upload
+      </>
+    );
   };
 
   return (
     <>
-      <FormLabel htmlFor={name}>
-        <InputLabel label={label} tooltip={tooltip} as="span" />
-        <FileUploadContainer>
-          <HiddenFileInput
-            ref={inputEl}
-            id={name}
-            name={name}
-            type="file"
-            onChange={handleChange}
-            value=""
-            multiple={multiple}
-            required={required}
-            accept={accept}
-          />
-
-          {!fileName && (
-            <Button component="span" startIcon={<FilePicker />} variant={buttonVariant}>
-              {text}
-            </Button>
-          )}
-        </FileUploadContainer>
-
-        {error && <MuiFormHelperText error>{error}</MuiFormHelperText>}
-        {helperText && (
-          <MuiFormHelperText component={FormHelperTextComponent}>{helperText}</MuiFormHelperText>
-        )}
-      </FormLabel>
-      {fileName && (
-        <FileNameAndFileSize>
-          {fileName} {showFileSize && sizeInBytes && `(${humanFileSize(sizeInBytes)})`}
-          <RemoveButton onClick={removeFile}>Remove</RemoveButton>
-        </FileNameAndFileSize>
+      <InputLabel label={label} tooltip={tooltip} as="span" />
+      <Wrapper {...getRootProps()} $isDragActive={isDragActive} $isDragReject={isDragReject}>
+        <input {...getInputProps()} accept={accept} required={required} />
+        <FilePicker />
+        <PrimaryLabel>{getDropzoneLabel()}</PrimaryLabel>
+        <SecondaryLabel>Supported file types: {acceptedFileTypesLabel}</SecondaryLabel>
+      </Wrapper>
+      {helperText && (
+        <FormHelperText component={FormHelperTextComponent}>{helperText}</FormHelperText>
       )}
+      <ul>
+        {acceptedFiles.map(file => (
+          <FileMetadata key={file.name}>
+            {file.name} {`(${humanFileSize(file.size)})`}
+          </FileMetadata>
+        ))}
+      </ul>
+      {/*<RemoveButton onClick={clear}>Clear selection</RemoveButton>*/}
     </>
   );
 };
