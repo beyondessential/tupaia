@@ -13,6 +13,7 @@ import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { CellButton } from './CellButton';
 import { Cell } from './Cell';
+import { getFlattenedColumns } from './utils';
 
 const MATRIX_ROW_CLASS_HIGHLIGHTED = 'highlighted';
 const MATRIX_ROW_CLASS_PARENT = 'parent';
@@ -271,6 +272,7 @@ const RowHeaderCell = ({
 export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const { children, title, onClick } = row;
   const { columns, expandedRows, disableExpand = false } = useContext(MatrixContext);
+  const flattenedColumns = getFlattenedColumns(columns);
 
   const isExpanded = expandedRows.includes(title);
   const depth = parents.length;
@@ -306,7 +308,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
         >
           {title}
         </RowHeaderCell>
-        {columns.map(({ key, title: cellTitle }) => (
+        {flattenedColumns.map(({ key, title: cellTitle }) => (
           <MatrixCell
             key={`column-${key || cellTitle}-row-${title}-value`}
             value={row[key as string]}
