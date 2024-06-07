@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
@@ -17,6 +17,7 @@ import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
 import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
+import { EditSurveyQuestionsModal } from './EditSurveyQuestionsModal';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -111,6 +112,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     isLoading,
     resetEditorToDefaultState,
   }) => {
+    const [editQuestionsModalOpen, setEditQuestionsModalOpen] = useState(false);
     const errorAlertRef = useRef(null);
     const navigate = useNavigate();
     const { '*': unusedParam, locale, ...params } = useParams();
@@ -185,6 +187,8 @@ const EditSurveyPageComponent = withConnectedEditor(
       }
     }, [errorMessage]);
 
+    const toggleEditQuestionsModal = () => setEditQuestionsModalOpen(!editQuestionsModalOpen);
+
     return (
       <Wrapper>
         <Breadcrumbs
@@ -214,7 +218,9 @@ const EditSurveyPageComponent = withConnectedEditor(
               Edit survey questions below or choose a file to upload
             </Typography>
             <ButtonGroup>
-              <Button color="primary">Edit questions</Button>
+              <Button color="primary" onClick={toggleEditQuestionsModal}>
+                Edit questions
+              </Button>
               <Typography>or</Typography>
               <FileUploadField
                 id="survey-questions"
@@ -250,6 +256,12 @@ const EditSurveyPageComponent = withConnectedEditor(
             Save changes
           </Button>
         </StickyFooter>
+        <EditSurveyQuestionsModal
+          open={editQuestionsModalOpen}
+          onClose={toggleEditQuestionsModal}
+          survey={details}
+          setFormFile={handleSetFormFile}
+        />
       </Wrapper>
     );
   },

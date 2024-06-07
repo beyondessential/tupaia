@@ -29,7 +29,7 @@ const CloseButton = styled(IconButton)`
 
 export const ModalHeader = ({ title, onClose, children }) => (
   <Header>
-    <Title variant="h2">{title}</Title>
+    {title && <Title variant="h2">{title}</Title>}
     {children}
     <CloseButton onClick={onClose}>
       <Close />
