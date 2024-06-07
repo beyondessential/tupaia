@@ -137,24 +137,17 @@ export const FileUploadField = ({
   required = false,
   accept,
 }: FileUploadFieldProps) => {
-  const {
-    acceptedFiles,
-    fileRejections,
-    getInputProps,
-    getRootProps,
-    isDragAccept,
-    isDragActive,
-    isDragReject,
-  } = useDropzone({
-    maxSize: maxSizeInBytes,
-    multiple,
-  });
+  const { acceptedFiles, fileRejections, getInputProps, getRootProps, isDragActive, isDragReject } =
+    useDropzone({
+      maxSize: maxSizeInBytes,
+      multiple,
+    });
   const { palette } = useTheme();
 
   const fileOrFiles = multiple ? 'files' : 'file';
   const acceptedFileTypesLabel = accept?.split(',').join(' ') ?? 'any';
   const getDropzoneLabel = () => {
-    if (isDragReject) return 'File not allowed';
+    if (isDragReject) return 'File(s) not allowed';
     if (isDragActive) return `Drop ${fileOrFiles} here`;
     return (
       <>
