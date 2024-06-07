@@ -2,25 +2,20 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from "react";
-import styled from "styled-components";
-import { To, Link as RouterLink } from "react-router-dom";
-import { useFormContext } from "react-hook-form";
-import {
-  Drawer as BaseDrawer,
-  ListItem,
-  List,
-  ButtonProps,
-} from "@material-ui/core";
-import { useIsMobile } from "../../../../utils";
-import { getSurveyScreenNumber } from "../../utils";
-import { useSurveyForm } from "../../SurveyContext";
-import { SideMenuButton } from "./SideMenuButton";
+import React from 'react';
+import styled from 'styled-components';
+import { To, Link as RouterLink } from 'react-router-dom';
+import { useFormContext } from 'react-hook-form';
+import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
+import { useIsMobile } from '../../../../utils';
+import { getSurveyScreenNumber } from '../../utils';
+import { useSurveyForm } from '../../SurveyContext';
+import { SideMenuButton } from './SideMenuButton';
 
-export const SIDE_MENU_WIDTH = "20rem";
+export const SIDE_MENU_WIDTH = '20rem';
 
 const Drawer = styled(BaseDrawer).attrs({
-  anchor: "left",
+  anchor: 'left',
   elevation: 0,
 })`
   flex-shrink: 0;
@@ -34,7 +29,7 @@ const Drawer = styled(BaseDrawer).attrs({
     border-right: none;
     height: 100%;
   }
-  ${({ theme }) => theme.breakpoints.up("md")} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     .MuiPaper-root {
       background-color: transparent;
     }
@@ -48,8 +43,8 @@ const SurveyMenuContent = styled(List)`
 const SurveyMenuItem = styled(ListItem).attrs({
   button: true,
   component: RouterLink,
-  variant: "text",
-  color: "default",
+  variant: 'text',
+  color: 'default',
 })<
   ButtonProps & {
     to: To;
@@ -62,7 +57,7 @@ const SurveyMenuItem = styled(ListItem).attrs({
   justify-content: flex-start;
   overflow: hidden;
   background-color: ${({ theme, $active }) =>
-    $active ? `${theme.palette.primary.main}55` : "transparent"};
+    $active ? `${theme.palette.primary.main}55` : 'transparent'};
   & ~ & {
     margin-left: 0; // overwrite styles from elsewhere
   }
@@ -74,8 +69,7 @@ const SurveyMenuItem = styled(ListItem).attrs({
       display: -webkit-box;
       -webkit-box-orient: vertical;
       line-clamp: ${({ $isInstructionOnly }) => ($isInstructionOnly ? 1 : 2)};
-      -webkit-line-clamp: ${({ $isInstructionOnly }) =>
-        $isInstructionOnly ? 1 : 2};
+      -webkit-line-clamp: ${({ $isInstructionOnly }) => ($isInstructionOnly ? 1 : 2)};
       overflow: hidden;
     }
   }
@@ -93,7 +87,7 @@ const Header = styled.div`
     border-radius: 3rem 0 0 3rem;
     position: static;
   }
-  ${({ theme }) => theme.breakpoints.up("md")} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
 `;
@@ -117,7 +111,7 @@ export const SurveySideMenu = () => {
     if (isMobile) toggleSideMenu();
   };
   const getFormattedScreens = () => {
-    const screens = visibleScreens?.map((screen) => {
+    const screens = visibleScreens?.map(screen => {
       const { surveyScreenComponents, id } = screen;
       const { text } = surveyScreenComponents[0];
       const surveyScreenNum = getSurveyScreenNumber(visibleScreens, screen);
@@ -133,7 +127,7 @@ export const SurveySideMenu = () => {
       <Drawer
         open={sideMenuOpen}
         onClose={toggleSideMenu}
-        variant={isMobile ? "temporary" : "persistent"}
+        variant={isMobile ? 'temporary' : 'persistent'}
       >
         <Header>
           <SideMenuButton />

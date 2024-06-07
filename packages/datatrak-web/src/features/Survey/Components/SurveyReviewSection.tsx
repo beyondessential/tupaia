@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from "react";
-import { QuestionType } from "@tupaia/types";
-import styled from "styled-components";
-import { Typography } from "@material-ui/core";
-import { useSurveyForm } from "../SurveyContext";
-import { SurveyQuestionGroup } from "./SurveyQuestionGroup";
+import React from 'react';
+import { QuestionType } from '@tupaia/types';
+import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
+import { useSurveyForm } from '../SurveyContext';
+import { SurveyQuestionGroup } from './SurveyQuestionGroup';
 
 const Section = styled.section`
   padding: 1rem 0;
@@ -18,12 +18,12 @@ const Section = styled.section`
 `;
 
 const SectionHeader = styled(Typography).attrs({
-  variant: "h3",
+  variant: 'h3',
 })`
   font-size: 1rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   margin-bottom: 1rem;
-  ${({ theme }) => theme.breakpoints.up("sm")} {
+  ${({ theme }) => theme.breakpoints.up('sm')} {
     font-size: 1.125rem;
   }
 `;
@@ -47,11 +47,10 @@ export const SurveyReviewSection = () => {
   }
 
   // split the questions into sections by screen so it's easier to read the long form
-  const questionSections = visibleScreens.map((screen) => {
+  const questionSections = visibleScreens.map(screen => {
     const { surveyScreenComponents } = screen;
     const heading = surveyScreenComponents[0].text;
-    const firstQuestionIsInstruction =
-      surveyScreenComponents[0].type === QuestionType.Instruction;
+    const firstQuestionIsInstruction = surveyScreenComponents[0].type === QuestionType.Instruction;
 
     // if the first question is an instruction, don't display it, because it will be displayed as the heading
     const questionsToDisplay = firstQuestionIsInstruction
