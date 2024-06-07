@@ -113,7 +113,7 @@ export class TupaiaApi {
    * @param {string?} fileName if provided, overrides the fileName returned from the server
    * @return {Promise<{}|{headers, body: ({emailTimeoutHit}|*)}>}
    */
-  async download(endpoint, queryParameters, fileName = null) {
+  async download(endpoint, queryParameters, fileName = null, returnBlob = false) {
     const response = await this.request(endpoint, queryParameters, this.buildFetchConfig('GET'));
 
     // Check if this is an early response indicating it will be emailed
@@ -136,6 +136,9 @@ export class TupaiaApi {
     }
 
     const responseBlob = await response.blob();
+    if (returnBlob) {
+      return responseBlob;
+    }
     saveAs(responseBlob, resolvedFileName);
     return {};
   }

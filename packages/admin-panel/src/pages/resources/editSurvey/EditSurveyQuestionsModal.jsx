@@ -3,13 +3,15 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import xlsx from 'xlsx';
 import { Dialog } from '@material-ui/core';
+import { Button } from '@tupaia/ui-components';
 import { ModalContentProvider, ModalFooter, ModalHeader } from '../../../widgets';
 import { Breadcrumbs } from '../../../layout';
-import { Button } from '@tupaia/ui-components';
+import { useApiContext } from '../../../utilities/ApiProvider';
 
 const StyledDialog = styled(Dialog)`
   // remove the breadcrumbs border
@@ -18,12 +20,50 @@ const StyledDialog = styled(Dialog)`
   }
 `;
 
-export const EditSurveyQuestionsModal = ({ open, onClose, survey, setFormFile, currentFile }) => {
-  const onSave = () => {
-    // generate a new file with the updated questions
-    //then call setFormFile with the new file
-    // then close the modal
+const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
+  const [file, setFile] = useState(uploadedFile);
+
+  const [error, setError] = useState(null);
+  const api = useApiContext();
+  const getInitialFile = async () => {
+    try {
+      const blob = await api.download(`export/surveys/${surveyId}`, {}, null, true);
+      const arrayBuffer = await blob.arrayBuffer();
+
+      setFile(arrayBuffer);
+    } catch (e) {
+      setError(e);
+    }
   };
+
+  useEffect(() => {
+    if (file || !isOpen) return;
+    if (uploadedFile) {
+      setFile(uploadedFile);
+    } else getInitialFile();
+  }, [isOpen]);
+
+  return { file, error };
+};
+
+const useSpreadsheetJson = file => {
+  const [json, setJson] = useState(null);
+
+  useEffect(() => {
+    if (!file || json) return;
+    const wb = xlsx.read(file, { type: 'array' });
+    const sheetJson = xlsx.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+    setJson(sheetJson);
+  }, [file]);
+
+  return json;
+};
+
+export const EditSurveyQuestionsModal = ({ open, onClose, survey, setFormFile, currentFile }) => {
+  const { file } = useInitialFile(survey?.id, open, currentFile);
+  const json = useSpreadsheetJson(file);
+  console.log(json);
+
   return (
     <StyledDialog open={open} onClose={onClose} disablePortal fullScreen>
       <ModalHeader onClose={onClose}>
@@ -34,7 +74,7 @@ export const EditSurveyQuestionsModal = ({ open, onClose, survey, setFormFile, c
           }}
           showBackButton={false}
           details={survey}
-          title={survey.name}
+          title={survey?.name}
           displayProperty="code"
         />
       </ModalHeader>
@@ -43,7 +83,7 @@ export const EditSurveyQuestionsModal = ({ open, onClose, survey, setFormFile, c
         <Button onClick={onClose} variant="outlined">
           Cancel
         </Button>
-        <Button onClick={onSave}>Save</Button>
+        <Button>Save</Button>
       </ModalFooter>
     </StyledDialog>
   );

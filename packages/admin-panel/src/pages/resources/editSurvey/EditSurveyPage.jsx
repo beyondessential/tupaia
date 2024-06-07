@@ -261,6 +261,7 @@ const EditSurveyPageComponent = withConnectedEditor(
           onClose={toggleEditQuestionsModal}
           survey={details}
           setFormFile={handleSetFormFile}
+          currentFile={files.surveyQuestions}
         />
       </Wrapper>
     );
