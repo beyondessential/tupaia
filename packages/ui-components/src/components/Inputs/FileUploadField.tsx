@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FormHelperText } from '@material-ui/core';
+import { FormHelperText, useTheme } from '@material-ui/core';
 import { useDropzone } from 'react-dropzone';
 import { FilePicker } from '../Icons';
 import { InputLabel } from './InputLabel';
@@ -141,6 +141,7 @@ export const FileUploadField = ({
     maxSize,
     multiple,
   });
+  const { palette } = useTheme();
 
   const fileOrFiles = multiple ? 'files' : 'file';
   const acceptedFileTypesLabel = accept?.split(',').join(' ') ?? 'any';
@@ -162,7 +163,7 @@ export const FileUploadField = ({
       <Uploader>
         <Drpozone {...getRootProps()} $isDragActive={isDragActive} $isDragReject={isDragReject}>
           <input {...getInputProps()} accept={accept} required={required} />
-          <FilePicker />
+          <FilePicker color={palette.primary.main} />
           <PrimaryLabel>{getDropzoneLabel()}</PrimaryLabel>
           <SecondaryLabel>Supported file types: {acceptedFileTypesLabel}</SecondaryLabel>
         </Drpozone>
