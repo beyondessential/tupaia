@@ -1,18 +1,25 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { FormHelperText } from '@material-ui/core';
+import { useDropzone } from 'react-dropzone';
 import { FilePicker } from '../Icons';
 import { InputLabel } from './InputLabel';
-import { useDropzone } from 'react-dropzone';
-import { FormHelperText } from '@material-ui/core';
 
-const Wrapper = styled.div<{ $isDragActive: boolean; $isDragReject: boolean }>`
+const Label = styled(InputLabel)`
+  margin-block-end: 0.25rem;
+`;
+
+const Uploader = styled.div`
   border-radius: 0.1875rem;
   border: 0.0625rem dashed ${({ theme }) => theme.palette.grey['400']};
+`;
+
+const Drpozone = styled.div<{ $isDragActive: boolean; $isDragReject: boolean }>`
   cursor: pointer;
   flex-direction: column;
   inline-size: 100%;
@@ -55,6 +62,22 @@ const ChooseFileButton = styled.span`
   color: ${({ theme }) => theme.palette.primary.main};
   &:hover {
     text-decoration: underline;
+  }
+`;
+
+const SelectedFileList = styled.ul`
+  border-block-start: 0.0625rem dashed ${({ theme }) => theme.palette.grey['400']};
+  list-style-type: none;
+  margin: 0;
+  padding-block: 0.5rem;
+  padding-inline: 1.25rem;
+
+  /*
+   * Workaround for accessibility issue with VoiceOver.
+   * See https://gerardkcohen.me/writing/2017/voiceover-list-style-type.html
+   */
+  li::before {
+    content: '\\200B'; /* zero-width space */
   }
 `;
 
@@ -130,23 +153,27 @@ export const FileUploadField = ({
 
   return (
     <>
-      <InputLabel label={label} tooltip={tooltip} as="span" />
-      <Wrapper {...getRootProps()} $isDragActive={isDragActive} $isDragReject={isDragReject}>
-        <input {...getInputProps()} accept={accept} required={required} />
-        <FilePicker />
-        <PrimaryLabel>{getDropzoneLabel()}</PrimaryLabel>
-        <SecondaryLabel>Supported file types: {acceptedFileTypesLabel}</SecondaryLabel>
-      </Wrapper>
+      <Label label={label} tooltip={tooltip} />
+      <Uploader>
+        <Drpozone {...getRootProps()} $isDragActive={isDragActive} $isDragReject={isDragReject}>
+          <input {...getInputProps()} accept={accept} required={required} />
+          <FilePicker />
+          <PrimaryLabel>{getDropzoneLabel()}</PrimaryLabel>
+          <SecondaryLabel>Supported file types: {acceptedFileTypesLabel}</SecondaryLabel>
+        </Drpozone>
+        {acceptedFiles.length > 0 && (
+          <SelectedFileList>
+            {acceptedFiles.map(file => (
+              <FileMetadata key={file.name}>
+                {file.name} ({humanFileSize(file.size)})
+              </FileMetadata>
+            ))}
+          </SelectedFileList>
+        )}
+      </Uploader>
       {helperText && (
         <FormHelperText component={FormHelperTextComponent}>{helperText}</FormHelperText>
       )}
-      <ul>
-        {acceptedFiles.map(file => (
-          <FileMetadata key={file.name}>
-            {file.name} {`(${humanFileSize(file.size)})`}
-          </FileMetadata>
-        ))}
-      </ul>
       {/*<RemoveButton onClick={clear}>Clear selection</RemoveButton>*/}
     </>
   );

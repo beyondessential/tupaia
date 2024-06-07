@@ -49,7 +49,7 @@ const Tooltip = styled(BaseTooltip)`
 `;
 
 interface InputLabelProps {
-  label?: string | React.ReactNode;
+  label?: React.ReactNode;
   tooltip?: string;
   as?: string | ComponentType<any>;
   className?: string;
@@ -64,13 +64,14 @@ export const InputLabel = ({
   className,
   htmlFor,
   TooltipIcon = HelpOutline,
+  ...props
 }: InputLabelProps) => {
   // If no label, don't render anything, so there isn't an empty label tag in the DOM
   if (!label) return null;
   return (
     // allows us to pass in a custom element to render as, e.g. a span if it is going to be contained in a label element, for example when using MUI's TextField component. Otherwise defaults to a label element so that it can be a standalone label
     <>
-      <LabelWrapper as={as} className={className} htmlFor={htmlFor}>
+      <LabelWrapper as={as} className={className} htmlFor={htmlFor} {...props}>
         {label}
       </LabelWrapper>
       {tooltip && (
