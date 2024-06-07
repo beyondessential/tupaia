@@ -158,9 +158,7 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
       item => item.code === entityRelative.code,
     );
 
-    if (isInVisualEntities) return false;
-
-    return true;
+    return !isInVisualEntities;
   };
 
   // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
