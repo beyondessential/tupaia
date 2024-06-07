@@ -67,6 +67,7 @@ const ChooseFileButton = styled.span`
 
 const SelectedFileList = styled.ul`
   border-block-start: 0.0625rem dashed ${({ theme }) => theme.palette.grey['400']};
+  color: ${({ theme }) => theme.palette.grey['600']};
   list-style-type: none;
   margin: 0;
   padding-block: 0.5rem;
@@ -102,7 +103,11 @@ const humanFileSize = (sizeInBytes: number) => {
   const i = sizeInBytes === 0 ? 0 : Math.floor(Math.log(sizeInBytes) / Math.log(1024));
   const value = (sizeInBytes / 1024 ** i).toFixed(2);
   const unit = ['B', 'kB', 'MB', 'GB', 'TB'][i];
-  return `${value} ${unit}`;
+  return (
+    <>
+      {value}&nbsp;{unit}
+    </>
+  );
 };
 
 interface FileUploadFieldProps {
@@ -130,14 +135,10 @@ export const FileUploadField = ({
   required = false,
   accept,
 }: FileUploadFieldProps) => {
-  // const [files, setFiles] = useState([] as File[]);
   const { acceptedFiles, getRootProps, getInputProps, isDragReject, isDragActive } = useDropzone({
     maxSize,
     multiple,
-    // onDrop: droppedFiles => setFiles(droppedFiles),
   });
-
-  // const clear = () => setFiles([]);
 
   const fileOrFiles = multiple ? 'files' : 'file';
   const acceptedFileTypesLabel = accept?.split(',').join(' ') ?? 'any';
