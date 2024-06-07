@@ -128,7 +128,7 @@ interface FileUploadFieldProps {
 export const FileUploadField = ({
   name,
   fileName,
-  multiple = true,
+  multiple = false,
   label,
   tooltip,
   helperText,
