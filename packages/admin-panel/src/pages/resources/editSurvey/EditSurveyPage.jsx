@@ -8,6 +8,7 @@ import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
@@ -58,6 +59,16 @@ const Section = styled.section`
         width: 48%;
       }
     }
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  margin-block-start: 1rem;
+  align-items: center;
+  button,
+  p {
+    margin-inline-end: 1rem;
   }
 `;
 
@@ -196,16 +207,28 @@ const EditSurveyPageComponent = withConnectedEditor(
             {errorMessage}
           </ErrorAlert>
           <Section>
-            <FileUploadField
-              id="survey-questions"
-              name="survey-questions"
-              onChange={({ fileName, file }) =>
-                handleSetFormFile('surveyQuestions', { fileName, file })
-              }
-              accept=".xlsx,.xls,.csv"
-              initialFileName={initialFileName}
-              label="Survey questions"
-            />
+            <Typography variant="h2" gutterBottom id="survey-questions-label">
+              Survey Questions
+            </Typography>
+            <Typography color="textSecondary" id="survey-questions-desc">
+              Edit survey questions below or choose a file to upload
+            </Typography>
+            <ButtonGroup>
+              <Button color="primary">Edit questions</Button>
+              <Typography>or</Typography>
+              <FileUploadField
+                id="survey-questions"
+                name="survey-questions"
+                onChange={({ fileName, file }) =>
+                  handleSetFormFile('surveyQuestions', { fileName, file })
+                }
+                accept=".xlsx,.xls,.csv"
+                initialFileName={initialFileName}
+                buttonVariant="outlined"
+                ariaDescribedBy="survey-questions-desc"
+                ariaLabelledBy="survey-questions-label"
+              />
+            </ButtonGroup>
           </Section>
           <Section>
             <FieldsEditor
