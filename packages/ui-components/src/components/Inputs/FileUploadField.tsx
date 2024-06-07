@@ -10,7 +10,9 @@ import { useDropzone } from 'react-dropzone';
 import { FilePicker } from '../Icons';
 import { InputLabel } from './InputLabel';
 
-const Label = styled(InputLabel)`
+const LabelAndTooltip = styled.div`
+  align-items: center;
+  display: flex;
   margin-block-end: 0.25rem;
 `;
 
@@ -154,7 +156,9 @@ export const FileUploadField = ({
 
   return (
     <>
-      <Label label={label} tooltip={tooltip} />
+      <LabelAndTooltip>
+        <InputLabel label={label} tooltip={tooltip} />
+      </LabelAndTooltip>
       <Uploader>
         <Drpozone {...getRootProps()} $isDragActive={isDragActive} $isDragReject={isDragReject}>
           <input {...getInputProps()} accept={accept} required={required} />
