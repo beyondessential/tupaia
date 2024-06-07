@@ -3,26 +3,20 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, {
-  createContext,
-  Dispatch,
-  useContext,
-  useEffect,
-  useReducer,
-} from "react";
-import { useMatch, useParams } from "react-router-dom";
-import { ROUTES } from "../../../constants";
-import { SurveyParams } from "../../../types";
-import { useSurvey } from "../../../api";
-import { getAllSurveyComponents } from "../utils";
+import React, { createContext, Dispatch, useContext, useEffect, useReducer } from 'react';
+import { useMatch, useParams } from 'react-router-dom';
+import { ROUTES } from '../../../constants';
+import { SurveyParams } from '../../../types';
+import { useSurvey } from '../../../api';
+import { getAllSurveyComponents } from '../utils';
 import {
   generateCodeForCodeGeneratorQuestions,
   getDisplayQuestions,
   getIsQuestionVisible,
   getUpdatedFormData,
-} from "./utils";
-import { SurveyFormContextType, surveyReducer } from "./reducer";
-import { ACTION_TYPES, SurveyFormAction } from "./actions";
+} from './utils';
+import { SurveyFormContextType, surveyReducer } from './reducer';
+import { ACTION_TYPES, SurveyFormAction } from './actions';
 
 const defaultContext = {
   startTime: new Date().toISOString(),
@@ -31,9 +25,9 @@ const defaultContext = {
   isLast: false,
   numberOfScreens: 0,
   screenNumber: 1,
-  screenHeader: "",
-  screenDetail: "",
-  surveyProjectCode: "",
+  screenHeader: '',
+  screenDetail: '',
+  surveyProjectCode: '',
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
@@ -41,15 +35,12 @@ const defaultContext = {
 
 const SurveyFormContext = createContext(defaultContext);
 
-export const SurveyFormDispatchContext =
-  createContext<Dispatch<SurveyFormAction> | null>(null);
+export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
 export const SurveyContext = ({ children }) => {
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const { surveyCode, ...params } = useParams<SurveyParams>();
-  const screenNumber = params.screenNumber
-    ? parseInt(params.screenNumber!, 10)
-    : null;
+  const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
   const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
 
@@ -60,18 +51,17 @@ export const SurveyContext = ({ children }) => {
 
   // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
   const visibleScreens = surveyScreens
-    .map((screen) => {
+    .map(screen => {
       return {
         ...screen,
-        surveyScreenComponents: screen.surveyScreenComponents.filter(
-          (question) => getIsQuestionVisible(question, formData)
+        surveyScreenComponents: screen.surveyScreenComponents.filter(question =>
+          getIsQuestionVisible(question, formData),
         ),
       };
     })
-    .filter((screen) => screen.surveyScreenComponents.length > 0);
+    .filter(screen => screen.surveyScreenComponents.length > 0);
 
-  const activeScreen =
-    visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
+  const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
   useEffect(() => {
     const initialiseFormData = () => {
@@ -79,7 +69,7 @@ export const SurveyContext = ({ children }) => {
       // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
       const initialFormData = generateCodeForCodeGeneratorQuestions(
         flattenedScreenComponents,
-        formData
+        formData,
       );
       dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
       // update the start time when a survey is started, so that it can be passed on when submitting the survey
@@ -94,10 +84,7 @@ export const SurveyContext = ({ children }) => {
     initialiseFormData();
   }, [surveyCode]);
 
-  const displayQuestions = getDisplayQuestions(
-    activeScreen,
-    flattenedScreenComponents
-  );
+  const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
   const screenHeader = activeScreen?.[0]?.text;
   const screenDetail = activeScreen?.[0]?.detail;
 
@@ -124,8 +111,7 @@ export const SurveyContext = ({ children }) => {
 
 export const useSurveyForm = () => {
   const surveyFormContext = useContext(SurveyFormContext);
-  const { surveyScreens, formData, screenNumber, visibleScreens } =
-    surveyFormContext;
+  const { surveyScreens, formData, screenNumber, visibleScreens } = surveyFormContext;
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
@@ -144,11 +130,7 @@ export const useSurveyForm = () => {
   };
 
   const updateFormData = (newFormData: Record<string, any>) => {
-    const updatedFormData = getUpdatedFormData(
-      newFormData,
-      formData,
-      flattenedScreenComponents
-    );
+    const updatedFormData = getUpdatedFormData(newFormData, formData, flattenedScreenComponents);
 
     setFormData(updatedFormData);
   };
