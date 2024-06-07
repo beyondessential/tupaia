@@ -119,7 +119,7 @@ interface FileUploadFieldProps {
   label?: string;
   tooltip?: string;
   helperText?: string;
-  maxSize?: number;
+  maxSizeInBytes?: number;
   FormHelperTextComponent?: React.ElementType;
   required?: boolean;
   accept?: string;
@@ -132,13 +132,21 @@ export const FileUploadField = ({
   label,
   tooltip,
   helperText,
-  maxSize,
+  maxSizeInBytes,
   FormHelperTextComponent = 'p',
   required = false,
   accept,
 }: FileUploadFieldProps) => {
-  const { acceptedFiles, getRootProps, getInputProps, isDragReject, isDragActive } = useDropzone({
-    maxSize,
+  const {
+    acceptedFiles,
+    fileRejections,
+    getInputProps,
+    getRootProps,
+    isDragAccept,
+    isDragActive,
+    isDragReject,
+  } = useDropzone({
+    maxSize: maxSizeInBytes,
     multiple,
   });
   const { palette } = useTheme();
@@ -177,6 +185,13 @@ export const FileUploadField = ({
           </SelectedFileList>
         )}
       </Uploader>
+      {fileRejections.map(({ file, errors }) =>
+        errors.map(error => (
+          <FormHelperText error key={`${file.name}-${error.code}`}>
+            ‘{file.name}’ not allowed &ndash; {error.message}
+          </FormHelperText>
+        )),
+      )}
       {helperText && (
         <FormHelperText component={FormHelperTextComponent}>{helperText}</FormHelperText>
       )}
