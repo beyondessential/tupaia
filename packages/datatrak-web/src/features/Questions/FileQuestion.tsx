@@ -70,7 +70,6 @@ export const FileQuestion = ({
         label={label!}
         helperText={detailLabel!}
         maxSizeInBytes={MAX_FILE_SIZE_BYTES}
-        showFileSize
         FormHelperTextComponent={InputHelperText}
         required={required}
       />

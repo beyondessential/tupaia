@@ -12,8 +12,6 @@ export const FileUploadField = ({
   name,
   label,
   helperText,
-  textOnButton,
-  showFileSize,
   maxSizeInBytes,
   initialFileName = null,
   accept = '*',
@@ -50,8 +48,6 @@ export const FileUploadField = ({
       fileName={fileName}
       label={label}
       helperText={helperText}
-      textOnButton={textOnButton}
-      showFileSize={showFileSize}
       maxSizeInBytes={maxSizeInBytes}
       accept={accept}
     />
@@ -63,8 +59,6 @@ FileUploadField.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   helperText: PropTypes.string,
-  textOnButton: PropTypes.string,
-  showFileSize: PropTypes.bool,
   maxSizeInBytes: PropTypes.number,
   initialFileName: PropTypes.string,
   accept: PropTypes.string,
@@ -74,8 +68,6 @@ FileUploadField.defaultProps = {
   onChange: () => {},
   label: null,
   helperText: null,
-  textOnButton: null,
-  showFileSize: false,
   maxSizeInBytes: null,
   initialFileName: null,
   accept: '*',
