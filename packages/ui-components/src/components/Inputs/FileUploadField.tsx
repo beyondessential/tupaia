@@ -163,7 +163,7 @@ export const FileUploadField = ({
       </LabelAndTooltip>
       <Uploader>
         <Drpozone {...getRootProps()} $isDragActive={isDragActive} $isDragReject={isDragReject}>
-          <input {...getInputProps()} accept={accept} name={namd} id={name} required={required} />
+          <input {...getInputProps()} accept={accept} name={name} id={name} required={required} />
           <FilePicker color={palette.primary.main} />
           <PrimaryLabel>{getDropzoneLabel()}</PrimaryLabel>
           <SecondaryLabel>Supported file types: {acceptedFileTypesLabel}</SecondaryLabel>
