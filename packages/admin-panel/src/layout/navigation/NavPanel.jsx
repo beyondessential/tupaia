@@ -122,7 +122,7 @@ NavListItem.propTypes = {
   navPanelOpen: PropTypes.bool.isRequired,
 };
 
-export const NavPanel = ({ links, user, logo, homeLink, profileLink, basePath, isOpen }) => {
+export const NavPanel = ({ links, logo, homeLink, profileLink, basePath, isOpen }) => {
   return (
     <Drawer variant="permanent" anchor="left" open={isOpen}>
       <Wrapper>
@@ -135,12 +135,17 @@ export const NavPanel = ({ links, user, logo, homeLink, profileLink, basePath, i
             <Nav>
               <List>
                 {links.map(link => (
-                  <NavListItem link={link} basePath={basePath} navPanelOpen={isOpen} />
+                  <NavListItem
+                    link={link}
+                    basePath={basePath}
+                    navPanelOpen={isOpen}
+                    key={link.id}
+                  />
                 ))}
               </List>
             </Nav>
           )}
-          <UserProfileInfo user={user} profileLink={profileLink} isFullWidth={isOpen} />
+          <UserProfileInfo profileLink={profileLink} isFullWidth={isOpen} />
         </Container>
       </Wrapper>
     </Drawer>
@@ -149,12 +154,6 @@ export const NavPanel = ({ links, user, logo, homeLink, profileLink, basePath, i
 
 NavPanel.propTypes = {
   links: PropTypes.arrayOf(PropTypes.shape({})),
-  user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }).isRequired,
   logo: PropTypes.shape({
     url: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
