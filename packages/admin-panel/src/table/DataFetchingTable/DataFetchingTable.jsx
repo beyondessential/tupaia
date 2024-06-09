@@ -29,6 +29,7 @@ import {
   changePageSize,
   changeResizedColumns,
   changeSorting,
+  clearError,
   confirmAction,
   refreshData,
 } from '../actions';
@@ -470,6 +471,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   const initialiseTable = (filters = defaultFilters) => {
     dispatch(changeSorting(reduxId, defaultSorting));
     dispatch(changeFilters(reduxId, filters)); // will trigger a data fetch afterwards
+    dispatch(clearError());
   };
   return {
     reduxId,
