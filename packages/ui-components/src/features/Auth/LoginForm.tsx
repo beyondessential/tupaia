@@ -80,7 +80,7 @@ export const LoginForm = ({
     password = 'Password',
     forgotPassword = 'Forgot password?',
     login = 'Log in',
-    dontHaveAnAccount = "Don't have an account?",
+    dontHaveAnAccount = 'Don’t have an account?',
     register = 'Register here',
   } = labels || {};
   return (
