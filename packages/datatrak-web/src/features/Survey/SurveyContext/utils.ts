@@ -28,7 +28,12 @@ export const getIsQuestionVisible = (
   return Object.entries(dependantQuestions)[operator](([questionId, validAnswers]) => {
     const answer = formData[questionId];
     if (answer === undefined) return false;
-    return Array.isArray(validAnswers) ? validAnswers?.includes(answer) : validAnswers === answer;
+
+    // stringify the answer to compare with the validAnswers so that the types are always the same
+    const stringifiedAnswer = String(answer);
+    return Array.isArray(validAnswers)
+      ? validAnswers?.map(validAnswer => String(validAnswer)).includes(stringifiedAnswer)
+      : String(validAnswers) === stringifiedAnswer;
   });
 };
 

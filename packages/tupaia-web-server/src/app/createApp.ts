@@ -103,7 +103,6 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     .use('logout', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('projects', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
-    .use('resetPassword', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('verifyEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }));
   const app = builder.build();
