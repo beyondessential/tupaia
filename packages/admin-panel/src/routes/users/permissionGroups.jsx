@@ -27,7 +27,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'permissionGroups',
     fields: [
       {
@@ -39,6 +38,8 @@ const CREATE_CONFIG = {
         source: 'parent_id',
         editConfig: {
           optionsEndpoint: 'permissionGroups',
+          optionLabelKey: 'name',
+          optionValueKey: 'id',
         },
       },
     ],

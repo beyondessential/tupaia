@@ -28,6 +28,7 @@ const DEFAULT_POLICY = {
   SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
   VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
   LA: ['Admin'],
+  TO: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
 };
 
 const BES_ADMIN_POLICY = {
@@ -53,6 +54,9 @@ describe('Create and Edit Surveys', () => {
 
   let vanuatuCountry;
   let kiribatiCountry;
+  let vanuatuEntity;
+  let kiribatiEntity;
+  let tongaCountry;
 
   let adminPermissionGroup;
 
@@ -60,7 +64,8 @@ describe('Create and Edit Surveys', () => {
 
   let dhis2SurveyId;
 
-  let project;
+  let project1;
+  let project2;
 
   before(async () => {
     await resetTestData();
@@ -69,19 +74,54 @@ describe('Create and Edit Surveys', () => {
       name: 'Admin',
     });
 
-    ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
-      code: 'KI',
-      name: 'Kiribati',
+    ({ country: kiribatiCountry, entity: kiribatiEntity } = await findOrCreateDummyCountryEntity(
+      models,
+      {
+        code: 'KI',
+        name: 'Kiribati',
+      },
+    ));
+
+    ({ country: vanuatuCountry, entity: vanuatuEntity } = await findOrCreateDummyCountryEntity(
+      models,
+      {
+        code: 'VU',
+        name: 'Vanuatu',
+      },
+    ));
+
+    ({ country: tongaCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'TO',
+      name: 'Tonga',
     }));
 
-    ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
-      code: 'VU',
-      name: 'Vanuatu',
-    }));
+    const entityHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
+      name: 'Project 1',
+    });
 
-    project = await findOrCreateDummyRecord(models.project, {
+    const projectEntity = await findOrCreateDummyRecord(models.entity, {
       code: 'project1',
     });
+
+    project1 = await findOrCreateDummyRecord(models.project, {
+      code: 'project1',
+      entity_hierarchy_id: entityHierarchy.id,
+      entity_id: projectEntity.id,
+    });
+
+    project2 = await findOrCreateDummyRecord(models.project, {
+      code: 'project2',
+    });
+
+    const addProjectCountryEntityRelations = async entity => {
+      await findOrCreateDummyRecord(models.entityRelation, {
+        parent_id: project1.entity_id,
+        child_id: entity.id,
+        entity_hierarchy_id: entityHierarchy.id,
+      });
+    };
+
+    await Promise.all([kiribatiEntity, vanuatuEntity].map(addProjectCountryEntityRelations));
 
     const addQuestion = (id, type) =>
       upsertQuestion(
@@ -118,7 +158,7 @@ describe('Create and Edit Surveys', () => {
       name: EXISTING_TEST_SURVEY_CODE_1,
       permission_group_id: adminPermissionGroup.id,
       country_ids: [vanuatuCountry.id],
-      project_id: project.id,
+      project_id: project1.id,
       dataGroup: {
         service_type: 'tupaia',
       },
@@ -131,7 +171,7 @@ describe('Create and Edit Surveys', () => {
       name: 'test_survey',
       permission_group_id: adminPermissionGroup.id,
       country_ids: [vanuatuCountry.id],
-      project_id: project.id,
+      project_id: project1.id,
       dataGroup: {
         service_type: 'dhis',
         config: {
@@ -164,7 +204,7 @@ describe('Create and Edit Surveys', () => {
         expect(statusCode).to.equal(200);
       });
 
-      it('Sufficient permissions - Should pass permissions check if new countries are specified and user has the survey permission group access to the new countries', async () => {
+      it('Sufficient permissions - Should pass permissions check if new countries are specified and user has the survey permission group access to the new countries and the countries are part of the project', async () => {
         await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app.multipartPut({
@@ -184,6 +224,54 @@ describe('Create and Edit Surveys', () => {
         const { statusCode } = response;
 
         expect(statusCode).to.equal(200);
+      });
+
+      it('Insufficient permissions - Should throw an error if countries are changed on a survey and any of these do not belong to the project', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+
+        const response = await app.multipartPut({
+          endpoint: `surveys/${survey1_id}`,
+          payload: {
+            name: 'Any change will do 2',
+            countryNames: [tongaCountry.name],
+          },
+        });
+
+        // Revert the countryIds back to Vanuatu for other test cases
+        await models.survey.update(
+          { code: EXISTING_TEST_SURVEY_CODE_1 },
+          { country_ids: [vanuatuCountry.id] },
+        );
+
+        expectResponseError(
+          response,
+          /The following countries are not part of the project: Tonga/,
+          400,
+        );
+      });
+
+      it('Insufficient permissions - Should throw an error if project is changed on a survey and any of the saved countries do not belong to the new project', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+
+        const response = await app.multipartPut({
+          endpoint: `surveys/${survey1_id}`,
+          payload: {
+            name: 'Any change will do 2',
+            project_id: project2.id,
+          },
+        });
+
+        // Revert the countryIds back to Vanuatu for other test cases
+        await models.survey.update(
+          { code: EXISTING_TEST_SURVEY_CODE_1 },
+          { country_ids: [vanuatuCountry.id] },
+        );
+
+        expectResponseError(
+          response,
+          /The following countries are not part of the project: Vanuatu/,
+          400,
+        );
       });
 
       it('Sufficient permissions - Should pass permissions check if users have BES Admin access to any countries', async () => {
@@ -293,7 +381,7 @@ describe('Create and Edit Surveys', () => {
             code: 'NEW_TEST_SURVEY_1', // must be unique
             countryNames: [kiribatiCountry.name],
             'permission_group.name': adminPermissionGroup.name,
-            'project.code': project.code,
+            'project.code': project1.code,
           },
         });
 
@@ -313,7 +401,7 @@ describe('Create and Edit Surveys', () => {
             code: 'NEW_TEST_SURVEY_2', // must be unique
             countryNames: [kiribatiCountry.name],
             'permission_group.name': adminPermissionGroup.name,
-            'project.code': project.code,
+            'project.code': project1.code,
           },
         });
 
@@ -341,11 +429,33 @@ describe('Create and Edit Surveys', () => {
             code: 'NEW_TEST_SURVEY_3', // must be unique
             countryNames: [kiribatiCountry.name],
             'permission_group.name': adminPermissionGroup.name,
-            'project.code': project.code,
+            'project.code': project1.code,
           },
         });
 
         expectResponseError(response, /Need Tupaia Admin Panel access to Kiribati/, 500);
+      });
+
+      it('Insufficient permissions - Should not pass permissions check if country applied does not belong to the project', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+
+        const response = await app.multipartPost({
+          endpoint: `surveys`,
+          payload: {
+            ...BASIC_SURVEY_CREATE_PAYLOAD,
+            name: 'NEW_TEST_SURVEY_3', // must be unique
+            code: 'NEW_TEST_SURVEY_3', // must be unique
+            countryNames: [tongaCountry.name],
+            'permission_group.name': adminPermissionGroup.name,
+            'project.code': project1.code,
+          },
+        });
+
+        expectResponseError(
+          response,
+          /The following countries are not part of the project: Tonga/,
+          400,
+        );
       });
     });
   });
@@ -362,7 +472,7 @@ describe('Create and Edit Surveys', () => {
           code: 'new_survey_import_1_test', // must be unique
           countryNames: [kiribatiCountry.name],
           'permission_group.name': adminPermissionGroup.name,
-          'project.code': project.code,
+          'project.code': project1.code,
         },
         filesByMultipartKey: {
           surveyQuestions: path.resolve(`${TEST_DATA_FOLDER}/surveys/importANewSurvey.xlsx`),
@@ -409,6 +519,90 @@ describe('Create and Edit Surveys', () => {
       });
       expect(response.statusCode).to.equal(500);
       expect(response.body.error).to.equal('Internal server error: Surveys must have a project');
+    });
+
+    it('Throws an error if a name is removed from a survey', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {
+          name: '',
+        },
+      });
+      expect(response.statusCode).to.equal(500);
+      expect(response.body.error).to.equal('Internal server error: Survey name is required');
+    });
+
+    it('Throws an error if a permission_group_id is removed from a survey', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {
+          permission_group_id: '',
+        },
+      });
+      expect(response.statusCode).to.equal(500);
+      expect(response.body.error).to.equal('Internal server error: Permission group is required');
+    });
+
+    it('Throws an error if a code is removed from a survey', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {
+          code: '',
+        },
+      });
+      expect(response.statusCode).to.equal(500);
+      expect(response.body.error).to.equal('Internal server error: Survey code is required');
+    });
+
+    it('Throws an error if a country_ids is removed from a survey and set to ""', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {
+          country_ids: '',
+        },
+      });
+      expect(response.statusCode).to.equal(500);
+      expect(response.body.error).to.equal(
+        'Internal server error: Survey must be associated with at least one country',
+      );
+    });
+
+    it('Throws an error if a country_ids is removed from a survey and set to []', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {
+          country_ids: [],
+        },
+      });
+      expect(response.statusCode).to.equal(500);
+      expect(response.body.error).to.equal(
+        'Internal server error: Survey must be associated with at least one country',
+      );
+    });
+
+    it('Throws an error if a country_ids is removed from a survey and set to null', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {
+          country_ids: null,
+        },
+      });
+      expect(response.statusCode).to.equal(500);
+      expect(response.body.error).to.equal(
+        'Internal server error: Survey must be associated with at least one country',
+      );
     });
   });
 

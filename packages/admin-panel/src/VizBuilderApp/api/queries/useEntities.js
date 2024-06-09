@@ -43,9 +43,9 @@ export const useEntityByCode = (entityCode, onSuccess) =>
     () =>
       get('entities', {
         params: {
-          filter: {
+          filter: JSON.stringify({
             code: entityCode,
-          },
+          }),
         },
       }),
     {

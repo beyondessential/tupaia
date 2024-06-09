@@ -12,6 +12,7 @@ import { assertCanImportSurvey } from '../assertCanImportSurvey';
 import { updateOrCreateDataGroup } from './updateOrCreateDataGroup';
 import { validateSurveyServiceType } from './validateSurveyServiceType';
 import { updateDataElementsConfig } from './updateDataElementsConfig';
+import { validateSurveyCountries } from './validateSurveyCountries';
 
 export class SurveyEditor {
   constructor(models, assertPermissions) {
@@ -71,8 +72,26 @@ export class SurveyEditor {
     const surveyCode = code ?? existingSurvey.code;
 
     // if the user is trying to remove the project from the survey, throw an error
-    if (existingSurvey && projectId === null) {
-      throw new Error('Surveys must have a project');
+    if (existingSurvey) {
+      if (projectId === null || projectId === '') {
+        throw new Error('Surveys must have a project');
+      }
+
+      if (code === null || code === '') {
+        throw new Error('Survey code is required');
+      }
+
+      if (permissionGroupId === null || permissionGroupId === '') {
+        throw new Error('Permission group is required');
+      }
+
+      if (name === null || name === '') {
+        throw new Error('Survey name is required');
+      }
+
+      if (countryIds === null || countryIds === '' || (countryIds && countryIds.length === 0)) {
+        throw new Error('Survey must be associated with at least one country');
+      }
     }
 
     const defaultPermissionGroup = await transactingModels.permissionGroup.findOne({
@@ -106,6 +125,18 @@ export class SurveyEditor {
 
     if (serviceType) {
       await validateSurveyServiceType(transactingModels, surveyId, serviceType);
+    }
+
+    if (countryIds || projectId) {
+      const surveyProjectId = projectId ?? existingSurvey?.project_id;
+
+      const countryIdsToValidate = countryIds ?? existingSurvey?.country_ids;
+      await validateSurveyCountries(
+        transactingModels,
+        surveyId,
+        countryIdsToValidate,
+        surveyProjectId,
+      );
     }
 
     try {

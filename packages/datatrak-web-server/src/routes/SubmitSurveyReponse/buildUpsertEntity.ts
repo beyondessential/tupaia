@@ -6,7 +6,7 @@
 import { generateId } from '@tupaia/database';
 import { ajvValidate, objectEntries } from '@tupaia/tsutils';
 import {
-  DatatrakWebSubmitSurveyRequest,
+  DatatrakWebSubmitSurveyResponseRequest,
   Entity,
   SurveyScreenComponentConfig,
   EntityUpdate,
@@ -15,7 +15,7 @@ import {
 } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../../types';
 
-type Answers = DatatrakWebSubmitSurveyRequest.ReqBody['answers'];
+type Answers = DatatrakWebSubmitSurveyResponseRequest.ReqBody['answers'];
 
 const isQuestionValue = (
   configValue?: EntityQuestionConfigFieldValue,

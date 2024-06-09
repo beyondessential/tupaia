@@ -6,16 +6,23 @@ import React, { lazy, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { render as renderReactApp } from 'react-dom';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { EnvBanner } from '@tupaia/ui-components';
 import AdminPanel from './App';
 import { AdminPanelProviders } from './utilities/AdminPanelProviders';
 import { StoreProvider } from './utilities/StoreProvider';
-import { Footer, NavPanel } from './widgets';
+import { Footer } from './widgets';
 import { TupaiaApi } from './api';
 import { theme } from './theme';
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 30rem;
+`;
 
 const AdminPanelRoute = () => {
   return (
@@ -55,26 +62,25 @@ const queryClient = new QueryClient();
 renderReactApp(
   <Router>
     <Suspense fallback={<div>loading...</div>}>
-      {/* Store provider applied above routes so that it always persists auth state */}
-      <StoreProvider api={api} persist>
-        <QueryClientProvider client={queryClient}>
-          <EnvBanner />
-          <StylesProvider injectFirst>
-            <MuiThemeProvider theme={theme}>
-              <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <Routes>
-                  <Route
-                    path="/viz-builder/*"
-                    element={<VizBuilder NavPanel={NavPanel} Footer={Footer} />}
-                  />
-                  <Route path="*" default element={<AdminPanelRoute />} />
-                </Routes>
-              </ThemeProvider>
-            </MuiThemeProvider>
-          </StylesProvider>
-        </QueryClientProvider>
-      </StoreProvider>
+      <Wrapper>
+        {/* Store provider applied above routes so that it always persists auth state */}
+        <StoreProvider api={api} persist>
+          <QueryClientProvider client={queryClient}>
+            <EnvBanner />
+            <StylesProvider injectFirst>
+              <MuiThemeProvider theme={theme}>
+                <ThemeProvider theme={theme}>
+                  <CssBaseline />
+                  <Routes>
+                    <Route path="/viz-builder/*" element={<VizBuilder Footer={Footer} />} />
+                    <Route path="*" default element={<AdminPanelRoute />} />
+                  </Routes>
+                </ThemeProvider>
+              </MuiThemeProvider>
+            </StylesProvider>
+          </QueryClientProvider>
+        </StoreProvider>
+      </Wrapper>
     </Suspense>
   </Router>,
   document.getElementById('root'),

@@ -22,14 +22,12 @@ const surveyName = {
   Header: 'Survey',
   source: 'survey.name',
   editable: false,
-  type: 'tooltip',
 };
 
 const surveyId = {
   Header: 'Survey ID',
   source: 'survey.id',
   editable: false,
-  type: 'tooltip',
   show: false,
 };
 
@@ -42,7 +40,6 @@ const assessorName = {
 const date = {
   Header: 'Date of survey',
   source: 'end_time',
-  type: 'tooltip',
   accessor: row => moment(row.end_time).local().format('ddd, MMM Do YYYY, HH:mm:ss ZZ'),
   filterable: false,
   editable: false,
@@ -51,7 +48,6 @@ const date = {
 const dateOfData = {
   Header: 'Date of data',
   source: 'data_time',
-  type: 'tooltip',
   accessor: row => moment.parseZone(row.data_time).format('ddd, MMM Do YYYY, HH:mm:ss'),
   filterable: false,
   editConfig: {
@@ -63,7 +59,6 @@ const dateOfData = {
 const approvalStatus = {
   Header: 'Approval status',
   source: 'approval_status',
-  type: 'tooltip',
 };
 
 const entityName = {
@@ -121,12 +116,10 @@ export const ANSWER_COLUMNS = [
     Header: 'Question',
     source: 'question.text',
     editable: false,
-    type: 'tooltip',
   },
   {
     Header: 'Answer',
     source: 'text',
-    type: 'tooltip',
   },
 ];
 
@@ -161,11 +154,13 @@ export const surveyResponses = {
   defaultFilters: [{ id: 'outdated', value: false }],
   defaultSorting: [{ id: 'data_time', desc: true }],
   ExportModalComponent: SurveyResponsesExportModal,
-  nestedView: {
-    title: 'Answers',
-    columns: ANSWER_COLUMNS,
-    endpoint: 'surveyResponses/{id}/answers',
-    path: '/:id/answers',
-    displayProperty: 'survey.name',
-  },
+  nestedViews: [
+    {
+      title: 'Answers',
+      columns: ANSWER_COLUMNS,
+      endpoint: 'surveyResponses/{id}/answers',
+      path: '/:id/answers',
+      displayProperty: 'survey.name',
+    },
+  ],
 };

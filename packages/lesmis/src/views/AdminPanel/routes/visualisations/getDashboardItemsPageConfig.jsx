@@ -21,13 +21,13 @@ export const getDashboardItemsPageConfig = (translate, adminUrl, isBESAdmin) => 
     {
       Header: translate('admin.code'),
       source: 'code',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.reportCode'),
       source: 'report_code',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {

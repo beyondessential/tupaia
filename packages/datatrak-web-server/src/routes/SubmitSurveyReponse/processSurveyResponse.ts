@@ -4,7 +4,7 @@
  */
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import {
-  DatatrakWebSubmitSurveyRequest,
+  DatatrakWebSubmitSurveyResponseRequest,
   Entity,
   MeditrakSurveyResponseRequest,
   QuestionType,
@@ -13,13 +13,13 @@ import {
 import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
-type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
+type SurveyRequestT = DatatrakWebSubmitSurveyResponseRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
   qr_codes_to_create?: Entity[];
   recent_entities: string[];
 };
-type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
-type FileUploadAnswerT = DatatrakWebSubmitSurveyRequest.FileUploadAnswer;
+type AnswerT = DatatrakWebSubmitSurveyResponseRequest.Answer;
+type FileUploadAnswerT = DatatrakWebSubmitSurveyResponseRequest.FileUploadAnswer;
 
 export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => {
   if (!config?.entity) {
@@ -88,7 +88,14 @@ export const processSurveyResponse = async (
           surveyResponse.qr_codes_to_create?.push(entityObj);
         }
       }
-      surveyResponse.recent_entities.push(answer as string);
+      if (answer) {
+        if (typeof answer !== 'string') {
+          throw new Error(
+            `Unexpected data type for EntityQuestion answer, expected string but got: ${typeof answer}`,
+          );
+        }
+        surveyResponse.recent_entities.push(answer);
+      }
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;

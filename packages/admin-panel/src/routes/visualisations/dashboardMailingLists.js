@@ -96,7 +96,6 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'dashboardMailingLists',
     fields: [
       DASHBOARD_MAILING_LIST_FIELDS.project,
@@ -111,7 +110,6 @@ const ENTRY_FIELDS = [
   {
     Header: 'Email',
     source: 'dashboard_mailing_list_entry.email',
-    type: 'tooltip',
   },
   {
     Header: 'Subscribed',
@@ -148,12 +146,14 @@ export const dashboardMailingLists = {
   endpoint: 'dashboardMailingLists',
   columns: DASHBOARD_MAILING_LIST_COLUMNS,
   createConfig: CREATE_CONFIG,
-  nestedView: {
-    title: 'Entries',
-    endpoint: 'dashboardMailingLists/{id}/dashboardMailingListEntries',
-    columns: ENTRY_COLUMNS,
-    path: '/:id/entries',
-    displayProperty: 'dashboard.name',
-  },
+  nestedViews: [
+    {
+      title: 'Entries',
+      endpoint: 'dashboardMailingLists/{id}/dashboardMailingListEntries',
+      columns: ENTRY_COLUMNS,
+      path: '/:id/entries',
+      displayProperty: 'dashboard.name',
+    },
+  ],
   isBESAdminOnly: true,
 };

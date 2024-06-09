@@ -22,6 +22,6 @@ export const handleError = (err, req, res, next) => {
       api_request_log_id: apiRequestLogId,
     });
   }
-  winston.error(error);
+  winston.error(err);
   error.respond(res);
 };

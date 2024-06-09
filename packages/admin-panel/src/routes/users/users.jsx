@@ -38,7 +38,6 @@ const EDIT_FIELDS = [
   {
     Header: 'Email address',
     source: 'email',
-    type: 'tooltip',
   },
   {
     Header: 'Phone number',
@@ -51,12 +50,10 @@ const EDIT_FIELDS = [
   {
     Header: 'Employer',
     source: 'employer',
-    type: 'tooltip',
   },
   {
     Header: 'Verified',
     source: 'verified_email',
-    type: 'tooltip',
     editConfig: {
       options: [
         {
@@ -94,12 +91,10 @@ const COLUMNS = [
   {
     Header: 'Email Address',
     source: 'email',
-    type: 'tooltip',
   },
   {
     Header: 'Employer',
     source: 'employer',
-    type: 'tooltip',
   },
   {
     Header: 'Verified',
@@ -128,7 +123,6 @@ const IMPORT_CONFIG = {
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,
@@ -173,15 +167,17 @@ export const users = {
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
   createConfig: CREATE_CONFIG,
-  nestedView: {
-    title: 'Permissions',
-    endpoint: `users/{id}/${PERMISSIONS_ENDPOINT}`,
-    columns: PERMISSIONS_COLUMNS,
-    path: '/:id/permissions',
-    getDisplayValue: user => {
-      if (!user) return '';
-      const { first_name: firstName, last_name: lastName } = user;
-      return `${firstName} ${lastName}`;
+  nestedViews: [
+    {
+      title: 'Permissions',
+      endpoint: `users/{id}/${PERMISSIONS_ENDPOINT}`,
+      columns: PERMISSIONS_COLUMNS,
+      path: '/:id/permissions',
+      getDisplayValue: user => {
+        if (!user) return '';
+        const { first_name: firstName, last_name: lastName } = user;
+        return `${firstName} ${lastName}`;
+      },
     },
-  },
+  ],
 };

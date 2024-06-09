@@ -17,7 +17,7 @@ export const getDashboardsPageConfig = translate => {
     {
       Header: translate('admin.code'),
       source: 'code',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {
@@ -129,15 +129,18 @@ export const getDashboardsPageConfig = translate => {
 
   return {
     ...dashboards,
+    title: translate('admin.dashboards'),
     columns: COLUMNS,
     createConfig,
     editorConfig,
     deleteConfig,
     needsBESAdminAccess: [],
-    nestedView: {
-      ...dashboards.nestedView,
-      title: translate('admin.dashboardRelations'),
-      columns: RELATION_COLUMNS,
-    },
+    nestedViews: [
+      {
+        ...dashboards.nestedViews[0],
+        title: translate('admin.dashboardRelations'),
+        columns: RELATION_COLUMNS,
+      },
+    ],
   };
 };

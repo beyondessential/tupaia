@@ -21,7 +21,6 @@ const FIELDS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'countries',
     fields: FIELDS,
   },
@@ -34,11 +33,13 @@ export const countries = {
   columns: FIELDS,
   createConfig: CREATE_CONFIG,
   needsBESAdminAccess: ['create'],
-  nestedView: {
-    title: 'Entities',
-    endpoint: 'countries/{id}/entities',
-    columns: ENTITIES_COLUMNS,
-    path: '/:id/entities',
-    displayProperty: 'name',
-  },
+  nestedViews: [
+    {
+      title: 'Entities',
+      endpoint: 'countries/{id}/entities',
+      columns: ENTITIES_COLUMNS,
+      path: '/:id/entities',
+      displayProperty: 'name',
+    },
+  ],
 };

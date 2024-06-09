@@ -17,7 +17,7 @@ import { TabPageLayout } from './layout/TabPageLayout';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
-    const { nestedView } = childView;
+    const { nestedViews } = childView;
 
     const childViewWithRoute = {
       ...childView,
@@ -26,23 +26,21 @@ export const getFlattenedChildViews = (route, basePath = '') => {
       to: `${basePath}${route.path}${childView.path}`, // this is an absolute route so that the breadcrumbs work
     };
 
-    if (!nestedView) return [...acc, childViewWithRoute];
+    if (!nestedViews) return [...acc, childViewWithRoute];
+    const updatedNestedViews = nestedViews.map(nestedView => ({
+      ...nestedView,
+      path: `${route.path}${childView.path}${nestedView.path}`,
 
-    const updatedNestedView = nestedView
-      ? {
-          ...nestedView,
-          path: `${route.path}${childView.path}${nestedView.path}`,
-          parent: childViewWithRoute,
-        }
-      : null;
+      parent: childViewWithRoute,
+    }));
 
     return [
       ...acc,
       {
         ...childViewWithRoute,
-        nestedView: updatedNestedView,
+        nestedViews: updatedNestedViews,
       },
-      updatedNestedView,
+      ...updatedNestedViews,
     ];
   }, []);
 };
@@ -74,7 +72,15 @@ export const App = ({ user, hasBESAdminAccess }) => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/logout" element={<LogoutPage />} />
       <Route path="/" element={<PrivateRoute />}>
-        <Route element={<AppPageLayout user={user} routes={accessibleRoutes} />}>
+        <Route
+          element={
+            <AppPageLayout
+              user={user}
+              routes={accessibleRoutes}
+              profileLink={{ label: 'Profile', to: '/profile' }}
+            />
+          }
+        >
           <Route index element={<Navigate to="/surveys" replace />} />
           <Route path="*" element={<Navigate to="/surveys" replace />} />
           {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
@@ -95,7 +101,7 @@ export const App = ({ user, hasBESAdminAccess }) => {
                   path={childRoute.path}
                   element={
                     childRoute.Component ? (
-                      <childRoute.Component />
+                      <childRoute.Component {...childRoute} />
                     ) : (
                       <ResourcePage {...childRoute} hasBESAdminAccess={hasBESAdminAccess} />
                     )

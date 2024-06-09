@@ -6,7 +6,7 @@
 // Primary & Secondary colors
 export const WHITE = '#FFFFFF';
 export const BLACK = '#000000';
-export const BLUE = '#3884B8';
+export const BLUE = '#328DE5';
 export const YELLOW = '#FFCC24';
 export const RED = '#D13333';
 export const ORANGE = '#EF5A06';
@@ -39,3 +39,4 @@ export const BLUE_E8 = '#E8F6FF';
 export const BLUE_F6 = '#F6FBFF';
 
 export const LIGHT_BLACK = '#2E2F33';
+export const EXTRA_LIGHT_BLACK = '#424347';
