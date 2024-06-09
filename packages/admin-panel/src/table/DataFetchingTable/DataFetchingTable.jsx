@@ -300,7 +300,7 @@ const DataFetchingTableComponent = memo(
                       }
                       isButtonColumn
                     >
-                      Action
+                      {actionLabel}
                     </HeaderDisplayCell>
                   )}
                 </TableRow>

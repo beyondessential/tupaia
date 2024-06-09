@@ -14,11 +14,12 @@ import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPa
 
 const PageWrapper = styled.div`
   display: flex;
+  overflow: hidden;
+  flex: 1;
 `;
 
 const Main = styled.main`
   overflow-x: auto;
-  height: 100vh;
   // This is so that we can make the PageBody component fill the whole remaining height of the screen
   display: flex;
   flex-direction: column;
@@ -57,7 +58,7 @@ const NavWrapper = styled.div`
       : NAV_PANEL_CLOSED_WIDTH}; // this is set so that the button can be positioned correctly
 `;
 
-export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, basePath }) => {
+export const AppPageLayout = ({ routes, logo, homeLink, profileLink, basePath }) => {
   const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
     setNavOpen(!navOpen);
@@ -67,7 +68,6 @@ export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, baseP
       <NavWrapper $navOpen={navOpen}>
         <NavPanel
           links={routes.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
-          user={user}
           profileLink={profileLink}
           logo={logo}
           homeLink={homeLink}
@@ -79,7 +79,7 @@ export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, baseP
           <CaretLeftIcon />
         </ArrowButton>
       </NavWrapper>
-      <Main $navOpen={navOpen}>
+      <Main>
         <Outlet />
       </Main>
     </PageWrapper>
@@ -87,12 +87,6 @@ export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, baseP
 };
 
 AppPageLayout.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string,
-    email: PropTypes.string,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }),
   routes: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
@@ -119,5 +113,4 @@ AppPageLayout.defaultProps = {
   homeLink: '/',
   profileLink: null,
   basePath: '',
-  user: {},
 };

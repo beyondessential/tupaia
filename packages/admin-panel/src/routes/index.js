@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-export { ROUTES } from './routes';
+export { ROUTES, AUTH_ROUTES } from './routes';
 export {
   surveys,
   questions,

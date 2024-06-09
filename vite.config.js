@@ -38,9 +38,8 @@ export default defineConfig(({ command, mode }) => {
       },
     },
 
-    // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
     plugins: [
-      ViteEjsPlugin(),
+      ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({
         jsxRuntime: 'classic',
