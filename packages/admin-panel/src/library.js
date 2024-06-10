@@ -26,8 +26,9 @@ export {
   QRCodeColumn,
   externalDataTabRoutes,
 } from './routes';
-export { LoginPage, LogoutPage } from './pages';
-export { PrivateRoute, getHasBESAdminAccess } from './authentication';
+export { LoginPage } from './pages';
+export { PrivateRoute } from './authentication';
+export { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
 export * from './pages/resources';
 export { ReduxAutocomplete } from './autocomplete';
 export {
@@ -43,14 +44,14 @@ export { useApiContext } from './utilities/ApiProvider';
 export { DataChangeAction, ActionButton } from './editor';
 export { App as VizBuilderApp } from './VizBuilderApp/App';
 export {
-  NavPanel,
-  PageWrapper,
-  Main,
   SecondaryNavbar,
   TabPageLayout,
   PageContentWrapper,
   AppPageLayout,
+  AuthLayout,
 } from './layout';
 export { getFlattenedChildViews } from './App';
 export { ExportModal } from './importExport';
 export { ColumnActionButton } from './table/columnTypes/ColumnActionButton';
+export { AUTH_ROUTES } from './routes';
+export { useUser } from './api/queries';

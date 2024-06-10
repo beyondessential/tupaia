@@ -26,12 +26,15 @@ const transformToValue = transform =>
   }));
 
 const valueToTransform = value =>
-  value.map(({ id, code, isDisabled = false, ...restOfConfig }, index) => ({
-    id: id || `${code}-${index}`, // option from selectable options does not have id.
-    transform: code,
-    isDisabled,
-    ...restOfConfig,
-  }));
+  value.map(({ id, code, isDisabled = false, ...restOfConfig }) => {
+    const uniqueId = Math.random() * 1000000; // unique id to add to the code
+    return {
+      id: id || `${code}-${uniqueId}`, // option from selectable options does not have id.
+      transform: code,
+      isDisabled,
+      ...restOfConfig,
+    };
+  });
 
 export const TransformDataLibrary = ({ transform, onTransformChange, onInvalidChange }) => {
   const [dataType, setDataType] = useState(DATA_TYPES.TRANSFORM);

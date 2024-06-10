@@ -12,14 +12,14 @@ export const getMapOverlayGroupsPageConfig = translate => {
     {
       Header: translate('admin.code'),
       source: 'code',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.name'),
       source: 'name',
       width: 140,
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
   ];
@@ -28,7 +28,7 @@ export const getMapOverlayGroupsPageConfig = translate => {
     {
       Header: 'ID',
       source: 'id',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     ...EDIT_FIELDS,
@@ -51,7 +51,7 @@ export const getMapOverlayGroupsPageConfig = translate => {
     {
       Header: translate('admin.childId'),
       source: 'child_id',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
       editConfig: {
         optionsEndpoint: 'mapOverlays',
@@ -63,7 +63,7 @@ export const getMapOverlayGroupsPageConfig = translate => {
     {
       Header: translate('admin.childType'),
       source: 'child_type',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
       editConfig: {
         options: [
@@ -81,7 +81,7 @@ export const getMapOverlayGroupsPageConfig = translate => {
     {
       Header: translate('admin.sortOrder'),
       source: 'sort_order',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
   ];
@@ -113,10 +113,12 @@ export const getMapOverlayGroupsPageConfig = translate => {
     columns: COLUMNS,
     editorConfig,
     createConfig,
-    nestedView: {
-      ...mapOverlayGroups.nestedView,
-      title: translate('admin.mapOverlayGroupRelations'),
-      columns: RELATION_COLUMNS,
-    },
+    nestedViews: [
+      {
+        ...mapOverlayGroups.nestedViews[0],
+        title: translate('admin.mapOverlayGroupRelations'),
+        columns: RELATION_COLUMNS,
+      },
+    ],
   };
 };

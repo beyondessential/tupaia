@@ -29,7 +29,7 @@ export const getUsersPageConfig = translate => {
     {
       Header: translate('admin.emailAddress'),
       source: 'email',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {
@@ -45,7 +45,7 @@ export const getUsersPageConfig = translate => {
     {
       Header: translate('admin.employer'),
       source: 'employer',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
   ];
@@ -63,7 +63,7 @@ export const getUsersPageConfig = translate => {
     {
       Header: translate('admin.verified'),
       source: 'verified_email',
-      type: 'tooltip',
+
       editConfig: {
         options: [
           {
@@ -108,7 +108,6 @@ export const getUsersPageConfig = translate => {
       Header: translate('admin.edit'),
       source: 'id',
       type: 'edit',
-      width: 150,
       actionConfig: {
         title: translate('admin.edit'),
         editEndpoint: 'users',
@@ -165,10 +164,12 @@ export const getUsersPageConfig = translate => {
     editorConfig,
     importConfig,
     createConfig,
-    nestedView: {
-      ...users.nestedView,
-      title: translate('admin.permissions'),
-      columns: PERMISSIONS_COLUMNS,
-    },
+    nestedViews: [
+      {
+        ...users.nestedViews[0],
+        title: translate('admin.permissions'),
+        columns: PERMISSIONS_COLUMNS,
+      },
+    ],
   };
 };

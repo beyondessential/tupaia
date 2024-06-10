@@ -9,9 +9,8 @@ import styled from 'styled-components';
 import { WHITE } from '../../theme/colors';
 
 const Link = styled(BaseLink)`
-  padding-inline: 0.625rem;
-  padding-block: 0.625rem;
-  height: 4rem;
+  padding-inline: 0.6rem;
+  padding-block: 0.2rem;
   display: block;
   border-radius: 4px;
   border: 1px solid transparent;
@@ -19,6 +18,7 @@ const Link = styled(BaseLink)`
     display: block;
     height: 100%;
     max-height: 100%;
+    max-width: 100%;
   }
   &:focus,
   &:focus-visible {
@@ -26,9 +26,9 @@ const Link = styled(BaseLink)`
   }
 `;
 
-export const HomeLink = ({ logo, homeLink }) => {
+export const HomeLink = ({ logo, homeLink, disableHomeLink }) => {
   return (
-    <Link to={homeLink}>
+    <Link to={homeLink} as={disableHomeLink ? 'div' : 'a'}>
       <img src={logo?.url} alt={logo?.alt || 'Logo'} />
     </Link>
   );
@@ -40,6 +40,7 @@ HomeLink.propTypes = {
     alt: PropTypes.string.isRequired,
   }),
   homeLink: PropTypes.string,
+  disableHomeLink: PropTypes.bool,
 };
 
 HomeLink.defaultProps = {
@@ -48,4 +49,5 @@ HomeLink.defaultProps = {
     alt: 'Tupaia Admin Panel Logo',
   },
   homeLink: '/',
+  disableHomeLink: false,
 };

@@ -5,33 +5,43 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
-import { openEditModal } from '../../editor/actions';
-import { fetchUsedBy } from '../../usedBy';
+import { loadEditor, openEditModal } from '../../editor/actions';
 import { ColumnActionButton } from './ColumnActionButton';
 
-export const EditButtonComponent = ({ onEdit }) => (
-  <ColumnActionButton className="edit-button" onClick={onEdit} title="Edit record">
-    <EditIcon />
-  </ColumnActionButton>
-);
-
-EditButtonComponent.propTypes = {
-  onEdit: PropTypes.func,
+export const EditButtonComponent = ({ onEdit, actionConfig, row }) => {
+  const parsedLink = actionConfig?.link
+    ? actionConfig.link.replace(/:id/g, row?.original?.id)
+    : null;
+  const { title = 'Edit record' } = actionConfig;
+  return (
+    <ColumnActionButton
+      className="edit-button"
+      onClick={parsedLink ? null : onEdit}
+      title={title}
+      to={parsedLink}
+      component={parsedLink ? Link : 'button'}
+    >
+      <EditIcon />
+    </ColumnActionButton>
+  );
 };
 
-EditButtonComponent.defaultProps = {
-  onEdit: () => {},
+EditButtonComponent.propTypes = {
+  onEdit: PropTypes.func.isRequired,
+  actionConfig: PropTypes.object.isRequired,
+  row: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onEdit: () => {
     const recordId = ownProps.row.original.id;
-    dispatch(openEditModal({ ...ownProps.actionConfig, isLoading: true }, recordId));
-    if (ownProps.actionConfig?.displayUsedBy) {
-      dispatch(fetchUsedBy(ownProps.actionConfig.recordType, recordId));
+    if (!ownProps.actionConfig?.link) {
+      dispatch(loadEditor(ownProps.actionConfig, recordId));
     }
+    dispatch(openEditModal(recordId));
   },
 });
 

@@ -5,34 +5,35 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { TableCell as MuiTableCell } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-const BUTTON_COLUMN_WIDTH = '4.5rem';
-
 const Cell = styled(MuiTableCell)`
-  vertical-align: middle;
   font-size: 0.75rem;
   padding: 0;
-  max-width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : '0')};
-  width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : 'auto')};
   border: none;
-  height: 1px; // need this to make the cell content fill the height of the cell
+  position: relative;
   &:first-child {
     padding-inline-start: 1.5rem;
   }
   &:last-child {
-    padding-inline-end: 1.5rem;
+    padding-inline-end: 1rem;
   }
 `;
 
 const CellContentWrapper = styled.div`
-  padding: ${({ $shouldCenterContent }) => ($shouldCenterContent ? '0' : '0.7rem')};
+  padding: 0.7rem;
+  ${({ $isButtonColumn }) =>
+    $isButtonColumn &&
+    css`
+      padding-inline: 0;
+      padding-block: 0;
+      text-align: center;
+    `}
   height: 100%;
   display: flex;
   align-items: center;
-  text-align: ${({ $shouldCenterContent }) => ($shouldCenterContent ? 'center' : 'left')};
 
   tr:not(:last-child) & {
     border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
@@ -42,8 +43,6 @@ const CellContentWrapper = styled.div`
   }
 
   line-height: 1.5;
-
-  ${({ $width }) => $width && `width: ${$width}`};
 `;
 
 // Flex does not support ellipsis so we need to have another container to handle the ellipsis
@@ -51,7 +50,7 @@ const CellContentContainer = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
+  width: 100%;
 `;
 
 const HeaderCell = styled(Cell)`
@@ -61,6 +60,7 @@ const HeaderCell = styled(Cell)`
   border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
   padding-block: 0.7rem;
   padding-inline: 0.7rem 0;
+  display: flex;
   position: initial; // override this because we have 2 sticky header rows so we will apply sticky to the thead element
   background-color: ${({ theme }) => theme.palette.background.paper};
   .MuiTableSortLabel-icon {
@@ -69,35 +69,48 @@ const HeaderCell = styled(Cell)`
   .MuiTableSortLabel-active .MuiTableSortLabel-icon {
     opacity: 1;
   }
-  // apply a min width to the button column to prevent it from shrinking the filter input too much
-  ${({ $isButtonColumn }) => !$isButtonColumn && `min-width: 9rem;`};
 `;
 
-export const HeaderDisplayCell = ({ children, isButtonColumn, width, ...props }) => {
+const ColResize = styled.div.attrs({
+  onClick: e => {
+    // suppress other events when resizing
+    e.preventDefault();
+    e.stopPropagation();
+  },
+})`
+  width: 2rem;
+  height: 100%;
+  cursor: col-resize;
+`;
+
+export const HeaderDisplayCell = ({ children, canResize, getResizerProps, ...props }) => {
   return (
-    <HeaderCell $isButtonColumn={isButtonColumn} $width={width} {...props}>
+    <HeaderCell {...props} $canResize={canResize}>
       <CellContentContainer> {children}</CellContentContainer>
+      {canResize && <ColResize {...getResizerProps()} />}
     </HeaderCell>
   );
 };
 
 HeaderDisplayCell.propTypes = {
   children: PropTypes.node,
-  isButtonColumn: PropTypes.bool,
   width: PropTypes.string,
+  canResize: PropTypes.bool,
+  getResizerProps: PropTypes.func,
 };
 
 HeaderDisplayCell.defaultProps = {
-  isButtonColumn: false,
   width: null,
   children: null,
+  canResize: false,
+  getResizerProps: () => {},
 };
 
-export const TableCell = ({ children, width, isButtonColumn, url }) => {
+export const TableCell = ({ children, width, isButtonColumn, url, ...props }) => {
   return (
-    <Cell $isButtonColumn={isButtonColumn}>
-      <CellContentWrapper $width={width} $shouldCenterContent={isButtonColumn}>
-        <CellContentContainer to={url} as={url ? CellLink : 'div'}>
+    <Cell $isButtonColumn={isButtonColumn} {...props}>
+      <CellContentWrapper $width={width} $isButtonColumn={isButtonColumn}>
+        <CellContentContainer to={url} as={url ? CellLink : 'div'} $isButtonColumn={isButtonColumn}>
           {children}
         </CellContentContainer>
       </CellContentWrapper>
@@ -123,7 +136,7 @@ const CellLink = styled(Link)`
   text-decoration: none;
   &:hover {
     tr:has(&) td > * {
-      background-color: ${({ theme }) => `${theme.palette.primary.main}33`};
+      background-color: ${({ theme }) => `${theme.palette.primary.main}18`}; // 18 is 10% opacity
     }
   }
 `;

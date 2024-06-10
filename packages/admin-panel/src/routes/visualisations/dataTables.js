@@ -16,7 +16,6 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
   },
   {
     Header: 'Description',
@@ -35,7 +34,6 @@ const FIELDS = [
   {
     Header: 'Permission groups',
     source: 'permission_groups',
-    type: 'tooltip',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
@@ -82,7 +80,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: DATA_TABLES_ENDPOINT,
     fields: FIELDS,
     FieldsComponent: DataTableEditFields,
@@ -97,6 +94,7 @@ const IMPORT_CONFIG = {
   title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataTables',
+    multiple: true,
   },
 };
 const EDITOR_CONFIG = { displayUsedBy: true };

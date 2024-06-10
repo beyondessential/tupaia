@@ -5,40 +5,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
-import { PageBody, PageHeader } from '../../widgets';
+import { PageHeader } from '../../widgets';
 import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
-import { generateTitle } from './resourceName';
-
-const Container = styled(PageBody)`
-  // This is a work around to put the scroll bar at the top of the section by rotating the
-  // div that has overflow and then flipping back the child immediately as there is no nice
-  // way in css to show the scroll bar at the top of the section
-  .scroll-container {
-    overflow: auto;
-    transform: rotateX(180deg);
-
-    > div {
-      transform: rotateX(180deg);
-    }
-  }
-  background-color: ${({ theme }) => theme.palette.background.paper};
-  border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
-  padding-inline: 0;
-  max-height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-`;
 
 const TableComponent = ({ children }) => (
   <div className="scroll-container">
@@ -67,7 +43,6 @@ const useEndpoint = (endpoint, details, params) => {
 };
 
 export const ResourcePage = ({
-  resourceName,
   columns,
   createConfig,
   endpoint,
@@ -83,25 +58,25 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
-  nestedView,
+  nestedViews,
   parent,
   displayProperty,
-  getHasNestedView,
   getDisplayValue,
   getNestedViewLink,
   basePath,
   hasBESAdminAccess,
   needsBESAdminAccess,
+  actionLabel,
+  resourceName,
 }) => {
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
 
-  const { path } = nestedView || {};
+  // assume the first nested view is the one we want to link to and any others would be direct linked to
+  const { path, getHasNestedView } = nestedViews?.[0] || {};
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
   const isDetailsPage = !!parent;
-
-  const pageTitle = title ?? generateTitle(resourceName);
 
   const getHasPermission = actionType => {
     if (!needsBESAdminAccess) return true;
@@ -117,42 +92,46 @@ export const ResourcePage = ({
   const accessibleColumns = getExplodedFields(columns).filter(
     column => (column.type ? getHasPermission(column.type) : true), // If column has no type, it's always accessible
   );
+
   return (
     <>
-      <Container>
-        {isDetailsPage && (
-          <Breadcrumbs
-            parent={parent}
-            title={pageTitle}
-            displayProperty={displayProperty}
-            details={details}
-            getDisplayValue={getDisplayValue}
-          />
-        )}
-        <PageHeader
-          title={pageTitle}
-          importConfig={canImport && importConfig}
-          exportConfig={canExport && exportConfig}
-          createConfig={canCreate && createConfig}
-          ExportModalComponent={canExport && ExportModalComponent}
-          LinksComponent={LinksComponent}
+      {isDetailsPage && (
+        <Breadcrumbs
+          parent={parent}
+          title={title}
+          displayProperty={displayProperty}
+          details={details}
+          getDisplayValue={getDisplayValue}
         />
-        <DataFetchingTable
-          endpoint={updatedEndpoint}
-          reduxId={reduxId || updatedEndpoint}
-          columns={accessibleColumns}
-          baseFilter={baseFilter}
-          defaultFilters={defaultFilters}
-          TableComponent={TableComponent}
-          defaultSorting={defaultSorting}
-          deleteConfig={deleteConfig}
-          detailUrl={path}
-          getHasNestedView={getHasNestedView}
-          getNestedViewLink={getNestedViewLink}
-          basePath={basePath}
-        />
-      </Container>
-      <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
+      )}
+      <PageHeader
+        importConfig={canImport && importConfig}
+        exportConfig={canExport && exportConfig}
+        createConfig={canCreate && createConfig}
+        ExportModalComponent={canExport && ExportModalComponent}
+        LinksComponent={LinksComponent}
+        resourceName={resourceName?.singular}
+      />
+      <DataFetchingTable
+        endpoint={updatedEndpoint}
+        reduxId={reduxId || updatedEndpoint}
+        columns={accessibleColumns}
+        baseFilter={baseFilter}
+        defaultFilters={defaultFilters}
+        TableComponent={TableComponent}
+        defaultSorting={defaultSorting}
+        deleteConfig={deleteConfig}
+        detailUrl={path}
+        getHasNestedView={getHasNestedView}
+        getNestedViewLink={getNestedViewLink}
+        basePath={basePath}
+        actionLabel={actionLabel}
+      />
+      <EditModal
+        onProcessDataForSave={onProcessDataForSave}
+        resourceName={resourceName?.singular}
+        {...editorConfig}
+      />
       <LogsModal />
       <QrCodeModal />
       <ResubmitSurveyResponseModal />
@@ -162,7 +141,7 @@ export const ResourcePage = ({
 
 ResourcePage.propTypes = {
   resourceName: PropTypes.shape({
-    singular: PropTypes.string.isRequired,
+    singular: PropTypes.string,
     plural: PropTypes.string,
   }),
   columns: PropTypes.array.isRequired,
@@ -181,7 +160,7 @@ ResourcePage.propTypes = {
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
-  nestedView: PropTypes.object,
+  nestedViews: PropTypes.arrayOf(PropTypes.object),
   parent: PropTypes.object,
   displayProperty: PropTypes.string,
   getHasNestedView: PropTypes.func,
@@ -190,6 +169,7 @@ ResourcePage.propTypes = {
   basePath: PropTypes.string,
   hasBESAdminAccess: PropTypes.bool.isRequired,
   needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
+  actionLabel: PropTypes.string,
 };
 
 ResourcePage.defaultProps = {
@@ -208,7 +188,7 @@ ResourcePage.defaultProps = {
   defaultFilters: [],
   reduxId: null,
   editorConfig: {},
-  nestedView: null,
+  nestedViews: null,
   parent: null,
   displayProperty: null,
   getHasNestedView: null,
@@ -216,4 +196,5 @@ ResourcePage.defaultProps = {
   getNestedViewLink: null,
   basePath: '',
   needsBESAdminAccess: [],
+  actionLabel: 'Action',
 };

@@ -9,12 +9,10 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
   },
   {
     Header: 'Data builder',
     source: 'data_builder',
-    type: 'tooltip',
   },
   {
     Header: 'Data builder config',
