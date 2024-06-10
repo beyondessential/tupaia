@@ -11,7 +11,6 @@ const USER_FIELDS = [
   {
     Header: 'Email address',
     source: 'user_account.email',
-    type: 'tooltip',
   },
   {
     Header: 'First name',
@@ -50,7 +49,6 @@ const ACCESS_REQUEST_FIELDS = [
   {
     Header: 'Message',
     source: 'message',
-    type: 'tooltip',
     editable: false,
   },
   {
@@ -75,7 +73,6 @@ const USER_COLUMNS = [
     Header: 'Edit',
     type: 'bulkEdit',
     source: 'user_id',
-    width: 150,
     actionConfig: {
       title: 'Edit & approve access requests',
       bulkGetEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
@@ -98,7 +95,6 @@ const USER_COLUMNS = [
           Header: 'Message',
           source: 'message',
           bulkAccessor: rows => rows.map(row => (row.message ? row.message : 'blank')).join(', '),
-          type: 'tooltip',
           editable: false,
         },
         {
@@ -137,7 +133,6 @@ const DETAILS_COLUMNS = [
   ...ACCESS_REQUEST_FIELDS,
   {
     Header: 'Approve/decline',
-    width: 140,
     source: 'id',
     type: 'edit',
     actionConfig: {

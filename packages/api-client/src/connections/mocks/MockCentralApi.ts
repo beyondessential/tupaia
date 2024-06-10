@@ -68,6 +68,9 @@ export class MockCentralApi implements CentralApiInterface {
   ): Promise<{ userId: string; message: string }> {
     throw new Error('Method not implemented.');
   }
+  public verifyUserEmail(token: string): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
   public changeUserPassword(
     passwordChangeFields: Record<string, unknown>,
   ): Promise<{ message: string }> {

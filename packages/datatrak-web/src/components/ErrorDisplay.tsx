@@ -39,7 +39,7 @@ export const ErrorDisplay = ({
 }: {
   errorMessage?: string | null;
   children?: ReactNode;
-  title;
+  title: ReactNode;
 }) => {
   return (
     <Wrapper>

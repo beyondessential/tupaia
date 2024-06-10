@@ -3,27 +3,27 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
-  LogoutPage,
   PrivateRoute,
   ResourcePage,
   TabPageLayout,
   getFlattenedChildViews,
+  PageContentWrapper,
+  AUTH_ROUTES,
+  AuthLayout,
+  useUser,
+  getHasBESAdminAccess,
   AppPageLayout,
   VizBuilderApp,
-  PageContentWrapper,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRedirect } from './LesmisAdminRedirect';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
+import { useAdminPanelUrl, useI18n } from '../utils';
 import { Footer } from '../components';
 import { getRoutes } from '../views/AdminPanel/routes';
-import { getIsBESAdmin } from '../views/AdminPanel/authentication';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
 
 const PageContentContainerComponent = styled(PageContentWrapper)`
@@ -36,120 +36,124 @@ const PageContentContainerComponent = styled(PageContentWrapper)`
   }
 `;
 
-const AdminPanelApp = ({ user, isBESAdmin }) => {
-  const { translate } = useI18n();
-  const location = useLocation();
-  const adminUrl = useAdminPanelUrl();
-  const userHasAdminPanelAccess = hasAdminPanelAccess(user);
+const AdminPanelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 30rem;
+  nav a {
+    font-size: 0.875rem; // make the font size smaller to fit more text in the nav and match the default font size
+  }
+  .MuiDrawer-paper img {
+    width: 10rem; // the logo has different dimensions to the default, so override the default
+  }
+`;
 
-  const routes = getRoutes(adminUrl, translate, isBESAdmin);
+const AdminPanelApp = () => {
+  const { translate } = useI18n();
+  const { data: user } = useUser();
+  const adminUrl = useAdminPanelUrl();
+  const hasBESAdminAccess = getHasBESAdminAccess(user);
+
+  const routes = getRoutes(adminUrl, translate, hasBESAdminAccess);
 
   return (
-    <Routes>
-      <Route path="/login" element={<AdminPanelLoginPage />} />
-      <Route path="/logout" element={<LogoutPage redirectTo={`${adminUrl}/login`} />} />
-
-      <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
+    <AdminPanelWrapper>
+      <Routes>
         <Route
-          path="/"
-          element={<LesmisAdminRedirect hasAdminPanelAccess={userHasAdminPanelAccess} />}
+          element={
+            <AuthLayout
+              logo={{
+                url: '/lesmis-logo-white.svg',
+                alt: 'LESMIS Admin Panel Logo',
+              }}
+            />
+          }
         >
-          <Route
-            path="/viz-builder/*"
-            hasAdminPanelAccess={userHasAdminPanelAccess}
-            element={
-              <VizBuilderApp
-                logo={{
-                  url: '/lesmis-logo-white.svg',
-                  alt: 'LESMIS Admin Panel Logo',
-                }}
-                homeLink={`${adminUrl}/survey-responses`}
-                Footer={Footer}
-              />
-            }
-          />
-          <Route
-            element={
-              <AppPageLayout
-                user={user}
-                routes={routes}
-                logo={{
-                  url: '/lesmis-logo-white.svg',
-                  alt: 'LESMIS Admin Panel Logo',
-                }}
-                homeLink={`${adminUrl}/survey-responses`}
-                userLinks={[{ label: 'Logout', to: `${adminUrl}/logout` }]}
-                basePath={adminUrl}
-              />
-            }
-          >
-            {routes.map(route => (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={
-                  <TabPageLayout
-                    routes={route.childViews}
-                    basePath={`${adminUrl}${route.path}`}
-                    Footer={<Footer />}
-                    ContainerComponent={PageContentContainerComponent}
-                  />
-                }
-              >
-                {getFlattenedChildViews(route, adminUrl).map(childRoute => (
-                  <Route
-                    key={childRoute.path}
-                    path={childRoute.path}
-                    element={
-                      childRoute.Component ? (
-                        <childRoute.Component />
-                      ) : (
-                        <ResourcePage {...childRoute} hasBESAdminAccess={isBESAdmin} />
-                      )
-                    }
-                  />
-                ))}
-              </Route>
-            ))}
-            <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
+          <Route path={AUTH_ROUTES.LOGIN} element={<AdminPanelLoginPage />} />
+        </Route>
+
+        <Route path="/" element={<PrivateRoute basePath={adminUrl} />}>
+          <Route path="/" element={<LesmisAdminRedirect />}>
+            <Route
+              element={
+                <AppPageLayout
+                  routes={routes}
+                  user={user}
+                  logo={{
+                    url: '/lesmis-logo-white.svg',
+                    alt: 'LESMIS Admin Panel Logo',
+                  }}
+                  homeLink={`${adminUrl}/survey-responses`}
+                  basePath={adminUrl}
+                />
+              }
+            >
+              {routes.map(route => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={
+                    <TabPageLayout
+                      routes={route.childViews}
+                      basePath={`${adminUrl}${route.path}`}
+                      Footer={<Footer />}
+                      ContainerComponent={PageContentContainerComponent}
+                    />
+                  }
+                >
+                  {getFlattenedChildViews(route, adminUrl).map(childRoute => (
+                    <Route
+                      key={childRoute.path}
+                      path={childRoute.path}
+                      element={
+                        childRoute.Component ? (
+                          <childRoute.Component />
+                        ) : (
+                          <ResourcePage
+                            actionLabel={translate('admin.action')}
+                            {...childRoute}
+                            hasBESAdminAccess={hasBESAdminAccess}
+                          />
+                        )
+                      }
+                    />
+                  ))}
+                </Route>
+              ))}
+              <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
+            </Route>
+            <Route
+              path="/viz-builder/*"
+              element={
+                <VizBuilderApp
+                  logo={{
+                    url: '/lesmis-logo-white.svg',
+                    alt: 'LESMIS Admin Panel Logo',
+                  }}
+                  homeLink={`${adminUrl}/survey-responses`}
+                  Footer={Footer}
+                />
+              }
+            />
           </Route>
         </Route>
-      </Route>
-      <Route path="not-authorised" element={<NotAuthorisedView />} />
-      <Route
-        path="*"
-        element={
-          <Navigate
-            to={`${adminUrl}/login`}
-            state={{
-              referrer: location.pathname,
-            }}
-          />
-        }
-      />
-    </Routes>
+        <Route path="not-authorised" element={<NotAuthorisedView />} />
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={`${adminUrl}/login`}
+              state={{
+                referrer: location.pathname,
+              }}
+            />
+          }
+        />
+      </Routes>
+    </AdminPanelWrapper>
   );
 };
 
-AdminPanelApp.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string,
-    email: PropTypes.string,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }),
-  isBESAdmin: PropTypes.bool,
-};
-
-AdminPanelApp.defaultProps = {
-  isBESAdmin: false,
-  user: {},
-};
-
-export default connect(
-  state => ({
-    user: state?.authentication?.user || {},
-    isBESAdmin: getIsBESAdmin(state),
-  }),
-  null,
-)(AdminPanelApp);
+export default AdminPanelApp;

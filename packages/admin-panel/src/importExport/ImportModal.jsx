@@ -6,13 +6,13 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ImportIcon from '@material-ui/icons/Publish';
 import { FileUploadField } from '@tupaia/ui-components';
 import { InputField, Modal } from '../widgets';
 import { useApiContext } from '../utilities/ApiProvider';
 import { DATA_CHANGE_ERROR, DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 import { ActionButton } from '../editor';
+import { ImportIcon } from '../icons';
 
 const STATUS = {
   IDLE: 'idle',
@@ -37,7 +37,6 @@ export const ImportModalComponent = React.memo(
     confirmButtonText,
     cancelButtonText,
     uploadButtonText,
-    noFileMessage,
   }) => {
     const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
@@ -62,7 +61,7 @@ export const ImportModalComponent = React.memo(
       setErrorMessage(null);
       setFinishedMessage(null);
       setFiles([]);
-      setFileName(noFileMessage);
+      setFileName(null);
     };
 
     const handleClose = () => {
@@ -72,7 +71,7 @@ export const ImportModalComponent = React.memo(
       setIsOpen(false);
       setValues({});
       setFiles([]);
-      setFileName(noFileMessage);
+      setFileName(null);
     };
 
     const handleSubmit = async event => {
@@ -234,7 +233,6 @@ ImportModalComponent.propTypes = {
   confirmButtonText: PropTypes.string,
   cancelButtonText: PropTypes.string,
   uploadButtonText: PropTypes.string,
-  noFileMessage: PropTypes.string,
 };
 
 ImportModalComponent.defaultProps = {
@@ -247,7 +245,6 @@ ImportModalComponent.defaultProps = {
   confirmButtonText: 'Import',
   cancelButtonText: 'Cancel',
   uploadButtonText: 'Choose file',
-  noFileMessage: 'No file chosen',
 };
 
 const mapDispatchToProps = dispatch => ({

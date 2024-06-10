@@ -49,6 +49,7 @@ const mergeProps = (
   { onProcessDataForSave, usedByConfig: usedByConfigInOwnProps, ...ownProps },
 ) => {
   const usedByConfig = { ...usedByConfigInOwnProps, ...usedByConfigInMapStateProps };
+  const isNew = recordData ? Object.keys(recordData).length === 0 : false;
   return {
     ...ownProps,
     ...stateProps,
@@ -59,9 +60,9 @@ const mergeProps = (
       ...initialValues,
       ...editedFields,
     }, // Include edits in visible record data
+    isNew,
     onSave: (files, onSuccess) => {
       // If there is no record data, this is a new record
-      const isNew = Object.keys(recordData).length === 0;
       let fieldValuesToSave = isNew ? { ...initialValues, ...editedFields } : { ...editedFields };
       if (onProcessDataForSave) {
         fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);

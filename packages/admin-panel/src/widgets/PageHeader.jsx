@@ -26,7 +26,16 @@ export const PageHeader = ({
   exportConfig,
   ExportModalComponent,
   LinksComponent,
+  resourceName,
 }) => {
+  const generateCreateButtonLabel = () => {
+    if (resourceName) {
+      return `Add ${resourceName}`;
+    }
+
+    return 'New';
+  };
+  const createButtonLabel = generateCreateButtonLabel();
   const CreateButton =
     createConfig && createConfig.bulkCreate ? BulkCreateButton : SingleCreateButton;
 
@@ -38,7 +47,7 @@ export const PageHeader = ({
     <Wrapper>
       <Container>
         {importConfig && <ImportModal {...importConfig} />}
-        {createConfig && <CreateButton {...createConfig} />}
+        {createConfig && <CreateButton label={createButtonLabel} {...createConfig} />}
         {ExportModalComponent && <ExportModalComponent {...exportConfig} />}
         {LinksComponent && <LinksComponent />}
       </Container>
@@ -47,12 +56,12 @@ export const PageHeader = ({
 };
 
 PageHeader.propTypes = {
-  title: PropTypes.string.isRequired,
   importConfig: PropTypes.object,
   createConfig: PropTypes.object,
   exportConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
+  resourceName: PropTypes.string.isRequired,
 };
 
 PageHeader.defaultProps = {

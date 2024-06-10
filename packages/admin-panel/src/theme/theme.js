@@ -16,7 +16,7 @@ const palette = {
   },
   secondary: {
     main: COLORS.LIGHT_BLACK,
-    light: COLORS.LIGHT_BLUE,
+    light: COLORS.EXTRA_LIGHT_BLACK,
   },
   error: {
     main: COLORS.RED,
@@ -35,6 +35,7 @@ const palette = {
     secondary: COLORS.TEXT_MIDGREY,
     tertiary: COLORS.TEXT_LIGHTGREY,
   },
+  divider: COLORS.GREY_DE,
   blue: {
     100: COLORS.BLUE_F6,
     200: COLORS.BLUE_E8,
@@ -129,11 +130,7 @@ const overrides = {
       borderColor: COLORS.GREY_DE,
     },
   },
-  MuiDivider: {
-    root: {
-      backgroundColor: COLORS.GREY_DE,
-    },
-  },
+
   MuiFormLabel: {
     root: {
       fontSize: '0.875rem',
@@ -148,7 +145,7 @@ const overrides = {
     input: {
       fontSize: '0.875rem',
       '&::placeholder': {
-        color: COLORS.GREY_B8,
+        color: COLORS.TEXT_LIGHTGREY,
       },
     },
   },
@@ -187,6 +184,11 @@ const overrides = {
           color: palette.text.secondary, // tooltip icon color
         },
       },
+    },
+  },
+  MuiAvatar: {
+    colorDefault: {
+      backgroundColor: '#E7B091',
     },
   },
 };

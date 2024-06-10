@@ -21,9 +21,15 @@ const BackButton = styled(IconButton)`
   margin-right: 0.5rem;
 `;
 
-const ActiveBreadcrumb = styled(Typography)`
-  color: ${({ theme }) => theme.palette.text.primary};
+const Breadcrumb = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  &:is(a) {
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      color: ${({ theme }) => theme.palette.primary.main};
+    }
+  }
 `;
 
 export const Breadcrumbs = ({
@@ -44,10 +50,15 @@ export const Breadcrumbs = ({
         <ArrowBack />
       </BackButton>
       <MuiBreadcrumbs separator="|">
-        <ActiveBreadcrumb component={Link} to={parent?.to || '/'} onClick={onClickLinks}>
+        <Breadcrumb
+          component={Link}
+          to={parent?.to || '/'}
+          onClick={onClickLinks}
+          color="textPrimary"
+        >
           {parentTitle}
-        </ActiveBreadcrumb>
-        <ActiveBreadcrumb>{title}</ActiveBreadcrumb>
+        </Breadcrumb>
+        <Breadcrumb color="textSecondary">{title}</Breadcrumb>
         {details && <Typography>{itemDisplayValue}</Typography>}
       </MuiBreadcrumbs>
     </Wrapper>

@@ -40,7 +40,7 @@ const RouteLink = styled(Link)`
   white-space: nowrap;
   color: ${({ theme }) => theme.palette.text.secondary};
   &:not(:last-child) {
-    border-right: 1px solid ${({ theme }) => theme.palette.text.tertiary};
+    border-right: 1px solid ${({ theme }) => theme.palette.divider};
   }
 
   &:hover,
@@ -219,8 +219,8 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
     return !!matchResult || !!nestedViewMatch;
   };
 
-  const links = linkInput?.map(({ exact, path, resourceName, title, ...rest }) => {
-    const linkTitle = title ?? generateTitle(resourceName);
+  const links = linkInput?.map(({ exact, path, resourceName, label, ...rest }) => {
+    const linkTitle = label ?? generateTitle(resourceName);
     const target = exact ? path : `${basePath}${path}`;
 
     return {
@@ -275,7 +275,7 @@ SecondaryNavbar.propTypes = {
   links: PropTypes.arrayOf(
     PropTypes.shape({
       path: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
+      label: PropTypes.string,
       exact: PropTypes.bool,
     }),
   ).isRequired,
