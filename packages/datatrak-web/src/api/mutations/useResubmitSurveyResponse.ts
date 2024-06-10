@@ -19,6 +19,7 @@ const processAnswers = (
 ) => {
   const files: File[] = [];
   let entityId = null as string | null;
+  let dataTime = null as string | null;
   const formattedAnswers = Object.entries(answers).reduce((acc, [questionId, answer]) => {
     const { code, type } = questionsById[questionId];
     if (!code) return acc;
@@ -41,6 +42,12 @@ const processAnswers = (
         [code]: uniqueFileName,
       };
     }
+
+    if (type === QuestionType.DateOfData || type === QuestionType.SubmissionDate) {
+      const date = new Date(answer as string);
+      dataTime = date.toISOString();
+      return acc;
+    }
     return {
       ...acc,
       [code]: answer,
@@ -51,6 +58,7 @@ const processAnswers = (
     answers: formattedAnswers,
     files,
     entityId,
+    dataTime,
   };
 };
 
@@ -71,15 +79,19 @@ export const useResubmitSurveyResponse = () => {
       if (!surveyAnswers) {
         return;
       }
-      const { answers, files, entityId } = processAnswers(surveyAnswers, questionsById);
+      const { answers, files, entityId, dataTime } = processAnswers(surveyAnswers, questionsById);
 
       const formData = new FormData();
       const formDataToSubmit = { answers } as {
         answers: Record<string, string | number | boolean>;
         entity_id?: string;
+        data_time?: string;
       };
       if (entityId) {
         formDataToSubmit.entity_id = entityId;
+      }
+      if (dataTime) {
+        formDataToSubmit.data_time = dataTime;
       }
       formData.append('payload', JSON.stringify(formDataToSubmit));
       files.forEach(file => {
