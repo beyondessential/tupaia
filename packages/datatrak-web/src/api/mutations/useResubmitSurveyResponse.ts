@@ -5,7 +5,7 @@
 
 import { useMutation } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
-import { Answer, QuestionType } from '@tupaia/types';
+import { QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { post } from '../api';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
