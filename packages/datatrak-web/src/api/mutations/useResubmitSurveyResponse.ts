@@ -29,18 +29,26 @@ const processAnswers = (
       return acc;
     }
 
-    if (type === QuestionType.File && isFileUploadAnswer(answer) && answer.value instanceof File) {
-      // Create a new file with a unique name, and add it to the files array, so we can add to the FormData, as this is what the central server expects
-      const uniqueFileName = getUniqueSurveyQuestionFileName(answer.name);
-      files.push(
-        new File([answer.value as Blob], uniqueFileName, {
-          type: answer.value.type,
-        }),
-      );
-      return {
-        ...acc,
-        [code]: uniqueFileName,
-      };
+    if (type === QuestionType.File) {
+      if (isFileUploadAnswer(answer) && answer.value instanceof File) {
+        // Create a new file with a unique name, and add it to the files array, so we can add to the FormData, as this is what the central server expects
+        const uniqueFileName = getUniqueSurveyQuestionFileName(answer.name);
+        files.push(
+          new File([answer.value as Blob], uniqueFileName, {
+            type: answer.value.type,
+          }),
+        );
+        return {
+          ...acc,
+          [code]: uniqueFileName,
+        };
+      }
+      if (answer && typeof answer === 'object' && 'name' in answer) {
+        return {
+          ...acc,
+          [code]: answer.name,
+        };
+      }
     }
 
     if (type === QuestionType.DateOfData || type === QuestionType.SubmissionDate) {

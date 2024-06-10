@@ -38,6 +38,13 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
         const formattedAnswers = Object.entries(data.answers).reduce((acc, [key, value]) => {
           // If the value is a stringified object, parse it
           const isStringifiedObject = typeof value === 'string' && value.startsWith('{');
+          const question = flattenedScreenComponents.find(
+            component => component.questionId === key,
+          );
+          if (!question) return acc;
+          if (question.type === QuestionType.File && value) {
+            return { ...acc, [key]: { name: value, value: null } };
+          }
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
         }, {});
 

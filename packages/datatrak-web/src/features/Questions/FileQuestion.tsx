@@ -32,6 +32,7 @@ export const FileQuestion = ({
   controllerProps: { onChange, value: selectedFile, name },
 }: SurveyQuestionInputProps) => {
   const handleChange = (_e, _name, files) => {
+    if (!files || files.length === 0) return onChange(null);
     const file = files[0];
     onChange({
       name: file.name,
