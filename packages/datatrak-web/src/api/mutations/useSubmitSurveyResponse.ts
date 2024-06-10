@@ -73,6 +73,7 @@ const processAnswers = async (answers: AnswersT, questionsById) => {
     if (question.type === QuestionType.File && isFileUploadAnswer(answer)) {
       // convert to an object with an encoded file so that it can be handled in the backend and uploaded to s3
       const encodedFile = await createEncodedFile(answer.value as File);
+
       formattedAnswers[questionId] = {
         name: answer.name,
         value: encodedFile,
@@ -92,12 +93,17 @@ export const useSubmitSurveyResponse = () => {
 
   const surveyResponseData = useSurveyResponseData();
 
+  const questionsById = surveyResponseData.questions.reduce((acc, question) => {
+    acc[question.questionId] = question;
+    return acc;
+  }, {});
+
   return useMutation<any, Error, AnswersT, unknown>(
     async (answers: AnswersT) => {
       if (!answers) {
         return;
       }
-      const formattedAnswers = await processAnswers(answers, surveyResponseData.questions);
+      const formattedAnswers = await processAnswers(answers, questionsById);
 
       return post('submitSurveyResponse', {
         data: { ...surveyResponseData, answers: formattedAnswers },
