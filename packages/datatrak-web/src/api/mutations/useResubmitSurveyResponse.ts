@@ -5,7 +5,7 @@
 
 import { useMutation } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
-import { QuestionType } from '@tupaia/types';
+import { Answer, QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { post } from '../api';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
@@ -18,9 +18,15 @@ const processAnswers = (
   questionsById: Record<string, SurveyScreenComponent>,
 ) => {
   const files: File[] = [];
+  let entityId = null as string | null;
   const formattedAnswers = Object.entries(answers).reduce((acc, [questionId, answer]) => {
     const { code, type } = questionsById[questionId];
     if (!code) return acc;
+
+    if (type === QuestionType.PrimaryEntity && answer) {
+      entityId = answer as string;
+      return acc;
+    }
 
     if (type === QuestionType.File && isFileUploadAnswer(answer) && answer.value instanceof File) {
       // Create a new file with a unique name, and add it to the files array, so we can add to the FormData, as this is what the central server expects
@@ -44,6 +50,7 @@ const processAnswers = (
   return {
     answers: formattedAnswers,
     files,
+    entityId,
   };
 };
 
@@ -64,10 +71,17 @@ export const useResubmitSurveyResponse = () => {
       if (!surveyAnswers) {
         return;
       }
-      const { answers, files } = processAnswers(surveyAnswers, questionsById);
+      const { answers, files, entityId } = processAnswers(surveyAnswers, questionsById);
 
       const formData = new FormData();
-      formData.append('payload', JSON.stringify({ answers }));
+      const formDataToSubmit = { answers } as {
+        answers: Record<string, string | number | boolean>;
+        entity_id?: string;
+      };
+      if (entityId) {
+        formDataToSubmit.entity_id = entityId;
+      }
+      formData.append('payload', JSON.stringify(formDataToSubmit));
       files.forEach(file => {
         formData.append(file.name, file);
       });

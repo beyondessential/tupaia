@@ -4,15 +4,17 @@
  */
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router';
-import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
+import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
 import { get } from '../api';
 import { ROUTES } from '../../constants';
 import { errorToast } from '../../utils';
-import { useSurveyForm } from '../../features';
+import { getAllSurveyComponents, useSurveyForm } from '../../features';
 
 export const useSurveyResponse = (surveyResponseId?: string) => {
-  const { setFormData } = useSurveyForm();
+  const { setFormData, surveyScreens } = useSurveyForm();
   const navigate = useNavigate();
+
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
 
   return useQuery(
     ['surveyResponse', surveyResponseId],
@@ -29,12 +31,20 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
         errorToast(error.message);
       },
       onSuccess: data => {
+        const primaryEntityQuestion = flattenedScreenComponents.find(
+          component => component.type === QuestionType.PrimaryEntity,
+        );
         // handle updating answers here - if this is done in the component, the answers get reset on every re-render
         const formattedAnswers = Object.entries(data.answers).reduce((acc, [key, value]) => {
           // If the value is a stringified object, parse it
           const isStringifiedObject = typeof value === 'string' && value.startsWith('{');
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
         }, {});
+
+        if (primaryEntityQuestion && data.entityId) {
+          formattedAnswers[primaryEntityQuestion.questionId] = data.entityId;
+        }
+
         setFormData(formattedAnswers);
       },
     },

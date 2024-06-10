@@ -25,6 +25,7 @@ const DEFAULT_FIELDS = [
   'country.name',
   'data_time',
   'entity.name',
+  'entity.id',
   'id',
   'survey.name',
   'survey.code',
