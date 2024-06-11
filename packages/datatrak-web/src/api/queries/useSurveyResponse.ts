@@ -34,6 +34,12 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
         const primaryEntityQuestion = flattenedScreenComponents.find(
           component => component.type === QuestionType.PrimaryEntity,
         );
+
+        const dateOfDataQuestion = flattenedScreenComponents.find(
+          component =>
+            component.type === QuestionType.DateOfData ||
+            component.type === QuestionType.SubmissionDate,
+        );
         // handle updating answers here - if this is done in the component, the answers get reset on every re-render
         const formattedAnswers = Object.entries(data.answers).reduce((acc, [key, value]) => {
           // If the value is a stringified object, parse it
@@ -45,11 +51,16 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
           if (question.type === QuestionType.File && value) {
             return { ...acc, [key]: { name: value, value: null } };
           }
+
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
         }, {});
 
         if (primaryEntityQuestion && data.entityId) {
           formattedAnswers[primaryEntityQuestion.questionId] = data.entityId;
+        }
+
+        if (dateOfDataQuestion && data.dataTime) {
+          formattedAnswers[dateOfDataQuestion.questionId] = data.dataTime;
         }
 
         setFormData(formattedAnswers);
