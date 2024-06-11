@@ -11,11 +11,11 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
-  TableHead,
+  TableContainer as MuiTableContainer,
+  TableHead as MuiTableHead,
   TableRow,
 } from '@material-ui/core';
-import { useTable } from 'react-table';
+import { useFlexLayout, useResizeColumns, useTable } from 'react-table';
 import { useApiContext } from '../../../utilities/ApiProvider';
 
 const Cell = styled(TableCell)`
@@ -34,23 +34,43 @@ const Cell = styled(TableCell)`
 const HeaderCell = styled(Cell).attrs({
   component: 'th',
 })`
-  position: sticky;
   background-color: ${({ theme }) => theme.palette.grey['400']};
   border-color: white;
   border-style: solid;
+`;
+
+const ColumnHeaderCell = styled(HeaderCell)`
+  border-width: 0 1px 1px 0;
+`;
+
+const RowHeaderCell = styled(HeaderCell)`
+  left: 0;
+  position: sticky !important; // to override the position that is applied inline by react-table
+  z-index: 2;
   thead & {
     top: 0;
-    border-width: 0 1px 1px 0;
-    &:first-child {
-      z-index: 3;
-    }
-  }
-  body & {
-    left: 0;
+    z-index: 4;
   }
 `;
 
-const StyledTable = styled(Table)``;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+`;
+
+const TableContainer = styled(MuiTableContainer)`
+  flex: 1;
+  overflow: auto;
+`;
+
+// workaround for sticky header not working with flex layout, which is needed for resizable columns
+const TableHead = styled(MuiTableHead)`
+  position: sticky;
+  top: 0;
+  z-index: 3;
+`;
 
 const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
   const [file, setFile] = useState(uploadedFile);
@@ -96,49 +116,75 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
   const json = useSpreadsheetJson(file);
 
   const columns = useMemo(
-    () => (json ? Object.keys(json[0]).map(key => ({ Header: key, accessor: key })) : []),
+    () =>
+      json
+        ? [
+            {
+              Header: '',
+              accessor: 'index',
+              canResize: false,
+              width: 60,
+              maxWidth: 60,
+            },
+            ...Object.keys(json[0]).map(key => ({ Header: key, accessor: key, canResize: true })),
+          ]
+        : [],
     [json],
   );
 
   const data = useMemo(() => {
     if (!json) return [];
-    return json;
+    return json.map((row, index) => ({ ...row, index: index + 1 }));
   }, [json]);
 
-  const { headers, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
+  const { headerGroups, rows, prepareRow, getTableProps, getTableBodyProps } = useTable(
+    {
+      columns,
+      data,
+    },
+    useFlexLayout,
+    useResizeColumns,
+  );
   return (
-    <TableContainer>
-      <StyledTable stickyHeader size="small">
-        <TableHead>
-          <TableRow>
-            <HeaderCell />
-            {headers.map(header => (
-              <HeaderCell key={header.id} {...header.getHeaderProps()}>
-                {header.render('Header')}
-              </HeaderCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <TableRow key={row.id} {...row.getRowProps()}>
-                <HeaderCell>{i + 1}</HeaderCell>
-                {row.cells.map(cell => (
-                  <Cell key={cell.id} {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </Cell>
+    <Wrapper>
+      <TableContainer>
+        <Table stickyHeader size="small" {...getTableProps()}>
+          <TableHead>
+            {headerGroups.map(headerGroup => (
+              <TableRow key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, i) => (
+                  <ColumnHeaderCell
+                    key={column.id}
+                    {...column.getHeaderProps()}
+                    as={i === 0 ? RowHeaderCell : undefined}
+                  >
+                    {column.render('Header')}
+                  </ColumnHeaderCell>
                 ))}
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </StyledTable>
-    </TableContainer>
+            ))}
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
+            {rows.map(row => {
+              prepareRow(row);
+              return (
+                <TableRow key={row.id} {...row.getRowProps()}>
+                  {row.cells.map((cell, i) => (
+                    <Cell
+                      key={cell.id}
+                      {...cell.getCellProps()}
+                      as={i === 0 ? RowHeaderCell : undefined}
+                    >
+                      {cell.render('Cell')}
+                    </Cell>
+                  ))}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Wrapper>
   );
 };
 
