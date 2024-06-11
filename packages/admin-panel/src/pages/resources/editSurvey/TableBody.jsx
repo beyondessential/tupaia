@@ -24,18 +24,26 @@ TableCell.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
-const Row = memo(({ row, prepareRow }) => {
-  prepareRow(row);
-  const rowProps = row.getRowProps();
+const Row = memo(
+  ({ row, prepareRow }) => {
+    prepareRow(row);
+    const rowProps = row.getRowProps();
 
-  return (
-    <TableRow {...rowProps}>
-      {row.cells.map((cell, i) => (
-        <TableCell key={cell.id} cell={cell} index={i} />
-      ))}
-    </TableRow>
-  );
-});
+    return (
+      <TableRow {...rowProps}>
+        {row.cells.map((cell, i) => (
+          <TableCell key={cell.id} cell={cell} index={i} />
+        ))}
+      </TableRow>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      JSON.stringify(prevProps.row.values) === JSON.stringify(nextProps.row.values) &&
+      JSON.stringify(prevProps.columnWidths) === JSON.stringify(nextProps.columnWidths)
+    );
+  },
+);
 
 Row.propTypes = {
   row: PropTypes.object.isRequired,
@@ -54,7 +62,7 @@ export const TableBody = memo(
     );
   },
   (prevProps, nextProps) => {
-    return prevProps.columnWidths === nextProps.columnWidths;
+    return JSON.stringify(prevProps.columnWidths) === JSON.stringify(nextProps.columnWidths);
   },
 );
 

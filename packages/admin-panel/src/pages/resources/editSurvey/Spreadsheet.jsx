@@ -147,7 +147,7 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
 
   const data = useMemo(() => {
     if (!json) return [];
-    return json.map((row, index) => ({ ...row, index: index + 1 })).slice(0, 100);
+    return json.map((row, index) => ({ ...row, index: index + 1 })).slice(0, 50);
   }, [JSON.stringify(json)]);
 
   const {
@@ -167,7 +167,10 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
     useResizeColumns,
   );
 
-  const columnWidths = visibleColumns.map(column => column.width);
+  const columnWidths = useMemo(
+    () => visibleColumns.map(column => column.width),
+    [JSON.stringify(visibleColumns)],
+  );
 
   return (
     <Wrapper>
