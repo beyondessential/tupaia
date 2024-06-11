@@ -11,13 +11,26 @@ import { ReduxAutocomplete } from '../autocomplete';
 import { ExportModal } from './ExportModal';
 
 const MODES = {
-  COUNTRY: 'country',
-  ENTITY: 'entity',
+  COUNTRY: { value: 'country', formInput: 'countryCode' },
+  ENTITY: { value: 'entity', formInput: 'entityIds' },
 };
 
 export const SurveyResponsesExportModal = () => {
   const [values, setValues] = useState({});
-  const [mode, setMode] = useState(MODES.COUNTRY);
+  const [mode, setMode] = useState(MODES.COUNTRY.value);
+  const [countryCode, setCountryCode] = useState(); // Keep local copy to ensure form stays in sync with input
+  const [entityIds, setEntityIds] = useState(); // Keep local copy to ensure form stays in sync with input
+
+  const onChangeMode = newMode => {
+    setMode(newMode);
+    if (newMode === MODES.COUNTRY.value) {
+      handleValueChange(MODES.COUNTRY.formInput, countryCode);
+      handleValueChange(MODES.ENTITY.formInput, undefined);
+    } else {
+      handleValueChange(MODES.COUNTRY.formInput, undefined);
+      handleValueChange(MODES.ENTITY.formInput, entityIds);
+    }
+  };
 
   const handleValueChange = (key, value) => {
     setValues(prevState => ({
@@ -41,25 +54,28 @@ export const SurveyResponsesExportModal = () => {
       <RadioGroup
         name="survey responses mode"
         label="Mode"
-        onChange={event => setMode(event.currentTarget.value)}
+        onChange={event => onChangeMode(event.currentTarget.value)}
         options={[
           {
             label: 'Country',
-            value: MODES.COUNTRY,
+            value: MODES.COUNTRY.value,
           },
           {
             label: 'Entity',
-            value: MODES.ENTITY,
+            value: MODES.ENTITY.value,
           },
         ]}
         value={mode}
       />
-      {mode === MODES.COUNTRY ? (
+      {mode === MODES.COUNTRY.value ? (
         <ReduxAutocomplete
           label="Country to include"
           helperText="Please enter the name of the country to be exported."
           reduxId="countryCode"
-          onChange={inputValue => handleValueChange('countryCode', inputValue)}
+          onChange={inputValue => {
+            setCountryCode(inputValue);
+            handleValueChange('countryCode', inputValue);
+          }}
           endpoint="countries"
           optionLabelKey="name"
           optionValueKey="code"
@@ -69,7 +85,10 @@ export const SurveyResponsesExportModal = () => {
           label="Entities to include"
           helperText="Please enter the names of the entities to be exported."
           reduxId="entityIds"
-          onChange={inputValue => handleValueChange('entityIds', inputValue)}
+          onChange={inputValue => {
+            setEntityIds(inputValue);
+            handleValueChange('entityIds', inputValue);
+          }}
           endpoint="entities"
           optionLabelKey="name"
           optionValueKey="id"
