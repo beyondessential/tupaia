@@ -11776,6 +11776,7 @@ __metadata:
     query-string: ^5.1.1
     react: ^16.13.1
     react-autobind: ^1.0.6
+    react-base-table: ^1.13.5
     react-beautiful-dnd: ^13.1.0
     react-beforeunload: ^2.5.1
     react-datepicker: ^1.6.0
@@ -30854,7 +30855,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memoize-one@npm:^5.0.0, memoize-one@npm:^5.1.1":
+"memoize-one@npm:>=3.1.1 <6, memoize-one@npm:^5.0.0, memoize-one@npm:^5.1.1":
   version: 5.2.1
   resolution: "memoize-one@npm:5.2.1"
   checksum: a3cba7b824ebcf24cdfcd234aa7f86f3ad6394b8d9be4c96ff756dafb8b51c7f71320785fbc2304f1af48a0467cbbd2a409efc9333025700ed523f254cb52e3d
@@ -35234,7 +35235,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
+"prop-types@npm:*, prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.7.0, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -35804,6 +35805,23 @@ __metadata:
   version: 1.0.6
   resolution: "react-autobind@npm:1.0.6"
   checksum: 0934d45cbd4c0986476ad96d96032cb091f72e23df76cf3c24ade58eb911243a61d21a1bea89cfe91cb2c1ea7b4462f0b2c895c303003bbb796d86003d796bc5
+  languageName: node
+  linkType: hard
+
+"react-base-table@npm:^1.13.5":
+  version: 1.13.5
+  resolution: "react-base-table@npm:1.13.5"
+  dependencies:
+    "@babel/runtime": ^7.0.0
+    classnames: ^2.2.5
+    memoize-one: ^5.0.0
+    prop-types: ^15.7.0
+    react-virtualized-auto-sizer: ^1.0.2
+    react-window: ^1.8.2
+  peerDependencies:
+    react: ^16.0.0 || ^17.0.0
+    react-dom: ^16.0.0 || ^17.0.0
+  checksum: b13c30f0b5589619ba94ad5ec3197e5559955c879046d2b8b51272e4b147e1f99be851f06d3e9d37614040a21311985bd08901668e39d1fd527997d98a5ac959
   languageName: node
   linkType: hard
 
@@ -37041,6 +37059,29 @@ __metadata:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: 0bcd8af483709832e318dcef84c26ebddeb866bf4f58010286367ef0c1e7c5106e00cfc65688b9102414cb3d572c63909c2eb7ea972b4420fc70a78c10b6e8ad
+  languageName: node
+  linkType: hard
+
+"react-virtualized-auto-sizer@npm:^1.0.2":
+  version: 1.0.24
+  resolution: "react-virtualized-auto-sizer@npm:1.0.24"
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0
+    react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0
+  checksum: e7d98563735dabbd1c58727c9d3e9f08f6a60a9964d25507cf4ef08f8964b6e421491c892ee0a99e47630118fdca42f1c60cef15ebda3659face58025dba3e98
+  languageName: node
+  linkType: hard
+
+"react-window@npm:^1.8.2":
+  version: 1.8.10
+  resolution: "react-window@npm:1.8.10"
+  dependencies:
+    "@babel/runtime": ^7.0.0
+    memoize-one: ">=3.1.1 <6"
+  peerDependencies:
+    react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: e8830f32e3ad4bf91af9cdc5cead84148c7694ce6abd9fdb447fb609da6cd4bbd0bbc75ff985f78828f4bbbd3ba4cbc98235cc9c056b5e5787578518f7fafbb9
   languageName: node
   linkType: hard
 

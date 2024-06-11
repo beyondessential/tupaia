@@ -7,51 +7,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import xlsx from 'xlsx';
-import {
-  Table,
-  TableCell,
-  TableContainer as MuiTableContainer,
-  TableHead as MuiTableHead,
-  TableRow,
-} from '@material-ui/core';
-import { useFlexLayout, useResizeColumns, useTable } from 'react-table';
+import { TableContainer as MuiTableContainer } from '@material-ui/core';
+import BaseTable from 'react-base-table';
+import 'react-base-table/styles.css';
 import { useApiContext } from '../../../utilities/ApiProvider';
-import { TableBody } from './TableBody';
-
-const Cell = styled(TableCell)`
-  padding-inline: 0.2rem;
-  padding-block: 0.4rem;
-  border-color: ${({ theme }) => theme.palette.grey['400']};
-  border-style: solid;
-  border-width: 0 1px 1px 0;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  // TODO: fix this once we apply resizable columns
-  max-width: 200px;
-`;
-
-const HeaderCell = styled(Cell).attrs({
-  component: 'th',
-})`
-  background-color: ${({ theme }) => theme.palette.grey['400']};
-  border-color: white;
-  border-style: solid;
-`;
-
-const ColumnHeaderCell = styled(HeaderCell)`
-  border-width: 0 1px 1px 0;
-`;
-
-const RowHeaderCell = styled(HeaderCell)`
-  left: 0;
-  position: sticky !important; // to override the position that is applied inline by react-table
-  z-index: 2;
-  thead & {
-    top: 0;
-    z-index: 4;
-  }
-`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -62,28 +21,25 @@ const Wrapper = styled.div`
 
 const TableContainer = styled(MuiTableContainer)`
   flex: 1;
-  overflow: auto;
-`;
-
-// workaround for sticky header not working with flex layout, which is needed for resizable columns
-const TableHead = styled(MuiTableHead)`
-  position: sticky;
-  top: 0;
-  z-index: 3;
-`;
-
-const ColumnResizeHandle = styled.div`
-  display: inline-block;
-  background: blue;
-  width: 10px;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: translateX(50%);
-  z-index: 1;
-  ${'' /* prevents from scrolling while dragging on touch devices */}
-  touch-action:none;
+  overflow: hidden;
+  .BaseTable__header-cell {
+    background-color: ${props => props.theme.palette.grey['400']};
+    border-right: 1px solid white;
+  }
+  .BaseTable__row-cell {
+    border-right: 1px solid ${props => props.theme.palette.grey['400']};
+  }
+  .BaseTable__row {
+    border-color: ${props => props.theme.palette.grey['400']};
+  }
+  .BaseTable__table-frozen-left {
+    .BaseTable__row-cell {
+      background-color: ${props => props.theme.palette.grey['400']};
+    }
+    .BaseTable__row {
+      border-color: white;
+    }
+  }
 `;
 
 const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
@@ -127,7 +83,7 @@ const useSpreadsheetJson = file => {
 
 export const Spreadsheet = ({ survey, open, currentFile }) => {
   const tableContainerRef = useRef();
-  const tableHeaderRef = useRef();
+
   const { file } = useInitialFile(survey?.id, open, currentFile);
   const json = useSpreadsheetJson(file);
 
@@ -135,71 +91,41 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
     if (!json) return [];
     return [
       {
-        Header: '',
-        accessor: 'index',
-        disableResizing: true,
-        width: 60,
-        maxWidth: 60,
+        key: 'id',
+        id: 'id',
+        dataKey: 'id',
+        title: '',
+        width: 50,
+        frozen: true,
       },
-      ...Object.keys(json[0]).map(key => ({ Header: key, accessor: key, canResize: true })),
+      ...Object.keys(json[0]).map(key => ({
+        key,
+        id: key,
+        dataKey: key,
+        title: key,
+        width: 100,
+        resizable: true,
+      })),
     ];
   }, [JSON.stringify(json)]);
 
   const data = useMemo(() => {
     if (!json) return [];
-    return json.map((row, index) => ({ ...row, index: index + 1 })).slice(0, 50);
+    return json.map((row, index) => ({ ...row, id: index + 1 }));
   }, [JSON.stringify(json)]);
-
-  const {
-    headerGroups,
-    rows,
-    prepareRow,
-    getTableProps,
-    getTableBodyProps,
-    totalColumnsWidth,
-    visibleColumns,
-  } = useTable(
-    {
-      columns,
-      data,
-    },
-    useFlexLayout,
-    useResizeColumns,
-  );
-
-  const columnWidths = useMemo(
-    () => visibleColumns.map(column => column.width),
-    [JSON.stringify(visibleColumns)],
-  );
 
   return (
     <Wrapper>
       <TableContainer ref={tableContainerRef}>
-        <Table stickyHeader size="small" {...getTableProps()}>
-          <TableHead ref={tableHeaderRef}>
-            {headerGroups.map(headerGroup => (
-              <TableRow key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, i) => (
-                  <ColumnHeaderCell
-                    key={column.id}
-                    {...column.getHeaderProps()}
-                    as={i === 0 ? RowHeaderCell : undefined}
-                  >
-                    {column.render('Header')}
-                    {column.canResize && <ColumnResizeHandle {...column.getResizerProps()} />}
-                  </ColumnHeaderCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
-          <TableBody
-            rows={rows}
-            getTableBodyProps={getTableBodyProps}
-            prepareRow={prepareRow}
-            totalColumnsWidth={totalColumnsWidth}
-            columnWidths={columnWidths}
-          />
-        </Table>
+        <BaseTable
+          data={data}
+          columns={columns}
+          maxHeight={tableContainerRef.current?.clientHeight ?? 0}
+          fixed
+          width={tableContainerRef.current?.clientWidth ?? 0}
+          headerHeight={30}
+          rowHeight={30}
+        />
       </TableContainer>
     </Wrapper>
   );
