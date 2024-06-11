@@ -3,13 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import xlsx from 'xlsx';
 import {
   Table,
-  TableBody,
   TableCell,
   TableContainer as MuiTableContainer,
   TableHead as MuiTableHead,
@@ -17,6 +16,7 @@ import {
 } from '@material-ui/core';
 import { useFlexLayout, useResizeColumns, useTable } from 'react-table';
 import { useApiContext } from '../../../utilities/ApiProvider';
+import { TableBody } from './TableBody';
 
 const Cell = styled(TableCell)`
   padding-inline: 0.2rem;
@@ -72,6 +72,20 @@ const TableHead = styled(MuiTableHead)`
   z-index: 3;
 `;
 
+const ColumnResizeHandle = styled.div`
+  display: inline-block;
+  background: blue;
+  width: 10px;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateX(50%);
+  z-index: 1;
+  ${'' /* prevents from scrolling while dragging on touch devices */}
+  touch-action:none;
+`;
+
 const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
   const [file, setFile] = useState(uploadedFile);
 
@@ -112,32 +126,39 @@ const useSpreadsheetJson = file => {
 };
 
 export const Spreadsheet = ({ survey, open, currentFile }) => {
+  const tableContainerRef = useRef();
+  const tableHeaderRef = useRef();
   const { file } = useInitialFile(survey?.id, open, currentFile);
   const json = useSpreadsheetJson(file);
 
-  const columns = useMemo(
-    () =>
-      json
-        ? [
-            {
-              Header: '',
-              accessor: 'index',
-              canResize: false,
-              width: 60,
-              maxWidth: 60,
-            },
-            ...Object.keys(json[0]).map(key => ({ Header: key, accessor: key, canResize: true })),
-          ]
-        : [],
-    [json],
-  );
+  const columns = useMemo(() => {
+    if (!json) return [];
+    return [
+      {
+        Header: '',
+        accessor: 'index',
+        disableResizing: true,
+        width: 60,
+        maxWidth: 60,
+      },
+      ...Object.keys(json[0]).map(key => ({ Header: key, accessor: key, canResize: true })),
+    ];
+  }, [JSON.stringify(json)]);
 
   const data = useMemo(() => {
     if (!json) return [];
-    return json.map((row, index) => ({ ...row, index: index + 1 }));
-  }, [json]);
+    return json.map((row, index) => ({ ...row, index: index + 1 })).slice(0, 100);
+  }, [JSON.stringify(json)]);
 
-  const { headerGroups, rows, prepareRow, getTableProps, getTableBodyProps } = useTable(
+  const {
+    headerGroups,
+    rows,
+    prepareRow,
+    getTableProps,
+    getTableBodyProps,
+    totalColumnsWidth,
+    visibleColumns,
+  } = useTable(
     {
       columns,
       data,
@@ -145,11 +166,14 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
     useFlexLayout,
     useResizeColumns,
   );
+
+  const columnWidths = visibleColumns.map(column => column.width);
+
   return (
     <Wrapper>
-      <TableContainer>
+      <TableContainer ref={tableContainerRef}>
         <Table stickyHeader size="small" {...getTableProps()}>
-          <TableHead>
+          <TableHead ref={tableHeaderRef}>
             {headerGroups.map(headerGroup => (
               <TableRow key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, i) => (
@@ -159,29 +183,19 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
                     as={i === 0 ? RowHeaderCell : undefined}
                   >
                     {column.render('Header')}
+                    {column.canResize && <ColumnResizeHandle {...column.getResizerProps()} />}
                   </ColumnHeaderCell>
                 ))}
               </TableRow>
             ))}
           </TableHead>
-          <TableBody {...getTableBodyProps()}>
-            {rows.map(row => {
-              prepareRow(row);
-              return (
-                <TableRow key={row.id} {...row.getRowProps()}>
-                  {row.cells.map((cell, i) => (
-                    <Cell
-                      key={cell.id}
-                      {...cell.getCellProps()}
-                      as={i === 0 ? RowHeaderCell : undefined}
-                    >
-                      {cell.render('Cell')}
-                    </Cell>
-                  ))}
-                </TableRow>
-              );
-            })}
-          </TableBody>
+          <TableBody
+            rows={rows}
+            getTableBodyProps={getTableBodyProps}
+            prepareRow={prepareRow}
+            totalColumnsWidth={totalColumnsWidth}
+            columnWidths={columnWidths}
+          />
         </Table>
       </TableContainer>
     </Wrapper>
