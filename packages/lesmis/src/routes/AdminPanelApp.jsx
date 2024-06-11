@@ -3,27 +3,27 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
-  LogoutPage,
   PrivateRoute,
   ResourcePage,
   TabPageLayout,
   getFlattenedChildViews,
+  PageContentWrapper,
+  AUTH_ROUTES,
+  AuthLayout,
+  useUser,
+  getHasBESAdminAccess,
   AppPageLayout,
   VizBuilderApp,
-  PageContentWrapper,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRedirect } from './LesmisAdminRedirect';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
+import { useAdminPanelUrl, useI18n } from '../utils';
 import { Footer } from '../components';
 import { getRoutes } from '../views/AdminPanel/routes';
-import { getIsBESAdmin } from '../views/AdminPanel/authentication';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
 
 const PageContentContainerComponent = styled(PageContentWrapper)`
@@ -37,6 +37,10 @@ const PageContentContainerComponent = styled(PageContentWrapper)`
 `;
 
 const AdminPanelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 30rem;
   nav a {
     font-size: 0.875rem; // make the font size smaller to fit more text in the nav and match the default font size
   }
@@ -45,25 +49,32 @@ const AdminPanelWrapper = styled.div`
   }
 `;
 
-const AdminPanelApp = ({ user, isBESAdmin }) => {
+const AdminPanelApp = () => {
   const { translate } = useI18n();
-  const location = useLocation();
+  const { data: user } = useUser();
   const adminUrl = useAdminPanelUrl();
-  const userHasAdminPanelAccess = hasAdminPanelAccess(user);
+  const hasBESAdminAccess = getHasBESAdminAccess(user);
 
-  const routes = getRoutes(adminUrl, translate, isBESAdmin);
+  const routes = getRoutes(adminUrl, translate, hasBESAdminAccess);
 
   return (
     <AdminPanelWrapper>
       <Routes>
-        <Route path="/login" element={<AdminPanelLoginPage />} />
-        <Route path="/logout" element={<LogoutPage redirectTo={`${adminUrl}/login`} />} />
+        <Route
+          element={
+            <AuthLayout
+              logo={{
+                url: '/lesmis-logo-white.svg',
+                alt: 'LESMIS Admin Panel Logo',
+              }}
+            />
+          }
+        >
+          <Route path={AUTH_ROUTES.LOGIN} element={<AdminPanelLoginPage />} />
+        </Route>
 
-        <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
-          <Route
-            path="/"
-            element={<LesmisAdminRedirect hasAdminPanelAccess={userHasAdminPanelAccess} />}
-          >
+        <Route path="/" element={<PrivateRoute basePath={adminUrl} />}>
+          <Route path="/" element={<LesmisAdminRedirect />}>
             <Route
               element={
                 <AppPageLayout
@@ -102,7 +113,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
                           <ResourcePage
                             actionLabel={translate('admin.action')}
                             {...childRoute}
-                            hasBESAdminAccess={isBESAdmin}
+                            hasBESAdminAccess={hasBESAdminAccess}
                           />
                         )
                       }
@@ -114,7 +125,6 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
             </Route>
             <Route
               path="/viz-builder/*"
-              hasAdminPanelAccess={userHasAdminPanelAccess}
               element={
                 <VizBuilderApp
                   logo={{
@@ -127,20 +137,6 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
               }
             />
           </Route>
-          <Route
-            path="/viz-builder/*"
-            hasAdminPanelAccess={userHasAdminPanelAccess}
-            element={
-              <VizBuilderApp
-                logo={{
-                  url: '/lesmis-logo-white.svg',
-                  alt: 'LESMIS Admin Panel Logo',
-                }}
-                homeLink={`${adminUrl}/survey-responses`}
-                Footer={Footer}
-              />
-            }
-          />
         </Route>
         <Route path="not-authorised" element={<NotAuthorisedView />} />
 
@@ -160,25 +156,4 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
   );
 };
 
-AdminPanelApp.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string,
-    email: PropTypes.string,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }),
-  isBESAdmin: PropTypes.bool,
-};
-
-AdminPanelApp.defaultProps = {
-  isBESAdmin: false,
-  user: {},
-};
-
-export default connect(
-  state => ({
-    user: state?.authentication?.user || {},
-    isBESAdmin: getIsBESAdmin(state),
-  }),
-  null,
-)(AdminPanelApp);
+export default AdminPanelApp;

@@ -4,10 +4,13 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Avatar, Divider, Typography } from '@material-ui/core';
 import { Tooltip } from '@tupaia/ui-components';
-import { UserLink } from './UserLink';
+import { UserButton } from './UserButton';
+import { useUser } from '../../api/queries';
+import { useLogout } from '../../api/mutations';
 
 const Wrapper = styled.div`
   padding-inline: 1.25rem;
@@ -26,7 +29,12 @@ const UserEmail = styled(Typography)`
   margin-block-end: 0.9rem;
 `;
 
-export const UserProfileInfo = ({ user, profileLink, isFullWidth }) => {
+export const UserProfileInfo = ({ profileLink, isFullWidth }) => {
+  const { isLoggedIn, data: user, isLoading } = useUser();
+  const { mutate: logout } = useLogout();
+
+  if (isLoading) return null;
+
   if (!user) return null;
 
   const name = user.firstName || user.lastName ? `${user.firstName} ${user.lastName}` : null;
@@ -41,9 +49,9 @@ export const UserProfileInfo = ({ user, profileLink, isFullWidth }) => {
     }`;
     return (
       <Tooltip title={profileLink.label}>
-        <UserLink to={profileLink.to} aria-label={profileLink.label}>
+        <UserButton to={profileLink.to} aria-label={profileLink.label} as={Link}>
           <Avatar>{initials}</Avatar>
-        </UserLink>
+        </UserButton>
       </Tooltip>
     );
   }
@@ -53,22 +61,16 @@ export const UserProfileInfo = ({ user, profileLink, isFullWidth }) => {
       <UserEmail>{user.email}</UserEmail>
       <Divider />
       {profileLink && (
-        <UserLink key={profileLink.to} to={profileLink.to}>
+        <UserButton key={profileLink.to} to={profileLink.to} component={Link}>
           {profileLink.label}
-        </UserLink>
+        </UserButton>
       )}
-      <UserLink to="/logout">Log out</UserLink>
+      {isLoggedIn && <UserButton onClick={logout}>Log out</UserButton>}
     </Wrapper>
   );
 };
 
 UserProfileInfo.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }).isRequired,
   profileLink: PropTypes.shape({
     label: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
