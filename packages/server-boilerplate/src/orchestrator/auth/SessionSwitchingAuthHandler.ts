@@ -36,7 +36,7 @@ export class SessionSwitchingAuthHandler implements AuthHandler {
     await this.getSession();
 
     if (this.session) {
-      return this.session.getAuthHeader();
+      return this.session.getAuthHeader(this.req);
     }
 
     return createBasicHeader(

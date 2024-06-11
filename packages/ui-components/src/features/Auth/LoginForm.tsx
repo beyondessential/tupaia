@@ -80,7 +80,7 @@ export const LoginForm = ({
     password = 'Password',
     forgotPassword = 'Forgot password?',
     login = 'Log in',
-    dontHaveAnAccount = "Don't have an account?",
+    dontHaveAnAccount = 'Don’t have an account?',
     register = 'Register here',
   } = labels || {};
   return (
@@ -89,6 +89,7 @@ export const LoginForm = ({
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         <FormInput
+          autoComplete="email"
           autoFocus
           id="email"
           name="email"
@@ -100,6 +101,7 @@ export const LoginForm = ({
           disabled={isLoading}
         />
         <FormInput
+          autoComplete="current-password"
           id="password"
           name="password"
           type="password"

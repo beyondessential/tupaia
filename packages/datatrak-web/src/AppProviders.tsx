@@ -12,23 +12,29 @@ import { theme } from './theme';
 import { Toast } from './components';
 import { errorToast } from './utils';
 import { CurrentUserContextProvider } from './api';
+import { REDIRECT_ERROR_PARAM } from './constants';
+
+const handleError = (error: any, query: any) => {
+  if (error.responseData.redirectClient) {
+    // Redirect the browser to the specified URL and display the error
+    window.location.href = `${error.responseData.redirectClient}?${REDIRECT_ERROR_PARAM}=${error.message}`;
+  }
+
+  if (!query?.meta || !query?.meta?.applyCustomErrorHandling) {
+    errorToast(error.message);
+  }
+};
 
 const defaultQueryClient = new QueryClient({
   mutationCache: new MutationCache({
     // use the errorToast function to display errors by default. If you want to override this, apply an meta.applyCustomErrorHandling to the mutation
     onError: (error: any, _variables: any, _context: any, mutation: any) => {
-      if (!mutation?.meta || !mutation?.meta?.applyCustomErrorHandling) {
-        errorToast(error.message);
-      }
+      handleError(error, mutation);
     },
   }),
   queryCache: new QueryCache({
     // use the errorToast function to display errors by default. If you want to override this, apply an meta.applyCustomErrorHandling to the mutation or an onError to the query
-    onError: (error: any, query) => {
-      if (!query?.meta || !query?.meta?.applyCustomErrorHandling) {
-        errorToast(error.message);
-      }
-    },
+    onError: handleError,
   }),
   defaultOptions: {
     queries: {
@@ -50,23 +56,21 @@ export const AppProviders = ({ children, queryClient = defaultQueryClient }: App
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
-          <CurrentUserContextProvider>
-            <CssBaseline />
-            <SnackbarProvider
-              Components={{
-                success: Toast,
-                error: Toast,
-                warning: Toast,
-                info: Toast,
-              }}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-            >
-              {children}
-            </SnackbarProvider>
-          </CurrentUserContextProvider>
+          <CssBaseline />
+          <SnackbarProvider
+            Components={{
+              success: Toast,
+              error: Toast,
+              warning: Toast,
+              info: Toast,
+            }}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <CurrentUserContextProvider>{children}</CurrentUserContextProvider>
+          </SnackbarProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </MuiThemeProvider>
