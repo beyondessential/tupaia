@@ -120,9 +120,26 @@ const parseRows = (
       });
       return result;
     }
+
+    const formattedRowValues = Object.entries(rest).reduce((acc, [key, item]) => {
+      // some items are objects, and we need to parse them to get the value
+      if (typeof item === 'object' && item !== null) {
+        const { value, metadata } = item as { value: any; metadata?: any };
+        acc[key] = formatDataValueByType(
+          {
+            value,
+            metadata,
+          },
+          valueTypeToUse,
+        );
+        return acc;
+      }
+      acc[key] = formatDataValueByType({ value: item }, valueTypeToUse);
+      return acc;
+    }, {});
     // if the row is a regular row, and there is a search filter, then we need to check if the row matches the search filter, and ignore this row if it doesn't. This filter only applies to standard rows, not category rows.
     if (searchFilters?.length > 0) {
-      const matchesSearchFilter = getRowMatchesSearchFilter(row, searchFilters);
+      const matchesSearchFilter = getRowMatchesSearchFilter(formattedRowValues, searchFilters);
 
       if (!matchesSearchFilter) return result;
     }
@@ -130,22 +147,7 @@ const parseRows = (
     result.push({
       title: dataElement,
       onClick: drillDown ? () => onDrillDown(row) : undefined,
-      ...Object.entries(rest).reduce((acc, [key, item]) => {
-        // some items are objects, and we need to parse them to get the value
-        if (typeof item === 'object' && item !== null) {
-          const { value, metadata } = item as { value: any; metadata?: any };
-          acc[key] = formatDataValueByType(
-            {
-              value,
-              metadata,
-            },
-            valueTypeToUse,
-          );
-          return acc;
-        }
-        acc[key] = formatDataValueByType({ value: item }, valueTypeToUse);
-        return acc;
-      }, {}),
+      ...formattedRowValues,
     });
     return result;
   }, []);
