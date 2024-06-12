@@ -28,16 +28,20 @@ const Input = styled(TextField).attrs({
   }
 `;
 
-export const EditField = ({ data, activeCell, onChange }) => {
-  if (!activeCell) return null;
-  const { rowIndex, column } = activeCell;
-  const cellData = data[rowIndex][column] ?? '';
+export const EditField = ({ activeCell, cellData, onChange }) => {
+  const onUpdateValue = e => {
+    if (!activeCell) return;
+    const { rowIndex, column } = activeCell;
+    onChange(rowIndex, column, e.target.value);
+  };
 
-  return <Input id="editable-field" value={cellData} onChange={onChange} />;
+  return (
+    <Input id="editable-field" value={cellData} onChange={onUpdateValue} disabled={!activeCell} />
+  );
 };
 
 EditField.propTypes = {
-  data: PropTypes.array.isRequired,
+  cellData: PropTypes.string.isRequired,
   activeCell: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
 };

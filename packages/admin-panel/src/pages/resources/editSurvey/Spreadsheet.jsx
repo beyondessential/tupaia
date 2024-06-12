@@ -51,14 +51,17 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
   const [activeCell, setActiveCell] = useState(null);
   const { json, setJson } = useSpreadsheetJSON(survey?.id, open, currentFile);
 
-  const getIsCellActive = ({ rowIndex, columnIndex }) => {
-    return activeCell?.rowIndex === rowIndex && activeCell?.columnIndex === columnIndex;
-  };
-
   const updateActiveCell = cell => {
     if (!cell) return setActiveCell(null);
-    const { rowIndex, columnIndex } = cell;
-    setActiveCell({ rowIndex, column: columns[columnIndex].id });
+    setActiveCell(cell);
+  };
+
+  const updateCellData = (rowIndex, column, value) => {
+    const updatedData = [...json];
+    updatedData[rowIndex][column] = value;
+
+    // update the data
+    setJson(updatedData);
   };
 
   const EditableCellComponent = props => (
@@ -66,8 +69,9 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
       {...props}
       activeCell={activeCell}
       setActiveCell={updateActiveCell}
-      getIsCellActive={getIsCellActive}
       editFieldRef={editFieldRef}
+      onChangeCellData={updateCellData}
+      column={columns[props.columnIndex]?.id}
     />
   );
 
@@ -98,23 +102,14 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
     return json.map((row, index) => ({ ...row, id: index + 1 }));
   }, [JSON.stringify(json)]);
 
-  const updateCellData = e => {
-    const { rowIndex, column } = activeCell;
-    const updatedData = [...json];
-    updatedData[rowIndex][column] = e.target.value;
-
-    // update the data
-    setJson(updatedData);
-  };
-
   return (
     <Wrapper>
       <TableContainer ref={tableContainerRef}>
         <EditField
           id="editable-field"
           activeCell={activeCell}
-          data={data}
           onChange={updateCellData}
+          cellData={data[activeCell?.rowIndex]?.[activeCell?.column] ?? ''}
         />
         <BaseTable
           data={data}

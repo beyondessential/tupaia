@@ -5,13 +5,18 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { TextField } from '@material-ui/core';
 
 const CellContent = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  ${props =>
+    props.$isActive &&
+    css`
+      border: 1px solid ${props.theme.palette.primary.main};
+    `}
 `;
 
 const CellButton = styled.button`
@@ -50,24 +55,16 @@ const EditableCellInput = styled(TextField).attrs({
   }
 `;
 
-export const EditableCell = ({ cellData, rowIndex, columnIndex, setActiveCell }) => {
+export const EditableCell = ({ cellData, rowIndex, setActiveCell, onChangeCellData, column }) => {
   const cellRef = useRef();
+  const [isActive, setIsActive] = useState(false);
   const [editing, setEditing] = useState(false);
 
-  const [value, setValue] = useState(cellData ?? '');
-
-  const toggleEditing = () => {
-    setEditing(!editing);
-  };
-
+  // Because the table memoizes the cells, we need to update the active cell when it changes in it's own state as a way to trigger a re-render
   useEffect(() => {
-    if (editing) setActiveCell({ rowIndex, columnIndex });
+    if (isActive) setActiveCell({ rowIndex, column });
     else setActiveCell(null);
-  }, [editing]);
-
-  useEffect(() => {
-    setValue(cellData);
-  }, [cellData]);
+  }, [isActive]);
 
   const handleClickOutside = e => {
     if (!cellRef.current) return;
@@ -75,6 +72,7 @@ export const EditableCell = ({ cellData, rowIndex, columnIndex, setActiveCell })
     const editableFieldInput = document.getElementById('editable-field');
     if (editableFieldInput && editableFieldInput.contains(e.target)) return;
     setEditing(false);
+    setIsActive(false);
   };
 
   // listener to finish editing when clicking outside the cell
@@ -83,12 +81,36 @@ export const EditableCell = ({ cellData, rowIndex, columnIndex, setActiveCell })
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const onClickCellButton = e => {
+    const isDoubleClick = e.detail === 2;
+    if (isDoubleClick) return handleDoubleClick();
+    handleSingleClick();
+  };
+
+  const handleSingleClick = () => {
+    if (!isActive) {
+      return setIsActive(true);
+    }
+    if (!editing) {
+      return setEditing(true);
+    }
+  };
+
+  const handleDoubleClick = () => {
+    setIsActive(true);
+    setEditing(true);
+  };
+
+  const onChange = e => {
+    onChangeCellData(rowIndex, column, e.target.value);
+  };
+
   return (
-    <CellContent ref={cellRef}>
+    <CellContent ref={cellRef} $isActive={isActive}>
       {editing ? (
-        <EditableCellInput value={value} onChange={e => setValue(e.target.value)} />
+        <EditableCellInput value={cellData} onChange={onChange} />
       ) : (
-        <CellButton onClick={toggleEditing}>{value}</CellButton>
+        <CellButton onClick={onClickCellButton}>{cellData}</CellButton>
       )}
     </CellContent>
   );
@@ -97,6 +119,7 @@ export const EditableCell = ({ cellData, rowIndex, columnIndex, setActiveCell })
 EditableCell.propTypes = {
   cellData: PropTypes.string.isRequired,
   rowIndex: PropTypes.number.isRequired,
-  columnIndex: PropTypes.number.isRequired,
+  column: PropTypes.string.isRequired,
   setActiveCell: PropTypes.func.isRequired,
+  onChangeCellData: PropTypes.func.isRequired,
 };
