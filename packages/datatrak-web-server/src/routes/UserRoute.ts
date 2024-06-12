@@ -49,7 +49,7 @@ export class UserRoute extends Route<UserRequest> {
       project = projects.find((p: WebServerProjectRequest.ResBody) => p.id === projectId);
     }
     if (countryId) {
-      const countryResponse = await ctx.services.central.fetchResources(`/entities/${countryId}`, {
+      const countryResponse = await ctx.services.central.fetchResources(`entities/${countryId}`, {
         columns: ['id', 'name', 'code'],
       });
       country = countryResponse || null;

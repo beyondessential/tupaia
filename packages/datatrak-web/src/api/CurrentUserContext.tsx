@@ -5,7 +5,6 @@
 import React, { createContext, useContext } from 'react';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FullPageLoader } from '@tupaia/ui-components';
-import { ErrorDisplay } from '../components';
 import { useUser } from './queries';
 
 export type CurrentUserContextType = DatatrakWebUserRequest.ResBody & { isLoggedIn: boolean };
@@ -25,15 +24,6 @@ export const CurrentUserContextProvider = ({ children }: { children: React.React
 
   if (currentUserQuery.isLoading) {
     return <FullPageLoader />;
-  }
-
-  if (currentUserQuery.isError) {
-    return (
-      <ErrorDisplay
-        title="Error loading user"
-        errorMessage={(currentUserQuery.error as Error)?.message}
-      />
-    );
   }
 
   const data = currentUserQuery.data;
