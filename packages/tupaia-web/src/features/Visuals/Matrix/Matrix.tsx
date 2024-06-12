@@ -236,7 +236,7 @@ const MatrixVisual = () => {
     setSearchFilters([]);
   }, [activeDrillDownId, reportPeriod]);
 
-  if (!parsedRows.length && !searchFilters) {
+  if (!parsedRows.length && !searchFilters.length) {
     return <NoData config={config} report={report} />;
   }
 
@@ -290,11 +290,19 @@ export const Matrix = () => {
   const { isEnlarged, config } = useContext(DashboardItemContext);
   // add a typeguard here to keep TS happy
   // if the item is not enlarged and is a matrix, then we show the preview, because there won't be any loaded data at this point
-  if (!isEnlarged && config?.type === DashboardItemType.Matrix)
-    return <MatrixPreview config={config} />;
+
+  if (config?.type !== DashboardItemType.Matrix) return null;
+
+  if (!isEnlarged)
+    return (
+      <Container>
+        <MobileWarning />
+        <MatrixPreview config={config} />;
+      </Container>
+    );
+
   return (
     <Container>
-      <MobileWarning />
       <MatrixVisual />
     </Container>
   );
