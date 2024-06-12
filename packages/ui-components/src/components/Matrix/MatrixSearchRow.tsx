@@ -13,7 +13,7 @@ import { getFlattenedColumns } from './utils';
 
 const SearchInput = styled(TextField)`
   margin: 0;
-  width: 12rem; // apply a min-width to prevent the input from shrinking too much if the column content is too narrow
+  width: 11rem; // apply a min-width to prevent the input from shrinking too much if the column content is too narrow
   .MuiInputBase-root {
     background-color: transparent;
     font-size: 0.7rem; // override this to inherit the font size from the cell
