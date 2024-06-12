@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useReducer, useRef, useState } from 'react';
+import React, { useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody, TableContainer } from '@material-ui/core';
 import { MatrixHeader } from './MatrixHeader';

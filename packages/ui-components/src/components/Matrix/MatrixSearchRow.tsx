@@ -13,17 +13,27 @@ import { getFlattenedColumns } from './utils';
 
 const SearchInput = styled(TextField)`
   margin: 0;
-  min-width: 9rem; // apply a min-width to prevent the input from shrinking too much if the column content is too narrow
+  width: 12rem; // apply a min-width to prevent the input from shrinking too much if the column content is too narrow
   .MuiInputBase-root {
     background-color: transparent;
     font-size: 0.7rem; // override this to inherit the font size from the cell
   }
   .MuiSvgIcon-root {
     font-size: 1rem;
+    color: ${({ theme }) => theme.palette.divider};
+  }
+  .MuiIconButton-root .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.text.primary};
   }
   .MuiInputBase-input {
     padding-block: 0.7rem;
     padding-inline: 0.2rem;
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.divider};
+  }
+  .MuiInputBase-input::placeholder {
+    color: ${({ theme }) => theme.palette.divider};
   }
 `;
 
@@ -61,7 +71,7 @@ const Search = ({ value, onChange, onClear, columnKey }: SearchProps) => {
 
   return (
     <SearchInput
-      placeholder="Search"
+      placeholder="Search..."
       value={searchValue}
       onChange={changeSearchFilter}
       InputProps={{
