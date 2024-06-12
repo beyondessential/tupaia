@@ -56,6 +56,7 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
     setActiveCell(cell);
   };
 
+  // This needs to accept the rowIndex and column name to update the correct cell, because when we pass this into the cell, it memoizes the function and doesn't recognise that the active cell has been set by this point
   const updateCellData = (rowIndex, column, value) => {
     const updatedData = [...json];
     updatedData[rowIndex][column] = value;
@@ -104,13 +105,13 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
 
   return (
     <Wrapper>
+      <EditField
+        id="editable-field"
+        activeCell={activeCell}
+        onChange={updateCellData}
+        cellData={data[activeCell?.rowIndex]?.[activeCell?.column] ?? ''}
+      />
       <TableContainer ref={tableContainerRef}>
-        <EditField
-          id="editable-field"
-          activeCell={activeCell}
-          onChange={updateCellData}
-          cellData={data[activeCell?.rowIndex]?.[activeCell?.column] ?? ''}
-        />
         <BaseTable
           data={data}
           columns={columns}

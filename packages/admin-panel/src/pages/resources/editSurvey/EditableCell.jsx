@@ -66,6 +66,7 @@ export const EditableCell = ({ cellData, rowIndex, setActiveCell, onChangeCellDa
     else setActiveCell(null);
   }, [isActive]);
 
+  // listener to finish editing and set as inactive when clicking outside the cell
   const handleClickOutside = e => {
     if (!cellRef.current) return;
     if (cellRef.current.contains(e.target)) return;
@@ -88,14 +89,17 @@ export const EditableCell = ({ cellData, rowIndex, setActiveCell, onChangeCellDa
   };
 
   const handleSingleClick = () => {
+    // on first click, set as active
     if (!isActive) {
       return setIsActive(true);
     }
+    // on second click, start editing
     if (!editing) {
       return setEditing(true);
     }
   };
 
+  // on double click, set as active and start editing straight away
   const handleDoubleClick = () => {
     setIsActive(true);
     setEditing(true);
