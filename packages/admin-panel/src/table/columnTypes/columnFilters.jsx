@@ -106,15 +106,6 @@ export const ArrayFilter = React.memo(({ onChange, value }) => {
 
   const onChangeSelection = (event, newSelection) => {
     onChange(newSelection);
-    // onChange(
-    //   newSelection === null
-    //     ? undefined
-    //     : {
-    //         comparator: '@>',
-    //         comparisonValue: `{${newSelection.join(',')}}`,
-    //         castAs: 'text[]',
-    //       },
-    // );
   };
 
   const getSelection = () => {
@@ -143,7 +134,6 @@ export const ArrayFilter = React.memo(({ onChange, value }) => {
         handleHomeEndKeys: true,
         renderTags: (values, getTagProps) => {
           return values.map((option, index) => {
-            console.log(getTagProps({ index }));
             return <Chip color="primary" label={option} {...getTagProps({ index })} />;
           });
         },
@@ -157,4 +147,8 @@ export const ArrayFilter = React.memo(({ onChange, value }) => {
 ArrayFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.arrayOf(PropTypes.string),
+};
+
+ArrayFilter.defaultProps = {
+  value: [],
 };
