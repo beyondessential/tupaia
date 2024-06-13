@@ -41,7 +41,7 @@ export const PasswordForm = ({
       options: FORM_FIELD_VALIDATION.PASSWORD,
     },
     {
-      name: 'passwordConfirm',
+      name: 'newPasswordConfirm',
       label: 'Confirm password',
       options: {
         validate: (value: string) =>
