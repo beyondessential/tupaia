@@ -97,7 +97,12 @@ export const EditableCell = ({
     if (!cellRef.current) return;
     if (cellRef.current.contains(e.target)) return;
     const editableFieldInput = document.getElementById('editable-field');
-    if (editableFieldInput && editableFieldInput.contains(e.target)) return;
+
+    // if the click is on the input, don't set as inactive, just remove edit mode so the input can be used
+    if (editableFieldInput && editableFieldInput.contains(e.target)) {
+      setEditMode(false);
+      return;
+    }
 
     setCellInactive();
   };
@@ -135,7 +140,7 @@ export const EditableCell = ({
     setEditValue(e.target.value);
   };
 
-  // if we ever programmatically change the cell data, update the edit value
+  //if we ever programmatically change the cell data, update the edit value
   useEffect(() => {
     if (!isEditingCell || cellData === editValue) return;
 

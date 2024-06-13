@@ -53,11 +53,6 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
   const [editMode, setEditMode] = useState(false);
   const { json, setJson, isLoading } = useSpreadsheetJSON(survey?.id, open, currentFile);
 
-  const updateActiveCell = cell => {
-    if (!cell) return setActiveCell(null);
-    setActiveCell(cell);
-  };
-
   // This needs to accept the rowIndex and column name to update the correct cell, because when we pass this into the cell, it memoizes the function and doesn't recognise that the active cell has been set by this point
   const updateCellData = (rowIndex, column, value) => {
     const updatedData = [...json];
@@ -109,7 +104,7 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
             <EditableCell
               {...props}
               activeCell={activeCell}
-              setActiveCell={updateActiveCell}
+              setActiveCell={setActiveCell}
               onChangeCellData={updateCellData}
               // eslint-disable-next-line react/prop-types
               column={columns[props.columnIndex]?.id}
@@ -141,7 +136,7 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
           width={tableContainerRef.current?.clientWidth ?? 0}
           headerHeight={30}
           rowHeight={30}
-          ignoreFunctionInColumnCompare={false}
+          ignoreFunctionInColumnCompare={false} // to allow the cells to receive updated props and re-render
         >
           {columns.map(column => (
             <Column key={column.id} {...column} />

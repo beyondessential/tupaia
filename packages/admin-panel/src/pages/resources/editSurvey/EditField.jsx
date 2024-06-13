@@ -3,10 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
+import { useDebounce } from '../../../utilities';
 
 const Input = styled(TextField).attrs({
   variant: 'outlined',
@@ -33,14 +34,23 @@ const Placeholder = styled.div`
 `;
 
 export const EditField = ({ activeCell, cellData, onChange }) => {
+  const [value, setValue] = useState(cellData);
+  const debouncedValue = useDebounce(value, 500);
+
+  useEffect(() => {
+    if (debouncedValue === cellData || !activeCell) return;
+    const { rowIndex, column } = activeCell;
+    onChange(rowIndex, column, debouncedValue);
+  }, [debouncedValue]);
+
+  useEffect(() => {
+    if (cellData === value) return;
+    setValue(cellData);
+  }, [cellData]);
+
   if (!activeCell) return <Placeholder />;
 
-  const onUpdateValue = e => {
-    const { rowIndex, column } = activeCell;
-    onChange(rowIndex, column, e.target.value);
-  };
-
-  return <Input id="editable-field" value={cellData} onChange={onUpdateValue} />;
+  return <Input id="editable-field" value={value} onChange={e => setValue(e.target.value)} />;
 };
 
 EditField.propTypes = {
