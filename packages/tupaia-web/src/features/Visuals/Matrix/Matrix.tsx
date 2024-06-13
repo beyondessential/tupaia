@@ -139,7 +139,13 @@ const parseRows = (
     }, {});
     // if the row is a regular row, and there is a search filter, then we need to check if the row matches the search filter, and ignore this row if it doesn't. This filter only applies to standard rows, not category rows.
     if (searchFilters?.length > 0) {
-      const matchesSearchFilter = getRowMatchesSearchFilter(formattedRowValues, searchFilters);
+      const matchesSearchFilter = getRowMatchesSearchFilter(
+        {
+          dataElement,
+          ...formattedRowValues,
+        },
+        searchFilters,
+      );
 
       if (!matchesSearchFilter) return result;
     }
@@ -252,6 +258,7 @@ const MatrixVisual = () => {
         searchFilters={searchFilters}
         updateSearchFilter={updateSearchFilter}
         clearSearchFilter={clearSearchFilter}
+        enableSearch
       />
       {searchFilters?.length > 0 && !parsedRows.length && (
         <NoResultsMessage>No results found</NoResultsMessage>
