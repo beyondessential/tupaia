@@ -22,8 +22,11 @@ const SearchInput = styled(TextField)`
     font-size: 1rem;
     color: ${({ theme }) => theme.palette.divider};
   }
-  .MuiIconButton-root .MuiSvgIcon-root {
-    color: ${({ theme }) => theme.palette.text.primary};
+  .MuiIconButton-root {
+    padding: 0.2rem;
+    .MuiSvgIcon-root {
+      color: ${({ theme }) => theme.palette.text.primary};
+    }
   }
   .MuiInputBase-input {
     padding-block: 0.7rem;
