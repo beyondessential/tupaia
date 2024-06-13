@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { TextField } from '@material-ui/core';
+import { useDebounce } from '../../../utilities';
 
 const CellContent = styled.div`
   display: flex;
@@ -55,25 +56,50 @@ const EditableCellInput = styled(TextField).attrs({
   }
 `;
 
-export const EditableCell = ({ cellData, rowIndex, setActiveCell, onChangeCellData, column }) => {
+export const EditableCell = ({
+  cellData,
+  rowIndex,
+  setActiveCell,
+  onChangeCellData,
+  column,
+  activeCell,
+  editMode,
+  setEditMode,
+}) => {
+  const [editValue, setEditValue] = useState(cellData);
+  const debouncedEditValue = useDebounce(editValue, 500);
   const cellRef = useRef();
-  const [isActive, setIsActive] = useState(false);
-  const [editing, setEditing] = useState(false);
 
-  // Because the table memoizes the cells, we need to update the active cell when it changes in it's own state as a way to trigger a re-render
-  useEffect(() => {
-    if (isActive) setActiveCell({ rowIndex, column });
-    else setActiveCell(null);
-  }, [isActive]);
+  const getIsActive = () => {
+    if (!activeCell) return false;
+    return activeCell.rowIndex === rowIndex && activeCell.column === column;
+  };
+
+  const isActive = getIsActive();
+
+  const isEditingCell = editMode && isActive;
+
+  const setCellInactive = () => {
+    setActiveCell(null);
+    setEditMode(false);
+  };
+
+  const setCellActive = () => {
+    setActiveCell({
+      rowIndex,
+      column,
+    });
+  };
 
   // listener to finish editing and set as inactive when clicking outside the cell
   const handleClickOutside = e => {
+    if (!isActive) return;
     if (!cellRef.current) return;
     if (cellRef.current.contains(e.target)) return;
     const editableFieldInput = document.getElementById('editable-field');
     if (editableFieldInput && editableFieldInput.contains(e.target)) return;
-    setEditing(false);
-    setIsActive(false);
+
+    setCellInactive();
   };
 
   // listener to finish editing when clicking outside the cell
@@ -91,28 +117,42 @@ export const EditableCell = ({ cellData, rowIndex, setActiveCell, onChangeCellDa
   const handleSingleClick = () => {
     // on first click, set as active
     if (!isActive) {
-      return setIsActive(true);
+      return setCellActive();
     }
     // on second click, start editing
-    if (!editing) {
-      return setEditing(true);
+    if (!isEditingCell) {
+      return setEditMode(true);
     }
   };
 
   // on double click, set as active and start editing straight away
   const handleDoubleClick = () => {
-    setIsActive(true);
-    setEditing(true);
+    setCellActive();
+    setEditMode(true);
   };
 
   const onChange = e => {
-    onChangeCellData(rowIndex, column, e.target.value);
+    setEditValue(e.target.value);
   };
+
+  // if we ever programmatically change the cell data, update the edit value
+  useEffect(() => {
+    if (!isEditingCell || cellData === editValue) return;
+
+    setEditValue(cellData);
+  }, [cellData]);
+
+  // when the debounced edit value changes, update the cell data
+  useEffect(() => {
+    if (!isEditingCell || debouncedEditValue === cellData) return;
+
+    onChangeCellData(rowIndex, column, debouncedEditValue);
+  }, [debouncedEditValue]);
 
   return (
     <CellContent ref={cellRef} $isActive={isActive}>
-      {editing ? (
-        <EditableCellInput value={cellData} onChange={onChange} />
+      {isEditingCell ? (
+        <EditableCellInput value={editValue} onChange={onChange} />
       ) : (
         <CellButton onClick={onClickCellButton}>{cellData}</CellButton>
       )}
@@ -126,4 +166,11 @@ EditableCell.propTypes = {
   column: PropTypes.string.isRequired,
   setActiveCell: PropTypes.func.isRequired,
   onChangeCellData: PropTypes.func.isRequired,
+  activeCell: PropTypes.object,
+  editMode: PropTypes.bool.isRequired,
+  setEditMode: PropTypes.func.isRequired,
+};
+
+EditableCell.defaultProps = {
+  activeCell: null,
 };

@@ -3,14 +3,15 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import BaseTable from 'react-base-table';
+import BaseTable, { Column } from 'react-base-table';
 import 'react-base-table/styles.css';
 import { EditableCell } from './EditableCell';
 import { EditField } from './EditField';
 import { useSpreadsheetJSON } from './useSpreadsheetJSON';
+import { RowHeaderCell } from './RowHeaderCell';
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,8 +48,8 @@ const TableContainer = styled.div`
 
 export const Spreadsheet = ({ survey, open, currentFile }) => {
   const tableContainerRef = useRef();
-  const editFieldRef = useRef();
   const [activeCell, setActiveCell] = useState(null);
+  const [editMode, setEditMode] = useState(false);
   const { json, setJson } = useSpreadsheetJSON(survey?.id, open, currentFile);
 
   const updateActiveCell = cell => {
@@ -65,16 +66,23 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
     setJson(updatedData);
   };
 
-  const EditableCellComponent = props => (
-    <EditableCell
-      {...props}
-      activeCell={activeCell}
-      setActiveCell={updateActiveCell}
-      editFieldRef={editFieldRef}
-      onChangeCellData={updateCellData}
-      column={columns[props.columnIndex]?.id}
-    />
-  );
+  const addNewRow = rowIndex => {
+    const updatedData = [...json];
+    const generatedRow = columns.reduce((acc, column) => {
+      if (column.id === 'id') return acc;
+      acc[column.id] = '';
+      return acc;
+    }, {});
+    updatedData.splice(rowIndex, 0, generatedRow);
+
+    setJson(updatedData);
+  };
+
+  const removeRow = rowIndex => {
+    const updatedData = [...json];
+    updatedData.splice(rowIndex, 1);
+    setJson(updatedData);
+  };
 
   const columns = json
     ? [
@@ -83,8 +91,11 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
           id: 'id',
           dataKey: 'id',
           title: '',
-          width: 50,
-          frozen: true,
+          frozen: 'left',
+          width: 60,
+          cellRenderer: props => (
+            <RowHeaderCell {...props} addNewRow={addNewRow} removeRow={removeRow} />
+          ),
         },
         ...Object.keys(json[0]).map(key => ({
           key,
@@ -93,15 +104,23 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
           title: key,
           width: 100,
           resizable: true,
-          cellRenderer: EditableCellComponent,
+          cellRenderer: props => (
+            <EditableCell
+              {...props}
+              activeCell={activeCell}
+              setActiveCell={updateActiveCell}
+              onChangeCellData={updateCellData}
+              // eslint-disable-next-line react/prop-types
+              column={columns[props.columnIndex]?.id}
+              editMode={editMode}
+              setEditMode={setEditMode}
+            />
+          ),
         })),
       ]
     : [];
 
-  const data = useMemo(() => {
-    if (!json) return [];
-    return json.map((row, index) => ({ ...row, id: index + 1 }));
-  }, [JSON.stringify(json)]);
+  const data = json ? json.map(row => ({ ...row, id: Math.random() * 1000 })) : [];
 
   return (
     <Wrapper>
@@ -120,7 +139,12 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
           width={tableContainerRef.current?.clientWidth ?? 0}
           headerHeight={30}
           rowHeight={30}
-        />
+          ignoreFunctionInColumnCompare={false}
+        >
+          {columns.map(column => (
+            <Column key={column.id} {...column} />
+          ))}
+        </BaseTable>
       </TableContainer>
     </Wrapper>
   );
