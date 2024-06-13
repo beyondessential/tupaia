@@ -28,16 +28,19 @@ const Input = styled(TextField).attrs({
   }
 `;
 
+const Placeholder = styled.div`
+  height: 2.5rem;
+`;
+
 export const EditField = ({ activeCell, cellData, onChange }) => {
+  if (!activeCell) return <Placeholder />;
+
   const onUpdateValue = e => {
-    if (!activeCell) return;
     const { rowIndex, column } = activeCell;
     onChange(rowIndex, column, e.target.value);
   };
 
-  return (
-    <Input id="editable-field" value={cellData} onChange={onUpdateValue} disabled={!activeCell} />
-  );
+  return <Input id="editable-field" value={cellData} onChange={onUpdateValue} />;
 };
 
 EditField.propTypes = {

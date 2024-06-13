@@ -9,17 +9,21 @@ import { useApiContext } from '../../../utilities/ApiProvider';
 
 const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
   const [file, setFile] = useState(uploadedFile);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [error, setError] = useState(null);
   const api = useApiContext();
   const getInitialFile = async () => {
     try {
+      setIsLoading(true);
       const blob = await api.download(`export/surveys/${surveyId}`, {}, null, true);
       const arrayBuffer = await blob.arrayBuffer();
 
       setFile(arrayBuffer);
     } catch (e) {
       setError(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -30,11 +34,11 @@ const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
     } else getInitialFile();
   }, [isOpen]);
 
-  return { file, error };
+  return { file, error, isLoading };
 };
 
 export const useSpreadsheetJSON = (surveyId, isOpen, uploadedFile = null) => {
-  const { file } = useInitialFile(surveyId, isOpen, uploadedFile);
+  const { file, isLoading, error } = useInitialFile(surveyId, isOpen, uploadedFile);
   const [json, setJson] = useState(null);
 
   useEffect(() => {
@@ -44,5 +48,5 @@ export const useSpreadsheetJSON = (surveyId, isOpen, uploadedFile = null) => {
     setJson(sheetJson);
   }, [file]);
 
-  return { json, setJson };
+  return { json, setJson, isLoading, error };
 };

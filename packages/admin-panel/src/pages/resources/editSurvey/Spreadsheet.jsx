@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import BaseTable, { Column } from 'react-base-table';
 import 'react-base-table/styles.css';
+import { SpinningLoader } from '@tupaia/ui-components';
 import { EditableCell } from './EditableCell';
 import { EditField } from './EditField';
 import { useSpreadsheetJSON } from './useSpreadsheetJSON';
@@ -50,7 +51,7 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
   const tableContainerRef = useRef();
   const [activeCell, setActiveCell] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const { json, setJson } = useSpreadsheetJSON(survey?.id, open, currentFile);
+  const { json, setJson, isLoading } = useSpreadsheetJSON(survey?.id, open, currentFile);
 
   const updateActiveCell = cell => {
     if (!cell) return setActiveCell(null);
@@ -131,6 +132,7 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
         cellData={data[activeCell?.rowIndex]?.[activeCell?.column] ?? ''}
       />
       <TableContainer ref={tableContainerRef}>
+        {isLoading && <SpinningLoader />}
         <BaseTable
           data={data}
           columns={columns}
