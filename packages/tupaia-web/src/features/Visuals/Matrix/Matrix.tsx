@@ -295,17 +295,12 @@ export const Matrix = () => {
 
   if (config?.type !== DashboardItemType.Matrix) return null;
 
-  if (!isEnlarged)
-    return (
-      <Container>
-        <MobileWarning />
-        <MatrixPreview config={config} />;
-      </Container>
-    );
+  const component = isEnlarged ? <MatrixVisual /> : <MatrixPreview config={config} />;
 
   return (
     <Container>
-      <MatrixVisual />
+      <MobileWarning />
+      {component}
     </Container>
   );
 };
