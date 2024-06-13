@@ -44,6 +44,7 @@ export const RowHeaderCell = ({ rowIndex, addNewRow, removeRow }) => {
       <Menu id="row-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={() => addNewRow(rowIndex)}>Add row above</MenuItem>
         <MenuItem onClick={() => addNewRow(rowIndex + 1)}>Add row below</MenuItem>
+        <MenuItem onClick={() => removeRow(rowIndex)}>Delete row</MenuItem>
       </Menu>
     </>
   );
