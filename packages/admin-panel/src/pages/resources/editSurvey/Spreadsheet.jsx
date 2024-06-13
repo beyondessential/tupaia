@@ -94,7 +94,6 @@ export const Spreadsheet = ({ data, setData }) => {
       key: column,
       title: column,
       width: 150,
-      min0width: 100,
       resizable: true,
       dataKey: column,
       cellRenderer: props => (
