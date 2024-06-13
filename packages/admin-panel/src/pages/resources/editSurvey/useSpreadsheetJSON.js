@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import xlsx from 'xlsx';
 import { useApiContext } from '../../../utilities/ApiProvider';
 
@@ -28,7 +28,7 @@ const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
   };
 
   useEffect(() => {
-    if (file || !isOpen) return;
+    if (!isOpen) return;
     if (uploadedFile) {
       setFile(uploadedFile);
     } else getInitialFile();
@@ -40,13 +40,31 @@ const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
 export const useSpreadsheetJSON = (surveyId, isOpen, uploadedFile = null) => {
   const { file, isLoading, error } = useInitialFile(surveyId, isOpen, uploadedFile);
   const [json, setJson] = useState(null);
+  const initialData = useRef(null);
+  const [dataHasBeenChanged, setDataHasBeenChanged] = useState(false);
 
   useEffect(() => {
     if (!file || json) return;
     const wb = xlsx.read(file, { type: 'array' });
     const sheetJson = xlsx.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-    setJson(sheetJson);
+    setJson([...sheetJson]);
   }, [file]);
 
-  return { json, setJson, isLoading, error };
+  useEffect(() => {
+    if (!json || initialData?.current) return;
+    // force a deep copy of the json object
+    initialData.current = JSON.parse(JSON.stringify(json));
+  }, [JSON.stringify(json)]);
+
+  useEffect(() => {
+    if (!json || !initialData?.current) return;
+    const dataMatches = json.every((row, i) =>
+      Object.entries(row).every(([key, value]) => {
+        return value === initialData.current?.[i][key];
+      }),
+    );
+    setDataHasBeenChanged(!dataMatches);
+  }, [JSON.stringify(json)]);
+
+  return { json, setJson, isLoading, error, dataHasBeenChanged };
 };
