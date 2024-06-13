@@ -83,7 +83,7 @@ export const useExportSurveyResponses = () => {
           const { error: message } = await getParsedBlob(data);
 
           // Parse content and retrieve 'message'
-          throw new FetchError(message, e.response.status);
+          throw new FetchError(message, e.response.status, data);
         }
       }
     },

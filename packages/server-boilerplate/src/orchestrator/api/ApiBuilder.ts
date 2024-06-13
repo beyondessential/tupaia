@@ -21,7 +21,7 @@ import { UnauthenticatedError } from '@tupaia/utils';
 import morgan from 'morgan';
 import { handleWith, handleError, emptyMiddleware, initialiseApiClient } from '../../utils';
 import { TestRoute } from '../../routes';
-import { LoginRoute, LogoutRoute, OneTimeLoginRoute } from '../routes';
+import { LoginRoute, LogoutRoute, OneTimeLoginRoute, RequestResetPasswordRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { SessionModel } from '../models';
@@ -279,6 +279,12 @@ export class ApiBuilder {
       this.attachVerifyLogin,
       this.logApiRequestMiddleware,
       handleWith(OneTimeLoginRoute),
+    );
+
+    this.app.post(
+      this.formatPath('requestResetPassword'),
+      this.logApiRequestMiddleware,
+      handleWith(RequestResetPasswordRoute),
     );
 
     this.handlers.forEach(handler => handler.add());
