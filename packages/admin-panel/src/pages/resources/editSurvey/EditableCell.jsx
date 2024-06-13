@@ -140,7 +140,7 @@ export const EditableCell = ({
     setEditValue(e.target.value);
   };
 
-  //if we ever programmatically change the cell data, update the edit value
+  // if we ever programmatically change the cell data, update the edit value
   useEffect(() => {
     if (!isEditingCell || cellData === editValue) return;
 

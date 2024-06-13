@@ -6,12 +6,10 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import BaseTable, { Column } from 'react-base-table';
+import BaseTable, { AutoResizer, Column } from 'react-base-table';
 import 'react-base-table/styles.css';
-import { SpinningLoader } from '@tupaia/ui-components';
 import { EditableCell } from './EditableCell';
 import { EditField } from './EditField';
-import { useSpreadsheetJSON } from './useSpreadsheetJSON';
 import { RowHeaderCell } from './RowHeaderCell';
 
 const Wrapper = styled.div`
@@ -24,6 +22,7 @@ const Wrapper = styled.div`
 const TableContainer = styled.div`
   flex: 1;
   overflow: hidden;
+  max-width: 1800px;
   .BaseTable__header-cell {
     background-color: ${props => props.theme.palette.grey['400']};
     border-right: 1px solid white;
@@ -47,76 +46,72 @@ const TableContainer = styled.div`
   }
 `;
 
-export const Spreadsheet = ({ survey, open, currentFile }) => {
+export const Spreadsheet = ({ data, setData }) => {
   const tableContainerRef = useRef();
   const [activeCell, setActiveCell] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const { json, setJson, isLoading } = useSpreadsheetJSON(survey?.id, open, currentFile);
 
   // This needs to accept the rowIndex and column name to update the correct cell, because when we pass this into the cell, it memoizes the function and doesn't recognise that the active cell has been set by this point
   const updateCellData = (rowIndex, column, value) => {
-    const updatedData = [...json];
+    const updatedData = [...data];
     updatedData[rowIndex][column] = value;
 
     // update the data
-    setJson(updatedData);
+    setData(updatedData);
   };
 
+  const fields = data ? Object.keys(data[0]) : [];
+
   const addNewRow = rowIndex => {
-    const updatedData = [...json];
-    const generatedRow = columns.reduce((acc, column) => {
-      if (column.id === 'id') return acc;
-      acc[column.id] = '';
+    const updatedData = [...data];
+    const generatedRow = fields.reduce((acc, field) => {
+      acc[field] = '';
       return acc;
     }, {});
     updatedData.splice(rowIndex, 0, generatedRow);
 
-    setJson(updatedData);
+    setData(updatedData);
   };
 
   const removeRow = rowIndex => {
-    const updatedData = [...json];
+    const updatedData = [...data];
     updatedData.splice(rowIndex, 1);
-    setJson(updatedData);
+    setData(updatedData);
   };
 
-  const columns = json
-    ? [
-        {
-          key: 'id',
-          id: 'id',
-          dataKey: 'id',
-          title: '',
-          frozen: 'left',
-          width: 60,
-          cellRenderer: props => (
-            <RowHeaderCell {...props} addNewRow={addNewRow} removeRow={removeRow} />
-          ),
-        },
-        ...Object.keys(json[0]).map(key => ({
-          key,
-          id: key,
-          dataKey: key,
-          title: key,
-          width: 100,
-          resizable: true,
-          cellRenderer: props => (
-            <EditableCell
-              {...props}
-              activeCell={activeCell}
-              setActiveCell={setActiveCell}
-              onChangeCellData={updateCellData}
-              // eslint-disable-next-line react/prop-types
-              column={columns[props.columnIndex]?.id}
-              editMode={editMode}
-              setEditMode={setEditMode}
-            />
-          ),
-        })),
-      ]
-    : [];
+  const columns = [
+    {
+      key: 'id',
+      title: '',
+      width: 60,
+      align: 'center',
+      frozen: true,
+      cellRenderer: props => (
+        <RowHeaderCell {...props} addNewRow={addNewRow} removeRow={removeRow} />
+      ),
+    },
+    ...fields.map(column => ({
+      key: column,
+      title: column,
+      width: 150,
+      min0width: 100,
+      resizable: true,
+      dataKey: column,
+      cellRenderer: props => (
+        <EditableCell
+          {...props}
+          activeCell={activeCell}
+          setActiveCell={setActiveCell}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          column={column}
+          onChangeCellData={updateCellData}
+        />
+      ),
+    })),
+  ];
 
-  const data = json ? json.map(row => ({ ...row, id: Math.random() * 1000 })) : [];
+  const rowData = data ? data.map(row => ({ ...row, id: Math.random() * 1000 })) : [];
 
   return (
     <Wrapper>
@@ -124,35 +119,38 @@ export const Spreadsheet = ({ survey, open, currentFile }) => {
         id="editable-field"
         activeCell={activeCell}
         onChange={updateCellData}
-        cellData={data[activeCell?.rowIndex]?.[activeCell?.column] ?? ''}
+        cellData={rowData[activeCell?.rowIndex]?.[activeCell?.column] ?? ''}
       />
+
       <TableContainer ref={tableContainerRef}>
-        {isLoading && <SpinningLoader />}
-        <BaseTable
-          data={data}
-          columns={columns}
-          maxHeight={tableContainerRef.current?.clientHeight ?? 0}
-          fixed
-          width={tableContainerRef.current?.clientWidth ?? 0}
-          headerHeight={30}
-          rowHeight={30}
-          ignoreFunctionInColumnCompare={false} // to allow the cells to receive updated props and re-render
-        >
-          {columns.map(column => (
-            <Column key={column.id} {...column} />
-          ))}
-        </BaseTable>
+        <AutoResizer>
+          {({ width, height }) => (
+            <BaseTable
+              data={rowData}
+              columns={columns}
+              maxHeight={height}
+              width={width}
+              headerHeight={30}
+              rowHeight={30}
+              fixed
+              ignoreFunctionInColumnCompare={false} // to allow the cells to receive updated props and re-render
+            >
+              {columns.map(column => (
+                <Column key={column.id} {...column} />
+              ))}
+            </BaseTable>
+          )}
+        </AutoResizer>
       </TableContainer>
     </Wrapper>
   );
 };
 
 Spreadsheet.propTypes = {
-  open: PropTypes.bool.isRequired,
-  survey: PropTypes.object.isRequired,
-  currentFile: PropTypes.object,
+  data: PropTypes.array,
+  setData: PropTypes.func.isRequired,
 };
 
 Spreadsheet.defaultProps = {
-  currentFile: null,
+  data: [],
 };
