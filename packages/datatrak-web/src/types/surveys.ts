@@ -10,7 +10,6 @@ export type SurveyScreen = Survey['screens'][number];
 
 export type SurveyScreenComponent = SurveyScreen['surveyScreenComponents'][0] & {
   updateFormDataOnChange?: boolean;
-  questionNumber?: string;
 };
 
 export type SurveyParams = {
