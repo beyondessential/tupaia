@@ -11,6 +11,7 @@ import {
   ACTION_CANCEL,
   ACTION_CONFIRM,
   ACTION_REQUEST,
+  CLEAR_ERROR,
   COLUMNS_RESIZE,
   DATA_CHANGE_ERROR,
   DATA_CHANGE_REQUEST,
@@ -113,6 +114,7 @@ const refreshDataWithDebounce = debounce(
       const linkHeader = parseLinkHeader(response.headers.get('Link'));
       const totalRecords = parseInt(response.headers.get('X-Total-Count'), 10);
       const lastPageNumber = parseInt(linkHeader.last.page, 10);
+
       dispatch({
         type: DATA_FETCH_SUCCESS,
         reduxId,
@@ -190,6 +192,11 @@ export const deleteRecordFromTable =
         reduxId,
         fetchId,
         errorMessage: error.message,
+        confirmActionMessage: '',
       });
     }
   };
+
+export const clearError = () => ({
+  type: CLEAR_ERROR,
+});

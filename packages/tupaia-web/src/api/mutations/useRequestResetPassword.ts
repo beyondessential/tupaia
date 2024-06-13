@@ -12,7 +12,7 @@ type ResetPasswordParams = {
 export const useRequestResetPassword = () => {
   return useMutation<any, Error, ResetPasswordParams, unknown>(
     ({ emailAddress }: ResetPasswordParams) => {
-      return post('resetPassword', {
+      return post('requestResetPassword', {
         data: {
           emailAddress,
         },

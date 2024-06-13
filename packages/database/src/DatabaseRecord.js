@@ -168,4 +168,9 @@ export class DatabaseRecord {
       this.id = record.id;
     }
   }
+
+  // Delete the record from the database
+  async delete() {
+    await this.model.deleteById(this.id);
+  }
 }
