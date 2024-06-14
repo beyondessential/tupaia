@@ -219,7 +219,12 @@ export const FileUploadField = ({
           </>
         )),
       )}
-      {hasFileSelected && <ClearButton onClick={clearSelection}>Clear selection</ClearButton>}
+      {hasFileSelected && (
+        <ClearButton onClick={clearSelection}>
+          Clear selection
+          {files.length > 1 && <> ({files.length}&nbsp;files)</>}
+        </ClearButton>
+      )}
       {helperText && (
         <FormHelperText component={FormHelperTextComponent}>{helperText}</FormHelperText>
       )}
