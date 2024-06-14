@@ -21,8 +21,6 @@ const STATUS = {
   ERROR: 'error',
 };
 
-const NO_FILE_MESSAGE = 'No file chosen';
-
 const Content = styled(DialogContent)`
   text-align: left;
   min-height: 220px;
@@ -47,7 +45,6 @@ export const ImportModal = ({
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState(NO_FILE_MESSAGE);
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -75,7 +72,6 @@ export const ImportModal = ({
     setErrorMessage(null);
     setSuccessMessage(null);
     setFile(null);
-    setFileName(NO_FILE_MESSAGE);
   };
 
   const handleDismiss = () => {
@@ -85,7 +81,6 @@ export const ImportModal = ({
     // Deselect file when dismissing an error, this avoids an error when editing selected files
     // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
     setFile(null);
-    setFileName(NO_FILE_MESSAGE);
   };
 
   const ContentContainer = showLoadingContainer
@@ -115,18 +110,16 @@ export const ImportModal = ({
             <p>{subtitle}</p>
             <form>
               <FileUploadField
-                onChange={({ target }, newName) => {
-                  setFileName(newName);
-                  setFile(target.files[0]);
+                onChange={(_event, files) => {
+                  setFile(files[0]);
                 }}
                 name="file-upload"
-                fileName={fileName}
               />
             </form>
           </>
         );
     }
-  }, [status, successMessage, errorMessage, subtitle, fileName]);
+  }, [status, successMessage, errorMessage, subtitle]);
 
   const renderButtons = useCallback(() => {
     switch (status) {

@@ -3,24 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { FileUploadField as BaseFileUploadField } from '@tupaia/ui-components';
 
-export const FileUploadField = ({
-  onChange,
-  name,
-  label,
-  helperText,
-  maxSizeInBytes,
-  initialFileName = null,
-  accept = '*',
-}) => {
-  const [fileName, setFileName] = useState(initialFileName);
-
-  const handleChange = async (event, newFileName, files) => {
-    setFileName(newFileName);
-
+export const FileUploadField = ({ onChange, name, label, helperText, maxSizeInBytes, accept }) => {
+  const handleChange = async (files, _event) => {
     const [file] = files || [];
     if (!file) {
       onChange({
@@ -31,21 +19,15 @@ export const FileUploadField = ({
     }
 
     onChange({
-      fileName: newFileName,
+      fileName: file.name,
       file,
     });
   };
-
-  // Allows programmatic setting of the file name
-  useEffect(() => {
-    setFileName(initialFileName);
-  }, [initialFileName]);
 
   return (
     <BaseFileUploadField
       onChange={handleChange}
       name={name}
-      fileName={fileName}
       label={label}
       helperText={helperText}
       maxSizeInBytes={maxSizeInBytes}
@@ -60,7 +42,6 @@ FileUploadField.propTypes = {
   label: PropTypes.string,
   helperText: PropTypes.string,
   maxSizeInBytes: PropTypes.number,
-  initialFileName: PropTypes.string,
   accept: PropTypes.string,
 };
 
@@ -69,6 +50,5 @@ FileUploadField.defaultProps = {
   label: null,
   helperText: null,
   maxSizeInBytes: null,
-  initialFileName: null,
-  accept: '*',
+  accept: '',
 };
