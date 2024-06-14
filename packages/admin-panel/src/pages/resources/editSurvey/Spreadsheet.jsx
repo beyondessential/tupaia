@@ -136,7 +136,7 @@ export const Spreadsheet = ({ data, setData }) => {
               maxHeight={height}
               width={width}
               headerHeight={30}
-              rowHeight={30}
+              rowHeight={35}
               fixed
               ignoreFunctionInColumnCompare={false} // to allow the cells to receive updated props and re-render
             >

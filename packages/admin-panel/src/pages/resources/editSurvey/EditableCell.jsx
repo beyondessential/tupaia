@@ -6,14 +6,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { ClickAwayListener, TextField } from '@material-ui/core';
-import { Overlay } from 'react-overlays';
+import { ClickAwayListener, Popper, TextField } from '@material-ui/core';
 import { useDebounce } from '../../../utilities';
 
 const CellContent = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  position: relative;
   ${props =>
     props.$isActive &&
     css`
@@ -57,6 +58,13 @@ const EditableCellInput = styled(TextField).attrs({
   }
 `;
 
+const CellInputWrapper = styled.div`
+  min-height: 2rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+`;
+
 export const EditableCell = ({
   cellData,
   rowIndex,
@@ -66,7 +74,6 @@ export const EditableCell = ({
   activeCell,
   editMode,
   setEditMode,
-  container,
 }) => {
   const [editValue, setEditValue] = useState(cellData);
   const debouncedEditValue = useDebounce(editValue, 500);
@@ -153,24 +160,11 @@ export const EditableCell = ({
     <ClickAwayListener onClickAway={handleClickOutside}>
       <CellContent ref={cellRef} $isActive={isActive} onClick={onClickCellButton}>
         {/** Use an overlay here to prevent re-render issues when value changes */}
-        {isEditingCell && (
-          <Overlay show target={cellRef} container={container} flip>
-            {({ props }) => (
-              <div
-                {...props}
-                style={{
-                  // eslint-disable-next-line react/prop-types
-                  ...props.style,
-                  width: cellRef.current?.offsetWidth,
-                  height: cellRef.current?.offsetHeight,
-                  top: -cellRef.current?.offsetHeight,
-                }}
-              >
-                <EditableCellInput value={editValue} onChange={onChange} />
-              </div>
-            )}
-          </Overlay>
-        )}
+        <Popper open={isEditingCell} anchorEl={cellRef} disablePortal>
+          <CellInputWrapper>
+            <EditableCellInput value={editValue} onChange={onChange} multiline />
+          </CellInputWrapper>
+        </Popper>
         {!isEditingCell && <CellTextContainer>{cellData}</CellTextContainer>}
       </CellContent>
     </ClickAwayListener>

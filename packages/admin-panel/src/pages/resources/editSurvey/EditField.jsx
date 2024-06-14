@@ -27,6 +27,9 @@ const Input = styled(TextField).attrs({
     border-color: ${props => props.theme.palette.primary.main};
     border-width: 1px;
   }
+  .MuiOutlinedInput-root {
+    padding: 0.2rem;
+  }
 `;
 
 const Placeholder = styled.div`
@@ -50,7 +53,9 @@ export const EditField = ({ activeCell, cellData, onChange }) => {
 
   if (!activeCell) return <Placeholder />;
 
-  return <Input id="editable-field" value={value} onChange={e => setValue(e.target.value)} />;
+  return (
+    <Input id="editable-field" value={value} onChange={e => setValue(e.target.value)} multiline />
+  );
 };
 
 EditField.propTypes = {
