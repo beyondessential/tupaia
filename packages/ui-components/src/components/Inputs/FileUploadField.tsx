@@ -72,7 +72,7 @@ const ChooseFileButton = styled.span`
   }
 `;
 
-const SelectedFileList = styled.ul`
+const SelectedFileList = styled.ul<{ $doesNeedBorder: boolean }>`
   list-style-type: none;
   margin: 0;
 
@@ -83,6 +83,14 @@ const SelectedFileList = styled.ul`
   li::before {
     content: '\\200B'; /* zero-width space */
   }
+
+  // If top border is always shown, it collides with the top-border of the parent when file
+  // dropzone is hidden
+  ${({ $doesNeedBorder }) =>
+    $doesNeedBorder &&
+    css`
+      border-block-start: 0.0625rem dashed ${({ theme }) => theme.palette.grey['400']};
+    `}
 `;
 
 const SelectedFileListItem = styled.li`
@@ -90,22 +98,27 @@ const SelectedFileListItem = styled.li`
   line-height: 1.2rem; // Match .MuiInputBase-input
 `;
 
-const ClearButton = styled(Button).attrs({
+const RemoveButton = styled(Button).attrs({
   variant: 'text',
   color: 'default',
 })`
+  display: inline-block;
   font-weight: 400;
   margin-block: 0.25rem;
   padding-inline: 1.1rem;
-  text-decoration: underline;
   transition: color 150ms ease;
   .MuiButton-label {
+    text-decoration: underline;
     font-size: 0.6875rem;
   }
   &:hover {
     background-color: transparent;
     color: ${({ theme }) => theme.palette.primary.main};
-    text-decoration: underline;
+  }
+
+  ${SelectedFileList} & {
+    margin-block: 0;
+    padding-block: 0;
   }
 `;
 
@@ -150,9 +163,15 @@ export const FileUploadField = ({
 }: FileUploadFieldProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const hasFileSelected = files.length > 0;
+
   const onDropAccepted = (acceptedFiles: File[], event: DropEvent) => {
-    setFiles(acceptedFiles);
-    onChange(acceptedFiles, event as React.ChangeEvent<HTMLInputElement>);
+    const deduped = acceptedFiles.filter(
+      acceptedFile =>
+        !files.map(file => JSON.stringify(file)).includes(JSON.stringify(acceptedFile)),
+    );
+    setFiles(files.concat(deduped));
+    console.log(files);
+    onChange(files, event as React.ChangeEvent<HTMLInputElement>);
   };
   const { fileRejections, getInputProps, getRootProps, inputRef, isDragActive, isDragReject } =
     useDropzone({
@@ -162,12 +181,9 @@ export const FileUploadField = ({
     });
   const { palette } = useTheme();
 
-  const clearSelection = () => {
-    setFiles([]);
-    if (inputRef.current) {
-      inputRef.current.value = '';
-      onChange(files, null);
-    }
+  const removeFile = (fileToRemove: File) => {
+    const newFiles = files.filter(file => JSON.stringify(file) !== JSON.stringify(fileToRemove));
+    setFiles(newFiles);
   };
 
   const fileOrFiles = multiple ? 'files' : 'file';
@@ -193,7 +209,7 @@ export const FileUploadField = ({
         <InputLabel label={label} tooltip={tooltip} />
       </LabelAndTooltip>
       <Uploader>
-        {!hasFileSelected && (
+        {(!hasFileSelected || multiple) && (
           <Dropzone {...getRootProps()} $isDragActive={isDragActive} $isDragReject={isDragReject}>
             <input {...getInputProps()} accept={accept} id={name} name={name} required={required} />
             <FilePicker color={palette.primary.main} />
@@ -202,10 +218,11 @@ export const FileUploadField = ({
           </Dropzone>
         )}
         {hasFileSelected && (
-          <SelectedFileList>
+          <SelectedFileList $doesNeedBorder={multiple}>
             {files.map(file => (
               <SelectedFileListItem key={file.name}>
                 {file.name} ({humanFileSize(file.size)})
+                <RemoveButton onClick={() => removeFile(file)}>Remove</RemoveButton>
               </SelectedFileListItem>
             ))}
           </SelectedFileList>
@@ -219,12 +236,6 @@ export const FileUploadField = ({
             </FormHelperText>
           </>
         )),
-      )}
-      {hasFileSelected && (
-        <ClearButton onClick={clearSelection}>
-          Clear selection
-          {files.length > 1 && <> ({files.length}&nbsp;files)</>}
-        </ClearButton>
       )}
       {helperText && (
         <FormHelperText component={FormHelperTextComponent}>{helperText}</FormHelperText>
