@@ -72,6 +72,11 @@ const Search = ({ value, onChange, onClear, columnKey }: SearchProps) => {
     return () => clearTimeout(timeout);
   }, [searchValue]);
 
+  useEffect(() => {
+    if (value === searchValue) return;
+    setSearchValue(value);
+  }, [value]);
+
   return (
     <SearchInput
       placeholder="Search..."
