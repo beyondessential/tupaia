@@ -21,7 +21,7 @@ export type MatrixProps = Omit<MatrixConfig, 'type' | 'name'> & {
   rowHeaderColumnTitle?: ReactNode;
   enableSearch?: boolean;
   searchFilters?: SearchFilter[];
-  updateSearchFilter?: (filter: SearchFilter) => void;
+  updateSearchFilter?: (searchFilter: SearchFilter) => void;
   clearSearchFilter?: (key: SearchFilter['key']) => void;
 };
 
@@ -52,7 +52,7 @@ interface MatrixAction {
 // This is the context for the dispatch function of the matrix
 export const MatrixDispatchContext = createContext<Dispatch<MatrixAction> | null>(null);
 
-type MatrixReducerState = Pick<typeof defaultContextValue, 'expandedRows' | 'searchFilters'>;
+type MatrixReducerState = Pick<typeof defaultContextValue, 'expandedRows'>;
 
 export const matrixReducer = (
   state: MatrixReducerState,
@@ -71,7 +71,6 @@ export const matrixReducer = (
           (rowTitle: RowTitle) => rowTitle !== action.payload,
         ),
       };
-
     default:
       return state;
   }

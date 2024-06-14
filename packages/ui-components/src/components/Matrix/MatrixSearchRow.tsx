@@ -72,11 +72,6 @@ const Search = ({ value, onChange, onClear, columnKey }: SearchProps) => {
     return () => clearTimeout(timeout);
   }, [searchValue]);
 
-  useEffect(() => {
-    if (value === searchValue) return;
-    setSearchValue(value);
-  }, [value]);
-
   return (
     <SearchInput
       placeholder="Search..."
@@ -94,22 +89,16 @@ const Search = ({ value, onChange, onClear, columnKey }: SearchProps) => {
   );
 };
 
-interface MatrixSearchRowProps {
-  onPageChange: (newPageIndex: number) => void;
-  searchFilters?: SearchFilter[];
-  clearSearchFilter?: (key: SearchFilter['key']) => void;
-  updateSearchFilter?: (filter: SearchFilter) => void;
-}
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
 export const MatrixSearchRow = ({
   onPageChange,
-  searchFilters,
-  clearSearchFilter,
-  updateSearchFilter,
-}: MatrixSearchRowProps) => {
-  const { columns, enableSearch } = useContext(MatrixContext);
+}: {
+  onPageChange: (newPageIndex: number) => void;
+}) => {
+  const { columns, enableSearch, searchFilters, updateSearchFilter, clearSearchFilter } =
+    useContext(MatrixContext);
 
   if (!enableSearch) return null;
 
