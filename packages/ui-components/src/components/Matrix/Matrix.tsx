@@ -29,7 +29,15 @@ const ScrollContainer = styled(TableContainer)`
 
 const DEFAULT_PAGE_SIZE = 50;
 
-export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
+export const Matrix = ({
+  columns = [],
+  rows = [],
+  disableExpand,
+  searchFilters,
+  updateSearchFilter,
+  clearSearchFilter,
+  ...config
+}: MatrixProps) => {
   const [pageIndex, setPageIndex] = useState(0);
   const [{ expandedRows }, dispatch] = useReducer(matrixReducer, {
     expandedRows: [],
@@ -62,7 +70,12 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
         <MatrixLegend />
         <ScrollContainer>
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
-            <MatrixHeader onPageChange={onPageChange} />
+            <MatrixHeader
+              onPageChange={onPageChange}
+              searchFilters={searchFilters}
+              clearSearchFilter={clearSearchFilter}
+              updateSearchFilter={updateSearchFilter}
+            />
             <TableBody>
               {visibleRows.map((row, i) => (
                 <MatrixRow row={row} key={`${row.title}-${i}`} parents={[]} index={i + 1} />

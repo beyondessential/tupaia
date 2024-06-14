@@ -6,7 +6,7 @@ import React, { useContext } from 'react';
 import { darken, TableHead, TableRow } from '@material-ui/core';
 import styled from 'styled-components';
 import { MatrixColumnType } from '../../types';
-import { MatrixContext } from './MatrixContext';
+import { MatrixContext, SearchFilter } from './MatrixContext';
 import { HeaderCell } from './Cell';
 import { MatrixSearchRow } from './MatrixSearchRow';
 import { getFlattenedColumns } from './utils';
@@ -23,14 +23,23 @@ const THead = styled(TableHead)`
   top: 0;
   z-index: 3;
 `;
+
+interface MatrixHeaderProps {
+  onPageChange: (newPageIndex: number) => void;
+  searchFilters?: SearchFilter[];
+  clearSearchFilter?: (key: SearchFilter['key']) => void;
+  updateSearchFilter?: (filter: SearchFilter) => void;
+}
+/**
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
 export const MatrixHeader = ({
   onPageChange,
-}: {
-  onPageChange: (newPageIndex: number) => void;
-}) => {
+  searchFilters,
+  clearSearchFilter,
+  updateSearchFilter,
+}: MatrixHeaderProps) => {
   const { columns, hideColumnTitles = false } = useContext(MatrixContext);
   // Get the grouped columns
   const columnGroups = columns.reduce((result: MatrixColumnType[], column: MatrixColumnType) => {
@@ -87,7 +96,12 @@ export const MatrixHeader = ({
           ))}
         </TableRow>
 
-        <MatrixSearchRow onPageChange={onPageChange} />
+        <MatrixSearchRow
+          onPageChange={onPageChange}
+          searchFilters={searchFilters}
+          clearSearchFilter={clearSearchFilter}
+          updateSearchFilter={updateSearchFilter}
+        />
       </THead>
     </>
   );
