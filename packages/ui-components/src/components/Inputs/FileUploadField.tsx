@@ -30,6 +30,7 @@ const Dropzone = styled.div<{ $isDragActive: boolean; $isDragReject: boolean }>`
   cursor: pointer;
   flex-direction: column;
   inline-size: 100%;
+  padding-block-start: 1.25rem;
   text-align: center;
   transition: background-color 100ms ease;
 
@@ -61,7 +62,7 @@ const SecondaryLabel = styled.p`
   color: ${({ theme }) => theme.palette.grey['600']};
   font-size: 0.6875rem;
   font-weight: 400;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03333em;
 `;
 
 const ChooseFileButton = styled.span`
