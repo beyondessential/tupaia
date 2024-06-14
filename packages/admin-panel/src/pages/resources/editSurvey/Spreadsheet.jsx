@@ -79,6 +79,11 @@ export const Spreadsheet = ({ data, setData }) => {
     setData(updatedData);
   };
 
+  const setCellActiveState = cell => {
+    setActiveCell(cell);
+    setEditMode(false);
+  };
+
   const columns = [
     {
       key: 'id',
@@ -100,11 +105,12 @@ export const Spreadsheet = ({ data, setData }) => {
         <EditableCell
           {...props}
           activeCell={activeCell}
-          setActiveCell={setActiveCell}
+          setActiveCell={setCellActiveState}
           editMode={editMode}
           setEditMode={setEditMode}
           column={column}
           onChangeCellData={updateCellData}
+          container={tableContainerRef}
         />
       ),
     })),

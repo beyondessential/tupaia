@@ -6,7 +6,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { TextField } from '@material-ui/core';
+import { ClickAwayListener, TextField } from '@material-ui/core';
+import { Overlay } from 'react-overlays';
 import { useDebounce } from '../../../utilities';
 
 const CellContent = styled.div`
@@ -20,7 +21,7 @@ const CellContent = styled.div`
     `}
 `;
 
-const CellButton = styled.button`
+const CellTextContainer = styled.div`
   height: 100%;
   width: 100%;
   border: none;
@@ -65,6 +66,7 @@ export const EditableCell = ({
   activeCell,
   editMode,
   setEditMode,
+  container,
 }) => {
   const [editValue, setEditValue] = useState(cellData);
   const debouncedEditValue = useDebounce(editValue, 500);
@@ -81,7 +83,6 @@ export const EditableCell = ({
 
   const setCellInactive = () => {
     setActiveCell(null);
-    setEditMode(false);
   };
 
   const setCellActive = () => {
@@ -95,7 +96,7 @@ export const EditableCell = ({
   const handleClickOutside = e => {
     if (!isActive) return;
     if (!cellRef.current) return;
-    if (cellRef.current.contains(e.target)) return;
+    if (cellRef.current.contains(e.target) || cellRef.current === e.target) return;
     const editableFieldInput = document.getElementById('editable-field');
 
     // if the click is on the input, don't set as inactive, just remove edit mode so the input can be used
@@ -106,12 +107,6 @@ export const EditableCell = ({
 
     setCellInactive();
   };
-
-  // listener to finish editing when clicking outside the cell
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const onClickCellButton = e => {
     const isDoubleClick = e.detail === 2;
@@ -155,13 +150,30 @@ export const EditableCell = ({
   }, [debouncedEditValue]);
 
   return (
-    <CellContent ref={cellRef} $isActive={isActive}>
-      {isEditingCell ? (
-        <EditableCellInput value={editValue} onChange={onChange} />
-      ) : (
-        <CellButton onClick={onClickCellButton}>{cellData}</CellButton>
-      )}
-    </CellContent>
+    <ClickAwayListener onClickAway={handleClickOutside}>
+      <CellContent ref={cellRef} $isActive={isActive} onClick={onClickCellButton}>
+        {/** Use an overlay here to prevent re-render issues when value changes */}
+        {isEditingCell && (
+          <Overlay show target={cellRef} container={container} flip>
+            {({ props }) => (
+              <div
+                {...props}
+                style={{
+                  // eslint-disable-next-line react/prop-types
+                  ...props.style,
+                  width: cellRef.current?.offsetWidth,
+                  height: cellRef.current?.offsetHeight,
+                  top: -cellRef.current?.offsetHeight,
+                }}
+              >
+                <EditableCellInput value={editValue} onChange={onChange} />
+              </div>
+            )}
+          </Overlay>
+        )}
+        {!isEditingCell && <CellTextContainer>{cellData}</CellTextContainer>}
+      </CellContent>
+    </ClickAwayListener>
   );
 };
 
@@ -174,6 +186,7 @@ EditableCell.propTypes = {
   activeCell: PropTypes.object,
   editMode: PropTypes.bool.isRequired,
   setEditMode: PropTypes.func.isRequired,
+  container: PropTypes.object.isRequired,
 };
 
 EditableCell.defaultProps = {

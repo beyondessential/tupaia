@@ -64,6 +64,7 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.8.3",
     "react-icons": "^2.2.7",
+    "react-overlays": "^5.2.1",
     "react-password-strength-bar": "^0.3.2",
     "react-query": "^3.19.0",
     "react-redux": "^5.0.6",
