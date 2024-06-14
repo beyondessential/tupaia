@@ -106,7 +106,7 @@ const RemoveButton = styled(Button).attrs({
   font-weight: 400;
   margin-block: 0.25rem;
   padding-inline: 1.1rem;
-  transition: color 150ms ease;
+  transition: color 100ms ease;
   .MuiButton-label {
     text-decoration: underline;
     font-size: 0.6875rem;
