@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
@@ -16,7 +16,13 @@ import {
   NoData,
 } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { MatrixConfig, MatrixReportColumn, MatrixReportRow, isMatrixReport } from '@tupaia/types';
+import {
+  DashboardItemType,
+  MatrixConfig,
+  MatrixReportColumn,
+  MatrixReportRow,
+  isMatrixReport,
+} from '@tupaia/types';
 import { DashboardItemContext } from '../../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
@@ -105,46 +111,42 @@ const parseRows = (
       );
       // if there are no child rows, e.g. because the search filter is hiding them, then we don't need to render this row
       if (!children.length) return result;
-      return [
-        ...result,
-        {
-          title: category,
-          ...rest,
-          children,
-        },
-      ];
+      result.push({
+        title: category,
+        ...rest,
+        children,
+      });
+      return result;
     }
     // if the row is a regular row, and there is a search filter, then we need to check if the row matches the search filter, and ignore this row if it doesn't. This filter only applies to standard rows, not category rows.
     if (searchFilter && !dataElement.toLowerCase().includes(searchFilter.toLowerCase()))
       return result;
     // otherwise, handle as a regular row
-    return [
-      ...result,
-      {
-        title: dataElement,
-        onClick: drillDown ? () => onDrillDown(row) : undefined,
-        ...Object.entries(rest).reduce((acc, [key, item]) => {
-          // some items are objects, and we need to parse them to get the value
-          if (typeof item === 'object' && item !== null) {
-            const { value, metadata } = item as { value: any; metadata?: any };
-            return {
-              ...acc,
-              [key]: formatDataValueByType(
-                {
-                  value,
-                  metadata,
-                },
-                valueTypeToUse,
-              ),
-            };
-          }
-          return {
-            ...acc,
-            [key]: formatDataValueByType({ value: item }, valueTypeToUse),
-          };
-        }, {}),
-      },
-    ];
+
+    const formattedProperties = Object.entries(rest).reduce((acc, [key, item]) => {
+      // some items are objects, and we need to parse them to get the value
+      if (typeof item === 'object' && item !== null) {
+        const { value, metadata } = item as { value: any; metadata?: any };
+        acc[key] = formatDataValueByType(
+          {
+            value,
+            metadata,
+          },
+          valueTypeToUse,
+        );
+        return acc;
+      }
+
+      acc[key] = formatDataValueByType({ value: item }, valueTypeToUse);
+      return acc;
+    }, {});
+
+    result.push({
+      title: dataElement,
+      onClick: drillDown ? () => onDrillDown(row) : undefined,
+      ...formattedProperties,
+    });
+    return result;
   }, [] as MatrixRowType[]);
 };
 
@@ -176,7 +178,7 @@ const MatrixVisual = () => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
 
-  const { report, isEnlarged } = context;
+  const { report } = context;
 
   // While we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context, so we cast it here so it trickles down to child components
   const config = context.config as MatrixConfig;
@@ -187,21 +189,28 @@ const MatrixVisual = () => {
 
   const { periodGranularity, drillDown, valueType } = config;
 
-  // in the dashboard, show a placeholder image
-  if (!isEnlarged) {
-    return <MatrixPreview config={config} />;
-  }
-
-  const parsedRows = parseRows(
-    rows,
-    undefined,
-    searchFilter,
-    drillDown,
-    valueType,
-    urlSearchParams,
-    setUrlSearchParams,
+  // memoise the parsed rows and columns so that they don't get recalculated on every render, for performance reasons
+  const parsedRows = useMemo(
+    () =>
+      parseRows(
+        rows,
+        undefined,
+        searchFilter,
+        drillDown,
+        valueType,
+        urlSearchParams,
+        setUrlSearchParams,
+      ),
+    [
+      JSON.stringify(rows),
+      searchFilter,
+      JSON.stringify(drillDown),
+      valueType,
+      JSON.stringify(urlSearchParams),
+      setUrlSearchParams,
+    ],
   );
-  const parsedColumns = parseColumns(columns);
+  const parsedColumns = useMemo(() => parseColumns(columns), [JSON.stringify(columns)]);
 
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFilter(e.target.value);
@@ -283,6 +292,11 @@ const MobileWarning = () => {
 };
 
 export const Matrix = () => {
+  const { isEnlarged, config } = useContext(DashboardItemContext);
+  // add a typeguard here to keep TS happy
+  // if the item is not enlarged and is a matrix, then we show the preview, because there won't be any loaded data at this point
+  if (!isEnlarged && config?.type === DashboardItemType.Matrix)
+    return <MatrixPreview config={config} />;
   return (
     <Container>
       <MobileWarning />
