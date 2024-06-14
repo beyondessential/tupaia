@@ -3,13 +3,11 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode, useReducer, useRef, useState } from 'react';
+import React, { useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody, TableContainer } from '@material-ui/core';
-import { MatrixConfig } from '@tupaia/types';
-import { MatrixColumnType, MatrixRowType } from '../../types';
 import { MatrixHeader } from './MatrixHeader';
-import { MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
+import { MatrixContext, MatrixDispatchContext, MatrixProps, matrixReducer } from './MatrixContext';
 import { MatrixRow } from './MatrixRow';
 import { MatrixLegend } from './MatrixLegend';
 import { MatrixPagination } from './MatrixPagination';
@@ -28,13 +26,6 @@ const ScrollContainer = styled(TableContainer)`
     60rem
   ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
 `;
-
-interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
-  columns: MatrixColumnType[];
-  rows: MatrixRowType[];
-  disableExpand?: boolean;
-  rowHeaderColumnTitle?: ReactNode;
-}
 
 const DEFAULT_PAGE_SIZE = 50;
 
@@ -71,7 +62,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
         <MatrixLegend />
         <ScrollContainer>
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
-            <MatrixHeader />
+            <MatrixHeader onPageChange={onPageChange} />
             <TableBody>
               {visibleRows.map((row, i) => (
                 <MatrixRow row={row} key={`${row.title}-${i}`} parents={[]} index={i + 1} />
