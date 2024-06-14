@@ -20,8 +20,10 @@ const LabelAndTooltip = styled.div`
 const Uploader = styled.div`
   border-radius: 0.1875rem;
   border: 0.0625rem dashed ${({ theme }) => theme.palette.grey['400']};
-  padding-block: 0.875rem;
-  padding-inline: 1.1rem;
+  > * {
+    padding-block: 0.875rem;
+    padding-inline: 1.1rem;
+  }
 `;
 
 const Dropzone = styled.div<{ $isDragActive: boolean; $isDragReject: boolean }>`
@@ -72,7 +74,6 @@ const ChooseFileButton = styled.span`
 const SelectedFileList = styled.ul`
   list-style-type: none;
   margin: 0;
-  padding: 0;
 
   /*
    * Workaround for accessibility issue with VoiceOver.
