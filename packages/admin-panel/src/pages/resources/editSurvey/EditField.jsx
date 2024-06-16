@@ -12,6 +12,8 @@ import { useDebounce } from '../../../utilities';
 const Input = styled(TextField).attrs({
   variant: 'outlined',
   fullWidth: true,
+  rowsMax: 4,
+  multiline: true,
 })`
   margin-block-end: 0.5rem;
   .MuiOutlinedInput-root {
@@ -33,7 +35,7 @@ const Input = styled(TextField).attrs({
 `;
 
 const Placeholder = styled.div`
-  height: 2.5rem;
+  height: 3rem;
 `;
 
 export const EditField = ({ activeCell, cellData, onChange }) => {
@@ -53,9 +55,7 @@ export const EditField = ({ activeCell, cellData, onChange }) => {
 
   if (!activeCell) return <Placeholder />;
 
-  return (
-    <Input id="editable-field" value={value} onChange={e => setValue(e.target.value)} multiline />
-  );
+  return <Input id="editable-field" value={value} onChange={e => setValue(e.target.value)} />;
 };
 
 EditField.propTypes = {

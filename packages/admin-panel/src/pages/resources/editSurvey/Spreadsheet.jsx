@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import BaseTable, { AutoResizer, Column } from 'react-base-table';
@@ -15,6 +15,7 @@ import { RowHeaderCell } from './RowHeaderCell';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   flex: 1;
   overflow: hidden;
 `;
@@ -22,15 +23,17 @@ const Wrapper = styled.div`
 const TableContainer = styled.div`
   flex: 1;
   overflow: hidden;
-  max-width: 1800px;
+  font-size: 0.625rem;
   .BaseTable__header-cell {
     background-color: ${props => props.theme.palette.grey['400']};
     border-right: 1px solid white;
     font-weight: ${props => props.theme.typography.fontWeightMedium};
+    font-size: 0.625rem;
   }
   .BaseTable__row-cell {
     border-right: 1px solid ${props => props.theme.palette.grey['400']};
     padding: 0;
+    font-size: 0.625rem;
   }
   .BaseTable__row {
     border-color: ${props => props.theme.palette.grey['400']};
@@ -48,6 +51,7 @@ const TableContainer = styled.div`
 
 export const Spreadsheet = ({ data, setData }) => {
   const tableContainerRef = useRef();
+  const [initialColumnWidth, setInitialColumnWidth] = useState(100);
   const [activeCell, setActiveCell] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
@@ -84,6 +88,14 @@ export const Spreadsheet = ({ data, setData }) => {
     setEditMode(false);
   };
 
+  // Set the initial column width based on the number of columns. This won't run on resize, because if the user then adjusts the column width, we don't want to reset it
+  useEffect(() => {
+    if (!tableContainerRef.current) return;
+
+    const { clientWidth } = tableContainerRef.current;
+    setInitialColumnWidth(clientWidth / fields.length);
+  }, [JSON.stringify(fields), !!tableContainerRef.current]);
+
   const columns = [
     {
       key: 'id',
@@ -98,7 +110,7 @@ export const Spreadsheet = ({ data, setData }) => {
     ...fields.map(column => ({
       key: column,
       title: column,
-      width: 150,
+      width: initialColumnWidth,
       resizable: true,
       dataKey: column,
       cellRenderer: props => (
@@ -110,7 +122,6 @@ export const Spreadsheet = ({ data, setData }) => {
           setEditMode={setEditMode}
           column={column}
           onChangeCellData={updateCellData}
-          container={tableContainerRef}
         />
       ),
     })),
@@ -136,7 +147,7 @@ export const Spreadsheet = ({ data, setData }) => {
               maxHeight={height}
               width={width}
               headerHeight={30}
-              rowHeight={35}
+              rowHeight={26}
               fixed
               ignoreFunctionInColumnCompare={false} // to allow the cells to receive updated props and re-render
             >

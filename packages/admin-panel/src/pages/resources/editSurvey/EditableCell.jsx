@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { ClickAwayListener, Popper, TextField } from '@material-ui/core';
+import { ClickAwayListener, Popper, TextField, Typography } from '@material-ui/core';
 import { useDebounce } from '../../../utilities';
 
 const CellContent = styled.div`
@@ -15,6 +15,12 @@ const CellContent = styled.div`
   height: 100%;
   overflow: hidden;
   position: relative;
+  display: flex;
+  align-items: center;
+  // popper is not full width by default
+  > [role='tooltip'] {
+    width: 100%;
+  }
   ${props =>
     props.$isActive &&
     css`
@@ -22,8 +28,7 @@ const CellContent = styled.div`
     `}
 `;
 
-const CellTextContainer = styled.div`
-  height: 100%;
+const CellText = styled(Typography)`
   width: 100%;
   border: none;
   background-color: transparent;
@@ -31,8 +36,9 @@ const CellTextContainer = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  padding: 0.2rem;
+  padding: 0.5rem 0.2rem;
   max-width: 99%; // to apply ellipsis
+  font-size: inherit;
 `;
 
 const EditableCellInput = styled(TextField).attrs({
@@ -43,8 +49,10 @@ const EditableCellInput = styled(TextField).attrs({
   width: 100%;
   height: 100%;
   flex: 1;
+
   .MuiOutlinedInput-input {
     padding: 0.2rem;
+    font-size: 0.625rem;
   }
   .MuiInputBase-formControl {
     padding: 0;
@@ -59,10 +67,10 @@ const EditableCellInput = styled(TextField).attrs({
 `;
 
 const CellInputWrapper = styled.div`
-  min-height: 2rem;
+  min-height: 1.4rem;
   display: flex;
-  flex: 1;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const EditableCell = ({
@@ -165,7 +173,7 @@ export const EditableCell = ({
             <EditableCellInput value={editValue} onChange={onChange} multiline />
           </CellInputWrapper>
         </Popper>
-        {!isEditingCell && <CellTextContainer>{cellData}</CellTextContainer>}
+        {!isEditingCell && <CellText>{cellData}</CellText>}
       </CellContent>
     </ClickAwayListener>
   );
@@ -180,7 +188,6 @@ EditableCell.propTypes = {
   activeCell: PropTypes.object,
   editMode: PropTypes.bool.isRequired,
   setEditMode: PropTypes.func.isRequired,
-  container: PropTypes.object.isRequired,
 };
 
 EditableCell.defaultProps = {
