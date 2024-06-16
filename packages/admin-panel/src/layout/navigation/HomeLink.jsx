@@ -26,9 +26,9 @@ const Link = styled(BaseLink)`
   }
 `;
 
-export const HomeLink = ({ logo, homeLink }) => {
+export const HomeLink = ({ logo, homeLink, disableHomeLink }) => {
   return (
-    <Link to={homeLink}>
+    <Link to={homeLink} component={disableHomeLink ? 'div' : undefined}>
       <img src={logo?.url} alt={logo?.alt || 'Logo'} />
     </Link>
   );
@@ -40,6 +40,7 @@ HomeLink.propTypes = {
     alt: PropTypes.string.isRequired,
   }),
   homeLink: PropTypes.string,
+  disableHomeLink: PropTypes.bool,
 };
 
 HomeLink.defaultProps = {
@@ -48,4 +49,5 @@ HomeLink.defaultProps = {
     alt: 'Tupaia Admin Panel Logo',
   },
   homeLink: '/',
+  disableHomeLink: false,
 };

@@ -17,13 +17,12 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
 `;
 
 const StyledTextField = styled(TextField)`
+  .MuiInputBase-root {
+    background: transparent;
+  }
   .MuiSelect-root {
     padding-right: 1.8rem;
     color: ${props => props.theme.palette.text.primary};
-
-    &:focus {
-      background: white;
-    }
   }
 `;
 

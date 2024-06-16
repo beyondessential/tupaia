@@ -24,6 +24,9 @@ export class WebConfigApi extends BaseApi {
   public async fetchDashboards(query: QueryParameters) {
     return this.connection.get('dashboards', query);
   }
+  public async fetchExport(query: QueryParameters) {
+    return this.connection.get('export/surveyDataDownload', query);
+  }
 }
 
 export interface WebConfigApiInterface extends PublicInterface<WebConfigApi> {}

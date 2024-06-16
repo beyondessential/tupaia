@@ -20,7 +20,11 @@ type QueryParams = Record<string, unknown> & {
   endDate?: Moment | string | null;
 };
 
-export const useReport = (reportCode: DashboardItem['reportCode'], params: QueryParams) => {
+export const useReport = (
+  reportCode: DashboardItem['reportCode'],
+  params: QueryParams,
+  enabled = true,
+) => {
   const { dashboardCode, projectCode, entityCode, itemCode, startDate, endDate, legacy, ...rest } =
     params;
   const today = moment();
@@ -40,6 +44,7 @@ export const useReport = (reportCode: DashboardItem['reportCode'], params: Query
       formattedStartDate,
       formattedEndDate,
       ...Object.values(rest),
+      enabled,
     ],
     (): Promise<TupaiaWebReportRequest.ResBody> =>
       get(`${endPoint}/${reportCode}`, {
@@ -55,7 +60,8 @@ export const useReport = (reportCode: DashboardItem['reportCode'], params: Query
         },
       }),
     {
-      enabled: !!reportCode && !!dashboardCode && !!projectCode && !!entityCode && !!itemCode,
+      enabled:
+        enabled && !!reportCode && !!dashboardCode && !!projectCode && !!entityCode && !!itemCode,
     },
   );
 };

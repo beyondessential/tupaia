@@ -4,23 +4,38 @@
  */
 
 import { Dispatch, ReactNode, createContext } from 'react';
-import { MatrixConfig } from '@tupaia/types';
+import { MatrixConfig, MatrixReportRow } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 
 type RowTitle = MatrixRowType['title'];
+
+export type SearchFilter = {
+  key: keyof MatrixReportRow;
+  value: string;
+};
+
+export type MatrixProps = Omit<MatrixConfig, 'type' | 'name'> & {
+  rows: MatrixRowType[];
+  columns: MatrixColumnType[];
+  disableExpand?: boolean;
+  rowHeaderColumnTitle?: ReactNode;
+  enableSearch?: boolean;
+  searchFilters?: SearchFilter[];
+  updateSearchFilter?: (searchFilter: SearchFilter) => void;
+  clearSearchFilter?: (key: SearchFilter['key']) => void;
+};
+
+export type MatrixContextT = MatrixProps & {
+  expandedRows: RowTitle[];
+};
 
 const defaultContextValue = {
   rows: [],
   columns: [],
   expandedRows: [],
   disableExpand: false,
-} as Omit<MatrixConfig, 'type' | 'name'> & {
-  rows: MatrixRowType[];
-  columns: MatrixColumnType[];
-  expandedRows: RowTitle[];
-  disableExpand?: boolean;
-  rowHeaderColumnTitle?: ReactNode;
-};
+  enableSearch: true,
+} as MatrixContextT;
 
 // This is the context for the rows, columns and presentation options of the matrix
 export const MatrixContext = createContext(defaultContextValue);
