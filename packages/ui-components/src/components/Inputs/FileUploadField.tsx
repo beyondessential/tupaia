@@ -170,7 +170,6 @@ export const FileUploadField = ({
         !files.map(file => JSON.stringify(file)).includes(JSON.stringify(acceptedFile)),
     );
     setFiles(files.concat(deduped));
-    console.log(files);
     onChange(files, event as React.ChangeEvent<HTMLInputElement>);
   };
   const { fileRejections, getInputProps, getRootProps, inputRef, isDragActive, isDragReject } =
