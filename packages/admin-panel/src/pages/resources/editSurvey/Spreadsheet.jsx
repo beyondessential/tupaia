@@ -23,17 +23,17 @@ const Wrapper = styled.div`
 const TableContainer = styled.div`
   flex: 1;
   overflow: hidden;
-  font-size: 0.625rem;
+  font-size: 0.7rem;
   .BaseTable__header-cell {
     background-color: ${props => props.theme.palette.grey['400']};
     border-right: 1px solid white;
     font-weight: ${props => props.theme.typography.fontWeightMedium};
-    font-size: 0.625rem;
+    font-size: 0.7rem;
   }
   .BaseTable__row-cell {
     border-right: 1px solid ${props => props.theme.palette.grey['400']};
     padding: 0;
-    font-size: 0.625rem;
+    font-size: 0.7rem;
   }
   .BaseTable__row {
     border-color: ${props => props.theme.palette.grey['400']};

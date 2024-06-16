@@ -52,7 +52,7 @@ const EditableCellInput = styled(TextField).attrs({
 
   .MuiOutlinedInput-input {
     padding: 0.2rem;
-    font-size: 0.625rem;
+    font-size: 0.7rem;
   }
   .MuiInputBase-formControl {
     padding: 0;
