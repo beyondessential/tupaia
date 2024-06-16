@@ -66,5 +66,13 @@ export const useSpreadsheetJSON = (surveyId, isOpen, uploadedFile = null) => {
     setDataHasBeenChanged(!dataMatches);
   }, [JSON.stringify(json)]);
 
+  useEffect(() => {
+    // when the modal is closed, reset the json and initialData, so that the next time the modal is opened, it will fetch the file again, and dataHasBeenChanged will be false
+    if (!isOpen) {
+      setJson(null);
+      initialData.current = null;
+    }
+  }, [isOpen]);
+
   return { json, setJson, isLoading, error, dataHasBeenChanged };
 };

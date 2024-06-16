@@ -8,7 +8,7 @@ import { parse } from 'content-disposition-header';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 
-const FETCH_TIMEOUT = 120 * 1000; // 120 seconds in milliseconds
+const FETCH_TIMEOUT = 2 * 60 * 1000; // 2 minutes in milliseconds
 
 const isJsonResponse = response => {
   const contentType = response.headers.get('content-type');

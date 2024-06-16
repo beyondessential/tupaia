@@ -61,9 +61,13 @@ const mergeProps = (
       ...editedFields,
     }, // Include edits in visible record data
     isNew,
-    onSave: (files, onSuccess) => {
+    // optional dataToSave parameter is used in cases where only a subset of the record data is saved, e.g. saving survey questions
+    onSave: (files, onSuccess, dataToSave = null) => {
       // If there is no record data, this is a new record
       let fieldValuesToSave = isNew ? { ...initialValues, ...editedFields } : { ...editedFields };
+      if (dataToSave) {
+        fieldValuesToSave = dataToSave;
+      }
       if (onProcessDataForSave) {
         fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
       }

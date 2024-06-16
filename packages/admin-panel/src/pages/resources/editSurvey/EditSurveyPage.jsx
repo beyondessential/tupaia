@@ -176,10 +176,6 @@ const EditSurveyPageComponent = withConnectedEditor(
       onSave(files, navigateBack);
     };
 
-    const initialFileName = Array.isArray(recordData?.surveyQuestions)
-      ? null
-      : recordData?.surveyQuestions;
-
     // on error, scroll to the error alert
     useEffect(() => {
       if (errorMessage && errorAlertRef.current) {
@@ -188,6 +184,10 @@ const EditSurveyPageComponent = withConnectedEditor(
     }, [errorMessage]);
 
     const toggleEditQuestionsModal = () => setEditQuestionsModalOpen(!editQuestionsModalOpen);
+
+    const onSetFormFile = file => {
+      handleSetFormFile('surveyQuestions', file);
+    };
 
     return (
       <Wrapper>
@@ -218,18 +218,19 @@ const EditSurveyPageComponent = withConnectedEditor(
               Edit survey questions below or choose a file to upload
             </Typography>
             <ButtonGroup>
-              <Button color="primary" onClick={toggleEditQuestionsModal}>
-                Edit questions
-              </Button>
-              <Typography>or</Typography>
+              {!files.surveyQuestions && (
+                <>
+                  <Button color="primary" onClick={toggleEditQuestionsModal}>
+                    Edit questions
+                  </Button>
+                  <Typography>or</Typography>
+                </>
+              )}
               <FileUploadField
                 id="survey-questions"
                 name="survey-questions"
-                onChange={({ fileName, file }) =>
-                  handleSetFormFile('surveyQuestions', { fileName, file })
-                }
+                onChange={onSetFormFile}
                 accept=".xlsx,.xls,.csv"
-                initialFileName={initialFileName}
                 buttonVariant="outlined"
                 ariaDescribedBy="survey-questions-desc"
                 ariaLabelledBy="survey-questions-label"
@@ -260,8 +261,10 @@ const EditSurveyPageComponent = withConnectedEditor(
           open={editQuestionsModalOpen}
           onClose={toggleEditQuestionsModal}
           survey={details}
-          setFormFile={handleSetFormFile}
+          onSave={onSave}
           currentFile={files.surveyQuestions}
+          isSaving={isLoading}
+          errorMessage={errorMessage}
         />
       </Wrapper>
     );
