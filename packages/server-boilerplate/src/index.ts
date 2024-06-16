@@ -12,6 +12,7 @@ export {
   handleError,
   handleWith,
   forwardRequest,
+  emailAfterTimeout,
 } from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
