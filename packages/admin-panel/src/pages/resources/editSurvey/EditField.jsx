@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
 import { useDebounce } from '../../../utilities';
+import { QuestionTypeInput } from './QuestionTypeInput';
 
 const Input = styled(TextField).attrs({
   variant: 'outlined',
@@ -15,7 +16,6 @@ const Input = styled(TextField).attrs({
   rowsMax: 4,
   multiline: true,
 })`
-  margin-block-end: 0.5rem;
   .MuiOutlinedInput-root {
     border-radius: 0;
   }
@@ -38,6 +38,11 @@ const Placeholder = styled.div`
   height: 3rem;
 `;
 
+const InputWrapper = styled.div`
+  margin-block-end: 0.5rem;
+  width: 100%;
+`;
+
 export const EditField = ({ activeCell, cellData, onChange }) => {
   const [value, setValue] = useState(cellData);
   const debouncedValue = useDebounce(value, 500);
@@ -55,7 +60,18 @@ export const EditField = ({ activeCell, cellData, onChange }) => {
 
   if (!activeCell) return <Placeholder />;
 
-  return <Input id="editable-field" value={value} onChange={e => setValue(e.target.value)} />;
+  const InputComponent = activeCell.column === 'type' ? QuestionTypeInput : Input;
+
+  return (
+    <InputWrapper>
+      <InputComponent
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        id="editable-field-input"
+        variant="outlined"
+      />
+    </InputWrapper>
+  );
 };
 
 EditField.propTypes = {

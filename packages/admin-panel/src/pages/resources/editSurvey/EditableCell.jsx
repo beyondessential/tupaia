@@ -4,19 +4,11 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { QuestionType } from '@tupaia/types';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import {
-  ClickAwayListener,
-  FormControl,
-  MenuItem,
-  Popper,
-  Select,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { ClickAwayListener, Popper, TextField, Typography } from '@material-ui/core';
 import { useDebounce } from '../../../utilities';
+import { QuestionTypeInput } from './QuestionTypeInput';
 
 const CellContent = styled.div`
   display: flex;
@@ -80,39 +72,10 @@ const CellInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
-
-const QuestionTypeOptions = Object.values(QuestionType).map(type => ({
-  label: type,
-  value: type,
-}));
-
-const SelectInput = styled(Select)`
-  font-size: inherit;
-  .MuiSelect-selectMenu {
-    min-height: unset;
-    font-size: inherit;
+  .MuiOutlinedInput-input {
+    padding-block: 0.2rem;
   }
 `;
-
-const TypeInput = ({ value, onChange }) => {
-  return (
-    <FormControl>
-      <SelectInput value={value} onChange={onChange}>
-        {QuestionTypeOptions.map(option => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </SelectInput>
-    </FormControl>
-  );
-};
-
-TypeInput.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
 
 export const EditableCell = ({
   cellData,
@@ -156,8 +119,9 @@ export const EditableCell = ({
     const editableFieldInput = document.getElementById('editable-field');
 
     // this handles the select menu, because we are using a popper, so the click away listener senses a click on the select menu as a click away
-    const isBody = e.target.tagName === 'BODY';
-    if (isBody) {
+    const isDropdown =
+      e.target.tagName === 'BODY' || e.target.classList.contains('MuiMenuItem-root');
+    if (isDropdown) {
       return;
     }
 
@@ -211,7 +175,7 @@ export const EditableCell = ({
     onChangeCellData(rowIndex, column, debouncedEditValue);
   }, [debouncedEditValue]);
 
-  const EditInput = column === 'type' ? TypeInput : EditableCellInput;
+  const EditInput = column === 'type' ? QuestionTypeInput : EditableCellInput;
 
   return (
     <ClickAwayListener onClickAway={handleClickOutside}>
