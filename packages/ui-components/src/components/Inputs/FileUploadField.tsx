@@ -156,17 +156,48 @@ export const FileUploadField = ({
   required = false,
   tooltip,
 }: FileUploadFieldProps) => {
+  /**
+   * `useDropzone` can provide an `acceptedFiles` array, but it provides no way to programmatically
+   * add/remove elements. We manage file selection state manually for some custom behaviour:
+   *
+   *   1. dropping files ADDS to the selection (rather than replacing it); and
+   *   2. files may be removed individually from the selection.
+   *
+   * This array uses set semantics. See {@link onDropAccepted}.
+   */
   const [files, setFiles] = useState<File[]>([]);
   const hasFileSelected = files.length > 0;
 
+  /**
+   * Unions the newly selected files with the existing selection.
+   *
+   * @privateRemarks Cannot rely on `file.name` as a unique identifier, because it is only the
+   * basename. The user may select two files with the same basename from different folders.
+   * Duplicate detection in this function stringifies the whole `File` object because it is unlikely
+   * that two different files will have the same name, size AND last-modified date.
+   *
+   * @param acceptedFiles The newly selected files, provided by `react-dropzone`
+   * @param event <input> change event, provided by `react-dropzone`
+   */
   const onDropAccepted = (acceptedFiles: File[], event: DropEvent) => {
     const deduped = acceptedFiles.filter(
       acceptedFile =>
         !files.map(file => JSON.stringify(file)).includes(JSON.stringify(acceptedFile)),
     );
     setFiles(files.concat(deduped));
+
+    // Propagate updated file selection to parent
     onChange(files, event as React.ChangeEvent<HTMLInputElement>);
   };
+
+  /**
+   * @privateRemarks `useDropzone` can take an `accept` prop of type `Record<string, string[]>`, but
+   * it is incompatible with existing usages of {@link FileUploadField} (without complex
+   * conversion). See https://react-dropzone.js.org/#section-accepting-specific-file-types.
+   *
+   * We use the `accept` attribute directly on the `<input>` element. It is simpler and agrees with
+   * legacy code.
+   */
   const { fileRejections, getInputProps, getRootProps, isDragActive } = useDropzone({
     maxSize: maxSizeInBytes,
     multiple,
