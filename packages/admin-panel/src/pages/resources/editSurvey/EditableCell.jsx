@@ -4,9 +4,18 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { QuestionType } from '@tupaia/types';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { ClickAwayListener, Popper, TextField, Typography } from '@material-ui/core';
+import {
+  ClickAwayListener,
+  FormControl,
+  MenuItem,
+  Popper,
+  Select,
+  TextField,
+  Typography,
+} from '@material-ui/core';
 import { useDebounce } from '../../../utilities';
 
 const CellContent = styled.div`
@@ -73,6 +82,38 @@ const CellInputWrapper = styled.div`
   width: 100%;
 `;
 
+const QuestionTypeOptions = Object.values(QuestionType).map(type => ({
+  label: type,
+  value: type,
+}));
+
+const SelectInput = styled(Select)`
+  font-size: inherit;
+  .MuiSelect-selectMenu {
+    min-height: unset;
+    font-size: inherit;
+  }
+`;
+
+const TypeInput = ({ value, onChange }) => {
+  return (
+    <FormControl>
+      <SelectInput value={value} onChange={onChange}>
+        {QuestionTypeOptions.map(option => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </SelectInput>
+    </FormControl>
+  );
+};
+
+TypeInput.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
 export const EditableCell = ({
   cellData,
   rowIndex,
@@ -113,6 +154,12 @@ export const EditableCell = ({
     if (!cellRef.current) return;
     if (cellRef.current.contains(e.target) || cellRef.current === e.target) return;
     const editableFieldInput = document.getElementById('editable-field');
+
+    // this handles the select menu, because we are using a popper, so the click away listener senses a click on the select menu as a click away
+    const isBody = e.target.tagName === 'BODY';
+    if (isBody) {
+      return;
+    }
 
     // if the click is on the input, don't set as inactive, just remove edit mode so the input can be used
     if (editableFieldInput && editableFieldInput.contains(e.target)) {
@@ -164,13 +211,15 @@ export const EditableCell = ({
     onChangeCellData(rowIndex, column, debouncedEditValue);
   }, [debouncedEditValue]);
 
+  const EditInput = column === 'type' ? TypeInput : EditableCellInput;
+
   return (
     <ClickAwayListener onClickAway={handleClickOutside}>
       <CellContent ref={cellRef} $isActive={isActive} onClick={onClickCellButton}>
         {/** Use an overlay here to prevent re-render issues when value changes */}
         <Popper open={isEditingCell} anchorEl={cellRef} disablePortal>
           <CellInputWrapper>
-            <EditableCellInput value={editValue} onChange={onChange} multiline />
+            <EditInput value={editValue} onChange={onChange} />
           </CellInputWrapper>
         </Popper>
         {!isEditingCell && <CellText>{cellData}</CellText>}
