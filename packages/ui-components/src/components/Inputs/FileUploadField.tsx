@@ -40,12 +40,7 @@ const Dropzone = styled.div<{ $isDragActive: boolean; $isDragReject: boolean }>`
     background-color: #f4f9ff;
   }
 
-  ${({ $isDragActive, $isDragReject }) => {
-    if ($isDragReject)
-      return css`
-        background-color: #fff6f5;
-      `;
-
+  ${({ $isDragActive }) => {
     if ($isDragActive)
       return css`
         background-color: #f4f9ff;
@@ -172,12 +167,11 @@ export const FileUploadField = ({
     setFiles(files.concat(deduped));
     onChange(files, event as React.ChangeEvent<HTMLInputElement>);
   };
-  const { fileRejections, getInputProps, getRootProps, inputRef, isDragActive, isDragReject } =
-    useDropzone({
-      maxSize: maxSizeInBytes,
-      multiple,
-      onDropAccepted,
-    });
+  const { fileRejections, getInputProps, getRootProps, isDragActive } = useDropzone({
+    maxSize: maxSizeInBytes,
+    multiple,
+    onDropAccepted,
+  });
   const { palette } = useTheme();
 
   const removeFile = (fileToRemove: File) => {
@@ -187,7 +181,6 @@ export const FileUploadField = ({
 
   const fileOrFiles = multiple ? 'files' : 'file';
   const getDropzoneLabel = () => {
-    if (isDragReject) return 'File(s) not allowed';
     if (isDragActive) return `Drop ${fileOrFiles} here`;
     return (
       <>
@@ -209,7 +202,7 @@ export const FileUploadField = ({
       </LabelAndTooltip>
       <Uploader>
         {(!hasFileSelected || multiple) && (
-          <Dropzone {...getRootProps()} $isDragActive={isDragActive} $isDragReject={isDragReject}>
+          <Dropzone {...getRootProps()} $isDragActive={isDragActive}>
             <input {...getInputProps()} accept={accept} id={name} name={name} required={required} />
             <FilePicker color={palette.primary.main} />
             <PrimaryLabel>{getDropzoneLabel()}</PrimaryLabel>
