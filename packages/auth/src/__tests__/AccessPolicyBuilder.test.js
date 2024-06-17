@@ -9,7 +9,22 @@ import { buildAccessPolicy } from '../buildAccessPolicy';
 jest.mock('../buildAccessPolicy');
 
 describe('AccessPolicyBuilder', () => {
-  const models = {};
+  const models = {
+    userEntityPermission: {
+      addChangeHandler: onPermissionsChanged => {
+        notifyPermissionsChange = userId =>
+          onPermissionsChanged({
+            old_record: { user_id: userId },
+            new_record: { user_id: userId },
+          });
+      },
+    },
+    permissionGroup: {
+      addChangeHandler: onPermissionGroupChanged => {
+        notifyPermissionGroupChange = () => onPermissionGroupChanged();
+      },
+    },
+  };
   const userId = 'xxx';
   let buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
 
@@ -29,7 +44,6 @@ describe('AccessPolicyBuilder', () => {
   describe('handles caching and cache invalidation', () => {
     beforeEach(() => {
       buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
-      buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
     });
 
     it('does not cache the policy if the response throws an error', async () => {
