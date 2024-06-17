@@ -45,6 +45,8 @@ import {
   EntitiesRequest,
   GenerateLoginTokenRoute,
   GenerateLoginTokenRequest,
+  TasksRequest,
+  TasksRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 
@@ -78,6 +80,7 @@ export async function createApp() {
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
+    .get<TasksRequest>('tasks', handleWith(TasksRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
     // Forward auth requests to web-config
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

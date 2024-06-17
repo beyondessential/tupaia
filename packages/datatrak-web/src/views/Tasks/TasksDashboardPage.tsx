@@ -5,12 +5,13 @@
 
 import React from 'react';
 import { PageContainer } from '../../components';
-import { TaskPageHeader } from '../../features';
+import { TaskPageHeader, TasksTable } from '../../features';
 
 export const TasksDashboardPage = () => {
   return (
     <PageContainer>
       <TaskPageHeader title="Tasks" />
+      <TasksTable />
     </PageContainer>
   );
 };
