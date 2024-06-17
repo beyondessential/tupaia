@@ -7,16 +7,14 @@ import { RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryCodesByPermissionGroupId, mergeFilter, mergeMultiJoin } from '../utilities';
 
-const getUserSurveysForProject = async (models, accessPolicy, projectId) => {
-  const userSurveys = await models.survey.findByAccessPolicy(
-    accessPolicy,
-    {
-      project_id: projectId,
-    },
-    {
-      columns: ['id'],
-    },
-  );
+const getUserSurveys = async (models, accessPolicy, projectId) => {
+  const query = {};
+  if (projectId) {
+    query.project_id = projectId;
+  }
+  const userSurveys = await models.survey.findByAccessPolicy(accessPolicy, query, {
+    columns: ['id'],
+  });
   return userSurveys;
 };
 
@@ -32,7 +30,7 @@ export const createTaskDBFilter = async (accessPolicy, models, criteria, options
     models,
   );
 
-  const surveys = await getUserSurveysForProject(models, accessPolicy, projectId);
+  const surveys = await getUserSurveys(models, accessPolicy, projectId);
 
   dbConditions['entity.country_code'] = mergeFilter(
     {
@@ -73,7 +71,7 @@ export const assertUserHasTaskPermissions = async (accessPolicy, models, taskId)
     throw new Error('Need to have access to the country of the task');
   }
 
-  const userSurveys = await getUserSurveysForProject(models, accessPolicy, task.project_id);
+  const userSurveys = await getUserSurveys(models, accessPolicy);
   const survey = userSurveys.find(({ id }) => id === task.survey_id);
   if (!survey) {
     throw new Error('Need to have access to the survey of the task');
@@ -94,11 +92,32 @@ export const assertUserHasPermissionToCreateTask = async (accessPolicy, models, 
     throw new Error('Need to have access to the country of the task');
   }
 
-  const userSurveys = await getUserSurveysForProject(models, accessPolicy, entity.project_id);
+  const userSurveys = await getUserSurveys(models, accessPolicy);
   const survey = userSurveys.find(({ id }) => id === surveyId);
   if (!survey) {
     throw new Error('Need to have access to the survey of the task');
   }
 
+  return true;
+};
+
+export const assertUserCanEditTask = async (accessPolicy, models, taskId, newRecordData) => {
+  await assertUserHasTaskPermissions(accessPolicy, models, taskId);
+  if (newRecordData.entity_id) {
+    const entity = await models.entity.findById(newRecordData.entity_id);
+    if (!entity) {
+      throw new Error(`No entity found with id ${newRecordData.entity_id}`);
+    }
+    if (!accessPolicy.allows(entity.country_code)) {
+      throw new Error('Need to have access to the country of the task');
+    }
+  }
+  if (newRecordData.survey_id) {
+    const userSurveys = await getUserSurveys(models, accessPolicy);
+    const survey = userSurveys.find(({ id }) => id === newRecordData.survey_id);
+    if (!survey) {
+      throw new Error('Need to have access to the survey of the task');
+    }
+  }
   return true;
 };

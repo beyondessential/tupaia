@@ -13,7 +13,7 @@ import {
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 
-describe('Permissions checker for CreateTask', async () => {
+describe('Permissions checker for EditTask', async () => {
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
@@ -39,11 +39,33 @@ describe('Permissions checker for CreateTask', async () => {
       country_code: 'DL',
     },
   ];
+
   const assignee = {
     id: generateId(),
     first_name: 'Peter',
     last_name: 'Pan',
   };
+
+  const dueDate = new Date('2021-12-31');
+
+  const tasks = [
+    {
+      id: generateId(),
+      survey_id: surveys[0].survey.id,
+      entity_id: facilities[0].id,
+      assignee_id: assignee.id,
+      is_recurring: false,
+      due_date: dueDate,
+    },
+    {
+      id: generateId(),
+      survey_id: surveys[1].survey.id,
+      entity_id: facilities[1].id,
+      assignee_id: assignee.id,
+      is_recurring: false,
+      due_date: dueDate,
+    },
+  ];
 
   before(async () => {
     const { country: tongaCountry } = await findOrCreateDummyCountryEntity(models, {
@@ -81,6 +103,8 @@ describe('Permissions checker for CreateTask', async () => {
     ]);
 
     await findOrCreateDummyRecord(models.user, assignee);
+
+    await Promise.all(tasks.map(task => findOrCreateDummyRecord(models.task, task)));
   });
 
   afterEach(() => {
@@ -91,62 +115,15 @@ describe('Permissions checker for CreateTask', async () => {
     await resetTestData();
   });
 
-  describe('POST /tasks', async () => {
-    it('Sufficient permissions: allows a user to create a task if they have BES Admin permission', async () => {
+  describe('PUT /tasks/:id', async () => {
+    it('Sufficient permissions: allows a user to edit a task if they have BES Admin permission', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
-      const { body: result } = await app.post('tasks', {
+      await app.put(`tasks/${tasks[0].id}`, {
         body: {
           entity_id: facilities[0].id,
           survey_id: surveys[0].survey.id,
-          assignee_id: assignee.id,
-          is_recurring: false,
-          due_date: new Date('2021-12-31'),
         },
       });
-
-      expect(result.message).to.equal('Successfully created tasks');
-    });
-
-    it('Sufficient permissions: Allows a user to create a task for a survey and entity they have access to', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.post('tasks', {
-        body: {
-          entity_id: facilities[0].id,
-          survey_id: surveys[1].survey.id,
-          assignee_id: assignee.id,
-          is_recurring: false,
-          due_date: new Date('2021-12-31'),
-        },
-      });
-      expect(result.message).to.equal('Successfully created tasks');
-    });
-
-    it('Insufficient permissions: Does not allow user to create a task for an entity they do not have access to', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.post('tasks', {
-        body: {
-          entity_id: facilities[1].id,
-          survey_id: surveys[1].survey.id,
-          assignee_id: assignee.id,
-          is_recurring: false,
-          due_date: new Date('2021-12-31'),
-        },
-      });
-      expect(result).to.have.keys('error');
-    });
-
-    it('Insufficient permissions: Does not allow user to create a task for a survey they do not have access to', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.post('tasks', {
-        body: {
-          entity_id: facilities[0].id,
-          survey_id: surveys[0].survey.id,
-          assignee_id: assignee.id,
-          is_recurring: false,
-          due_date: new Date('2021-12-31'),
-        },
-      });
-      expect(result).to.have.keys('error');
     });
   });
 });

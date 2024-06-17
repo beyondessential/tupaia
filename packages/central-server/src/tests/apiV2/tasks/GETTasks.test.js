@@ -64,11 +64,7 @@ describe('Permissions checker for GETTasks', async () => {
       },
     ];
 
-    await Promise.all(
-      facilities.map(async facility => {
-        await findOrCreateDummyRecord(models.entity, facility);
-      }),
-    );
+    await Promise.all(facilities.map(facility => findOrCreateDummyRecord(models.entity, facility)));
 
     const surveys = await buildAndInsertSurveys(models, [
       {
@@ -99,9 +95,7 @@ describe('Permissions checker for GETTasks', async () => {
     ];
 
     await Promise.all(
-      assignees.map(async assignee => {
-        await findOrCreateDummyRecord(models.user, assignee);
-      }),
+      assignees.map(async assignee => findOrCreateDummyRecord(models.user, assignee)),
     );
 
     const dueDate = new Date('2021-12-31');
@@ -125,11 +119,7 @@ describe('Permissions checker for GETTasks', async () => {
       },
     ];
 
-    await Promise.all(
-      tasks.map(async task => {
-        await findOrCreateDummyRecord(models.task, task);
-      }),
-    );
+    await Promise.all(tasks.map(task => findOrCreateDummyRecord(models.task, task)));
   });
 
   afterEach(() => {
