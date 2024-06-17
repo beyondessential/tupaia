@@ -38,7 +38,6 @@ const createTaskTable = db => {
       },
       assignee_id: {
         type: 'text',
-        notNull: true,
         foreignKey: createDataSourceFK('assignee_id', 'user_account'),
       },
       is_recurring: { type: 'boolean', notNull: true, defaultValue: false },
