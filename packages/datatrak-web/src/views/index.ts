@@ -19,3 +19,4 @@ export { ForgotPasswordPage } from './ForgotPasswordPage';
 export { ResetPasswordPage } from './ResetPasswordPage';
 export { AccountSettingsPage } from './AccountSettingsPage';
 export { ReportsPage } from './ReportsPage';
+export { TasksDashboardPage } from './Tasks';
