@@ -144,6 +144,7 @@ import {
   GETDashboardMailingListEntries,
 } from './dashboardMailingListEntries';
 import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
+import { GETTasks } from './tasks';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -267,7 +268,7 @@ apiV2.get(
 apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(GETEntityHierarchy));
 apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
-
+apiV2.get('/tasks/:recordId?', useRouteHandler(GETTasks));
 /**
  * POST routes
  */
