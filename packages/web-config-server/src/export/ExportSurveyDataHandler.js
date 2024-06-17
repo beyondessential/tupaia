@@ -5,7 +5,7 @@
 
 import xlsx from 'xlsx';
 import fs from 'fs';
-import { getExportDatesString } from '@tupaia/utils';
+import { getExportDatesString, respondWithDownload } from '@tupaia/utils';
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { USER_SESSION_CONFIG } from '/authSession';
 import { RouteHandler } from '/apiV1/RouteHandler';
@@ -19,7 +19,6 @@ export class ExportSurveyDataHandler extends RouteHandler {
   static PermissionsChecker = ExportSurveyResponsesPermissionsChecker;
 
   async handleRequest() {
-    await super.handleRequest();
     const {
       organisationUnitCode,
       itemCode,
@@ -114,9 +113,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
     }
 
     const filePath = `${EXPORT_DIRECTORY}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
+
     xlsx.writeFile(workbook, filePath);
-    this.res.download(filePath, () => {
-      fs.unlinkSync(filePath); // delete export file after download
-    });
+    respondWithDownload(this.res, filePath, true);
   }
 }

@@ -17,8 +17,6 @@ source "$DIR/../../scripts/bash/mergeEnvForDB.sh"
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
 
-set -x
-
 IS_RDS=$(PGPASSWORD="$DB_PG_PASSWORD" psql -qtAX -h "$DB_URL" -p "$DB_PORT" -U "$DB_PG_USER" -c "SELECT 1 FROM pg_roles WHERE rolname='rds_superuser'")
 
 PGPASSWORD="$DB_PG_PASSWORD" psql -h "$DB_URL" -p "$DB_PORT" -U "$DB_PG_USER" -c "CREATE ROLE $DB_USER LOGIN PASSWORD '$DB_PASSWORD'" || echo "Role $DB_USER already exists?"

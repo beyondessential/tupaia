@@ -1464,6 +1464,10 @@ export const MatrixConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		},
+		"enableSearch": {
+			"description": "Specify whether to show search filters on the matrix",
+			"type": "boolean"
 		}
 	},
 	"required": [
@@ -2161,6 +2165,10 @@ export const MatrixVizBuilderConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		},
+		"enableSearch": {
+			"description": "Specify whether to show search filters on the matrix",
+			"type": "boolean"
 		},
 		"output": {
 			"description": "Configuration for rows, columns, and categories of the matrix",
@@ -22315,6 +22323,10 @@ export const DashboardItemConfigSchema = {
 				"placeholder": {
 					"description": "A url to an image to be used when a matrix is collapsed.",
 					"type": "string"
+				},
+				"enableSearch": {
+					"description": "Specify whether to show search filters on the matrix",
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -43480,6 +43492,10 @@ export const DashboardItemSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -52155,6 +52171,10 @@ export const DashboardItemCreateSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -60827,6 +60847,10 @@ export const DashboardItemUpdateSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -88518,6 +88542,10 @@ export const DashboardWithMetadataSchema = {
 									"placeholder": {
 										"description": "A url to an image to be used when a matrix is collapsed.",
 										"type": "string"
+									},
+									"enableSearch": {
+										"description": "Specify whether to show search filters on the matrix",
+										"type": "boolean"
 									}
 								},
 								"required": [

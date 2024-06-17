@@ -39,5 +39,6 @@ export {
   TupaiaWebSubscribeDashboardRequest,
   TupaiaWebUnsubscribeDashboardRequest,
   TupaiaWebUnsubscribeDashboardMailingListRequest,
+  TupaiaWebExportSurveyDataRequest,
 } from './tupaia-web-server';
 export { ProjectResponse, WebServerEntityRequest, WebServerProjectRequest } from './web-server';

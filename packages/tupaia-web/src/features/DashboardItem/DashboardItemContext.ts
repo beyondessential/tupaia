@@ -17,6 +17,7 @@ type DashboardItemState = {
   isEnlarged?: boolean;
   isExport?: boolean;
   reportCode?: DashboardItem['reportCode'];
+  isEnabled?: boolean;
 };
 const defaultContext = {
   config: null,
@@ -24,6 +25,7 @@ const defaultContext = {
   isLoading: false,
   error: null,
   refetch: () => {},
+  isEnabled: true,
 } as DashboardItemState;
 
 export const DashboardItemContext = createContext(defaultContext);

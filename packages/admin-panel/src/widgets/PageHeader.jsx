@@ -56,7 +56,6 @@ export const PageHeader = ({
 };
 
 PageHeader.propTypes = {
-  title: PropTypes.string.isRequired,
   importConfig: PropTypes.object,
   createConfig: PropTypes.object,
   exportConfig: PropTypes.object,
