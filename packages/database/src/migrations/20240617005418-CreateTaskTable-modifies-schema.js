@@ -16,6 +16,7 @@ const createDataSourceFK = (columnName, table) => ({
 
 const createStatusEnum = db => {
   return db.runSql(`
+    DROP TYPE IF EXISTS TASK_STATUS;
     CREATE TYPE TASK_STATUS AS ENUM('to_do', 'completed', 'overdue', 'cancelled');
  
   `);
@@ -64,7 +65,8 @@ exports.up = async function (db) {
   return createTaskTable(db);
 };
 
-exports.down = function (db) {
+exports.down = async function (db) {
+  await db.runSql('DROP TYPE TASK_STATUS;');
   return db.dropTable('task');
 };
 
