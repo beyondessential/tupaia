@@ -1534,7 +1534,7 @@ export interface SyncGroupLogUpdate {
   'timestamp'?: Date | null;
 }
 export interface Task {
-  'assignee_id': string;
+  'assignee_id'?: string | null;
   'due_date': Date;
   'entity_id': string;
   'id': string;
@@ -1544,7 +1544,7 @@ export interface Task {
   'survey_id': string;
 }
 export interface TaskCreate {
-  'assignee_id': string;
+  'assignee_id'?: string | null;
   'due_date': Date;
   'entity_id': string;
   'is_recurring'?: boolean;
@@ -1553,7 +1553,7 @@ export interface TaskCreate {
   'survey_id': string;
 }
 export interface TaskUpdate {
-  'assignee_id'?: string;
+  'assignee_id'?: string | null;
   'due_date'?: Date;
   'entity_id'?: string;
   'id'?: string;
