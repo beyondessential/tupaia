@@ -66,8 +66,8 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  await db.runSql('DROP TYPE TASK_STATUS;');
-  return db.dropTable('task');
+  await db.dropTable('task');
+  return db.runSql('DROP TYPE TASK_STATUS;');
 };
 
 exports._meta = {
