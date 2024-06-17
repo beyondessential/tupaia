@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class TaskRecord extends DatabaseRecord {
+export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
 
   async entity() {
