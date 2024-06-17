@@ -4,7 +4,11 @@
  */
 
 import React from 'react';
+import { useCurrentUserContext, useTasks } from '../../api';
 
 export const TasksTable = () => {
+  const { projectId } = useCurrentUserContext();
+  const { data: tasks } = useTasks(projectId);
+  console.log(tasks);
   return <div>Tasks table</div>;
 };

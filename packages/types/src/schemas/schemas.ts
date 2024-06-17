@@ -87810,13 +87810,52 @@ export const TaskResponseSchema = {
 			"type": "string"
 		},
 		"assignee": {
-			"type": "string"
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"id",
+				"name"
+			]
 		},
-		"surveyName": {
-			"type": "string"
+		"survey": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"id",
+				"name"
+			]
 		},
 		"entity": {
-			"type": "string"
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"id",
+				"name"
+			]
 		}
 	},
 	"required": [
@@ -87827,8 +87866,8 @@ export const TaskResponseSchema = {
 		"isRecurring",
 		"repeatFrequency",
 		"status",
-		"surveyId",
-		"surveyName"
+		"survey",
+		"surveyId"
 	]
 } 
 
