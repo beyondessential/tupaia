@@ -13,13 +13,22 @@ import {
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 
+const rollbackRecordChange = async (models, records) => {
+  await Promise.all(records.map(record => models.task.delete({ id: record.id })));
+};
+
+const createTasks = async (tasksToCreate, models) => {
+  await Promise.all(tasksToCreate.map(task => findOrCreateDummyRecord(models.task, task)));
+};
+
 describe('Permissions checker for EditTask', async () => {
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
+    TO: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const DEFAULT_POLICY = {
-    TO: ['Donor'],
+    DL: ['Donor'],
   };
 
   const app = new TestableApp();
@@ -48,24 +57,7 @@ describe('Permissions checker for EditTask', async () => {
 
   const dueDate = new Date('2021-12-31');
 
-  const tasks = [
-    {
-      id: generateId(),
-      survey_id: surveys[0].survey.id,
-      entity_id: facilities[0].id,
-      assignee_id: assignee.id,
-      is_recurring: false,
-      due_date: dueDate,
-    },
-    {
-      id: generateId(),
-      survey_id: surveys[1].survey.id,
-      entity_id: facilities[1].id,
-      assignee_id: assignee.id,
-      is_recurring: false,
-      due_date: dueDate,
-    },
-  ];
+  let tasks;
 
   before(async () => {
     const { country: tongaCountry } = await findOrCreateDummyCountryEntity(models, {
@@ -98,16 +90,38 @@ describe('Permissions checker for EditTask', async () => {
         code: 'TEST_SURVEY_2',
         name: 'Test Survey 2',
         permission_group_id: donorPermission.id,
-        country_ids: [tongaCountry.id],
+        country_ids: [dlCountry.id],
       },
     ]);
 
-    await findOrCreateDummyRecord(models.user, assignee);
+    tasks = [
+      {
+        id: generateId(),
+        survey_id: surveys[0].survey.id,
+        entity_id: facilities[0].id,
+        assignee_id: assignee.id,
+        is_recurring: false,
+        due_date: dueDate,
+      },
+      {
+        id: generateId(),
+        survey_id: surveys[1].survey.id,
+        entity_id: facilities[1].id,
+        assignee_id: assignee.id,
+        is_recurring: false,
+        due_date: dueDate,
+      },
+    ];
 
-    await Promise.all(tasks.map(task => findOrCreateDummyRecord(models.task, task)));
+    await findOrCreateDummyRecord(models.user, assignee);
   });
 
-  afterEach(() => {
+  beforeEach(async () => {
+    await createTasks(tasks, models);
+  });
+
+  afterEach(async () => {
+    await rollbackRecordChange(models, tasks);
     app.revokeAccess();
   });
 
@@ -118,12 +132,81 @@ describe('Permissions checker for EditTask', async () => {
   describe('PUT /tasks/:id', async () => {
     it('Sufficient permissions: allows a user to edit a task if they have BES Admin permission', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
-      await app.put(`tasks/${tasks[0].id}`, {
+      await app.put(`tasks/${tasks[1].id}`, {
         body: {
           entity_id: facilities[0].id,
           survey_id: surveys[0].survey.id,
         },
       });
+      const result = await models.task.find({
+        id: tasks[1].id,
+      });
+      expect(result[0].entity_id).to.equal(facilities[0].id);
+      expect(result[0].survey_id).to.equal(surveys[0].survey.id);
+    });
+
+    it('Sufficient permissions: allows a user to edit a task if they have access to the task, and entity and survey are not being updated', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      await app.put(`tasks/${tasks[1].id}`, {
+        body: {
+          status: 'completed',
+        },
+      });
+      const result = await models.task.find({
+        id: tasks[1].id,
+      });
+      expect(result[0].status).to.equal('completed');
+    });
+
+    it('Sufficient permissions: allows a user to edit a task if they have access to the task, and the entity and survey that are being linked to the task', async () => {
+      await app.grantAccess({
+        DL: ['Donor'],
+        TO: ['Donor'],
+      });
+      await app.put(`tasks/${tasks[1].id}`, {
+        body: {
+          survey_id: surveys[1].survey.id,
+          entity_id: facilities[1].id,
+        },
+      });
+      const result = await models.task.find({
+        id: tasks[1].id,
+      });
+      expect(result[0].entity_id).to.equal(facilities[1].id);
+      expect(result[0].survey_id).to.equal(surveys[1].survey.id);
+    });
+
+    it('Insufficient permissions: throws an error if the user does not have access to the task being edited', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: result } = await app.put(`tasks/${tasks[0].id}`, {
+        body: {
+          status: 'completed',
+        },
+      });
+      expect(result).to.have.keys('error');
+      expect(result.error).to.include('Need to have access to the country of the task');
+    });
+
+    it('Insufficient permissions: throws an error if the user does not have access to the survey being linked to the task', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: result } = await app.put(`tasks/${tasks[1].id}`, {
+        body: {
+          survey_id: surveys[0].survey.id,
+        },
+      });
+      expect(result).to.have.keys('error');
+      expect(result.error).to.include('Need to have access to the new survey of the task');
+    });
+
+    it('Insufficient permissions: throws an error if the user does not have access to the entity being linked to the task', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: result } = await app.put(`tasks/${tasks[1].id}`, {
+        body: {
+          entity_id: facilities[0].id,
+        },
+      });
+      expect(result).to.have.keys('error');
+      expect(result.error).to.include('Need to have access to the new entity of the task');
     });
   });
 });

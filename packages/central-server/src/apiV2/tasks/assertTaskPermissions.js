@@ -109,14 +109,14 @@ export const assertUserCanEditTask = async (accessPolicy, models, taskId, newRec
       throw new Error(`No entity found with id ${newRecordData.entity_id}`);
     }
     if (!accessPolicy.allows(entity.country_code)) {
-      throw new Error('Need to have access to the country of the task');
+      throw new Error('Need to have access to the new entity of the task');
     }
   }
   if (newRecordData.survey_id) {
     const userSurveys = await getUserSurveys(models, accessPolicy);
     const survey = userSurveys.find(({ id }) => id === newRecordData.survey_id);
     if (!survey) {
-      throw new Error('Need to have access to the survey of the task');
+      throw new Error('Need to have access to the new survey of the task');
     }
   }
   return true;
