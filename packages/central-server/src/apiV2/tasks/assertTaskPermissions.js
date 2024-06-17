@@ -81,3 +81,24 @@ export const assertUserHasTaskPermissions = async (accessPolicy, models, taskId)
 
   return true;
 };
+
+export const assertUserHasPermissionToCreateTask = async (accessPolicy, models, taskData) => {
+  const { entity_id: entityId, survey_id: surveyId } = taskData;
+
+  const entity = await models.entity.findById(entityId);
+  if (!entity) {
+    throw new Error(`No entity found with id ${entityId}`);
+  }
+
+  if (!accessPolicy.allows(entity.country_code)) {
+    throw new Error('Need to have access to the country of the task');
+  }
+
+  const userSurveys = await getUserSurveysForProject(models, accessPolicy, entity.project_id);
+  const survey = userSurveys.find(({ id }) => id === surveyId);
+  if (!survey) {
+    throw new Error('Need to have access to the survey of the task');
+  }
+
+  return true;
+};

@@ -4,3 +4,4 @@
  */
 
 export { GETTasks } from './GETTasks';
+export { CreateTask } from './CreateTask';
