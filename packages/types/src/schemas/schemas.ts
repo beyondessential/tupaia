@@ -85599,6 +85599,136 @@ export const SyncGroupLogUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const TaskSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"is_recurring": {
+			"type": "boolean"
+		},
+		"repeat_frequency": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"overdue",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"assignee_id",
+		"due_date",
+		"entity_id",
+		"id",
+		"is_recurring",
+		"repeat_frequency",
+		"status",
+		"survey_id"
+	]
+} 
+
+export const TaskCreateSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"is_recurring": {
+			"type": "boolean"
+		},
+		"repeat_frequency": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"overdue",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"assignee_id",
+		"due_date",
+		"entity_id",
+		"survey_id"
+	]
+} 
+
+export const TaskUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"is_recurring": {
+			"type": "boolean"
+		},
+		"repeat_frequency": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"overdue",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const TupaiaWebSessionSchema = {
 	"type": "object",
 	"properties": {
@@ -86135,6 +86265,16 @@ export const VerifiedEmailSchema = {
 		"new_user",
 		"unverified",
 		"verified"
+	],
+	"type": "string"
+} 
+
+export const TaskStatusSchema = {
+	"enum": [
+		"cancelled",
+		"completed",
+		"overdue",
+		"to_do"
 	],
 	"type": "string"
 } 

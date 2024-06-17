@@ -1533,6 +1533,35 @@ export interface SyncGroupLogUpdate {
   'sync_group_code'?: string;
   'timestamp'?: Date | null;
 }
+export interface Task {
+  'assignee_id': string;
+  'due_date': Date;
+  'entity_id': string;
+  'id': string;
+  'is_recurring': boolean;
+  'repeat_frequency': {};
+  'status': TaskStatus;
+  'survey_id': string;
+}
+export interface TaskCreate {
+  'assignee_id': string;
+  'due_date': Date;
+  'entity_id': string;
+  'is_recurring'?: boolean;
+  'repeat_frequency'?: {};
+  'status'?: TaskStatus;
+  'survey_id': string;
+}
+export interface TaskUpdate {
+  'assignee_id'?: string;
+  'due_date'?: Date;
+  'entity_id'?: string;
+  'id'?: string;
+  'is_recurring'?: boolean;
+  'repeat_frequency'?: {};
+  'status'?: TaskStatus;
+  'survey_id'?: string;
+}
 export interface TupaiaWebSession {
   'access_policy': {};
   'access_token': string;
@@ -1664,6 +1693,12 @@ export enum VerifiedEmail {
   'unverified' = 'unverified',
   'new_user' = 'new_user',
   'verified' = 'verified',
+}
+export enum TaskStatus {
+  'to_do' = 'to_do',
+  'completed' = 'completed',
+  'overdue' = 'overdue',
+  'cancelled' = 'cancelled',
 }
 export enum SyncGroupSyncStatus {
   'IDLE' = 'IDLE',
