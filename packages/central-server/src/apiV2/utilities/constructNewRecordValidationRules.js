@@ -444,7 +444,7 @@ export const constructForSingle = (models, recordType) => {
       return {
         entity_id: [constructRecordExistsWithId(models.entity)],
         survey_id: [constructRecordExistsWithId(models.survey)],
-        assignee_id: [constructRecordExistsWithId(models.user)],
+        assignee_id: [constructIsEmptyOr(constructRecordExistsWithId(models.user))],
         due_date: [hasContent],
         is_recurring: [hasContent, isBoolean],
         repeat_frequency: [

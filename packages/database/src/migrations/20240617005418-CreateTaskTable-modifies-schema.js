@@ -4,15 +4,20 @@ var dbm;
 var type;
 var seed;
 
-const createDataSourceFK = (columnName, table) => ({
-  name: `task_${columnName}_fk`,
-  table,
-  mapping: 'id',
-  rules: {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  },
-});
+const createFK = (columnName, table, shouldCascade) => {
+  const rules = shouldCascade
+    ? {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      }
+    : {};
+  return {
+    name: `task_${columnName}_fk`,
+    table,
+    mapping: 'id',
+    rules,
+  };
+};
 
 const createStatusEnum = db => {
   return db.runSql(`
@@ -29,17 +34,16 @@ const createTaskTable = db => {
       survey_id: {
         type: 'text',
         notNull: true,
-        foreignKey: createDataSourceFK('survey_id', 'survey'),
+        foreignKey: createFK('survey_id', 'survey', true),
       },
       entity_id: {
         type: 'text',
         notNull: true,
-        foreignKey: createDataSourceFK('entity_id', 'entity'),
+        foreignKey: createFK('entity_id', 'entity', true),
       },
       assignee_id: {
         type: 'text',
-        notNull: true,
-        foreignKey: createDataSourceFK('assignee_id', 'user_account'),
+        foreignKey: createFK('assignee_id', 'user_account', false),
       },
       is_recurring: { type: 'boolean', notNull: true, defaultValue: false },
       repeat_frequency: { type: 'jsonb', notNull: true, defaultValue: '{}' },
