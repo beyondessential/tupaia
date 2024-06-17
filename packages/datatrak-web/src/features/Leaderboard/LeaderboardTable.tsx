@@ -5,7 +5,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { DatatrakWebLeaderboardRequest, DatatrakWebUserRequest } from '@tupaia/types';
+import {
+  DatatrakWebLeaderboardRequest,
+  DatatrakWebUserRequest,
+  DatatrakWebUserRewardsRequest,
+} from '@tupaia/types';
 import {
   Table,
   TableBody,
@@ -15,7 +19,6 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import { UserRewards } from '../../types';
 
 const TableContainer = styled(MuiTableContainer)`
   font-variant-numeric: tabular-nums;
@@ -81,7 +84,7 @@ const FooterCell = styled(Cell)`
 `;
 
 interface LeaderboardTableProps {
-  userRewards?: UserRewards;
+  userRewards?: DatatrakWebUserRewardsRequest.ResBody;
   user?: DatatrakWebUserRequest.ResBody & {
     isLoggedIn: boolean;
   };

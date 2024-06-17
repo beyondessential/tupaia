@@ -3,15 +3,14 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useQuery } from 'react-query';
-import { Project } from '@tupaia/types';
+import { DatatrakWebUserRewardsRequest, Project } from '@tupaia/types';
 import { get } from '../api';
-import { UserRewards } from '../../types';
 import { useCurrentUserContext } from '../CurrentUserContext';
 
 const useRewards = (projectId?: Project['id']) => {
   return useQuery(
     ['rewards', projectId],
-    (): Promise<UserRewards> =>
+    (): Promise<DatatrakWebUserRewardsRequest.ResBody> =>
       get('me/rewards', {
         params: {
           projectId,

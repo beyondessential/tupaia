@@ -14,5 +14,6 @@ export * as DatatrakWebRecentSurveysRequest from './RecentSurveysRequest';
 export * as DatatrakWebSingleSurveyResponseRequest from './SingleSurveyResponseRequest';
 export * as DatatrakWebLeaderboardRequest from './LeaderboardRequest';
 export * as DatatrakWebActivityFeedRequest from './ActivityFeedRequest';
+export * as DatatrakWebUserRewardsRequest from './UserRewardsRequest';
 export * as DatatrakWebGenerateLoginTokenRequest from './GenerateLoginTokenRequest';
 export * as DatatrakWebEntityDescendantsRequest from './EntityDescendantsRequest';

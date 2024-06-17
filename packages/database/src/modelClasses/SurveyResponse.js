@@ -37,8 +37,8 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     return this.database.executeSql(
       `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
         FROM (
-          SELECT user_id, FLOOR(COUNT(*)) as coconuts, FLOOR(COUNT(*) / 100) as pigs
-          --              ^~~~~~~~~~~~~~~ FLOOR to force result to be returned as int, not string
+          SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100) as pigs
+          --              ^~~~~~~~~~~~~~~ The COUNT(*)::int is required here, since pg serializes count to string
           FROM survey_response
           ${projectId ? 'JOIN survey on survey.id = survey_id and survey.project_id = ?' : ''}
           GROUP BY user_id
@@ -51,5 +51,27 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
       `,
       bindings,
     );
+  }
+
+  async getRewardsForUser(userId, projectId = '') {
+    const [rewards] = await this.database.executeSql(
+      `SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100) as pigs
+      --               ^~~~~~~~~~~~~~~ The COUNT(*)::int is required here, since pg serializes count to string
+      FROM survey_response
+      -- If there is no projectId specified, return all survey_responses. eg. on meditrak-app     
+      ${projectId ? 'JOIN survey ON survey.id = survey_id AND survey.project_id = ?' : ''}
+      WHERE user_id = ?
+      GROUP BY user_id;
+      `,
+      // Need to make sure the number of replacements matches the number of ? in the query
+      projectId ? [userId, projectId] : [userId],
+    );
+
+    if (rewards) {
+      const { coconuts, pigs } = rewards;
+      return { coconuts, pigs };
+    }
+
+    return { coconuts: 0, pigs: 0 };
   }
 }
