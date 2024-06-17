@@ -40,8 +40,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
           SELECT user_id, FLOOR(COUNT(*)) as coconuts, FLOOR(COUNT(*) / 100) as pigs
           --              ^~~~~~~~~~~~~~~ FLOOR to force result to be returned as int, not string
           FROM survey_response
-          JOIN survey on survey.id=survey_id
-          ${projectId ? 'WHERE survey.project_id = ?' : ''}
+          ${projectId ? 'JOIN survey on survey.id = survey_id and survey.project_id = ?' : ''}
           GROUP BY user_id
         ) r
         JOIN user_account on user_account.id = r.user_id
