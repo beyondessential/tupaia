@@ -693,6 +693,10 @@ function addJoin(baseQuery, recordType, joinOptions) {
   });
 }
 
+/**
+ * @privateRemarks
+ * This sanitisation step fails if the input uses both JSON operators and the `COALESCE` function.
+ */
 function getColSelector(connection, inputColStr) {
   const jsonOperatorPattern = /->>?/g;
   if (jsonOperatorPattern.test(inputColStr)) {
