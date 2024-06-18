@@ -16,10 +16,12 @@ type TaskResponse = KeysToCamelCase<Task> & {
   survey: {
     name: Survey['name'];
     id: Survey['id'];
+    code: Survey['code'];
   };
   entity: {
     name: Entity['name'];
     id: Entity['id'];
+    countryCode: string; // this is not undefined or null so use string explicitly here
   };
 };
 
