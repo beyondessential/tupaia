@@ -19,21 +19,13 @@ const TEXT_DARKGREY = '#414D55';
 
 const ScreenChartTable = styled(ChartTable).attrs({
   stickyHeader: true,
+  className: 'flippa-table',
 })`
   &:has(.MuiTable-stickyHeader) {
     max-height: clamp(20rem, 60rem, 55vh);
   }
   table {
     table-layout: unset;
-  }
-  .MuiTableRow-root:nth-child(even) {
-    background-color: ${props => props.theme.palette.background.paper};
-  }
-  .MuiTableCell-head {
-    border-bottom: 1px solid ${GREY_DE};
-  }
-  .MuiTableCell-root {
-    padding-inline: 1.5rem;
   }
 `;
 
