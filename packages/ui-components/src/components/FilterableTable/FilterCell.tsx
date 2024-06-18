@@ -4,14 +4,17 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { HeaderDisplayCell, HeaderDisplayCellProps } from './Cells';
-import { TextField } from '../Inputs';
 import { Search } from '@material-ui/icons';
 import { ColumnInstance } from 'react-table';
+import { TextField } from '../Inputs';
+import { HeaderDisplayCell, HeaderDisplayCellProps } from './Cells';
 
 const FilterWrapper = styled.div`
   .MuiFormControl-root {
     margin-block-end: 0;
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.divider};
   }
   .MuiInputBase-input,
   .MuiOutlinedInput-root {
@@ -39,6 +42,9 @@ const FilterWrapper = styled.div`
   .MuiAutocomplete-option {
     padding-block: 0.5rem;
   }
+  .MuiInputBase-input::-webkit-input-placeholder {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
 `;
 
 export const DefaultFilter = styled(TextField).attrs(props => ({
@@ -64,7 +70,7 @@ export const DefaultFilter = styled(TextField).attrs(props => ({
     padding-inline-start: 0.3rem;
   }
   .MuiSvgIcon-root {
-    color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${({ theme }) => theme.palette.divider};
   }
 `;
 

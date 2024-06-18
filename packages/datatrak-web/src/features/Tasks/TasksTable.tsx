@@ -3,29 +3,40 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useMemo } from 'react';
-import { usePagination, useSortBy, useTable } from 'react-table';
+import React from 'react';
 import styled from 'styled-components';
 import { generatePath, useSearchParams, Link } from 'react-router-dom';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer as MuiTableContainer,
-  TableHead,
-  TableRow,
-} from '@material-ui/core';
+import { FilterableTable } from '@tupaia/ui-components';
 import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
 import { Button } from '../../components';
 import { useCurrentUserContext, useTasks } from '../../api';
 import { displayDate } from '../../utils';
 import { ROUTES } from '../../constants';
 
-const TableContainer = styled(MuiTableContainer)`
-  background-color: ${({ theme }) => theme.palette.background.paper};
+type Task = DatatrakWebTasksRequest.ResBody[0];
+
+const ActionButtonComponent = styled(Button).attrs({
+  color: 'primary',
+  size: 'small',
+})`
+  padding-inline: 1.2rem;
+  padding-block: 0.4rem;
+  .MuiButton-label {
+    font-size: 0.75rem;
+    line-height: normal;
+  }
+  .cell-content:has(&) {
+    padding-block: 0.2rem;
+  }
 `;
 
-type Task = DatatrakWebTasksRequest.ResBody[0];
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border: 1px solid ${({ theme }) => theme.palette.divider};
+  border-radius: 3px;
+`;
 
 const ActionButton = (task: Task) => {
   if (!task) return null;
@@ -37,11 +48,7 @@ const ActionButton = (task: Task) => {
   )
     return null;
   if (!assignee) {
-    return (
-      <Button variant="outlined" color="primary">
-        Assign
-      </Button>
-    );
+    return <ActionButtonComponent variant="outlined">Assign</ActionButtonComponent>;
   }
 
   const surveyLink = generatePath(ROUTES.SURVEY, {
@@ -49,9 +56,9 @@ const ActionButton = (task: Task) => {
     countryCode: entity.countryCode,
   });
   return (
-    <Button component={Link} to={surveyLink} variant="contained" color="primary">
+    <ActionButtonComponent component={Link} to={surveyLink} variant="contained">
       Complete
-    </Button>
+    </ActionButtonComponent>
   );
 };
 
@@ -68,29 +75,35 @@ const COLUMNS = [
     Header: 'Survey',
     accessor: (row: any) => row.survey.name,
     id: 'survey.name',
+    filterable: true,
   },
   {
     Header: 'Entity',
     accessor: (row: any) => row.entity.name,
     id: 'entity.name',
+    filterable: true,
   },
   {
     Header: 'Assignee',
     accessor: row => row.assignee?.name ?? 'Unassigned',
     id: 'assignee.name',
+    filterable: true,
   },
   {
     Header: 'Repeating task',
     accessor: row => (row.isRecurring ? row.repeatFrequency : "Doesn't repeat"),
     id: 'repeating',
+    filterable: true,
   },
   {
     Header: 'Due Date',
     accessor: row => displayDate(row.dueDate),
     id: 'dueDate',
+    filterable: true,
   },
   {
     Header: 'Status',
+    filterable: true,
     accessor: row => {
       if (row.isRecurring) {
         return STATUS_VALUES.repeating;
@@ -103,14 +116,15 @@ const COLUMNS = [
     Header: '',
     accessor: row => <ActionButton {...row} />,
     id: 'actions',
+    filterable: false,
+    disableSortBy: true,
   },
 ];
 
 const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
-  const { data: tasks } = useTasks(projectId);
+  const { data } = useTasks(projectId);
   const [searchParams, setSearchParams] = useSearchParams();
-  const data = useMemo(() => tasks || [], [tasks]);
 
   const page = parseInt(searchParams.get('page') || '0', 10);
 
@@ -118,90 +132,48 @@ const useTasksTable = () => {
   const URLSortBy = searchParams.get('sortBy');
   const sortBy = URLSortBy ? JSON.parse(URLSortBy) : [];
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    pageCount,
-    gotoPage,
-    setPageSize,
-    visibleColumns,
-    setSortBy,
-  } = useTable(
-    {
-      columns: COLUMNS,
-      data,
-      initialState: {
-        pageIndex: page,
-        pageSize: pageSize,
-        sortBy,
-      },
-      manualPagination: true,
-      manualSortBy: true,
-    },
-    useSortBy,
-    usePagination,
-  );
+  const updateSorting = newSorting => {
+    setSearchParams({ sortBy: JSON.stringify(newSorting) });
+  };
+
+  const { tasks = [], count = 0, numberOfPages = 1 } = data || {};
 
   return {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    pageCount,
-    gotoPage,
-    setPageSize,
-    visibleColumns,
-    setSortBy,
+    columns: COLUMNS,
+    data: tasks,
+    totalRecords: count,
+    pageIndex: page,
+    pageSize,
+    sorting: sortBy,
+    updateSorting,
+    numberOfPages,
   };
 };
 
 export const TasksTable = () => {
   const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    pageCount,
-    gotoPage,
-    setPageSize,
-    visibleColumns,
-    setSortBy,
+    columns,
+    data,
+    pageIndex,
+    pageSize,
+    sorting,
+    updateSorting,
+    totalRecords,
+    numberOfPages,
   } = useTasksTable();
 
   return (
-    <TableContainer>
-      <Table {...getTableProps()} stickyHeader>
-        <TableHead>
-          {headerGroups.map((headerGroup, i) => (
-            <TableRow {...headerGroup.getHeaderGroupProps()} key={`header-group-${i}`}>
-              {headerGroup.headers.map(column => (
-                <TableCell {...column.getHeaderProps()} key={column.id}>
-                  {column.render('Header')}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()} key={row.id}>
-                {row.cells.map(cell => (
-                  <TableCell {...cell.getCellProps()} key={cell.column.id}>
-                    {cell.render('Cell')}
-                  </TableCell>
-                ))}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Container>
+      <FilterableTable
+        columns={columns}
+        data={data}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        sorting={sorting}
+        onChangeSorting={updateSorting}
+        totalRecords={totalRecords}
+        numberOfPages={numberOfPages}
+      />
+    </Container>
   );
 };

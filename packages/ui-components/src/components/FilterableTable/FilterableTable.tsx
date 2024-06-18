@@ -170,9 +170,9 @@ export const FilterableTable = ({
                 )}
               </TableRow>
             ))}
-            <TableRow>
-              {displayFilterRow &&
-                visibleColumns.map(column => {
+            {displayFilterRow && (
+              <TableRow>
+                {visibleColumns.map(column => {
                   return (
                     <FilterCell
                       {...column.getHeaderProps()}
@@ -183,7 +183,8 @@ export const FilterableTable = ({
                     />
                   );
                 })}
-            </TableRow>
+              </TableRow>
+            )}
           </TableHead>
           <TableBody {...getTableBodyProps()}>
             {rows.map(row => {
