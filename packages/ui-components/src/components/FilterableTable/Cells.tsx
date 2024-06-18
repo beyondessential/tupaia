@@ -78,7 +78,7 @@ const CellLink = styled(Link)`
 `;
 
 const ColResize = styled.div.attrs({
-  onClick: e => {
+  onClick: (e: React.DragEvent<HTMLDivElement>) => {
     // suppress other events when resizing
     e.preventDefault();
     e.stopPropagation();
