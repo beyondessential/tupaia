@@ -87833,10 +87833,14 @@ export const TaskResponseSchema = {
 				},
 				"id": {
 					"type": "string"
+				},
+				"code": {
+					"type": "string"
 				}
 			},
 			"additionalProperties": false,
 			"required": [
+				"code",
 				"id",
 				"name"
 			]
@@ -87849,10 +87853,14 @@ export const TaskResponseSchema = {
 				},
 				"id": {
 					"type": "string"
+				},
+				"countryCode": {
+					"type": "string"
 				}
 			},
 			"additionalProperties": false,
 			"required": [
+				"countryCode",
 				"id",
 				"name"
 			]

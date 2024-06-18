@@ -16,7 +16,10 @@ export type TasksRequest = Request<
 >;
 
 const FIELDS = [
+  'id',
   'survey.name',
+  'survey.code',
+  'entity.country_code',
   'entity.name',
   'user_account.first_name',
   'user_account.last_name',
@@ -35,7 +38,9 @@ type SingleTask = Task & {
   'user_account.first_name'?: string;
   'user_account.last_name'?: string;
   'survey.name': string;
+  'survey.code': string;
   'entity.name': string;
+  'entity.country_code': string;
 };
 
 export class TasksRoute extends Route<TasksRequest> {
@@ -58,6 +63,8 @@ export class TasksRoute extends Route<TasksRequest> {
         'user_account.last_name': lastName,
         entity_id: entityId,
         'entity.name': entityName,
+        'entity.country_code': entityCountryCode,
+        'survey.code': surveyCode,
         survey_id: surveyId,
         'survey.name': surveyName,
         ...rest
@@ -73,10 +80,12 @@ export class TasksRoute extends Route<TasksRequest> {
         entity: {
           id: entityId,
           name: entityName,
+          countryCode: entityCountryCode,
         },
         survey: {
           id: surveyId,
           name: surveyName,
+          code: surveyCode,
         },
       };
     });
