@@ -45,6 +45,8 @@ const createTaskTable = db => {
         type: 'text',
         foreignKey: createFK('assignee_id', 'user_account', false),
       },
+      // add the assignee name so that we can easily filter tasks by assignee name
+      assignee_name: { type: 'text' },
       is_recurring: { type: 'boolean', notNull: true, defaultValue: false },
       repeat_frequency: { type: 'jsonb', notNull: true, defaultValue: '{}' },
       due_date: { type: 'timestamp', notNull: true },
@@ -66,7 +68,13 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   await createStatusEnum(db);
-  return createTaskTable(db);
+  await createTaskTable(db);
+
+  return db.runSql(` 
+    CREATE INDEX task_survey_id_idx ON task USING btree (survey_id);
+    CREATE INDEX task_entity_id_idx ON task USING btree (entity_id);
+    CREATE INDEX task_assignee_id_idx ON task USING btree (assignee_id);
+  `);
 };
 
 exports.down = async function (db) {

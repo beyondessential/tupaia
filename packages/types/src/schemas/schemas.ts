@@ -85605,6 +85605,9 @@ export const TaskSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
+		"assignee_name": {
+			"type": "string"
+		},
 		"due_date": {
 			"type": "string",
 			"format": "date-time"
@@ -85653,6 +85656,9 @@ export const TaskCreateSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
+		"assignee_name": {
+			"type": "string"
+		},
 		"due_date": {
 			"type": "string",
 			"format": "date-time"
@@ -85692,6 +85698,9 @@ export const TaskUpdateSchema = {
 	"type": "object",
 	"properties": {
 		"assignee_id": {
+			"type": "string"
+		},
+		"assignee_name": {
 			"type": "string"
 		},
 		"due_date": {
