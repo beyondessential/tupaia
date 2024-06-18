@@ -26,6 +26,15 @@ const ScreenChartTable = styled(ChartTable).attrs({
   table {
     table-layout: unset;
   }
+  .MuiTableRow-root:nth-child(even) {
+    background-color: ${props => props.theme.palette.background.paper};
+  }
+  .MuiTableCell-head {
+    border-bottom: 1px solid ${GREY_DE};
+  }
+  .MuiTableCell-root {
+    padding-inline: 1.5rem;
+  }
 `;
 
 const ExportingStyledTable = styled(ChartTable)`
