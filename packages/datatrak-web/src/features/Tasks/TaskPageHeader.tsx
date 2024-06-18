@@ -10,8 +10,6 @@ import { TaskIcon } from '../../components';
 
 const Wrapper = styled.div`
   padding-block: 0.7rem;
-  display: flex;
-  align-items: center;
 `;
 
 const HeadingContainer = styled.div`
@@ -33,6 +31,7 @@ export const TaskPageHeader = ({ title, children }: { title: string; children?: 
         <TaskIcon />
         <Title>{title}</Title>
       </HeadingContainer>
+
       {children}
     </Wrapper>
   );
