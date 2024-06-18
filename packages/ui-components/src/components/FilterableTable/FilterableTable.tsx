@@ -23,6 +23,7 @@ const TableContainer = styled(MuiTableContainer)`
   position: relative;
   flex: 1;
   overflow: auto;
+  background-color: ${({ theme }) => theme.palette.background.paper};
   table {
     min-width: 45rem;
   }
@@ -31,11 +32,10 @@ const TableContainer = styled(MuiTableContainer)`
     position: sticky;
     top: 0;
     z-index: 2;
-    background-color: ${({ theme }) => theme.palette.background.paper};
   }
   tr {
     display: flex;
-    
+  }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: ${({ theme }) => theme.palette.primary.main};
   }

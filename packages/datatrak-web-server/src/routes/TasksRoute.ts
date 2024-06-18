@@ -45,8 +45,11 @@ type SingleTask = Task & {
   'entity.country_code': string;
 };
 
-const queryForCount = (filters: Record<string, any>, models: DatatrakWebServerModelRegistry) => {
-  const { assigneeId } = filters;
+const queryForCount = (filter: Record<string, any>, models: DatatrakWebServerModelRegistry) => {
+  const {
+    'user_account.first_name': assigneeFirstName,
+    'user_account.last_name': assigneeLastName,
+  } = filter;
 
   const multiJoin = [
     {
@@ -59,24 +62,67 @@ const queryForCount = (filters: Record<string, any>, models: DatatrakWebServerMo
     },
   ];
 
-  if (assigneeId) {
+  if (assigneeFirstName || assigneeLastName) {
     multiJoin.push({
       joinWith: RECORDS.USER_ACCOUNT,
       joinCondition: [`${RECORDS.USER_ACCOUNT}.id`, `${RECORDS.TASK}.assignee_id`],
     });
   }
-  return models.database.count(RECORDS.TASK, filters, {
+  return models.database.count(RECORDS.TASK, filter, {
     multiJoin,
   });
 };
 
+// the names are formatted as "firstName lastName" so we need to split the string and format the filters accordingly
+const formatFirstNameFilter = (nameString: string) => {
+  const [strPart1, strPart2] = nameString.split(' ');
+
+  // if there is only one part of the name, return a starting with filter for the first name
+  if (!strPart2)
+    return {
+      [`${RECORDS.USER_ACCOUNT}.first_name`]: {
+        comparator: 'ilike',
+        comparisonValue: `${strPart1}%`,
+      },
+    };
+
+  // if there are two parts of the name, return an exact filter for the first name and a starting with filter for the last name
+  return {
+    [`${RECORDS.USER_ACCOUNT}.first_name`]: strPart1,
+    [`${RECORDS.USER_ACCOUNT}.last_name`]: {
+      comparator: 'ilike',
+      comparisonValue: `${strPart2}%`,
+    },
+  };
+};
+
+const formatFilters = (filters: Record<string, any>[]) => {
+  return filters.reduce((acc, { id, value }) => {
+    if (value === '' || value === undefined || value === null) return acc;
+    if (id === 'assignee.name') {
+      return {
+        ...acc,
+        ...formatFirstNameFilter(value),
+      };
+    }
+    if (value) {
+      acc[id] = {
+        comparator: 'ilike',
+        comparisonValue: value,
+      };
+    }
+    return acc;
+  }, {});
+};
 export class TasksRoute extends Route<TasksRequest> {
   public async buildResponse() {
     const { ctx, query = {}, models } = this.req;
-    const { filter = {}, pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
+    const { filters = [], pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
+
+    const formattedFilters = formatFilters(filters);
 
     const tasks = await ctx.services.central.fetchResources('tasks', {
-      filter,
+      filter: formattedFilters,
       columns: FIELDS,
       sort,
       pageSize,
@@ -84,7 +130,7 @@ export class TasksRoute extends Route<TasksRequest> {
     });
 
     // Get all task ids for pagination
-    const count = await queryForCount(filter, models);
+    const count = await queryForCount(formattedFilters, models);
 
     const numberOfPages = Math.ceil(count / pageSize);
 

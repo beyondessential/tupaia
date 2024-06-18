@@ -7,7 +7,17 @@ import { useQuery } from 'react-query';
 import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { get } from '../api';
 
-export const useTasks = (projectId?: string, pageSize?: number, page?: number, filters = {}) => {
+type Filter = {
+  id: string;
+  value: string;
+};
+
+export const useTasks = (
+  projectId?: string,
+  pageSize?: number,
+  page?: number,
+  filters: Filter[] = [],
+) => {
   return useQuery(
     ['tasks', projectId, pageSize, page, filters],
     (): Promise<DatatrakWebTasksRequest.ResBody> =>
@@ -15,10 +25,7 @@ export const useTasks = (projectId?: string, pageSize?: number, page?: number, f
         params: {
           pageSize,
           page,
-          filter: {
-            'survey.project_id': projectId,
-            ...filters,
-          },
+          filters,
         },
         enabled: !!projectId,
       }),

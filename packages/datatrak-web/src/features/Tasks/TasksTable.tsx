@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { generatePath, useSearchParams, Link } from 'react-router-dom';
+import { generatePath, useSearchParams, Link, useLocation } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
 import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
 import { Button } from '../../components';
@@ -39,6 +39,7 @@ const Container = styled.div`
 `;
 
 const ActionButton = (task: Task) => {
+  const location = useLocation();
   if (!task) return null;
   const { assignee, survey, entity, status } = task;
   if (
@@ -56,7 +57,14 @@ const ActionButton = (task: Task) => {
     countryCode: entity.countryCode,
   });
   return (
-    <ActionButtonComponent component={Link} to={surveyLink} variant="contained">
+    <ActionButtonComponent
+      component={Link}
+      to={surveyLink}
+      variant="contained"
+      state={{
+        from: JSON.stringify(location),
+      }}
+    >
       Complete
     </ActionButtonComponent>
   );
@@ -123,7 +131,6 @@ const COLUMNS = [
 
 const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
-  const { data } = useTasks(projectId);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = parseInt(searchParams.get('page') || '0', 10);
@@ -132,8 +139,25 @@ const useTasksTable = () => {
   const URLSortBy = searchParams.get('sortBy');
   const sortBy = URLSortBy ? JSON.parse(URLSortBy) : [];
 
+  const urlFilters = searchParams.get('filters');
+  const filters = urlFilters ? JSON.parse(urlFilters) : [];
+
+  const { data } = useTasks(projectId, pageSize, page, filters);
+
   const updateSorting = newSorting => {
     setSearchParams({ sortBy: JSON.stringify(newSorting) });
+  };
+
+  const updateFilters = newFilters => {
+    setSearchParams({ filters: JSON.stringify(newFilters) });
+  };
+
+  const onChangePage = newPage => {
+    setSearchParams({ page: newPage });
+  };
+
+  const onChangePageSize = newPageSize => {
+    setSearchParams({ pageSize: newPageSize });
   };
 
   const { tasks = [], count = 0, numberOfPages = 1 } = data || {};
@@ -147,6 +171,10 @@ const useTasksTable = () => {
     sorting: sortBy,
     updateSorting,
     numberOfPages,
+    filters,
+    updateFilters,
+    onChangePage,
+    onChangePageSize,
   };
 };
 
@@ -160,6 +188,10 @@ export const TasksTable = () => {
     updateSorting,
     totalRecords,
     numberOfPages,
+    filters,
+    updateFilters,
+    onChangePage,
+    onChangePageSize,
   } = useTasksTable();
 
   return (
@@ -173,6 +205,10 @@ export const TasksTable = () => {
         onChangeSorting={updateSorting}
         totalRecords={totalRecords}
         numberOfPages={numberOfPages}
+        onChangeFilters={updateFilters}
+        filters={filters}
+        onChangePage={onChangePage}
+        onChangePageSize={onChangePageSize}
       />
     </Container>
   );
