@@ -7,6 +7,8 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTasksRequest, Task } from '@tupaia/types';
+import { RECORDS } from '@tupaia/database';
+import { DatatrakWebServerModelRegistry } from '../types';
 
 export type TasksRequest = Request<
   DatatrakWebTasksRequest.Params,
@@ -43,9 +45,34 @@ type SingleTask = Task & {
   'entity.country_code': string;
 };
 
+const queryForCount = (filters: Record<string, any>, models: DatatrakWebServerModelRegistry) => {
+  const { assigneeId } = filters;
+
+  const multiJoin = [
+    {
+      joinWith: RECORDS.ENTITY,
+      joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.TASK}.entity_id`],
+    },
+    {
+      joinWith: RECORDS.SURVEY,
+      joinCondition: [`${RECORDS.SURVEY}.id`, `${RECORDS.TASK}.survey_id`],
+    },
+  ];
+
+  if (assigneeId) {
+    multiJoin.push({
+      joinWith: RECORDS.USER_ACCOUNT,
+      joinCondition: [`${RECORDS.USER_ACCOUNT}.id`, `${RECORDS.TASK}.assignee_id`],
+    });
+  }
+  return models.database.count(RECORDS.TASK, filters, {
+    multiJoin,
+  });
+};
+
 export class TasksRoute extends Route<TasksRequest> {
   public async buildResponse() {
-    const { ctx, query = {} } = this.req;
+    const { ctx, query = {}, models } = this.req;
     const { filter = {}, pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
 
     const tasks = await ctx.services.central.fetchResources('tasks', {
@@ -55,6 +82,11 @@ export class TasksRoute extends Route<TasksRequest> {
       pageSize,
       page,
     });
+
+    // Get all task ids for pagination
+    const count = await queryForCount(filter, models);
+
+    const numberOfPages = Math.ceil(count / pageSize);
 
     const formattedTasks = tasks.map((task: SingleTask) => {
       const {
@@ -90,8 +122,10 @@ export class TasksRoute extends Route<TasksRequest> {
       };
     });
 
-    return camelcaseKeys(formattedTasks, {
-      deep: true,
-    });
+    return {
+      tasks: camelcaseKeys(formattedTasks, { deep: true }),
+      count,
+      numberOfPages,
+    };
   }
 }

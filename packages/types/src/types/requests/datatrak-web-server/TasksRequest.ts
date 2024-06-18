@@ -25,7 +25,11 @@ type TaskResponse = KeysToCamelCase<Task> & {
   };
 };
 
-export type ResBody = TaskResponse[];
+export type ResBody = {
+  tasks: TaskResponse[];
+  count: number;
+  numberOfPages: number;
+};
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
