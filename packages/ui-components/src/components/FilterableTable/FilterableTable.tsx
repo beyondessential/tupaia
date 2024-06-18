@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   TableContainer as MuiTableContainer,
   Table,
@@ -13,19 +13,10 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 import styled from 'styled-components';
-import {
-  Column,
-  useFlexLayout,
-  usePagination,
-  useResizeColumns,
-  useSortBy,
-  useTable,
-  SortingRule,
-} from 'react-table';
+import { Column, useFlexLayout, useResizeColumns, useTable, SortingRule } from 'react-table';
 import { KeyboardArrowDown } from '@material-ui/icons';
 import { HeaderDisplayCell, TableCell } from './Cells';
 import { FilterCell, FilterCellProps, Filters } from './FilterCell';
-import { set } from 'date-fns';
 import { Pagination } from './Pagination';
 
 const TableContainer = styled(MuiTableContainer)`
@@ -85,8 +76,6 @@ export const FilterableTable = ({
   onChangePage,
   onChangePageSize,
   onChangeSorting,
-  isLoading,
-  errorMessage,
   onChangeFilters,
   filters = [],
   totalRecords,
@@ -99,19 +88,13 @@ export const FilterableTable = ({
     prepareRow,
     rows,
     pageCount,
-    gotoPage,
-    setPageSize,
     visibleColumns,
-    setSortBy,
     // Get the state from the instance
-    state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
   } = useTable(
     {
       columns,
       data: memoisedData,
       initialState: {
-        pageIndex,
-        pageSize,
         sortBy: sorting,
         hiddenColumns,
       },
@@ -119,40 +102,24 @@ export const FilterableTable = ({
       pageCount: numberOfPages,
       manualSortBy: true,
     },
-    useSortBy,
-    usePagination,
     useFlexLayout,
     useResizeColumns,
   );
 
-  //  Listen for changes in pagination and use the state to fetch our new data
-  useEffect(() => {
-    onChangePage(tablePageIndex);
-  }, [tablePageIndex]);
+  const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
 
-  useEffect(() => {
-    onChangePageSize(tablePageSize);
-    gotoPage(0);
-  }, [tablePageSize]);
+  const updateSorting = (isSortedDesc: boolean, id: string) => {
+    const isCurrentlySorted = sorting.some(sort => sort.id === id);
+    const newSorting = isCurrentlySorted
+      ? sorting.map(sort => (sort.id === id ? { id, desc: isSortedDesc } : sort))
+      : [{ id, desc: isSortedDesc }];
 
-  useEffect(() => {
-    if (JSON.stringify(sorting) === JSON.stringify(tableSorting)) return;
-    onChangeSorting(tableSorting);
-    gotoPage(0);
-  }, [JSON.stringify(tableSorting)]);
-
-  useEffect(() => {
-    if (JSON.stringify(sorting) === JSON.stringify(tableSorting)) return;
-    setSortBy(sorting);
-    gotoPage(0);
-  }, [JSON.stringify(sorting)]);
-
-  const updateFilters = newFilters => {
-    onChangeFilters(newFilters);
-    gotoPage(0);
+    onChangeSorting(newSorting);
   };
 
-  const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
+  const getSortedConfig = (id: string) => {
+    return sorting.find(sort => sort.id === id);
+  };
 
   return (
     <>
@@ -163,34 +130,31 @@ export const FilterableTable = ({
               // eslint-disable-next-line react/no-array-index-key
               <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
                 {headers.map(
-                  (
-                    {
-                      getHeaderProps,
-                      render,
-                      isSorted,
-                      isSortedDesc,
-                      getSortByToggleProps,
-                      canSort,
-                      getResizerProps,
-                      canResize,
-                    },
-                    i,
-                  ) => {
+                  ({
+                    getHeaderProps,
+                    render,
+                    disableSortBy,
+                    getResizerProps,
+                    canResize,
+                    maxWidth,
+                    id,
+                  }) => {
+                    const sortedConfig = getSortedConfig(id);
                     return (
                       <HeaderDisplayCell
                         {...getHeaderProps()}
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={`header-${i}`}
+                        key={`header-${id}`}
                         canResize={canResize}
                         getResizerProps={getResizerProps}
+                        maxWidth={maxWidth}
                       >
                         {render('Header')}
-                        {canSort && (
+                        {!disableSortBy && (
                           <TableSortLabel
-                            active={isSorted}
-                            direction={isSortedDesc ? 'asc' : 'desc'}
+                            active={!!sortedConfig}
+                            direction={sortedConfig?.desc ? 'asc' : 'desc'}
                             IconComponent={KeyboardArrowDown}
-                            {...getSortByToggleProps()}
+                            onClick={() => updateSorting(!sortedConfig?.desc, id)}
                           />
                         )}
                       </HeaderDisplayCell>
@@ -207,7 +171,7 @@ export const FilterableTable = ({
                       {...column.getHeaderProps()}
                       key={column.id}
                       column={column}
-                      onChangeFilters={updateFilters}
+                      onChangeFilters={onChangeFilters}
                       filters={filters}
                     />
                   );
@@ -215,20 +179,18 @@ export const FilterableTable = ({
             </TableRow>
           </TableHead>
           <TableBody {...getTableBodyProps()}>
-            {rows.map((row, index) => {
+            {rows.map(row => {
               prepareRow(row);
               return (
-                // eslint-disable-next-line react/no-array-index-key
-                <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
+                <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
                   {row.cells.map(({ getCellProps, render }, i) => {
                     const col = visibleColumns[i];
                     return (
                       <TableCell
                         {...getCellProps()}
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={`table-row-${index}-cell-${i}`}
-                        isCentered={col.isCentered}
+                        key={`table-row-${row.id}-cell-${col.id}`}
                         row={row.original}
+                        maxWidth={col.maxWidth}
                       >
                         {render('Cell')}
                       </TableCell>
@@ -243,9 +205,9 @@ export const FilterableTable = ({
       <Pagination
         page={pageIndex}
         pageCount={pageCount}
-        gotoPage={gotoPage}
+        onChangePage={onChangePage}
         pageSize={pageSize}
-        setPageSize={setPageSize}
+        onChangePageSize={onChangePageSize}
         totalRecords={totalRecords}
       />
     </>

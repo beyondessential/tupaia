@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Pagination as UIPagination } from '../Pagination';
 
@@ -21,33 +20,30 @@ const Wrapper = styled.div`
 interface PaginationProps {
   page: number;
   pageCount: number;
-  gotoPage: (page: number) => void;
+  onChangePage: (page: number) => void;
   pageSize: number;
-  setPageSize: (pageSize: number) => void;
+  onChangePageSize: (pageSize: number) => void;
   totalRecords: number;
 }
 
 export const Pagination = ({
   page,
   pageCount,
-  gotoPage,
+  onChangePage,
   pageSize,
-  setPageSize,
+  onChangePageSize,
   totalRecords,
 }: PaginationProps) => {
   if (!totalRecords) return null;
 
-  const handleChangePage = (newPage: number) => {
-    gotoPage(newPage);
-  };
   return (
     <Wrapper>
       <UIPagination
         page={page}
         pageCount={pageCount}
-        onChangePage={handleChangePage}
+        onChangePage={onChangePage}
         pageSize={pageSize}
-        setPageSize={setPageSize}
+        setPageSize={onChangePageSize}
         totalRecords={totalRecords}
       />
     </Wrapper>

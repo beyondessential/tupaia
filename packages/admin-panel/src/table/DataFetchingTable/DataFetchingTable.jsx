@@ -24,7 +24,6 @@ import {
   refreshData,
 } from '../actions';
 import { ConfirmDeleteModal } from '../../widgets';
-import { FilterCell } from './FilterCell';
 import { DisplayCell } from './Cells';
 
 const ErrorAlert = styled(Alert).attrs({
@@ -62,6 +61,10 @@ const ButtonCell = styled.div`
 
 const SingleButtonWrapper = styled.div`
   width: ${({ $width }) => $width}px;
+  .cell-content:has(&) {
+    padding-block: 0;
+    padding-inline-end: 0;
+  }
 `;
 
 const formatColumnForReactTable = (originalColumn, reduxId) => {
@@ -138,10 +141,12 @@ const DataFetchingTableComponent = memo(
       const buttonColumns = cols.filter(col => col.isButtonColumn);
       if (!buttonColumns.length) return nonButtonColumns;
 
+      const buttonWidths = buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0);
       // Group all button columns into a single column so they can be displayed together under a single header
       const singleButtonColumn = {
         Header: actionLabel,
-        width: buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0),
+        maxWidth: buttonWidths,
+        width: buttonWidths,
         // eslint-disable-next-line react/prop-types
         Cell: ({ row }) => {
           return (
@@ -248,24 +253,19 @@ DataFetchingTableComponent.propTypes = {
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
   numberOfPages: PropTypes.number,
-  TableComponent: PropTypes.elementType,
   onCancelAction: PropTypes.func.isRequired,
   onConfirmAction: PropTypes.func.isRequired,
   onFilteredChange: PropTypes.func.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onPageSizeChange: PropTypes.func.isRequired,
   onRefreshData: PropTypes.func.isRequired,
-  onResizedChange: PropTypes.func.isRequired,
   onSortedChange: PropTypes.func.isRequired,
   initialiseTable: PropTypes.func.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
-  reduxId: PropTypes.string.isRequired,
-  resizedColumns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   sorting: PropTypes.array.isRequired,
   nestingLevel: PropTypes.number,
   deleteConfig: PropTypes.object,
-  actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
   totalRecords: PropTypes.number,
   detailUrl: PropTypes.string,
   getHasNestedView: PropTypes.func,
@@ -274,7 +274,6 @@ DataFetchingTableComponent.propTypes = {
   baseFilter: PropTypes.object,
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
-  defaultSorting: PropTypes.array,
   actionLabel: PropTypes.string,
 };
 
@@ -285,8 +284,6 @@ DataFetchingTableComponent.defaultProps = {
   numberOfPages: 0,
   nestingLevel: 0,
   deleteConfig: {},
-  TableComponent: undefined,
-  actionColumns: [],
   totalRecords: 0,
   detailUrl: '',
   getHasNestedView: null,
@@ -294,7 +291,6 @@ DataFetchingTableComponent.defaultProps = {
   baseFilter: null,
   basePath: '',
   resourceName: {},
-  defaultSorting: [],
   actionLabel: 'Action',
 };
 
@@ -330,6 +326,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   const onRefreshData = () =>
     dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
   const initialiseTable = (filters = defaultFilters) => {
+    dispatch(changePageSize(reduxId, 20, 0));
     dispatch(changeSorting(reduxId, defaultSorting));
     dispatch(changeFilters(reduxId, filters)); // will trigger a data fetch afterwards
     dispatch(clearError());

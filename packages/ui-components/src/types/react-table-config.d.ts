@@ -27,7 +27,7 @@ declare module 'react-table' {
   export interface ColumnInstance<D extends Record<string, any>>
     extends UseSortByColumnProps<D>,
       UseResizeColumnsColumnProps<D> {
-    isCentered?: boolean;
     filterable?: boolean;
+    disableSortBy?: boolean;
   }
 }

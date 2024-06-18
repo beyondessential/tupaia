@@ -4,19 +4,19 @@
  */
 
 import React, { ReactNode } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { TableCell as MuiTableCell } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { TableResizerProps } from 'react-table';
 
 const Cell = styled(MuiTableCell)<{
-  $width?: string;
-  $isCentered?: boolean;
+  $maxWidth?: number;
 }>`
   font-size: 0.75rem;
   padding: 0;
   border: none;
   position: relative;
+  max-width: ${({ $maxWidth }) => ($maxWidth ? `${$maxWidth}px` : 'auto')};
   &:first-child {
     padding-inline-start: 1.5rem;
   }
@@ -25,17 +25,8 @@ const Cell = styled(MuiTableCell)<{
   }
 `;
 
-const CellContentWrapper = styled.div<{
-  $isCentered?: boolean;
-}>`
+const CellContentWrapper = styled.div`
   padding: 0.7rem;
-  ${({ $isCentered }) =>
-    $isCentered &&
-    css`
-      padding-inline: 0;
-      padding-block: 0;
-      text-align: center;
-    `}
   height: 100%;
   display: flex;
   align-items: center;
@@ -76,6 +67,16 @@ const HeaderCell = styled(Cell)`
   }
 `;
 
+const CellLink = styled(Link)`
+  color: inherit;
+  text-decoration: none;
+  &:hover {
+    tr:has(&) td > * {
+      background-color: ${({ theme }) => `${theme.palette.primary.main}18`}; // 18 is 10% opacity
+    }
+  }
+`;
+
 const ColResize = styled.div.attrs({
   onClick: e => {
     // suppress other events when resizing
@@ -92,17 +93,19 @@ export interface HeaderDisplayCellProps {
   children?: ReactNode;
   canResize?: boolean;
   getResizerProps?: (props?: Partial<TableResizerProps>) => TableResizerProps;
+  maxWidth?: number;
 }
 
 export const HeaderDisplayCell = ({
   children,
   canResize,
   getResizerProps = () => ({}),
+  maxWidth,
   ...props
 }: HeaderDisplayCellProps) => {
   return (
-    <HeaderCell {...props}>
-      <CellContentContainer> {children}</CellContentContainer>
+    <HeaderCell {...props} $maxWidth={maxWidth}>
+      <CellContentContainer>{children}</CellContentContainer>
       {canResize && <ColResize {...getResizerProps()} />}
     </HeaderCell>
   );
@@ -111,28 +114,18 @@ export const HeaderDisplayCell = ({
 interface TableCellProps {
   children: ReactNode;
   width?: string;
-  isCentered?: boolean;
   row: Record<string, any>;
+  maxWidth?: number;
 }
-export const TableCell = ({ children, width, isCentered, row, ...props }: TableCellProps) => {
+export const TableCell = ({ children, width, row, maxWidth, ...props }: TableCellProps) => {
   const url = row?.original?.url;
   return (
-    <Cell $isCentered={isCentered} {...props}>
-      <CellContentWrapper $isCentered={isCentered}>
-        <CellContentContainer to={url} as={url ? CellLink : 'div'} $isCentered={isCentered}>
+    <Cell {...props} $maxWidth={maxWidth}>
+      <CellContentWrapper className="cell-content">
+        <CellContentContainer to={url} as={url ? CellLink : 'div'}>
           {children}
         </CellContentContainer>
       </CellContentWrapper>
     </Cell>
   );
 };
-
-const CellLink = styled(Link)`
-  color: inherit;
-  text-decoration: none;
-  &:hover {
-    tr:has(&) td > * {
-      background-color: ${({ theme }) => `${theme.palette.primary.main}18`}; // 18 is 10% opacity
-    }
-  }
-`;
