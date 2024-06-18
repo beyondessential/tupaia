@@ -10,7 +10,7 @@ import { get } from '../api';
 export const useTasks = (projectId?: string, pageSize?: number, page?: number, filters = {}) => {
   return useQuery(
     ['tasks', projectId, pageSize, page, filters],
-    (): Promise<DatatrakWebTasksRequest.ResBody[]> =>
+    (): Promise<DatatrakWebTasksRequest.ResBody> =>
       get('tasks', {
         params: {
           pageSize,
