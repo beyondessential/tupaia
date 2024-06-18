@@ -17,7 +17,6 @@ import {
   changeFilters,
   changePage,
   changePageSize,
-  changeResizedColumns,
   changeSorting,
   clearError,
   confirmAction,
@@ -310,7 +309,6 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
     dispatch(changePageSize(reduxId, newPageSize, newPageIndex)),
   onSortedChange: newSorting => dispatch(changeSorting(reduxId, newSorting)),
   onFilteredChange: newFilters => dispatch(changeFilters(reduxId, newFilters)),
-  onResizedChange: newResized => dispatch(changeResizedColumns(reduxId, newResized)),
 });
 
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {

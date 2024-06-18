@@ -108,11 +108,18 @@ export const FilterableTable = ({
 
   const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
 
-  const updateSorting = (isSortedDesc: boolean, id: string) => {
-    const isCurrentlySorted = sorting.some(sort => sort.id === id);
-    const newSorting = isCurrentlySorted
-      ? sorting.map(sort => (sort.id === id ? { id, desc: isSortedDesc } : sort))
-      : [{ id, desc: isSortedDesc }];
+  const updateSorting = (id: string) => {
+    const currentSorting = sorting.find(sort => sort.id === id);
+    const getNewSorting = () => {
+      // if the column is not sorted, add it to the sorting array, ascending first
+      if (!currentSorting) return [...sorting, { id, desc: false }];
+      // If the column is sorted descending, remove it from the sorting array, so it can have an 'off' state
+      if (currentSorting.desc) return sorting.filter(sort => sort.id !== id);
+      // If the column is sorted ascending, toggle it to descending
+      return sorting.map(sort => (sort.id === id ? { ...sort, desc: !sort.desc } : sort));
+    };
+
+    const newSorting = getNewSorting();
 
     onChangeSorting(newSorting);
   };
@@ -154,7 +161,7 @@ export const FilterableTable = ({
                             active={!!sortedConfig}
                             direction={sortedConfig?.desc ? 'asc' : 'desc'}
                             IconComponent={KeyboardArrowDown}
-                            onClick={() => updateSorting(!sortedConfig?.desc, id)}
+                            onClick={() => updateSorting(id)}
                           />
                         )}
                       </HeaderDisplayCell>

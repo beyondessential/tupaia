@@ -93,10 +93,10 @@ export const FilterCell = ({ column, filters, onChangeFilters, ...props }: Filte
 
     onChangeFilters(updatedFilters);
   };
-  if (!column.filterable) return <HeaderDisplayCell {...props} />;
+  if (!column.filterable) return <HeaderDisplayCell {...props} maxWidth={column.maxWidth} />;
 
   return (
-    <HeaderDisplayCell {...props}>
+    <HeaderDisplayCell {...props} maxWidth={column.maxWidth}>
       <FilterWrapper>
         {Filter ? (
           <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
