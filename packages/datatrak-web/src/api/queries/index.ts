@@ -20,4 +20,3 @@ export { useUserRewards } from './useUserRewards';
 export { useActivityFeed, useCurrentProjectActivityFeed } from './useActivityFeed';
 export { useProjectSurveys } from './useProjectSurveys';
 export { useEntities } from './useEntities';
-export { useTasks } from './useTasks';
