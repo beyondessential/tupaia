@@ -440,6 +440,22 @@ export const constructForSingle = (models, recordType) => {
         code: [isAString],
         config: [hasContent],
       };
+    case RECORDS.TASK:
+      return {
+        entity_id: [constructRecordExistsWithId(models.entity)],
+        survey_id: [constructRecordExistsWithId(models.survey)],
+        assignee_id: [constructIsEmptyOr(constructRecordExistsWithId(models.user))],
+        due_date: [hasContent],
+        is_recurring: [hasContent, isBoolean],
+        repeat_frequency: [
+          (value, { is_recurring: isRecurring }) => {
+            if (isRecurring && !value) {
+              throw new Error('Repeat frequency is required for recurring tasks');
+            }
+            return true;
+          },
+        ],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }

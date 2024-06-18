@@ -1,0 +1,182 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
+import { expect } from 'chai';
+import {
+  buildAndInsertSurveys,
+  findOrCreateDummyCountryEntity,
+  findOrCreateDummyRecord,
+  generateId,
+} from '@tupaia/database';
+import { TestableApp, resetTestData } from '../../testUtilities';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
+
+describe('Permissions checker for GETTasks', async () => {
+  const BES_ADMIN_POLICY = {
+    DL: [BES_ADMIN_PERMISSION_GROUP],
+  };
+
+  const DEFAULT_POLICY = {
+    DL: ['Donor'],
+    TO: ['Donor'],
+  };
+
+  const PUBLIC_POLICY = {
+    DL: ['Public'],
+  };
+
+  const app = new TestableApp();
+  const { models } = app;
+  let tasks;
+
+  before(async () => {
+    const { country: tongaCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'TO',
+      name: 'Tonga',
+    });
+
+    const { country: dlCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'DL',
+      name: 'Demo Land',
+    });
+
+    const donorPermission = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Donor',
+    });
+    const BESAdminPermission = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Admin',
+    });
+
+    const facilities = [
+      {
+        id: generateId(),
+        code: 'TEST_FACILITY_1',
+        name: 'Test Facility 1',
+        country_code: tongaCountry.code,
+      },
+      {
+        id: generateId(),
+        code: 'TEST_FACILITY_2',
+        name: 'Test Facility 2',
+        country_code: dlCountry.code,
+      },
+    ];
+
+    await Promise.all(facilities.map(facility => findOrCreateDummyRecord(models.entity, facility)));
+
+    const surveys = await buildAndInsertSurveys(models, [
+      {
+        code: 'TEST_SURVEY_1',
+        name: 'Test Survey 1',
+        permission_group_id: BESAdminPermission.id,
+        country_ids: [tongaCountry.id, dlCountry.id],
+      },
+      {
+        code: 'TEST_SURVEY_2',
+        name: 'Test Survey 2',
+        permission_group_id: donorPermission.id,
+        country_ids: [tongaCountry.id, dlCountry.id],
+      },
+    ]);
+
+    const assignees = [
+      {
+        id: generateId(),
+        first_name: 'Peter',
+        last_name: 'Pan',
+      },
+      {
+        id: generateId(),
+        first_name: 'Minnie',
+        last_name: 'Mouse',
+      },
+    ];
+
+    await Promise.all(
+      assignees.map(async assignee => findOrCreateDummyRecord(models.user, assignee)),
+    );
+
+    const dueDate = new Date('2021-12-31');
+
+    tasks = [
+      {
+        id: generateId(),
+        survey_id: surveys[0].survey.id,
+        entity_id: facilities[0].id,
+        assignee_id: assignees[0].id,
+        is_recurring: false,
+        due_date: dueDate,
+      },
+      {
+        id: generateId(),
+        survey_id: surveys[1].survey.id,
+        entity_id: facilities[1].id,
+        assignee_id: assignees[1].id,
+        is_recurring: false,
+        due_date: dueDate,
+      },
+    ];
+
+    await Promise.all(tasks.map(task => findOrCreateDummyRecord(models.task, task)));
+  });
+
+  afterEach(() => {
+    app.revokeAccess();
+  });
+
+  after(async () => {
+    await resetTestData();
+  });
+
+  describe('GET /tasks/:id', async () => {
+    it('Sufficient permissions: returns a requested task when user has BES admin permissions', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const { body: result } = await app.get(`tasks/${tasks[0].id}`);
+      expect(result.id).to.equal(tasks[0].id);
+    });
+
+    it('Sufficient permissions: returns a requested task when user has permissions', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: result } = await app.get(`tasks/${tasks[1].id}`);
+
+      expect(result.id).to.equal(tasks[1].id);
+    });
+
+    it('Insufficient permissions: throws an error if requesting task when user does not have permissions', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: result } = await app.get(`tasks/${tasks[0].id}`);
+
+      expect(result).to.have.keys('error');
+    });
+  });
+
+  describe('GET /tasks', async () => {
+    it('Sufficient permissions: returns all tasks if the user has BES admin access', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const { body: results } = await app.get('tasks');
+      expect(results.length).to.equal(tasks.length);
+      const resultIds = results.map(r => r.id);
+      tasks.forEach(task => {
+        expect(resultIds.includes(task.id)).to.equal(true);
+      });
+    });
+
+    it('Sufficient permissions: returns tasks when user has permissions', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      const { body: results } = await app.get('tasks');
+
+      expect(results.length).to.equal(1);
+      const resultIds = results.map(r => r.id);
+      expect(resultIds[0]).to.equal(tasks[1].id);
+    });
+
+    it('Insufficient permissions: returns an empty array if users do not have access to any project', async () => {
+      await app.grantAccess(PUBLIC_POLICY);
+      const { body: results } = await app.get('tasks');
+
+      expect(results).to.be.empty;
+    });
+  });
+});
