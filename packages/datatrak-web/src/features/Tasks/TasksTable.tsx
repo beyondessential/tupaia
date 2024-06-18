@@ -94,7 +94,7 @@ const COLUMNS = [
   {
     Header: 'Assignee',
     accessor: row => row.assignee?.name ?? 'Unassigned',
-    id: 'assignee.name',
+    id: 'assignee_name',
     filterable: true,
   },
   {
@@ -149,7 +149,12 @@ const useTasksTable = () => {
   };
 
   const updateFilters = newFilters => {
-    setSearchParams({ filters: JSON.stringify(newFilters) });
+    const nonEmptyFilters = newFilters.filter(({ value }) => value !== '');
+    if (nonEmptyFilters.length === 0) {
+      setSearchParams({ filters: '' });
+      return;
+    }
+    setSearchParams({ filters: JSON.stringify(nonEmptyFilters) });
   };
 
   const onChangePage = newPage => {

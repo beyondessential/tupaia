@@ -87565,6 +87565,9 @@ export const TaskResponseSchema = {
 		"assigneeId": {
 			"type": "string"
 		},
+		"assigneeName": {
+			"type": "string"
+		},
 		"dueDate": {
 			"type": "object",
 			"properties": {

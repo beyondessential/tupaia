@@ -23,8 +23,7 @@ const FIELDS = [
   'survey.code',
   'entity.country_code',
   'entity.name',
-  'user_account.first_name',
-  'user_account.last_name',
+  'assignee_name',
   'assignee_id',
   'status',
   'due_date',
@@ -37,8 +36,6 @@ const FIELDS = [
 const DEFAULT_PAGE_SIZE = 20;
 
 type SingleTask = Task & {
-  'user_account.first_name'?: string;
-  'user_account.last_name'?: string;
   'survey.name': string;
   'survey.code': string;
   'entity.name': string;
@@ -46,11 +43,6 @@ type SingleTask = Task & {
 };
 
 const queryForCount = (filter: Record<string, any>, models: DatatrakWebServerModelRegistry) => {
-  const {
-    'user_account.first_name': assigneeFirstName,
-    'user_account.last_name': assigneeLastName,
-  } = filter;
-
   const multiJoin = [
     {
       joinWith: RECORDS.ENTITY,
@@ -62,55 +54,22 @@ const queryForCount = (filter: Record<string, any>, models: DatatrakWebServerMod
     },
   ];
 
-  if (assigneeFirstName || assigneeLastName) {
-    multiJoin.push({
-      joinWith: RECORDS.USER_ACCOUNT,
-      joinCondition: [`${RECORDS.USER_ACCOUNT}.id`, `${RECORDS.TASK}.assignee_id`],
-    });
-  }
   return models.database.count(RECORDS.TASK, filter, {
     multiJoin,
   });
 };
 
-// the names are formatted as "firstName lastName" so we need to split the string and format the filters accordingly
-const formatFirstNameFilter = (nameString: string) => {
-  const [strPart1, strPart2] = nameString.split(' ');
-
-  // if there is only one part of the name, return a starting with filter for the first name
-  if (!strPart2)
-    return {
-      [`${RECORDS.USER_ACCOUNT}.first_name`]: {
-        comparator: 'ilike',
-        comparisonValue: `${strPart1}%`,
-      },
-    };
-
-  // if there are two parts of the name, return an exact filter for the first name and a starting with filter for the last name
-  return {
-    [`${RECORDS.USER_ACCOUNT}.first_name`]: strPart1,
-    [`${RECORDS.USER_ACCOUNT}.last_name`]: {
-      comparator: 'ilike',
-      comparisonValue: `${strPart2}%`,
-    },
-  };
-};
-
 const formatFilters = (filters: Record<string, any>[]) => {
   return filters.reduce((acc, { id, value }) => {
     if (value === '' || value === undefined || value === null) return acc;
-    if (id === 'assignee.name') {
-      return {
-        ...acc,
-        ...formatFirstNameFilter(value),
-      };
+    if (id === 'survey.project_id') {
+      acc['survey.project_id'] = value;
+      return acc;
     }
-    if (value) {
-      acc[id] = {
-        comparator: 'ilike',
-        comparisonValue: value,
-      };
-    }
+    acc[id] = {
+      comparator: 'ilike',
+      comparisonValue: `${value}%`,
+    };
     return acc;
   }, {});
 };
@@ -137,8 +96,7 @@ export class TasksRoute extends Route<TasksRequest> {
     const formattedTasks = tasks.map((task: SingleTask) => {
       const {
         assignee_id: assigneeId,
-        'user_account.first_name': firstName,
-        'user_account.last_name': lastName,
+        assignee_name: assigneeName,
         entity_id: entityId,
         'entity.name': entityName,
         'entity.country_code': entityCountryCode,
@@ -152,7 +110,7 @@ export class TasksRoute extends Route<TasksRequest> {
         assignee: assigneeId
           ? {
               id: assigneeId,
-              name: `${firstName} ${lastName}`,
+              name: assigneeName,
             }
           : null,
         entity: {

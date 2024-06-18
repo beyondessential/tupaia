@@ -25,7 +25,13 @@ export const useTasks = (
         params: {
           pageSize,
           page,
-          filters,
+          filters: [
+            ...filters,
+            {
+              id: 'survey.project_id',
+              value: projectId,
+            },
+          ],
         },
         enabled: !!projectId,
       }),
