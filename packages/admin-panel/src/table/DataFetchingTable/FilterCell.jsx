@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DefaultFilter } from '../columnTypes/columnFilters';
-import { HeaderDisplayCell } from './Cells';
 
 const FilterWrapper = styled.div`
   .MuiFormControl-root {
@@ -40,7 +39,7 @@ const FilterWrapper = styled.div`
   }
 `;
 
-export const FilterCell = ({ column, filters, onFilteredChange, ...props }) => {
+export const FilterCell = ({ column, filters, onFilteredChange }) => {
   const { id, Filter } = column;
   const existingFilter = filters?.find(f => f.id === id);
   const handleUpdate = value => {
@@ -50,22 +49,20 @@ export const FilterCell = ({ column, filters, onFilteredChange, ...props }) => {
 
     onFilteredChange(updatedFilters);
   };
-  if (!column.filterable) return <HeaderDisplayCell {...props} />;
+  if (!column.filterable) return null;
 
   return (
-    <HeaderDisplayCell {...props}>
-      <FilterWrapper>
-        {Filter ? (
-          <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
-        ) : (
-          <DefaultFilter
-            value={existingFilter?.value || ''}
-            onChange={e => handleUpdate(e.target.value)}
-            aria-label={`Search ${column.Header}`}
-          />
-        )}
-      </FilterWrapper>
-    </HeaderDisplayCell>
+    <FilterWrapper>
+      {Filter ? (
+        <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
+      ) : (
+        <DefaultFilter
+          value={existingFilter?.value || ''}
+          onChange={e => handleUpdate(e.target.value)}
+          aria-label={`Search ${column.Header}`}
+        />
+      )}
+    </FilterWrapper>
   );
 };
 
