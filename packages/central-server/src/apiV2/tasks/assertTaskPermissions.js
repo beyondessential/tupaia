@@ -22,7 +22,7 @@ export const createTaskDBFilter = async (accessPolicy, models, criteria, options
   if (hasBESAdminAccess(accessPolicy)) {
     return { dbConditions: criteria, dbOptions: options };
   }
-  const { projectId, ...dbConditions } = { ...criteria };
+  const { 'survey.project_id': projectId, ...dbConditions } = { ...criteria };
   const dbOptions = { ...options };
 
   const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(

@@ -4,14 +4,23 @@
  */
 
 import { KeysToCamelCase } from '../../../utils/casing';
-import { Entity, Survey, Task } from '../../models';
+import { Entity, Survey, Task, UserAccount } from '../../models';
 
 export type Params = Record<string, never>;
 
 type TaskResponse = KeysToCamelCase<Task> & {
-  assignee?: string;
-  surveyName: Survey['name'];
-  entity: Entity['name'];
+  assignee?: {
+    name: string;
+    id: UserAccount['id'];
+  };
+  survey: {
+    name: Survey['name'];
+    id: Survey['id'];
+  };
+  entity: {
+    name: Entity['name'];
+    id: Entity['id'];
+  };
 };
 
 export type ResBody = TaskResponse[];
@@ -20,6 +29,6 @@ export interface ReqQuery {
   fields?: string[];
   pageSize?: number;
   sort?: string[];
+  page?: number;
   filter?: Record<string, string | string[]>;
-  projectId?: string;
 }
