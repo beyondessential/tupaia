@@ -103,7 +103,7 @@ export const getPermissionsPageConfig = translate => {
   const deleteConfig = getDeleteConfigs(translate);
   return {
     ...permissions,
-    title: translate('admin.permissions'),
+    label: translate('admin.permissions'),
     columns: FIELDS,
     editorConfig,
     createConfig,
