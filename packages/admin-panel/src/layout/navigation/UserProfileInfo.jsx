@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Avatar, Divider, Typography } from '@material-ui/core';
@@ -11,6 +12,7 @@ import { Tooltip } from '@tupaia/ui-components';
 import { UserButton } from './UserButton';
 import { useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
+import { logout as logoutAction } from '../../authentication';
 
 const Wrapper = styled.div`
   padding-inline: 1.25rem;
@@ -29,9 +31,9 @@ const UserEmail = styled(Typography)`
   margin-block-end: 0.9rem;
 `;
 
-export const UserProfileInfo = ({ profileLink, isFullWidth }) => {
+const UserProfileInfoComponent = ({ profileLink, isFullWidth, onLogout }) => {
   const { isLoggedIn, data: user, isLoading } = useUser();
-  const { mutate: logout } = useLogout();
+  const { mutate: logout } = useLogout(onLogout);
 
   if (isLoading) return null;
 
@@ -70,14 +72,21 @@ export const UserProfileInfo = ({ profileLink, isFullWidth }) => {
   );
 };
 
-UserProfileInfo.propTypes = {
+UserProfileInfoComponent.propTypes = {
   profileLink: PropTypes.shape({
     label: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
   }),
   isFullWidth: PropTypes.bool.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
-UserProfileInfo.defaultProps = {
+UserProfileInfoComponent.defaultProps = {
   profileLink: null,
 };
+
+const mapDispatchToProps = dispatch => ({
+  onLogout: () => dispatch(logoutAction()),
+});
+
+export const UserProfileInfo = connect(null, mapDispatchToProps)(UserProfileInfoComponent);
