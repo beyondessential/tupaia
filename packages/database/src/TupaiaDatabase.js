@@ -59,7 +59,14 @@ const COMPARATORS = {
 };
 
 /**
- * We only support specific functions in select statements in order to avoid SQL injection
+ * We only support specific functions in SELECT statements to avoid SQL injection.
+ *
+ * @privateRemarks Because of the (appropriately) conservative way Knex handles identifiers in
+ * parameterised queries, supported functions may need custom handling in {@link getColSelector}.
+ * Otherwise, Knex will attempt to interpret function calls as identifiers. For example,
+ * `COALESCE(foo, bar)` would otherwise become `"COALESCE(FOO", "bar)"`.
+ *
+ * @see getColSelector
  */
 const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 
@@ -696,6 +703,8 @@ function addJoin(baseQuery, recordType, joinOptions) {
 /**
  * @privateRemarks
  * This sanitisation step fails if the input uses both JSON operators and the `COALESCE` function.
+ *
+ * @see supportedFunctions
  */
 function getColSelector(connection, inputColStr) {
   const jsonOperatorPattern = /->>?/g;
