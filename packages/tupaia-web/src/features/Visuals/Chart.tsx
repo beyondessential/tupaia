@@ -19,6 +19,7 @@ const TEXT_DARKGREY = '#414D55';
 
 const ScreenChartTable = styled(ChartTable).attrs({
   stickyHeader: true,
+  className: 'flippa-table',
 })`
   &:has(.MuiTable-stickyHeader) {
     max-height: clamp(20rem, 60rem, 55vh);
