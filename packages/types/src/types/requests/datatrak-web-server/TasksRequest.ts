@@ -36,5 +36,5 @@ export interface ReqQuery {
   pageSize?: number;
   sort?: string[];
   page?: number;
-  filters?: Record<string, string | string[]>[];
+  filters?: Record<string, string>[];
 }

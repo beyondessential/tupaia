@@ -12,6 +12,8 @@ import { Button } from '../../components';
 import { useCurrentUserContext, useTasks } from '../../api';
 import { displayDate } from '../../utils';
 import { ROUTES } from '../../constants';
+import { StatusFilter } from './StatusFilter';
+import { REPEATING_STATUS, StatusPill } from './StatusPill';
 
 type Task = DatatrakWebTasksRequest.ResBody[0];
 
@@ -70,14 +72,6 @@ const ActionButton = (task: Task) => {
   );
 };
 
-const STATUS_VALUES = {
-  to_do: 'To Do',
-  overdue: 'Overdue',
-  repeating: 'Repeating',
-  completed: 'Complete',
-  cancelled: 'Cancelled',
-};
-
 const COLUMNS = [
   {
     Header: 'Survey',
@@ -99,7 +93,7 @@ const COLUMNS = [
   },
   {
     Header: 'Repeating task',
-    accessor: row => (row.isRecurring ? row.repeatFrequency : "Doesn't repeat"),
+    accessor: row => (row.isRecurring ? JSON.stringify(row.repeatFrequency) : "Doesn't repeat"),
     id: 'repeating',
     filterable: true,
   },
@@ -114,11 +108,13 @@ const COLUMNS = [
     filterable: true,
     accessor: row => {
       if (row.isRecurring) {
-        return STATUS_VALUES.repeating;
+        return REPEATING_STATUS;
       }
-      return STATUS_VALUES[row.status];
+      return row.status;
     },
     id: 'status',
+    Cell: ({ value }) => <StatusPill status={value} />,
+    Filter: StatusFilter,
   },
   {
     Header: '',

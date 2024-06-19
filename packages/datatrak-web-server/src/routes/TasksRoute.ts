@@ -6,7 +6,7 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebTasksRequest, Task } from '@tupaia/types';
+import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
 import { RECORDS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../types';
 
@@ -42,7 +42,11 @@ type SingleTask = Task & {
   'entity.country_code': string;
 };
 
-const queryForCount = (filter: Record<string, any>, models: DatatrakWebServerModelRegistry) => {
+type FormattedFilter = string | { comparator: string; comparisonValue: string } | TaskStatus;
+
+type FormattedFilters = Record<string, FormattedFilter>;
+
+const queryForCount = (filter: FormattedFilters, models: DatatrakWebServerModelRegistry) => {
   const multiJoin = [
     {
       joinWith: RECORDS.ENTITY,
@@ -59,19 +63,34 @@ const queryForCount = (filter: Record<string, any>, models: DatatrakWebServerMod
   });
 };
 
-const formatFilters = (filters: Record<string, any>[]) => {
-  return filters.reduce((acc, { id, value }) => {
-    if (value === '' || value === undefined || value === null) return acc;
+const getStatusFilter = (value: string) => {
+  if (value === 'repeating') return { is_recurring: 'true' };
+  if (value === TaskStatus.to_do) return { status: value, is_recurring: 'false' };
+  return { status: value };
+};
+
+const formatFilters = (filters: Record<string, string>[]) => {
+  let formattedFilters: FormattedFilters = {};
+
+  filters.forEach(({ id, value }) => {
+    if (value === '' || value === undefined || value === null) return;
     if (id === 'survey.project_id') {
-      acc['survey.project_id'] = value;
-      return acc;
+      formattedFilters['survey.project_id'] = value;
+      return;
     }
-    acc[id] = {
+
+    if (id === 'status') {
+      Object.assign(formattedFilters, getStatusFilter(value));
+      return;
+    }
+
+    formattedFilters[id] = {
       comparator: 'ilike',
       comparisonValue: `${value}%`,
     };
-    return acc;
-  }, {});
+  });
+
+  return formattedFilters;
 };
 export class TasksRoute extends Route<TasksRequest> {
   public async buildResponse() {
