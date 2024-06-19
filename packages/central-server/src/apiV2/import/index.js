@@ -5,8 +5,8 @@
 
 import express from 'express';
 import multer from 'multer';
-
-import { catchAsyncErrors, emailAfterTimeout } from '../middleware';
+import { emailAfterTimeout } from '@tupaia/server-boilerplate';
+import { catchAsyncErrors } from '../middleware';
 
 import { importOptionSets } from './importOptionSets';
 import { importEntities } from './importEntities';
