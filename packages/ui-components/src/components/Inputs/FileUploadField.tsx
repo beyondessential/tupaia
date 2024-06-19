@@ -99,7 +99,8 @@ const RemoveButton = styled(Button).attrs({
 })`
   display: inline-block;
   font-weight: 400;
-  margin-block: 0.25rem;
+  margin-block: 0;
+  padding-block: 0;
   padding-inline: 1.1rem;
   transition: color 100ms ease;
   .MuiButton-label {
@@ -109,11 +110,6 @@ const RemoveButton = styled(Button).attrs({
   &:hover {
     background-color: transparent;
     color: ${({ theme }) => theme.palette.primary.main};
-  }
-
-  ${SelectedFileList} & {
-    margin-block: 0;
-    padding-block: 0;
   }
 `;
 
