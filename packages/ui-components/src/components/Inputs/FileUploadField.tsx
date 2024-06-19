@@ -180,10 +180,11 @@ export const FileUploadField = ({
       acceptedFile =>
         !files.map(file => JSON.stringify(file)).includes(JSON.stringify(acceptedFile)),
     );
-    setFiles(files.concat(deduped));
+    const newFiles = files.concat(deduped);
+    setFiles(newFiles);
 
     // Propagate updated file selection to parent
-    onChange(files, event as React.ChangeEvent<HTMLInputElement>);
+    onChange(newFiles, event as React.ChangeEvent<HTMLInputElement>);
   };
 
   /**
