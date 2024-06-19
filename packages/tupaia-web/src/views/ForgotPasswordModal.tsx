@@ -10,10 +10,10 @@ import {
   AuthModalBody,
   AuthModalButton,
   Form,
+  Modal,
   RouterButton,
   RouterLink,
   TextField,
-  Modal,
 } from '../components';
 import { useRequestResetPassword } from '../api/mutations';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
@@ -93,6 +93,7 @@ export const ForgotPasswordModal = () => {
             formContext={formContext}
           >
             <TextField
+              autoComplete="email"
               name="emailAddress"
               label="Email"
               type="email"

@@ -58,7 +58,7 @@ const NavWrapper = styled.div`
       : NAV_PANEL_CLOSED_WIDTH}; // this is set so that the button can be positioned correctly
 `;
 
-export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, basePath }) => {
+export const AppPageLayout = ({ routes, logo, homeLink, profileLink, basePath }) => {
   const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
     setNavOpen(!navOpen);
@@ -68,7 +68,6 @@ export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, baseP
       <NavWrapper $navOpen={navOpen}>
         <NavPanel
           links={routes.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
-          user={user}
           profileLink={profileLink}
           logo={logo}
           homeLink={homeLink}
@@ -80,7 +79,7 @@ export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, baseP
           <CaretLeftIcon />
         </ArrowButton>
       </NavWrapper>
-      <Main $navOpen={navOpen}>
+      <Main>
         <Outlet />
       </Main>
     </PageWrapper>
@@ -88,12 +87,6 @@ export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, baseP
 };
 
 AppPageLayout.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string,
-    email: PropTypes.string,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }),
   routes: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
@@ -120,5 +113,4 @@ AppPageLayout.defaultProps = {
   homeLink: '/',
   profileLink: null,
   basePath: '',
-  user: {},
 };

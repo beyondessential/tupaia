@@ -69,6 +69,7 @@ const ExportDate = styled(Typography)`
   font-size: 0.75rem;
   padding-block: 1rem 0.3rem;
 `;
+
 interface EnlargedDashboardVisualProps {
   entityName?: Entity['name'];
   isPreview?: boolean;
@@ -178,6 +179,7 @@ export const EnlargedDashboardVisual = ({
             isExport: isPreview,
             reportCode: currentDashboardItem?.reportCode,
             config: mergedConfig,
+            isEnabled: true,
           }}
         >
           <DashboardItemContent />
