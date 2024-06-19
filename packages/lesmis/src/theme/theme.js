@@ -15,7 +15,6 @@ export const palette = {
   },
   secondary: {
     main: COLORS.DARK_RED,
-    light: COLORS.LIGHT_RED,
   },
   error: {
     main: COLORS.RED,
@@ -128,7 +127,7 @@ export const overrides = {
   },
   MuiTableRow: {
     root: {
-      'tbody &:nth-of-type(odd)': {
+      'table:not(.data-fetching-table) tbody &:nth-of-type(odd)': {
         backgroundColor: COLORS.GREY_F1,
       },
     },

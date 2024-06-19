@@ -1,7 +1,8 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import { createMuiTheme } from '@material-ui/core';
 import { MOBILE_BREAKPOINT } from '../constants';
 
@@ -98,6 +99,7 @@ export const theme = createMuiTheme({
     MuiButton: {
       root: {
         textTransform: 'none',
+        verticalAlign: 'baseline',
       },
       label: {
         fontSize: '0.875rem',

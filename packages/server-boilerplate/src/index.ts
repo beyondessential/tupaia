@@ -12,6 +12,7 @@ export {
   handleError,
   handleWith,
   forwardRequest,
+  emailAfterTimeout,
 } from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
@@ -23,6 +24,7 @@ export {
   SessionRecord,
   SessionCookie,
   SessionSwitchingAuthHandler,
+  RequiresSessionAuthHandler,
   attachSession,
   attachSessionIfAvailable,
 } from './orchestrator';

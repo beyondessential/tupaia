@@ -49,10 +49,6 @@ export const Simple = () => {
         onDelete={handleFileDelete}
         avatarInitial="BES"
         label="Your avatar"
-        deleteModal={{
-          title: 'Remove Photo',
-          message: 'Are you sure you want to delete your photo?',
-        }}
       />
     </Container>
   );

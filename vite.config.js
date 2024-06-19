@@ -15,7 +15,8 @@ dns.setDefaultResultOrder('verbatim');
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  const env = loadEnv(mode, process.cwd(), 'REACT_APP_');
+  // Load the environment variables, whether or not they are prefixed with REACT_APP_
+  const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
   const baseConfig = {
     build: {
@@ -37,9 +38,8 @@ export default defineConfig(({ command, mode }) => {
       },
     },
 
-    // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
     plugins: [
-      ViteEjsPlugin(),
+      ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({
         jsxRuntime: 'classic',
@@ -76,6 +76,7 @@ export default defineConfig(({ command, mode }) => {
         ...baseConfig.resolve,
         alias: {
           ...baseConfig.resolve.alias,
+          '@tupaia/admin-panel': path.resolve(__dirname, './packages/admin-panel/src/library.js'),
           // this is to allow for hot reloading in dev
           '@tupaia/ui-chart-components': path.resolve(
             __dirname,

@@ -1,0 +1,14 @@
+{
+  "report": {
+    "data": [
+      {
+        "value": 0.48223663551154017
+      }
+    ]
+  },
+  "config": {
+    "name": "Percentage of Female Students",
+    "type": "chart",
+    "chartType": "gauge"
+  }
+}

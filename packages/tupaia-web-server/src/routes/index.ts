@@ -20,21 +20,13 @@ export {
 } from './LegacyMapOverlayReportRoute';
 export { MapOverlaysRequest, MapOverlaysRoute } from './MapOverlaysRoute';
 export { UserRequest, UserRoute } from './UserRoute';
-export { ExportDashboardRequest, ExportDashboardRoute } from './ExportDashboardRoute';
 export { EmailDashboardRequest, EmailDashboardRoute } from './EmailDashboardRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 export {
   RequestCountryAccessRequest,
   RequestCountryAccessRoute,
 } from './RequestCountryAccessRoute';
-export {
-  ExportSurveyResponsesRequest,
-  ExportSurveyResponsesRoute,
-} from './ExportSurveyResponsesRoute';
-export {
-  ProjectCountryAccessListRequest,
-  ProjectCountryAccessListRoute,
-} from './ProjectCountryAccessListRoute';
+export * from './export';
 export { SubscribeDashboardRoute, SubscribeDashboardRequest } from './SubscribeDashboardRoute';
 export {
   UnsubscribeDashboardRoute,

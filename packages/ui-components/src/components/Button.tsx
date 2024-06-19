@@ -9,7 +9,6 @@ import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
 import { OverrideableComponentProps } from '../types';
 
 const StyledButton = styled(MuiButton)`
-  font-size: 0.9375rem;
   line-height: 1.75;
   letter-spacing: 0;
   padding: 0.5em 1.75em;

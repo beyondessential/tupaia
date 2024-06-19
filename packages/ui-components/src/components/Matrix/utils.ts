@@ -1,20 +1,21 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ *
+ * This file contains any utils that useful for the matrix component. This is mainly used for
+ * presentation options.
  */
-import { find, isString, isNumber } from 'lodash';
+
+import { find, isNumber, isString } from 'lodash';
 import {
-  ConditionValue,
-  RangePresentationOptions,
   ConditionalPresentationOptions,
-  PresentationOptionCondition,
+  ConditionValue,
   MatrixPresentationOptions,
+  PresentationOptionCondition,
+  RangePresentationOptions,
 } from '@tupaia/types';
 import { MatrixColumnType } from '../../types';
 
-/**
- * This file contains any utils that useful for the matrix component. This is mainly used for presentation options
- */
 export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
   a
     .toString()
@@ -130,8 +131,11 @@ export function checkIfApplyPillCellStyle(
 export function getFlattenedColumns(columns: MatrixColumnType[]): MatrixColumnType[] {
   return columns.reduce((cols, column) => {
     if (column.children) {
-      return [...cols, ...getFlattenedColumns(column.children)];
+      const childCols = getFlattenedColumns(column.children);
+      cols.push(...childCols);
+      return cols;
     }
-    return [...cols, column];
+    cols.push(column);
+    return cols;
   }, [] as MatrixColumnType[]);
 }

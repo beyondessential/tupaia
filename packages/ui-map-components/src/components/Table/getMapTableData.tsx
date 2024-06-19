@@ -36,7 +36,6 @@ const processColumns = (serieses: Series[]) => {
       },
     },
     ...configColumns,
-    { Header: 'Most Recent Data Date', accessor: 'submissionDate' },
   ];
 };
 
@@ -54,17 +53,16 @@ const processData = (serieses: Series[], measureData: MeasureData[]) => {
     return {
       name: row.name,
       ...columns,
-      submissionDate: row.submissionDate ?? 'No data',
     };
   });
 };
 
 export const getMapTableData = (serieses: Series[], measureData: MeasureData[]) => {
   const columns = useMemo(() => processColumns(serieses), [JSON.stringify(serieses)]);
-  const data = useMemo(() => processData(serieses, measureData), [
-    JSON.stringify(serieses),
-    JSON.stringify(measureData),
-  ]);
+  const data = useMemo(
+    () => processData(serieses, measureData),
+    [JSON.stringify(serieses), JSON.stringify(measureData)],
+  );
 
   return {
     columns,

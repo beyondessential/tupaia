@@ -29,7 +29,7 @@ fi
 
 load_env_file_from_bw () {
     FILE_NAME=$1
-    BASE_FILE_PATH=$2 
+    BASE_FILE_PATH=$2
     NEW_FILE_NAME=$3
     ENV_FILE_PATH=$BASE_FILE_PATH/$NEW_FILE_NAME.env
 
@@ -48,7 +48,12 @@ load_env_file_from_bw () {
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual
     # deployment name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
     sed -i -e "s/\[deployment-name\]/$DEPLOYMENT_NAME/g" "$ENV_FILE_PATH"
-   
+
+    if [[ -v DOMAIN ]]; then
+        # Replace the placeholder [domain]
+        sed -i -e "s/\[domain\]/$DOMAIN/g" "$ENV_FILE_PATH"
+    fi
+
     if [[ $DEPLOYMENT_NAME = *-e2e || $DEPLOYMENT_NAME = e2e ]]; then
         # Update e2e environment variables
         if [[ $FILE_NAME = aggregation ]]; then
@@ -67,7 +72,6 @@ load_env_file_from_bw () {
     echo -e "${GREEN}✅ Downloaded variables for ${BOLD}${FILE_NAME}${RESET} → $ENV_FILE_PATH"
 }
 
-
 for PACKAGE in "${PACKAGES[@]}"; do
     # Only download the env file if there is an example file in the package. If there isn’t, this
     # means it is a package that doesn’t need env vars
@@ -76,7 +80,7 @@ for PACKAGE in "${PACKAGES[@]}"; do
         load_env_file_from_bw "$PACKAGE" "$DIR/../../packages/$PACKAGE" ''
     fi
 done
- 
+
 
 for file_name in *.env.example; do
     env_name="${file_name%.env.example}" # Get its basename without the .env.example extension
@@ -88,3 +92,10 @@ done
 echo
 echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
 bw logout
+
+
+# Clean up detritus on macOS
+# macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
+# that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
+# generate backup files which we don’t need.
+rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e

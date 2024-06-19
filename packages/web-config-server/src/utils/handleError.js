@@ -25,9 +25,9 @@ export const handleError = (err, req, res, next) => {
         err,
       });
     } else {
-      winston.error(err.stack);
       error = new InternalServerError(err);
     }
   }
+  winston.error(err);
   error.respond(res);
 };

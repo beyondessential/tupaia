@@ -1,14 +1,20 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 export { IconButton } from './IconButton';
 export { InputField, JsonEditorInputField } from './InputField';
-export { Navbar } from './Navbar';
 export { Tabs } from './Tabs';
-export { Header } from './Header';
-export { PageBody } from './PageBody';
-export { Footer } from './Footer';
-export { ModalContentProvider } from './ModalContentProvider';
+export { PageHeader } from './PageHeader';
+export { PageBody, Footer } from '../layout';
+export {
+  ModalContentProvider,
+  Modal,
+  ModalFooter,
+  ModalHeader,
+  ModalCenteredContent,
+} from './Modal';
 export { JsonEditor, JsonTreeEditor } from './JsonEditor';
+export { SecondaryNavbar } from '../layout/navigation/SecondaryNavbar';
+export { ConfirmDeleteModal } from './ConfirmDeleteModal';

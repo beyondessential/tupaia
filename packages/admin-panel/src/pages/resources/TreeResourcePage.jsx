@@ -7,43 +7,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
-import { Header, PageBody } from '../../widgets';
-import { usePortalWithCallback } from '../../utilities';
+import { PageBody, PageHeader } from '../../widgets';
 import { LogsModal } from '../../logsTable';
-import * as COLORS from '../../theme/colors';
+import { generateTitle } from './resourceName';
 
 const Container = styled(PageBody)`
   overflow: auto;
 `;
 
 const StyledHorizontalTree = styled(HorizontalTree)`
+  color: ${({ theme }) => theme.palette.text.primary};
   height: 930px;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  max-height: 870px;
-  color: ${COLORS.TEXT_MIDGREY};
-
-  .MuiTypography-body1 {
-    font-size: 15px;
-  }
+  margin-block: 40px;
+  max-block-size: 870px;
 `;
 
 export const TreeResourcePage = ({
+  resourceName,
   title,
-  getHeaderEl,
   fetchRoot,
   fetchBranch,
   ExportModalComponent,
 }) => {
-  const HeaderPortal = usePortalWithCallback(
-    <Header title={title} ExportModalComponent={ExportModalComponent} />,
-    getHeaderEl,
-  );
-
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <PageHeader
+          title={title ?? generateTitle(resourceName)}
+          ExportModalComponent={ExportModalComponent}
+        />
         <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} />
       </Container>
       <LogsModal />
@@ -52,11 +44,15 @@ export const TreeResourcePage = ({
 };
 
 TreeResourcePage.defaultProps = {
+  resourceName: {},
   ExportModalComponent: null,
 };
 
 TreeResourcePage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
+  resourceName: PropTypes.shape({
+    singular: PropTypes.string.isRequired,
+    plural: PropTypes.string,
+  }),
   title: PropTypes.string.isRequired,
   fetchRoot: PropTypes.func.isRequired,
   fetchBranch: PropTypes.func.isRequired,

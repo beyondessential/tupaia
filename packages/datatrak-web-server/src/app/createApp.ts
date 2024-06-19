@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { Request } from 'express';
@@ -12,6 +12,7 @@ import {
   SessionSwitchingAuthHandler,
   forwardRequest,
 } from '@tupaia/server-boilerplate';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 import { DataTrakSessionModel } from '../models';
 import {
   UserRoute,
@@ -30,8 +31,8 @@ import {
   EntityDescendantsRoute,
   ProjectRequest,
   ProjectRoute,
-  SubmitSurveyRoute,
-  SubmitSurveyRequest,
+  SubmitSurveyResponseRoute,
+  SubmitSurveyResponseRequest,
   RecentSurveysRequest,
   RecentSurveysRoute,
   LeaderboardRequest,
@@ -47,20 +48,23 @@ import {
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 
-const {
-  WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
-  CENTRAL_API_URL = 'http://localhost:8090/v2',
-} = process.env;
-
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export async function createApp() {
+  const WEB_CONFIG_API_URL = getEnvVarOrDefault(
+    'WEB_CONFIG_API_URL',
+    'http://localhost:8000/api/v1',
+  );
+  const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
   const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server')
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .use('*', attachAccessPolicy)
     .attachApiClientToContext(authHandlerProvider)
-    .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
+    .post<SubmitSurveyResponseRequest>(
+      'submitSurveyResponse',
+      handleWith(SubmitSurveyResponseRoute),
+    )
     .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:entityCode', handleWith(SingleEntityRoute))

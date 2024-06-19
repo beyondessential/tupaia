@@ -15,8 +15,8 @@ const palette = {
     dark: COLORS.DARK_BLUE,
   },
   secondary: {
-    main: COLORS.DARK_BLUE,
-    light: COLORS.LIGHT_BLUE,
+    main: COLORS.LIGHT_BLACK,
+    light: COLORS.EXTRA_LIGHT_BLACK,
   },
   error: {
     main: COLORS.RED,
@@ -31,10 +31,11 @@ const palette = {
     dark: COLORS.DARK_GREEN,
   },
   text: {
-    primary: COLORS.TEXT_DARKGREY,
+    primary: COLORS.LIGHT_BLACK,
     secondary: COLORS.TEXT_MIDGREY,
     tertiary: COLORS.TEXT_LIGHTGREY,
   },
+  divider: COLORS.GREY_DE,
   blue: {
     100: COLORS.BLUE_F6,
     200: COLORS.BLUE_E8,
@@ -62,8 +63,8 @@ const typography = {
     letterSpacing: 0,
   },
   h2: {
-    fontSize: '2rem',
-    fontWeight: 600,
+    fontSize: '0.875rem',
+    fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
@@ -104,13 +105,13 @@ const typography = {
     letterSpacing: 0,
   },
   body1: {
-    fontSize: '1.125rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
-    lineHeight: 1.18,
+    lineHeight: 1.2,
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -129,9 +130,65 @@ const overrides = {
       borderColor: COLORS.GREY_DE,
     },
   },
-  MuiDivider: {
+
+  MuiFormLabel: {
     root: {
-      backgroundColor: COLORS.GREY_DE,
+      fontSize: '0.875rem',
+      fontWeight: 500,
+      color: palette.text.primary,
+    },
+    asterisk: {
+      color: palette.error.main,
+    },
+  },
+  MuiInputBase: {
+    input: {
+      fontSize: '0.875rem',
+      '&::placeholder': {
+        color: COLORS.TEXT_LIGHTGREY,
+      },
+    },
+  },
+  MuiFormControl: {
+    root: {
+      '& legend': {
+        fontSize: '0.875rem',
+        fontWeight: 500,
+        color: palette.text.primary,
+      },
+    },
+  },
+  MuiOutlinedInput: {
+    input: {
+      paddingInline: '1.1rem',
+      paddingBlock: '0.875rem',
+    },
+  },
+  MuiMenuItem: {
+    root: {
+      fontSize: '0.875rem',
+    },
+  },
+  MuiButton: {
+    root: {
+      '&.MuiButtonBase-root': {
+        fontSize: '0.875rem',
+      },
+    },
+  },
+  MuiCssBaseline: {
+    '@global': {
+      label: {
+        fontWeight: 500,
+        '& .MuiSvgIcon-root': {
+          color: palette.text.secondary, // tooltip icon color
+        },
+      },
+    },
+  },
+  MuiAvatar: {
+    colorDefault: {
+      backgroundColor: '#E7B091',
     },
   },
 };

@@ -1,9 +1,9 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
+import React, { createContext, Dispatch, useContext, useEffect, useReducer } from 'react';
 import { useMatch, useParams } from 'react-router-dom';
 import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
@@ -26,6 +26,7 @@ const defaultContext = {
   numberOfScreens: 0,
   screenNumber: 1,
   screenHeader: '',
+  screenDetail: '',
   surveyProjectCode: '',
   displayQuestions: [],
   sideMenuOpen: false,
@@ -83,12 +84,9 @@ export const SurveyContext = ({ children }) => {
     initialiseFormData();
   }, [surveyCode]);
 
-  const displayQuestions = getDisplayQuestions(
-    activeScreen,
-    flattenedScreenComponents,
-    screenNumber,
-  );
+  const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
   const screenHeader = activeScreen?.[0]?.text;
+  const screenDetail = activeScreen?.[0]?.detail;
 
   return (
     <SurveyFormContext.Provider
@@ -100,6 +98,7 @@ export const SurveyContext = ({ children }) => {
         displayQuestions,
         surveyScreens,
         screenHeader,
+        screenDetail,
         visibleScreens,
       }}
     >

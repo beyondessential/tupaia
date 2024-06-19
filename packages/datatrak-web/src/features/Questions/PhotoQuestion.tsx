@@ -51,7 +51,6 @@ export const PhotoQuestion = ({
         name={name!}
         required={required}
         avatarVariant="square"
-        deleteModal={null}
         FormHelperTextComponent={InputHelperText}
         invalid={invalid}
       />

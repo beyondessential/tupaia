@@ -13,7 +13,7 @@
     "test": "yarn package:test",
     "test:coverage": "yarn test --coverage"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
@@ -23,6 +23,7 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "lodash.isequal": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "node-fetch": "^1.7.3",
     "qs": "^6.12.0"

@@ -12,8 +12,8 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Tooltip } from '@material-ui/core';
 import styled, { keyframes } from 'styled-components';
 import { useApiContext } from '../utilities/ApiProvider';
-import { IconButton } from '../widgets';
 import { makeSubstitutionsInString } from '../utilities';
+import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';
 
 const STATUSES = {
   IDLE: 'IDLE',
@@ -61,7 +61,7 @@ const SpinningSyncIcon = styled(SyncIcon)`
   animation-iteration-count: infinite;
 `;
 
-const SyncingIconButton = styled(IconButton)`
+const SyncingIconButton = styled(ColumnActionButton)`
   display: flex;
 
   &.Mui-disabled {
@@ -96,7 +96,10 @@ const formatLog = ({ timestamp, message }) =>
   })}: ${message}`;
 
 export const SyncStatus = props => {
-  const { actionConfig, original } = props;
+  const {
+    actionConfig,
+    row: { original },
+  } = props;
   const api = useApiContext();
   const [status, setStatus] = useExternalState(`${original.id}.status`, original.sync_status);
   const [logMessage, setLogMessage] = useExternalState(`${original.id}.logMessage`, '');
@@ -149,9 +152,9 @@ export const SyncStatus = props => {
   if (errorMessage) {
     return (
       <SyncStatusContainer>
-        <IconButton className="sync-button" onClick={performManualSync}>
+        <ColumnActionButton className="sync-button" onClick={performManualSync}>
           <SyncIcon />
-        </IconButton>
+        </ColumnActionButton>
         <Tooltip title={errorMessage}>
           <StatusMessageContainer>
             <SyncFailingIcon />
@@ -165,9 +168,9 @@ export const SyncStatus = props => {
   if (status === STATUSES.ERROR) {
     return (
       <SyncStatusContainer>
-        <IconButton onClick={performManualSync}>
+        <ColumnActionButton onClick={performManualSync}>
           <SyncIcon />
-        </IconButton>
+        </ColumnActionButton>
         <Tooltip title={logMessage}>
           <StatusMessageContainer>
             <SyncFailingIcon />
@@ -193,9 +196,9 @@ export const SyncStatus = props => {
 
   return (
     <SyncStatusContainer>
-      <IconButton onClick={performManualSync}>
+      <ColumnActionButton onClick={performManualSync}>
         <SyncIcon />
-      </IconButton>
+      </ColumnActionButton>
       <Tooltip title={logMessage}>
         <StatusMessageContainer>
           <SyncSuccessIcon />
@@ -212,5 +215,10 @@ SyncStatus.propTypes = {
     latestSyncLogEndpoint: PropTypes.string,
     manualSyncEndpoint: PropTypes.string,
   }).isRequired,
-  original: PropTypes.shape({ id: PropTypes.string, sync_status: PropTypes.string }).isRequired,
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      id: PropTypes.string,
+      sync_status: PropTypes.string,
+    }),
+  }).isRequired,
 };

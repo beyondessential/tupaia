@@ -83,6 +83,7 @@ jobs:
 
   run_tests:
     name: Run tests
+    timeout-minutes: 15 # Sometimes Jest doesn’t exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
     env:
       # common
@@ -95,6 +96,10 @@ jobs:
       API_CLIENT_PASSWORD: api-client
       API_CLIENT_SALT: abc132
       JWT_SECRET: abc132
+      TUPAIA_ADMIN_EMAIL_ADDRESS: test@tupaia.org
+      TUPAIA_FRONT_END_URL: dev.tupaia.org
+      LESMIS_FRONT_END_URL: dev-lesmis.tupaia.org
+      DATATRAK_FRONT_END_URL: dev-datatrak.tupaia.org
 
       # test database
       DB_PG_USER: postgres
@@ -107,6 +112,9 @@ jobs:
       DATA_LAKE_DB_PASSWORD: opensesame4
       DATA_LAKE_DB_URL: localhost
       DATA_LAKE_DB_USER: tupaia
+
+      # viz-test-tool
+      SLACK_BOT_OAUTH_TOKEN: cat1234
 
     strategy:
       fail-fast: false
@@ -146,6 +154,7 @@ jobs:
           - ui-components
           - ui-map-components
           - utils
+          - viz-test-tool
           - weather-api
           - web-config-server
 

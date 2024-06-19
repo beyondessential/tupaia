@@ -80,6 +80,6 @@ describe('ReportBuilder', () => {
 
     const reportBuilder = new ReportBuilder(reqContext).setConfig(testConfig).setTestData(testData);
     const results = await reportBuilder.build();
-    expect(results).toStrictEqual({ results: testData });
+    expect(results).toStrictEqual({ results: testData, type: 'default' });
   });
 });

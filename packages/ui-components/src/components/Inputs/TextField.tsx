@@ -8,7 +8,6 @@ import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
 import styled from 'styled-components';
 import { InputLabel } from './InputLabel';
 
-const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';
 
 const StyledTextField = styled(MuiTextField)<TextFieldProps>`
@@ -23,14 +22,8 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
-    font-size: 1rem;
     line-height: 1.2rem;
-    padding: 1rem;
     border-radius: 3px;
-  }
-
-  .MuiSelect-root {
-    color: ${props => props.theme.palette.text.tertiary};
   }
 
   // Error state
@@ -71,8 +64,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   // Focused state
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-width: 1px;
-    border-color: ${FOCUS_COLOUR};
-    box-shadow: 0 0 5px rgba(0, 135, 216, 0.75);
   }
 
   .MuiFormLabel-root.Mui-focused {
@@ -83,8 +74,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   .MuiFormLabel-root {
     position: relative;
     margin-bottom: 3px;
-    color: ${props => props.theme.palette.text.secondary};
-    font-size: 0.9375rem;
     line-height: 1.125rem;
     transform: none;
     display: flex;
@@ -111,7 +100,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   &&&& {
     .MuiInputBase-input::placeholder {
       opacity: 1 !important;
-      color: ${props => props.theme.palette.text.secondary};
     }
   }
 
@@ -136,7 +124,7 @@ export const TextField = ({
   label = '',
   tooltip,
   ...props
-}: TextFieldProps & {
+}: Partial<TextFieldProps> & {
   tooltip?: string;
 }) => (
   <StyledTextField

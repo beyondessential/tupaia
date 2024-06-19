@@ -4,10 +4,8 @@
  */
 
 import { convertPeriodStringToDateRange } from '@tupaia/utils';
-import { ApiConnection } from './ApiConnection';
 import { PSSS_HIERARCHY } from '../constants';
-
-const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
+import { TupaiaApiClient } from '@tupaia/api-client';
 
 const buildEmptyReport = (periods: string[]) => ({
   results: [],
@@ -24,10 +22,14 @@ type ReportObject = {
 };
 
 /**
- * @deprecated use @tupaia/api-client
+ * Wrapper around the ReportApi
  */
-export class ReportConnection extends ApiConnection {
-  public baseUrl = REPORT_API_URL;
+export class ReportConnection {
+  private readonly reportApi: TupaiaApiClient['report'];
+
+  public constructor(reportApi: TupaiaApiClient['report']) {
+    this.reportApi = reportApi;
+  }
 
   public async fetchReport(
     reportCode: string,
@@ -46,7 +48,7 @@ export class ReportConnection extends ApiConnection {
     const [startDate] = convertPeriodStringToDateRange(startWeek);
     const [, endDate] = convertPeriodStringToDateRange(endWeek);
 
-    return this.get(`fetchReport/${reportCode}`, {
+    return this.reportApi.fetchReport(reportCode, {
       organisationUnitCodes: orgUnitCodes.join(','),
       startDate,
       endDate,

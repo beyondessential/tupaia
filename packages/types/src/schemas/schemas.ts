@@ -315,6 +315,16 @@ export const ReferencePropsSchema = {
 	]
 } 
 
+export const DashboardItemTypeSchema = {
+	"enum": [
+		"chart",
+		"component",
+		"matrix",
+		"view"
+	],
+	"type": "string"
+} 
+
 export const EntityAttributesSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -662,21 +672,37 @@ export const BaseConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -1082,21 +1108,37 @@ export const MatrixConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -1422,6 +1464,10 @@ export const MatrixConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		},
+		"enableSearch": {
+			"description": "Specify whether to show search filters on the matrix",
+			"type": "boolean"
 		}
 	},
 	"required": [
@@ -1763,21 +1809,37 @@ export const MatrixVizBuilderConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -2103,6 +2165,10 @@ export const MatrixVizBuilderConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		},
+		"enableSearch": {
+			"description": "Specify whether to show search filters on the matrix",
+			"type": "boolean"
 		},
 		"output": {
 			"description": "Configuration for rows, columns, and categories of the matrix",
@@ -2939,21 +3005,37 @@ export const ComponentConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -3445,21 +3527,37 @@ export const BaseChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -4294,21 +4392,37 @@ export const CartesianChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -4704,20 +4818,15 @@ export const CartesianChartConfigSchema = {
 	]
 } 
 
-export const PieChartPresentationOptionsSchema = {
+export const PieOptionSchema = {
 	"type": "object",
 	"properties": {
-		"exportWithLabels": {
-			"description": "Include labels for each point of data in exports",
-			"type": "boolean"
+		"color": {
+			"description": "A CSS color string e.g. green or #abc123",
+			"type": "string"
 		},
-		"exportWithTable": {
-			"description": "Include the data table below the viz in exports",
-			"type": "boolean"
-		},
-		"exportWithTableDisabled": {
-			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-			"type": "boolean"
+		"label": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -4737,6 +4846,25 @@ export const PieChartSegmentConfigSchema = {
 			}
 		},
 		"additionalProperties": false
+	}
+} 
+
+export const PieChartPresentationOptionsSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"exportWithLabels": {
+			"description": "Include labels for each point of data in exports",
+			"type": "boolean"
+		},
+		"exportWithTable": {
+			"description": "Include the data table below the viz in exports",
+			"type": "boolean"
+		},
+		"exportWithTableDisabled": {
+			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+			"type": "boolean"
+		}
 	}
 } 
 
@@ -5074,21 +5202,37 @@ export const PieChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -5173,6 +5317,7 @@ export const PieChartConfigSchema = {
 		},
 		"presentationOptions": {
 			"description": "Common options for configuring the chart presentation",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"exportWithLabels": {
@@ -5187,8 +5332,7 @@ export const PieChartConfigSchema = {
 					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 					"type": "boolean"
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		"segmentConfig": {
 			"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -5608,21 +5752,37 @@ export const BarChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -6538,21 +6698,37 @@ export const LineChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"weekDisplayFormat": {
@@ -7460,21 +7636,37 @@ export const ComposedChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"weekDisplayFormat": {
@@ -8198,21 +8390,37 @@ export const GaugeChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -8639,21 +8847,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -8738,6 +8962,7 @@ export const ChartConfigSchema = {
 				},
 				"presentationOptions": {
 					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"exportWithLabels": {
@@ -8752,8 +8977,7 @@ export const ChartConfigSchema = {
 							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 							"type": "boolean"
 						}
-					},
-					"additionalProperties": false
+					}
 				},
 				"segmentConfig": {
 					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -9113,21 +9337,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -9867,21 +10107,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"weekDisplayFormat": {
@@ -10615,21 +10871,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"weekDisplayFormat": {
@@ -11352,21 +11624,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -11462,24 +11750,6 @@ export const ChartConfigSchema = {
 export const ChartPresentationOptionsSchema = {
 	"anyOf": [
 		{
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false
-		},
-		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -11526,6 +11796,24 @@ export const ChartPresentationOptionsSchema = {
 						}
 					},
 					"additionalProperties": false
+				}
+			}
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
 				}
 			}
 		},
@@ -11923,21 +12211,37 @@ export const BaseViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -12359,21 +12663,37 @@ export const MultiValueViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -12903,21 +13223,37 @@ export const MultiValueRowViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -13398,21 +13734,37 @@ export const SingleValueViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -13807,21 +14159,37 @@ export const MultiPhotographViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -14212,21 +14580,37 @@ export const MultiSingleValueViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -14617,21 +15001,37 @@ export const SingleDownloadLinkViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -15022,21 +15422,37 @@ export const DataDownloadViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -15089,6 +15505,443 @@ export const DataDownloadViewConfigSchema = {
 	},
 	"required": [
 		"name",
+		"type",
+		"viewType"
+	]
+} 
+
+export const DataDownloadViewVizBuilderConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"name": {
+			"description": "The title of the viz",
+			"type": "string"
+		},
+		"description": {
+			"description": "A short description that appears above a viz",
+			"type": "string"
+		},
+		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"defaultTimePeriod": {
+			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"exportConfig": {
+			"description": "Extra config options for exporting",
+			"type": "object",
+			"properties": {
+				"dataElementHeader": {
+					"description": "Sets the header for the data element in xls exports",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"noDataMessage": {
+			"description": "Message which shows if no data is found",
+			"type": "string"
+		},
+		"noDataFetch": {
+			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+			"default": false,
+			"type": "boolean"
+		},
+		"drillDown": {
+			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+			"type": "object",
+			"properties": {
+				"itemCode": {
+					"description": "The code of the dashboard item that drilling down through this viz should take you to",
+					"type": "string"
+				},
+				"keyLink": {
+					"type": "string"
+				},
+				"parameterLink": {
+					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+					"type": "string"
+				},
+				"itemCodeByEntry": {
+					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entityHeader": {
+			"description": "",
+			"type": "string"
+		},
+		"reference": {
+			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
+				},
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
+				}
+			]
+		},
+		"source": {
+			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+			"type": "string"
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
+		"viewType": {
+			"type": "string",
+			"enum": [
+				"dataDownload"
+			]
+		},
+		"valueType": {
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"value_metadata": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"output": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"rawDataExport"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		}
+	},
+	"required": [
+		"name",
+		"output",
 		"type",
 		"viewType"
 	]
@@ -15427,21 +16280,37 @@ export const SingleDateViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -15832,21 +16701,37 @@ export const DownloadFilesViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -16237,21 +17122,37 @@ export const QRCodeViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -16644,21 +17545,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -17061,21 +17978,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -17555,21 +18488,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -17963,21 +18912,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -18367,21 +19332,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -18771,21 +19752,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -19175,21 +20172,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -19579,21 +20592,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -19983,21 +21012,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -20387,21 +21432,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -20906,21 +21967,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -21246,6 +22323,10 @@ export const DashboardItemConfigSchema = {
 				"placeholder": {
 					"description": "A url to an image to be used when a matrix is collapsed.",
 					"type": "string"
+				},
+				"enableSearch": {
+					"description": "Specify whether to show search filters on the matrix",
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -21587,21 +22668,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -21975,21 +23072,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -22074,6 +23187,7 @@ export const DashboardItemConfigSchema = {
 				},
 				"presentationOptions": {
 					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"exportWithLabels": {
@@ -22088,8 +23202,7 @@ export const DashboardItemConfigSchema = {
 							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 							"type": "boolean"
 						}
-					},
-					"additionalProperties": false
+					}
 				},
 				"segmentConfig": {
 					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -22449,21 +23562,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -23203,21 +24332,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"weekDisplayFormat": {
@@ -23951,21 +25096,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"weekDisplayFormat": {
@@ -24688,21 +25849,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -25125,21 +26302,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -25542,21 +26735,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -26036,21 +27245,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -26444,21 +27669,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -26848,21 +28089,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -27252,21 +28509,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -27656,21 +28929,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -28060,21 +29349,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -28464,21 +29769,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -28868,21 +30189,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -28944,24 +30281,6 @@ export const DashboardItemConfigSchema = {
 
 export const PresentationOptionsSchema = {
 	"anyOf": [
-		{
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false
-		},
 		{
 			"type": "object",
 			"properties": {
@@ -29159,6 +30478,24 @@ export const PresentationOptionsSchema = {
 				"exportWithTableDisabled": {
 					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 					"type": "boolean"
+				}
+			}
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
 				},
 				"periodTickFormat": {
 					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
@@ -29320,6 +30657,16 @@ export const TransformSchema = {
 	]
 } 
 
+export const OutputConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string"
+		}
+	}
+} 
+
 export const StandardReportConfigSchema = {
 	"type": "object",
 	"properties": {
@@ -29338,8 +30685,13 @@ export const StandardReportConfigSchema = {
 			}
 		},
 		"output": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
 		}
 	},
 	"additionalProperties": false,
@@ -29381,8 +30733,13 @@ export const ReportConfigSchema = {
 					}
 				},
 				"output": {
+					"additionalProperties": false,
 					"type": "object",
-					"additionalProperties": false
+					"properties": {
+						"type": {
+							"type": "string"
+						}
+					}
 				}
 			},
 			"additionalProperties": false,
@@ -29443,6 +30800,9 @@ export const MatrixReportColumnSchema = {
 export const BaseReportSchema = {
 	"type": "object",
 	"properties": {
+		"type": {
+			"type": "string"
+		},
 		"data": {
 			"type": "array",
 			"items": {
@@ -29479,30 +30839,67 @@ export const BaseReportSchema = {
 	]
 } 
 
-export const ViewDataItemSchema = {
-	"additionalProperties": false,
+export const DownloadFilesVisualDataItemSchema = {
 	"type": "object",
 	"properties": {
-		"value": {},
-		"total": {
-			"type": "number"
+		"uniqueFileName": {
+			"type": "string"
 		},
-		"viewType": {
-			"enum": [
-				"dataDownload",
-				"filesDownload",
-				"multiPhotograph",
-				"multiSingleValue",
-				"multiValue",
-				"multiValueRow",
-				"qrCodeVisual",
-				"singleDate",
-				"singleDownloadLink",
-				"singleValue"
-			],
+		"label": {
 			"type": "string"
 		}
-	}
+	},
+	"additionalProperties": false,
+	"required": [
+		"label",
+		"uniqueFileName"
+	]
+} 
+
+export const ViewDataItemSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"uniqueFileName": {
+					"type": "string"
+				},
+				"label": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"label",
+				"uniqueFileName"
+			]
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"value": {},
+				"total": {
+					"type": "number"
+				},
+				"viewType": {
+					"enum": [
+						"dataDownload",
+						"filesDownload",
+						"multiPhotograph",
+						"multiSingleValue",
+						"multiValue",
+						"multiValueRow",
+						"qrCodeVisual",
+						"singleDate",
+						"singleDownloadLink",
+						"singleValue"
+					],
+					"type": "string"
+				}
+			}
+		}
+	]
 } 
 
 export const ViewReportSchema = {
@@ -29530,32 +30927,59 @@ export const ViewReportSchema = {
 			},
 			"additionalProperties": false
 		},
+		"type": {
+			"enum": [
+				"default",
+				"rawDataExport"
+			],
+			"type": "string"
+		},
 		"data": {
 			"type": "array",
 			"items": {
-				"additionalProperties": false,
-				"type": "object",
-				"properties": {
-					"value": {},
-					"total": {
-						"type": "number"
+				"anyOf": [
+					{
+						"type": "object",
+						"properties": {
+							"uniqueFileName": {
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"label",
+							"uniqueFileName"
+						]
 					},
-					"viewType": {
-						"enum": [
-							"dataDownload",
-							"filesDownload",
-							"multiPhotograph",
-							"multiSingleValue",
-							"multiValue",
-							"multiValueRow",
-							"qrCodeVisual",
-							"singleDate",
-							"singleDownloadLink",
-							"singleValue"
-						],
-						"type": "string"
+					{
+						"additionalProperties": false,
+						"type": "object",
+						"properties": {
+							"value": {},
+							"total": {
+								"type": "number"
+							},
+							"viewType": {
+								"enum": [
+									"dataDownload",
+									"filesDownload",
+									"multiPhotograph",
+									"multiSingleValue",
+									"multiValue",
+									"multiValueRow",
+									"qrCodeVisual",
+									"singleDate",
+									"singleDownloadLink",
+									"singleValue"
+								],
+								"type": "string"
+							}
+						}
 					}
-				}
+				]
 			}
 		},
 		"downloadUrl": {
@@ -29572,6 +30996,12 @@ export const MatrixReportSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"matrix"
+			]
+		},
 		"startDate": {
 			"type": "string"
 		},
@@ -29687,6 +31117,12 @@ export const ChartReportSchema = {
 			},
 			"additionalProperties": false
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"default"
+			]
+		},
 		"data": {
 			"type": "array",
 			"items": {
@@ -29722,44 +31158,6 @@ export const ChartReportSchema = {
 export const DashboardItemReportSchema = {
 	"anyOf": [
 		{
-			"type": "object",
-			"properties": {
-				"data": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"period": {
-					"type": "object",
-					"properties": {
-						"earliestAvailable": {
-							"type": "string"
-						},
-						"latestAvailable": {
-							"type": "string"
-						},
-						"requested": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"endDate",
-				"startDate"
-			]
-		},
-		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -29784,32 +31182,59 @@ export const DashboardItemReportSchema = {
 					},
 					"additionalProperties": false
 				},
+				"type": {
+					"enum": [
+						"default",
+						"rawDataExport"
+					],
+					"type": "string"
+				},
 				"data": {
 					"type": "array",
 					"items": {
-						"additionalProperties": false,
-						"type": "object",
-						"properties": {
-							"value": {},
-							"total": {
-								"type": "number"
+						"anyOf": [
+							{
+								"type": "object",
+								"properties": {
+									"uniqueFileName": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"label",
+									"uniqueFileName"
+								]
 							},
-							"viewType": {
-								"enum": [
-									"dataDownload",
-									"filesDownload",
-									"multiPhotograph",
-									"multiSingleValue",
-									"multiValue",
-									"multiValueRow",
-									"qrCodeVisual",
-									"singleDate",
-									"singleDownloadLink",
-									"singleValue"
-								],
-								"type": "string"
+							{
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"value": {},
+									"total": {
+										"type": "number"
+									},
+									"viewType": {
+										"enum": [
+											"dataDownload",
+											"filesDownload",
+											"multiPhotograph",
+											"multiSingleValue",
+											"multiValue",
+											"multiValueRow",
+											"qrCodeVisual",
+											"singleDate",
+											"singleDownloadLink",
+											"singleValue"
+										],
+										"type": "string"
+									}
+								}
 							}
-						}
+						]
 					}
 				},
 				"downloadUrl": {
@@ -29825,6 +31250,12 @@ export const DashboardItemReportSchema = {
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"matrix"
+					]
+				},
 				"startDate": {
 					"type": "string"
 				},
@@ -29915,6 +31346,12 @@ export const DashboardItemReportSchema = {
 						}
 					},
 					"additionalProperties": false
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"default"
+					]
 				},
 				"data": {
 					"type": "array",
@@ -30038,17 +31475,23 @@ export const MeasureConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -30068,6 +31511,7 @@ export const MeasureConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -30191,8 +31635,7 @@ export const ScaleTypeSchema = {
 		"neutral",
 		"neutralReverse",
 		"performance",
-		"performanceDesc",
-		"time"
+		"performanceDesc"
 	],
 	"type": "string"
 } 
@@ -30227,17 +31670,23 @@ export const EntityLevelSchema = {
 		"CaseContact",
 		"Catchment",
 		"City",
+		"Commune",
 		"Complaint",
 		"Country",
 		"Disaster",
 		"District",
+		"DistrictOperational",
 		"EnumerationArea",
 		"Facility",
+		"FacilityBuilding",
+		"FacilityDivision",
+		"FacilitySection",
 		"Farm",
 		"FetpGraduate",
 		"FieldStation",
 		"FijiAspenFacility",
 		"HealthClinicBoundary",
+		"HospitalWard",
 		"Household",
 		"Incident",
 		"IncidentReported",
@@ -30257,6 +31706,7 @@ export const EntityLevelSchema = {
 		"SubCatchment",
 		"SubDistrict",
 		"SubFacility",
+		"Transfer",
 		"Trap",
 		"Village",
 		"WaterSample",
@@ -30287,8 +31737,7 @@ export const MeasureColorSchemeSchema = {
 		"default",
 		"default-reverse",
 		"gpi",
-		"performance",
-		"time"
+		"performance"
 	],
 	"type": "string"
 } 
@@ -30567,17 +32016,23 @@ export const BaseMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -30597,6 +32052,7 @@ export const BaseMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -30708,17 +32164,23 @@ export const BaseMapOverlayConfigSchema = {
 							"CaseContact",
 							"Catchment",
 							"City",
+							"Commune",
 							"Complaint",
 							"Country",
 							"Disaster",
 							"District",
+							"DistrictOperational",
 							"EnumerationArea",
 							"Facility",
+							"FacilityBuilding",
+							"FacilityDivision",
+							"FacilitySection",
 							"Farm",
 							"FetpGraduate",
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalWard",
 							"Household",
 							"Incident",
 							"IncidentReported",
@@ -30738,6 +32200,7 @@ export const BaseMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -30839,17 +32302,23 @@ export const BaseMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -30869,6 +32338,7 @@ export const BaseMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -31261,17 +32731,23 @@ export const SpectrumMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -31291,6 +32767,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -31402,17 +32879,23 @@ export const SpectrumMapOverlayConfigSchema = {
 							"CaseContact",
 							"Catchment",
 							"City",
+							"Commune",
 							"Complaint",
 							"Country",
 							"Disaster",
 							"District",
+							"DistrictOperational",
 							"EnumerationArea",
 							"Facility",
+							"FacilityBuilding",
+							"FacilityDivision",
+							"FacilitySection",
 							"Farm",
 							"FetpGraduate",
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalWard",
 							"Household",
 							"Incident",
 							"IncidentReported",
@@ -31432,6 +32915,7 @@ export const SpectrumMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -31533,17 +33017,23 @@ export const SpectrumMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -31563,6 +33053,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -31678,8 +33169,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"neutral",
 				"neutralReverse",
 				"performance",
-				"performanceDesc",
-				"time"
+				"performanceDesc"
 			],
 			"type": "string"
 		},
@@ -31689,8 +33179,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"default",
 				"default-reverse",
 				"gpi",
-				"performance",
-				"time"
+				"performance"
 			],
 			"type": "string"
 		},
@@ -31783,7 +33272,6 @@ export const SpectrumMapOverlayConfigSchema = {
 	},
 	"required": [
 		"displayType",
-		"scaleColorScheme",
 		"scaleType"
 	]
 } 
@@ -32063,17 +33551,23 @@ export const IconMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -32093,6 +33587,7 @@ export const IconMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -32204,17 +33699,23 @@ export const IconMapOverlayConfigSchema = {
 							"CaseContact",
 							"Catchment",
 							"City",
+							"Commune",
 							"Complaint",
 							"Country",
 							"Disaster",
 							"District",
+							"DistrictOperational",
 							"EnumerationArea",
 							"Facility",
+							"FacilityBuilding",
+							"FacilityDivision",
+							"FacilitySection",
 							"Farm",
 							"FetpGraduate",
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalWard",
 							"Household",
 							"Incident",
 							"IncidentReported",
@@ -32234,6 +33735,7 @@ export const IconMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -32335,17 +33837,23 @@ export const IconMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -32365,6 +33873,7 @@ export const IconMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -32787,17 +34296,23 @@ export const RadiusMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -32817,6 +34332,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -32928,17 +34444,23 @@ export const RadiusMapOverlayConfigSchema = {
 							"CaseContact",
 							"Catchment",
 							"City",
+							"Commune",
 							"Complaint",
 							"Country",
 							"Disaster",
 							"District",
+							"DistrictOperational",
 							"EnumerationArea",
 							"Facility",
+							"FacilityBuilding",
+							"FacilityDivision",
+							"FacilitySection",
 							"Farm",
 							"FetpGraduate",
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalWard",
 							"Household",
 							"Incident",
 							"IncidentReported",
@@ -32958,6 +34480,7 @@ export const RadiusMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -33059,17 +34582,23 @@ export const RadiusMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -33089,6 +34618,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -33485,17 +35015,23 @@ export const ColorMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -33515,6 +35051,7 @@ export const ColorMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -33626,17 +35163,23 @@ export const ColorMapOverlayConfigSchema = {
 							"CaseContact",
 							"Catchment",
 							"City",
+							"Commune",
 							"Complaint",
 							"Country",
 							"Disaster",
 							"District",
+							"DistrictOperational",
 							"EnumerationArea",
 							"Facility",
+							"FacilityBuilding",
+							"FacilityDivision",
+							"FacilitySection",
 							"Farm",
 							"FetpGraduate",
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalWard",
 							"Household",
 							"Incident",
 							"IncidentReported",
@@ -33656,6 +35199,7 @@ export const ColorMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -33757,17 +35301,23 @@ export const ColorMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -33787,6 +35337,7 @@ export const ColorMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -33912,8 +35463,7 @@ export const ColorMapOverlayConfigSchema = {
 				"neutral",
 				"neutralReverse",
 				"performance",
-				"performanceDesc",
-				"time"
+				"performanceDesc"
 			],
 			"type": "string"
 		}
@@ -34198,17 +35748,23 @@ export const ShadingMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -34228,6 +35784,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -34339,17 +35896,23 @@ export const ShadingMapOverlayConfigSchema = {
 							"CaseContact",
 							"Catchment",
 							"City",
+							"Commune",
 							"Complaint",
 							"Country",
 							"Disaster",
 							"District",
+							"DistrictOperational",
 							"EnumerationArea",
 							"Facility",
+							"FacilityBuilding",
+							"FacilityDivision",
+							"FacilitySection",
 							"Farm",
 							"FetpGraduate",
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalWard",
 							"Household",
 							"Incident",
 							"IncidentReported",
@@ -34369,6 +35932,7 @@ export const ShadingMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -34470,17 +36034,23 @@ export const ShadingMapOverlayConfigSchema = {
 				"CaseContact",
 				"Catchment",
 				"City",
+				"Commune",
 				"Complaint",
 				"Country",
 				"Disaster",
 				"District",
+				"DistrictOperational",
 				"EnumerationArea",
 				"Facility",
+				"FacilityBuilding",
+				"FacilityDivision",
+				"FacilitySection",
 				"Farm",
 				"FetpGraduate",
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalWard",
 				"Household",
 				"Incident",
 				"IncidentReported",
@@ -34500,6 +36070,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -34902,17 +36473,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -34932,6 +36509,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -35043,17 +36621,23 @@ export const MapOverlayConfigSchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -35073,6 +36657,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -35174,17 +36759,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -35204,6 +36795,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -35319,8 +36911,7 @@ export const MapOverlayConfigSchema = {
 						"neutral",
 						"neutralReverse",
 						"performance",
-						"performanceDesc",
-						"time"
+						"performanceDesc"
 					],
 					"type": "string"
 				},
@@ -35330,8 +36921,7 @@ export const MapOverlayConfigSchema = {
 						"default",
 						"default-reverse",
 						"gpi",
-						"performance",
-						"time"
+						"performance"
 					],
 					"type": "string"
 				},
@@ -35424,7 +37014,6 @@ export const MapOverlayConfigSchema = {
 			},
 			"required": [
 				"displayType",
-				"scaleColorScheme",
 				"scaleType"
 			]
 		},
@@ -35703,17 +37292,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -35733,6 +37328,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -35844,17 +37440,23 @@ export const MapOverlayConfigSchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -35874,6 +37476,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -35975,17 +37578,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -36005,6 +37614,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -36426,17 +38036,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -36456,6 +38072,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -36567,17 +38184,23 @@ export const MapOverlayConfigSchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -36597,6 +38220,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -36698,17 +38322,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -36728,6 +38358,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -37123,17 +38754,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -37153,6 +38790,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -37264,17 +38902,23 @@ export const MapOverlayConfigSchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -37294,6 +38938,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -37395,17 +39040,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -37425,6 +39076,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -37550,8 +39202,7 @@ export const MapOverlayConfigSchema = {
 						"neutral",
 						"neutralReverse",
 						"performance",
-						"performanceDesc",
-						"time"
+						"performanceDesc"
 					],
 					"type": "string"
 				}
@@ -37835,17 +39486,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -37865,6 +39522,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -37976,17 +39634,23 @@ export const MapOverlayConfigSchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -38006,6 +39670,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -38107,17 +39772,23 @@ export const MapOverlayConfigSchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -38137,6 +39808,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -38739,17 +40411,23 @@ export const EntityQuestionConfigSchema = {
 									"case_contact",
 									"catchment",
 									"city",
+									"commune",
 									"complaint",
 									"country",
 									"disaster",
 									"district",
+									"district_operational",
 									"enumeration_area",
 									"facility",
+									"facility_building",
+									"facility_division",
+									"facility_section",
 									"farm",
 									"fetp_graduate",
 									"field_station",
 									"fiji_aspen_facility",
 									"health_clinic_boundary",
+									"hospital_ward",
 									"household",
 									"incident",
 									"incident_reported",
@@ -38769,6 +40447,7 @@ export const EntityQuestionConfigSchema = {
 									"sub_catchment",
 									"sub_district",
 									"sub_facility",
+									"transfer",
 									"trap",
 									"village",
 									"water_sample",
@@ -38786,17 +40465,23 @@ export const EntityQuestionConfigSchema = {
 								"case_contact",
 								"catchment",
 								"city",
+								"commune",
 								"complaint",
 								"country",
 								"disaster",
 								"district",
+								"district_operational",
 								"enumeration_area",
 								"facility",
+								"facility_building",
+								"facility_division",
+								"facility_section",
 								"farm",
 								"fetp_graduate",
 								"field_station",
 								"fiji_aspen_facility",
 								"health_clinic_boundary",
+								"hospital_ward",
 								"household",
 								"incident",
 								"incident_reported",
@@ -38816,6 +40501,7 @@ export const EntityQuestionConfigSchema = {
 								"sub_catchment",
 								"sub_district",
 								"sub_facility",
+								"transfer",
 								"trap",
 								"village",
 								"water_sample",
@@ -39255,17 +40941,23 @@ export const SurveyScreenComponentConfigSchema = {
 											"case_contact",
 											"catchment",
 											"city",
+											"commune",
 											"complaint",
 											"country",
 											"disaster",
 											"district",
+											"district_operational",
 											"enumeration_area",
 											"facility",
+											"facility_building",
+											"facility_division",
+											"facility_section",
 											"farm",
 											"fetp_graduate",
 											"field_station",
 											"fiji_aspen_facility",
 											"health_clinic_boundary",
+											"hospital_ward",
 											"household",
 											"incident",
 											"incident_reported",
@@ -39285,6 +40977,7 @@ export const SurveyScreenComponentConfigSchema = {
 											"sub_catchment",
 											"sub_district",
 											"sub_facility",
+											"transfer",
 											"trap",
 											"village",
 											"water_sample",
@@ -39302,17 +40995,23 @@ export const SurveyScreenComponentConfigSchema = {
 										"case_contact",
 										"catchment",
 										"city",
+										"commune",
 										"complaint",
 										"country",
 										"disaster",
 										"district",
+										"district_operational",
 										"enumeration_area",
 										"facility",
+										"facility_building",
+										"facility_division",
+										"facility_section",
 										"farm",
 										"fetp_graduate",
 										"field_station",
 										"fiji_aspen_facility",
 										"health_clinic_boundary",
+										"hospital_ward",
 										"household",
 										"incident",
 										"incident_reported",
@@ -39332,6 +41031,7 @@ export const SurveyScreenComponentConfigSchema = {
 										"sub_catchment",
 										"sub_district",
 										"sub_facility",
+										"transfer",
 										"trap",
 										"village",
 										"water_sample",
@@ -39767,6 +41467,30 @@ export const RecentEntitiesForCountrySchema = {
 				"type": "string"
 			}
 		},
+		"facility_building": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"facility_division": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"facility_section": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"hospital_ward": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"farm": {
 			"type": "array",
 			"items": {
@@ -39774,6 +41498,18 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"repair_request": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"district_operational": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"commune": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -39808,6 +41544,12 @@ export const RecentEntitiesForCountrySchema = {
 			"items": {
 				"type": "string"
 			}
+		},
+		"transfer": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
 		}
 	},
 	"additionalProperties": false
@@ -39825,6 +41567,105 @@ export const UserAccountPreferencesSchema = {
 		"recent_entities": {
 			"type": "object",
 			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const FrontEndExcludedExceptionSchema = {
+	"type": "object",
+	"properties": {
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"permissionGroups"
+	]
+} 
+
+export const FrontEndExcludedConfigSchema = {
+	"type": "object",
+	"properties": {
+		"types": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"exceptions": {
+			"type": "object",
+			"properties": {
+				"permissionGroups": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"permissionGroups"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"types"
+	]
+} 
+
+export const ProjectConfigSchema = {
+	"type": "object",
+	"properties": {
+		"frontendExcluded": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"types": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"exceptions": {
+						"type": "object",
+						"properties": {
+							"permissionGroups": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"permissionGroups"
+						]
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"types"
+				]
+			}
+		},
+		"permanentRegionLabels": {
+			"type": "boolean"
+		},
+		"tileSets": {
+			"type": "string"
+		},
+		"includeDefaultTileSets": {
+			"type": "boolean"
+		},
+		"projectDashboardHeader": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -40076,6 +41917,27 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
 			"type": "string"
 		},
 		"value": {
@@ -40120,6 +41982,27 @@ export const AnalyticsCreateSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
 			"type": "string"
 		},
 		"value": {
@@ -40164,6 +42047,27 @@ export const AnalyticsUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
 			"type": "string"
 		},
 		"value": {
@@ -41172,21 +43076,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -41512,6 +43432,10 @@ export const DashboardItemSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -41853,21 +43777,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -42241,21 +44181,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -42340,6 +44296,7 @@ export const DashboardItemSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -42354,8 +44311,7 @@ export const DashboardItemSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						"segmentConfig": {
 							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -42715,21 +44671,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -43469,21 +45441,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -44217,21 +46205,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -44954,21 +46958,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -45391,21 +47411,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -45808,21 +47844,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -46302,21 +48354,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -46710,21 +48778,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -47114,21 +49198,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -47518,21 +49618,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -47922,21 +50038,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -48326,21 +50458,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -48730,21 +50878,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -49134,21 +51298,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -49575,21 +51755,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -49915,6 +52111,10 @@ export const DashboardItemCreateSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -50256,21 +52456,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -50644,21 +52860,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -50743,6 +52975,7 @@ export const DashboardItemCreateSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -50757,8 +52990,7 @@ export const DashboardItemCreateSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						"segmentConfig": {
 							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -51118,21 +53350,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -51872,21 +54120,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -52620,21 +54884,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -53357,21 +55637,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -53794,21 +56090,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -54211,21 +56523,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -54705,21 +57033,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -55113,21 +57457,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -55517,21 +57877,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -55921,21 +58297,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -56325,21 +58717,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -56729,21 +59137,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -57133,21 +59557,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -57537,21 +59977,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -57972,21 +60428,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -58312,6 +60784,10 @@ export const DashboardItemUpdateSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -58653,21 +61129,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -59041,21 +61533,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -59140,6 +61648,7 @@ export const DashboardItemUpdateSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -59154,8 +61663,7 @@ export const DashboardItemUpdateSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						"segmentConfig": {
 							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -59515,21 +62023,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -60269,21 +62793,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -61017,21 +63557,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -61754,21 +64310,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -62191,21 +64763,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -62608,21 +65196,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -63102,21 +65706,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -63510,21 +66130,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -63914,21 +66550,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -64318,21 +66970,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -64722,21 +67390,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -65126,21 +67810,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -65530,21 +68230,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -65934,21 +68650,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -66209,17 +68941,23 @@ export const DashboardRelationSchema = {
 					"case_contact",
 					"catchment",
 					"city",
+					"commune",
 					"complaint",
 					"country",
 					"disaster",
 					"district",
+					"district_operational",
 					"enumeration_area",
 					"facility",
+					"facility_building",
+					"facility_division",
+					"facility_section",
 					"farm",
 					"fetp_graduate",
 					"field_station",
 					"fiji_aspen_facility",
 					"health_clinic_boundary",
+					"hospital_ward",
 					"household",
 					"incident",
 					"incident_reported",
@@ -66239,6 +68977,7 @@ export const DashboardRelationSchema = {
 					"sub_catchment",
 					"sub_district",
 					"sub_facility",
+					"transfer",
 					"trap",
 					"village",
 					"water_sample",
@@ -66302,17 +69041,23 @@ export const DashboardRelationCreateSchema = {
 					"case_contact",
 					"catchment",
 					"city",
+					"commune",
 					"complaint",
 					"country",
 					"disaster",
 					"district",
+					"district_operational",
 					"enumeration_area",
 					"facility",
+					"facility_building",
+					"facility_division",
+					"facility_section",
 					"farm",
 					"fetp_graduate",
 					"field_station",
 					"fiji_aspen_facility",
 					"health_clinic_boundary",
+					"hospital_ward",
 					"household",
 					"incident",
 					"incident_reported",
@@ -66332,6 +69077,7 @@ export const DashboardRelationCreateSchema = {
 					"sub_catchment",
 					"sub_district",
 					"sub_facility",
+					"transfer",
 					"trap",
 					"village",
 					"water_sample",
@@ -66390,17 +69136,23 @@ export const DashboardRelationUpdateSchema = {
 					"case_contact",
 					"catchment",
 					"city",
+					"commune",
 					"complaint",
 					"country",
 					"disaster",
 					"district",
+					"district_operational",
 					"enumeration_area",
 					"facility",
+					"facility_building",
+					"facility_division",
+					"facility_section",
 					"farm",
 					"fetp_graduate",
 					"field_station",
 					"fiji_aspen_facility",
 					"health_clinic_boundary",
+					"hospital_ward",
 					"household",
 					"incident",
 					"incident_reported",
@@ -66420,6 +69172,7 @@ export const DashboardRelationUpdateSchema = {
 					"sub_catchment",
 					"sub_district",
 					"sub_facility",
+					"transfer",
 					"trap",
 					"village",
 					"water_sample",
@@ -67587,17 +70340,23 @@ export const EntitySchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"commune",
 				"complaint",
 				"country",
 				"disaster",
 				"district",
+				"district_operational",
 				"enumeration_area",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_ward",
 				"household",
 				"incident",
 				"incident_reported",
@@ -67617,6 +70376,7 @@ export const EntitySchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -67685,17 +70445,23 @@ export const EntityCreateSchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"commune",
 				"complaint",
 				"country",
 				"disaster",
 				"district",
+				"district_operational",
 				"enumeration_area",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_ward",
 				"household",
 				"incident",
 				"incident_reported",
@@ -67715,6 +70481,7 @@ export const EntityCreateSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -67783,17 +70550,23 @@ export const EntityUpdateSchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"commune",
 				"complaint",
 				"country",
 				"disaster",
 				"district",
+				"district_operational",
 				"enumeration_area",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_ward",
 				"household",
 				"incident",
 				"incident_reported",
@@ -67813,6 +70586,7 @@ export const EntityUpdateSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -69015,17 +71789,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -69045,6 +71825,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -69156,17 +71937,23 @@ export const MapOverlaySchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -69186,6 +71973,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -69287,17 +72075,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -69317,6 +72111,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -69432,8 +72227,7 @@ export const MapOverlaySchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						},
@@ -69443,8 +72237,7 @@ export const MapOverlaySchema = {
 								"default",
 								"default-reverse",
 								"gpi",
-								"performance",
-								"time"
+								"performance"
 							],
 							"type": "string"
 						},
@@ -69537,7 +72330,6 @@ export const MapOverlaySchema = {
 					},
 					"required": [
 						"displayType",
-						"scaleColorScheme",
 						"scaleType"
 					]
 				},
@@ -69816,17 +72608,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -69846,6 +72644,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -69957,17 +72756,23 @@ export const MapOverlaySchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -69987,6 +72792,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -70088,17 +72894,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -70118,6 +72930,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -70539,17 +73352,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -70569,6 +73388,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -70680,17 +73500,23 @@ export const MapOverlaySchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -70710,6 +73536,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -70811,17 +73638,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -70841,6 +73674,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -71236,17 +74070,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -71266,6 +74106,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -71377,17 +74218,23 @@ export const MapOverlaySchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -71407,6 +74254,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -71508,17 +74356,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -71538,6 +74392,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -71663,8 +74518,7 @@ export const MapOverlaySchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						}
@@ -71948,17 +74802,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -71978,6 +74838,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -72089,17 +74950,23 @@ export const MapOverlaySchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -72119,6 +74986,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -72220,17 +75088,23 @@ export const MapOverlaySchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -72250,6 +75124,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -72713,17 +75588,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -72743,6 +75624,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -72854,17 +75736,23 @@ export const MapOverlayCreateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -72884,6 +75772,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -72985,17 +75874,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -73015,6 +75910,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -73130,8 +76026,7 @@ export const MapOverlayCreateSchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						},
@@ -73141,8 +76036,7 @@ export const MapOverlayCreateSchema = {
 								"default",
 								"default-reverse",
 								"gpi",
-								"performance",
-								"time"
+								"performance"
 							],
 							"type": "string"
 						},
@@ -73235,7 +76129,6 @@ export const MapOverlayCreateSchema = {
 					},
 					"required": [
 						"displayType",
-						"scaleColorScheme",
 						"scaleType"
 					]
 				},
@@ -73514,17 +76407,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -73544,6 +76443,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -73655,17 +76555,23 @@ export const MapOverlayCreateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -73685,6 +76591,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -73786,17 +76693,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -73816,6 +76729,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -74237,17 +77151,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -74267,6 +77187,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -74378,17 +77299,23 @@ export const MapOverlayCreateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -74408,6 +77335,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -74509,17 +77437,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -74539,6 +77473,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -74934,17 +77869,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -74964,6 +77905,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -75075,17 +78017,23 @@ export const MapOverlayCreateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -75105,6 +78053,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -75206,17 +78155,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -75236,6 +78191,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -75361,8 +78317,7 @@ export const MapOverlayCreateSchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						}
@@ -75646,17 +78601,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -75676,6 +78637,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -75787,17 +78749,23 @@ export const MapOverlayCreateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -75817,6 +78785,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -75918,17 +78887,23 @@ export const MapOverlayCreateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -75948,6 +78923,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -76404,17 +79380,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -76434,6 +79416,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -76545,17 +79528,23 @@ export const MapOverlayUpdateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -76575,6 +79564,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -76676,17 +79666,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -76706,6 +79702,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -76821,8 +79818,7 @@ export const MapOverlayUpdateSchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						},
@@ -76832,8 +79828,7 @@ export const MapOverlayUpdateSchema = {
 								"default",
 								"default-reverse",
 								"gpi",
-								"performance",
-								"time"
+								"performance"
 							],
 							"type": "string"
 						},
@@ -76926,7 +79921,6 @@ export const MapOverlayUpdateSchema = {
 					},
 					"required": [
 						"displayType",
-						"scaleColorScheme",
 						"scaleType"
 					]
 				},
@@ -77205,17 +80199,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -77235,6 +80235,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -77346,17 +80347,23 @@ export const MapOverlayUpdateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -77376,6 +80383,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -77477,17 +80485,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -77507,6 +80521,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -77928,17 +80943,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -77958,6 +80979,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -78069,17 +81091,23 @@ export const MapOverlayUpdateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -78099,6 +81127,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -78200,17 +81229,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -78230,6 +81265,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -78625,17 +81661,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -78655,6 +81697,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -78766,17 +81809,23 @@ export const MapOverlayUpdateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -78796,6 +81845,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -78897,17 +81947,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -78927,6 +81983,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -79052,8 +82109,7 @@ export const MapOverlayUpdateSchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						}
@@ -79337,17 +82393,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -79367,6 +82429,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -79478,17 +82541,23 @@ export const MapOverlayUpdateSchema = {
 											"CaseContact",
 											"Catchment",
 											"City",
+											"Commune",
 											"Complaint",
 											"Country",
 											"Disaster",
 											"District",
+											"DistrictOperational",
 											"EnumerationArea",
 											"Facility",
+											"FacilityBuilding",
+											"FacilityDivision",
+											"FacilitySection",
 											"Farm",
 											"FetpGraduate",
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalWard",
 											"Household",
 											"Incident",
 											"IncidentReported",
@@ -79508,6 +82577,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -79609,17 +82679,23 @@ export const MapOverlayUpdateSchema = {
 								"CaseContact",
 								"Catchment",
 								"City",
+								"Commune",
 								"Complaint",
 								"Country",
 								"Disaster",
 								"District",
+								"DistrictOperational",
 								"EnumerationArea",
 								"Facility",
+								"FacilityBuilding",
+								"FacilityDivision",
+								"FacilitySection",
 								"Farm",
 								"FetpGraduate",
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalWard",
 								"Household",
 								"Incident",
 								"IncidentReported",
@@ -79639,6 +82715,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -80582,17 +83659,23 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"commune",
 				"complaint",
 				"country",
 				"disaster",
 				"district",
+				"district_operational",
 				"enumeration_area",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_ward",
 				"household",
 				"incident",
 				"incident_reported",
@@ -80612,6 +83695,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -80662,17 +83746,23 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"commune",
 				"complaint",
 				"country",
 				"disaster",
 				"district",
+				"district_operational",
 				"enumeration_area",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_ward",
 				"household",
 				"incident",
 				"incident_reported",
@@ -80692,6 +83782,7 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -80739,17 +83830,23 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"commune",
 				"complaint",
 				"country",
 				"disaster",
 				"district",
+				"district_operational",
 				"enumeration_area",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_ward",
 				"household",
 				"incident",
 				"incident_reported",
@@ -80769,6 +83866,7 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -80807,7 +83905,54 @@ export const ProjectSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -80846,6 +83991,7 @@ export const ProjectSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id",
 		"permission_groups"
 	]
@@ -80859,7 +84005,54 @@ export const ProjectCreateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -80906,7 +84099,54 @@ export const ProjectUpdateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -81331,8 +84571,13 @@ export const ReportSchema = {
 							}
 						},
 						"output": {
+							"additionalProperties": false,
 							"type": "object",
-							"additionalProperties": false
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
 						}
 					},
 					"additionalProperties": false,
@@ -81401,8 +84646,13 @@ export const ReportCreateSchema = {
 							}
 						},
 						"output": {
+							"additionalProperties": false,
 							"type": "object",
-							"additionalProperties": false
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
 						}
 					},
 					"additionalProperties": false,
@@ -81466,8 +84716,13 @@ export const ReportUpdateSchema = {
 							}
 						},
 						"output": {
+							"additionalProperties": false,
 							"type": "object",
-							"additionalProperties": false
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
 						}
 					},
 					"additionalProperties": false,
@@ -82959,17 +86214,23 @@ export const EntityTypeSchema = {
 		"case_contact",
 		"catchment",
 		"city",
+		"commune",
 		"complaint",
 		"country",
 		"disaster",
 		"district",
+		"district_operational",
 		"enumeration_area",
 		"facility",
+		"facility_building",
+		"facility_division",
+		"facility_section",
 		"farm",
 		"fetp_graduate",
 		"field_station",
 		"fiji_aspen_facility",
 		"health_clinic_boundary",
+		"hospital_ward",
 		"household",
 		"incident",
 		"incident_reported",
@@ -82989,6 +86250,7 @@ export const EntityTypeSchema = {
 		"sub_catchment",
 		"sub_district",
 		"sub_facility",
+		"transfer",
 		"trap",
 		"village",
 		"water_sample",
@@ -83029,6 +86291,98 @@ export const ApprovalStatusSchema = {
 		"rejected"
 	],
 	"type": "string"
+} 
+
+export const ParamsSchema = {
+	"type": "object",
+	"properties": {
+		"projectCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"projectCode"
+	]
+} 
+
+export const CountryAccessObjectSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
+} 
+
+export const ResBodySchema = {
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"id": {
+				"type": "string"
+			},
+			"name": {
+				"type": "string"
+			},
+			"code": {
+				"type": "string"
+			},
+			"hasAccess": {
+				"type": "boolean"
+			},
+			"hasPendingAccess": {
+				"type": "boolean"
+			}
+		},
+		"additionalProperties": false,
+		"required": [
+			"code",
+			"hasAccess",
+			"hasPendingAccess",
+			"id",
+			"name"
+		]
+	}
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"properties": {
+		"projectId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"projectId"
+	]
 } 
 
 export const IdSchema = {
@@ -83192,17 +86546,23 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"case_contact",
 							"catchment",
 							"city",
+							"commune",
 							"complaint",
 							"country",
 							"disaster",
 							"district",
+							"district_operational",
 							"enumeration_area",
 							"facility",
+							"facility_building",
+							"facility_division",
+							"facility_section",
 							"farm",
 							"fetp_graduate",
 							"field_station",
 							"fiji_aspen_facility",
 							"health_clinic_boundary",
+							"hospital_ward",
 							"household",
 							"incident",
 							"incident_reported",
@@ -83222,6 +86582,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"sub_catchment",
 							"sub_district",
 							"sub_facility",
+							"transfer",
 							"trap",
 							"village",
 							"water_sample",
@@ -83286,39 +86647,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 	]
 } 
 
-export const CountryAccessResponseSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"accessRequests": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"code": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"accessRequests",
-		"code",
-		"hasAccess",
-		"id",
-		"name"
-	]
-} 
-
 export const DataTablePreviewRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -83366,19 +86694,6 @@ export const DataTablePreviewRequestSchema = {
 	]
 } 
 
-export const ParamsSchema = {
-	"type": "object",
-	"properties": {
-		"projectCode": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"projectCode"
-	]
-} 
-
 export const ProjectResponseSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -83388,6 +86703,53 @@ export const ProjectResponseSchema = {
 		},
 		"config": {
 			"type": "object",
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
 			"additionalProperties": false
 		},
 		"dashboardGroupName": {
@@ -83423,9 +86785,6 @@ export const ProjectResponseSchema = {
 		"sortOrder": {
 			"type": "number"
 		},
-		"name": {
-			"type": "string"
-		},
 		"hasAccess": {
 			"type": "boolean"
 		},
@@ -83434,78 +86793,20 @@ export const ProjectResponseSchema = {
 		},
 		"homeEntityCode": {
 			"type": "string"
-		}
-	},
-	"required": [
-		"code",
-		"hasAccess",
-		"hasPendingAccess",
-		"homeEntityCode",
-		"id",
-		"name",
-		"permissionGroups"
-	]
-} 
-
-export const ResBodySchema = {
-	"additionalProperties": false,
-	"type": "object",
-	"properties": {
-		"code": {
+		},
+		"name": {
 			"type": "string"
 		},
-		"config": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"dashboardGroupName": {
-			"type": "string"
-		},
-		"defaultMeasure": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"entityHierarchyId": {
-			"type": "string"
-		},
-		"entityId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"imageUrl": {
-			"type": "string"
-		},
-		"logoUrl": {
-			"type": "string"
-		},
-		"permissionGroups": {
+		"names": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
-		},
-		"sortOrder": {
-			"type": "number"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		},
-		"homeEntityCode": {
-			"type": "string"
 		}
 	},
 	"required": [
 		"code",
+		"config",
 		"hasAccess",
 		"hasPendingAccess",
 		"homeEntityCode",
@@ -83513,16 +86814,6 @@ export const ResBodySchema = {
 		"name",
 		"permissionGroups"
 	]
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const VisibilityCriteriaSchema = {
@@ -84009,34 +87300,6 @@ export const CamelCaseFeedItemSchema = {
 	]
 } 
 
-export const CountryAccessSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"accessRequests": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"accessRequests",
-		"hasAccess",
-		"id",
-		"name"
-	]
-} 
-
 export const EntityResponseSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -84089,17 +87352,23 @@ export const EntityResponseSchema = {
 				"case_contact",
 				"catchment",
 				"city",
+				"commune",
 				"complaint",
 				"country",
 				"disaster",
 				"district",
+				"district_operational",
 				"enumeration_area",
 				"facility",
+				"facility_building",
+				"facility_division",
+				"facility_section",
 				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_ward",
 				"household",
 				"incident",
 				"incident_reported",
@@ -84119,6 +87388,7 @@ export const EntityResponseSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -84510,21 +87780,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -84850,6 +88136,10 @@ export const DashboardWithMetadataSchema = {
 									"placeholder": {
 										"description": "A url to an image to be used when a matrix is collapsed.",
 										"type": "string"
+									},
+									"enableSearch": {
+										"description": "Specify whether to show search filters on the matrix",
+										"type": "boolean"
 									}
 								},
 								"required": [
@@ -85191,21 +88481,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -85579,21 +88885,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -85678,6 +89000,7 @@ export const DashboardWithMetadataSchema = {
 									},
 									"presentationOptions": {
 										"description": "Common options for configuring the chart presentation",
+										"additionalProperties": false,
 										"type": "object",
 										"properties": {
 											"exportWithLabels": {
@@ -85692,8 +89015,7 @@ export const DashboardWithMetadataSchema = {
 												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 												"type": "boolean"
 											}
-										},
-										"additionalProperties": false
+										}
 									},
 									"segmentConfig": {
 										"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -86053,21 +89375,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -86807,21 +90145,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"weekDisplayFormat": {
@@ -87555,21 +90909,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"weekDisplayFormat": {
@@ -88292,21 +91662,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -88729,21 +92115,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -89146,21 +92548,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -89640,21 +93058,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -90048,21 +93482,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -90452,21 +93902,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -90856,21 +94322,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -91260,21 +94742,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -91664,21 +95162,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -92068,21 +95582,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -92472,21 +96002,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -92913,17 +96459,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -92943,6 +96495,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -93054,17 +96607,23 @@ export const TranslatedMapOverlaySchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -93084,6 +96643,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -93185,17 +96745,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -93215,6 +96781,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -93330,8 +96897,7 @@ export const TranslatedMapOverlaySchema = {
 						"neutral",
 						"neutralReverse",
 						"performance",
-						"performanceDesc",
-						"time"
+						"performanceDesc"
 					],
 					"type": "string"
 				},
@@ -93341,8 +96907,7 @@ export const TranslatedMapOverlaySchema = {
 						"default",
 						"default-reverse",
 						"gpi",
-						"performance",
-						"time"
+						"performance"
 					],
 					"type": "string"
 				},
@@ -93442,7 +97007,6 @@ export const TranslatedMapOverlaySchema = {
 				"entityAttributesFilter",
 				"legacy",
 				"name",
-				"scaleColorScheme",
 				"scaleType"
 			]
 		},
@@ -93737,17 +97301,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -93767,6 +97337,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -93878,17 +97449,23 @@ export const TranslatedMapOverlaySchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -93908,6 +97485,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -94009,17 +97587,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -94039,6 +97623,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -94483,17 +98068,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -94513,6 +98104,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -94624,17 +98216,23 @@ export const TranslatedMapOverlaySchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -94654,6 +98252,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -94755,17 +98354,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -94785,6 +98390,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -95203,17 +98809,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -95233,6 +98845,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -95344,17 +98957,23 @@ export const TranslatedMapOverlaySchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -95374,6 +98993,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -95475,17 +99095,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -95505,6 +99131,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -95630,8 +99257,7 @@ export const TranslatedMapOverlaySchema = {
 						"neutral",
 						"neutralReverse",
 						"performance",
-						"performanceDesc",
-						"time"
+						"performanceDesc"
 					],
 					"type": "string"
 				},
@@ -95938,17 +99564,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -95968,6 +99600,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -96079,17 +99712,23 @@ export const TranslatedMapOverlaySchema = {
 									"CaseContact",
 									"Catchment",
 									"City",
+									"Commune",
 									"Complaint",
 									"Country",
 									"Disaster",
 									"District",
+									"DistrictOperational",
 									"EnumerationArea",
 									"Facility",
+									"FacilityBuilding",
+									"FacilityDivision",
+									"FacilitySection",
 									"Farm",
 									"FetpGraduate",
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalWard",
 									"Household",
 									"Incident",
 									"IncidentReported",
@@ -96109,6 +99748,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -96210,17 +99850,23 @@ export const TranslatedMapOverlaySchema = {
 						"CaseContact",
 						"Catchment",
 						"City",
+						"Commune",
 						"Complaint",
 						"Country",
 						"Disaster",
 						"District",
+						"DistrictOperational",
 						"EnumerationArea",
 						"Facility",
+						"FacilityBuilding",
+						"FacilityDivision",
+						"FacilitySection",
 						"Farm",
 						"FetpGraduate",
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalWard",
 						"Household",
 						"Incident",
 						"IncidentReported",
@@ -96240,6 +99886,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -96380,31 +100027,6 @@ export const TranslatedMapOverlayGroupSchema = {
 
 export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
-} 
-
-export const CountryAccessObjectSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"hasAccess",
-		"hasPendingAccess",
-		"id",
-		"name"
-	]
 } 
 
 export const SubscribeDashboardResponseSchema = {

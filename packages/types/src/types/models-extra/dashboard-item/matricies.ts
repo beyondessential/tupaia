@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { CssColor } from '../../css';
+import { DashboardItemType } from '../common';
 import type { BaseConfig, ValueType } from './common';
 
 /**
  * @description Matrix viz type
  */
 export type MatrixConfig = BaseConfig & {
-  type: 'matrix';
+  type: `${DashboardItemType.Matrix}`;
 
   /**
    * @description Matrix viz type can specify a column as the data element column.
@@ -38,6 +39,10 @@ export type MatrixConfig = BaseConfig & {
    * @description A url to an image to be used when a matrix is collapsed.
    */
   placeholder?: string;
+  /**
+   * @description Specify whether to show search filters on the matrix
+   */
+  enableSearch?: boolean;
 };
 
 export type MatrixVizBuilderConfig = MatrixConfig & {

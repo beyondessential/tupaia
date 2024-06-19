@@ -11,13 +11,26 @@ import { ReduxAutocomplete } from '../autocomplete';
 import { ExportModal } from './ExportModal';
 
 const MODES = {
-  COUNTRY: 'country',
-  ENTITY: 'entity',
+  COUNTRY: { value: 'country', formInput: 'countryCode' },
+  ENTITY: { value: 'entity', formInput: 'entityIds' },
 };
 
 export const SurveyResponsesExportModal = () => {
   const [values, setValues] = useState({});
-  const [mode, setMode] = useState(MODES.COUNTRY);
+  const [mode, setMode] = useState(MODES.COUNTRY.value);
+  const [countryCode, setCountryCode] = useState(); // Keep local copy to ensure form stays in sync with input
+  const [entityIds, setEntityIds] = useState(); // Keep local copy to ensure form stays in sync with input
+
+  const onChangeMode = newMode => {
+    setMode(newMode);
+    if (newMode === MODES.COUNTRY.value) {
+      handleValueChange(MODES.COUNTRY.formInput, countryCode);
+      handleValueChange(MODES.ENTITY.formInput, undefined);
+    } else {
+      handleValueChange(MODES.COUNTRY.formInput, undefined);
+      handleValueChange(MODES.ENTITY.formInput, entityIds);
+    }
+  };
 
   const handleValueChange = (key, value) => {
     setValues(prevState => ({
@@ -27,9 +40,9 @@ export const SurveyResponsesExportModal = () => {
   };
 
   return (
-    <ExportModal title="Export Survey Responses" values={values} exportEndpoint="surveyResponses">
+    <ExportModal title="Download survey responses" values={values} exportEndpoint="surveyResponses">
       <ReduxAutocomplete
-        label="Surveys to Include"
+        label="Surveys to include"
         helperText="Please enter the names of the surveys to be exported."
         reduxId="surveyCodes"
         onChange={inputValue => handleValueChange('surveyCodes', inputValue)}
@@ -41,35 +54,41 @@ export const SurveyResponsesExportModal = () => {
       <RadioGroup
         name="survey responses mode"
         label="Mode"
-        onChange={event => setMode(event.currentTarget.value)}
+        onChange={event => onChangeMode(event.currentTarget.value)}
         options={[
           {
             label: 'Country',
-            value: MODES.COUNTRY,
+            value: MODES.COUNTRY.value,
           },
           {
             label: 'Entity',
-            value: MODES.ENTITY,
+            value: MODES.ENTITY.value,
           },
         ]}
         value={mode}
       />
-      {mode === MODES.COUNTRY ? (
+      {mode === MODES.COUNTRY.value ? (
         <ReduxAutocomplete
-          label="Country to Include"
+          label="Country to include"
           helperText="Please enter the name of the country to be exported."
           reduxId="countryCode"
-          onChange={inputValue => handleValueChange('countryCode', inputValue)}
+          onChange={inputValue => {
+            setCountryCode(inputValue);
+            handleValueChange('countryCode', inputValue);
+          }}
           endpoint="countries"
           optionLabelKey="name"
           optionValueKey="code"
         />
       ) : (
         <ReduxAutocomplete
-          label="Entities to Include"
+          label="Entities to include"
           helperText="Please enter the names of the entities to be exported."
           reduxId="entityIds"
-          onChange={inputValue => handleValueChange('entityIds', inputValue)}
+          onChange={inputValue => {
+            setEntityIds(inputValue);
+            handleValueChange('entityIds', inputValue);
+          }}
           endpoint="entities"
           optionLabelKey="name"
           optionValueKey="id"
@@ -77,7 +96,7 @@ export const SurveyResponsesExportModal = () => {
         />
       )}
       <DateTimePicker
-        label="Start Date"
+        label="Start date"
         format="yyyy-MM-dd HH:mm"
         value={
           values.startDate && moment(values.startDate).isValid
@@ -91,7 +110,7 @@ export const SurveyResponsesExportModal = () => {
         }}
       />
       <DateTimePicker
-        label="End Date"
+        label="End date"
         format="yyyy-MM-dd HH:mm"
         value={
           values.endDate && moment(values.endDate).isValid

@@ -19,6 +19,7 @@ export const useDownloadRawData = downloadUrl => {
           surveyCodes: surveyCodesForDownload,
         },
       });
+
       // before returning the data, parse it if it's json, so that we can access the emailTimeoutHit property
       const { 'content-type': contentType, 'content-disposition': contentDisposition } = headers;
       if (contentType?.includes('application/json')) {

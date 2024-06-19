@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useContext } from 'react';
@@ -13,6 +13,11 @@ import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { CellButton } from './CellButton';
 import { Cell } from './Cell';
+import { getFlattenedColumns } from './utils';
+
+const MATRIX_ROW_CLASS_HIGHLIGHTED = 'highlighted';
+const MATRIX_ROW_CLASS_PARENT = 'parent';
+const MATRIX_ROW_CLASS_CHILD = 'child';
 
 const depthCalc = (depth: number) => `${1.5 + depth * 2}rem`;
 
@@ -26,6 +31,7 @@ const ExpandIcon = styled(KeyboardArrowRight)<{
 const RowHeaderCellContent = styled.div`
   display: flex;
   align-items: center;
+  line-height: 1.4;
   justify-content: flex-start;
   height: 100%;
   width: 100%;
@@ -64,10 +70,11 @@ const TableRow = styled(MuiTableRow)<{
   $isChild?: boolean;
   $depth: number;
 }>`
-  height: 100%; // this is so the modal button for the cell fills the whole height of the cell
-  position: relative; // this is so that the hover border can be positioned absolutely over just the row
+  height: 100%; // so the modal button for the cell fills the whole height of the cell
+  position: relative; // so the hover border can be positioned absolutely over just the row
 
-  // apply a border to the top of the child rows using pseudo classes so we can control the width and the still see the border when the row is scrolled horizontally
+  // Apply a border to the top of the child rows using pseudo-classes so we can control the width
+  // and still see the border when the row is scrolled horizontally
   ${Cell}:before {
     content: '';
     position: absolute;
@@ -76,16 +83,18 @@ const TableRow = styled(MuiTableRow)<{
     width: 100%;
     height: 100%;
     pointer-events: none; // don't let the cell interfere with the button events
-    border-style: solid;
     border-color: ${({ theme }) => theme.palette.divider};
+    border-style: solid;
     border-width: ${({ $isChild }) => ($isChild ? '1px 0 0 0' : '0')};
     :is(th) {
       width: ${({ $depth }) => `calc(100% - ${depthCalc($depth)})`}; // the row header is indented
     }
   }
-  // for the first row of a group that is expanded and the immediate sibling of another expanded tow, add a border to the top of the row
+
+  // For the first row of a group that is expanded and the immediate sibling of another expanded
+  // row, add a border to the top of the row
   &.child
-    + &.parent.highlighted:not(
+    + &.${MATRIX_ROW_CLASS_PARENT}.${MATRIX_ROW_CLASS_HIGHLIGHTED}:not(
       :has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible))
     ) {
     ${Cell}:before {
@@ -98,7 +107,8 @@ const TableRow = styled(MuiTableRow)<{
     }
   }
 
-  // apply the hover effect to the cells instead of the row, so that when the row is scrolled horizontally, the left border doesn't get hidden
+  // Apply the hover effect to the cells instead of the row, so that when the row is scrolled
+  // horizontally, the left border doesn’t get hidden
   &:has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible)) {
     ${Cell}:before {
       content: ''; // set this to an empty string so the border always shows when the button is hovered
@@ -206,7 +216,8 @@ const ClickableRowHeaderCell = ({
 };
 
 /**
- * This component renders the first cell of a row. It renders a button to expand/collapse the row if it has children, otherwise it renders a regular cell.
+ * This component renders the first cell of a row. It renders a button to expand/collapse the row if
+ * it has children, otherwise it renders a regular cell.
  */
 const RowHeaderCell = ({
   rowTitle,
@@ -260,23 +271,31 @@ const RowHeaderCell = ({
  */
 export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const { children, title, onClick } = row;
-  const { columns, expandedRows, disableExpand = false } = useContext(MatrixContext);
+  const { columns, expandedRows, disableExpand = false, searchFilters } = useContext(MatrixContext);
+  const flattenedColumns = getFlattenedColumns(columns);
 
   const isExpanded = expandedRows.includes(title);
   const depth = parents.length;
 
-  const isCategory = children ? children.length > 0 : false;
+  const getIsCategory = () => {
+    if (!!searchFilters) return !!children;
+    return children ? children.length > 0 : false;
+  };
+
+  const isCategory = getIsCategory();
 
   const getClassNames = () => {
-    const highlightedClass =
-      isExpanded || depth > 0 || (isCategory && disableExpand) ? 'highlighted' : '';
-    const matrixClass = 'matrix';
-    const childClass = depth > 0 ? 'child' : 'parent';
+    const isHighlighted = isExpanded || depth > 0 || (isCategory && disableExpand);
+    const isChild = depth > 0;
+    const shouldAlternateRowColor = !(depth > 0 || index === undefined);
 
-    const baseClass = `${matrixClass} ${highlightedClass} ${childClass}`;
-    if (depth > 0 || index === undefined) return baseClass;
-    if (index % 2 === 0) return `${baseClass} even`;
-    return `${baseClass} odd`;
+    const childOrParentClass = isChild ? MATRIX_ROW_CLASS_CHILD : MATRIX_ROW_CLASS_PARENT;
+
+    const classes = ['matrix', childOrParentClass];
+    if (isHighlighted) classes.push(MATRIX_ROW_CLASS_HIGHLIGHTED);
+    if (shouldAlternateRowColor) classes.push(index % 2 === 0 ? 'even' : 'odd');
+
+    return classes.join(' ');
   };
 
   const classNames = getClassNames();
@@ -294,7 +313,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
         >
           {title}
         </RowHeaderCell>
-        {columns.map(({ key, title: cellTitle }) => (
+        {flattenedColumns.map(({ key, title: cellTitle }) => (
           <MatrixCell
             key={`column-${key || cellTitle}-row-${title}-value`}
             value={row[key as string]}

@@ -7,7 +7,6 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { AvatarProps, Box, Fab, FormHelperText } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ConfirmDeleteModal, ConfirmDeleteModalProps } from '../ConfirmDeleteModal';
 import { FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
 import { Avatar } from '../Avatar';
@@ -86,7 +85,6 @@ interface ImageUploadFieldProps {
   onDelete?: () => void;
   label: string;
   buttonLabel?: string;
-  deleteModal?: Omit<ConfirmDeleteModalProps, 'isOpen' | 'onConfirm' | 'onCancel'> | null;
   avatarVariant?: AvatarProps['variant'];
   maxHeight?: number;
   maxWidth?: number;
@@ -122,10 +120,6 @@ export const ImageUploadField = React.memo(
     avatarInitial,
     label,
     buttonLabel = 'Upload photo',
-    deleteModal = {
-      title: 'Remove Photo',
-      message: 'Are you sure you want to remove your photo?',
-    },
     avatarVariant = 'circle',
     maxHeight,
     maxWidth,
@@ -137,12 +131,10 @@ export const ImageUploadField = React.memo(
     FormHelperTextComponent,
     invalid,
   }: ImageUploadFieldProps) => {
-    const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const inputEl = useRef<HTMLInputElement | null>(null);
 
     const handleDelete = () => {
-      setConfirmModalIsOpen(false);
       if (inputEl && inputEl.current) inputEl.current.value = '';
       onDelete();
       setErrorMessage(null);
@@ -186,14 +178,6 @@ export const ImageUploadField = React.memo(
       }
     };
 
-    const onClickDelete = () => {
-      if (deleteModal) {
-        setConfirmModalIsOpen(true);
-      } else {
-        handleDelete();
-      }
-    };
-
     return (
       <Wrapper className="upload_wrapper">
         <Box position="relative">
@@ -206,7 +190,7 @@ export const ImageUploadField = React.memo(
             {avatarInitial}
           </StyledAvatar>
           {imageSrc && (
-            <DeleteButton onClick={onClickDelete}>
+            <DeleteButton onClick={handleDelete}>
               <DeleteIcon />
             </DeleteButton>
           )}
@@ -236,15 +220,6 @@ export const ImageUploadField = React.memo(
           <GreyOutlinedButton component="span">{buttonLabel}</GreyOutlinedButton>
           {errorMessage && <ErrorMessage id={`${name}-error-message`}>{errorMessage}</ErrorMessage>}
         </Label>
-
-        {deleteModal && (
-          <ConfirmDeleteModal
-            isOpen={confirmModalIsOpen}
-            onConfirm={handleDelete}
-            onCancel={() => setConfirmModalIsOpen(false)}
-            {...deleteModal}
-          />
-        )}
       </Wrapper>
     );
   },

@@ -3,23 +3,16 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ImportIcon from '@material-ui/icons/Publish';
-import {
-  Button,
-  Dialog,
-  DialogFooter,
-  DialogHeader,
-  FileUploadField,
-  LightOutlinedButton,
-  OutlinedButton,
-} from '@tupaia/ui-components';
-import { InputField, ModalContentProvider } from '../widgets';
+import { FileUploadField } from '@tupaia/ui-components';
+import { InputField, Modal } from '../widgets';
 import { useApiContext } from '../utilities/ApiProvider';
 import { DATA_CHANGE_ERROR, DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
+import { ActionButton } from '../editor';
+import { ImportIcon } from '../icons';
 
 const STATUS = {
   IDLE: 'idle',
@@ -44,7 +37,6 @@ export const ImportModalComponent = React.memo(
     confirmButtonText,
     cancelButtonText,
     uploadButtonText,
-    noFileMessage,
   }) => {
     const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
@@ -53,7 +45,7 @@ export const ImportModalComponent = React.memo(
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [files, setFiles] = useState([]);
-    const [fileName, setFileName] = useState(noFileMessage);
+    const [fileName, setFileName] = useState(null);
 
     const handleOpen = () => setIsOpen(true);
 
@@ -69,7 +61,7 @@ export const ImportModalComponent = React.memo(
       setErrorMessage(null);
       setFinishedMessage(null);
       setFiles([]);
-      setFileName(noFileMessage);
+      setFileName(null);
     };
 
     const handleClose = () => {
@@ -79,7 +71,7 @@ export const ImportModalComponent = React.memo(
       setIsOpen(false);
       setValues({});
       setFiles([]);
-      setFileName(noFileMessage);
+      setFileName(null);
     };
 
     const handleSubmit = async event => {
@@ -122,96 +114,107 @@ export const ImportModalComponent = React.memo(
         ? 'Request timed out, but may have still succeeded. Please wait 2 minutes and check to see if the data has changed'
         : errorMessage;
 
-    const renderButtons = useCallback(() => {
+    const getButtons = () => {
       switch (status) {
         case STATUS.TIMEOUT:
         case STATUS.SUCCESS:
-          return <Button onClick={handleClose}>Done</Button>;
+          return [
+            {
+              text: 'Done',
+              onClick: handleClose,
+            },
+          ];
         case STATUS.ERROR:
-          return (
-            <>
-              <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
-              <Button disabled>{confirmButtonText}</Button>
-            </>
-          );
+          return [
+            {
+              text: 'Dismiss',
+              onClick: handleDismiss,
+              variant: 'outlined',
+            },
+            {
+              text: confirmButtonText,
+              disabled: true,
+            },
+          ];
         default:
-          return (
-            <>
-              <OutlinedButton id="form-button-cancel" onClick={handleClose}>
-                {cancelButtonText}
-              </OutlinedButton>
-              <Button
-                id="form-button-import"
-                type="submit"
-                disabled={files.length === 0}
-                isLoading={status === STATUS.LOADING}
-                onClick={handleSubmit}
-              >
-                {confirmButtonText}
-              </Button>
-            </>
-          );
+          return [
+            {
+              text: cancelButtonText,
+              onClick: handleClose,
+              variant: 'outlined',
+              id: 'form-button-cancel',
+            },
+            {
+              text: confirmButtonText,
+              disabled: files.length === 0 || status === STATUS.LOADING,
+              isLoading: status === STATUS.LOADING,
+              onClick: handleSubmit,
+              id: 'form-button-import',
+              type: 'submit',
+            },
+          ];
       }
-    }, [status, files, handleDismiss, handleClose, handleSubmit]);
+    };
+
+    const buttons = getButtons();
+
+    const onChangeFile = (event, newName) => {
+      setFileName(newName);
+      if (event?.target?.files?.length > 0) {
+        setFiles(Array.from(event.target.files));
+      } else {
+        setFiles([]);
+      }
+    };
 
     return (
       <>
-        <Dialog onClose={handleClose} open={isOpen} disableBackdropClick>
-          <form>
-            <DialogHeader
-              onClose={handleClose}
-              title={fileErrorMessage ? 'Error' : title}
-              color={fileErrorMessage ? 'error' : 'textPrimary'}
-            />
-            <ModalContentProvider
-              errorMessage={fileErrorMessage}
-              isLoading={status === STATUS.LOADING}
-            >
-              {finishedMessage ? (
-                <>{finishedMessage}</>
-              ) : (
-                <>
-                  <p>{subtitle}</p>
-                  {queryParameters
-                    .filter(({ visibilityCriteria }) =>
-                      checkVisibilityCriteriaAreMet(visibilityCriteria, values),
-                    )
-                    .map(queryParameter => {
-                      const { parameterKey, ...restOfProps } = queryParameter;
-                      return (
-                        <InputField
-                          key={parameterKey}
-                          inputKey={parameterKey}
-                          value={values[parameterKey]}
-                          {...restOfProps}
-                          onChange={handleValueChange}
-                          id={`field-${labelToId(parameterKey)}`}
-                        />
-                      );
-                    })}
-                  <FileUploadField
-                    onChange={({ target }, newName) => {
-                      setFileName(newName);
-                      setFiles(Array.from(target.files));
-                    }}
-                    name="file-upload"
-                    fileName={fileName}
-                    multiple={actionConfig.multiple}
-                    textOnButton={uploadButtonText}
-                  />
-                </>
-              )}
-            </ModalContentProvider>
-            <DialogFooter>{renderButtons()}</DialogFooter>
-          </form>
-        </Dialog>
-        <LightOutlinedButton
-          id="page-import-button"
-          startIcon={<ImportIcon />}
-          onClick={handleOpen}
+        <Modal
+          onClose={handleClose}
+          isOpen={isOpen}
+          disableBackdropClick
+          title={fileErrorMessage ? 'Error' : title}
+          errorMessage={fileErrorMessage}
+          isLoading={status === STATUS.LOADING}
+          buttons={buttons}
         >
+          <form>
+            {finishedMessage ? (
+              <>{finishedMessage}</>
+            ) : (
+              <>
+                <p>{subtitle}</p>
+                {queryParameters
+                  .filter(({ visibilityCriteria }) =>
+                    checkVisibilityCriteriaAreMet(visibilityCriteria, values),
+                  )
+                  .map(queryParameter => {
+                    const { parameterKey, ...restOfProps } = queryParameter;
+                    return (
+                      <InputField
+                        key={parameterKey}
+                        inputKey={parameterKey}
+                        value={values[parameterKey]}
+                        {...restOfProps}
+                        onChange={handleValueChange}
+                        id={`field-${labelToId(parameterKey)}`}
+                      />
+                    );
+                  })}
+                <FileUploadField
+                  onChange={onChangeFile}
+                  name="file-upload"
+                  fileName={fileName}
+                  multiple={actionConfig.multiple}
+                  textOnButton={uploadButtonText}
+                />
+              </>
+            )}
+          </form>
+        </Modal>
+        <ActionButton id="page-import-button" startIcon={<ImportIcon />} onClick={handleOpen}>
           {confirmButtonText}
-        </LightOutlinedButton>
+        </ActionButton>
       </>
     );
   },
@@ -230,7 +233,6 @@ ImportModalComponent.propTypes = {
   confirmButtonText: PropTypes.string,
   cancelButtonText: PropTypes.string,
   uploadButtonText: PropTypes.string,
-  noFileMessage: PropTypes.string,
 };
 
 ImportModalComponent.defaultProps = {
@@ -243,7 +245,6 @@ ImportModalComponent.defaultProps = {
   confirmButtonText: 'Import',
   cancelButtonText: 'Cancel',
   uploadButtonText: 'Choose file',
-  noFileMessage: 'No file chosen',
 };
 
 const mapDispatchToProps = dispatch => ({

@@ -11,14 +11,16 @@ import { InputWrapper } from './InputWrapper';
 
 const RadioGroup = styled(BaseRadioGroup)`
   margin: 0;
+  max-width: 100%;
   .MuiFormGroup-root {
     width: 100%;
-    justify-content: space-between;
     border: none;
+    flex-wrap: nowrap;
   }
   .MuiFormControlLabel-label {
     font-size: 0.875rem;
   }
+
   .MuiFormControlLabel-root {
     width: 48%;
     border: 1px solid ${({ theme }) => theme.palette.divider};
@@ -53,7 +55,7 @@ export const EntityLevelInput = () => {
         rules={{ required: 'Required' }}
         render={({ ref, onChange, value }, { invalid }) => (
           <RadioGroup
-            label="Entity level *"
+            label="Entity level"
             name="entityLevel"
             options={[
               { label: 'Country', value: 'country' },

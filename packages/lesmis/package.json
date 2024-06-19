@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/lesmis"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run --prefix ../../ package:build:vite",
@@ -34,7 +34,7 @@
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/ui-map-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "axios": "^0.21.1",
+    "axios": "^1.6.8",
     "camelcase": "^6.2.0",
     "dom-to-image": "^2.6.0",
     "downloadjs": "^1.4.7",
@@ -51,7 +51,8 @@
     "react-password-strength-bar": "^0.3.3",
     "react-query": "^3.19.0",
     "react-redux": "^5.0.6",
-    "react-router-dom": "^5.2.0",
+    "react-router": "6.3.0",
+    "react-router-dom": "6.3.0",
     "styled-components": "^5.1.0"
   },
   "devDependencies": {

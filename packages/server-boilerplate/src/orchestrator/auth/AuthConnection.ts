@@ -4,19 +4,12 @@
  *
  */
 
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, requireEnv } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
-import { Credentials, OneTimeCredentials } from '../types';
+import { Credentials, OneTimeCredentials, RequestResetPasswordCredentials } from '../types';
 import { ApiConnection } from '../../connections';
 
 const DEFAULT_NAME = 'TUPAIA-SERVER';
-
-const basicAuthHandler = {
-  getAuthHeader: async () => {
-    const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
-    return createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
-  },
-};
 
 export interface AuthResponse {
   accessToken?: string;
@@ -26,6 +19,14 @@ export interface AuthResponse {
     accessPolicy: AccessPolicyObject;
   };
 }
+
+const basicAuthHandler = {
+  getAuthHeader: async () => {
+    const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
+    const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
+    return createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
+  },
+};
 
 export class AuthConnection extends ApiConnection {
   public baseUrl = process.env.CENTRAL_API_URL || 'http://localhost:8090/v2'; // auth server is actually just central server
@@ -56,6 +57,13 @@ export class AuthConnection extends ApiConnection {
       { token, deviceName: `${serverName}: ${deviceName}` },
     );
     return this.parseAuthResponse(response);
+  }
+
+  public async requestResetPassword({
+    emailAddress,
+    resetPasswordUrl,
+  }: RequestResetPasswordCredentials) {
+    return this.post('auth/resetPassword', {}, { emailAddress, resetPasswordUrl });
   }
 
   public async refreshAccessToken(refreshToken: string) {

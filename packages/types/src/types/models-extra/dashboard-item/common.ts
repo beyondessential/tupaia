@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DateOffsetSpec, DefaultTimePeriod, VizPeriodGranularity } from '../common';
+import { DateOffsetSpec, DefaultTimePeriod, ReferenceProps, VizPeriodGranularity } from '../common';
 
 export type BaseConfig = {
   /**
@@ -112,16 +112,7 @@ export type BaseConfig = {
   /**
    * @description If provided shows an (i) icon next to the viz title, which allows linking to the source data
    */
-  reference?: {
-    /**
-     * @description url
-     */
-    link: string;
-    /**
-     * @description label
-     */
-    name: string;
-  };
+  reference?: ReferenceProps;
 
   /**
    * @description If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. "Requires mSupply".

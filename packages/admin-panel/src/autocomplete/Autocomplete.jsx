@@ -5,6 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import Close from '@material-ui/icons/Close';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import styled from 'styled-components';
 import MuiChip from '@material-ui/core/Chip';
@@ -14,6 +15,11 @@ import debounce from 'lodash.debounce';
 const Chip = styled(MuiChip)`
   &:first-child {
     margin-left: 6px;
+  }
+  color: ${props => props.theme.palette.text.primary};
+  .MuiChip-deleteIcon {
+    color: ${props => props.theme.palette.text.secondary};
+    height: 1rem;
   }
 `;
 
@@ -33,13 +39,15 @@ export const Autocomplete = props => {
     allowMultipleValues,
     optionLabelKey,
     muiProps,
+    tooltip,
+    required,
   } = props;
   const [searchTerm, setSearchTerm] = React.useState('');
   const debouncedSearchUpdate = React.useCallback(
     debounce(newValue => {
       onChangeSearchTerm(newValue);
     }, 200),
-    [],
+    [onChangeSearchTerm],
   );
 
   const muiPropsForCreateNewOptions = canCreateNewOptions
@@ -75,6 +83,8 @@ export const Autocomplete = props => {
           values.map((option, index) => (
             <Chip
               color="primary"
+              deleteIcon={<Close />}
+              variant="outlined"
               label={optionLabelKey ? option[optionLabelKey] : option}
               {...getTagProps({ index })}
             />
@@ -109,6 +119,8 @@ export const Autocomplete = props => {
       placeholder={placeholder}
       helperText={helperText}
       muiProps={extraMuiProps}
+      tooltip={tooltip}
+      required={required}
     />
   );
 };
@@ -130,6 +142,8 @@ Autocomplete.propTypes = {
   allowMultipleValues: PropTypes.bool,
   optionLabelKey: PropTypes.string,
   muiProps: PropTypes.object,
+  tooltip: PropTypes.string,
+  required: PropTypes.bool,
 };
 
 Autocomplete.defaultProps = {
@@ -144,4 +158,6 @@ Autocomplete.defaultProps = {
   muiProps: {},
   optionLabelKey: null,
   onChangeSearchTerm: () => {},
+  tooltip: null,
+  required: false,
 };

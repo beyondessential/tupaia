@@ -13,7 +13,7 @@ import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { ROUTES } from '../../constants';
-import { useSubmitSurvey } from '../../api/mutations';
+import { useSubmitSurveyResponse } from '../../api/mutations';
 import { getErrorsByScreen } from './utils';
 
 const ScrollableLayout = styled.div<{
@@ -84,7 +84,8 @@ export const SurveyLayout = () => {
     visibleScreens,
   } = useSurveyForm();
   const { handleSubmit, getValues } = useFormContext();
-  const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
+  const { mutate: submitSurveyResponse, isLoading: isSubmittingSurveyResponse } =
+    useSubmitSurveyResponse();
 
   const handleStep = (path, data) => {
     updateFormData({ ...formData, ...data });
@@ -142,7 +143,7 @@ export const SurveyLayout = () => {
   };
 
   const onSubmit = data => {
-    if (isReviewScreen) return submitSurvey(data);
+    if (isReviewScreen) return submitSurveyResponse(data);
     return navigateNext(data);
   };
 
@@ -154,8 +155,8 @@ export const SurveyLayout = () => {
       <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
         <Paper>
           <Form onSubmit={handleClickSubmit} noValidate>
-            <Outlet context={{ onStepPrevious, isSubmittingSurvey }} />
-            {isSubmittingSurvey && (
+            <Outlet context={{ onStepPrevious, isSubmittingSurveyResponse }} />
+            {isSubmittingSurveyResponse && (
               <LoadingContainer>
                 <SpinningLoader />
               </LoadingContainer>
