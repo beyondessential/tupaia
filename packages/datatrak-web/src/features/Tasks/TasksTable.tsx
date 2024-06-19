@@ -23,6 +23,7 @@ const ActionButtonComponent = styled(Button).attrs({
 })`
   padding-inline: 1.2rem;
   padding-block: 0.4rem;
+  width: 100%;
   .MuiButton-label {
     font-size: 0.75rem;
     line-height: normal;
@@ -93,6 +94,7 @@ const COLUMNS = [
   },
   {
     Header: 'Repeating task',
+    // TODO: Update this display once RN-1341 is done
     accessor: row => (row.isRecurring ? JSON.stringify(row.repeatFrequency) : "Doesn't repeat"),
     id: 'repeating',
     filterable: true,
