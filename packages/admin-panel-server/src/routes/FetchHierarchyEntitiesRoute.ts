@@ -1,11 +1,9 @@
 /*
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
  */
 
 import { Request } from 'express';
-
 import { Route } from '@tupaia/server-boilerplate';
 
 export type FetchHierarchyEntitiesRequest = Request<
@@ -48,7 +46,7 @@ export class FetchHierarchyEntitiesRoute extends Route<FetchHierarchyEntitiesReq
 
     // If pageSize is provided, return only the first n entities
     if (pageSize) {
-      return flattenedDescendants.slice(0, parseInt(pageSize, 10));
+      return flattenedDescendants.slice(0, Number.parseInt(pageSize, 10));
     }
     return flattenedDescendants;
   }

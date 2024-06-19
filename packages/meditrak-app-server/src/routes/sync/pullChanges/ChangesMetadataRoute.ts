@@ -28,7 +28,7 @@ export class ChangesMetadataRoute extends Route<ChangesMetadataRequest> {
     >(this.req, 'count(*)');
 
     const queryResult = await query.executeOnDatabase(this.req.models.database);
-    const changeCount = parseInt(queryResult[0].count);
+    const changeCount = Number.parseInt(queryResult[0].count);
 
     return { changeCount, countries, permissionGroups };
   }

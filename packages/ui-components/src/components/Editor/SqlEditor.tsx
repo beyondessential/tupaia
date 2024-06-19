@@ -108,7 +108,7 @@ export const SqlEditor = ({
       //   "Expecting '(', 'NUMERIC', 'IDENTIFIER', 'STRING', 'EXPONENT_NU...",
       // ];
       const errors = (e as Error).message.split('\n');
-      const rowNum = parseInt(errors[0].split(' ')[4].replace(':', ''));
+      const rowNum = Number.parseInt(errors[0].split(' ')[4].replace(':', ''));
       if (errors[1].startsWith('...')) {
         errors[1] = errors[1].substring(3);
         errors[2] = errors[2].substring(3);

@@ -35,7 +35,7 @@ const CONDITION_CHECK_METHOD = {
   '=': (value: any, filterValue: ConditionValue) => {
     // Make sure we are comparing the same types
     if (typeof filterValue === 'number') {
-      return parseFloat(value) === filterValue;
+      return Number.parseFloat(value) === filterValue;
     }
     return value === filterValue;
   },
@@ -72,7 +72,7 @@ const getPresentationOptionFromCondition = (
 
           if (operator !== '=') {
             // If operator is not '=' then we need to parse the value to a number
-            parsedValue = parseFloat(parsedValue);
+            parsedValue = Number.parseFloat(parsedValue);
           }
 
           return checkConditionMethod

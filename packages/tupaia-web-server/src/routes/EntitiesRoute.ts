@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebEntitiesRequest, Entity } from '@tupaia/types';
+import { Entity, TupaiaWebEntitiesRequest } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
 import { generateFrontendExcludedFilter } from '../utils';
 
@@ -38,7 +38,7 @@ const FILTER_PARSERS = {
   },
   generational_distance: (filterVal: string) => ({
     comparator: '<=',
-    comparisonValue: parseInt(filterVal),
+    comparisonValue: Number.parseInt(filterVal),
   }),
 };
 const parseFilter = (filter: Record<string, any>): Record<string, any> =>

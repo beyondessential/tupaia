@@ -52,10 +52,12 @@ const insertColumns = (table: TransformTable, params: InsertColumnsParams, conte
   }));
 
   // Drop, then re-insert the original skipped rows
-  const rowsToDrop = Object.keys(skippedRows).map(rowIndexString => parseInt(rowIndexString));
+  const rowsToDrop = Object.keys(skippedRows).map(rowIndexString =>
+    Number.parseInt(rowIndexString),
+  );
   const rowReinserts = Object.entries(skippedRows).map(([rowIndexString, row]) => ({
     row,
-    index: parseInt(rowIndexString),
+    index: Number.parseInt(rowIndexString),
   }));
 
   return table.upsertColumns(columnUpserts).dropRows(rowsToDrop).insertRows(rowReinserts);
