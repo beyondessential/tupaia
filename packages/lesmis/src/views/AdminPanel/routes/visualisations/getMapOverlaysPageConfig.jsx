@@ -189,7 +189,7 @@ export const getMapOverlaysPageConfig = (translate, adminUrl, isBESAdmin) => {
   const deleteConfig = getDeleteConfigs(translate);
   return {
     ...mapOverlays,
-    title: translate('admin.mapOverlays'),
+    label: translate('admin.mapOverlays'),
     columns: COLUMNS,
     importConfig,
     LinksComponent: renderNewMapOverlayVizButton,
