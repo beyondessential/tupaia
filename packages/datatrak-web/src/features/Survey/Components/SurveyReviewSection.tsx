@@ -7,9 +7,8 @@ import React from 'react';
 import { QuestionType } from '@tupaia/types';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { SurveyQuestionGroup } from './SurveyQuestionGroup';
-import { formatSurveyScreenQuestions, getSurveyScreenNumber } from '../utils';
 import { useSurveyForm } from '../SurveyContext';
+import { SurveyQuestionGroup } from './SurveyQuestionGroup';
 
 const Section = styled.section`
   padding: 1rem 0;
@@ -50,7 +49,6 @@ export const SurveyReviewSection = () => {
   // split the questions into sections by screen so it's easier to read the long form
   const questionSections = visibleScreens.map(screen => {
     const { surveyScreenComponents } = screen;
-    const screenNumber = getSurveyScreenNumber(visibleScreens, screen);
     const heading = surveyScreenComponents[0].text;
     const firstQuestionIsInstruction = surveyScreenComponents[0].type === QuestionType.Instruction;
 
@@ -60,7 +58,7 @@ export const SurveyReviewSection = () => {
       : surveyScreenComponents;
     return {
       heading,
-      questions: formatSurveyScreenQuestions(questionsToDisplay, screenNumber),
+      questions: questionsToDisplay,
     };
   });
   return (

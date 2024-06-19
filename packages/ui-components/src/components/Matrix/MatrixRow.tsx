@@ -271,13 +271,18 @@ const RowHeaderCell = ({
  */
 export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const { children, title, onClick } = row;
-  const { columns, expandedRows, disableExpand = false } = useContext(MatrixContext);
+  const { columns, expandedRows, disableExpand = false, searchFilters } = useContext(MatrixContext);
   const flattenedColumns = getFlattenedColumns(columns);
 
   const isExpanded = expandedRows.includes(title);
   const depth = parents.length;
 
-  const isCategory = children ? children.length > 0 : false;
+  const getIsCategory = () => {
+    if (!!searchFilters) return !!children;
+    return children ? children.length > 0 : false;
+  };
+
+  const isCategory = getIsCategory();
 
   const getClassNames = () => {
     const isHighlighted = isExpanded || depth > 0 || (isCategory && disableExpand);

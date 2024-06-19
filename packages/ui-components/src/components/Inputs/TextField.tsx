@@ -123,7 +123,7 @@ export const TextField = ({
   label = '',
   tooltip,
   ...props
-}: TextFieldProps & {
+}: Partial<TextFieldProps> & {
   tooltip?: string;
 }) => (
   <StyledTextField

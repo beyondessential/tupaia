@@ -84,11 +84,7 @@ export const SurveyContext = ({ children }) => {
     initialiseFormData();
   }, [surveyCode]);
 
-  const displayQuestions = getDisplayQuestions(
-    activeScreen,
-    flattenedScreenComponents,
-    screenNumber,
-  );
+  const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
   const screenHeader = activeScreen?.[0]?.text;
   const screenDetail = activeScreen?.[0]?.detail;
 

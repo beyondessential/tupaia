@@ -5,6 +5,7 @@
 
 import { saveAs } from 'file-saver';
 import { parse } from 'content-disposition-header';
+import { logout } from '../authentication';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 

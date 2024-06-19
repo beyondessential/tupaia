@@ -76,10 +76,6 @@ const SurveyMenuItem = styled(ListItem).attrs({
   }
 `;
 
-const SurveyScreenNumber = styled.span`
-  width: 2rem;
-`;
-
 const SurveyScreenTitle = styled.span`
   width: 100%;
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
@@ -120,8 +116,8 @@ export const SurveySideMenu = () => {
     const screens = visibleScreens?.map(screen => {
       const { surveyScreenComponents, id } = screen;
       const { text } = surveyScreenComponents[0];
-      const visibleScreenNumber = getSurveyScreenNumber(visibleScreens, screen);
-      return { id, text, screenNumber: visibleScreenNumber };
+      const surveyScreenNum = getSurveyScreenNumber(visibleScreens, screen);
+      return { id, text, screenNumber: surveyScreenNum };
     });
     return screens;
   };
@@ -151,9 +147,6 @@ export const SurveySideMenu = () => {
                   onClick={onChangeScreen}
                   $isInstructionOnly={!screen.screenNumber}
                 >
-                  {screen.screenNumber && (
-                    <SurveyScreenNumber>{screen.screenNumber}:</SurveyScreenNumber>
-                  )}
                   <SurveyScreenTitle>{screen.text}</SurveyScreenTitle>
                 </SurveyMenuItem>
               </li>
