@@ -446,10 +446,9 @@ export const constructForSingle = (models, recordType) => {
         survey_id: [constructRecordExistsWithId(models.survey)],
         assignee_id: [constructIsEmptyOr(constructRecordExistsWithId(models.user))],
         due_date: [hasContent],
-        is_recurring: [hasContent, isBoolean],
         repeat_frequency: [
-          (value, { is_recurring: isRecurring }) => {
-            if (isRecurring && !value) {
+          (value, { status }) => {
+            if (status === 'repeating' && !value) {
               throw new Error('Repeat frequency is required for recurring tasks');
             }
             return true;
