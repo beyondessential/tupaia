@@ -4,6 +4,7 @@
  */
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { FormLabelProps } from '@material-ui/core';
 import { Country } from '@tupaia/types';
 import { ListItemType, SelectList, SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
@@ -30,12 +31,18 @@ interface GroupedSurveyListProps {
   setSelectedSurvey: (survey: ListItemType | null) => void;
   selectedSurvey: ListItemType | null;
   selectedCountry?: Country | null;
+  label?: string;
+  labelProps?: FormLabelProps & {
+    component?: React.ElementType;
+  };
 }
 
 export const GroupedSurveyList = ({
   setSelectedSurvey,
   selectedSurvey,
   selectedCountry,
+  label,
+  labelProps,
 }: GroupedSurveyListProps) => {
   const user = useCurrentUserContext();
   const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.name);
@@ -88,7 +95,12 @@ export const GroupedSurveyList = ({
   }, [JSON.stringify(surveys)]);
   return (
     <ListWrapper>
-      <SelectList items={groupedSurveys} onSelect={setSelectedSurvey} />
+      <SelectList
+        items={groupedSurveys}
+        onSelect={setSelectedSurvey}
+        label={label}
+        labelProps={labelProps}
+      />
     </ListWrapper>
   );
 };
