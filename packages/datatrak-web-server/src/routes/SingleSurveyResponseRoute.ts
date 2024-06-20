@@ -65,6 +65,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
 
     const { user_id: userId, 'country.code': countryCode, ...response } = surveyResponse;
 
+    // If the user is not the owner of the survey response, they should not be able to view the survey response unless they are a BES admin or have access to the admin panel
     if (userId !== id) {
       assertCanViewSurveyResponse(accessPolicy, countryCode);
     }
