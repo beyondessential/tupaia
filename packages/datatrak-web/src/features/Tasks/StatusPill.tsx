@@ -6,6 +6,7 @@
 import { TaskStatus } from '@tupaia/types';
 import React from 'react';
 import styled from 'styled-components';
+import { theme } from '../../theme';
 
 const Pill = styled.span<{
   $color: string;
@@ -21,20 +22,10 @@ const Pill = styled.span<{
   }
 `;
 
-export const REPEATING_STATUS = 'repeating';
-
 export const STATUS_VALUES = {
   [TaskStatus.to_do]: {
     label: 'To do',
     color: '#1172D1',
-  },
-  [TaskStatus.overdue]: {
-    label: 'Overdue',
-    color: '#F76853',
-  },
-  [REPEATING_STATUS]: {
-    label: 'Repeating',
-    color: '#4101C9',
   },
   [TaskStatus.completed]: {
     label: 'Complete',
@@ -42,11 +33,24 @@ export const STATUS_VALUES = {
   },
   [TaskStatus.cancelled]: {
     label: 'Cancelled',
-    color: '#898989',
+    color: theme.palette.text.secondary,
+  },
+  [TaskStatus.overdue]: {
+    label: 'Overdue',
+    color: theme.palette.error.main,
+  },
+  [TaskStatus.repeating]: {
+    label: 'Repeating',
+    color: '#4101C9',
   },
 };
 
 export const StatusPill = ({ status }) => {
-  const { label, color } = STATUS_VALUES[status];
+  const statusInfo = STATUS_VALUES[status];
+  // If the status is not found, return null. This should not happen in practice, but it's a good idea to handle it.
+  if (!statusInfo) {
+    return null;
+  }
+  const { label, color } = statusInfo;
   return <Pill $color={color}>{label}</Pill>;
 };

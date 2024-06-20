@@ -87796,9 +87796,6 @@ export const TaskResponseSchema = {
 		"id": {
 			"type": "string"
 		},
-		"isRecurring": {
-			"type": "boolean"
-		},
 		"repeatFrequency": {
 			"type": "object",
 			"additionalProperties": false
@@ -87808,6 +87805,7 @@ export const TaskResponseSchema = {
 				"cancelled",
 				"completed",
 				"overdue",
+				"repeating",
 				"to_do"
 			],
 			"type": "string"
@@ -87877,7 +87875,6 @@ export const TaskResponseSchema = {
 		"entity",
 		"entityId",
 		"id",
-		"isRecurring",
 		"repeatFrequency",
 		"status",
 		"survey",

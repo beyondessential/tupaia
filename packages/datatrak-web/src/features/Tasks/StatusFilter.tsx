@@ -12,6 +12,11 @@ const PlaceholderText = styled.span`
   color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
+const PlaceholderOption = styled(MuiMenuItem)`
+  font-size: 0.75rem;
+  padding-inline: 0.8rem;
+`;
+
 const MenuItem = styled(MuiMenuItem)`
   padding-inline: 0.5rem;
   padding-block: 0.2rem;
@@ -24,6 +29,7 @@ interface StatusFilterProps {
 }
 
 export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
+  // TODO: Filter/include cancelled and completed statuses as part of RN_1343
   const options = Object.entries(STATUS_VALUES).map(([value, { label }]) => ({
     value,
     label,
@@ -45,7 +51,8 @@ export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
         return <StatusPill status={value as string} />;
       }}
     >
-      <MenuItem value="">All</MenuItem>
+      {/** Include a placeholder option so that the user can clear the status filter */}
+      <PlaceholderOption value="">Show all</PlaceholderOption>
       {options.map(option => (
         <MenuItem key={option.value} value={option.value}>
           <StatusPill status={option.value} />

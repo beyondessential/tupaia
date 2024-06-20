@@ -28,7 +28,8 @@ export const ProjectSelectModal = ({ onClose }: ModalProps) => {
   const [requestAccessProjectCode, setRequestAccessProjectCode] = useState<string | null>(null);
 
   return (
-    <Modal open onClose={onClose} PaperComponent={Wrapper}>
+    // Disable the portal so it displays over any other content and we don't get z-index issues
+    <Modal open onClose={onClose} PaperComponent={Wrapper} disablePortal={false}>
       {requestAccessProjectCode ? (
         <RequestProjectAccess
           projectCode={requestAccessProjectCode}

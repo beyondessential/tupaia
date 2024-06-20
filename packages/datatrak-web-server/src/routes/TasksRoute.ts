@@ -7,7 +7,7 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
-import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../types';
 
 export type TasksRequest = Request<
@@ -27,7 +27,6 @@ const FIELDS = [
   'assignee_id',
   'status',
   'due_date',
-  'is_recurring',
   'repeat_frequency',
   'survey_id',
   'entity_id',
@@ -63,12 +62,6 @@ const queryForCount = (filter: FormattedFilters, models: DatatrakWebServerModelR
   });
 };
 
-const getStatusFilter = (value: string) => {
-  if (value === 'repeating') return { is_recurring: 'true' };
-  if (value === TaskStatus.to_do) return { status: value, is_recurring: 'false' };
-  return { status: value };
-};
-
 const formatFilters = (filters: Record<string, string>[]) => {
   let formattedFilters: FormattedFilters = {};
 
@@ -79,12 +72,7 @@ const formatFilters = (filters: Record<string, string>[]) => {
       return;
     }
 
-    if (id === 'status') {
-      Object.assign(formattedFilters, getStatusFilter(value));
-      return;
-    }
-
-    if (id === 'due_date') {
+    if (id === 'status' || id === 'due_date') {
       formattedFilters[id] = value;
       return;
     }

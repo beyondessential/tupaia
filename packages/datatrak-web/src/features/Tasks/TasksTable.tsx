@@ -13,7 +13,7 @@ import { useCurrentUserContext, useTasks } from '../../api';
 import { displayDate } from '../../utils';
 import { ROUTES } from '../../constants';
 import { StatusFilter } from './StatusFilter';
-import { REPEATING_STATUS, StatusPill } from './StatusPill';
+import { StatusPill } from './StatusPill';
 import { DueDateFilter } from './DueDateFilter';
 
 type Task = DatatrakWebTasksRequest.ResBody[0];
@@ -31,6 +31,7 @@ const ActionButtonComponent = styled(Button).attrs({
   }
   .cell-content:has(&) {
     padding-block: 0.2rem;
+    padding-inline-start: 1.5rem;
   }
 `;
 
@@ -80,6 +81,7 @@ const ActionButton = (task: Task) => {
 
 const COLUMNS = [
   {
+    // only the survey name can be resized
     Header: 'Survey',
     accessor: (row: any) => row.survey.name,
     id: 'survey.name',
@@ -90,19 +92,23 @@ const COLUMNS = [
     accessor: (row: any) => row.entity.name,
     id: 'entity.name',
     filterable: true,
+    disableResizing: true,
   },
   {
     Header: 'Assignee',
     accessor: row => row.assignee?.name ?? 'Unassigned',
     id: 'assignee_name',
     filterable: true,
+    disableResizing: true,
   },
   {
     Header: 'Repeating task',
-    // TODO: Update this display once RN-1341 is done
-    accessor: row => (row.isRecurring ? JSON.stringify(row.repeatFrequency) : "Doesn't repeat"),
+    // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
+    accessor: row =>
+      row.status === TaskStatus.repeating ? JSON.stringify(row.repeatFrequency) : "Doesn't repeat",
     id: 'repeat_frequency',
     filterable: true,
+    disableResizing: true,
   },
   {
     Header: 'Due Date',
@@ -110,19 +116,16 @@ const COLUMNS = [
     id: 'due_date',
     filterable: true,
     Filter: DueDateFilter,
+    disableResizing: true,
   },
   {
     Header: 'Status',
     filterable: true,
-    accessor: row => {
-      if (row.isRecurring) {
-        return REPEATING_STATUS;
-      }
-      return row.status;
-    },
+    accessor: 'status',
     id: 'status',
     Cell: ({ value }) => <StatusPill status={value} />,
     Filter: StatusFilter,
+    disableResizing: true,
   },
   {
     Header: '',
@@ -130,6 +133,7 @@ const COLUMNS = [
     id: 'actions',
     filterable: false,
     disableSortBy: true,
+    disableResizing: true,
   },
 ];
 
