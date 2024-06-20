@@ -16,7 +16,7 @@ const Pill = styled.span<{
   padding-inline: 0.7rem;
   padding-block: 0.3rem;
   border-radius: 20px;
-  div:has(&) {
+  .cell-content > div:has(&) {
     overflow: visible;
   }
 `;

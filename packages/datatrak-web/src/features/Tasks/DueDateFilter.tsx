@@ -17,6 +17,9 @@ const Wrapper = styled.div`
   .MuiInputAdornment-positionEnd {
     margin-inline-start: 0;
   }
+  .MuiOutlinedInput-adornedEnd {
+    padding-inline-end: 0;
+  }
 `;
 
 const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';

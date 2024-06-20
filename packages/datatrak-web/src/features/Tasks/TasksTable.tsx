@@ -38,8 +38,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  border-radius: 3px;
+  .MuiTableContainer-root {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
+    border-radius: 3px;
+  }
 `;
 
 const ActionButton = (task: Task) => {
