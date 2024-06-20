@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { MenuItem as MuiMenuItem, Select } from '@material-ui/core';
-import { STATUS_VALUES, StatusPill } from './StatusPill';
+import { STATUS_VALUES, StatusPill } from '../StatusPill';
 
 const PlaceholderText = styled.span`
   color: ${({ theme }) => theme.palette.text.secondary};

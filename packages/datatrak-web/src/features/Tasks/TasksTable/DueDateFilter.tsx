@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React, { useEffect, useState } from 'react';
-import { DatePicker } from '@tupaia/ui-components';
 import { format, isValid } from 'date-fns';
 import styled from 'styled-components';
+import { DatePicker } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   .MuiButtonBase-root.MuiIconButton-root {

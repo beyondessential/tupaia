@@ -8,15 +8,15 @@ import styled from 'styled-components';
 import { generatePath, useSearchParams, Link, useLocation } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
 import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
-import { Button } from '../../components';
-import { useCurrentUserContext, useTasks } from '../../api';
-import { displayDate } from '../../utils';
-import { ROUTES } from '../../constants';
+import { Button } from '../../../components';
+import { useCurrentUserContext, useTasks } from '../../../api';
+import { displayDate } from '../../../utils';
+import { ROUTES } from '../../../constants';
+import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
-import { StatusPill } from './StatusPill';
 import { DueDateFilter } from './DueDateFilter';
 
-type Task = DatatrakWebTasksRequest.ResBody[0];
+type Task = DatatrakWebTasksRequest.ResBody['tasks'][0];
 
 const ActionButtonComponent = styled(Button).attrs({
   color: 'primary',
