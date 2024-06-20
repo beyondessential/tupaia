@@ -11,6 +11,7 @@
           { "/": "/reset-password/*", "exclude": true },
           { "/": "/verify-email/*", "exclude": true },
           { "/": "/verify-email-resend/*", "exclude": true },
+          { "/": "/tasks/*", "exclude": true },
           { "/": "/*" }
         ]
       }
