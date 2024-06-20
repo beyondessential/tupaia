@@ -105,7 +105,7 @@ const COLUMNS = [
     Header: 'Repeating task',
     // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
     accessor: row =>
-      row.status === TaskStatus.repeating ? JSON.stringify(row.repeatFrequency) : "Doesn't repeat",
+      row.status === TaskStatus.repeating ? JSON.stringify(row.repeatFrequency) : 'Doesn’t repeat',
     id: 'repeat_frequency',
     filterable: true,
     disableResizing: true,
@@ -225,7 +225,7 @@ export const TasksTable = () => {
         filters={filters}
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
-        noDataMessage="No tasks to display Click the ‘+ Create task’ button above to add a new task."
+        noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
       />
     </Container>

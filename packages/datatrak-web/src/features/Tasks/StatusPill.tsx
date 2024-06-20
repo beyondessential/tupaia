@@ -45,7 +45,7 @@ export const STATUS_VALUES = {
   },
 };
 
-export const StatusPill = ({ status }) => {
+export const StatusPill = ({ status }: { status: TaskStatus }) => {
   const statusInfo = STATUS_VALUES[status];
   // If the status is not found, return null. This should not happen in practice, but it's a good idea to handle it.
   if (!statusInfo) {
