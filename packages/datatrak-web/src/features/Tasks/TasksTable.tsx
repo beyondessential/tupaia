@@ -14,6 +14,7 @@ import { displayDate } from '../../utils';
 import { ROUTES } from '../../constants';
 import { StatusFilter } from './StatusFilter';
 import { REPEATING_STATUS, StatusPill } from './StatusPill';
+import { DueDateFilter } from './DueDateFilter';
 
 type Task = DatatrakWebTasksRequest.ResBody[0];
 
@@ -102,8 +103,9 @@ const COLUMNS = [
   {
     Header: 'Due Date',
     accessor: row => displayDate(row.dueDate),
-    id: 'dueDate',
+    id: 'due_date',
     filterable: true,
+    Filter: DueDateFilter,
   },
   {
     Header: 'Status',
@@ -147,9 +149,10 @@ const useTasksTable = () => {
   };
 
   const updateFilters = newFilters => {
-    const nonEmptyFilters = newFilters.filter(({ value }) => value !== '');
+    const nonEmptyFilters = newFilters.filter(({ value }) => !!value);
     if (nonEmptyFilters.length === 0) {
-      setSearchParams({ filters: '' });
+      searchParams.delete('filters');
+      setSearchParams(searchParams);
       return;
     }
     setSearchParams({ filters: JSON.stringify(nonEmptyFilters) });

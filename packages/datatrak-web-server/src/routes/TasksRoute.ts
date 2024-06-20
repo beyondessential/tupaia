@@ -7,7 +7,7 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
-import { RECORDS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../types';
 
 export type TasksRequest = Request<
@@ -81,6 +81,11 @@ const formatFilters = (filters: Record<string, string>[]) => {
 
     if (id === 'status') {
       Object.assign(formattedFilters, getStatusFilter(value));
+      return;
+    }
+
+    if (id === 'due_date') {
+      formattedFilters[id] = value;
       return;
     }
 
