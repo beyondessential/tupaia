@@ -2,9 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Search } from '@material-ui/icons';
+import { StandardTextFieldProps } from '@material-ui/core';
 import { ColumnInstance } from 'react-table';
 import { TextField } from '../Inputs';
 import { HeaderDisplayCell, HeaderDisplayCellProps } from './Cells';
@@ -47,13 +48,7 @@ const FilterWrapper = styled.div`
   }
 `;
 
-export const DefaultFilter = styled(TextField).attrs(props => ({
-  InputProps: {
-    ...props.InputProps,
-    startAdornment: <Search />,
-  },
-  placeholder: 'Search...',
-}))`
+const DefaultFilterInput = styled(TextField)`
   margin-block-end: 0;
   font-size: inherit;
   width: 100%;
@@ -73,6 +68,63 @@ export const DefaultFilter = styled(TextField).attrs(props => ({
     color: ${({ theme }) => theme.palette.divider};
   }
 `;
+
+// see https://github.com/tannerlinsley/react-query/issues/293
+// see https://usehooks.com/useDebounce/
+export function useDebounce(value: string, delay: number) {
+  // State and setters for debounced value
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(
+    () => {
+      // Update debounced value after delay
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+
+      // Cancel the timeout if value changes (also on delay change or unmount)
+      // This is how we prevent debounced value from updating if value is changed ...
+      // .. within the delay period. Timeout gets cleared and restarted.
+      return () => {
+        clearTimeout(handler);
+      };
+    },
+    [value, delay], // Only re-call effect if value or delay changes
+  );
+
+  return debouncedValue;
+}
+
+interface DefaultFilterProps extends Omit<StandardTextFieldProps, 'onChange' | 'value'> {
+  value?: string | null;
+  onChange: (value: string) => void;
+}
+
+const DefaultFilter = ({ value, onChange, ...props }: DefaultFilterProps) => {
+  const [stateValue, setStateValue] = useState<string>(value ?? '');
+  const debouncedSearchValue = useDebounce(stateValue, 500);
+
+  useEffect(() => {
+    if (debouncedSearchValue === value) return;
+    onChange(debouncedSearchValue);
+  }, [debouncedSearchValue]);
+
+  useEffect(() => {
+    if (value === stateValue) return;
+    setStateValue(value ?? '');
+  }, [value]);
+  return (
+    <DefaultFilterInput
+      {...props}
+      value={stateValue}
+      onChange={e => setStateValue(e.target.value)}
+      InputProps={{
+        startAdornment: <Search />,
+      }}
+      placeholder="Search..."
+    />
+  );
+};
 
 export type Filters = Record<string, any>[];
 
@@ -109,7 +161,7 @@ export const FilterCell = ({ column, filters, onChangeFilters, ...props }: Filte
         ) : (
           <DefaultFilter
             value={existingFilter?.value || ''}
-            onChange={e => handleUpdate(e.target.value)}
+            onChange={handleUpdate}
             aria-label={`Search ${column.Header}`}
           />
         )}
