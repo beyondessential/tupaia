@@ -106,7 +106,6 @@ describe('Permissions checker for GETTasks', async () => {
         survey_id: surveys[0].survey.id,
         entity_id: facilities[0].id,
         assignee_id: assignees[0].id,
-        is_recurring: false,
         due_date: dueDate,
       },
       {
@@ -114,7 +113,6 @@ describe('Permissions checker for GETTasks', async () => {
         survey_id: surveys[1].survey.id,
         entity_id: facilities[1].id,
         assignee_id: assignees[1].id,
-        is_recurring: false,
         due_date: dueDate,
       },
     ];

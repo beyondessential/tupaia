@@ -99,7 +99,6 @@ describe('Permissions checker for CreateTask', async () => {
           entity_id: facilities[0].id,
           survey_id: surveys[0].survey.id,
           assignee_id: assignee.id,
-          is_recurring: false,
           due_date: new Date('2021-12-31'),
         },
       });
@@ -114,7 +113,6 @@ describe('Permissions checker for CreateTask', async () => {
           entity_id: facilities[0].id,
           survey_id: surveys[1].survey.id,
           assignee_id: assignee.id,
-          is_recurring: false,
           due_date: new Date('2021-12-31'),
         },
       });
@@ -128,7 +126,6 @@ describe('Permissions checker for CreateTask', async () => {
           entity_id: facilities[1].id,
           survey_id: surveys[1].survey.id,
           assignee_id: assignee.id,
-          is_recurring: false,
           due_date: new Date('2021-12-31'),
         },
       });
@@ -142,7 +139,6 @@ describe('Permissions checker for CreateTask', async () => {
           entity_id: facilities[0].id,
           survey_id: surveys[0].survey.id,
           assignee_id: assignee.id,
-          is_recurring: false,
           due_date: new Date('2021-12-31'),
         },
       });
