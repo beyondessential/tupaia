@@ -6,11 +6,13 @@ import { useParams } from 'react-router-dom';
 import { SurveyScreenComponentConfig } from '@tupaia/types';
 import { useSurveyForm } from '../../Survey';
 
-export const useEntityBaseFilters = (config: SurveyScreenComponentConfig) => {
+export const useEntityBaseFilters = (config?: SurveyScreenComponentConfig | null) => {
   const { getAnswerByQuestionId } = useSurveyForm();
   const { countryCode } = useParams();
 
   const filters = { countryCode } as Record<string, string | string[]>;
+
+  if (!config) return filters;
 
   const filter = config?.entity?.filter;
   if (!filter) {

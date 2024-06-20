@@ -60,7 +60,7 @@ interface SelectListProps {
   label?: string;
   ListItem?: React.ElementType;
   variant?: 'fullPage' | 'inline';
-  labelProps: FormLabelProps & {
+  labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
 }

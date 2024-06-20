@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
-import { SelectList } from '../../../components';
+import { SelectList } from '../../components';
 
 const ListWrapper = styled.div`
   display: flex;
