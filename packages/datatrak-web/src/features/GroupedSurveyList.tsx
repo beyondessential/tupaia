@@ -2,10 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { Country } from '@tupaia/types';
 import { ListItemType, SelectList, SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
+import { useCurrentUserContext, useProjectSurveys } from '../api';
 
 const ListWrapper = styled.div`
   max-height: 35rem;
@@ -25,16 +27,18 @@ const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
 };
 
 interface GroupedSurveyListProps {
-  surveys?: Survey[];
-  setSelectedSurvey: (survey: ListItemType) => void;
+  setSelectedSurvey: (survey: ListItemType | null) => void;
   selectedSurvey: ListItemType | null;
+  selectedCountry?: Country | null;
 }
 
 export const GroupedSurveyList = ({
-  surveys,
   setSelectedSurvey,
   selectedSurvey,
+  selectedCountry,
 }: GroupedSurveyListProps) => {
+  const user = useCurrentUserContext();
+  const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.name);
   const groupedSurveys =
     surveys
       ?.reduce((acc: ListItemType[], survey: Survey) => {
@@ -75,6 +79,13 @@ export const GroupedSurveyList = ({
         });
       }, [])
       ?.sort(sortAlphanumerically) ?? [];
+
+  useEffect(() => {
+    // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
+    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey.value)) {
+      setSelectedSurvey(null);
+    }
+  }, [JSON.stringify(surveys)]);
   return (
     <ListWrapper>
       <SelectList items={groupedSurveys} onSelect={setSelectedSurvey} />

@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
@@ -96,7 +96,7 @@ export const SurveySelectPage = () => {
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
   const user = useCurrentUserContext();
 
-  const { data: surveys, isLoading } = useProjectSurveys(user.projectId, selectedCountry?.name);
+  const { isLoading } = useProjectSurveys(user.projectId, selectedCountry?.name);
 
   const handleSelectSurvey = () => {
     if (countryHasUpdated) {
@@ -104,13 +104,6 @@ export const SurveySelectPage = () => {
       updateUser({ countryId: selectedCountry?.id });
     } else navigateToSurvey();
   };
-
-  useEffect(() => {
-    // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
-    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey.value)) {
-      setSelectedSurvey(null);
-    }
-  }, [JSON.stringify(surveys)]);
 
   const showLoader = isLoading || isLoadingCountries || isUpdatingUser;
   return (
@@ -132,9 +125,9 @@ export const SurveySelectPage = () => {
         </LoadingContainer>
       ) : (
         <GroupedSurveyList
-          surveys={surveys}
           setSelectedSurvey={setSelectedSurvey}
           selectedSurvey={selectedSurvey}
+          selectedCountry={selectedCountry}
         />
       )}
       <DialogActions>
