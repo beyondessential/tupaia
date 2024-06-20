@@ -7,12 +7,12 @@ import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useEditUser } from '../../api/mutations';
-import { SelectList, ListItemType, Button, SurveyFolderIcon, SurveyIcon } from '../../components';
-import { Survey } from '../../types';
-import { useCurrentUserContext, useProjectSurveys } from '../../api';
-import { HEADER_HEIGHT } from '../../constants';
-import { CountrySelector, useUserCountries } from '../../features';
+import { useEditUser } from '../api/mutations';
+import { SelectList, ListItemType, Button, SurveyFolderIcon, SurveyIcon } from '../components';
+import { Survey } from '../types';
+import { useCurrentUserContext, useProjectSurveys } from '../api';
+import { HEADER_HEIGHT } from '../constants';
+import { CountrySelector, useUserCountries } from '../features';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
