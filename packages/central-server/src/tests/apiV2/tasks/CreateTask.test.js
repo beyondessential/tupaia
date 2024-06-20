@@ -45,6 +45,13 @@ describe('Permissions checker for CreateTask', async () => {
     last_name: 'Pan',
   };
 
+  const BASE_TASK = {
+    assignee_id: assignee.id,
+    repeat_frequency: '{}',
+    due_date: new Date('2021-12-31'),
+    status: 'to_do',
+  };
+
   before(async () => {
     const { country: tongaCountry } = await findOrCreateDummyCountryEntity(models, {
       code: 'TO',
@@ -96,37 +103,39 @@ describe('Permissions checker for CreateTask', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.post('tasks', {
         body: {
+          ...BASE_TASK,
           entity_id: facilities[0].id,
           survey_id: surveys[0].survey.id,
-          assignee_id: assignee.id,
-          due_date: new Date('2021-12-31'),
         },
       });
 
       expect(result.message).to.equal('Successfully created tasks');
     });
 
-    it('Sufficient permissions: Allows a user to create a task for a survey and entity they have access to', async () => {
+    it('Sufficient permissions: Allows a user to create a task for a survey and entity they have access to, and apply the assignee name to the task', async () => {
       await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.post('tasks', {
-        body: {
-          entity_id: facilities[0].id,
-          survey_id: surveys[1].survey.id,
-          assignee_id: assignee.id,
-          due_date: new Date('2021-12-31'),
-        },
+      const taskInput = {
+        ...BASE_TASK,
+        entity_id: facilities[0].id,
+        survey_id: surveys[1].survey.id,
+      };
+      await app.post('tasks', {
+        body: taskInput,
       });
-      expect(result.message).to.equal('Successfully created tasks');
+      const [task] = await models.task.find({
+        entity_id: taskInput.entity_id,
+        survey_id: taskInput.survey_id,
+      });
+      expect(task.assignee_name).to.equal('Peter Pan');
     });
 
     it('Insufficient permissions: Does not allow user to create a task for an entity they do not have access to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.post('tasks', {
         body: {
+          ...BASE_TASK,
           entity_id: facilities[1].id,
           survey_id: surveys[1].survey.id,
-          assignee_id: assignee.id,
-          due_date: new Date('2021-12-31'),
         },
       });
       expect(result).to.have.keys('error');
@@ -136,10 +145,9 @@ describe('Permissions checker for CreateTask', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.post('tasks', {
         body: {
+          ...BASE_TASK,
           entity_id: facilities[0].id,
           survey_id: surveys[0].survey.id,
-          assignee_id: assignee.id,
-          due_date: new Date('2021-12-31'),
         },
       });
       expect(result).to.have.keys('error');
