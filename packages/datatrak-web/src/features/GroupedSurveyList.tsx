@@ -24,15 +24,17 @@ const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
   });
 };
 
+interface GroupedSurveyListProps {
+  surveys?: Survey[];
+  setSelectedSurvey: (survey: ListItemType) => void;
+  selectedSurvey: ListItemType | null;
+}
+
 export const GroupedSurveyList = ({
   surveys,
   setSelectedSurvey,
   selectedSurvey,
-}: {
-  surveys?: Survey[];
-  setSelectedSurvey: (survey: ListItemType) => void;
-  selectedSurvey: ListItemType | null;
-}) => {
+}: GroupedSurveyListProps) => {
   const groupedSurveys =
     surveys
       ?.reduce((acc: ListItemType[], survey: Survey) => {
