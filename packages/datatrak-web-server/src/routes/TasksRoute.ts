@@ -41,7 +41,10 @@ type SingleTask = Task & {
   'entity.country_code': string;
 };
 
-type FormattedFilter = string | { comparator: string; comparisonValue: string } | TaskStatus;
+type FormattedFilter =
+  | string
+  | { comparator: string; comparisonValue: string; castAs?: string }
+  | TaskStatus;
 
 type FormattedFilters = Record<string, FormattedFilter>;
 
@@ -74,6 +77,15 @@ const formatFilters = (filters: Record<string, string>[]) => {
 
     if (id === 'status' || id === 'due_date') {
       formattedFilters[id] = value;
+      return;
+    }
+
+    if (id === 'repeat_frequency') {
+      formattedFilters[id] = {
+        comparator: 'ilike',
+        comparisonValue: `${value}%`,
+        castAs: 'text',
+      };
       return;
     }
 

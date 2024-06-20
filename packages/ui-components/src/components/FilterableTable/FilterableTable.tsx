@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  Typography,
 } from '@material-ui/core';
 import styled from 'styled-components';
 import { Column, useFlexLayout, useResizeColumns, useTable, SortingRule } from 'react-table';
@@ -41,6 +42,12 @@ const TableContainer = styled(MuiTableContainer)`
   }
 `;
 
+const NoDataMessage = styled.div`
+  width: 100%;
+  text-align: center;
+  padding-block: 2.5rem;
+`;
+
 type SortBy = {
   id: string;
   desc: boolean;
@@ -57,12 +64,10 @@ interface FilterableTableProps {
   onChangePage: (pageIndex: number) => void;
   onChangePageSize: (pageSize: number) => void;
   onChangeSorting: (sorting: SortingRule<Record<string, any>>[]) => void;
-  refreshData: () => void;
-  isLoading: boolean;
-  errorMessage: string;
   onChangeFilters: FilterCellProps['onChangeFilters'];
   filters?: Filters;
   totalRecords: number;
+  noDataMessage?: string;
 }
 
 export const FilterableTable = ({
@@ -79,6 +84,7 @@ export const FilterableTable = ({
   onChangeFilters,
   filters = [],
   totalRecords,
+  noDataMessage,
 }: FilterableTableProps) => {
   const memoisedData = useMemo(() => data ?? [], [data]);
   const {
@@ -209,6 +215,11 @@ export const FilterableTable = ({
             })}
           </TableBody>
         </Table>
+        {rows.length === 0 && noDataMessage && (
+          <NoDataMessage>
+            <Typography variant="body2">{noDataMessage}</Typography>
+          </NoDataMessage>
+        )}
       </TableContainer>
       <Pagination
         page={pageIndex}

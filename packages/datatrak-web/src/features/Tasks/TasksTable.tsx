@@ -223,6 +223,7 @@ export const TasksTable = () => {
         filters={filters}
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
+        noDataMessage="No tasks to display Click the ‘+ Create task’ button above to add a new task."
       />
     </Container>
   );

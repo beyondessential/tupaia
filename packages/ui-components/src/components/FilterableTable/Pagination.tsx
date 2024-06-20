@@ -39,17 +39,16 @@ export const Pagination = ({
   onChangePageSize,
   totalRecords,
 }: PaginationProps) => {
-  if (!totalRecords) return null;
-
   return (
     <Wrapper>
       <UIPagination
         page={page}
-        pageCount={pageCount}
+        pageCount={pageCount || 1}
         onChangePage={onChangePage}
         pageSize={pageSize}
         setPageSize={onChangePageSize}
         totalRecords={totalRecords}
+        alwaysDisplay
       />
     </Wrapper>
   );
