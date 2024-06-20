@@ -12,8 +12,7 @@ import { SelectList, ListItemType, Button, SurveyFolderIcon, SurveyIcon } from '
 import { Survey } from '../../types';
 import { useCurrentUserContext, useProjectSurveys } from '../../api';
 import { HEADER_HEIGHT } from '../../constants';
-import { SurveyCountrySelector } from './SurveyCountrySelector';
-import { useUserCountries } from './useUserCountries';
+import { CountrySelector, useUserCountries } from '../../features';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -181,7 +180,7 @@ export const SurveySelectPage = () => {
           <Typography variant="h1">Select survey</Typography>
           <Subheader>Select a survey from the list below</Subheader>
         </div>
-        <SurveyCountrySelector
+        <CountrySelector
           countries={countries}
           selectedCountry={selectedCountry}
           onChangeCountry={updateSelectedCountry}
