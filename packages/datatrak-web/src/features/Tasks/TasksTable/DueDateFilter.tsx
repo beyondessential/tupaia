@@ -62,11 +62,11 @@ export const DueDateFilter = ({ filter, onChange }: DueDateFilterProps) => {
       .map(({ type, value }) => {
         switch (type) {
           case 'year':
-            return 'YYYY';
+            return 'yyyy';
           case 'month':
-            return 'MM';
+            return 'mm';
           case 'day':
-            return 'DD';
+            return 'dd';
           default:
             return value;
         }

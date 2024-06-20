@@ -65,18 +65,15 @@ const queryForCount = (filter: FormattedFilters, models: DatatrakWebServerModelR
   });
 };
 
+const EQUALITY_FILTERS = ['status', 'due_date', 'survey.project_id'];
+
 const formatFilters = (filters: Record<string, string>[]) => {
   let formattedFilters: FormattedFilters = {};
 
   filters.forEach(({ id, value }) => {
     if (value === '' || value === undefined || value === null) return;
-    if (id === 'survey.project_id') {
+    if (EQUALITY_FILTERS.includes(id)) {
       formattedFilters['survey.project_id'] = value;
-      return;
-    }
-
-    if (id === 'status' || id === 'due_date') {
-      formattedFilters[id] = value;
       return;
     }
 
