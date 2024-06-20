@@ -38,8 +38,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  border: 1px solid ${({ theme }) => theme.palette.divider};
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  border-radius: 3px;
   .MuiTableContainer-root {
-    border: 1px solid ${({ theme }) => theme.palette.divider};
     border-radius: 3px;
   }
 `;
@@ -99,7 +101,7 @@ const COLUMNS = [
     Header: 'Repeating task',
     // TODO: Update this display once RN-1341 is done
     accessor: row => (row.isRecurring ? JSON.stringify(row.repeatFrequency) : "Doesn't repeat"),
-    id: 'repeating',
+    id: 'repeat_frequency',
     filterable: true,
   },
   {
@@ -144,7 +146,7 @@ const useTasksTable = () => {
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
-  const { data } = useTasks(projectId, pageSize, page, filters);
+  const { data } = useTasks(projectId, pageSize, page, filters, sortBy);
 
   const updateSorting = newSorting => {
     setSearchParams({ sortBy: JSON.stringify(newSorting) });

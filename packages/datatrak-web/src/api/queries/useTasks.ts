@@ -12,14 +12,20 @@ type Filter = {
   value: string;
 };
 
+type SortBy = {
+  id: string;
+  desc: boolean;
+};
+
 export const useTasks = (
   projectId?: string,
   pageSize?: number,
   page?: number,
   filters: Filter[] = [],
+  sortBy?: SortBy[],
 ) => {
   return useQuery(
-    ['tasks', projectId, pageSize, page, filters],
+    ['tasks', projectId, pageSize, page, filters, sortBy],
     (): Promise<DatatrakWebTasksRequest.ResBody> =>
       get('tasks', {
         params: {
@@ -32,6 +38,7 @@ export const useTasks = (
               value: projectId,
             },
           ],
+          sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
         },
         enabled: !!projectId,
       }),
