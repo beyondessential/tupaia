@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { LatLngLiteral } from 'leaflet';
 import { MapContainer as BaseMapContainer, ZoomControl } from 'react-leaflet';
-import { DEFAULT_TILESETS, TilePicker } from '@tupaia/ui-map-components';
+import { TilePicker, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
 import { DEFAULT_BOUNDS, DEFAULT_ZOOM_LEVEL, UNSET_LOCATION_ZOOM_LEVEL } from './constants';
 import { UserLocationMap } from './UserLocationMap';
 import { PinDrop } from './PinDrop';
@@ -79,8 +79,8 @@ export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapP
   // round coordinates to 4 decimal places before setting them - any less and the coordinates are not very accurate
   const onUpdateCoordinates = ({ lat, lng }: LatLngLiteral) => {
     setCoordinates({
-      lat: Number.parseFloat(lat.toFixed(4)),
-      lng: Number.parseFloat(lng.toFixed(4)),
+      lat: parseFloat(lat.toFixed(4)),
+      lng: parseFloat(lng.toFixed(4)),
     });
   };
   return (

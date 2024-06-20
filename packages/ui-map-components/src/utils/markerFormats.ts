@@ -6,17 +6,17 @@
 
 import { formatDataValueByType } from '@tupaia/utils';
 import { IconMapOverlayConfig } from '@tupaia/types';
-import { BREWER_AUTO, MAP_COLORS, NO_COLOR, UNKNOWN_COLOR, YES_COLOR } from '../constants';
-import { DEFAULT_ICON, SPECTRUM_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
+import { YES_COLOR, NO_COLOR, BREWER_AUTO, UNKNOWN_COLOR, MAP_COLORS } from '../constants';
+import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
 import {
-  BaseSeries,
+  SeriesValue,
   LegendProps,
   MeasureData,
-  RadiusSeries,
   Series,
-  SeriesValue,
   SeriesValueMapping,
   Value,
+  RadiusSeries,
+  BaseSeries,
 } from '../types';
 import { resolveSpectrumColour } from './markerColors';
 
@@ -387,7 +387,7 @@ export const calculateRadiusScaleFactor = (measureData: MeasureData[]) => {
   // (this needs to happen here instead of inside the circle marker component
   // because it needs to operate on the dataset level, not the datapoint level)
   const maxRadius = measureData
-    .map(d => Number.parseInt(d.radius as string, 10) || 1)
+    .map(d => parseInt(d.radius as string, 10) || 1)
     .reduce((state, current) => Math.max(state, current), 0);
   return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
 };
@@ -395,5 +395,5 @@ export const calculateRadiusScaleFactor = (measureData: MeasureData[]) => {
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).
 export function flattenNumericalMeasureData(measureData: MeasureData[], key: string) {
-  return measureData.map(v => Number.parseFloat(v[key])).filter(x => !Number.isNaN(x));
+  return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }

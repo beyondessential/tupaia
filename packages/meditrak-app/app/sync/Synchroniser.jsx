@@ -3,10 +3,10 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { Scheduler } from 'sussol-utilities';
+import {Scheduler} from 'sussol-utilities';
 
-import { LogBox } from 'react-native';
-import { ChangeQueue } from './ChangeQueue';
+import {LogBox} from 'react-native';
+import {ChangeQueue} from './ChangeQueue';
 import {
   setSyncProgress,
   setSyncProgressMessage,
@@ -20,8 +20,8 @@ import {
   LATEST_SERVER_SYNC_TIMESTAMP,
   PERMISSION_GROUPS_SYNCED,
 } from '../settings';
-import { loadSocialFeedLatest } from '../social';
-import { getSyncMigrations } from './syncMigrations';
+import {loadSocialFeedLatest} from '../social';
+import {getSyncMigrations} from './syncMigrations';
 
 LogBox.ignoreLogs(['Setting a timer']);
 
@@ -226,13 +226,13 @@ export class Synchroniser {
 
     // Get batch of outgoing changes and send them
     const changes = await this.changeQueue.nextWithinThreshold(this.batchSize);
-    const { requestDuration } = await this.pushChanges(changes.map(({ payload }) => payload));
+    const {requestDuration} = await this.pushChanges(changes.map(({payload}) => payload));
 
     // Run any post-change cleanup
-    await this.cleanupChangesAfterPush(changes.map(({ change }) => change));
+    await this.cleanupChangesAfterPush(changes.map(({change}) => change));
 
     // Take the successfully sent batch of changes off the queue requiring sync
-    this.changeQueue.use(changes.map(({ change }) => change));
+    this.changeQueue.use(changes.map(({change}) => change));
 
     const batchCount = changes.length;
 
@@ -275,7 +275,7 @@ export class Synchroniser {
     setProgress(this.synchroniserProgress);
 
     // Get a batch of changes and integrate them
-    const { changes, requestDuration } = await this.getIncomingChanges(since, numberChangesPulled);
+    const {changes, requestDuration} = await this.getIncomingChanges(since, numberChangesPulled);
     if (!changes || changes.length === 0) {
       throw new Error(`Expected ${total - numberChangesPulled} more changes, but received none`);
     }
@@ -285,7 +285,7 @@ export class Synchroniser {
     // Save the current timestamp we are in sync with on the server
     const latestChangeTimestamp = changes.reduce(
       (currentLatestTimestamp, change) => Math.max(change.timestamp, currentLatestTimestamp),
-      Number.parseFloat(this.getLastSyncTime()),
+      parseFloat(this.getLastSyncTime()),
     );
     this.database.setSetting(LATEST_SERVER_SYNC_TIMESTAMP, latestChangeTimestamp);
 
@@ -323,7 +323,7 @@ export class Synchroniser {
     if (responseJson.error && responseJson.error.length > 0) {
       throw new Error(responseJson.error);
     }
-    const { changeCount, countries, permissionGroups } = responseJson;
+    const {changeCount, countries, permissionGroups} = responseJson;
     if (
       typeof changeCount !== 'number' ||
       !Array.isArray(countries) ||
@@ -331,7 +331,7 @@ export class Synchroniser {
     ) {
       throw new Error('Unexpected response from server');
     }
-    return { changeCount, countries, permissionGroups };
+    return {changeCount, countries, permissionGroups};
   }
 
   /**

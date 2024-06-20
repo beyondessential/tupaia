@@ -5,8 +5,8 @@
  */
 
 import moment from 'moment';
-import { blue, green, red } from '@material-ui/core/colors';
-import { MeasureColorScheme, ScaleType } from '@tupaia/types';
+import { blue, red, green } from '@material-ui/core/colors';
+import { ScaleType, MeasureColorScheme } from '@tupaia/types';
 import { BREWER_PALETTE, HEATMAP_UNKNOWN_COLOR } from '../constants';
 import { Color, ColorKey } from '../types';
 
@@ -39,7 +39,7 @@ export function resolveSpectrumColour(
   max: number | string, // the highest number or a string representing latest date in a range
   noDataColour?: string, // css hsl string, e.g. `hsl(value, 100%, 50%)` for null value
 ): string {
-  if (value === null || Number.isNaN(value)) return noDataColour || HEATMAP_UNKNOWN_COLOR;
+  if (value === null || isNaN(value)) return noDataColour || HEATMAP_UNKNOWN_COLOR;
 
   let valueToColor: (value: number | null, ...args: any[]) => string;
   if (scaleColorScheme) {
@@ -93,7 +93,7 @@ export function getPerformanceHeatmapColor(
 }
 
 const getTimeProportion = (value: number | null, min: string, max: string) => {
-  if (!value || !Number.isNaN(value)) return null;
+  if (!value || !isNaN(value)) return null;
   const range = moment(max).diff(min, 'days');
   const valueAsMoment = moment(value);
   const ageOfSample = moment(max).diff(valueAsMoment, 'days');
@@ -107,7 +107,7 @@ export function getTimeHeatmapColor(
   value: number | null, // Number in range [0..1] representing percentage
   noDataColour?: string,
 ): string {
-  if (value === null || Number.isNaN(value)) return noDataColour || HEATMAP_UNKNOWN_COLOR;
+  if (value === null || isNaN(value)) return noDataColour || HEATMAP_UNKNOWN_COLOR;
   return `hsl(${100 - Math.floor(value * 100)}, 100%, 50%)`;
 }
 

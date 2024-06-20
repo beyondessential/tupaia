@@ -40,7 +40,7 @@ export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction
 export const SurveyContext = ({ children }) => {
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const { surveyCode, ...params } = useParams<SurveyParams>();
-  const screenNumber = params.screenNumber ? Number.parseInt(params.screenNumber!, 10) : null;
+  const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
   const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
 

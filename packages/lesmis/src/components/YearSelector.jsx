@@ -12,7 +12,7 @@ import { MIN_DATA_YEAR } from '../constants';
 const getYearOptions = () => {
   const years = [];
 
-  const startYear = Number.parseInt(MIN_DATA_YEAR);
+  const startYear = parseInt(MIN_DATA_YEAR);
   let year = new Date().getFullYear();
 
   while (year >= startYear) {

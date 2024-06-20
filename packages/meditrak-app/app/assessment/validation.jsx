@@ -5,11 +5,11 @@
 
 // Validators return null if there is no error, or a string representing the error message
 const answerValidators = {
-  isNumber: answer => (Number.isNaN(Number.parseFloat(answer)) ? 'Must be a number' : null),
+  isNumber: answer => (isNaN(parseFloat(answer)) ? 'Must be a number' : null),
   min: (answer, minimumValue) =>
-    Number.parseFloat(answer) < minimumValue ? `The minimum value is ${minimumValue}` : null,
+    parseFloat(answer) < minimumValue ? `The minimum value is ${minimumValue}` : null,
   max: (answer, maximumValue) =>
-    Number.parseFloat(answer) > maximumValue ? `The maximum value is ${maximumValue}` : null,
+    parseFloat(answer) > maximumValue ? `The maximum value is ${maximumValue}` : null,
 };
 
 export const validateAnswer = (validationCriteria, answer) => {

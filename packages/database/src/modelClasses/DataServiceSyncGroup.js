@@ -62,7 +62,7 @@ export class DataServiceSyncGroupRecord extends DatabaseRecord {
       [this.id],
     );
 
-    return Number.parseInt(count);
+    return parseInt(count);
   }
 
   async getLatestLogs(limit = 100, offset = 0) {

@@ -5,8 +5,8 @@
 
 import React, { useContext } from 'react';
 import {
-  ConditionalPresentationOptions,
   ConditionsObject,
+  ConditionalPresentationOptions,
   PresentationOptionCondition,
 } from '@tupaia/types';
 import styled from 'styled-components';
@@ -47,7 +47,7 @@ const convertConditionToText = (condition: PresentationOptionCondition['conditio
   if (typeof condition === 'object') {
     const values = Object.values(condition);
 
-    const isNumberRange = values.every(value => !Number.isNaN(Number.parseInt(String(value), 10)));
+    const isNumberRange = values.every(value => !isNaN(parseInt(String(value), 10)));
     if (isNumberRange) {
       return convertNumberRangeToText(condition);
     }

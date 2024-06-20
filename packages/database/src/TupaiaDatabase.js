@@ -102,8 +102,8 @@ export class TupaiaDatabase {
     pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 
     if (useNumericStuff) {
-      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, Number.parseFloat);
-      pgTypes.setTypeParser(20, Number.parseInt); // bigInt type to Integer
+      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, parseFloat);
+      pgTypes.setTypeParser(20, parseInt); // bigInt type to Integer
     }
   }
 
@@ -319,7 +319,7 @@ export class TupaiaDatabase {
   async count(recordType, where, options) {
     // If just a simple query without options, use the more efficient knex count method
     const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
-    return Number.parseInt(result[0].count, 10);
+    return parseInt(result[0].count, 10);
   }
 
   async create(recordType, record, where) {

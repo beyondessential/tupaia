@@ -6,7 +6,7 @@
 import { Request } from 'express';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
-import { FeedItem, NullableKeysToOptional } from '@tupaia/types';
+import { NullableKeysToOptional, FeedItem } from '@tupaia/types';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
@@ -75,9 +75,9 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
       page: queryPage,
       numberPerPage: queryNumberPerPage,
     } = query;
-    const pageNumber = queryPage ? Number.parseInt(queryPage, 10) : 0;
+    const pageNumber = queryPage ? parseInt(queryPage, 10) : 0;
     const numberPerPage = queryNumberPerPage
-      ? Number.parseInt(queryNumberPerPage, 10)
+      ? parseInt(queryNumberPerPage, 10)
       : DEFAULT_NUMBER_PER_PAGE;
 
     // @todo: Use user access policy to determine the type of information appearing in the feed.
