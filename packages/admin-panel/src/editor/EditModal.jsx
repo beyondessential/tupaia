@@ -8,10 +8,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { dismissEditor } from './actions';
 import { UsedBy } from '../usedBy/UsedBy';
-import { Modal } from '../widgets';
 import { useEditFiles } from './useEditFiles';
 import { FieldsEditor } from './FieldsEditor';
 import { withConnectedEditor } from './withConnectedEditor';
+import { Modal } from '@tupaia/ui-components';
 
 export const EditModalComponent = withConnectedEditor(
   ({
