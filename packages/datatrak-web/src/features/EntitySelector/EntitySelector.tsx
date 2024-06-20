@@ -51,8 +51,9 @@ interface EntitySelectorProps {
   };
   config: any;
   showLabel: boolean;
-  filter: any;
+  filter?: Record<string, string | string[]>;
   projectCode?: string;
+  showRecentEntities?: boolean;
 }
 
 export const EntitySelector = ({
@@ -65,6 +66,7 @@ export const EntitySelector = ({
   filter,
   projectCode,
   showLabel,
+  showRecentEntities,
 }: EntitySelectorProps) => {
   const { errors } = useFormContext();
   const [isDirty, setIsDirty] = useState(false);
@@ -125,7 +127,12 @@ export const EntitySelector = ({
       {!isFetched || isLoading ? (
         <SpinningLoader />
       ) : (
-        <ResultsList value={value} onSelect={onSelect} searchResults={displayResults} />
+        <ResultsList
+          value={value}
+          onSelect={onSelect}
+          searchResults={displayResults}
+          showRecentEntities={showRecentEntities}
+        />
       )}
     </Container>
   );

@@ -7,7 +7,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
-import { SelectList } from '../../components';
+import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
+import { ListItemType, SelectList } from '../../components';
 
 const ListWrapper = styled.div`
   display: flex;
@@ -37,21 +38,36 @@ export const ResultItem = ({ name, parentName }) => {
   );
 };
 
-export const ResultsList = ({ value, searchResults, onSelect }) => {
+type SearchResults = DatatrakWebEntityDescendantsRequest.ResBody;
+interface ResultsListProps {
+  value: string;
+  searchResults?: SearchResults;
+  onSelect: (value: ListItemType) => void;
+  showRecentEntities?: boolean;
+}
+
+export const ResultsList = ({
+  value,
+  searchResults,
+  onSelect,
+  showRecentEntities,
+}: ResultsListProps) => {
   const getEntitiesList = (returnRecentEntities?: boolean) => {
     const entities = searchResults?.filter(({ isRecent }) =>
       returnRecentEntities ? isRecent : !isRecent,
     );
-    return entities?.map(({ name, parentName, code, id }) => ({
-      content: <ResultItem name={name} parentName={parentName} />,
-      value: id,
-      code,
-      selected: id === value,
-      icon: <RoomIcon />,
-      button: true,
-    }));
+    return (
+      entities?.map(({ name, parentName, code, id }) => ({
+        content: <ResultItem name={name} parentName={parentName} />,
+        value: id,
+        code,
+        selected: id === value,
+        icon: <RoomIcon />,
+        button: true,
+      })) ?? []
+    );
   };
-  const recentEntities = getEntitiesList(true);
+  const recentEntities = showRecentEntities ? getEntitiesList(true) : [];
   const displayResults = getEntitiesList(false);
 
   return (

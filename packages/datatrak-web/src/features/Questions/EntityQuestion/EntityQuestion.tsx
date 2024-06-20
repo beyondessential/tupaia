@@ -41,6 +41,7 @@ export const EntityQuestion = ({
       showLabel={isReviewScreen || isResponseScreen}
       filter={filter}
       projectCode={surveyProjectCode}
+      showRecentEntities
     />
   );
 };
