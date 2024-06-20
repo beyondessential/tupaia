@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { MenuItem as MuiMenuItem, Select } from '@material-ui/core';
 import { STATUS_VALUES, StatusPill } from '../StatusPill';
+import { TaskStatus } from '@tupaia/types';
 
 const PlaceholderText = styled.span`
   color: ${({ theme }) => theme.palette.text.secondary};
@@ -48,14 +49,14 @@ export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
       displayEmpty
       renderValue={value => {
         if (!value) return <PlaceholderText>Select</PlaceholderText>;
-        return <StatusPill status={value as string} />;
+        return <StatusPill status={value as TaskStatus} />;
       }}
     >
       {/** Include a placeholder option so that the user can clear the status filter */}
       <PlaceholderOption value="">Show all</PlaceholderOption>
       {options.map(option => (
         <MenuItem key={option.value} value={option.value}>
-          <StatusPill status={option.value} />
+          <StatusPill status={option.value as TaskStatus} />
         </MenuItem>
       ))}
     </Select>

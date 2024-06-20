@@ -123,7 +123,7 @@ const COLUMNS = [
     filterable: true,
     accessor: 'status',
     id: 'status',
-    Cell: ({ value }) => <StatusPill status={value} />,
+    Cell: ({ value }: { value: TaskStatus }) => <StatusPill status={value} />,
     Filter: StatusFilter,
     disableResizing: true,
   },
