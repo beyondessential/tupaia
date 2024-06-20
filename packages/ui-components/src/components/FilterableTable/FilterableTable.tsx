@@ -16,6 +16,7 @@ import {
 import styled from 'styled-components';
 import { Column, useFlexLayout, useResizeColumns, useTable, SortingRule } from 'react-table';
 import { KeyboardArrowDown } from '@material-ui/icons';
+import { SpinningLoader } from '../Loaders';
 import { HeaderDisplayCell, TableCell } from './Cells';
 import { FilterCell, FilterCellProps, Filters } from './FilterCell';
 import { Pagination } from './Pagination';
@@ -24,6 +25,8 @@ const TableContainer = styled(MuiTableContainer)`
   position: relative;
   flex: 1;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
   background-color: ${({ theme }) => theme.palette.background.paper};
   table {
     min-width: 45rem;
@@ -48,6 +51,13 @@ const NoDataMessage = styled.div`
   padding-block: 2.5rem;
 `;
 
+const LoadingContainer = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 type SortBy = {
   id: string;
   desc: boolean;
@@ -68,6 +78,7 @@ interface FilterableTableProps {
   filters?: Filters;
   totalRecords: number;
   noDataMessage?: string;
+  isLoading?: boolean;
 }
 
 export const FilterableTable = ({
@@ -85,6 +96,7 @@ export const FilterableTable = ({
   filters = [],
   totalRecords,
   noDataMessage,
+  isLoading,
 }: FilterableTableProps) => {
   const memoisedData = useMemo(() => data ?? [], [data]);
   const {
@@ -215,10 +227,15 @@ export const FilterableTable = ({
             })}
           </TableBody>
         </Table>
-        {rows.length === 0 && noDataMessage && (
+        {rows.length === 0 && noDataMessage && !isLoading && (
           <NoDataMessage>
             <Typography variant="body2">{noDataMessage}</Typography>
           </NoDataMessage>
+        )}
+        {isLoading && (
+          <LoadingContainer>
+            <SpinningLoader />
+          </LoadingContainer>
         )}
       </TableContainer>
       <Pagination

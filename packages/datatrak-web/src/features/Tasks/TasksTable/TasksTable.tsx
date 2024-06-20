@@ -150,7 +150,7 @@ const useTasksTable = () => {
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
-  const { data } = useTasks(projectId, pageSize, page, filters, sortBy);
+  const { data, isLoading } = useTasks(projectId, pageSize, page, filters, sortBy);
 
   const updateSorting = newSorting => {
     setSearchParams({ sortBy: JSON.stringify(newSorting) });
@@ -189,6 +189,7 @@ const useTasksTable = () => {
     updateFilters,
     onChangePage,
     onChangePageSize,
+    isLoading,
   };
 };
 
@@ -206,6 +207,7 @@ export const TasksTable = () => {
     updateFilters,
     onChangePage,
     onChangePageSize,
+    isLoading,
   } = useTasksTable();
 
   return (
@@ -224,6 +226,7 @@ export const TasksTable = () => {
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
         noDataMessage="No tasks to display Click the ‘+ Create task’ button above to add a new task."
+        isLoading={isLoading}
       />
     </Container>
   );
