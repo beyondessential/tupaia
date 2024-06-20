@@ -1539,7 +1539,6 @@ export interface Task {
   'due_date': Date;
   'entity_id': string;
   'id': string;
-  'is_recurring': boolean;
   'repeat_frequency': {};
   'status': TaskStatus;
   'survey_id': string;
@@ -1549,7 +1548,6 @@ export interface TaskCreate {
   'assignee_name'?: string | null;
   'due_date': Date;
   'entity_id': string;
-  'is_recurring'?: boolean;
   'repeat_frequency'?: {};
   'status'?: TaskStatus;
   'survey_id': string;
@@ -1560,7 +1558,6 @@ export interface TaskUpdate {
   'due_date'?: Date;
   'entity_id'?: string;
   'id'?: string;
-  'is_recurring'?: boolean;
   'repeat_frequency'?: {};
   'status'?: TaskStatus;
   'survey_id'?: string;
@@ -1699,9 +1696,10 @@ export enum VerifiedEmail {
 }
 export enum TaskStatus {
   'to_do' = 'to_do',
+  'cancelled' = 'cancelled',
   'completed' = 'completed',
   'overdue' = 'overdue',
-  'cancelled' = 'cancelled',
+  'repeating' = 'repeating',
 }
 export enum SyncGroupSyncStatus {
   'IDLE' = 'IDLE',

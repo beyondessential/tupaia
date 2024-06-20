@@ -85618,9 +85618,6 @@ export const TaskSchema = {
 		"id": {
 			"type": "string"
 		},
-		"is_recurring": {
-			"type": "boolean"
-		},
 		"repeat_frequency": {
 			"type": "object",
 			"properties": {}
@@ -85630,6 +85627,7 @@ export const TaskSchema = {
 				"cancelled",
 				"completed",
 				"overdue",
+				"repeating",
 				"to_do"
 			],
 			"type": "string"
@@ -85643,7 +85641,6 @@ export const TaskSchema = {
 		"due_date",
 		"entity_id",
 		"id",
-		"is_recurring",
 		"repeat_frequency",
 		"status",
 		"survey_id"
@@ -85666,9 +85663,6 @@ export const TaskCreateSchema = {
 		"entity_id": {
 			"type": "string"
 		},
-		"is_recurring": {
-			"type": "boolean"
-		},
 		"repeat_frequency": {
 			"type": "object",
 			"properties": {}
@@ -85678,6 +85672,7 @@ export const TaskCreateSchema = {
 				"cancelled",
 				"completed",
 				"overdue",
+				"repeating",
 				"to_do"
 			],
 			"type": "string"
@@ -85713,9 +85708,6 @@ export const TaskUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"is_recurring": {
-			"type": "boolean"
-		},
 		"repeat_frequency": {
 			"type": "object",
 			"properties": {}
@@ -85725,6 +85717,7 @@ export const TaskUpdateSchema = {
 				"cancelled",
 				"completed",
 				"overdue",
+				"repeating",
 				"to_do"
 			],
 			"type": "string"
@@ -86281,6 +86274,7 @@ export const TaskStatusSchema = {
 		"cancelled",
 		"completed",
 		"overdue",
+		"repeating",
 		"to_do"
 	],
 	"type": "string"
