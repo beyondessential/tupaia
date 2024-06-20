@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
 import { PageContainer as BasePageContainer, Button } from '../../components';
-import { TaskPageHeader, TasksTable } from '../../features';
+import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -39,16 +39,19 @@ const AddIcon = styled(Add)`
 `;
 
 export const TasksDashboardPage = () => {
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
     <PageContainer>
       <TaskPageHeader title="Tasks">
         <ButtonContainer>
-          <CreateButton>
+          <CreateButton onClick={toggleCreateModal}>
             <AddIcon /> Create Task
           </CreateButton>
         </ButtonContainer>
       </TaskPageHeader>
       <TasksTable />
+      <CreateTaskModal open={createModalOpen} onClose={toggleCreateModal} />
     </PageContainer>
   );
 };
