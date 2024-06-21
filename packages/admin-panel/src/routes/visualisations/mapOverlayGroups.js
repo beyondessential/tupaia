@@ -120,7 +120,7 @@ export const mapOverlayGroups = {
   createConfig: CREATE_CONFIG,
   nestedViews: [
     {
-      title: 'Map Overlay Group Relations',
+      title: 'Map overlay group relations',
       columns: RELATION_COLUMNS,
       endpoint: 'mapOverlayGroups/{id}/mapOverlayGroupRelations',
       path: '/:id/map-overlay-group-relations',

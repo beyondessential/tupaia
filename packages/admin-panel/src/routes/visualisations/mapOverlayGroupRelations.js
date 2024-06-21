@@ -36,7 +36,7 @@ const childType = {
 };
 
 const childCode = {
-  Header: 'Child Code',
+  Header: 'Child code',
   source: 'child_code',
 };
 
