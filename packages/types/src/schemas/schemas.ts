@@ -87794,7 +87794,7 @@ export const TaskResponseSchema = {
 		"id": {
 			"type": "string"
 		},
-		"repeatFrequency": {
+		"repeatSchedule": {
 			"type": "object",
 			"additionalProperties": false
 		},
@@ -87869,11 +87869,10 @@ export const TaskResponseSchema = {
 		}
 	},
 	"required": [
-		"dueDate",
 		"entity",
 		"entityId",
 		"id",
-		"repeatFrequency",
+		"repeatSchedule",
 		"status",
 		"survey",
 		"surveyId"

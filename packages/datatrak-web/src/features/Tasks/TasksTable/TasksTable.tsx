@@ -51,12 +51,7 @@ const ActionButton = (task: Task) => {
   const location = useLocation();
   if (!task) return null;
   const { assignee, survey, entity, status } = task;
-  if (
-    status === TaskStatus.overdue ||
-    status === TaskStatus.cancelled ||
-    status === TaskStatus.completed
-  )
-    return null;
+  if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
   if (!assignee) {
     return <ActionButtonComponent variant="outlined">Assign</ActionButtonComponent>;
   }
@@ -106,7 +101,7 @@ const COLUMNS = [
     // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
     accessor: row =>
       row.status === TaskStatus.repeating ? JSON.stringify(row.repeatFrequency) : 'Doesn’t repeat',
-    id: 'repeat_frequency',
+    id: 'repeat_schedule',
     filterable: true,
     disableResizing: true,
   },
