@@ -3,56 +3,10 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { FIELDS as RELATION_FIELDS, RELATION_ENDPOINT } from './mapOverlayGroupRelations';
+
 const RESOURCE_NAME = { singular: 'map overlay group' };
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
-
-const childType = {
-  Header: 'Child type',
-  source: 'child_type',
-  editConfig: {
-    options: [
-      {
-        label: 'Map overlay',
-        value: 'mapOverlay',
-      },
-      {
-        label: 'Map overlay group',
-        value: 'mapOverlayGroup',
-      },
-    ],
-  },
-};
-
-const childCode = {
-  Header: 'Child code',
-  source: 'child_code',
-};
-
-const childMapOverlayCode = {
-  Header: 'Child map overlay code',
-  id: 'child_map_overlay_code',
-  source: 'child_code',
-  editConfig: {
-    optionsEndpoint: 'mapOverlays',
-    optionLabelKey: 'mapOverlay.code',
-    optionValueKey: 'mapOverlay.id',
-    sourceKey: 'child_id',
-    visibilityCriteria: { child_type: 'mapOverlay' },
-  },
-};
-
-const childMapOverlayGroupCode = {
-  Header: 'Child map overlay group code',
-  id: 'child_map_overlay_group_code',
-  source: 'child_code',
-  editConfig: {
-    optionsEndpoint: 'mapOverlayGroups',
-    optionLabelKey: 'mapOverlayGroups.code',
-    optionValueKey: 'mapOverlayGroups.id',
-    sourceKey: 'child_id',
-    visibilityCriteria: { child_type: 'mapOverlayGroup' },
-  },
-};
 
 const FIELDS = [
   {
@@ -70,11 +24,6 @@ const FIELDS = [
   },
 ];
 
-const sortOrder = {
-  Header: 'Sort order',
-  source: 'sort_order',
-};
-
 const COLUMNS = [
   ...FIELDS,
   {
@@ -88,19 +37,23 @@ const COLUMNS = [
   },
 ];
 
-const RELATION_FIELDS = [childType, childMapOverlayCode, childMapOverlayGroupCode, sortOrder];
-
 export const RELATION_COLUMNS = [
-  childType,
-  childCode,
-  sortOrder,
+  RELATION_FIELDS.CHILD_TYPE,
+  RELATION_FIELDS.CHILD_CODE,
+  RELATION_FIELDS.SORT_ORDER,
   {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'mapOverlayGroupRelations',
-      fields: RELATION_FIELDS,
+      editEndpoint: RELATION_ENDPOINT,
+      fields: [
+        // Cannot edit parent map overlay group from nested/drilled-down view
+        RELATION_FIELDS.CHILD_TYPE,
+        RELATION_FIELDS.CHILD_MAP_OVERLAY_CODE,
+        RELATION_FIELDS.CHILD_MAP_OVERLAY_GROUP_CODE,
+        RELATION_FIELDS.SORT_ORDER,
+      ],
     },
   },
 ];
