@@ -25,7 +25,6 @@ export const Simple = () => {
       <FileUploadField
         onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
-        fileName={fileName}
         label="File Upload"
       />
     </Container>
@@ -40,7 +39,6 @@ export const SimpleWithTooltip = () => {
         accept="image/jpeg,image/png"
         onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
-        fileName={fileName}
         label="File Upload"
         tooltip="PNG and JPEG files only"
       />
@@ -52,12 +50,7 @@ export const Multiple = () => {
   const [files, setFiles] = useState([]);
   return (
     <Container>
-      <FileUploadField
-        onChange={newFiles => setFiles(newFiles)}
-        name="file-upload"
-        fileName={fileName}
-        multiple
-      />
+      <FileUploadField onChange={newFiles => setFiles(newFiles)} name="file-upload" multiple />
     </Container>
   );
 };
@@ -69,7 +62,6 @@ export const WithLabel = () => {
       <FileUploadField
         onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
-        fileName={fileName}
         label="Profile Image"
         helperText="Select an image to use as your profile pic"
       />
@@ -84,7 +76,6 @@ export const WithMaxFileSize = () => {
       <FileUploadField
         onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
-        fileName={fileName}
         label="File Upload"
         tooltip="Max. file size 10 KiB"
         maxSizeInBytes={1024 * 10} /* 10 KiB */
