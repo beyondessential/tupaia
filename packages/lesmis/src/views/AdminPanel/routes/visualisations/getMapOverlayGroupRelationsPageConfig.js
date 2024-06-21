@@ -91,7 +91,7 @@ export const getMapOverlayGroupRelationsPageConfig = translate => {
 
   return {
     ...mapOverlayGroupRelations,
-    title: translate('admin.mapOverlayGroupRelations'),
+    label: translate('admin.mapOverlayGroupRelations'),
     columns: COLUMNS,
     editorConfig,
     createConfig,

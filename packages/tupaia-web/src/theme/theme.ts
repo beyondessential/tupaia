@@ -110,6 +110,9 @@ theme.overrides = {
       ['&:not(.MuiTableRow-head)&nth-child(even)']: {
         backgroundColor: theme.palette.table?.even,
       },
+      ['.flippa-table &:nth-child(even)']: {
+        backgroundColor: theme.palette.background.paper,
+      },
     },
     head: {
       backgroundColor: theme.palette.table?.header,
@@ -125,10 +128,18 @@ theme.overrides = {
       ['&.MuiTableCell-row-head']: {
         fontWeight: theme.typography.fontWeightMedium,
       },
+      ['.flippa-table &']: {
+        paddingInline: '1.5rem',
+      },
     },
 
     stickyHeader: {
       backgroundColor: 'inherit', // make the sticky header cells have the row's background color
+    },
+    head: {
+      ['.flippa-table &']: {
+        borderBottom: `1px solid #DEDEE0`,
+      },
     },
   },
   MuiButton: {
