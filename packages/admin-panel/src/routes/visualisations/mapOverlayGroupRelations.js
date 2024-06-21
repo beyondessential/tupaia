@@ -20,7 +20,6 @@ const mapOverlayGroupCode = {
 
 const childType = {
   Header: 'Child type',
-  width: 160,
   source: 'child_type',
   editConfig: {
     options: [
