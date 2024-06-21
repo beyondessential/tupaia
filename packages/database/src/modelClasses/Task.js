@@ -27,11 +27,4 @@ export class TaskModel extends DatabaseModel {
   get DatabaseRecordClass() {
     return TaskRecord;
   }
-
-  taskStatuses = {
-    TO_DO: 'to_do',
-    COMPLETED: 'completed',
-    OVERDUE: 'overdue',
-    CANCELLED: 'cancelled',
-  };
 }
