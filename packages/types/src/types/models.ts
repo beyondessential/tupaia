@@ -1536,7 +1536,7 @@ export interface SyncGroupLogUpdate {
 export interface Task {
   'assignee_id'?: string | null;
   'assignee_name'?: string | null;
-  'due_date': Date;
+  'due_date'?: Date | null;
   'entity_id': string;
   'id': string;
   'repeat_frequency': {};
@@ -1546,7 +1546,7 @@ export interface Task {
 export interface TaskCreate {
   'assignee_id'?: string | null;
   'assignee_name'?: string | null;
-  'due_date': Date;
+  'due_date'?: Date | null;
   'entity_id': string;
   'repeat_frequency'?: {};
   'status'?: TaskStatus;
@@ -1555,7 +1555,7 @@ export interface TaskCreate {
 export interface TaskUpdate {
   'assignee_id'?: string | null;
   'assignee_name'?: string | null;
-  'due_date'?: Date;
+  'due_date'?: Date | null;
   'entity_id'?: string;
   'id'?: string;
   'repeat_frequency'?: {};

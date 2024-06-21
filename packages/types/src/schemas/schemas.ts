@@ -85638,7 +85638,6 @@ export const TaskSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"due_date",
 		"entity_id",
 		"id",
 		"repeat_frequency",
@@ -85683,7 +85682,6 @@ export const TaskCreateSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"due_date",
 		"entity_id",
 		"survey_id"
 	]

@@ -445,11 +445,24 @@ export const constructForSingle = (models, recordType) => {
         entity_id: [constructRecordExistsWithId(models.entity)],
         survey_id: [constructRecordExistsWithId(models.survey)],
         assignee_id: [constructIsEmptyOr(constructRecordExistsWithId(models.user))],
-        due_date: [hasContent],
+        due_date: [
+          (value, { status }) => {
+            if (status !== 'repeating' && !value) {
+              throw new Error('Due date is required for non-recurring tasks');
+            }
+            if (status === 'repeating' && value) {
+              throw new Error('Due date should not be provided for recurring tasks');
+            }
+            return true;
+          },
+        ],
         repeat_frequency: [
           (value, { status }) => {
             if (status === 'repeating' && !value) {
               throw new Error('Repeat frequency is required for recurring tasks');
+            }
+            if (status !== 'repeating' && value) {
+              throw new Error('Repeat frequency should not be provided for non-recurring tasks');
             }
             return true;
           },
