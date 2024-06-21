@@ -85618,7 +85618,7 @@ export const TaskSchema = {
 		"id": {
 			"type": "string"
 		},
-		"repeat_frequency": {
+		"repeat_schedule": {
 			"type": "object",
 			"properties": {}
 		},
@@ -85640,7 +85640,7 @@ export const TaskSchema = {
 	"required": [
 		"entity_id",
 		"id",
-		"repeat_frequency",
+		"repeat_schedule",
 		"status",
 		"survey_id"
 	]
@@ -85662,7 +85662,7 @@ export const TaskCreateSchema = {
 		"entity_id": {
 			"type": "string"
 		},
-		"repeat_frequency": {
+		"repeat_schedule": {
 			"type": "object",
 			"properties": {}
 		},
@@ -85706,7 +85706,7 @@ export const TaskUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"repeat_frequency": {
+		"repeat_schedule": {
 			"type": "object",
 			"properties": {}
 		},

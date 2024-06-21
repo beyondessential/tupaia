@@ -1539,7 +1539,7 @@ export interface Task {
   'due_date'?: Date | null;
   'entity_id': string;
   'id': string;
-  'repeat_frequency': {};
+  'repeat_schedule': {};
   'status': TaskStatus;
   'survey_id': string;
 }
@@ -1548,7 +1548,7 @@ export interface TaskCreate {
   'assignee_name'?: string | null;
   'due_date'?: Date | null;
   'entity_id': string;
-  'repeat_frequency'?: {};
+  'repeat_schedule'?: {};
   'status'?: TaskStatus;
   'survey_id': string;
 }
@@ -1558,7 +1558,7 @@ export interface TaskUpdate {
   'due_date'?: Date | null;
   'entity_id'?: string;
   'id'?: string;
-  'repeat_frequency'?: {};
+  'repeat_schedule'?: {};
   'status'?: TaskStatus;
   'survey_id'?: string;
 }

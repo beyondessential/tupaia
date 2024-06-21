@@ -456,7 +456,7 @@ export const constructForSingle = (models, recordType) => {
             return true;
           },
         ],
-        repeat_frequency: [
+        repeat_schedule: [
           (value, { status }) => {
             if (status === 'repeating' && !value) {
               throw new Error('Repeat frequency is required for recurring tasks');
