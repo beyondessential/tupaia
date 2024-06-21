@@ -91,7 +91,7 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       title: `Edit ${RESOURCE_NAME.singular}`,
-      editEndpoint: 'mapOverlayGroupRelations',
+      editEndpoint: RELATION_ENDPOINT,
       fields: EDIT_FIELDS,
     },
   },
@@ -99,7 +99,7 @@ const COLUMNS = [
     Header: 'Delete',
     type: 'delete',
     actionConfig: {
-      endpoint: 'mapOverlayGroupRelations',
+      endpoint: RELATION_ENDPOINT,
     },
   },
 ];
