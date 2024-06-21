@@ -47,7 +47,7 @@ describe('Permissions checker for CreateTask', async () => {
 
   const BASE_TASK = {
     assignee_id: assignee.id,
-    repeat_schedule: '{}',
+    repeat_schedule: null,
     due_date: new Date('2021-12-31'),
     status: 'to_do',
   };
