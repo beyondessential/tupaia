@@ -34,20 +34,29 @@ const ListSelectWrapper = styled.div`
   .list-wrapper {
     height: 15rem;
     max-height: 15rem;
+    padding: 1rem;
   }
 
   .entity-selector-content {
-    height: 20rem;
-    max-height: 20rem;
+    padding-block: 1rem;
     border: 1px solid ${({ theme }) => theme.palette.divider};
     border-radius: 3px;
-    padding-inline: 1rem;
+    .MuiFormControl-root {
+      width: auto;
+      margin-inline: 1rem;
+      padding-block-end: 1rem;
+      border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+    }
+    .list-wrapper {
+      border-top: 0;
+      margin-block-start: 0;
+      padding-block-start: 0;
+    }
   }
 
   .entity-selector-content,
   .list-wrapper {
     margin-block-start: 0.5rem;
-    padding-block: 1rem;
   }
 `;
 

@@ -6,13 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useFormContext } from 'react-hook-form';
-import {
-  FormHelperText,
-  FormLabel,
-  FormLabelProps,
-  Typography,
-  TypographyProps,
-} from '@material-ui/core';
+import { FormHelperText, FormLabel, FormLabelProps, TypographyProps } from '@material-ui/core';
 import { Country, SurveyScreenComponentConfig } from '@tupaia/types';
 import { SpinningLoader, useDebounce } from '@tupaia/ui-components';
 import { useEntityById, useProjectEntities } from '../../api';
@@ -137,7 +131,11 @@ export const EntitySelector = ({
 
   return (
     <Container>
-      {showLegend && <Label {...legendProps}>{legend}</Label>}
+      {showLegend && (
+        <Label {...legendProps} id="entity-selector-legend">
+          {legend}
+        </Label>
+      )}
       <div className="entity-selector-content">
         {showSearchInput && (
           <SearchField
@@ -151,6 +149,9 @@ export const EntitySelector = ({
             searchValue={searchValue}
             invalid={invalid}
             required={required}
+            inputProps={{
+              ['aria-labelledby']: showLegend && !label ? 'entity-selector-legend' : undefined,
+            }}
           />
         )}
         {errors && errors[name!] && <FormHelperText error>*{errors[name!].message}</FormHelperText>}

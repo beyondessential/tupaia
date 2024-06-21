@@ -64,8 +64,18 @@ type SearchFieldProps = TextFieldProps & {
 };
 
 export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((props, ref) => {
-  const { name, label, id, searchValue, onChangeSearch, isDirty, invalid, detailLabel, required } =
-    props;
+  const {
+    name,
+    label,
+    id,
+    searchValue,
+    onChangeSearch,
+    isDirty,
+    invalid,
+    detailLabel,
+    required,
+    inputProps,
+  } = props;
 
   const displayValue = isDirty ? searchValue : '';
 
@@ -109,6 +119,7 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
             </InputAdornment>
           ) : null,
       }}
+      inputProps={inputProps}
     />
   );
 });

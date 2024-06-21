@@ -43,7 +43,7 @@ export const EntityQuestion = ({
       data={formData}
       countryCode={countryCode}
       showRecentEntities
-      showSearchInput={isReviewScreen || isResponseScreen}
+      showSearchInput={!isReviewScreen && !isResponseScreen}
       legend={label}
       legendProps={{
         component: Typography,
