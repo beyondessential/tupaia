@@ -2,14 +2,13 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { useParams } from 'react-router-dom';
 import { SurveyScreenComponentConfig } from '@tupaia/types';
-import { useSurveyForm } from '../../Survey';
 
-export const useEntityBaseFilters = (config?: SurveyScreenComponentConfig | null) => {
-  const { getAnswerByQuestionId } = useSurveyForm();
-  const { countryCode } = useParams();
-
+export const useEntityBaseFilters = (
+  config?: SurveyScreenComponentConfig | null,
+  answers?: Record<string, string>,
+  countryCode?: string,
+) => {
   const filters = { countryCode } as Record<string, string | string[]>;
 
   if (!config) return filters;
@@ -25,15 +24,18 @@ export const useEntityBaseFilters = (config?: SurveyScreenComponentConfig | null
     filters.type = Array.isArray(type) ? type.join(',') : type;
   }
 
-  if (parentId && parentId.questionId) {
-    filters['parentId'] = getAnswerByQuestionId(parentId.questionId);
+  if (!answers) return filters;
+
+  if (parentId && parentId.questionId && answers?.[parentId.questionId]) {
+    filters.parentId = answers[parentId.questionId];
   }
-  if (grandparentId && grandparentId.questionId) {
-    filters['grandparentId'] = getAnswerByQuestionId(grandparentId.questionId);
+  if (grandparentId && grandparentId.questionId && answers?.[grandparentId.questionId]) {
+    filters.grandparentId = answers[grandparentId.questionId];
   }
   if (attributes) {
     Object.entries(attributes).forEach(([key, attrConfig]) => {
-      const filterValue = getAnswerByQuestionId(attrConfig.questionId);
+      if (answers?.[attrConfig.questionId] === undefined) return;
+      const filterValue = answers?.[attrConfig.questionId];
       filters[`attributes->>${key}`] = filterValue;
     });
   }

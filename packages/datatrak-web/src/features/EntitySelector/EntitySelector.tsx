@@ -6,11 +6,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useFormContext } from 'react-hook-form';
-import { FormHelperText, Typography } from '@material-ui/core';
+import {
+  FormHelperText,
+  FormLabel,
+  FormLabelProps,
+  Typography,
+  TypographyProps,
+} from '@material-ui/core';
+import { Country, SurveyScreenComponentConfig } from '@tupaia/types';
 import { SpinningLoader, useDebounce } from '@tupaia/ui-components';
 import { useEntityById, useProjectEntities } from '../../api';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
+import { useEntityBaseFilters } from './useEntityBaseFilters';
 
 const Container = styled.div`
   width: 100%;
@@ -21,20 +29,22 @@ const Container = styled.div`
   }
 `;
 
-const Label = styled(Typography).attrs({
-  variant: 'h4',
-})`
+const Label = styled(FormLabel)`
   font-size: 1rem;
   cursor: pointer;
 `;
 
-const useSearchResults = (searchValue, filter, projectCode) => {
+const useSearchResults = (searchValue, filter, projectCode, disableSearch = false) => {
   const debouncedSearch = useDebounce(searchValue!, 200);
-  return useProjectEntities(projectCode, {
-    fields: ['id', 'parent_name', 'code', 'name', 'type'],
-    filter,
-    searchString: debouncedSearch,
-  });
+  return useProjectEntities(
+    projectCode,
+    {
+      fields: ['id', 'parent_name', 'code', 'name', 'type'],
+      filter,
+      searchString: debouncedSearch,
+    },
+    !disableSearch,
+  );
 };
 
 interface EntitySelectorProps {
@@ -49,11 +59,20 @@ interface EntitySelectorProps {
     ref: any;
     invalid: boolean;
   };
-  config: any;
-  showLabel: boolean;
-  filter?: Record<string, string | string[]>;
+  showLegend: boolean;
   projectCode?: string;
   showRecentEntities?: boolean;
+  config?: SurveyScreenComponentConfig | null;
+  data?: Record<string, any>;
+  countryCode?: Country['code'];
+  disableSearch?: boolean;
+  isLoading?: boolean;
+  showSearchInput?: boolean;
+  legend?: string | null;
+  legendProps?: FormLabelProps & {
+    component?: React.ElementType;
+    variant?: TypographyProps['variant'];
+  };
 }
 
 export const EntitySelector = ({
@@ -63,10 +82,17 @@ export const EntitySelector = ({
   name,
   required,
   controllerProps: { onChange, value, ref, invalid },
-  filter,
   projectCode,
-  showLabel,
+  showLegend,
   showRecentEntities,
+  config,
+  data,
+  countryCode,
+  disableSearch,
+  isLoading,
+  showSearchInput,
+  legend,
+  legendProps,
 }: EntitySelectorProps) => {
   const { errors } = useFormContext();
   const [isDirty, setIsDirty] = useState(false);
@@ -92,11 +118,13 @@ export const EntitySelector = ({
     onChange(entity.value);
   };
 
+  const filters = useEntityBaseFilters(config, data, countryCode);
+
   const {
     data: searchResults,
-    isLoading,
+    isLoading: isLoadingSearchResults,
     isFetched,
-  } = useSearchResults(searchValue, filter, projectCode);
+  } = useSearchResults(searchValue, filters, projectCode, disableSearch);
 
   const displayResults = searchResults?.filter(({ name: entityName }) => {
     if (isDirty || !value) {
@@ -105,35 +133,38 @@ export const EntitySelector = ({
     return entityName === searchValue;
   });
 
+  const showLoader = isLoading || ((isLoadingSearchResults || !isFetched) && !disableSearch);
+
   return (
     <Container>
-      {showLabel ? (
-        <Label>{label}</Label>
-      ) : (
-        <SearchField
-          id={id}
-          isDirty={isDirty}
-          label={label}
-          detailLabel={detailLabel}
-          name={name!}
-          ref={ref}
-          onChangeSearch={onChangeSearch}
-          searchValue={searchValue}
-          invalid={invalid}
-          required={required}
-        />
-      )}
-      {errors && errors[name!] && <FormHelperText error>*{errors[name!].message}</FormHelperText>}
-      {!isFetched || isLoading ? (
-        <SpinningLoader />
-      ) : (
-        <ResultsList
-          value={value}
-          onSelect={onSelect}
-          searchResults={displayResults}
-          showRecentEntities={showRecentEntities}
-        />
-      )}
+      {showLegend && <Label {...legendProps}>{legend}</Label>}
+      <div className="entity-selector-content">
+        {showSearchInput && (
+          <SearchField
+            id={id}
+            isDirty={isDirty}
+            label={label}
+            detailLabel={detailLabel}
+            name={name!}
+            ref={ref}
+            onChangeSearch={onChangeSearch}
+            searchValue={searchValue}
+            invalid={invalid}
+            required={required}
+          />
+        )}
+        {errors && errors[name!] && <FormHelperText error>*{errors[name!].message}</FormHelperText>}
+        {showLoader ? (
+          <SpinningLoader />
+        ) : (
+          <ResultsList
+            value={value}
+            onSelect={onSelect}
+            searchResults={displayResults}
+            showRecentEntities={showRecentEntities}
+          />
+        )}
+      </div>
     </Container>
   );
 };

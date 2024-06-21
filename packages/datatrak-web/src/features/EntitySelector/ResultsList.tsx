@@ -79,7 +79,7 @@ export const ResultsList = ({
         </SubListWrapper>
       )}
       <SubListWrapper>
-        <Subtitle>All entities</Subtitle>
+        {showRecentEntities && <Subtitle>All entities</Subtitle>}
         <SelectList items={displayResults} onSelect={onSelect} variant="fullPage" />
       </SubListWrapper>
     </ListWrapper>

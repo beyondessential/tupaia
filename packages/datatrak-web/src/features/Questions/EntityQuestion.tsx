@@ -4,10 +4,11 @@
  */
 
 import React from 'react';
-import { SurveyQuestionInputProps } from '../../../types';
-import { useSurveyForm } from '../..';
-import { EntitySelector } from '../../EntitySelector';
-import { useEntityBaseFilters } from './utils';
+import { useParams } from 'react-router';
+import { SurveyQuestionInputProps } from '../../types';
+import { useSurveyForm } from '..';
+import { EntitySelector } from '../EntitySelector';
+import { Typography } from '@material-ui/core';
 
 export const EntityQuestion = ({
   id,
@@ -18,9 +19,8 @@ export const EntityQuestion = ({
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
-  const { isReviewScreen, isResponseScreen } = useSurveyForm();
-
-  const filter = useEntityBaseFilters(config);
+  const { countryCode } = useParams();
+  const { isReviewScreen, isResponseScreen, formData } = useSurveyForm();
 
   const { surveyProjectCode } = useSurveyForm();
 
@@ -37,11 +37,18 @@ export const EntityQuestion = ({
         ref,
         invalid,
       }}
-      config={config}
-      showLabel={isReviewScreen || isResponseScreen}
-      filter={filter}
+      showLegend={isReviewScreen || isResponseScreen}
       projectCode={surveyProjectCode}
+      config={config}
+      data={formData}
+      countryCode={countryCode}
       showRecentEntities
+      showSearchInput={isReviewScreen || isResponseScreen}
+      legend={label}
+      legendProps={{
+        component: Typography,
+        variant: 'h4',
+      }}
     />
   );
 };

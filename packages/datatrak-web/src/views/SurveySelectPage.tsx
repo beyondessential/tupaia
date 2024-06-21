@@ -12,6 +12,7 @@ import { ListItemType, Button } from '../components';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { HEADER_HEIGHT } from '../constants';
 import { CountrySelector, GroupedSurveyList, useUserCountries } from '../features';
+import { Survey } from '../types';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -82,7 +83,7 @@ const Subheader = styled(Typography).attrs({
 
 export const SurveySelectPage = () => {
   const navigate = useNavigate();
-  const [selectedSurvey, setSelectedSurvey] = useState<ListItemType | null>(null);
+  const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
   const {
     countries,
     selectedCountry,
@@ -91,7 +92,7 @@ export const SurveySelectPage = () => {
     isLoading: isLoadingCountries,
   } = useUserCountries();
   const navigateToSurvey = () => {
-    navigate(`/survey/${selectedCountry?.code}/${selectedSurvey?.value}`);
+    navigate(`/survey/${selectedCountry?.code}/${selectedSurvey}`);
   };
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
   const user = useCurrentUserContext();

@@ -28,8 +28,8 @@ const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
 };
 
 interface GroupedSurveyListProps {
-  setSelectedSurvey: (survey: ListItemType | null) => void;
-  selectedSurvey: ListItemType | null;
+  setSelectedSurvey: (surveyCode: Survey['code'] | null) => void;
+  selectedSurvey: Survey['code'] | null;
   selectedCountry?: Country | null;
   label?: string;
   labelProps?: FormLabelProps & {
@@ -53,7 +53,7 @@ export const GroupedSurveyList = ({
         const formattedSurvey = {
           content: name,
           value: code,
-          selected: selectedSurvey?.value === code,
+          selected: selectedSurvey === code,
           icon: <SurveyIcon />,
         };
         // if there is no surveyGroupName, add the survey to the list as a top level item
@@ -89,15 +89,20 @@ export const GroupedSurveyList = ({
 
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
-    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey.value)) {
+    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey)) {
       setSelectedSurvey(null);
     }
   }, [JSON.stringify(surveys)]);
+
+  const onSelectSurvey = (listItem: ListItemType | null) => {
+    if (!listItem) return setSelectedSurvey(null);
+    setSelectedSurvey(listItem?.value as Survey['code']);
+  };
   return (
     <ListWrapper>
       <SelectList
         items={groupedSurveys}
-        onSelect={setSelectedSurvey}
+        onSelect={onSelectSurvey}
         label={label}
         labelProps={labelProps}
       />
