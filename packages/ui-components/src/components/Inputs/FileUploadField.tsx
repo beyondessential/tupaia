@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { FormHelperText, useTheme } from '@material-ui/core';
-import { DropEvent, useDropzone } from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 import { FilePicker as FilePickerIcon } from '../Icons';
 import { Button } from '../Button';
 import { InputLabel } from './InputLabel';
@@ -173,19 +173,25 @@ export const FileUploadField = ({
    * that two different files will have the same name, size AND last-modified date.
    *
    * @param acceptedFiles The newly selected files, provided by `react-dropzone`
-   * @param event <input> change event, provided by `react-dropzone`
    */
-  const onDropAccepted = (acceptedFiles: File[], event: DropEvent) => {
+  const onDropAccepted = (acceptedFiles: File[]) => {
     const deduped = acceptedFiles.filter(
       acceptedFile =>
         !files.map(file => JSON.stringify(file)).includes(JSON.stringify(acceptedFile)),
     );
     const newFiles = files.concat(deduped);
     setFiles(newFiles);
-
-    // Propagate updated file selection to parent
-    onChange(newFiles, event as React.ChangeEvent<HTMLInputElement>);
   };
+
+  const removeFile = (fileToRemove: File) => {
+    const newFiles = files.filter(file => JSON.stringify(file) !== JSON.stringify(fileToRemove));
+    setFiles(newFiles);
+  };
+
+  /** Propagates file selection changes to parent */
+  useEffect(() => {
+    onChange(files, null);
+  }, [files]);
 
   /**
    * @privateRemarks `useDropzone` can take an `accept` prop of type `Record<string, string[]>`, but
@@ -201,11 +207,6 @@ export const FileUploadField = ({
     onDropAccepted,
   });
   const { palette } = useTheme();
-
-  const removeFile = (fileToRemove: File) => {
-    const newFiles = files.filter(file => JSON.stringify(file) !== JSON.stringify(fileToRemove));
-    setFiles(newFiles);
-  };
 
   const fileOrFiles = multiple ? 'files' : 'file';
   const getDropzoneLabel = () => {
