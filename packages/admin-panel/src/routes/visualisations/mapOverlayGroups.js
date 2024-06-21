@@ -46,6 +46,7 @@ export const RELATION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
+      title: 'Edit map overlay group relation',
       editEndpoint: RELATION_ENDPOINT,
       fields: [
         // Cannot edit parent map overlay group from nested/drilled-down view
