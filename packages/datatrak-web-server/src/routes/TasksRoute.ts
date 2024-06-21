@@ -27,7 +27,7 @@ const FIELDS = [
   'assignee_id',
   'status',
   'due_date',
-  'repeat_frequency',
+  'repeat_schedule',
   'survey_id',
   'entity_id',
 ];
@@ -77,7 +77,7 @@ const formatFilters = (filters: Record<string, string>[]) => {
       return;
     }
 
-    if (id === 'repeat_frequency') {
+    if (id === 'repeat_schedule') {
       formattedFilters[id] = {
         comparator: 'ilike',
         comparisonValue: `${value}%`,

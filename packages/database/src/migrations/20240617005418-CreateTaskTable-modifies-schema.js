@@ -47,8 +47,8 @@ const createTaskTable = db => {
       },
       // add the assignee name so that we can easily filter tasks by assignee name
       assignee_name: { type: 'text' },
-      repeat_frequency: { type: 'jsonb', notNull: true, defaultValue: '{}' },
-      due_date: { type: 'timestamp', notNull: true },
+      repeat_schedule: { type: 'jsonb', notNull: true, defaultValue: '{}' },
+      due_date: { type: 'timestamp' },
       status: { type: 'TASK_STATUS', notNull: true, defaultValue: 'to_do' },
     },
     ifNotExists: true,
