@@ -450,9 +450,6 @@ export const constructForSingle = (models, recordType) => {
             if (status !== 'repeating' && !value) {
               throw new Error('Due date is required for non-recurring tasks');
             }
-            if (status === 'repeating' && value) {
-              throw new Error('Due date should not be provided for recurring tasks');
-            }
             return true;
           },
         ],
@@ -460,9 +457,6 @@ export const constructForSingle = (models, recordType) => {
           (value, { status }) => {
             if (status === 'repeating' && !value) {
               throw new Error('Repeat frequency is required for recurring tasks');
-            }
-            if (status !== 'repeating' && value) {
-              throw new Error('Repeat frequency should not be provided for non-recurring tasks');
             }
             return true;
           },
