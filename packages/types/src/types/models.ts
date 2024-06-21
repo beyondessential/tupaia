@@ -1536,29 +1536,29 @@ export interface SyncGroupLogUpdate {
 export interface Task {
   'assignee_id'?: string | null;
   'assignee_name'?: string | null;
-  'due_date': Date;
+  'due_date'?: Date | null;
   'entity_id': string;
   'id': string;
-  'repeat_frequency': {};
+  'repeat_schedule': {};
   'status': TaskStatus;
   'survey_id': string;
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;
   'assignee_name'?: string | null;
-  'due_date': Date;
+  'due_date'?: Date | null;
   'entity_id': string;
-  'repeat_frequency'?: {};
+  'repeat_schedule'?: {};
   'status'?: TaskStatus;
   'survey_id': string;
 }
 export interface TaskUpdate {
   'assignee_id'?: string | null;
   'assignee_name'?: string | null;
-  'due_date'?: Date;
+  'due_date'?: Date | null;
   'entity_id'?: string;
   'id'?: string;
-  'repeat_frequency'?: {};
+  'repeat_schedule'?: {};
   'status'?: TaskStatus;
   'survey_id'?: string;
 }

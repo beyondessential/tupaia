@@ -85618,7 +85618,7 @@ export const TaskSchema = {
 		"id": {
 			"type": "string"
 		},
-		"repeat_frequency": {
+		"repeat_schedule": {
 			"type": "object",
 			"properties": {}
 		},
@@ -85638,10 +85638,9 @@ export const TaskSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"due_date",
 		"entity_id",
 		"id",
-		"repeat_frequency",
+		"repeat_schedule",
 		"status",
 		"survey_id"
 	]
@@ -85663,7 +85662,7 @@ export const TaskCreateSchema = {
 		"entity_id": {
 			"type": "string"
 		},
-		"repeat_frequency": {
+		"repeat_schedule": {
 			"type": "object",
 			"properties": {}
 		},
@@ -85683,7 +85682,6 @@ export const TaskCreateSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"due_date",
 		"entity_id",
 		"survey_id"
 	]
@@ -85708,7 +85706,7 @@ export const TaskUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"repeat_frequency": {
+		"repeat_schedule": {
 			"type": "object",
 			"properties": {}
 		},
