@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { FileUploadField } from '../../src/components';
+import { FileUploadField } from '../../src';
 
 export default {
   title: 'Inputs/FileUploadField',
@@ -19,13 +19,11 @@ const Container = styled(MuiBox)`
 `;
 
 export const Simple = () => {
-  const [fileName, setFileName] = useState('No File chosen');
+  const [files, setFiles] = useState([]);
   return (
     <Container>
       <FileUploadField
-        onChange={(event, newName) => {
-          setFileName(newName);
-        }}
+        onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
         fileName={fileName}
         label="File Upload"
@@ -35,30 +33,27 @@ export const Simple = () => {
 };
 
 export const SimpleWithTooltip = () => {
-  const [fileName, setFileName] = useState('No File chosen');
+  const [files, setFiles] = useState([]);
   return (
     <Container>
       <FileUploadField
-        onChange={(event, newName) => {
-          setFileName(newName);
-        }}
+        accept="image/jpeg,image/png"
+        onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
         fileName={fileName}
         label="File Upload"
-        tooltip=".png and .jpg files only"
+        tooltip="PNG and JPEG files only"
       />
     </Container>
   );
 };
 
 export const Multiple = () => {
-  const [fileName, setFileName] = useState('No File chosen');
+  const [files, setFiles] = useState([]);
   return (
     <Container>
       <FileUploadField
-        onChange={(event, newName) => {
-          setFileName(newName);
-        }}
+        onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
         fileName={fileName}
         multiple
@@ -68,13 +63,11 @@ export const Multiple = () => {
 };
 
 export const WithLabel = () => {
-  const [fileName, setFileName] = useState('No File chosen');
+  const [files, setFiles] = useState([]);
   return (
     <Container>
       <FileUploadField
-        onChange={(event, newName) => {
-          setFileName(newName);
-        }}
+        onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
         fileName={fileName}
         label="Profile Image"
@@ -85,17 +78,16 @@ export const WithLabel = () => {
 };
 
 export const WithMaxFileSize = () => {
-  const [fileName, setFileName] = useState('No File chosen');
+  const [files, setFiles] = useState([]);
   return (
     <Container>
       <FileUploadField
-        onChange={(event, newName) => {
-          setFileName(newName);
-        }}
+        onChange={newFiles => setFiles(newFiles)}
         name="file-upload"
         fileName={fileName}
         label="File Upload"
-        maxSizeInBytes={1024 * 10} /* 10 KB */
+        tooltip="Max. file size 10 KiB"
+        maxSizeInBytes={1024 * 10} /* 10 KiB */
       />
     </Container>
   );
