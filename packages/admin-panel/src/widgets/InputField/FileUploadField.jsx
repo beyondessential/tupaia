@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { FileUploadField as BaseFileUploadField } from '@tupaia/ui-components';
 
 export const FileUploadField = ({ onChange, name, label, helperText, maxSizeInBytes, accept }) => {
-  const handleChange = async (files, _event) => {
+  const handleChange = async files => {
     const [file] = files || [];
     if (!file) {
       onChange({

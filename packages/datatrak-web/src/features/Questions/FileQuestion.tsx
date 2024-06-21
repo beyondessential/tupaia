@@ -47,8 +47,8 @@ export const FileQuestion = ({
   detailLabel,
   controllerProps: { onChange, name },
 }: SurveyQuestionInputProps) => {
-  const handleChange = async (_event, files) => {
-    if (!files) {
+  const handleChange = async files => {
+    if (!files || files.length === 0) {
       onChange(null);
       return;
     }

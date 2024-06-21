@@ -109,12 +109,7 @@ export const ImportModal = ({
           <>
             <p>{subtitle}</p>
             <form>
-              <FileUploadField
-                onChange={(_event, files) => {
-                  setFile(files[0]);
-                }}
-                name="file-upload"
-              />
+              <FileUploadField onChange={files => setFile(files[0])} name="file-upload" />
             </form>
           </>
         );

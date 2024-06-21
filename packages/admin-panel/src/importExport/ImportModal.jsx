@@ -158,7 +158,7 @@ export const ImportModalComponent = React.memo(
 
     const buttons = getButtons();
 
-    const onChangeFile = (newFiles, _event) => {
+    const onChangeFile = newFiles => {
       setFiles(newFiles);
     };
 
