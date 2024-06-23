@@ -3,7 +3,10 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { RESOURCE_NAME as DASHBOARD_RELATION_RESOURCE_NAME } from './dashboardRelations';
+import {
+  DASHBOARD_RELATION_ENDPOINT,
+  RESOURCE_NAME as DASHBOARD_RELATION_RESOURCE_NAME,
+} from './dashboardRelations';
 
 const RESOURCE_NAME = { singular: 'dashboard' };
 
@@ -110,6 +113,13 @@ const RELATION_COLUMNS = [
     actionConfig: {
       editEndpoint: 'dashboardRelations',
       fields: RELATION_FIELDS,
+    },
+  },
+  {
+    Header: 'Delete',
+    type: 'delete',
+    actionConfig: {
+      endpoint: DASHBOARD_RELATION_ENDPOINT,
     },
   },
 ];

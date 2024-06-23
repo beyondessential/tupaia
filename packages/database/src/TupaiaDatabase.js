@@ -58,6 +58,18 @@ const COMPARATORS = {
   ILIKE: 'ilike',
 };
 
+/**
+ * We only support specific functions in SELECT statements to avoid SQL injection.
+ *
+ * @privateRemarks Because of the (appropriately) conservative way Knex handles identifiers in
+ * parameterised queries, supported functions may need custom handling in {@link getColSelector}.
+ * Otherwise, Knex will attempt to interpret function calls as identifiers. For example,
+ * `COALESCE(foo, bar)` would otherwise become `"COALESCE(FOO", "bar)"`.
+ *
+ * @see getColSelector
+ */
+const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
@@ -536,11 +548,16 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
         return { [alias]: connection.raw(`??::${castAs}`, [alias]) };
       }
 
-      // special case to handle selecting geojson - avoid generic handling of functions to keep
-      // out sql injection vulnerabilities
-      if (selector.includes('ST_AsGeoJSON')) {
-        const [, columnSelector] = selector.match(/ST_AsGeoJSON\((.*)\)/);
-        return { [alias]: connection.raw('ST_AsGeoJSON(??)', [columnSelector]) };
+      // Special case to handle allowlisted SQL functions, namely for selecting GeoJSON and COALESCE
+      // attributes. Avoid generic handling of functions to keep out SQL injection vulnerabilities.
+      for (const func of supportedFunctions) {
+        if (selector.includes(func)) {
+          const [, argsString] = selector.match(new RegExp(`${func}\\((.*)\\)`));
+          const args = argsString.split(',').map(arg => arg.trim());
+          return {
+            [alias]: connection.raw(`${func}(${args.map(() => '??').join(',')})`, [...args]),
+          };
+        }
       }
 
       return { [alias]: connection.raw('??', [selector]) };
@@ -683,17 +700,39 @@ function addJoin(baseQuery, recordType, joinOptions) {
   });
 }
 
+/**
+ * @privateRemarks
+ * This sanitisation step fails if the input uses both JSON operators and the `COALESCE` function.
+ *
+ * @see supportedFunctions
+ */
 function getColSelector(connection, inputColStr) {
   const jsonOperatorPattern = /->>?/g;
-  if (!jsonOperatorPattern.test(inputColStr)) return inputColStr;
+  if (jsonOperatorPattern.test(inputColStr)) {
+    const params = inputColStr.split(jsonOperatorPattern);
+    const allButFirst = params.slice(1);
+    const lastIndexOfLookupAsText = inputColStr.lastIndexOf('->>');
+    const lastIndexOfLookupAsJson = inputColStr.lastIndexOf('->');
+    const selector = lastIndexOfLookupAsText >= lastIndexOfLookupAsJson ? '#>>' : '#>';
 
-  const params = inputColStr.split(jsonOperatorPattern);
-  const allButFirst = params.slice(1);
-  const lastIndexOfLookupAsText = inputColStr.lastIndexOf('->>');
-  const lastIndexOfLookupAsJson = inputColStr.lastIndexOf('->');
-  const selector = lastIndexOfLookupAsText >= lastIndexOfLookupAsJson ? '#>>' : '#>';
+    // Turn `config->item->>colour` into `config #>> '{item,colour}'`
+    // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
+    return connection.raw(`?? ${selector} '{${allButFirst.map(() => '??').join(',')}}'`, params);
+  }
 
-  // Turn `config->item->>colour` into `config #>> '{item,colour}'`
-  // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
-  return connection.raw(`?? ${selector} '{${allButFirst.map(() => '??').join(',')}}'`, params);
+  /**
+   * Special handling of COALESCE() - one of the {@link supportedFunctions} - to treat its arguments
+   * as identifiers individually rather than trying to treat ‘COALESCE(foo, bar)’ as a single
+   * identifier.
+   */
+  const coalescePattern = /^COALESCE\(.+\)$/;
+  if (coalescePattern.test(inputColStr)) {
+    const [, argsString] = inputColStr.match(/^COALESCE\((.+)\)$/);
+    const bindings = argsString.split(',').map(arg => arg.trim());
+    const identifiers = bindings.map(() => '??');
+
+    return connection.raw(`COALESCE(${identifiers})`, bindings);
+  }
+
+  return inputColStr;
 }
