@@ -99,8 +99,8 @@ describe('Permissions checker for EditTask', async () => {
         id: generateId(),
         survey_id: surveys[0].survey.id,
         entity_id: facilities[0].id,
-        assignee_id: assignee.id,
         due_date: dueDate,
+        status: 'to_do',
       },
       {
         id: generateId(),
@@ -108,6 +108,7 @@ describe('Permissions checker for EditTask', async () => {
         entity_id: facilities[1].id,
         assignee_id: assignee.id,
         due_date: dueDate,
+        status: 'to_do',
       },
     ];
 

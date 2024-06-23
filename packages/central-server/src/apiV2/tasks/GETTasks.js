@@ -1,6 +1,6 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
@@ -9,21 +9,6 @@ import { assertUserHasTaskPermissions, createTaskDBFilter } from './assertTaskPe
 
 export class GETTasks extends GETHandler {
   permissionsFilteredInternally = true;
-
-  customJoinConditions = {
-    entity: {
-      nearTableKey: 'task.entity_id',
-      farTableKey: 'entity.id',
-    },
-    survey: {
-      nearTableKey: 'task.survey_id',
-      farTableKey: 'survey.id',
-    },
-    user_account: {
-      nearTableKey: 'task.assignee_id',
-      farTableKey: 'user_account.id',
-    },
-  };
 
   async getPermissionsFilter(criteria, options) {
     return createTaskDBFilter(this.accessPolicy, this.models, criteria, options);
@@ -37,5 +22,19 @@ export class GETTasks extends GETHandler {
     );
 
     return super.findSingleRecord(projectId, options);
+  }
+
+  async getDbQueryOptions() {
+    const { multiJoin, sort, ...restOfOptions } = await super.getDbQueryOptions();
+
+    return {
+      ...restOfOptions,
+      // Strip table prefix from `task_status` and `assignee_name` as these are customColumns
+      sort: sort.map(s =>
+        s.replace('task.task_status', 'task_status').replace('task.assignee_name', 'assignee_name'),
+      ),
+      // Appending the multi-join from the Record class so that we can fetch the `task_status` and `assignee_name`
+      multiJoin: multiJoin.concat(this.models.task.DatabaseRecordClass.joins),
+    };
   }
 }
