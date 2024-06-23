@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { RELATION_ENDPOINT } from './mapOverlayGroupRelations';
+
 const RESOURCE_NAME = { singular: 'map overlay group' };
 
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
@@ -80,6 +82,13 @@ export const RELATION_COLUMNS = [
     actionConfig: {
       editEndpoint: 'mapOverlayGroupRelations',
       fields: RELATION_FIELDS,
+    },
+  },
+  {
+    Header: 'Delete',
+    type: 'delete',
+    actionConfig: {
+      endpoint: RELATION_ENDPOINT,
     },
   },
 ];
