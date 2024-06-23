@@ -3,10 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { TaskStatus } from '@tupaia/types';
 import React from 'react';
 import styled from 'styled-components';
+import { TaskStatus } from '@tupaia/types';
 import { theme } from '../../theme';
+import { TaskStatusType } from '../../types';
 
 const Pill = styled.span<{
   $color: string;
@@ -35,17 +36,17 @@ export const STATUS_VALUES = {
     label: 'Cancelled',
     color: theme.palette.text.secondary,
   },
-  [TaskStatus.overdue]: {
+  overdue: {
     label: 'Overdue',
     color: theme.palette.error.main,
   },
-  [TaskStatus.repeating]: {
+  repeating: {
     label: 'Repeating',
     color: '#4101C9',
   },
 };
 
-export const StatusPill = ({ status }: { status: TaskStatus }) => {
+export const StatusPill = ({ status }: { status: TaskStatusType }) => {
   const statusInfo = STATUS_VALUES[status];
   // If the status is not found, return null. This should not happen in practice, but it's a good idea to handle it.
   if (!statusInfo) {

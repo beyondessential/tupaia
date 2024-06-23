@@ -92,7 +92,12 @@ export const MapTableModal = ({ onClose }: any) => {
           />
         )}
         {!isLoading && !hasNoData && (
-          <MapTable serieses={serieses} measureData={measureData} stickyHeader />
+          <MapTable
+            serieses={serieses}
+            measureData={measureData}
+            stickyHeader
+            className="flippa-table"
+          />
         )}
       </Wrapper>
     </Modal>

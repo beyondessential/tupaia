@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { generatePath, useSearchParams, Link, useLocation } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
 import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
+import { TaskStatusType } from '../../../types';
 import { Button } from '../../../components';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
@@ -50,9 +51,9 @@ const Container = styled.div`
 const ActionButton = (task: Task) => {
   const location = useLocation();
   if (!task) return null;
-  const { assignee, survey, entity, status } = task;
+  const { assigneeId, survey, entity, status } = task;
   if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
-  if (!assignee) {
+  if (!assigneeId) {
     return <ActionButtonComponent variant="outlined">Assign</ActionButtonComponent>;
   }
 
@@ -91,7 +92,7 @@ const COLUMNS = [
   },
   {
     Header: 'Assignee',
-    accessor: row => row.assignee?.name ?? 'Unassigned',
+    accessor: row => row.assigneeName ?? 'Unassigned',
     id: 'assignee_name',
     filterable: true,
     disableResizing: true,
@@ -99,8 +100,7 @@ const COLUMNS = [
   {
     Header: 'Repeating task',
     // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
-    accessor: row =>
-      row.status === TaskStatus.repeating ? JSON.stringify(row.repeatFrequency) : 'Doesn’t repeat',
+    accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
     id: 'repeat_schedule',
     filterable: true,
     disableResizing: true,
@@ -116,9 +116,9 @@ const COLUMNS = [
   {
     Header: 'Status',
     filterable: true,
-    accessor: 'status',
-    id: 'status',
-    Cell: ({ value }: { value: TaskStatus }) => <StatusPill status={value} />,
+    accessor: 'taskStatus',
+    id: 'task_status',
+    Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
     Filter: StatusFilter,
     disableResizing: true,
   },

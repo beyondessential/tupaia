@@ -21,20 +21,6 @@ export class CreateTask extends CreateHandler {
   }
 
   async createRecord() {
-    const recordData = { ...this.newRecordData };
-    const { assignee_id: assigneeId } = recordData;
-    await this.models.wrapInTransaction(async transactingModels => {
-      // Check if assignee exists, and if so, add their name to the record
-      if (assigneeId) {
-        const user = await transactingModels.user.findById(assigneeId);
-        if (!user) {
-          throw new Error(`User with id ${assigneeId} not found`);
-        }
-        const name = [user.first_name, user.last_name].join(' ');
-        recordData.assignee_name = name;
-      }
-      await transactingModels.task.create(recordData);
-      return recordData;
-    });
+    await this.insertRecord();
   }
 }

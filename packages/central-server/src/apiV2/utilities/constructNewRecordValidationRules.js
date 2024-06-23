@@ -461,6 +461,15 @@ export const constructForSingle = (models, recordType) => {
             return true;
           },
         ],
+        status: [
+          (value, { repeat_schedule: repeatSchedule }) => {
+            if (repeatSchedule) return true;
+            if (!value) {
+              throw new Error('Status is required');
+            }
+            return true;
+          },
+        ],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

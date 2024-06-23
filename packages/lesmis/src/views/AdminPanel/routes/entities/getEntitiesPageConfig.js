@@ -59,7 +59,7 @@ export const getEntitiesPageConfig = translate => {
   const IMPORT_CONFIG = getImportConfigs(translate, entities.importConfig);
   return {
     ...entities,
-    title: translate('admin.entities'),
+    label: translate('admin.entities'),
     columns: FIELDS,
     importConfig: IMPORT_CONFIG,
     nestedViews: [
