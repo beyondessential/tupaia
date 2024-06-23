@@ -42,7 +42,10 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
   return formatLinkHeader(linkHeader);
 };
 
-export const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
+/**
+ * Used only by {@link processColumnSelector}, so not exported.
+ */
+const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
   const [resource, column] = unprocessedColumnSelector.includes('.')
     ? unprocessedColumnSelector.split('.')
     : [baseRecordType, unprocessedColumnSelector];
@@ -55,7 +58,7 @@ export const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, ba
 export const processColumnSelectorKeys = (models, object, recordType) => {
   const processedObject = {};
   Object.entries(object).forEach(([columnSelector, value]) => {
-    processedObject[fullyQualifyColumnSelector(models, columnSelector, recordType)] = value;
+    processedObject[processColumnSelector(models, columnSelector, recordType)] = value;
   });
   return processedObject;
 };

@@ -22,7 +22,7 @@ const createFK = (columnName, table, shouldCascade) => {
 const createStatusEnum = db => {
   return db.runSql(`
     DROP TYPE IF EXISTS TASK_STATUS;
-    CREATE TYPE TASK_STATUS AS ENUM('to_do', 'cancelled', 'completed', 'overdue','repeating');
+    CREATE TYPE TASK_STATUS AS ENUM('to_do', 'cancelled', 'completed');
  
   `);
 };
@@ -45,11 +45,9 @@ const createTaskTable = db => {
         type: 'text',
         foreignKey: createFK('assignee_id', 'user_account', false),
       },
-      // add the assignee name so that we can easily filter tasks by assignee name
-      assignee_name: { type: 'text' },
-      repeat_schedule: { type: 'jsonb', notNull: true, defaultValue: '{}' },
+      repeat_schedule: { type: 'jsonb' },
       due_date: { type: 'timestamp' },
-      status: { type: 'TASK_STATUS', notNull: true, defaultValue: 'to_do' },
+      status: { type: 'TASK_STATUS' },
     },
     ifNotExists: true,
   });

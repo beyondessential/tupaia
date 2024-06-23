@@ -1535,30 +1535,27 @@ export interface SyncGroupLogUpdate {
 }
 export interface Task {
   'assignee_id'?: string | null;
-  'assignee_name'?: string | null;
   'due_date'?: Date | null;
   'entity_id': string;
   'id': string;
-  'repeat_schedule': {};
+  'repeat_schedule'?: {} | null;
   'status': TaskStatus;
   'survey_id': string;
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;
-  'assignee_name'?: string | null;
   'due_date'?: Date | null;
   'entity_id': string;
-  'repeat_schedule'?: {};
+  'repeat_schedule'?: {} | null;
   'status'?: TaskStatus;
   'survey_id': string;
 }
 export interface TaskUpdate {
   'assignee_id'?: string | null;
-  'assignee_name'?: string | null;
   'due_date'?: Date | null;
   'entity_id'?: string;
   'id'?: string;
-  'repeat_schedule'?: {};
+  'repeat_schedule'?: {} | null;
   'status'?: TaskStatus;
   'survey_id'?: string;
 }
@@ -1698,8 +1695,6 @@ export enum TaskStatus {
   'to_do' = 'to_do',
   'cancelled' = 'cancelled',
   'completed' = 'completed',
-  'overdue' = 'overdue',
-  'repeating' = 'repeating',
 }
 export enum SyncGroupSyncStatus {
   'IDLE' = 'IDLE',

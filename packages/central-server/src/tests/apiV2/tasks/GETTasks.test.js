@@ -81,22 +81,12 @@ describe('Permissions checker for GETTasks', async () => {
       },
     ]);
 
-    const assignees = [
-      {
-        id: generateId(),
-        first_name: 'Peter',
-        last_name: 'Pan',
-      },
-      {
-        id: generateId(),
-        first_name: 'Minnie',
-        last_name: 'Mouse',
-      },
-    ];
-
-    await Promise.all(
-      assignees.map(async assignee => findOrCreateDummyRecord(models.user, assignee)),
-    );
+    const assignee = {
+      id: generateId(),
+      first_name: 'Minnie',
+      last_name: 'Mouse',
+    };
+    await findOrCreateDummyRecord(models.user, assignee);
 
     const dueDate = new Date('2021-12-31');
 
@@ -105,19 +95,32 @@ describe('Permissions checker for GETTasks', async () => {
         id: generateId(),
         survey_id: surveys[0].survey.id,
         entity_id: facilities[0].id,
-        assignee_id: assignees[0].id,
         due_date: dueDate,
+        status: 'to_do',
+        repeat_schedule: null,
       },
       {
         id: generateId(),
         survey_id: surveys[1].survey.id,
         entity_id: facilities[1].id,
-        assignee_id: assignees[1].id,
-        due_date: dueDate,
+        assignee_id: assignee.id,
+        due_date: null,
+        repeat_schedule: '{}',
+        status: null,
       },
     ];
 
-    await Promise.all(tasks.map(task => findOrCreateDummyRecord(models.task, task)));
+    await Promise.all(
+      tasks.map(task =>
+        findOrCreateDummyRecord(
+          models.task,
+          {
+            'task.id': task.id,
+          },
+          task,
+        ),
+      ),
+    );
   });
 
   afterEach(() => {
@@ -152,25 +155,40 @@ describe('Permissions checker for GETTasks', async () => {
 
   describe('GET /tasks', async () => {
     it('Sufficient permissions: returns all tasks if the user has BES admin access', async () => {
+      const columnsString = JSON.stringify([
+        'id',
+        'task_status',
+        'assignee_name',
+        'due_date',
+        'repeat_schedule',
+      ]);
       await app.grantAccess(BES_ADMIN_POLICY);
-      const { body: results } = await app.get('tasks');
+      const { body: results } = await app.get(`tasks?columns=${columnsString}`);
       expect(results.length).to.equal(tasks.length);
-      const resultIds = results.map(r => r.id);
-      tasks.forEach(task => {
-        expect(resultIds.includes(task.id)).to.equal(true);
+
+      results.forEach((result, index) => {
+        const task = tasks[index];
+        expect(result.id).to.equal(task.id);
+        if (task.assignee_id) {
+          expect(result.assignee_name).to.equal('Minnie Mouse');
+        }
+        if (task.status === 'to_do') {
+          expect(result.task_status).to.equal('overdue');
+        } else expect(result.task_status).to.equal('repeating');
       });
     });
 
     it('Sufficient permissions: returns tasks when user has permissions', async () => {
+      const columnsString = JSON.stringify(['assignee_name', 'id']);
       await app.grantAccess(DEFAULT_POLICY);
-      const { body: results } = await app.get('tasks');
+      const { body: results } = await app.get(`tasks?columns=${columnsString}`);
 
       expect(results.length).to.equal(1);
-      const resultIds = results.map(r => r.id);
-      expect(resultIds[0]).to.equal(tasks[1].id);
+      expect(results[0].assignee_name).to.equal('Minnie Mouse');
+      expect(results[0].id).to.equal(tasks[1].id);
     });
 
-    it('Insufficient permissions: returns an empty array if users do not have access to any project', async () => {
+    it('Insufficient permissions: returns an empty array if users do not have access to any tasks', async () => {
       await app.grantAccess(PUBLIC_POLICY);
       const { body: results } = await app.get('tasks');
 
