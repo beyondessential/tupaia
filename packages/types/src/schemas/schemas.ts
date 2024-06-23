@@ -85635,7 +85635,6 @@ export const TaskSchema = {
 	"required": [
 		"entity_id",
 		"id",
-		"status",
 		"survey_id"
 	]
 } 

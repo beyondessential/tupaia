@@ -1539,7 +1539,7 @@ export interface Task {
   'entity_id': string;
   'id': string;
   'repeat_schedule'?: {} | null;
-  'status': TaskStatus;
+  'status'?: TaskStatus | null;
   'survey_id': string;
 }
 export interface TaskCreate {
@@ -1547,7 +1547,7 @@ export interface TaskCreate {
   'due_date'?: Date | null;
   'entity_id': string;
   'repeat_schedule'?: {} | null;
-  'status'?: TaskStatus;
+  'status'?: TaskStatus | null;
   'survey_id': string;
 }
 export interface TaskUpdate {
@@ -1556,7 +1556,7 @@ export interface TaskUpdate {
   'entity_id'?: string;
   'id'?: string;
   'repeat_schedule'?: {} | null;
-  'status'?: TaskStatus;
+  'status'?: TaskStatus | null;
   'survey_id'?: string;
 }
 export interface TupaiaWebSession {
