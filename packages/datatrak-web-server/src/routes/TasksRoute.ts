@@ -25,7 +25,7 @@ const FIELDS = [
   'entity.name',
   'assignee_name',
   'assignee_id',
-  'status',
+  'task_status',
   'due_date',
   'repeat_schedule',
   'survey_id',
@@ -116,8 +116,6 @@ export class TasksRoute extends Route<TasksRequest> {
 
     const formattedTasks = tasks.map((task: SingleTask) => {
       const {
-        assignee_id: assigneeId,
-        assignee_name: assigneeName,
         entity_id: entityId,
         'entity.name': entityName,
         'entity.country_code': entityCountryCode,
@@ -128,12 +126,6 @@ export class TasksRoute extends Route<TasksRequest> {
       } = task;
       return {
         ...rest,
-        assignee: assigneeId
-          ? {
-              id: assigneeId,
-              name: assigneeName,
-            }
-          : null,
         entity: {
           id: entityId,
           name: entityName,

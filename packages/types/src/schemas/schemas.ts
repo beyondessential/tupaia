@@ -87538,9 +87538,6 @@ export const TaskResponseSchema = {
 		"assigneeId": {
 			"type": "string"
 		},
-		"assigneeName": {
-			"type": "string"
-		},
 		"dueDate": {
 			"type": "object",
 			"properties": {
@@ -87783,8 +87780,6 @@ export const TaskResponseSchema = {
 			"enum": [
 				"cancelled",
 				"completed",
-				"overdue",
-				"repeating",
 				"to_do"
 			],
 			"type": "string"
@@ -87792,21 +87787,18 @@ export const TaskResponseSchema = {
 		"surveyId": {
 			"type": "string"
 		},
-		"assignee": {
-			"type": "object",
-			"properties": {
-				"name": {
-					"type": "string"
-				},
-				"id": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"id",
-				"name"
-			]
+		"assigneeName": {
+			"type": "string"
+		},
+		"taskStatus": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"overdue",
+				"repeating",
+				"to_do"
+			],
+			"type": "string"
 		},
 		"survey": {
 			"type": "object",
@@ -87853,10 +87845,9 @@ export const TaskResponseSchema = {
 		"entity",
 		"entityId",
 		"id",
-		"repeatSchedule",
-		"status",
 		"survey",
-		"surveyId"
+		"surveyId",
+		"taskStatus"
 	]
 } 
 

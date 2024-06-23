@@ -4,15 +4,13 @@
  */
 
 import { KeysToCamelCase } from '../../../utils/casing';
-import { Entity, Survey, Task, UserAccount } from '../../models';
+import { Entity, Survey, Task, TaskStatus } from '../../models';
 
 export type Params = Record<string, never>;
 
 type TaskResponse = KeysToCamelCase<Task> & {
-  assignee?: {
-    name: string;
-    id: UserAccount['id'];
-  };
+  assigneeName?: string;
+  taskStatus: TaskStatus | 'overdue' | 'repeating';
   survey: {
     name: Survey['name'];
     id: Survey['id'];
