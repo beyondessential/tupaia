@@ -5,6 +5,8 @@
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
 import { EditSurveyPage } from '../../pages/resources';
 
+const { REACT_APP_DATATRAK_WEB_URL } = import.meta.env;
+
 const RESOURCE_NAME = { singular: 'survey' };
 
 const PERIOD_GRANULARITIES = [
@@ -170,12 +172,25 @@ const SURVEY_COLUMNS = [
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {
+    Header: 'Project ID',
+    source: 'project.id',
+    show: false,
+  },
+  {
     Header: 'Permission group',
     source: 'permission_group.name',
   },
   {
     Header: 'Survey group',
     source: 'survey_group.name',
+  },
+  {
+    Header: 'Preview',
+    type: 'externalLink',
+    actionConfig: {
+      url: `${REACT_APP_DATATRAK_WEB_URL}/survey?projectId={project.id}`,
+      title: 'Preview survey',
+    },
   },
   {
     Header: 'Export',
