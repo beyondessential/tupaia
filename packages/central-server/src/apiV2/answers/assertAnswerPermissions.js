@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
+import { JOIN_TYPES, QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 import { assertSurveyResponsePermissions } from '../surveyResponses';
@@ -101,6 +101,11 @@ export const createAnswerViaSurveyResponseDBFilter = async (
       {
         joinWith: RECORDS.SURVEY_RESPONSE,
         joinCondition: [`${RECORDS.SURVEY_RESPONSE}.id`, `${RECORDS.ANSWER}.survey_response_id`],
+      },
+      {
+        joinWith: RECORDS.ENTITY,
+        joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.ANSWER}.text`],
+        joinType: JOIN_TYPES.LEFT,
       },
       {
         joinWith: RECORDS.SURVEY_SCREEN,
