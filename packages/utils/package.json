@@ -40,7 +40,7 @@
     "sanitize-filename": "^1.6.3",
     "validator": "^13.11.0",
     "winston": "^3.3.3",
-    "xlsx": "^0.10.9",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.9"
   },
   "devDependencies": {
