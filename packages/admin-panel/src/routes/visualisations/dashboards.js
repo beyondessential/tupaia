@@ -6,6 +6,7 @@
 import {
   RESOURCE_NAME as DASHBOARD_RELATION_RESOURCE_NAME,
   DASHBOARD_RELATION_COLUMNS,
+  DASHBOARD_RELATION_ENDPOINT,
 } from './dashboardRelations';
 
 const RESOURCE_NAME = { singular: 'dashboard' };
@@ -82,6 +83,13 @@ const RELATION_COLUMNS = [
     actionConfig: {
       editEndpoint: 'dashboardRelations',
       fields: RELATION_FIELDS,
+    },
+  },
+  {
+    Header: 'Delete',
+    type: 'delete',
+    actionConfig: {
+      endpoint: DASHBOARD_RELATION_ENDPOINT,
     },
   },
 ];

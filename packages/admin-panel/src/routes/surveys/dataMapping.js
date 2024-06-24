@@ -31,7 +31,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Data service sonfiguration',
+    Header: 'Data service configuration',
     source: 'service_config',
     Cell: DataSourceConfigView,
     editConfig: DATA_ELEMENT_FIELD_EDIT_CONFIG,

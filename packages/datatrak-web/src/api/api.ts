@@ -42,15 +42,15 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
 
       // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
       if (data.details) {
-        throw new FetchError(data.details, error.response.status);
+        throw new FetchError(data.details, error.response.status, data);
       }
 
       if (data.error) {
-        throw new FetchError(data.error, error.response.status);
+        throw new FetchError(data.error, error.response.status, data);
       }
 
       if (data.message) {
-        throw new FetchError(data.message, data.code);
+        throw new FetchError(data.message, data.code, data);
       }
     }
     throw new Error(error);

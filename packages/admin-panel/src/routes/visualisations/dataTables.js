@@ -112,6 +112,7 @@ const IMPORT_CONFIG = {
   title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataTables',
+    multiple: true,
   },
 };
 const EDITOR_CONFIG = { displayUsedBy: true };

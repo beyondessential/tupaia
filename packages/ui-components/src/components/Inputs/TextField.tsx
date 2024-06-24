@@ -121,7 +121,7 @@ export const TextField = ({
   error,
   required,
   ...props
-}: TextFieldProps & {
+}: Partial<TextFieldProps> & {
   tooltip?: string;
 }) => (
   <StyledTextField

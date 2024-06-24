@@ -414,7 +414,7 @@ export const getSurveysPageConfig = translate => {
 
   return {
     ...surveys,
-    title: translate('admin.surveys'),
+    label: translate('admin.surveys'),
     columns: SURVEY_COLUMNS,
     importConfig: IMPORT_CONFIG,
     deleteConfig: getDeleteConfigs(translate),
@@ -422,7 +422,7 @@ export const getSurveysPageConfig = translate => {
     nestedViews: [
       {
         ...surveys.nestedViews[0],
-        title: translate('admin.questions'),
+        label: translate('admin.questions'),
         columns: QUESTION_COLUMNS,
       },
     ],

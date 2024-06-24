@@ -4,6 +4,8 @@
  */
 import { MAP_OVERLAY_GROUP_RELATION_FIELDS } from './mapOverlayGroupRelations';
 
+import { RELATION_ENDPOINT } from './mapOverlayGroupRelations';
+
 const RESOURCE_NAME = { singular: 'map overlay group' };
 
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
@@ -54,6 +56,13 @@ export const RELATION_COLUMNS = [
     actionConfig: {
       editEndpoint: 'mapOverlayGroupRelations',
       fields: RELATION_FIELDS,
+    },
+  },
+  {
+    Header: 'Delete',
+    type: 'delete',
+    actionConfig: {
+      endpoint: RELATION_ENDPOINT,
     },
   },
 ];

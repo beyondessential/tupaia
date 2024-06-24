@@ -70,8 +70,20 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
     // normalise errors using fetch error class
     if (error.response) {
       const { data } = error.response;
+      let errorObject = error;
 
-      const message = getErrorMessage(error);
+      // This is usually in the case of data downloads, which means the error is formatted differently because we request a blob
+      if (data instanceof Blob) {
+        const result = JSON.parse(await data.text());
+        errorObject = {
+          response: {
+            status: result.code,
+            data: result,
+          },
+        };
+      }
+
+      const message = getErrorMessage(errorObject);
 
       const code = data.message ? data.code : error.response.status;
 

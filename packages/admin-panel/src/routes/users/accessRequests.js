@@ -74,7 +74,6 @@ const USER_COLUMNS = [
     Header: 'Edit',
     type: 'bulkEdit',
     source: 'user_id',
-    width: 150,
     actionConfig: {
       title: 'Edit & approve access requests',
       bulkGetEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
@@ -137,7 +136,6 @@ const DETAILS_COLUMNS = [
   ...ACCESS_REQUEST_FIELDS,
   {
     Header: 'Approve/decline',
-    width: 140,
     source: 'id',
     type: 'edit',
     actionConfig: {

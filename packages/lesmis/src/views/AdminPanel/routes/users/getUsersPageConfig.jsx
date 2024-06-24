@@ -159,7 +159,7 @@ export const getUsersPageConfig = translate => {
 
   return {
     ...users,
-    title: translate('admin.users'),
+    label: translate('admin.users'),
     columns: COLUMNS,
     editorConfig,
     importConfig,

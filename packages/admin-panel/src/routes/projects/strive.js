@@ -6,7 +6,7 @@
 import { StrivePage } from '../../pages/StrivePage';
 
 export const strive = {
-  title: 'Strive',
+  label: 'Strive',
   path: '/strive',
   Component: StrivePage,
   isBESAdminOnly: true,

@@ -40,6 +40,8 @@ const CREATE_CONFIG = {
         required: true,
         editConfig: {
           optionsEndpoint: 'permissionGroups',
+          optionLabelKey: 'name',
+          optionValueKey: 'id',
         },
       },
     ],

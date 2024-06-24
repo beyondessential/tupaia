@@ -38,7 +38,6 @@ export const ImportModalComponent = React.memo(
     confirmButtonText,
     cancelButtonText,
     uploadButtonText,
-    noFileMessage,
   }) => {
     const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
@@ -63,7 +62,7 @@ export const ImportModalComponent = React.memo(
       setErrorMessage(null);
       setFinishedMessage(null);
       setFiles([]);
-      setFileName(noFileMessage);
+      setFileName(null);
     };
 
     const handleClose = () => {
@@ -73,7 +72,7 @@ export const ImportModalComponent = React.memo(
       setIsOpen(false);
       setValues({});
       setFiles([]);
-      setFileName(noFileMessage);
+      setFileName(null);
     };
 
     const handleSubmit = async event => {
@@ -235,7 +234,6 @@ ImportModalComponent.propTypes = {
   confirmButtonText: PropTypes.string,
   cancelButtonText: PropTypes.string,
   uploadButtonText: PropTypes.string,
-  noFileMessage: PropTypes.string,
 };
 
 ImportModalComponent.defaultProps = {
@@ -248,7 +246,6 @@ ImportModalComponent.defaultProps = {
   confirmButtonText: 'Import',
   cancelButtonText: 'Cancel',
   uploadButtonText: 'Choose file',
-  noFileMessage: 'No file chosen',
 };
 
 const mapDispatchToProps = dispatch => ({

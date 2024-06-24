@@ -40,6 +40,7 @@ const ReduxAutocompleteComponent = ({
   required,
   error,
   tooltip,
+  optionValueKey,
 }) => {
   const [hasUpdated, setHasUpdated] = React.useState(false);
   React.useEffect(() => {
@@ -53,7 +54,8 @@ const ReduxAutocompleteComponent = ({
     if (hasUpdated || !initialValue) return;
     const needToUpdate = allowMultipleValues
       ? JSON.stringify(initialValue) !== JSON.stringify(selection?.map(s => s[optionLabelKey]))
-      : initialValue !== selection?.[optionLabelKey];
+      : initialValue !== selection?.[optionValueKey];
+
     if (needToUpdate) {
       programaticallyChangeSelection(initialValue);
     }
@@ -108,6 +110,7 @@ ReduxAutocompleteComponent.propTypes = {
   initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   required: PropTypes.bool,
   error: PropTypes.bool,
+  optionValueKey: PropTypes.string.isRequired,
 };
 
 ReduxAutocompleteComponent.defaultProps = {

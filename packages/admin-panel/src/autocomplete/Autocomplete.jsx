@@ -48,7 +48,7 @@ export const Autocomplete = props => {
     debounce(newValue => {
       onChangeSearchTerm(newValue);
     }, 200),
-    [],
+    [onChangeSearchTerm],
   );
 
   const muiPropsForCreateNewOptions = canCreateNewOptions
