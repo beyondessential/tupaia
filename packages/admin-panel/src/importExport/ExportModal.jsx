@@ -30,25 +30,25 @@ export const ExportModal = React.memo(
   }) => {
     const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [error, setError] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
 
     const handleOpen = () => setIsOpen(true);
 
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
-      setErrorMessage(null);
+      setError(null);
     };
 
     const handleClose = () => {
       setStatus(STATUS.IDLE);
-      setErrorMessage(null);
+      setError(null);
       setIsOpen(false);
     };
 
     const handleSubmit = async event => {
       event.preventDefault();
-      setErrorMessage(null);
+      setError(null);
       setStatus(STATUS.LOADING);
 
       try {
@@ -63,9 +63,9 @@ export const ExportModal = React.memo(
         } else {
           handleClose();
         }
-      } catch (error) {
+      } catch (e) {
         setStatus(STATUS.ERROR);
-        setErrorMessage(error.message);
+        setError(e);
       }
     };
 
@@ -120,8 +120,8 @@ export const ExportModal = React.memo(
           onClose={handleClose}
           isOpen={isOpen}
           disableBackdropClick
-          title={errorMessage ? 'Error' : title}
-          errorMessage={errorMessage}
+          title={error ? 'Error' : title}
+          error={error}
           isLoading={status === STATUS.LOADING}
           buttons={buttons}
         >

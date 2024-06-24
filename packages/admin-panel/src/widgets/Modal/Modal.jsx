@@ -22,14 +22,14 @@ export const Modal = ({
   onClose,
   title,
   isLoading,
-  errorMessage,
+  error,
   buttons,
   ...muiDialogProps
 }) => {
   return (
     <Dialog onClose={onClose} open={isOpen} fullWidth {...muiDialogProps}>
-      <ModalHeader onClose={onClose} title={title} />
-      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
+      <ModalHeader onClose={onClose} title={error ? 'Error' : title} />
+      <ModalContentProvider error={error} isLoading={isLoading}>
         {children}
       </ModalContentProvider>
       {buttons?.length > 0 && (
@@ -72,7 +72,7 @@ Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   isLoading: PropTypes.bool,
-  errorMessage: PropTypes.string,
+  error: PropTypes.object,
   buttons: PropTypes.arrayOf(
     PropTypes.shape({
       onClick: PropTypes.func.isRequired,
@@ -90,6 +90,6 @@ Modal.propTypes = {
 
 Modal.defaultProps = {
   buttons: [],
-  errorMessage: '',
+  error: null,
   isLoading: false,
 };

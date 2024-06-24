@@ -13,7 +13,7 @@ import {
 } from './constants';
 
 const defaultState = {
-  errorMessage: '',
+  error: null,
   isLoading: false,
   isOpen: false,
   logs: [],
@@ -36,9 +36,9 @@ const stateChanges = {
   [LOGS_DISMISS]: () => ({
     ...defaultState,
   }),
-  [LOGS_ERROR]: (payload, { errorMessage }) => {
-    if (errorMessage) {
-      return { errorMessage: defaultState.errorMessage }; // If there is an error, dismiss it
+  [LOGS_ERROR]: (payload, { error }) => {
+    if (error) {
+      return { error: defaultState.error }; // If there is an error, dismiss it
     }
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },

@@ -90,7 +90,7 @@ export const EditModalComponent = withConnectedEditor(
 );
 
 EditModalComponent.propTypes = {
-  errorMessage: PropTypes.string,
+  error: PropTypes.object,
   isOpen: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
