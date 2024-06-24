@@ -77,6 +77,7 @@ export class DatabaseModel {
   async fetchFieldNames() {
     if (!this.fieldNames) {
       const schema = await this.fetchSchema();
+
       this.fieldNames = Object.keys(schema);
     }
     return this.fieldNames;

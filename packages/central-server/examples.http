@@ -112,3 +112,10 @@ Authorization: {{user-authorization}}
 GET {{baseUrl}}/{{version}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
+
+
+### Get tasks
+
+GET {{baseUrl}}/tasks?columns=["task_status","assignee_name"]
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
