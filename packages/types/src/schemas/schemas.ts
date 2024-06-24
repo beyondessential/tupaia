@@ -1464,6 +1464,10 @@ export const MatrixConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		},
+		"enableSearch": {
+			"description": "Specify whether to show search filters on the matrix",
+			"type": "boolean"
 		}
 	},
 	"required": [
@@ -2161,6 +2165,10 @@ export const MatrixVizBuilderConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		},
+		"enableSearch": {
+			"description": "Specify whether to show search filters on the matrix",
+			"type": "boolean"
 		},
 		"output": {
 			"description": "Configuration for rows, columns, and categories of the matrix",
@@ -22315,6 +22323,10 @@ export const DashboardItemConfigSchema = {
 				"placeholder": {
 					"description": "A url to an image to be used when a matrix is collapsed.",
 					"type": "string"
+				},
+				"enableSearch": {
+					"description": "Specify whether to show search filters on the matrix",
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -43420,6 +43432,10 @@ export const DashboardItemSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -52095,6 +52111,10 @@ export const DashboardItemCreateSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -60764,6 +60784,10 @@ export const DashboardItemUpdateSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -85575,6 +85599,117 @@ export const SyncGroupLogUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const TaskSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entity_id",
+		"id",
+		"survey_id"
+	]
+} 
+
+export const TaskCreateSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entity_id",
+		"survey_id"
+	]
+} 
+
+export const TaskUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const TupaiaWebSessionSchema = {
 	"type": "object",
 	"properties": {
@@ -86111,6 +86246,15 @@ export const VerifiedEmailSchema = {
 		"new_user",
 		"unverified",
 		"verified"
+	],
+	"type": "string"
+} 
+
+export const TaskStatusSchema = {
+	"enum": [
+		"cancelled",
+		"completed",
+		"to_do"
 	],
 	"type": "string"
 } 
@@ -88112,6 +88256,10 @@ export const DashboardWithMetadataSchema = {
 									"placeholder": {
 										"description": "A url to an image to be used when a matrix is collapsed.",
 										"type": "string"
+									},
+									"enableSearch": {
+										"description": "Specify whether to show search filters on the matrix",
+										"type": "boolean"
 									}
 								},
 								"required": [

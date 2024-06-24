@@ -10,11 +10,18 @@ import { respond } from './respond';
  * the appropriate http status code
  */
 export class RespondingError extends Error {
+  /**
+   * @param {string} message
+   * @param {number} statusCode
+   * @param {Record<string, unknown>} extraFields
+   * @param {*} originalError
+   */
   constructor(message, statusCode, extraFields = {}, originalError = null) {
     super(message, { cause: originalError });
     this.statusCode = statusCode;
     this.extraFields = extraFields;
-    this.respond = res => respond(res, { error: this.message, ...extraFields }, statusCode);
+    this.respond = res =>
+      respond(res, { error: this.message, ...this.extraFields }, this.statusCode);
   }
 }
 
