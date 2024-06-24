@@ -13,7 +13,7 @@ export const DatePicker = ({
   menuItems,
 }: {
   label: string;
-  selectedValue: number;
+  selectedValue: number | undefined;
   onChange: (event: ChangeEvent<{ value: any }>) => void;
   menuItems: ReactNode[];
 }) => (

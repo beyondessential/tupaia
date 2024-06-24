@@ -8,6 +8,7 @@ export {
   PlaintextReferenceProps,
   LinkReferenceProps,
   EntityAttributes,
+  DateOffsetSpec,
 } from './common';
 export type {
   ReportConfig,

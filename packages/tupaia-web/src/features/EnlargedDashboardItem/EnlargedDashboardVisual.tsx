@@ -164,6 +164,8 @@ export const EnlargedDashboardVisual = ({
             maxDate={maxEndDate}
             weekDisplayFormat={weekDisplayFormat}
             onResetDate={onResetDate}
+            dateOffset={config?.dateOffset}
+            dateRangeDelimiter={config?.dateRangeDelimiter}
           />
         )}
       </TitleWrapper>
