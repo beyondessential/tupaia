@@ -15,10 +15,9 @@ export const DATA_CHANGE_SUCCESS = 'DATA_CHANGE_SUCCESS';
 export const DATA_CHANGE_ERROR = 'DATA_CHANGE_ERROR';
 export const PAGE_INDEX_CHANGE = 'PAGE_INDEX_CHANGE';
 export const PAGE_SIZE_CHANGE = 'PAGE_SIZE_CHANGE';
-export const EXPANSIONS_CHANGE = 'EXPANSIONS_CHANGE';
-export const EXPANSIONS_TAB_CHANGE = 'EXPANSIONS_TAB_CHANGE';
-export const COLUMNS_RESIZE = 'COLUMNS_RESIZE';
+export const FILTERS_CHANGE = 'FILTERS_CHANGE';
 export const SORTING_CHANGE = 'SORTING_CHANGE';
+export const CLEAR_ERROR = 'CLEAR_ERROR';
 
 export const DATA_CHANGE_ACTIONS = {
   start: DATA_CHANGE_REQUEST,
@@ -37,7 +36,4 @@ export const DEFAULT_TABLE_STATE = {
   pageIndex: 0,
   pageSize: 20,
   sorting: [],
-  expansions: {},
-  expansionTabStates: {},
-  resizedColumns: [],
 };

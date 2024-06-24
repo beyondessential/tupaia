@@ -112,7 +112,7 @@ export const getDashboardRelationsPageConfig = translate => {
 
   return {
     ...dashboardRelations,
-    title: translate('admin.dashboardRelations'),
+    label: translate('admin.dashboardRelations'),
     endpoint: dashboardRelations.endpoint,
     columns: FIELDS,
     createConfig,

@@ -42,7 +42,8 @@ const getHasNoData = (report?: DashboardItemReport | null) => {
  * DashboardItemContent handles displaying of the content within a dashboard item, e.g. charts. It also handles error messages and loading states
  */
 export const DashboardItemContent = () => {
-  const { config, report, isExport, isLoading, error, refetch } = useContext(DashboardItemContext);
+  const { config, report, isExport, isLoading, error, refetch, isEnabled } =
+    useContext(DashboardItemContext);
 
   const getComponentKey = () => {
     if (config?.type === 'component' && config) {
@@ -61,12 +62,13 @@ export const DashboardItemContent = () => {
   if (!DisplayComponent) return null;
 
   if (error) return <FetchErrorAlert error={error} refetch={isExport ? undefined : refetch} />;
+
   // there will be no report returned if type is component, so don't show the loader for that type
-  if (isLoading || (!report && config?.type !== 'component'))
+  if (isLoading || (!report && config?.type !== 'component' && isEnabled))
     return <DashboardItemLoader name={config?.name} isExport={isExport} />;
 
   // if there is no data for the selected dates, then we want to show a message to the user
-  const showNoDataMessage = isLoading ? false : getHasNoData(report);
+  const showNoDataMessage = !isEnabled ? false : getHasNoData(report);
 
   return (
     <>
