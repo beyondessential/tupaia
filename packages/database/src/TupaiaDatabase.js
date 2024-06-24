@@ -560,6 +560,12 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
         }
       }
 
+      // Special case to handle CASE statements, otherwise they get interpreted as column names
+      const CASE_PATTERN = /^CASE/;
+      if (CASE_PATTERN.test(selector)) {
+        return { [alias]: connection.raw(selector) };
+      }
+
       return { [alias]: connection.raw('??', [selector]) };
     });
   query = addWhereClause(connection, query[queryMethod](queryMethodParameter || columns), where);
@@ -732,6 +738,10 @@ function getColSelector(connection, inputColStr) {
     const identifiers = bindings.map(() => '??');
 
     return connection.raw(`COALESCE(${identifiers})`, bindings);
+  }
+  const casePattern = /^CASE/;
+  if (casePattern.test(inputColStr)) {
+    return connection.raw(inputColStr);
   }
 
   return inputColStr;
