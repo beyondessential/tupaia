@@ -13,23 +13,11 @@ export const useColumnFilters = (defaultFilters = []) => {
   const urlFilters = urlSearchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : defaultFilters;
 
-  const getUpdatedFilters = (id, value) => {
-    if (value === '' || value === undefined) {
-      return filters.filter(f => f.id !== id);
-    }
-    const existingFilter = filters.find(f => f.id === id);
-    if (existingFilter) {
-      return filters.map(f => (f.id === id ? { ...f, value } : f));
-    }
-    return [...filters, { id, value }];
-  };
-
-  const onChangeFilter = (id, value) => {
-    const updatedFilters = getUpdatedFilters(id, value);
+  const onChangeFilters = newFilters => {
     // if the filters are the same, don't update the URL
-    if (JSON.stringify(updatedFilters) === JSON.stringify(filters)) return;
+    if (JSON.stringify(newFilters) === JSON.stringify(filters)) return;
 
-    if (updatedFilters.length === 0) {
+    if (newFilters.length === 0) {
       // if there are filters in the URL, delete the filters key
       urlSearchParams.delete('filters');
 
@@ -38,10 +26,10 @@ export const useColumnFilters = (defaultFilters = []) => {
     }
 
     // update the filters key in the URL
-    setUrlSearchParams({ filters: JSON.stringify(updatedFilters) });
+    setUrlSearchParams({ filters: JSON.stringify(newFilters) });
   };
   return {
     filters,
-    onChangeFilter,
+    onChangeFilters,
   };
 };

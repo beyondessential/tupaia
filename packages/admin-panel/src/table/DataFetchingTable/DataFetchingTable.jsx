@@ -104,9 +104,7 @@ const DataFetchingTableComponent = memo(
     onSortedChange,
     detailUrl,
     getHasNestedView,
-    endpoint,
     getNestedViewLink,
-    baseFilter,
     basePath,
     resourceName,
     actionLabel = 'Action',
@@ -161,24 +159,12 @@ const DataFetchingTableComponent = memo(
       return [...nonButtonColumns, singleButtonColumn];
     }, [JSON.stringify(columns)]);
 
-    useEffect(() => {
-      if (!isChangingDataOnServer && !errorMessage) {
-        onRefreshData(filters, sorting);
-      }
-    }, [errorMessage, isChangingDataOnServer]);
-
-    // initial render/re-render when endpoint changes
-    useEffect(() => {
-      const initialSorting = defaultSorting ?? [];
-      // if we are on the first page or the sorting is the same as the initial sorting, then we should refresh the data manually. If not, changing the sorting/page will trigger a refresh
-      if (pageIndex === 0 || JSON.stringify(sorting) === JSON.stringify(initialSorting)) {
-        onRefreshData(filters, initialSorting);
-      }
-    }, [endpoint, JSON.stringify(baseFilter)]);
+    // Listen for changes in filters in the URL and refresh the data accordingly
+    const { filters, onChangeFilters } = useColumnFilters(defaultFilters);
 
     useEffect(() => {
-      onRefreshData();
-    }, [filters, pageIndex, pageSize, JSON.stringify(sorting)]);
+      onRefreshData(filters, sorting);
+    }, [JSON.stringify(filters), pageIndex, pageSize, JSON.stringify(sorting)]);
 
     const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -206,7 +192,7 @@ const DataFetchingTableComponent = memo(
           pageSize={pageSize}
           sorting={sorting}
           numberOfPages={numberOfPages}
-          onChangeFilters={onFilteredChange}
+          onChangeFilters={onChangeFilters}
           filters={filters}
           hiddenColumns={columns
             .filter(column => column.show === false)
@@ -242,7 +228,6 @@ DataFetchingTableComponent.propTypes = {
   confirmActionMessage: PropTypes.string,
   errorMessage: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.shape({})),
-  filters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
   numberOfPages: PropTypes.number,
@@ -259,9 +244,7 @@ DataFetchingTableComponent.propTypes = {
   totalRecords: PropTypes.number,
   detailUrl: PropTypes.string,
   getHasNestedView: PropTypes.func,
-  endpoint: PropTypes.string.isRequired,
   getNestedViewLink: PropTypes.func,
-  baseFilter: PropTypes.object,
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
   actionLabel: PropTypes.string,
@@ -278,7 +261,6 @@ DataFetchingTableComponent.defaultProps = {
   detailUrl: '',
   getHasNestedView: null,
   getNestedViewLink: null,
-  baseFilter: null,
   basePath: '',
   resourceName: {},
   actionLabel: 'Action',

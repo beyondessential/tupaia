@@ -60,8 +60,14 @@ export const DisplayCell = ({
     return basePath ? `${basePath}${formattedUrl}` : formattedUrl;
   };
   const url = generateLink();
+  const { to, newState } = useLinkWithSearchState(url);
   return (
-    <CellContentContainer to={url} as={url ? CellLink : 'div'} $isButtonColumn={isButtonColumn}>
+    <CellContentContainer
+      to={to}
+      as={url ? CellLink : 'div'}
+      $isButtonColumn={isButtonColumn}
+      state={newState}
+    >
       {children}
     </CellContentContainer>
   );
