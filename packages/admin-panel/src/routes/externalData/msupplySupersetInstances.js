@@ -9,11 +9,13 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
+    required: true,
     editConfig: {
       type: 'jsonEditor',
       default: '{}',

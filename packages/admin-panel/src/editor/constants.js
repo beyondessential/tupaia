@@ -19,5 +19,6 @@ export const DATA_CHANGE_ACTIONS = {
 };
 
 export const SECTION_FIELD_TYPE = 'section';
+export const SET_VALIDATION_ERRORS = 'SET_VALIDATION_ERRORS';
 export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';
 export const RESET_EDITS = 'RESET_EDITS';

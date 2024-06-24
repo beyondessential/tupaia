@@ -26,11 +26,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
     border-radius: 3px;
   }
 
-  // Error state
-  .MuiInputBase-root.Mui-error {
-    background: ${props => props.theme.palette.error.light};
-  }
-
   // helper text
   .MuiFormHelperText-root {
     margin-left: 0;
@@ -123,6 +118,8 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
 export const TextField = ({
   label = '',
   tooltip,
+  error,
+  required,
   ...props
 }: Partial<TextFieldProps> & {
   tooltip?: string;
@@ -131,6 +128,20 @@ export const TextField = ({
     fullWidth
     {...props}
     variant="outlined"
-    label={label ? <InputLabel label={label} tooltip={tooltip} as="span" /> : null}
+    error={error}
+    required={required}
+    label={
+      label ? (
+        <InputLabel
+          label={label}
+          tooltip={tooltip}
+          as="span"
+          labelProps={{
+            required,
+            error,
+          }}
+        />
+      ) : null
+    }
   />
 );

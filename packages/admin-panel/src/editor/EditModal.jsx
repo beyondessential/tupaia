@@ -12,6 +12,7 @@ import { Modal } from '../widgets';
 import { useEditFiles } from './useEditFiles';
 import { FieldsEditor } from './FieldsEditor';
 import { withConnectedEditor } from './withConnectedEditor';
+import { useValidationScroll } from './useValidationScroll';
 
 export const EditModalComponent = withConnectedEditor(
   ({
@@ -22,7 +23,7 @@ export const EditModalComponent = withConnectedEditor(
     onEditField,
     onSave,
     recordData,
-    title,
+    title = 'Edit',
     fields,
     FieldsComponent,
     isUnchanged,
@@ -32,6 +33,7 @@ export const EditModalComponent = withConnectedEditor(
     cancelButtonText,
     saveButtonText,
     extraDialogProps,
+    validationErrors,
     resourceName,
     isNew,
   }) => {
@@ -39,6 +41,15 @@ export const EditModalComponent = withConnectedEditor(
 
     const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
 
+    const handleSave = () => {
+      onSave(files, onDismiss);
+    };
+
+    const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
+      handleSave,
+      onEditField,
+      validationErrors,
+    );
     const buttons = [
       {
         onClick: onDismiss,
@@ -48,7 +59,7 @@ export const EditModalComponent = withConnectedEditor(
         id: 'form-button-cancel',
       },
       {
-        onClick: () => onSave(files, onDismiss),
+        onClick: onSaveWithTouched,
         id: 'form-button-save',
         text: saveButtonText,
         disabled: !!errorMessage || isLoading || isUnchanged,
@@ -80,7 +91,7 @@ export const EditModalComponent = withConnectedEditor(
           fields={fields}
           isLoading={isLoading}
           recordData={recordData}
-          onEditField={onEditField}
+          onEditField={onEditWithTouched}
           onSetFormFile={handleSetFormFile}
         />
         {displayUsedBy && <UsedBy {...usedByConfig} />}
@@ -107,6 +118,7 @@ EditModalComponent.propTypes = {
   cancelButtonText: PropTypes.string,
   saveButtonText: PropTypes.string,
   extraDialogProps: PropTypes.object,
+  validationErrors: PropTypes.object,
 };
 
 EditModalComponent.defaultProps = {
@@ -120,10 +132,11 @@ EditModalComponent.defaultProps = {
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
   extraDialogProps: null,
+  validationErrors: {},
 };
 
 const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(dismissEditor()),
 });
 
-export const EditModal = connect(null, mapDispatchToProps)(EditModalComponent);
+export const EditModal = withConnectedEditor(connect(null, mapDispatchToProps)(EditModalComponent));

@@ -11,6 +11,7 @@ import { useCountries, useProjects, useSearchPermissionGroups } from '../../api/
 import { useVizConfigContext } from '../../context';
 import { useDebounce } from '../../../utilities';
 import { MAP_OVERLAY_VIZ_TYPES } from '../../constants';
+import { REQUIRED_FIELD_ERROR } from '../../../editor';
 
 export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const vizTypeOptions = Object.entries(MAP_OVERLAY_VIZ_TYPES).map(([vizType, { name }]) => ({
@@ -64,35 +65,38 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
         <TextField
           name="code"
           label="Code"
+          required
           defaultValue={code}
           error={!!errors.code}
           helperText={errors.code && errors.code.message}
           inputRef={register({
-            required: 'Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
         <TextField
           name="name"
           label="Name"
+          required
           defaultValue={name}
           error={!!errors.name}
           helperText={errors.name && errors.name.message}
           inputRef={register({
-            required: 'Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
         <Autocomplete
           id="mapOverlayPermissionGroup"
           name="mapOverlayPermissionGroup"
-          label="Permission Group"
-          placeholder="Select Permission Group"
+          label="Permission group"
+          required
+          placeholder="Select permission group"
           defaultValue={mapOverlayPermissionGroup}
           options={permissionGroups.map(p => p.name)}
           disabled={isLoadingPermissionGroups}
           error={!!errors.mapOverlayPermissionGroup}
           helperText={errors.mapOverlayPermissionGroup && errors.mapOverlayPermissionGroup.message}
           inputRef={register({
-            required: 'Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
           value={searchInput}
           onInputChange={(event, newValue) => {
@@ -102,7 +106,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
         <Autocomplete
           id="projectCodes"
           name="projectCodes"
-          label="Project Codes"
+          label="Project codes"
           defaultValue={projectCodes ?? []}
           options={allProjects.map(p => p['project.code'])}
           disabled={isLoadingAllProjects}
@@ -124,7 +128,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
         <Autocomplete
           id="countryCodes"
           name="countryCodes"
-          label="Country Codes"
+          label="Country codes"
           defaultValue={countryCodes ?? []}
           options={allCountries.map(c => c.code)}
           disabled={isLoadingAllCountries}
@@ -146,8 +150,9 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
         <Autocomplete
           id="vizType"
           name="vizType"
-          label="Visualisation Type"
-          placeholder="Select Visualisation Type"
+          label="Visualisation type"
+          required
+          placeholder="Select visualisation type"
           defaultValue={vizTypeOptions.find(({ value }) => value === vizType)}
           options={vizTypeOptions}
           getOptionLabel={option => option.label}
@@ -155,7 +160,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           error={!!errors.vizType}
           helperText={errors.vizType && errors.vizType.message}
           inputRef={register({
-            required: 'Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
       </Body>

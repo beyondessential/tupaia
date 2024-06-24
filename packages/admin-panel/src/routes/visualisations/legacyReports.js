@@ -9,16 +9,19 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Data builder',
     source: 'data_builder',
+    required: true,
   },
   {
     Header: 'Data builder config',
     source: 'data_builder_config',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
+    required: true,
   },
   {
     Header: 'Data services',

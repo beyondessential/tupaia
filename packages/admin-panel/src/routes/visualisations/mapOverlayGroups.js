@@ -2,8 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
-import { RELATION_ENDPOINT } from './mapOverlayGroupRelations';
+import { childCode, childType, sortOrder, RELATION_ENDPOINT } from './mapOverlayGroupRelations';
 
 const RESOURCE_NAME = { singular: 'map overlay group' };
 
@@ -18,10 +17,12 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
 ];
 
@@ -38,40 +39,7 @@ const COLUMNS = [
   },
 ];
 
-export const RELATION_FIELDS = [
-  {
-    Header: 'Child ID',
-    source: 'child_id',
-
-    editConfig: {
-      optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'mapOverlay.id',
-      optionValueKey: 'mapOverlay.id',
-      sourceKey: 'child_id',
-    },
-  },
-  {
-    Header: 'Child type',
-    source: 'child_type',
-
-    editConfig: {
-      options: [
-        {
-          label: 'Map overlay',
-          value: 'mapOverlay',
-        },
-        {
-          label: 'Map overlay group',
-          value: 'mapOverlayGroup',
-        },
-      ],
-    },
-  },
-  {
-    Header: 'Sort order',
-    source: 'sort_order',
-  },
-];
+export const RELATION_FIELDS = [childCode, childType, sortOrder];
 
 export const RELATION_COLUMNS = [
   ...RELATION_FIELDS,
@@ -108,7 +76,7 @@ export const mapOverlayGroups = {
   createConfig: CREATE_CONFIG,
   nestedViews: [
     {
-      title: 'Map Overlay Group Relations',
+      title: 'Map overlay group relations',
       columns: RELATION_COLUMNS,
       endpoint: 'mapOverlayGroups/{id}/mapOverlayGroupRelations',
       path: '/:id/map-overlay-group-relations',

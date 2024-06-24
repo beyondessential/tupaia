@@ -12,6 +12,7 @@ export const PERMISSIONS_COLUMNS = [
   {
     Header: 'Entity',
     source: 'entity.name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'entities',
       baseFilter: { type: 'country' },
@@ -20,6 +21,7 @@ export const PERMISSIONS_COLUMNS = [
   {
     Header: 'Permission group',
     source: 'permission_group.name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
     },
@@ -71,6 +73,7 @@ const CREATE_CONFIG = {
       {
         Header: 'User email',
         source: 'user.email',
+        required: true,
         editConfig: {
           optionsEndpoint: 'users',
           optionLabelKey: 'email',
@@ -80,8 +83,10 @@ const CREATE_CONFIG = {
       {
         Header: 'Entity',
         source: 'entity.name',
+        required: true,
         editConfig: {
           optionsEndpoint: 'entities',
+          optionLabelKey: 'name',
           baseFilter: { type: 'country' },
           allowMultipleValues: true,
         },
@@ -89,6 +94,7 @@ const CREATE_CONFIG = {
       {
         Header: 'Permission group',
         source: 'permission_group.name',
+        required: true,
         editConfig: {
           optionsEndpoint: 'permissionGroups',
           allowMultipleValues: true,

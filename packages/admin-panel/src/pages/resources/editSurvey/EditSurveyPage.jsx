@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
-import { withConnectedEditor } from '../../../editor';
+import { withConnectedEditor, useValidationScroll } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
@@ -70,7 +70,7 @@ const SectionBlock = styled.div`
 const RowSection = styled(SectionBlock)`
   > div {
     display: flex;
-    > fieldset:last-child {
+    > div:last-child {
       margin-left: 1.2rem;
     }
   }
@@ -99,6 +99,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     onSave,
     isLoading,
     resetEditorToDefaultState,
+    validationErrors,
   }) => {
     const errorAlertRef = useRef(null);
     const navigate = useNavigate();
@@ -112,6 +113,21 @@ const EditSurveyPageComponent = withConnectedEditor(
     }, [params.id, JSON.stringify(parent)]);
 
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
+
+    const navigateBack = () => {
+      navigate('../../');
+      resetEditorToDefaultState();
+    };
+    const handleSave = () => {
+      onSave(files, navigateBack);
+    };
+
+    const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
+      handleSave,
+      onEditField,
+      validationErrors,
+      files,
+    );
 
     const fieldsBySource = keyBy(fields, 'source');
 
@@ -154,14 +170,6 @@ const EditSurveyPageComponent = withConnectedEditor(
             },
           ]
         : [];
-
-    const navigateBack = () => {
-      navigate('../../');
-      resetEditorToDefaultState();
-    };
-    const handleSave = () => {
-      onSave(files, navigateBack);
-    };
 
     const initialFileName = Array.isArray(recordData?.surveyQuestions)
       ? null
@@ -211,7 +219,7 @@ const EditSurveyPageComponent = withConnectedEditor(
             <FieldsEditor
               fields={orderedFields}
               recordData={recordData}
-              onEditField={onEditField}
+              onEditField={onEditWithTouched}
             />
           </Section>
         </Form>
@@ -222,7 +230,7 @@ const EditSurveyPageComponent = withConnectedEditor(
             variant="contained"
             color="primary"
             disabled={isUnchanged || isLoading}
-            onClick={handleSave}
+            onClick={onSaveWithTouched}
           >
             Save changes
           </Button>

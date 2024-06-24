@@ -18,11 +18,13 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Name',
     source: 'name',
     width: 140,
+    required: true,
   },
   {
     Header: 'Permission group',
@@ -102,7 +104,7 @@ const extraEditFields = [
     source: 'entity_attributes_filter',
     editConfig: {
       type: 'jsonEditor',
-      secondaryLabel: (
+      labelTooltip: (
         <>
           Case-sensitive. This field will be used to filter the entities that this map overlay will
           have data for. It is an extension of <code>config.measureLevel</code>. e.g.&nbsp;

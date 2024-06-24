@@ -14,10 +14,12 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   {
     Header: 'Description',

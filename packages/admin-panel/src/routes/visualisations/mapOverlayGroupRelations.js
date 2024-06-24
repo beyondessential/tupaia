@@ -10,6 +10,7 @@ export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 const mapOverlayGroupCode = {
   Header: 'Map overlay group code',
   source: 'map_overlay_group.code',
+  required: true,
   editConfig: {
     optionsEndpoint: 'mapOverlayGroups',
     optionLabelKey: 'map_overlay_group.code',
@@ -18,10 +19,11 @@ const mapOverlayGroupCode = {
   },
 };
 
-const childType = {
+export const childType = {
   Header: 'Child type',
   width: 160,
   source: 'child_type',
+  required: true,
   editConfig: {
     options: [
       {
@@ -36,9 +38,10 @@ const childType = {
   },
 };
 
-const childCode = {
+export const childCode = {
   Header: 'Child Code',
   source: 'child_code',
+  required: true,
 };
 
 const childMapOverlayCode = {
@@ -67,7 +70,7 @@ const childMapOverlayGroupCode = {
   },
 };
 
-const sortOrder = {
+export const sortOrder = {
   Header: 'Sort order',
   source: 'sort_order',
 };

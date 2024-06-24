@@ -4,8 +4,9 @@
  */
 
 import {
-  DASHBOARD_RELATION_ENDPOINT,
   RESOURCE_NAME as DASHBOARD_RELATION_RESOURCE_NAME,
+  DASHBOARD_RELATION_COLUMNS,
+  DASHBOARD_RELATION_ENDPOINT,
 } from './dashboardRelations';
 
 const RESOURCE_NAME = { singular: 'dashboard' };
@@ -16,14 +17,17 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   {
     Header: 'Organisation unit code',
     source: 'root_entity_code',
+    required: true,
     editConfig: {
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
@@ -64,44 +68,10 @@ const RELATION_FIELDS = [
     source: 'dashboard_item.code',
     editable: false,
   },
-  {
-    Header: 'Permission groups',
-    source: 'permission_groups',
-    editConfig: {
-      optionsEndpoint: 'permissionGroups',
-      optionLabelKey: 'name',
-      optionValueKey: 'name',
-      sourceKey: 'permission_groups',
-      allowMultipleValues: true,
-    },
-  },
-  {
-    Header: 'Entity types',
-    source: 'entity_types',
-    editConfig: {
-      type: 'autocomplete',
-      allowMultipleValues: true,
-      canCreateNewOptions: true,
-      optionLabelKey: 'entityTypes',
-      optionValueKey: 'entityTypes',
-      secondaryLabel: 'Input the entity types you want. e.g. ‘country’, ‘sub_district’',
-    },
-  },
-  {
-    Header: 'Project codes',
-    source: 'project_codes',
-    editConfig: {
-      optionsEndpoint: 'projects',
-      optionLabelKey: 'code',
-      optionValueKey: 'code',
-      sourceKey: 'project_codes',
-      allowMultipleValues: true,
-    },
-  },
-  {
-    Header: 'Sort order',
-    source: 'sort_order',
-  },
+  DASHBOARD_RELATION_COLUMNS.PERMISSION_GROUPS,
+  DASHBOARD_RELATION_COLUMNS.ENTITY_TYPES,
+  DASHBOARD_RELATION_COLUMNS.PROJECT_CODES,
+  DASHBOARD_RELATION_COLUMNS.SORT_ORDER,
 ];
 
 const RELATION_COLUMNS = [

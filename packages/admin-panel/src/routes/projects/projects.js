@@ -29,6 +29,7 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Map overlay code',
     source: 'default_measure',
+    required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'code',
@@ -40,6 +41,7 @@ const DEFAULT_FIELDS = [
     Header: 'Permission group',
     source: 'permission_groups',
     type: 'jsonTooltip',
+    required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
@@ -55,7 +57,7 @@ const DEFAULT_FIELDS = [
       type: 'image',
       name: 'image_url',
       avatarVariant: 'square',
-      secondaryLabel: 'Recommended size: 480 × 240 px',
+      labelTooltip: 'Recommended size: 480 × 240 px',
       maxHeight: 240,
       maxWidth: 480,
     },
@@ -67,7 +69,7 @@ const DEFAULT_FIELDS = [
       type: 'image',
       name: 'logo_url',
       avatarVariant: 'square',
-      secondaryLabel: 'Recommended size: 480 × 240 px',
+      labelTooltip: 'Recommended size: 480 × 240 px',
       maxHeight: 240,
       maxWidth: 480,
     },
@@ -76,10 +78,11 @@ const DEFAULT_FIELDS = [
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
+    required: true,
     editConfig: {
       type: 'jsonEditor',
+      labelTooltip: 'eg. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',
     },
-    secondaryLabel: 'e.g. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',
   },
   {
     Header: 'Sort',
@@ -92,6 +95,7 @@ const CREATE_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   ...DEFAULT_FIELDS,
 ];
@@ -101,6 +105,7 @@ const EDIT_FIELDS = [
     Header: 'Code',
     source: 'code',
     editable: false,
+    required: true,
   },
   ...DEFAULT_FIELDS,
 ];
@@ -109,6 +114,7 @@ const NEW_PROJECT_COLUMNS = [
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   ...CREATE_FIELDS,
   {

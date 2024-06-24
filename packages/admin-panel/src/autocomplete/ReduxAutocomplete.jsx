@@ -38,6 +38,8 @@ const ReduxAutocompleteComponent = ({
   placeholder,
   helperText,
   required,
+  error,
+  tooltip,
   optionValueKey,
 }) => {
   const [hasUpdated, setHasUpdated] = React.useState(false);
@@ -84,6 +86,8 @@ const ReduxAutocompleteComponent = ({
       allowMultipleValues={allowMultipleValues}
       optionLabelKey={optionLabelKey}
       required={required}
+      error={error}
+      tooltip={tooltip}
     />
   );
 };
@@ -105,6 +109,7 @@ ReduxAutocompleteComponent.propTypes = {
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   required: PropTypes.bool,
+  error: PropTypes.bool,
   optionValueKey: PropTypes.string.isRequired,
 };
 
@@ -119,6 +124,7 @@ ReduxAutocompleteComponent.defaultProps = {
   label: null,
   helperText: null,
   required: false,
+  error: false,
 };
 
 const mapStateToProps = (state, { reduxId }) => {
