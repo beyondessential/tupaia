@@ -24,6 +24,7 @@ export const ROUTES = {
   VERIFY_EMAIL: '/verify-email',
   VERIFY_EMAIL_RESEND: '/verify-email-resend',
   REPORTS: '/reports',
+  TASKS: '/tasks',
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';

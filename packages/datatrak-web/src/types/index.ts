@@ -14,3 +14,4 @@ export * from './activityFeed';
 export * from './entity';
 export * from './userAccountDetails';
 export * from './userRewards';
+export * from './task';

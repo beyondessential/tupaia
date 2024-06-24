@@ -11,6 +11,7 @@ import {
   OptionModel,
   SurveyModel,
   SurveyResponseModel,
+  TaskModel,
   UserModel,
 } from '@tupaia/server-boilerplate';
 
@@ -23,4 +24,5 @@ export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly surveyResponse: SurveyResponseModel;
   readonly oneTimeLogin: OneTimeLoginModel;
   readonly option: OptionModel;
+  readonly task: TaskModel;
 }

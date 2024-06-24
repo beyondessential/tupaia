@@ -147,6 +147,7 @@ export const getQueryOptionsForColumns = (
           customJoinConditions,
           joinType,
         );
+
         joinConditions.forEach(j => {
           if (!recordTypesInQuery.has(j.joinWith)) multiJoin.push(j);
           recordTypesInQuery.add(j.joinWith);

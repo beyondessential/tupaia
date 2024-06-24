@@ -167,6 +167,7 @@ interface PaginationProps {
   pageSizeOptions?: RowsSelectComponentProps['pageSizeOptions'];
   applyRowsPerPage?: boolean;
   showEntriesCount?: boolean;
+  alwaysDisplay?: boolean;
 }
 export const Pagination = ({
   page,
@@ -178,20 +179,22 @@ export const Pagination = ({
   pageSizeOptions = [5, 10, 20, 25, 50, 100],
   applyRowsPerPage = true,
   showEntriesCount = true,
+  alwaysDisplay = false,
 }: PaginationProps) => {
-  if (!totalRecords) return null;
+  if (!totalRecords && !alwaysDisplay) return null;
   const currentDisplayStart = page * pageSize + 1;
   const currentDisplayEnd = Math.min((page + 1) * pageSize, totalRecords);
 
+  const getEntriesText = () => {
+    if (!totalRecords) return '1 of 0 entries';
+    return `${currentDisplayStart} - ${currentDisplayEnd} of ${totalRecords} entries`;
+  };
+
+  const entriesText = getEntriesText();
+
   return (
     <Wrapper className="pagination-wrapper">
-      <ActionsWrapper>
-        {showEntriesCount && (
-          <Text>
-            {currentDisplayStart} - {currentDisplayEnd} of {totalRecords} entries
-          </Text>
-        )}
-      </ActionsWrapper>
+      <ActionsWrapper>{showEntriesCount && <Text>{entriesText}</Text>}</ActionsWrapper>
       <ActionsWrapper>
         {applyRowsPerPage && (
           <RowsSelectComponent
