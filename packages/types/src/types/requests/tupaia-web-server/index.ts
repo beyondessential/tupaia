@@ -21,3 +21,4 @@ export * as TupaiaWebSubscribeDashboardRequest from './SubscribeDashboardRequest
 export * as TupaiaWebUnsubscribeDashboardRequest from './UnsubscribeDashboardRequest';
 export * as TupaiaWebUnsubscribeDashboardMailingListRequest from './UnsubscribeDashboardMailingListRequest';
 export * as TupaiaWebExportMapOverlayRequest from './ExportMapOverlayRequest';
+export * as TupaiaWebExportSurveyDataRequest from './ExportSurveyDataRequest';

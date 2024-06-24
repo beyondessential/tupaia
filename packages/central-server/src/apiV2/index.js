@@ -144,6 +144,7 @@ import {
   GETDashboardMailingListEntries,
 } from './dashboardMailingListEntries';
 import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
+import { CreateTask, EditTask, GETTasks } from './tasks';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -267,7 +268,7 @@ apiV2.get(
 apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(GETEntityHierarchy));
 apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
-
+apiV2.get('/tasks/:recordId?', useRouteHandler(GETTasks));
 /**
  * POST routes
  */
@@ -314,7 +315,7 @@ apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
-
+apiV2.post('/tasks', useRouteHandler(CreateTask));
 /**
  * PUT routes
  */
@@ -352,6 +353,7 @@ apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/supersetInstances/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/tasks/:recordId', useRouteHandler(EditTask));
 
 /**
  * DELETE routes

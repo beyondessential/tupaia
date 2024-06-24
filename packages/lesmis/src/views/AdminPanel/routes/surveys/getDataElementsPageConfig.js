@@ -87,7 +87,7 @@ export const getDataElementsPageConfig = translate => {
 
   return {
     ...dataElements,
-    title: translate('admin.dataElements'),
+    label: translate('admin.dataElements'),
     columns: [
       ...DATA_ELEMENT_FIELDS,
       ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement', translate),

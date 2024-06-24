@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { TypeValidationError, stripFields } from '@tupaia/utils';
+import { stripFields, TypeValidationError } from '@tupaia/utils';
 
 export class DatabaseRecord {
   static databaseRecord = null; // The database table name
@@ -33,42 +33,41 @@ export class DatabaseRecord {
    */
   static fieldValidators = new Map();
 
-  /*
-    Joins are executed on every model query and give developers the ability to
-    add extra fields that are necessary for a model to be meaningful.
-
-    format:
-    static joins = [
-      {
-        fields: {
-          ['field code in joined database']: 'field code to map to in model',
-        },
-        joinWith: 'table to join with',
-        joinCondition: [`{table to join with}.id`, `${this.databaseRecord}.${field to join on}`],
-      }
-    ]
-
-    eg:
-    static joins = [
-      {
-        fields: {
-          code: 'country_code',
-        },
-        joinWith: RECORDS.COUNTRY,
-        joinCondition: [`${RECORDS.COUNTRY}.id`, `${this.databaseRecord}.country_id`],
-      },
-      {
-        fields: {
-          code: 'foo_bar_field',
-        },
-        joinWith: RECORDS.FOO_BAR,
-        joinCondition: [`${RECORDS.FOO_BAR}.id`, `${this.databaseRecord}.foo_bar_id`],
-      }
-    ]
-
-    Will add the fields `country_code` and `foo_bar_field` to the model using the value
-    from the join query.
-  */
+  /**
+   * Joins are executed on every model query and give developers the ability to
+   * add extra fields that are necessary for a model to be meaningful.
+   *
+   * Format:
+   * ```js
+   * static joins = [
+   *   {
+   *     fields: {
+   *       ['field code in joined database']: 'field code to map to in model',
+   *     },
+   *     joinWith: 'table to join with',
+   *     joinCondition: [`{table to join with}.id`, `${this.databaseRecord}.${field to join on}`],
+   *   }
+   * ]
+   * ```
+   *
+   * @example Add the fields `country_code` and `foo_bar_field` to the model using the value from the join query.
+   * static joins = [
+   *   {
+   *     fields: {
+   *       code: 'country_code',
+   *     },
+   *     joinWith: RECORDS.COUNTRY,
+   *     joinCondition: [`${RECORDS.COUNTRY}.id`, `${this.databaseRecord}.country_id`],
+   *   },
+   *   {
+   *     fields: {
+   *       code: 'foo_bar_field',
+   *     },
+   *     joinWith: RECORDS.FOO_BAR,
+   *     joinCondition: [`${RECORDS.FOO_BAR}.id`, `${this.databaseRecord}.foo_bar_id`],
+   *   }
+   * ]
+   */
   static joins = [];
 
   constructor(model, fieldValues) {
@@ -168,5 +167,10 @@ export class DatabaseRecord {
       /** @type {string} */
       this.id = record.id;
     }
+  }
+
+  // Delete the record from the database
+  async delete() {
+    await this.model.deleteById(this.id);
   }
 }
