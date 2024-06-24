@@ -13,6 +13,10 @@ const Wrapper = styled.div`
   }
   .MuiInputBase-input {
     padding-inline-end: 0;
+    padding-inline-start: 1rem;
+    font-size: inherit;
+    line-height: normal;
+    color: inherit;
   }
   .MuiInputAdornment-positionEnd {
     margin-inline-start: 0;
@@ -20,46 +24,65 @@ const Wrapper = styled.div`
   .MuiOutlinedInput-adornedEnd {
     padding-inline-end: 0;
   }
+  .MuiFormLabel-root {
+    margin-block-end: 0.25rem;
+  }
+  .MuiSvgIcon-root {
+    font-size: 1rem;
+  }
 `;
 
 const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 
-interface DueDateFilterProps {
-  filter: { value: string } | undefined;
+interface DueDatePickerProps {
+  value?: string | null;
   onChange: (value: string | null) => void;
+  disablePast?: boolean;
+  fullWidth?: boolean;
+  required?: boolean;
+  label?: string;
+  inputRef?: React.Ref<any>;
 }
 
-export const DueDateFilter = ({ filter, onChange }: DueDateFilterProps) => {
-  const [date, setDate] = useState<string | null>(filter?.value ?? null);
+export const DueDatePicker = ({
+  value,
+  onChange,
+  label,
+  disablePast,
+  fullWidth,
+  required,
+  inputRef,
+}: DueDatePickerProps) => {
+  const [date, setDate] = useState<string | null>(value ?? null);
 
   // update in local state to be the end of the selected date
   // this is also to handle invalid dates, so the filter doesn't get updated until a valid date is selected/entered
-  const updateSelectedDate = (value: string | null) => {
-    if (!value) return setDate(null);
-    if (!isValid(new Date(value))) return;
-    const endOfDay = new Date(value).setHours(23, 59, 59, 999);
+  const updateSelectedDate = (newValue: string | null) => {
+    if (!newValue) return setDate(null);
+    if (!isValid(new Date(newValue))) return;
+    const endOfDay = new Date(newValue).setHours(23, 59, 59, 999);
     const newDate = format(endOfDay, DATE_FORMAT);
     setDate(newDate);
   };
 
-  // if the date is updated, update the filter
+  // if the date is updated, update the value
   useEffect(() => {
-    if (date === filter?.value) return;
+    if (date === value) return;
     onChange(date);
   }, [date]);
 
-  // if the filter is updated, update the local state. This is to handle, for example, dates that are updated from the URL params
+  // if the value is updated, update the local state. This is to handle, for example, dates that are updated from the URL params
   useEffect(() => {
-    if (filter?.value === date) return;
+    if (value === date) return;
 
-    setDate(filter?.value ?? null);
-  }, [filter?.value]);
+    setDate(value ?? null);
+  }, [value]);
 
   const getLocaleDateFormat = () => {
     const localeCode = window.navigator.language;
     const parts = new Intl.DateTimeFormat(localeCode).formatToParts();
     return parts
-      .map(({ type, value }) => {
+      .map(({ type, value: partValue }) => {
         switch (type) {
           case 'year':
             return 'yyyy';
@@ -68,7 +91,7 @@ export const DueDateFilter = ({ filter, onChange }: DueDateFilterProps) => {
           case 'day':
             return 'dd';
           default:
-            return value;
+            return partValue;
         }
       })
       .join('');
@@ -85,6 +108,11 @@ export const DueDateFilter = ({ filter, onChange }: DueDateFilterProps) => {
           position: 'end',
         }}
         placeholder={placeholder}
+        label={label}
+        disablePast={disablePast}
+        fullWidth={fullWidth}
+        required={required}
+        inputRef={inputRef}
       />
     </Wrapper>
   );

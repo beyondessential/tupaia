@@ -7,12 +7,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { Modal } from '@tupaia/ui-components';
-import { QuestionType } from '@tupaia/types';
-import { CountrySelector, useUserCountries } from '../CountrySelector';
-import { GroupedSurveyList } from '../GroupedSurveyList';
-import { EntitySelector } from '../EntitySelector';
-import { useCurrentUserContext, useSurvey } from '../../api';
-import { getAllSurveyComponents } from '../Survey';
+import { CountrySelector, useUserCountries } from '../../CountrySelector';
+import { GroupedSurveyList } from '../../GroupedSurveyList';
+import { DueDatePicker } from '../DueDatePicker';
+import { RepeatScheduleInput } from './RepeatScheduleInput';
+import { EntityInput } from './EntityInput';
 
 const CountrySelectorWrapper = styled.div`
   margin-inline-start: auto;
@@ -21,11 +20,17 @@ const CountrySelectorWrapper = styled.div`
 const Form = styled.form`
   .MuiFormLabel-root {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    margin-block-end: 0;
+    margin-block-end: 0.2rem;
     font-size: 0.875rem;
   }
   .MuiFormLabel-asterisk {
     color: ${({ theme }) => theme.palette.error.main};
+  }
+  .MuiInputBase-root {
+    font-size: 0.875rem;
+  }
+  .MuiOutlinedInput-input {
+    padding-block: 0.9rem;
   }
 `;
 
@@ -53,10 +58,15 @@ const ListSelectWrapper = styled.div`
       padding-block-start: 0;
     }
   }
+`;
 
-  .entity-selector-content,
-  .list-wrapper {
-    margin-block-start: 0.5rem;
+const InputRow = styled.div`
+  display: flex;
+  > * {
+    flex: 1;
+    &:first-child {
+      margin-inline-end: 1rem;
+    }
   }
 `;
 
@@ -66,26 +76,13 @@ interface CreateTaskModalProps {
 }
 
 export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
-  const user = useCurrentUserContext();
-  const formContext = useForm();
-  const { handleSubmit, control, watch } = formContext;
+  const formContext = useForm({
+    mode: 'onChange',
+  });
+  const { handleSubmit, control } = formContext;
   const { countries, isLoading, selectedCountry, updateSelectedCountry } = useUserCountries();
 
   const onSubmit = data => {};
-
-  const surveyCode = watch('survey');
-  const { data: survey, isLoading: isLoadingSurvey } = useSurvey(surveyCode);
-  const getPrimaryEntityQuestionConfig = () => {
-    if (!survey) return null;
-    const flattenedQuestions = getAllSurveyComponents(survey.screens ?? []);
-    const primaryEntityQuestion = flattenedQuestions.find(
-      question => question.type === QuestionType.PrimaryEntity,
-    );
-    return primaryEntityQuestion?.config ?? {};
-  };
-
-  const primaryEntityQuestionConfig = getPrimaryEntityQuestionConfig();
-  ``;
 
   return (
     <Modal isOpen={open} onClose={onClose} title="New task">
@@ -99,7 +96,7 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
       <FormProvider {...formContext}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Controller
-            name="survey"
+            name="surveyCode"
             control={control}
             rules={{ required: 'Required' }}
             render={({ onChange, value }) => (
@@ -124,33 +121,42 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
             rules={{ required: 'Required' }}
             render={({ onChange, value, ref }, { invalid }) => (
               <ListSelectWrapper>
-                <EntitySelector
-                  id="entity"
-                  name="entity"
-                  required
-                  controllerProps={{
-                    onChange,
-                    value,
-                    ref,
-                    invalid,
-                  }}
-                  showLegend
-                  projectCode={user?.project?.code}
-                  config={primaryEntityQuestionConfig}
-                  countryCode={selectedCountry?.code}
-                  showRecentEntities={false}
-                  disableSearch={!survey || !primaryEntityQuestionConfig}
-                  isLoading={isLoadingSurvey}
-                  showSearchInput
-                  legend="Select entity"
-                  legendProps={{
-                    required: true,
-                    color: 'primary',
-                  }}
+                <EntityInput
+                  onChange={onChange}
+                  value={value}
+                  invalid={invalid}
+                  selectedCountry={selectedCountry}
+                  ref={ref}
                 />
               </ListSelectWrapper>
             )}
           />
+          <InputRow>
+            <Controller
+              name="dueDate"
+              control={control}
+              render={({ ref, value, onChange, ...field }) => (
+                <DueDatePicker
+                  {...field}
+                  value={value}
+                  onChange={onChange}
+                  inputRef={ref}
+                  label="Due date"
+                  disablePast
+                  fullWidth
+                  required
+                />
+              )}
+            />
+            <Controller
+              name="repeatSchedule"
+              control={control}
+              render={({ onChange, value }) => (
+                <RepeatScheduleInput value={value} onChange={onChange} />
+              )}
+            />
+          </InputRow>
+
           {/* <Button type="submit">Create task</Button> */}
         </Form>
       </FormProvider>
