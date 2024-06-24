@@ -48,24 +48,25 @@ type FormattedFilter =
 
 type FormattedFilters = Record<string, FormattedFilter>;
 
-const queryForCount = (filter: FormattedFilters, models: DatatrakWebServerModelRegistry) => {
-  const multiJoin = [
-    {
-      joinWith: RECORDS.ENTITY,
-      joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.TASK}.entity_id`],
-    },
-    {
-      joinWith: RECORDS.SURVEY,
-      joinCondition: [`${RECORDS.SURVEY}.id`, `${RECORDS.TASK}.survey_id`],
-    },
-  ];
+const queryForCount = async (filter: FormattedFilters, models: DatatrakWebServerModelRegistry) => {
+  const filtersWithColumnSelectors = { ...filter };
 
-  return models.database.count(RECORDS.TASK, filter, {
-    multiJoin,
+  // use column selectors for custom columns being used in filters
+  for (const [key, value] of Object.entries(filter)) {
+    if (key in models.task.customColumnSelectors) {
+      const colKey =
+        models.task.customColumnSelectors[key as keyof typeof models.task.customColumnSelectors]();
+      filtersWithColumnSelectors[colKey] = value;
+      delete filtersWithColumnSelectors[key];
+    }
+  }
+
+  return models.database.count(RECORDS.TASK, filtersWithColumnSelectors, {
+    multiJoin: models.task.DatabaseRecordClass.joins,
   });
 };
 
-const EQUALITY_FILTERS = ['status', 'due_date', 'survey.project_id'];
+const EQUALITY_FILTERS = ['due_date', 'survey.project_id', 'task_status'];
 
 const formatFilters = (filters: Record<string, string>[]) => {
   let formattedFilters: FormattedFilters = {};
@@ -73,7 +74,7 @@ const formatFilters = (filters: Record<string, string>[]) => {
   filters.forEach(({ id, value }) => {
     if (value === '' || value === undefined || value === null) return;
     if (EQUALITY_FILTERS.includes(id)) {
-      formattedFilters['survey.project_id'] = value;
+      formattedFilters[id] = value;
       return;
     }
 
@@ -85,7 +86,6 @@ const formatFilters = (filters: Record<string, string>[]) => {
       };
       return;
     }
-
     formattedFilters[id] = {
       comparator: 'ilike',
       comparisonValue: `${value}%`,

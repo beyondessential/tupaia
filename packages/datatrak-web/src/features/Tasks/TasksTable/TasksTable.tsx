@@ -148,7 +148,8 @@ const useTasksTable = () => {
   const { data, isLoading } = useTasks(projectId, pageSize, page, filters, sortBy);
 
   const updateSorting = newSorting => {
-    setSearchParams({ sortBy: JSON.stringify(newSorting) });
+    searchParams.set('sortBy', JSON.stringify(newSorting));
+    setSearchParams(searchParams);
   };
 
   const updateFilters = newFilters => {
@@ -158,7 +159,8 @@ const useTasksTable = () => {
       setSearchParams(searchParams);
       return;
     }
-    setSearchParams({ filters: JSON.stringify(nonEmptyFilters) });
+    searchParams.set('filters', JSON.stringify(nonEmptyFilters));
+    setSearchParams(searchParams);
   };
 
   const onChangePage = newPage => {
