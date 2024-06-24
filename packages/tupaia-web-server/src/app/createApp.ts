@@ -51,6 +51,10 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'dashboards/:projectCode/:entityCode/:dashboardCode/export',
       handleWith(routes.ExportDashboardRoute),
     )
+    .post<routes.ExportMapOverlayRequest>(
+      'mapOverlays/:projectCode/:entityCode/:mapOverlayCode/export',
+      handleWith(routes.ExportMapOverlayRoute),
+    )
     .post<routes.EmailDashboardRequest>(
       'dashboards/:projectCode/:entityCode/:dashboardCode/email',
       handleWith(routes.EmailDashboardRoute),

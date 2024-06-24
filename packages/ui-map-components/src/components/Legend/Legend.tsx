@@ -14,6 +14,7 @@ type MeasureTypeLiteral = `${MeasureType}` | 'popup-only';
 
 const LegendFrame = styled.div<{
   isDisplayed: boolean;
+  $isExport?: boolean;
 }>`
   display: flex;
   width: fit-content;
@@ -26,9 +27,12 @@ const LegendFrame = styled.div<{
   opacity: ${props => (props.isDisplayed ? '100%' : '20%')};
   margin: 0.6rem auto;
 
-  ${p => p.theme.breakpoints.down('sm')} {
-    margin: 0.6rem 0.6rem 0.6rem 0;
-  }
+  ${({ $isExport, theme }) =>
+    !$isExport &&
+    ` 
+    ${theme.breakpoints.down('sm')} {
+      margin: 0.6rem 0.6rem 0.6rem 0;
+    }`}
 `;
 
 const LegendName = styled.div`
@@ -50,7 +54,7 @@ interface LegendProps extends BaseLegendProps {
   displayedMapOverlayCodes?: string[];
   seriesesKey?: string;
   SeriesContainer?: React.ComponentType<any>;
-  SeriesDivider?: React.ComponentType<any>;
+  SeriesDivider?: React.ComponentType<any> | null;
 }
 
 export const Legend = React.memo(
@@ -64,6 +68,7 @@ export const Legend = React.memo(
     seriesesKey = 'serieses',
     SeriesContainer = LegendFrame,
     SeriesDivider,
+    isExport,
   }: LegendProps) => {
     if (Object.keys(baseMeasureInfo).length === 0) {
       return null;
@@ -124,7 +129,12 @@ export const Legend = React.memo(
             .sort(a => (a.type === MeasureType.COLOR ? -1 : 1)) // color series should sit at the top
             .map((series, index) => {
               return (
-                <SeriesContainer className={className} isDisplayed={isDisplayed} key={series.key}>
+                <SeriesContainer
+                  className={className}
+                  isDisplayed={isDisplayed}
+                  key={series.key}
+                  $isExport={isExport}
+                >
                   {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
                   <LegendComponent
                     series={series}
@@ -133,6 +143,7 @@ export const Legend = React.memo(
                     hasRadiusLayer={hasRadiusLayer}
                     setValueHidden={setValueHidden}
                     hiddenValues={hiddenValues}
+                    isExport={isExport}
                   />
                   {index < serieses.length - 1 && SeriesDivider && <SeriesDivider />}
                 </SeriesContainer>
@@ -151,6 +162,7 @@ type LegendComponentProps = {
   hasRadiusLayer: boolean;
   hiddenValues: LegendProps['hiddenValues'];
   setValueHidden: LegendProps['setValueHidden'];
+  isExport?: LegendProps['isExport'];
 };
 
 /**
@@ -163,6 +175,7 @@ const LegendComponent = ({
   hasRadiusLayer,
   hiddenValues,
   setValueHidden,
+  isExport,
 }: LegendComponentProps) => {
   const { type } = series;
   switch (type) {
@@ -186,6 +199,7 @@ const LegendComponent = ({
           series={series}
           setValueHidden={setValueHidden}
           hiddenValues={hiddenValues}
+          isExport={isExport}
         />
       );
   }

@@ -4,7 +4,13 @@
  */
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
-import { LandingPage, PDFExport, ProjectPage, Unsubscribe } from './views';
+import {
+  DashboardPDFExport,
+  LandingPage,
+  MapOverlayPDFExport,
+  ProjectPage,
+  Unsubscribe,
+} from './views';
 import { Dashboard } from './features';
 import { MODAL_ROUTES, DEFAULT_URL, ROUTE_STRUCTURE } from './constants';
 import { useUser } from './api/queries';
@@ -63,7 +69,14 @@ export const Routes = () => {
 
   return (
     <RouterRoutes>
-      <Route path="/:projectCode/:entityCode/:dashboardName/pdf-export" element={<PDFExport />} />
+      <Route
+        path="/:projectCode/:entityCode/:dashboardName/dashboard-pdf-export"
+        element={<DashboardPDFExport />}
+      />
+      <Route
+        path="/:projectCode/:entityCode/map-overlay-pdf-export"
+        element={<MapOverlayPDFExport />}
+      />
       <Route path="/unsubscribe" element={<Unsubscribe />} />
       <Route element={<MainLayout />}>
         <Route path="/:landingPageUrlSegment" element={<LandingPage />} />

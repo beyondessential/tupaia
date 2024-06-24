@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import { PDFExport } from '../../../views';
+import { DashboardPDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 
 const PreviewPanelContainer = styled.div`
@@ -74,7 +74,7 @@ export const Preview = ({ selectedDashboardItems }: { selectedDashboardItems: st
         />
       </PreviewHeaderContainer>
       <PreviewContainer>
-        <PDFExport selectedDashboardItems={[visualisationToPreview]} isPreview={true} />
+        <DashboardPDFExport selectedDashboardItems={[visualisationToPreview]} isPreview={true} />
       </PreviewContainer>
     </PreviewPanelContainer>
   );
