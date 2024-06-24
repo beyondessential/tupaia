@@ -19,7 +19,7 @@ const mapOverlayGroupCode = {
   },
 };
 
-const childType = {
+export const childType = {
   Header: 'Child type',
   width: 160,
   source: 'child_type',
@@ -38,7 +38,7 @@ const childType = {
   },
 };
 
-const childCode = {
+export const childCode = {
   Header: 'Child Code',
   source: 'child_code',
   required: true,
@@ -70,7 +70,7 @@ const childMapOverlayGroupCode = {
   },
 };
 
-const sortOrder = {
+export const sortOrder = {
   Header: 'Sort order',
   source: 'sort_order',
 };

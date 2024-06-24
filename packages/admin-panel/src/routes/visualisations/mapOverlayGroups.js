@@ -2,9 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { MAP_OVERLAY_GROUP_RELATION_FIELDS } from './mapOverlayGroupRelations';
-
-import { RELATION_ENDPOINT } from './mapOverlayGroupRelations';
+import { childCode, childType, sortOrder, RELATION_ENDPOINT } from './mapOverlayGroupRelations';
 
 const RESOURCE_NAME = { singular: 'map overlay group' };
 
@@ -41,11 +39,7 @@ const COLUMNS = [
   },
 ];
 
-export const RELATION_FIELDS = [
-  MAP_OVERLAY_GROUP_RELATION_FIELDS.CHILD_ID,
-  MAP_OVERLAY_GROUP_RELATION_FIELDS.CHILD_TYPE,
-  MAP_OVERLAY_GROUP_RELATION_FIELDS.SORT_ORDER,
-];
+export const RELATION_FIELDS = [childCode, childType, sortOrder];
 
 export const RELATION_COLUMNS = [
   ...RELATION_FIELDS,
