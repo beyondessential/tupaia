@@ -12,6 +12,7 @@ import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
 import { gaEvent, successToast } from '../../utils';
+import { useLocation } from 'react-router-dom';
 
 type Answer = string | number | boolean | null | undefined;
 
@@ -37,6 +38,7 @@ export const useSurveyResponseData = () => {
 
 export const useSubmitSurveyResponse = () => {
   const queryClient = useQueryClient();
+  const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
@@ -86,6 +88,7 @@ export const useSubmitSurveyResponse = () => {
         // include the survey response data in the location state, so that we can use it to generate QR codes
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
           state: {
+            from: location?.state?.from,
             surveyResponse: JSON.stringify(data),
           },
         });

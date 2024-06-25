@@ -64,10 +64,10 @@ const ActionButton = (task: Task) => {
   return (
     <ActionButtonComponent
       component={Link}
-      to={surveyLink}
+      to={`${surveyLink}/1`}
       variant="contained"
       state={{
-        from: JSON.stringify(location),
+        from: location.pathname,
       }}
     >
       Complete

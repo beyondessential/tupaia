@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
+import { useLocation, Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper as MuiPaper } from '@material-ui/core';
@@ -71,6 +71,7 @@ const LoadingContainer = styled.div`
  */
 export const SurveyLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const params = useParams<SurveyParams>();
   const {
     updateFormData,
@@ -89,7 +90,9 @@ export const SurveyLayout = () => {
 
   const handleStep = (path, data) => {
     updateFormData({ ...formData, ...data });
-    navigate(path);
+    navigate(path, {
+      state: location.state,
+    });
   };
 
   const onStepPrevious = () => {
@@ -136,6 +139,7 @@ export const SurveyLayout = () => {
       }),
       {
         state: {
+          ...location.state,
           errors: stringifiedErrors,
         },
       },

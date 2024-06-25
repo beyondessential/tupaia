@@ -13,6 +13,7 @@ import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
 import { SurveyQRCode } from '../SurveyQRCode';
 import { useCurrentUserContext } from '../../../api';
+import { useFromLocation } from '../../../utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -75,6 +76,8 @@ export const SurveySuccessScreen = () => {
   const navigate = useNavigate();
   const { resetForm } = useSurveyForm();
   const { data: survey } = useSurvey(params.surveyCode);
+  const from = useFromLocation();
+  const returnTo = from === '/tasks' ? '/tasks' : '/';
 
   const repeatSurvey = () => {
     resetForm();
@@ -109,7 +112,7 @@ export const SurveySuccessScreen = () => {
                   Repeat Survey
                 </Button>
               )}
-              <Button to="/" fullWidth>
+              <Button to={returnTo} fullWidth>
                 Return to dashboard
               </Button>
             </ButtonGroup>

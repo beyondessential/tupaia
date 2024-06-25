@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { To, Link as RouterLink } from 'react-router-dom';
+import { To, Link as RouterLink, useLocation } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
 import { useIsMobile } from '../../../../utils';
@@ -94,6 +94,7 @@ const Header = styled.div`
 
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
+  const location = useLocation();
   const isMobile = useIsMobile();
   const {
     sideMenuOpen,
@@ -139,6 +140,7 @@ export const SurveySideMenu = () => {
               <li key={screen.id}>
                 <SurveyMenuItem
                   to={`./${num}`}
+                  state={location.state}
                   $active={screenNumber === num}
                   onClick={onChangeScreen}
                   $isInstructionOnly={!screen.screenNumber}
