@@ -45,12 +45,14 @@ const SurveyMenuItem = styled(ListItem).attrs({
   component: RouterLink,
   variant: 'text',
   color: 'default',
-  state: {},
 })<
   ButtonProps & {
     to: To;
     $active?: boolean;
     $isInstructionOnly?: boolean;
+    state: {
+      from?: string | undefined;
+    };
   }
 >`
   padding: 0.5rem;
@@ -141,7 +143,7 @@ export const SurveySideMenu = () => {
               <li key={screen.id}>
                 <SurveyMenuItem
                   to={`./${num}`}
-                  state={{ from }}
+                  state={{ ...(from && { from }) }}
                   $active={screenNumber === num}
                   onClick={onChangeScreen}
                   $isInstructionOnly={!screen.screenNumber}

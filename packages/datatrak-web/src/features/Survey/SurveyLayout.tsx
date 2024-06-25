@@ -92,7 +92,7 @@ export const SurveyLayout = () => {
   const handleStep = (path, data) => {
     updateFormData({ ...formData, ...data });
     navigate(path, {
-      state: { from },
+      state: { ...(from && { from }) },
     });
   };
 
@@ -140,7 +140,7 @@ export const SurveyLayout = () => {
       }),
       {
         state: {
-          from,
+          ...(from && { from }),
           errors: stringifiedErrors,
         },
       },
