@@ -6,7 +6,6 @@ import React, { memo, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
-import queryString from 'query-string';
 import PropTypes from 'prop-types';
 import { Alert, FilterableTable } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
@@ -17,7 +16,6 @@ import {
   changePage,
   changePageSize,
   changeSorting,
-  clearError,
   confirmAction,
   refreshData,
 } from '../actions';
@@ -163,8 +161,16 @@ const DataFetchingTableComponent = memo(
     const { filters, onChangeFilters } = useColumnFilters(defaultFilters);
 
     useEffect(() => {
-      onRefreshData(filters, sorting);
-    }, [JSON.stringify(filters), pageIndex, pageSize, JSON.stringify(sorting)]);
+      // if the page index is already 0, we can just refresh the data
+      if (pageIndex === 0) {
+        onRefreshData(filters, sorting, pageIndex, pageSize);
+        // if the page index is not 0, we need to reset it to 0, which will trigger a refresh
+      } else onPageChange(0);
+    }, [JSON.stringify(filters), JSON.stringify(sorting)]);
+
+    useEffect(() => {
+      onRefreshData(filters, sorting, pageIndex, pageSize);
+    }, [pageSize, pageIndex]);
 
     const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -286,8 +292,14 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
 
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   const { baseFilter = {}, endpoint, columns, reduxId, ...restOfOwnProps } = ownProps;
-  const onRefreshData = (filters, sorting) =>
-    dispatch(refreshData(reduxId, endpoint, columns, baseFilter, filters, sorting, stateProps));
+  const onRefreshData = (filters, sorting, pageIndex, pageSize) =>
+    dispatch(
+      refreshData(reduxId, endpoint, columns, baseFilter, filters, sorting, {
+        ...stateProps,
+        pageIndex,
+        pageSize,
+      }),
+    );
 
   return {
     reduxId,

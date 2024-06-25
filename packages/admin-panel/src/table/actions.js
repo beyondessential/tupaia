@@ -18,7 +18,6 @@ import {
   DATA_FETCH_ERROR,
   DATA_FETCH_REQUEST,
   DATA_FETCH_SUCCESS,
-  FILTERS_CHANGE,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
   SORTING_CHANGE,
@@ -36,12 +35,6 @@ export const changePageSize = (reduxId, pageSize, pageIndex) => ({
   type: PAGE_SIZE_CHANGE,
   pageSize,
   pageIndex,
-  reduxId,
-});
-
-export const changeFilters = (reduxId, filters) => ({
-  type: FILTERS_CHANGE,
-  filters,
   reduxId,
 });
 
@@ -110,6 +103,8 @@ const refreshDataWithDebounce = debounce(
         numberOfPages: lastPageNumber,
         fetchId,
         totalRecords,
+        pageIndex,
+        pageSize,
       });
     } catch (error) {
       dispatch({
@@ -117,6 +112,8 @@ const refreshDataWithDebounce = debounce(
         reduxId,
         errorMessage: error.message,
         fetchId,
+        pageIndex,
+        pageSize,
       });
     }
   },
