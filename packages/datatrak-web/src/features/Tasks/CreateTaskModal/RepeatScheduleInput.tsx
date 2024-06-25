@@ -3,9 +3,16 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Select, MenuItem, FormControl, FormLabel } from '@material-ui/core';
+import { Select as BaseSelect, MenuItem, FormControl, FormLabel } from '@material-ui/core';
 import { format, lastDayOfMonth } from 'date-fns';
 import { useWatch } from 'react-hook-form';
+import styled from 'styled-components';
+
+const Select = styled(BaseSelect)`
+  &.Mui-disabled {
+    background-color: ${({ theme }) => theme.palette.background.default};
+  }
+`;
 
 const useRepeatScheduleOptions = dueDate => {
   const noRepeat = {
