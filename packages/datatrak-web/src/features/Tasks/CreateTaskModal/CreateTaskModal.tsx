@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
-import { Modal } from '@tupaia/ui-components';
+import { Modal, TextField } from '@tupaia/ui-components';
 import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { DueDatePicker } from '../DueDatePicker';
@@ -68,6 +68,17 @@ const InputRow = styled.div`
   > * {
     width: 48%;
     margin-block-end: 0;
+  }
+`;
+
+const CommentsInput = styled(TextField).attrs({
+  multiline: true,
+  variant: 'outlined',
+  fullWidth: true,
+  rows: 4,
+})`
+  .MuiOutlinedInput-inputMultiline {
+    padding-inline: 1rem;
   }
 `;
 
@@ -174,6 +185,8 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
             />
           </InputRow>
 
+          {/** This is a placeholder for when we add in comments functionality */}
+          <CommentsInput label="Comments" />
           {/* <Button type="submit">Create task</Button> */}
         </Form>
       </FormProvider>
