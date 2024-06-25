@@ -38,6 +38,8 @@ const CREATE_CONFIG = {
         source: 'parent_id',
         editConfig: {
           optionsEndpoint: 'permissionGroups',
+          optionLabelKey: 'name',
+          optionValueKey: 'id',
         },
       },
     ],

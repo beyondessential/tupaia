@@ -9,8 +9,8 @@ import { Moment } from 'moment';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
-import { DashboardItemConfig } from '@tupaia/types';
-import { DashboardItem as DashboardItemType } from '../../types';
+import { DashboardItemConfig, DashboardItemType } from '@tupaia/types';
+import { DashboardItem as DashboardItemT } from '../../types';
 import { useReport } from '../../api/queries';
 import { useDashboard } from '../Dashboard';
 import { DashboardItemContent } from './DashboardItemContent';
@@ -69,7 +69,7 @@ const getShowDashboardItemTitle = (config?: DashboardItemConfig, legacy?: boolea
 /**
  * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal if the item is expandable
  */
-export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemType }) => {
+export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT }) => {
   const { projectCode, entityCode } = useParams();
   const { activeDashboard } = useDashboard();
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
@@ -79,20 +79,28 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     endDate?: Moment;
   };
 
+  const type = dashboardItem?.config?.type;
+
+  const isEnabled = type !== DashboardItemType.Matrix; // don't fetch the report if the item is a matrix, because we only view the matrix in the modal
+
   const {
     data: report,
     isLoading,
     error,
     refetch,
-  } = useReport(dashboardItem?.reportCode, {
-    projectCode,
-    entityCode,
-    dashboardCode: activeDashboard?.code,
-    itemCode: dashboardItem?.code,
-    startDate: defaultStartDate,
-    endDate: defaultEndDate,
-    legacy: dashboardItem?.legacy,
-  });
+  } = useReport(
+    dashboardItem?.reportCode,
+    {
+      projectCode,
+      entityCode,
+      dashboardCode: activeDashboard?.code,
+      itemCode: dashboardItem?.code,
+      startDate: defaultStartDate,
+      endDate: defaultEndDate,
+      legacy: dashboardItem?.legacy,
+    },
+    isEnabled, // don't fetch the report if the item is a matrix, because we only view the matrix in the modal
+  );
 
   const { config, legacy } = dashboardItem;
 
@@ -105,7 +113,8 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
         value={{
           config: dashboardItem?.config,
           report,
-          isLoading,
+          isLoading: isEnabled && isLoading,
+          isEnabled,
           error,
           refetch,
           reportCode: dashboardItem?.reportCode,

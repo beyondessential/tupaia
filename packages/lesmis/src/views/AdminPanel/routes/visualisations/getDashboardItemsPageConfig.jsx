@@ -123,7 +123,7 @@ export const getDashboardItemsPageConfig = (translate, adminUrl, isBESAdmin) => 
 
   return {
     ...dashboardItems,
-    title: translate('admin.dashboardItems'),
+    label: translate('admin.dashboardItems'),
     columns,
     importConfig,
     editorConfig,
