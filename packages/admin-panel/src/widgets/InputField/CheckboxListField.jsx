@@ -13,6 +13,7 @@ import {
   FormGroup as MuiFormGroup,
   FormLabel,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import { InputLabel } from '@tupaia/ui-components';
@@ -121,6 +122,10 @@ const LegendWrapper = styled.div`
   display: flex;
 `;
 
+const NoResults = styled(Typography)`
+  margin-block-end: 0.5rem;
+`;
+
 export const CheckboxListField = ({
   endpoint,
   baseFilter,
@@ -189,6 +194,7 @@ export const CheckboxListField = ({
         <SearchField value={searchTerm} onChange={event => setSearchTerm(event.target.value)} />
         <FormGroup>
           {isLoading && <div>Loading...</div>}
+          {!optionsList?.length && !isLoading && <NoResults>No results found</NoResults>}
 
           {optionsList?.map(option => (
             <FormControlLabel
