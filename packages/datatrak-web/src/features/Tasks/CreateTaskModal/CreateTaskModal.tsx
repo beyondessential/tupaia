@@ -15,7 +15,11 @@ import { EntityInput } from './EntityInput';
 import { AssigneeInput } from './AssigneeInput';
 
 const CountrySelectorWrapper = styled.div`
-  margin-inline-start: auto;
+  display: flex;
+  justify-content: flex-end;
+  .MuiInputBase-input.MuiSelect-selectMenu {
+    font-size: 0.75rem;
+  }
 `;
 
 const Form = styled.form`
@@ -33,10 +37,16 @@ const Form = styled.form`
   .MuiOutlinedInput-input {
     padding-block: 0.9rem;
   }
+  input::placeholder {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.divider};
+  }
 `;
 
 const ListSelectWrapper = styled.div`
-  margin-block-end: 1rem;
+  margin-block-end: 1.8rem;
   .list-wrapper {
     height: 15rem;
     max-height: 15rem;
@@ -64,7 +74,7 @@ const ListSelectWrapper = styled.div`
 const InputRow = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-block-end: 1rem;
+  margin-block-end: 1.2rem;
   > * {
     width: 48%;
     margin-block-end: 0;
@@ -98,15 +108,15 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
 
   return (
     <Modal isOpen={open} onClose={onClose} title="New task">
-      <CountrySelectorWrapper>
-        <CountrySelector
-          countries={countries}
-          selectedCountry={selectedCountry}
-          onChangeCountry={updateSelectedCountry}
-        />
-      </CountrySelectorWrapper>
       <FormProvider {...formContext}>
         <Form onSubmit={handleSubmit(onSubmit)}>
+          <CountrySelectorWrapper>
+            <CountrySelector
+              countries={countries}
+              selectedCountry={selectedCountry}
+              onChangeCountry={updateSelectedCountry}
+            />
+          </CountrySelectorWrapper>
           <Controller
             name="surveyCode"
             control={control}
