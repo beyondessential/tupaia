@@ -13,7 +13,7 @@ export const useLinkWithSearchState = url => {
     },
     newState: {
       ...state,
-      prevSearch: search,
+      [location.pathname]: search,
     },
   };
 };
@@ -21,8 +21,7 @@ export const useLinkWithSearchState = url => {
 export const useLinkToPreviousSearchState = url => {
   const location = useLocation();
   const { state } = location;
-  const { prevSearch } = state || {};
-
+  const prevSearch = state?.[url];
   return {
     to: {
       ...location,
@@ -31,7 +30,7 @@ export const useLinkToPreviousSearchState = url => {
     },
     newState: {
       ...state,
-      prevSearch: '',
+      [url]: '',
     },
   };
 };

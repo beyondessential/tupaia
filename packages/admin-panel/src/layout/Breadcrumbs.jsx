@@ -48,6 +48,7 @@ export const Breadcrumbs = ({
   const pathname = parent?.to || '/';
 
   const { to, newState } = useLinkToPreviousSearchState(pathname);
+
   return (
     <Wrapper>
       <BackButton component={Link} to={to} onClick={onClickLinks} state={newState}>
@@ -59,6 +60,7 @@ export const Breadcrumbs = ({
           to={parent?.to || '/'}
           onClick={onClickLinks}
           color="textPrimary"
+          state={newState}
         >
           {parentTitle}
         </Breadcrumb>
