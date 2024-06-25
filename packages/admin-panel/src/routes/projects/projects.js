@@ -112,13 +112,13 @@ const NEW_PROJECT_COLUMNS = [
   },
   ...CREATE_FIELDS,
   {
-    Header: 'Country code(s)',
+    Header: 'Countries',
     source: 'country.code',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'countries',
-      optionLabelKey: 'country.code',
+      optionLabelKey: 'country.name',
       optionValueKey: 'country.id',
       sourceKey: 'countries',
       pageSize: 'ALL',
