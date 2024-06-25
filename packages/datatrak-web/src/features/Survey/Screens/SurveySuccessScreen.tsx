@@ -13,6 +13,7 @@ import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
 import { SurveyQRCode } from '../SurveyQRCode';
 import { useCurrentUserContext } from '../../../api';
+import { useFromLocation } from '../../../utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -69,13 +70,25 @@ const Button = styled(BaseButton)`
   }
 `;
 
+const ReturnButton = () => {
+  const from = useFromLocation();
+  return from === ROUTES.TASKS ? (
+    <Button to={ROUTES.TASKS} fullWidth>
+      Return to tasks
+    </Button>
+  ) : (
+    <Button to="/" fullWidth>
+      Return to dashboard
+    </Button>
+  );
+};
+
 export const SurveySuccessScreen = () => {
   const { isLoggedIn } = useCurrentUserContext();
   const params = useParams();
   const navigate = useNavigate();
   const { resetForm } = useSurveyForm();
   const { data: survey } = useSurvey(params.surveyCode);
-
   const repeatSurvey = () => {
     resetForm();
     const path = generatePath(ROUTES.SURVEY_SCREEN, {
@@ -109,9 +122,7 @@ export const SurveySuccessScreen = () => {
                   Repeat Survey
                 </Button>
               )}
-              <Button to="/" fullWidth>
-                Return to dashboard
-              </Button>
+              <ReturnButton />
             </ButtonGroup>
           </>
         )}
