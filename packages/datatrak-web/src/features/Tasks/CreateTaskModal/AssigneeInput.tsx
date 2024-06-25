@@ -46,7 +46,7 @@ export const AssigneeInput = ({ value, onChange, inputRef }: AssigneeInputProps)
         setSearchValue(newValue);
       }, 200)}
       inputValue={searchValue}
-      getOptionLabel={option => option.name}
+      getOptionLabel={option => option.label}
       getOptionSelected={(option, selectedOption) => option.id === selectedOption?.id}
       placeholder="Search..."
     />

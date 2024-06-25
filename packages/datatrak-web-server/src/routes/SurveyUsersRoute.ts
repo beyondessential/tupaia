@@ -6,6 +6,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyUsersRequest } from '@tupaia/types';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 
 export type SurveyUsersRequest = Request<
   DatatrakWebSurveyUsersRequest.Params,
@@ -15,6 +16,8 @@ export type SurveyUsersRequest = Request<
 >;
 
 const DEFAULT_PAGE_SIZE = 100;
+
+const E2E_USER = 'test_e2e@beyondessential.com.au';
 
 export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
   public async buildResponse() {
@@ -66,7 +69,15 @@ export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
     const userIds = userEntityPermissions.map(uep => uep.user_id);
 
     const users = await models.user.find(
-      { id: userIds, ...filter },
+      {
+        id: userIds,
+        ...filter,
+        // exclude the e2e user and any user with a tupaia.org email, as these are api-client users
+        email: { comparator: '!=', comparisonValue: E2E_USER },
+        [QUERY_CONJUNCTIONS.AND]: {
+          email: { comparator: 'not like', comparisonValue: '%@tupaia.org' },
+        },
+      },
       {
         sort: ['full_name ASC'],
         limit: DEFAULT_PAGE_SIZE,

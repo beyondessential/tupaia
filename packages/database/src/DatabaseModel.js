@@ -125,9 +125,9 @@ export class DatabaseModel {
 
     return fieldNames.map(fieldName => {
       const qualifiedName = this.fullyQualifyColumn(fieldName);
-      const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
-      if (customSelector) {
-        return { [fieldName]: customSelector(qualifiedName) };
+      const customColumnSelector = this.getColumnSelector(fieldName, qualifiedName);
+      if (customColumnSelector) {
+        return { [fieldName]: customColumnSelector };
       }
       return qualifiedName;
     });
@@ -151,6 +151,14 @@ export class DatabaseModel {
     return { ...options, ...customQueryOptions };
   }
 
+  getColumnSelector(fieldName, qualifiedName) {
+    const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
+    if (customSelector) {
+      return customSelector(qualifiedName);
+    }
+    return null;
+  }
+
   async getDbConditions(dbConditions = {}) {
     const fieldNames = await this.fetchFieldNames();
     const fullyQualifiedConditions = {};
@@ -165,9 +173,9 @@ export class DatabaseModel {
         // Don't touch RAW conditions
         fullyQualifiedConditions[field] = value;
       } else {
-        const fullyQualifiedField = fieldNames.includes(field)
-          ? this.fullyQualifyColumn(field)
-          : field;
+        const qualifiedName = this.fullyQualifyColumn(field);
+        const fieldSelector = this.getColumnSelector(field, qualifiedName) ?? qualifiedName;
+        const fullyQualifiedField = fieldNames.includes(field) ? fieldSelector : field;
         fullyQualifiedConditions[fullyQualifiedField] = value;
       }
     }

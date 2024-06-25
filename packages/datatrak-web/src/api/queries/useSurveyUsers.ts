@@ -11,7 +11,7 @@ import { Survey } from '../../types';
 export const useSurveyUsers = (surveyCode?: Survey['code'], searchTerm?: string) => {
   return useQuery(
     ['surveyUsers', surveyCode, searchTerm],
-    (): Promise<DatatrakWebSurveyUsersRequest.ResBody[]> =>
+    (): Promise<DatatrakWebSurveyUsersRequest.ResBody> =>
       get(`users/${surveyCode}`, {
         params: {
           filter: searchTerm
