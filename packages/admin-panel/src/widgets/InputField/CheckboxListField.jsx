@@ -166,7 +166,6 @@ export const CheckboxListField = ({
         checked: selectedValue?.includes(option[optionValueKey]),
         value: option[optionValueKey],
         label: option[optionLabelKey],
-        name: option[optionValueKey],
       })) ?? []
     );
   }, [options, selectedValue]);
