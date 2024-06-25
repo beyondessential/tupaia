@@ -77,7 +77,7 @@ export const SurveySuccessScreen = () => {
   const { resetForm } = useSurveyForm();
   const { data: survey } = useSurvey(params.surveyCode);
   const from = useFromLocation();
-  const returnTo = from === '/tasks' ? '/tasks' : '/';
+  const returnTo = from ? from : '/';
 
   const repeatSurvey = () => {
     resetForm();

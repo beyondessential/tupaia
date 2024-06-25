@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useLocation, Outlet, generatePath, useNavigate, useParams } from 'react-router';
+import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper as MuiPaper } from '@material-ui/core';
@@ -15,6 +15,7 @@ import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { ROUTES } from '../../constants';
 import { useSubmitSurveyResponse } from '../../api/mutations';
 import { getErrorsByScreen } from './utils';
+import { useFromLocation } from '../../utils';
 
 const ScrollableLayout = styled.div<{
   $sideMenuClosed?: boolean;
@@ -71,7 +72,7 @@ const LoadingContainer = styled.div`
  */
 export const SurveyLayout = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const from = useFromLocation();
   const params = useParams<SurveyParams>();
   const {
     updateFormData,
@@ -91,7 +92,7 @@ export const SurveyLayout = () => {
   const handleStep = (path, data) => {
     updateFormData({ ...formData, ...data });
     navigate(path, {
-      state: location.state,
+      state: { from },
     });
   };
 
@@ -139,7 +140,7 @@ export const SurveyLayout = () => {
       }),
       {
         state: {
-          ...location.state,
+          from,
           errors: stringifiedErrors,
         },
       },
