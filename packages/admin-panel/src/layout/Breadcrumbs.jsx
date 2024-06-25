@@ -57,7 +57,7 @@ export const Breadcrumbs = ({
       <MuiBreadcrumbs separator="|">
         <Breadcrumb
           component={Link}
-          to={parent?.to || '/'}
+          to={to}
           onClick={onClickLinks}
           color="textPrimary"
           state={newState}
