@@ -4,15 +4,19 @@
  */
 
 import { useQuery } from 'react-query';
-import { DatatrakWebSurveyUsersRequest } from '@tupaia/types';
+import { Country, DatatrakWebSurveyUsersRequest } from '@tupaia/types';
 import { get } from '../api';
 import { Survey } from '../../types';
 
-export const useSurveyUsers = (surveyCode?: Survey['code'], searchTerm?: string) => {
+export const useSurveyUsers = (
+  surveyCode?: Survey['code'],
+  countryCode?: Country['code'],
+  searchTerm?: string,
+) => {
   return useQuery(
-    ['surveyUsers', surveyCode, searchTerm],
+    ['surveyUsers', surveyCode, countryCode, searchTerm],
     (): Promise<DatatrakWebSurveyUsersRequest.ResBody> =>
-      get(`users/${surveyCode}`, {
+      get(`users/${surveyCode}/${countryCode}`, {
         params: {
           filter: searchTerm
             ? {
@@ -25,7 +29,7 @@ export const useSurveyUsers = (surveyCode?: Survey['code'], searchTerm?: string)
         },
       }),
     {
-      enabled: !!surveyCode,
+      enabled: !!surveyCode && !!countryCode,
     },
   );
 };

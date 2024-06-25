@@ -64,6 +64,7 @@ const ListSelectWrapper = styled.div`
 const InputRow = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-block-end: 1rem;
   > * {
     width: 48%;
     margin-block-end: 0;
@@ -162,7 +163,13 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
               name="assigneeId"
               control={control}
               render={({ ref, value, onChange, ...field }) => (
-                <AssigneeInput {...field} value={value} onChange={onChange} inputRef={ref} />
+                <AssigneeInput
+                  {...field}
+                  value={value}
+                  onChange={onChange}
+                  inputRef={ref}
+                  selectedCountry={selectedCountry}
+                />
               )}
             />
           </InputRow>

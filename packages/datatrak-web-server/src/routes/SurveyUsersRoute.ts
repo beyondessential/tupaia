@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSurveyUsersRequest } from '@tupaia/types';
+import { DatatrakWebSurveyUsersRequest, EntityType } from '@tupaia/types';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 
 export type SurveyUsersRequest = Request<
@@ -22,7 +22,7 @@ const E2E_USER = 'test_e2e@beyondessential.com.au';
 export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
   public async buildResponse() {
     const { models, params, query } = this.req;
-    const { surveyCode } = params;
+    const { surveyCode, countryCode } = params;
 
     const { filter } = query;
 
@@ -32,7 +32,7 @@ export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
       throw new Error(`Survey with code ${surveyCode} not found`);
     }
 
-    const { permission_group_id: permissionGroupId, country_ids: countryIds } = survey;
+    const { permission_group_id: permissionGroupId } = survey;
 
     if (!permissionGroupId) {
       return [];
@@ -48,23 +48,16 @@ export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
     // get the ancestors of the permission group
     const permissionGroupWithAncestors = await permissionGroup.getAncestors();
 
-    // get the user entity permissions for the permission group and its ancestors
-    let userEntityPermissions = await models.userEntityPermission.find({
-      permission_group_id: permissionGroupWithAncestors.map(p => p.id),
+    const entity = await models.entity.findOne({
+      country_code: countryCode,
+      type: EntityType.country,
     });
 
-    // filter the user entity permissions by country
-    if (countryIds) {
-      const countries = await models.country.find({ id: countryIds });
-      // the countryIds are not the same as entityIds so we need to get the country codes and filter by them instead
-      const countryCodes = countries.map(c => c.code);
-      userEntityPermissions = userEntityPermissions.filter(uep => {
-        // @ts-ignore
-        if (!uep.entity_code) return false;
-        // @ts-ignore
-        return countryCodes.includes(uep.entity_code);
-      });
-    }
+    // get the user entity permissions for the permission group and its ancestors
+    const userEntityPermissions = await models.userEntityPermission.find({
+      permission_group_id: permissionGroupWithAncestors.map(p => p.id),
+      entity_id: entity.id,
+    });
 
     const userIds = userEntityPermissions.map(uep => uep.user_id);
 

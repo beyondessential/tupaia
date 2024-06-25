@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import throttle from 'lodash.throttle';
 import { useWatch } from 'react-hook-form';
-import { DatatrakWebSurveyUsersRequest } from '@tupaia/types';
+import { Country, DatatrakWebSurveyUsersRequest } from '@tupaia/types';
 import { Autocomplete } from '../../../components';
 import { useSurveyUsers } from '../../../api';
 
@@ -15,13 +15,19 @@ interface AssigneeInputProps {
   value: string | null;
   onChange: (value: User | null) => void;
   inputRef?: React.Ref<any>;
+  selectedCountry?: Country | null;
 }
 
-export const AssigneeInput = ({ value, onChange, inputRef }: AssigneeInputProps) => {
+export const AssigneeInput = ({
+  value,
+  onChange,
+  inputRef,
+  selectedCountry,
+}: AssigneeInputProps) => {
   const [searchValue, setSearchValue] = useState('');
   const { surveyCode } = useWatch('surveyCode');
 
-  const { data: users = [] } = useSurveyUsers(surveyCode, searchValue);
+  const { data: users = [] } = useSurveyUsers(surveyCode, selectedCountry?.code, searchValue);
 
   const onChangeAssignee = (_e, newSelection: User | null) => {
     onChange(newSelection);
