@@ -22,6 +22,7 @@ import {
 import { ConfirmDeleteModal } from '../../widgets';
 import { useColumnFilters } from './useColumnFilters';
 import { DisplayCell } from './Cells';
+import { getEditorState } from '../../editor/selectors';
 
 const ErrorAlert = styled(Alert).attrs({
   severity: 'error',
@@ -107,6 +108,7 @@ const DataFetchingTableComponent = memo(
     resourceName,
     actionLabel = 'Action',
     defaultFilters,
+    editorState,
   }) => {
     const formattedColumns = useMemo(() => {
       const cols = columns.map(column => formatColumnForReactTable(column));
@@ -171,6 +173,11 @@ const DataFetchingTableComponent = memo(
     useEffect(() => {
       onRefreshData(filters, sorting, pageIndex, pageSize);
     }, [pageSize, pageIndex]);
+
+    useEffect(() => {
+      if (editorState?.isOpen) return;
+      onRefreshData(filters, sorting, pageIndex, pageSize);
+    }, [editorState?.isOpen]);
 
     const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -255,6 +262,7 @@ DataFetchingTableComponent.propTypes = {
   resourceName: PropTypes.object,
   actionLabel: PropTypes.string,
   defaultFilters: PropTypes.array,
+  editorState: PropTypes.object,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -271,6 +279,7 @@ DataFetchingTableComponent.defaultProps = {
   resourceName: {},
   actionLabel: 'Action',
   defaultFilters: [],
+  editorState: {},
 };
 
 const mapStateToProps = (state, { reduxId, ...ownProps }) => ({
@@ -278,6 +287,7 @@ const mapStateToProps = (state, { reduxId, ...ownProps }) => ({
   isChangingDataOnServer: getIsChangingDataOnServer(state),
   ...ownProps,
   ...getTableState(state, reduxId),
+  editorState: getEditorState(state),
 });
 
 const mapDispatchToProps = (dispatch, { reduxId }) => ({
