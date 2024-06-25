@@ -56,6 +56,7 @@ const Container = styled.div`
   padding-block-start: 0.2rem;
   border-radius: 4px;
   margin-block-start: 0.5rem;
+  margin-block-end: 1.2rem;
 `;
 
 const FormGroup = styled(MuiFormGroup)`
