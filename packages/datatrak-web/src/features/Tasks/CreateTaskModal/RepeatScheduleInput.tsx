@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Select as BaseSelect, MenuItem, FormControl, FormLabel } from '@material-ui/core';
 import { format, lastDayOfMonth } from 'date-fns';
 import { useWatch } from 'react-hook-form';
@@ -76,6 +76,12 @@ interface RepeatScheduleInputProps {
 export const RepeatScheduleInput = ({ value = '', onChange }: RepeatScheduleInputProps) => {
   const { dueDate } = useWatch('dueDate');
   const repeatScheduleOptions = useRepeatScheduleOptions(dueDate);
+
+  useEffect(() => {
+    if (!dueDate) {
+      onChange(null);
+    }
+  }, [dueDate]);
   return (
     <FormControl fullWidth>
       <FormLabel htmlFor="repeatSchedule">Repeating task</FormLabel>

@@ -13,6 +13,7 @@ import { DueDatePicker } from '../DueDatePicker';
 import { RepeatScheduleInput } from './RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
 import { AssigneeInput } from './AssigneeInput';
+import { ButtonProps } from '@material-ui/core';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -101,13 +102,40 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
   const formContext = useForm({
     mode: 'onChange',
   });
-  const { handleSubmit, control } = formContext;
+  const {
+    handleSubmit,
+    control,
+    formState: { isValid },
+  } = formContext;
   const { countries, isLoading, selectedCountry, updateSelectedCountry } = useUserCountries();
 
-  const onSubmit = data => {};
+  const onSubmit = data => {
+    console.log(data);
+  };
+
+  const buttons: {
+    text: string;
+    onClick: () => void;
+    variant?: ButtonProps['variant']; // typing here because simply giving 'outlined' as default value is causing a type mismatch error
+    id: string;
+    disabled?: boolean;
+  }[] = [
+    {
+      text: 'Cancel',
+      onClick: onClose,
+      variant: 'outlined',
+      id: 'cancel',
+    },
+    {
+      text: 'Save',
+      onClick: handleSubmit(onSubmit),
+      id: 'save',
+      disabled: !isValid,
+    },
+  ];
 
   return (
-    <Modal isOpen={open} onClose={onClose} title="New task">
+    <Modal isOpen={open} onClose={onClose} title="New task" buttons={buttons}>
       <FormProvider {...formContext}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <CountrySelectorWrapper>
