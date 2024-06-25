@@ -13,7 +13,7 @@ type User = DatatrakWebSurveyUsersRequest.ResBody[0];
 
 interface AssigneeInputProps {
   value: string | null;
-  onChange: (value: User | null) => void;
+  onChange: (value: User['id'] | null) => void;
   inputRef?: React.Ref<any>;
   selectedCountry?: Country | null;
 }
@@ -27,10 +27,14 @@ export const AssigneeInput = ({
   const [searchValue, setSearchValue] = useState('');
   const { surveyCode } = useWatch('surveyCode');
 
-  const { data: users = [] } = useSurveyUsers(surveyCode, selectedCountry?.code, searchValue);
+  const { data: users = [], isLoading } = useSurveyUsers(
+    surveyCode,
+    selectedCountry?.code,
+    searchValue,
+  );
 
   const onChangeAssignee = (_e, newSelection: User | null) => {
-    onChange(newSelection);
+    onChange(newSelection?.id ?? null);
   };
 
   const options =
@@ -55,6 +59,7 @@ export const AssigneeInput = ({
       getOptionLabel={option => option.label}
       getOptionSelected={(option, selectedOption) => option.id === selectedOption?.id}
       placeholder="Search..."
+      loading={isLoading}
     />
   );
 };
