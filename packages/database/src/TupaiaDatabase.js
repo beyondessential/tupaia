@@ -514,6 +514,7 @@ export class TupaiaDatabase {
  */
 function buildQuery(connection, queryConfig, where = {}, options = {}) {
   const { recordType, queryMethod, queryMethodParameter } = queryConfig;
+
   let query = connection(recordType); // Query starts as just the table, but will be built up
 
   // If an innerQuery is defined, make the outer query wrap it
@@ -676,6 +677,7 @@ function addWhereClause(connection, baseQuery, where) {
     }
 
     const columnKey = getColSelector(connection, key);
+
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
 
     const { args = [comparator, sanitizeComparisonValue(comparator, comparisonValue)] } = value;
@@ -740,6 +742,7 @@ function getColSelector(connection, inputColStr) {
     return connection.raw(`COALESCE(${identifiers})`, bindings);
   }
   const casePattern = /^CASE/;
+
   if (casePattern.test(inputColStr)) {
     return connection.raw(inputColStr);
   }

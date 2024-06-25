@@ -12,6 +12,7 @@ import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { DueDatePicker } from '../DueDatePicker';
 import { RepeatScheduleInput } from './RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
+import { AssigneeInput } from './AssigneeInput';
 
 const CountrySelectorWrapper = styled.div`
   margin-inline-start: auto;
@@ -62,11 +63,10 @@ const ListSelectWrapper = styled.div`
 
 const InputRow = styled.div`
   display: flex;
+  justify-content: space-between;
   > * {
-    flex: 1;
-    &:first-child {
-      margin-inline-end: 1rem;
-    }
+    width: 48%;
+    margin-block-end: 0;
   }
 `;
 
@@ -153,6 +153,16 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
               control={control}
               render={({ onChange, value }) => (
                 <RepeatScheduleInput value={value} onChange={onChange} />
+              )}
+            />
+          </InputRow>
+
+          <InputRow>
+            <Controller
+              name="assigneeId"
+              control={control}
+              render={({ ref, value, onChange, ...field }) => (
+                <AssigneeInput {...field} value={value} onChange={onChange} inputRef={ref} />
               )}
             />
           </InputRow>

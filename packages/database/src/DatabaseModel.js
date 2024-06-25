@@ -78,7 +78,9 @@ export class DatabaseModel {
     if (!this.fieldNames) {
       const schema = await this.fetchSchema();
 
-      this.fieldNames = Object.keys(schema);
+      const customColumnSelectors = this.customColumnSelectors || {};
+
+      this.fieldNames = [...Object.keys(schema), ...Object.keys(customColumnSelectors)];
     }
     return this.fieldNames;
   }
@@ -120,6 +122,7 @@ export class DatabaseModel {
     // Alias field names to the table to prevent errors when joining other tables
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
+
     return fieldNames.map(fieldName => {
       const qualifiedName = this.fullyQualifyColumn(fieldName);
       const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];

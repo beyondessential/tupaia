@@ -20,6 +20,7 @@ export {
   DatatrakWebGenerateLoginTokenRequest,
   DatatrakWebEntityDescendantsRequest,
   DatatrakWebTasksRequest,
+  DatatrakWebSurveyUsersRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,

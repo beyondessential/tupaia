@@ -47,6 +47,8 @@ import {
   GenerateLoginTokenRequest,
   TasksRequest,
   TasksRoute,
+  SurveyUsersRequest,
+  SurveyUsersRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 
@@ -82,6 +84,7 @@ export async function createApp() {
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TasksRequest>('tasks', handleWith(TasksRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
+    .get<SurveyUsersRequest>('users/:surveyCode', handleWith(SurveyUsersRoute))
     // Forward auth requests to web-config
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

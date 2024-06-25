@@ -8,6 +8,9 @@ import styled from 'styled-components';
 import { DatePicker } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
+  .MuiFormControl-root {
+    margin-block-end: 0;
+  }
   .MuiButtonBase-root.MuiIconButton-root {
     color: ${props => props.theme.palette.primary.main};
   }
@@ -26,6 +29,7 @@ const Wrapper = styled.div`
   }
   .MuiFormLabel-root {
     margin-block-end: 0.25rem;
+    line-height: 1.2;
   }
   .MuiSvgIcon-root {
     font-size: 1rem;

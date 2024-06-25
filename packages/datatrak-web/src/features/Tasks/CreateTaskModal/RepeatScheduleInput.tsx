@@ -34,6 +34,7 @@ const useRepeatScheduleOptions = dueDate => {
     ? 'Monthly on the last day'
     : `Monthly on the ${dateOfMonth}`;
 
+  // TODO: When saving, add some logic here when we handle recurring tasks
   return [
     noRepeat,
     {
