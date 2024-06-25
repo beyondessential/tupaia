@@ -5,20 +5,10 @@
 import React, { memo, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { useTable, usePagination, useSortBy, useResizeColumns, useFlexLayout } from 'react-table';
-import {
-  TableHead,
-  TableContainer as MuiTableContainer,
-  TableRow,
-  TableBody,
-  Table,
-  Typography,
-  TableSortLabel,
-} from '@material-ui/core';
-import { KeyboardArrowDown } from '@material-ui/icons';
+import { Typography } from '@material-ui/core';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
-import { Alert } from '@tupaia/ui-components';
+import { Alert, FilterableTable } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
 import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
@@ -27,43 +17,18 @@ import {
   changeFilters,
   changePage,
   changePageSize,
-  changeResizedColumns,
   changeSorting,
   clearError,
   confirmAction,
   refreshData,
 } from '../actions';
-import { FilterCell } from './FilterCell';
-import { Pagination } from './Pagination';
-import { DisplayCell, HeaderDisplayCell } from './Cells';
 import { ConfirmDeleteModal } from '../../widgets';
+import { DisplayCell } from './Cells';
 
 const ErrorAlert = styled(Alert).attrs({
   severity: 'error',
 })`
   margin: 0.5rem;
-`;
-
-const TableContainer = styled(MuiTableContainer)`
-  position: relative;
-  flex: 1;
-  overflow: auto;
-  table {
-    min-width: 45rem;
-  }
-  // Because we want two header rows to be sticky, we need to set the position of the thead to sticky
-  thead {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background-color: ${({ theme }) => theme.palette.background.paper};
-  }
-  tr {
-    display: flex;
-    
-  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.primary.main};
-  }
 `;
 
 const Wrapper = styled.div`
@@ -87,12 +52,26 @@ const MessageWrapper = styled.div`
   background-color: rgba(255, 255, 255, 0.5);
 `;
 
+const ButtonCell = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SingleButtonWrapper = styled.div`
+  width: ${({ $width }) => $width}px;
+  .cell-content:has(&) {
+    padding-block: 0;
+    padding-inline-end: 0;
+  }
+`;
+
 const formatColumnForReactTable = (originalColumn, reduxId) => {
   const { source, type, actionConfig, filterable, ...restOfColumn } = originalColumn;
   const id = source || type;
   return {
     id,
-    accessor: id?.includes('.') ? row => row[source] : id, // react-table doesn't like .'s
+    accessor: id?.includes('.') ? originalRow => originalRow[source] : id, // react-table doesn't like .'s
     actionConfig,
     reduxId,
     type,
@@ -134,69 +113,56 @@ const DataFetchingTableComponent = memo(
     baseFilter,
     basePath,
     resourceName,
-    defaultSorting,
     actionLabel = 'Action',
   }) => {
-    const formattedColumns = useMemo(
-      () => columns.map(column => formatColumnForReactTable(column)),
-      [JSON.stringify(columns)],
-    );
+    const formattedColumns = useMemo(() => {
+      const cols = columns.map(column => formatColumnForReactTable(column));
+      // for the columns that are not buttons, display them using a custom wrapper
+      const nonButtonColumns = cols
+        .filter(col => !col.isButtonColumn)
+        .map(col => ({
+          ...col,
+          // eslint-disable-next-line react/prop-types
+          Cell: ({ value, ...props }) => (
+            <DisplayCell
+              {...props}
+              isButtonColumn={col.isButtonColumn}
+              detailUrl={col.isButtonColumn ? '' : detailUrl}
+              getHasNestedView={getHasNestedView}
+              getNestedViewLink={getNestedViewLink}
+              basePath={basePath}
+            >
+              {/** Columns can have custom Cells. If they do, render these, otherwise render the value */}
+              {col.Cell ? col.Cell({ value, ...props }) : value}
+            </DisplayCell>
+          ),
+        }));
+      const buttonColumns = cols.filter(col => col.isButtonColumn);
+      if (!buttonColumns.length) return nonButtonColumns;
 
-    const memoisedData = useMemo(() => data, [JSON.stringify(data)]);
-
-    const {
-      getTableProps,
-      getTableBodyProps,
-      headerGroups,
-      prepareRow,
-      rows,
-      pageCount,
-      gotoPage,
-      setPageSize,
-      visibleColumns,
-      setSortBy,
-      // Get the state from the instance
-      state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
-    } = useTable(
-      {
-        columns: formattedColumns,
-        data: memoisedData,
-        initialState: {
-          pageIndex,
-          pageSize,
-          sortBy: sorting,
-          hiddenColumns: columns
-            .filter(column => column.show === false)
-            .map(column => column.source ?? column.type),
+      const buttonWidths = buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0);
+      // Group all button columns into a single column so they can be displayed together under a single header
+      const singleButtonColumn = {
+        Header: actionLabel,
+        maxWidth: buttonWidths,
+        width: buttonWidths,
+        // eslint-disable-next-line react/prop-types
+        Cell: ({ row }) => {
+          return (
+            <ButtonCell>
+              {buttonColumns.map(({ Cell, accessor, ...col }) => {
+                return (
+                  <SingleButtonWrapper $width={col.width}>
+                    <Cell key={`${col.id}`} {...col} row={row} />
+                  </SingleButtonWrapper>
+                );
+              })}
+            </ButtonCell>
+          );
         },
-        manualPagination: true,
-        pageCount: numberOfPages,
-        manualSortBy: true,
-      },
-      useSortBy,
-      usePagination,
-      useFlexLayout,
-      useResizeColumns,
-    );
-
-    //  Listen for changes in pagination and use the state to fetch our new data
-    useEffect(() => {
-      onPageChange(tablePageIndex);
-    }, [tablePageIndex]);
-
-    useEffect(() => {
-      onPageSizeChange(tablePageSize);
-      gotoPage(0);
-    }, [tablePageSize]);
-
-    useEffect(() => {
-      onSortedChange(tableSorting);
-      gotoPage(0);
-    }, [tableSorting]);
-
-    useEffect(() => {
-      onRefreshData();
-    }, [filters, pageIndex, pageSize, sorting]);
+      };
+      return [...nonButtonColumns, singleButtonColumn];
+    }, [JSON.stringify(columns)]);
 
     useEffect(() => {
       if (!isChangingDataOnServer && !errorMessage) {
@@ -214,22 +180,15 @@ const DataFetchingTableComponent = memo(
       } else {
         initialiseTable();
       }
-      gotoPage(0);
-      setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
     }, [endpoint, JSON.stringify(baseFilter)]);
 
-    const onChangeFilters = newFilters => {
-      onFilteredChange(newFilters);
-      gotoPage(0);
-    };
+    useEffect(() => {
+      onRefreshData();
+    }, [filters, pageIndex, pageSize, JSON.stringify(sorting)]);
 
     const isLoading = isFetchingData || isChangingDataOnServer;
 
-    const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
-
     const { singular = 'record' } = resourceName;
-
-    const actionColumns = visibleColumns.filter(column => column.isButtonColumn);
 
     return (
       <Wrapper>
@@ -244,119 +203,25 @@ const DataFetchingTableComponent = memo(
             <Typography variant="body2">No data to display</Typography>
           </MessageWrapper>
         )}
-        <TableContainer>
-          <Table {...getTableProps()} stickyHeader className="data-fetching-table">
-            <TableHead>
-              {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
-                  {headers.map(
-                    (
-                      {
-                        getHeaderProps,
-                        render,
-                        isSorted,
-                        isSortedDesc,
-                        getSortByToggleProps,
-                        canSort,
-                        getResizerProps,
-                        canResize,
-                        isButtonColumn,
-                      },
-                      i,
-                    ) => {
-                      // we will make a separate 'Actions' header
-                      if (isButtonColumn) return null;
-                      return (
-                        <HeaderDisplayCell
-                          {...getHeaderProps()}
-                          // eslint-disable-next-line react/no-array-index-key
-                          key={`header-${i}`}
-                          canResize={canResize}
-                          getResizerProps={getResizerProps}
-                        >
-                          {render('Header')}
-                          {canSort && (
-                            <TableSortLabel
-                              active={isSorted}
-                              direction={isSortedDesc ? 'asc' : 'desc'}
-                              IconComponent={KeyboardArrowDown}
-                              {...getSortByToggleProps()}
-                            />
-                          )}
-                        </HeaderDisplayCell>
-                      );
-                    },
-                  )}
-                  {actionColumns.length > 0 && (
-                    <HeaderDisplayCell
-                      key="actions-header"
-                      canResize={false}
-                      colSpan={actionColumns.length}
-                      width={
-                        // if there are multiple action columns, set the width to the sum of their widths, otherwise set it to auto so that the column takes up the remaining space
-                        actionColumns.length > 1
-                          ? actionColumns.reduce((acc, column) => acc + column.totalWidth, 0)
-                          : 'auto'
-                      }
-                      isButtonColumn
-                    >
-                      {actionLabel}
-                    </HeaderDisplayCell>
-                  )}
-                </TableRow>
-              ))}
-              <TableRow>
-                {displayFilterRow &&
-                  visibleColumns.map(column => {
-                    return (
-                      <FilterCell
-                        {...column.getHeaderProps()}
-                        key={column.id}
-                        column={column}
-                        onFilteredChange={onChangeFilters}
-                        filters={filters}
-                      />
-                    );
-                  })}
-              </TableRow>
-            </TableHead>
-            <TableBody {...getTableBodyProps()}>
-              {rows.map((row, index) => {
-                prepareRow(row);
-                return (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
-                    {row.cells.map(({ getCellProps, render }, i) => {
-                      const col = visibleColumns[i];
-                      return (
-                        <DisplayCell
-                          {...getCellProps()}
-                          // eslint-disable-next-line react/no-array-index-key
-                          key={`table-row-${index}-cell-${i}`}
-                          row={row}
-                          detailUrl={col.isButtonColumn ? '' : detailUrl}
-                          getHasNestedView={getHasNestedView}
-                          getNestedViewLink={getNestedViewLink}
-                          isButtonColumn={col.isButtonColumn}
-                          basePath={basePath}
-                        >
-                          {render('Cell')}
-                        </DisplayCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Pagination
-          page={tablePageIndex}
-          pageCount={pageCount}
-          gotoPage={gotoPage}
+
+        <FilterableTable
+          columns={formattedColumns}
+          data={data}
+          isLoading={isChangingDataOnServer}
+          pageIndex={pageIndex}
           pageSize={pageSize}
-          setPageSize={setPageSize}
+          sorting={sorting}
+          numberOfPages={numberOfPages}
+          onChangeFilters={onFilteredChange}
+          filters={filters}
+          hiddenColumns={columns
+            .filter(column => column.show === false)
+            .map(column => column.source ?? column.type)}
+          onChangePage={onPageChange}
+          onChangePageSize={onPageSizeChange}
+          onChangeSorting={onSortedChange}
+          refreshData={onRefreshData}
+          errorMessage={errorMessage}
           totalRecords={totalRecords}
         />
 
@@ -387,24 +252,19 @@ DataFetchingTableComponent.propTypes = {
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
   numberOfPages: PropTypes.number,
-  TableComponent: PropTypes.elementType,
   onCancelAction: PropTypes.func.isRequired,
   onConfirmAction: PropTypes.func.isRequired,
   onFilteredChange: PropTypes.func.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onPageSizeChange: PropTypes.func.isRequired,
   onRefreshData: PropTypes.func.isRequired,
-  onResizedChange: PropTypes.func.isRequired,
   onSortedChange: PropTypes.func.isRequired,
   initialiseTable: PropTypes.func.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
-  reduxId: PropTypes.string.isRequired,
-  resizedColumns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   sorting: PropTypes.array.isRequired,
   nestingLevel: PropTypes.number,
   deleteConfig: PropTypes.object,
-  actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
   totalRecords: PropTypes.number,
   detailUrl: PropTypes.string,
   getHasNestedView: PropTypes.func,
@@ -413,7 +273,6 @@ DataFetchingTableComponent.propTypes = {
   baseFilter: PropTypes.object,
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
-  defaultSorting: PropTypes.array,
   actionLabel: PropTypes.string,
 };
 
@@ -424,8 +283,6 @@ DataFetchingTableComponent.defaultProps = {
   numberOfPages: 0,
   nestingLevel: 0,
   deleteConfig: {},
-  TableComponent: undefined,
-  actionColumns: [],
   totalRecords: 0,
   detailUrl: '',
   getHasNestedView: null,
@@ -433,7 +290,6 @@ DataFetchingTableComponent.defaultProps = {
   baseFilter: null,
   basePath: '',
   resourceName: {},
-  defaultSorting: [],
   actionLabel: 'Action',
 };
 
@@ -453,7 +309,6 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
     dispatch(changePageSize(reduxId, newPageSize, newPageIndex)),
   onSortedChange: newSorting => dispatch(changeSorting(reduxId, newSorting)),
   onFilteredChange: newFilters => dispatch(changeFilters(reduxId, newFilters)),
-  onResizedChange: newResized => dispatch(changeResizedColumns(reduxId, newResized)),
 });
 
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
@@ -469,6 +324,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   const onRefreshData = () =>
     dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
   const initialiseTable = (filters = defaultFilters) => {
+    dispatch(changePageSize(reduxId, 20, 0));
     dispatch(changeSorting(reduxId, defaultSorting));
     dispatch(changeFilters(reduxId, filters)); // will trigger a data fetch afterwards
     dispatch(clearError());
