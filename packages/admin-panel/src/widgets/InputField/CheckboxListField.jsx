@@ -179,15 +179,7 @@ export const CheckboxListField = ({
   return (
     <FormControl component="fieldset" required={required} error={error}>
       <LegendWrapper>
-        <InputLabel
-          label={label}
-          as={Legend}
-          tooltip={tooltip}
-          labelProps={{
-            error,
-            required,
-          }}
-        />
+        <InputLabel label={label} as={Legend} tooltip={tooltip} error={error} required={required} />
       </LegendWrapper>
 
       <Container>
