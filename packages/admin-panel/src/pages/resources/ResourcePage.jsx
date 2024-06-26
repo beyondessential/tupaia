@@ -16,16 +16,6 @@ import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurvey
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
 
-const TableComponent = ({ children }) => (
-  <div className="scroll-container">
-    <div>{children}</div>
-  </div>
-);
-
-TableComponent.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
 const useEndpoint = (endpoint, details, params) => {
   if (!details && !params) return endpoint;
 
@@ -118,7 +108,6 @@ export const ResourcePage = ({
         columns={accessibleColumns}
         baseFilter={baseFilter}
         defaultFilters={defaultFilters}
-        TableComponent={TableComponent}
         defaultSorting={defaultSorting}
         deleteConfig={deleteConfig}
         detailUrl={path}
@@ -126,6 +115,7 @@ export const ResourcePage = ({
         getNestedViewLink={getNestedViewLink}
         basePath={basePath}
         actionLabel={actionLabel}
+        key={updatedEndpoint}
       />
       <EditModal
         onProcessDataForSave={onProcessDataForSave}

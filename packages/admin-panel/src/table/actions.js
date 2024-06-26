@@ -18,7 +18,6 @@ import {
   DATA_FETCH_ERROR,
   DATA_FETCH_REQUEST,
   DATA_FETCH_SUCCESS,
-  FILTERS_CHANGE,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
   SORTING_CHANGE,
@@ -39,12 +38,6 @@ export const changePageSize = (reduxId, pageSize, pageIndex) => ({
   reduxId,
 });
 
-export const changeFilters = (reduxId, filters) => ({
-  type: FILTERS_CHANGE,
-  filters,
-  reduxId,
-});
-
 export const changeSorting = (reduxId, sorting) => ({
   type: SORTING_CHANGE,
   sorting,
@@ -52,8 +45,18 @@ export const changeSorting = (reduxId, sorting) => ({
 });
 
 const refreshDataWithDebounce = debounce(
-  async (reduxId, endpoint, columns, baseFilter, tableState, dispatch, api) => {
-    const { pageIndex, pageSize, filters, sorting } = tableState;
+  async (
+    reduxId,
+    endpoint,
+    columns,
+    baseFilter,
+    filters = [],
+    sorting = [],
+    tableState,
+    dispatch,
+    api,
+  ) => {
+    const { pageIndex, pageSize } = tableState;
 
     // Set up filter
     const filterObject = { ...baseFilter };
@@ -100,6 +103,8 @@ const refreshDataWithDebounce = debounce(
         numberOfPages: lastPageNumber,
         fetchId,
         totalRecords,
+        pageIndex,
+        pageSize,
       });
     } catch (error) {
       dispatch({
@@ -107,6 +112,8 @@ const refreshDataWithDebounce = debounce(
         reduxId,
         errorMessage: error.message,
         fetchId,
+        pageIndex,
+        pageSize,
       });
     }
   },
@@ -114,13 +121,15 @@ const refreshDataWithDebounce = debounce(
 );
 
 export const refreshData =
-  (reduxId, endpoint, columns, baseFilter, tableState) =>
+  (reduxId, endpoint, columns, baseFilter, filters, sorting, tableState) =>
   async (dispatch, getState, { api }) => {
     return refreshDataWithDebounce(
       reduxId,
       endpoint,
       columns,
       baseFilter,
+      filters,
+      sorting,
       tableState,
       dispatch,
       api,

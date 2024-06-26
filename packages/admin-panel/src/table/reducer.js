@@ -15,7 +15,6 @@ import {
   DATA_CHANGE_ERROR,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
-  FILTERS_CHANGE,
   SORTING_CHANGE,
   DATA_CHANGE_REQUEST,
   DEFAULT_TABLE_STATE,
@@ -71,10 +70,6 @@ const stateChanges = {
   [PAGE_INDEX_CHANGE]: payload => payload,
   [PAGE_SIZE_CHANGE]: payload => ({
     ...payload,
-  }),
-  [FILTERS_CHANGE]: payload => ({
-    ...payload,
-    pageIndex: 0,
   }),
 
   [SORTING_CHANGE]: payload => ({

@@ -16,6 +16,7 @@ import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
 import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
+import { useLinkToPreviousSearchState, useLinkWithSearchState } from '../../../utilities';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -155,8 +156,13 @@ const EditSurveyPageComponent = withConnectedEditor(
           ]
         : [];
 
+    // need to explicity state the path here because using '../../' doesn't apply the search state
+    const { to, newState } = useLinkToPreviousSearchState('/surveys');
+
     const navigateBack = () => {
-      navigate('../../');
+      navigate(to, {
+        state: newState,
+      });
       resetEditorToDefaultState();
     };
     const handleSave = () => {
