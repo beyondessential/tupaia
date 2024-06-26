@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { ComponentType } from 'react';
@@ -69,7 +69,9 @@ export const InputLabel = ({
   // If no label, don't render anything, so there isn't an empty label tag in the DOM
   if (!label) return null;
   return (
-    // allows us to pass in a custom element to render as, e.g. a span if it is going to be contained in a label element, for example when using MUI's TextField component. Otherwise defaults to a label element so that it can be a standalone label
+    // Allows us to pass in a custom element to render as, e.g. a <span> if it is going to be
+    // contained in a <label> element, for example when using MUI’s `TextField` component. Otherwise
+    // defaults to a <label> element so that it can be a standalone label
     <>
       <LabelWrapper as={as} className={className} htmlFor={htmlFor} {...props}>
         {label}
