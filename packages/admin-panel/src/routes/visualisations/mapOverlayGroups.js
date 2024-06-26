@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { RELATION_ENDPOINT } from './mapOverlayGroupRelations';
+import { FIELDS as RELATION_FIELDS, RELATION_ENDPOINT } from './mapOverlayGroupRelations';
 
 const RESOURCE_NAME = { singular: 'map overlay group' };
 
@@ -38,50 +38,28 @@ const COLUMNS = [
   },
 ];
 
-export const RELATION_FIELDS = [
-  {
-    Header: 'Child ID',
-    source: 'child_id',
-
-    editConfig: {
-      optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'mapOverlay.id',
-      optionValueKey: 'mapOverlay.id',
-      sourceKey: 'child_id',
-    },
-  },
-  {
-    Header: 'Child type',
-    source: 'child_type',
-
-    editConfig: {
-      options: [
-        {
-          label: 'Map overlay',
-          value: 'mapOverlay',
-        },
-        {
-          label: 'Map overlay group',
-          value: 'mapOverlayGroup',
-        },
-      ],
-    },
-  },
-  {
-    Header: 'Sort order',
-    source: 'sort_order',
-  },
-];
-
 export const RELATION_COLUMNS = [
-  ...RELATION_FIELDS,
+  RELATION_FIELDS.CHILD_TYPE,
+  RELATION_FIELDS.CHILD_CODE,
+  RELATION_FIELDS.SORT_ORDER,
   {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'mapOverlayGroupRelations',
-      fields: RELATION_FIELDS,
+      title: 'Edit map overlay group relation',
+      editEndpoint: RELATION_ENDPOINT,
+      fields: [
+        {
+          Header: 'Map overlay group code',
+          source: 'map_overlay_group.code',
+          editable: false,
+        },
+        RELATION_FIELDS.CHILD_TYPE,
+        RELATION_FIELDS.CHILD_MAP_OVERLAY_CODE,
+        RELATION_FIELDS.CHILD_MAP_OVERLAY_GROUP_CODE,
+        RELATION_FIELDS.SORT_ORDER,
+      ],
     },
   },
   {
@@ -108,7 +86,7 @@ export const mapOverlayGroups = {
   createConfig: CREATE_CONFIG,
   nestedViews: [
     {
-      title: 'Map Overlay Group Relations',
+      title: 'Map overlay group relations',
       columns: RELATION_COLUMNS,
       endpoint: 'mapOverlayGroups/{id}/mapOverlayGroupRelations',
       path: '/:id/map-overlay-group-relations',
