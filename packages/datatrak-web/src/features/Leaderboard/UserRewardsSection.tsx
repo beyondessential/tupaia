@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { DatatrakWebUserRewardsRequest } from '@tupaia/types';
 import { Coconut, Pig } from '../../components';
-import { UserRewards } from '../../types';
 import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 const Wrapper = styled.div`
@@ -38,7 +38,7 @@ const UserRewardCount = styled(Typography)`
   line-height: 1.25rem;
 `;
 
-export const UserRewardsSection = ({ pigs, coconuts }: UserRewards) => {
+export const UserRewardsSection = ({ pigs, coconuts }: DatatrakWebUserRewardsRequest.ResBody) => {
   return (
     <Wrapper>
       <UserRewardItem>

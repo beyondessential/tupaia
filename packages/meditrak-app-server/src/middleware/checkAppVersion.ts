@@ -4,12 +4,25 @@
  */
 
 import { NextFunction, Request, Response } from 'express';
+import semverCompare from 'semver-compare';
+
+const MINIMUM_SUPPORTED_APP_VERSION = '1.7.107';
 
 export const checkAppVersion = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { appVersion } = req.query;
     if (!appVersion) {
-      throw new Error('appVersion unspecified, please upgrade your app');
+      throw new Error('appVersion unspecified, please upgrade Meditrak App');
+    }
+
+    if (typeof appVersion !== 'string') {
+      throw new Error(`appVersion must be a string`);
+    }
+
+    if (semverCompare(appVersion, MINIMUM_SUPPORTED_APP_VERSION) < 0) {
+      throw new Error(
+        `appVersion ${appVersion} is no longer supported, please upgrade Meditrak App`,
+      );
     }
 
     next();

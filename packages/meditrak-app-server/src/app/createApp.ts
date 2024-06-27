@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import { handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
+import { forwardRequest, handleWith, MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
 import {
   AuthRequest,
   AuthRoute,
@@ -25,15 +25,19 @@ import {
   UserRewardsRoute,
 } from '../routes';
 import { authHandlerProvider, buildAuthMiddleware } from '../auth';
-import { checkAppVersion } from '../middleware';
+import { checkAppVersion, errorHandler } from '../middleware';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 /**
  * Set up express server with middleware,
  */
 export function createApp(database = new TupaiaDatabase()) {
+  const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
   const authMiddleware = buildAuthMiddleware(database);
   const builder = new MicroServiceApiBuilder(database, 'meditrak')
+    .setVersion('(1|2)') // Support either v1 or v2 as we're rerouting requests to the central-server here for legacy versions
     .attachApiClientToContext(authHandlerProvider)
+    .useErrorHandler(errorHandler)
     .use('*', checkAppVersion)
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
@@ -51,7 +55,9 @@ export function createApp(database = new TupaiaDatabase()) {
       handleWith(ChangesMetadataRoute),
     )
     .get<PullChangesRequest>('changes', authMiddleware, handleWith(PullChangesRoute))
-    .post<PushChangesRequest>('changes', authMiddleware, handleWith(PushChangesRoute));
+    .post<PushChangesRequest>('changes', authMiddleware, handleWith(PushChangesRoute))
+    .post('me/requestCountryAccess', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
+    .post('me/deleteAccount', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }));
 
   const app = builder.build();
 

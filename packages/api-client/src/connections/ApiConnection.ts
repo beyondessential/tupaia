@@ -8,6 +8,7 @@ import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
 import { CustomError } from '@tupaia/utils';
 import { QueryParameters, AuthHandler } from '../types';
+import { buildApiError } from '@tupaia/tsutils';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
@@ -97,9 +98,7 @@ export class ApiConnection {
       const responseJson = await response.json();
       throw new CustomError(
         {
-          responseText: `API error ${response.status}: ${
-            responseJson.error || responseJson.message
-          }`,
+          responseText: buildApiError(responseJson.error || responseJson.message, response.status),
           responseStatus: response.status,
         },
         {},

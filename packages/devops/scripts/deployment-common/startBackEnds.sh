@@ -19,9 +19,6 @@ for PACKAGE in ${PACKAGES[@]}; do
             yarn workspace @tupaia/data-api install-mv-refresh
             yarn workspace @tupaia/data-api patch-mv-refresh up
             yarn workspace @tupaia/data-api build-analytics-table
-
-            # ensure that the latest permissions based meditrak sync queue has been built
-            yarn workspace @tupaia/central-server create-meditrak-sync-view
         fi
 
         # It's a server, start the pm2 process

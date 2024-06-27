@@ -12,6 +12,7 @@ import {
   FacilityModel,
   FeedItemModel,
   GeographicalAreaModel,
+  MeditrakDeviceModel,
   MeditrakSyncQueueModel,
   OptionModel,
   OptionSetModel,
@@ -48,5 +49,6 @@ export interface MeditrakAppServerModelRegistry extends ModelRegistry {
   readonly surveyGroup: SurveyGroupModel;
   readonly surveyScreen: SurveyScreenModel;
   readonly surveyScreenComponent: SurveyScreenComponentModel;
+  readonly meditrakDevice: MeditrakDeviceModel;
   readonly meditrakSyncQueue: MeditrakSyncQueueModel;
 }

@@ -25,7 +25,7 @@ export const fetchFromCentralServer = async (endpoint, payload, queryParameters,
   const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
   const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
   const url = stringifyQuery(
-    process.env.TUPAIA_APP_SERVER_URL || 'http://localhost:8090/v2',
+    process.env.CENTRAL_API_URL || 'http://localhost:8090/v2',
     endpoint,
     queryParameters,
   );

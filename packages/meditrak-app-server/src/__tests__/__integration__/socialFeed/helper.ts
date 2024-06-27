@@ -17,16 +17,21 @@ export const filterItemFields = (items: Record<string, any>[]) =>
     return fieldsWithValues;
   });
 
-export const replaceItemsCountryWithCountryId = (
+export const addCountryIdAndPermissionGroupId = (
   items: Record<string, any>[],
   countryCodeToId: Record<string, string>,
+  permissionGroupId: string,
 ) =>
   items.map(({ country, ...restOfItem }) => {
     if (!country) {
-      return restOfItem;
+      return { ...restOfItem, permission_group_id: permissionGroupId };
     }
 
-    return { ...restOfItem, country_id: countryCodeToId[country] };
+    return {
+      ...restOfItem,
+      country_id: countryCodeToId[country],
+      permission_group_id: permissionGroupId,
+    };
   });
 
 export const addLeaderboardAsThirdItem = (

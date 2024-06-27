@@ -12,6 +12,7 @@ type ServerAuthResponse = {
   accessToken?: string;
   refreshToken?: string;
   user?: {
+    id: string;
     email: string;
     accessPolicy: AccessPolicyObject;
   };
@@ -21,8 +22,6 @@ type AuthDetails = {
   emailAddress: string;
   password: string;
   deviceName: string;
-  devicePlatform?: string;
-  installId?: string;
 };
 
 export class AuthApi extends BaseApi {

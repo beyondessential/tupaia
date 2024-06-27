@@ -17,6 +17,7 @@ export {
   DatatrakWebSingleSurveyResponseRequest,
   DatatrakWebLeaderboardRequest,
   DatatrakWebActivityFeedRequest,
+  DatatrakWebUserRewardsRequest,
   DatatrakWebGenerateLoginTokenRequest,
   DatatrakWebEntityDescendantsRequest,
 } from './datatrak-web-server';

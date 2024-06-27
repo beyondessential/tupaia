@@ -4,6 +4,7 @@
  */
 
 import { constructAccessToken } from '@tupaia/auth';
+import { MockCentralApi } from '@tupaia/api-client';
 import { clearTestData, getTestDatabase } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBearerHeader } from '@tupaia/utils';
@@ -18,19 +19,7 @@ describe('me/changePassword', () => {
 
   beforeAll(async () => {
     app = await setupTestApp({
-      central: {
-        async changeUserPassword(passwordChangeFields: Record<string, unknown>) {
-          const { oldPassword, password, passwordConfirm } = passwordChangeFields;
-          if (oldPassword !== CAT_USER.password) {
-            throw new Error('Incorrect old password');
-          }
-
-          if (password !== passwordConfirm) {
-            throw new Error('password != confirm');
-          }
-          return { message: mockResponseMsg, newPassword: password };
-        },
-      },
+      central: new MockCentralApi({ user: CAT_USER }),
     });
 
     const user = await setupTestUser();
@@ -76,7 +65,7 @@ describe('me/changePassword', () => {
         },
       });
 
-      expect(response.body).toEqual({ message: mockResponseMsg, newPassword });
+      expect(response.body).toEqual({ message: mockResponseMsg });
     });
 
     it('it supports older meditrak-app password params', async () => {
@@ -92,7 +81,7 @@ describe('me/changePassword', () => {
         },
       });
 
-      expect(response.body).toEqual({ message: mockResponseMsg, newPassword });
+      expect(response.body).toEqual({ message: mockResponseMsg });
     });
   });
 });

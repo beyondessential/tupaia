@@ -19,5 +19,6 @@ export {
 } from './SingleSurveyResponseRoute';
 export { LeaderboardRequest, LeaderboardRoute } from './LeaderboardRoute';
 export { ActivityFeedRequest, ActivityFeedRoute } from './ActivityFeedRoute';
+export { UserRewardsRequest, UserRewardsRoute } from './UserRewardsRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { GenerateLoginTokenRequest, GenerateLoginTokenRoute } from './GenerateLoginTokenRoute';

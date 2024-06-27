@@ -10,18 +10,26 @@ const upsertEntities = async (models, entitiesUpserted, surveyId) => {
   const dataGroup = await survey.dataGroup();
 
   return Promise.all(
-    entitiesUpserted.map(async entity =>
-      models.entity.updateOrCreate(
-        { id: entity.id },
-        {
+    entitiesUpserted.map(async entity => {
+      const existingEntity = await models.entity.findById(entity.id);
+      if (existingEntity) {
+        // Override existing entity fields
+        models.entity.update(
+          { id: entity.id },
+          {
+            ...entity,
+          },
+        );
+      } else {
+        models.entity.create({
           ...entity,
           metadata:
             dataGroup.service_type === 'dhis'
               ? { dhis: { isDataRegional: !!dataGroup.config.isDataRegional } }
               : {},
-        },
-      ),
-    ),
+        });
+      }
+    }),
   );
 };
 

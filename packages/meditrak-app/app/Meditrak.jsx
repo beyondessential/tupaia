@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 
 import {database} from './database';
 import {MessageOverlay} from './messages/MessageOverlay';
-import {isBeta, betaBranch, centralApiUrl} from './version';
+import {isBeta, betaBranch, meditrakApiUrl} from './version';
 import {NavigationMenuContainer, goBack} from './navigation';
 import {
   DEFAULT_PADDING,
@@ -49,7 +49,7 @@ class MeditrakContainer extends React.Component {
     return (
       <View style={localStyles.betaBanner} pointerEvents="none">
         <Text style={localStyles.betaBannerText}>
-          {betaBranch?.toUpperCase() || centralApiUrl}
+          {betaBranch?.toUpperCase() || meditrakApiUrl}
         </Text>
       </View>
     );
@@ -60,7 +60,7 @@ class MeditrakContainer extends React.Component {
       <View style={localStyles.container}>
         <NavigationMenuContainer>{this.props.children}</NavigationMenuContainer>
         <MessageOverlay />
-        {isBeta || centralApiUrl ? this.renderBetaBanner() : null}
+        {isBeta || meditrakApiUrl ? this.renderBetaBanner() : null}
       </View>
     );
   }

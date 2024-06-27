@@ -326,8 +326,8 @@ export const DashboardItemTypeSchema = {
 } 
 
 export const EntityAttributesSchema = {
-	"additionalProperties": false,
 	"type": "object",
+	"additionalProperties": {},
 	"properties": {
 		"type": {
 			"type": "string"
@@ -40069,8 +40069,8 @@ export const EntityQuestionConfigFieldValueSchema = {
 			"properties": {}
 		},
 		{
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
@@ -40112,8 +40112,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40144,8 +40144,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40176,8 +40176,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40208,8 +40208,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40240,8 +40240,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40272,8 +40272,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40304,8 +40304,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40336,8 +40336,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40368,8 +40368,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -40642,8 +40642,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -40674,8 +40674,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -40706,8 +40706,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -40738,8 +40738,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -40770,8 +40770,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -40802,8 +40802,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -40834,8 +40834,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -40866,8 +40866,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -40898,8 +40898,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -41730,6 +41730,9 @@ export const AccessRequestCreateSchema = {
 		"entity_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"message": {
 			"type": "string"
 		},
@@ -41795,7 +41798,10 @@ export const AccessRequestUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const AdminPanelSessionSchema = {
@@ -41848,6 +41854,9 @@ export const AdminPanelSessionCreateSchema = {
 		"email": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"refresh_token": {
 			"type": "string"
 		}
@@ -41885,7 +41894,10 @@ export const AdminPanelSessionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const AnalyticsSchema = {
@@ -42126,6 +42138,9 @@ export const AncestorDescendantRelationCreateSchema = {
 		},
 		"generational_distance": {
 			"type": "number"
+		},
+		"id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -42156,7 +42171,10 @@ export const AncestorDescendantRelationUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const AnswerSchema = {
@@ -42190,6 +42208,9 @@ export const AnswerSchema = {
 export const AnswerCreateSchema = {
 	"type": "object",
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"question_id": {
 			"type": "string"
 		},
@@ -42230,7 +42251,10 @@ export const AnswerUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const ApiClientSchema = {
@@ -42260,6 +42284,9 @@ export const ApiClientSchema = {
 export const ApiClientCreateSchema = {
 	"type": "object",
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"secret_key_hash": {
 			"type": "string"
 		},
@@ -42293,7 +42320,10 @@ export const ApiClientUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const ApiRequestLogSchema = {
@@ -42349,6 +42379,9 @@ export const ApiRequestLogCreateSchema = {
 			"type": "string"
 		},
 		"endpoint": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"metadata": {
@@ -42421,7 +42454,10 @@ export const ApiRequestLogUpdateSchema = {
 			"type": "number"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const ClinicSchema = {
@@ -42477,6 +42513,9 @@ export const ClinicCreateSchema = {
 		"geographical_area_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"name": {
 			"type": "string"
 		},
@@ -42524,7 +42563,10 @@ export const ClinicUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const CommentSchema = {
@@ -42564,6 +42606,9 @@ export const CommentCreateSchema = {
 			"type": "string",
 			"format": "date-time"
 		},
+		"id": {
+			"type": "string"
+		},
 		"last_modified_time": {
 			"type": "string",
 			"format": "date-time"
@@ -42602,7 +42647,10 @@ export const CommentUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const CountrySchema = {
@@ -42632,6 +42680,9 @@ export const CountryCreateSchema = {
 		"code": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"name": {
 			"type": "string"
 		}
@@ -42656,7 +42707,10 @@ export const CountryUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DashboardSchema = {
@@ -42691,6 +42745,9 @@ export const DashboardCreateSchema = {
 	"type": "object",
 	"properties": {
 		"code": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"name": {
@@ -42730,7 +42787,10 @@ export const DashboardUpdateSchema = {
 			"type": "number"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DashboardItemSchema = {
@@ -60066,6 +60126,9 @@ export const DashboardItemCreateSchema = {
 				}
 			]
 		},
+		"id": {
+			"type": "string"
+		},
 		"legacy": {
 			"type": "boolean"
 		},
@@ -68755,7 +68818,10 @@ export const DashboardItemUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DashboardMailingListSchema = {
@@ -68805,6 +68871,9 @@ export const DashboardMailingListCreateSchema = {
 		"entity_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"project_id": {
 			"type": "string"
 		}
@@ -68839,7 +68908,10 @@ export const DashboardMailingListUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DashboardMailingListEntrySchema = {
@@ -68880,6 +68952,9 @@ export const DashboardMailingListEntryCreateSchema = {
 		"email": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"subscribed": {
 			"type": "boolean"
 		},
@@ -68915,7 +68990,10 @@ export const DashboardMailingListEntryUpdateSchema = {
 			"format": "date-time"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DashboardRelationSchema = {
@@ -69087,6 +69165,9 @@ export const DashboardRelationCreateSchema = {
 				"type": "string"
 			}
 		},
+		"id": {
+			"type": "string"
+		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -69201,7 +69282,10 @@ export const DashboardRelationUpdateSchema = {
 			"type": "number"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DataElementSchema = {
@@ -69255,6 +69339,9 @@ export const DataElementCreateSchema = {
 		"config": {
 			"type": "object",
 			"properties": {}
+		},
+		"id": {
+			"type": "string"
 		},
 		"permission_groups": {
 			"type": "array",
@@ -69314,7 +69401,10 @@ export const DataElementUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DataElementDataGroupSchema = {
@@ -69346,6 +69436,9 @@ export const DataElementDataGroupCreateSchema = {
 		},
 		"data_group_id": {
 			"type": "string"
+		},
+		"id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -69368,7 +69461,10 @@ export const DataElementDataGroupUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DataElementDataServiceSchema = {
@@ -69417,6 +69513,9 @@ export const DataElementDataServiceCreateSchema = {
 			"type": "string"
 		},
 		"data_element_code": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"service_config": {
@@ -69473,7 +69572,10 @@ export const DataElementDataServiceUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DataGroupSchema = {
@@ -69521,6 +69623,9 @@ export const DataGroupCreateSchema = {
 			"type": "object",
 			"properties": {}
 		},
+		"id": {
+			"type": "string"
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -69567,7 +69672,10 @@ export const DataGroupUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DataServiceEntitySchema = {
@@ -69601,6 +69709,9 @@ export const DataServiceEntityCreateSchema = {
 		},
 		"entity_code": {
 			"type": "string"
+		},
+		"id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -69624,7 +69735,10 @@ export const DataServiceEntityUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DataServiceSyncGroupSchema = {
@@ -69688,6 +69802,9 @@ export const DataServiceSyncGroupCreateSchema = {
 			"properties": {}
 		},
 		"data_group_code": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"service_type": {
@@ -69763,7 +69880,10 @@ export const DataServiceSyncGroupUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DataTableSchema = {
@@ -69824,6 +69944,9 @@ export const DataTableCreateSchema = {
 			"properties": {}
 		},
 		"description": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"permission_groups": {
@@ -69892,7 +70015,10 @@ export const DataTableUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DatatrakSessionSchema = {
@@ -69945,6 +70071,9 @@ export const DatatrakSessionCreateSchema = {
 		"email": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"refresh_token": {
 			"type": "string"
 		}
@@ -69982,7 +70111,10 @@ export const DatatrakSessionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DhisInstanceSchema = {
@@ -70021,6 +70153,9 @@ export const DhisInstanceCreateSchema = {
 			"type": "object",
 			"properties": {}
 		},
+		"id": {
+			"type": "string"
+		},
 		"readonly": {
 			"type": "boolean"
 		}
@@ -70050,7 +70185,10 @@ export const DhisInstanceUpdateSchema = {
 			"type": "boolean"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DhisSyncLogSchema = {
@@ -70110,6 +70248,9 @@ export const DhisSyncLogCreateSchema = {
 		"error_list": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"ignored": {
 			"type": "number"
 		},
@@ -70167,7 +70308,10 @@ export const DhisSyncLogUpdateSchema = {
 			"type": "number"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const DhisSyncQueueSchema = {
@@ -70223,6 +70367,9 @@ export const DhisSyncQueueCreateSchema = {
 			"type": "number"
 		},
 		"details": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"is_dead_letter": {
@@ -70286,15 +70433,18 @@ export const DhisSyncQueueUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const EntitySchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
@@ -70401,8 +70551,8 @@ export const EntityCreateSchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
@@ -70416,6 +70566,9 @@ export const EntityCreateSchema = {
 			"type": "string"
 		},
 		"country_code": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"image_url": {
@@ -70503,8 +70656,8 @@ export const EntityUpdateSchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
@@ -70596,7 +70749,10 @@ export const EntityUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const EntityHierarchySchema = {
@@ -70631,6 +70787,9 @@ export const EntityHierarchyCreateSchema = {
 				"type": "string"
 			}
 		},
+		"id": {
+			"type": "string"
+		},
 		"name": {
 			"type": "string"
 		}
@@ -70657,7 +70816,10 @@ export const EntityHierarchyUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const EntityRelationSchema = {
@@ -70694,6 +70856,9 @@ export const EntityRelationCreateSchema = {
 		"entity_hierarchy_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"parent_id": {
 			"type": "string"
 		}
@@ -70722,7 +70887,10 @@ export const EntityRelationUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const ErrorLogSchema = {
@@ -70761,6 +70929,9 @@ export const ErrorLogCreateSchema = {
 			"type": "string",
 			"format": "date-time"
 		},
+		"id": {
+			"type": "string"
+		},
 		"message": {
 			"type": "string"
 		},
@@ -70791,7 +70962,10 @@ export const ErrorLogUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const ExternalDatabaseConnectionSchema = {
@@ -70834,6 +71008,9 @@ export const ExternalDatabaseConnectionCreateSchema = {
 		"description": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"name": {
 			"type": "string"
 		},
@@ -70873,7 +71050,10 @@ export const ExternalDatabaseConnectionUpdateSchema = {
 			}
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const FeedItemSchema = {
@@ -70934,6 +71114,9 @@ export const FeedItemCreateSchema = {
 			"format": "date-time"
 		},
 		"geographical_area_id": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"permission_group_id": {
@@ -71005,7 +71188,10 @@ export const FeedItemUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const GeographicalAreaSchema = {
@@ -71050,6 +71236,9 @@ export const GeographicalAreaCreateSchema = {
 			"type": "string"
 		},
 		"country_id": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"level_code": {
@@ -71099,7 +71288,10 @@ export const GeographicalAreaUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const IndicatorSchema = {
@@ -71140,6 +71332,9 @@ export const IndicatorCreateSchema = {
 		"config": {
 			"type": "object",
 			"properties": {}
+		},
+		"id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -71166,7 +71361,10 @@ export const IndicatorUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const LandingPageSchema = {
@@ -71239,6 +71437,9 @@ export const LandingPageCreateSchema = {
 			"type": "string"
 		},
 		"external_link": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"image_url": {
@@ -71337,7 +71538,10 @@ export const LandingPageUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const LegacyReportSchema = {
@@ -71384,6 +71588,9 @@ export const LegacyReportCreateSchema = {
 		"data_services": {
 			"type": "object",
 			"properties": {}
+		},
+		"id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -71413,7 +71620,10 @@ export const LegacyReportUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const LesmisSessionSchema = {
@@ -71466,6 +71676,9 @@ export const LesmisSessionCreateSchema = {
 		"email": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"refresh_token": {
 			"type": "string"
 		}
@@ -71503,7 +71716,10 @@ export const LesmisSessionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const MapOverlaySchema = {
@@ -79064,6 +79280,9 @@ export const MapOverlayCreateSchema = {
 			"type": "object",
 			"properties": {}
 		},
+		"id": {
+			"type": "string"
+		},
 		"legacy": {
 			"type": "boolean"
 		},
@@ -82914,6 +83133,9 @@ export const MapOverlayGroupCreateSchema = {
 		"code": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"name": {
 			"type": "string"
 		}
@@ -82938,7 +83160,10 @@ export const MapOverlayGroupUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const MapOverlayGroupRelationSchema = {
@@ -82978,6 +83203,9 @@ export const MapOverlayGroupRelationCreateSchema = {
 		"child_type": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"map_overlay_group_id": {
 			"type": "string"
 		},
@@ -83012,7 +83240,10 @@ export const MapOverlayGroupRelationUpdateSchema = {
 			"type": "number"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const MeditrakDeviceSchema = {
@@ -83031,7 +83262,14 @@ export const MeditrakDeviceSchema = {
 		"install_id": {
 			"type": "string"
 		},
+		"last_login_time": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
+			"type": "string"
+		},
+		"refresh_token": {
 			"type": "string"
 		},
 		"user_id": {
@@ -83056,10 +83294,20 @@ export const MeditrakDeviceCreateSchema = {
 			"type": "object",
 			"properties": {}
 		},
+		"id": {
+			"type": "string"
+		},
 		"install_id": {
 			"type": "string"
 		},
+		"last_login_time": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
+			"type": "string"
+		},
+		"refresh_token": {
 			"type": "string"
 		},
 		"user_id": {
@@ -83089,14 +83337,24 @@ export const MeditrakDeviceUpdateSchema = {
 		"install_id": {
 			"type": "string"
 		},
+		"last_login_time": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
+			"type": "string"
+		},
+		"refresh_token": {
 			"type": "string"
 		},
 		"user_id": {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const MeditrakSyncQueueSchema = {
@@ -83132,6 +83390,9 @@ export const MeditrakSyncQueueCreateSchema = {
 	"properties": {
 		"change_time": {
 			"type": "number"
+		},
+		"id": {
+			"type": "string"
 		},
 		"record_id": {
 			"type": "string"
@@ -83170,7 +83431,10 @@ export const MeditrakSyncQueueUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const Ms1SyncLogSchema = {
@@ -83221,6 +83485,9 @@ export const Ms1SyncLogCreateSchema = {
 		"error_list": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"record_id": {
 			"type": "string"
 		},
@@ -83260,7 +83527,10 @@ export const Ms1SyncLogUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const Ms1SyncQueueSchema = {
@@ -83316,6 +83586,9 @@ export const Ms1SyncQueueCreateSchema = {
 			"type": "number"
 		},
 		"details": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"is_dead_letter": {
@@ -83379,7 +83652,10 @@ export const Ms1SyncQueueUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const OneTimeLoginSchema = {
@@ -83417,6 +83693,9 @@ export const OneTimeLoginCreateSchema = {
 		"creation_date": {
 			"type": "string",
 			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
 		},
 		"token": {
 			"type": "string"
@@ -83457,7 +83736,10 @@ export const OneTimeLoginUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const OptionSchema = {
@@ -83497,6 +83779,9 @@ export const OptionCreateSchema = {
 		"attributes": {
 			"type": "object",
 			"properties": {}
+		},
+		"id": {
+			"type": "string"
 		},
 		"label": {
 			"type": "string"
@@ -83541,7 +83826,10 @@ export const OptionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const OptionSetSchema = {
@@ -83564,6 +83852,9 @@ export const OptionSetSchema = {
 export const OptionSetCreateSchema = {
 	"type": "object",
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"name": {
 			"type": "string"
 		}
@@ -83584,7 +83875,10 @@ export const OptionSetUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const PermissionGroupSchema = {
@@ -83610,6 +83904,9 @@ export const PermissionGroupSchema = {
 export const PermissionGroupCreateSchema = {
 	"type": "object",
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"name": {
 			"type": "string"
 		},
@@ -83636,7 +83933,10 @@ export const PermissionGroupUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const PermissionsBasedMeditrakSyncQueueSchema = {
@@ -83789,6 +84089,9 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 				"wish_sub_district",
 				"world"
 			],
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"permission_groups": {
@@ -84069,6 +84372,9 @@ export const ProjectCreateSchema = {
 		"entity_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"image_url": {
 			"type": "string"
 		},
@@ -84182,7 +84488,10 @@ export const ProjectUpdateSchema = {
 			"type": "number"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const PsssSessionSchema = {
@@ -84235,6 +84544,9 @@ export const PsssSessionCreateSchema = {
 		"email": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"refresh_token": {
 			"type": "string"
 		}
@@ -84272,7 +84584,10 @@ export const PsssSessionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const QuestionSchema = {
@@ -84354,6 +84669,9 @@ export const QuestionCreateSchema = {
 			"type": "string"
 		},
 		"hook": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"name": {
@@ -84461,7 +84779,10 @@ export const QuestionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const RefreshTokenSchema = {
@@ -84474,9 +84795,6 @@ export const RefreshTokenSchema = {
 			"type": "number"
 		},
 		"id": {
-			"type": "string"
-		},
-		"meditrak_device_id": {
 			"type": "string"
 		},
 		"token": {
@@ -84503,7 +84821,7 @@ export const RefreshTokenCreateSchema = {
 		"expiry": {
 			"type": "number"
 		},
-		"meditrak_device_id": {
+		"id": {
 			"type": "string"
 		},
 		"token": {
@@ -84532,9 +84850,6 @@ export const RefreshTokenUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"meditrak_device_id": {
-			"type": "string"
-		},
 		"token": {
 			"type": "string"
 		},
@@ -84542,7 +84857,10 @@ export const RefreshTokenUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const ReportSchema = {
@@ -84674,6 +84992,9 @@ export const ReportCreateSchema = {
 				}
 			]
 		},
+		"id": {
+			"type": "string"
+		},
 		"latest_data_parameters": {
 			"type": "object",
 			"properties": {}
@@ -84755,7 +85076,10 @@ export const ReportUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SettingSchema = {
@@ -84781,6 +85105,9 @@ export const SettingSchema = {
 export const SettingCreateSchema = {
 	"type": "object",
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"key": {
 			"type": "string"
 		},
@@ -84807,7 +85134,10 @@ export const SettingUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SupersetInstanceSchema = {
@@ -84841,6 +85171,9 @@ export const SupersetInstanceCreateSchema = {
 		"config": {
 			"type": "object",
 			"properties": {}
+		},
+		"id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -84864,7 +85197,10 @@ export const SupersetInstanceUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SurveySchema = {
@@ -84943,6 +85279,9 @@ export const SurveyCreateSchema = {
 			}
 		},
 		"data_group_id": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"integration_metadata": {
@@ -85034,7 +85373,10 @@ export const SurveyUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SurveyGroupSchema = {
@@ -85057,6 +85399,9 @@ export const SurveyGroupSchema = {
 export const SurveyGroupCreateSchema = {
 	"type": "object",
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"name": {
 			"type": "string"
 		}
@@ -85077,7 +85422,10 @@ export const SurveyGroupUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SurveyResponseSchema = {
@@ -85167,6 +85515,9 @@ export const SurveyResponseCreateSchema = {
 		"entity_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"metadata": {
 			"type": "string"
 		},
@@ -85247,7 +85598,10 @@ export const SurveyResponseUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SurveyResponseCommentSchema = {
@@ -85277,6 +85631,9 @@ export const SurveyResponseCommentCreateSchema = {
 		"comment_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"survey_response_id": {
 			"type": "string"
 		}
@@ -85301,7 +85658,10 @@ export const SurveyResponseCommentUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SurveyScreenSchema = {
@@ -85328,6 +85688,9 @@ export const SurveyScreenSchema = {
 export const SurveyScreenCreateSchema = {
 	"type": "object",
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"screen_number": {
 			"type": "number"
 		},
@@ -85355,7 +85718,10 @@ export const SurveyScreenUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SurveyScreenComponentSchema = {
@@ -85425,6 +85791,9 @@ export const SurveyScreenComponentCreateSchema = {
 		"detail_label": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"is_follow_up": {
 			"type": "boolean"
 		},
@@ -85492,7 +85861,10 @@ export const SurveyScreenComponentUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const SyncGroupLogSchema = {
@@ -85536,6 +85908,9 @@ export const SyncGroupLogSchema = {
 export const SyncGroupLogCreateSchema = {
 	"type": "object",
 	"properties": {
+		"id": {
+			"type": "string"
+		},
 		"log_message": {
 			"type": "string"
 		},
@@ -85596,7 +85971,10 @@ export const SyncGroupLogUpdateSchema = {
 			"format": "date-time"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const TaskSchema = {
@@ -85760,6 +86138,9 @@ export const TupaiaWebSessionCreateSchema = {
 		"email": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"refresh_token": {
 			"type": "string"
 		}
@@ -85797,7 +86178,10 @@ export const TupaiaWebSessionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const UserAccountSchema = {
@@ -85900,6 +86284,9 @@ export const UserAccountCreateSchema = {
 			"type": "string"
 		},
 		"gender": {
+			"type": "string"
+		},
+		"id": {
 			"type": "string"
 		},
 		"last_name": {
@@ -86034,7 +86421,10 @@ export const UserAccountUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const UserEntityPermissionSchema = {
@@ -86068,6 +86458,9 @@ export const UserEntityPermissionCreateSchema = {
 		"entity_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"permission_group_id": {
 			"type": "string"
 		},
@@ -86099,7 +86492,10 @@ export const UserEntityPermissionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const UserFavouriteDashboardItemSchema = {
@@ -86129,6 +86525,9 @@ export const UserFavouriteDashboardItemCreateSchema = {
 		"dashboard_item_id": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"user_id": {
 			"type": "string"
 		}
@@ -86153,7 +86552,10 @@ export const UserFavouriteDashboardItemUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const UserSessionSchema = {
@@ -86201,6 +86603,9 @@ export const UserSessionCreateSchema = {
 		"accessToken": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"refreshToken": {
 			"type": "string"
 		},
@@ -86238,7 +86643,10 @@ export const UserSessionUpdateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const VerifiedEmailSchema = {
@@ -86619,8 +87027,8 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"type": "object",
 				"properties": {
 					"attributes": {
-						"additionalProperties": false,
 						"type": "object",
+						"additionalProperties": {},
 						"properties": {
 							"type": {
 								"type": "string"
@@ -86714,12 +87122,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"attributes",
-					"code",
-					"id",
-					"metadata",
-					"name",
-					"type"
+					"id"
 				]
 			}
 		},
@@ -86728,21 +87131,24 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"items": {
 				"type": "object",
 				"properties": {
-					"label": {
-						"type": "string"
-					},
 					"attributes": {
 						"type": "object",
 						"properties": {}
 					},
-					"option_set_id": {
+					"id": {
 						"type": "string"
 					},
-					"value": {
+					"label": {
+						"type": "string"
+					},
+					"option_set_id": {
 						"type": "string"
 					},
 					"sort_order": {
 						"type": "number"
+					},
+					"value": {
+						"type": "string"
 					}
 				},
 				"additionalProperties": false,
@@ -87425,8 +87831,8 @@ export const EntityResponseSchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"

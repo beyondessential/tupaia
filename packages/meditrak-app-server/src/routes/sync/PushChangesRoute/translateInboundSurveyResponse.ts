@@ -7,7 +7,8 @@ import cloneDeep from 'lodash.clonedeep';
 import { QuestionModel, SurveyModel } from '@tupaia/database';
 import { EntityModel, UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';
-import { Entity } from '@tupaia/types';
+import { Entity, OptionCreate } from '@tupaia/types';
+import { stripNullishFields } from '@tupaia/tsutils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { RawSurveyResponseObject } from './types';
 
@@ -43,11 +44,35 @@ export const translateQuestionCodeToId = async (questionModel: QuestionModel, co
   return { question_id: question.id };
 };
 
+/**
+ * {
+ *   label: null,
+ *   value: 'Gdfbnkjb',
+ *   option_set_id: '602360f561f76a47b0076328'
+ * }
+ * =>
+ * {
+ *   value: 'Gdfbnkjb',
+ *   option_set_id: '602360f561f76a47b0076328'
+ * }
+ */
+const removeNullLabelsFromOption = (option: OptionCreate) => {
+  const { label, ...restOfOption } = option;
+  if (label === null) {
+    return restOfOption;
+  }
+
+  return { label, ...restOfOption };
+};
+
 const constructSurveyResponseTranslators = (models: MeditrakAppServerModelRegistry) => ({
   user_email: (userEmail: string) => translateUserEmailToId(models.user, userEmail),
   entity_code: (entityCode: string) => translateEntityCodeToId(models.entity, entityCode),
   survey_code: (surveyCode: string) => translateSurveyCodeToId(models.survey, surveyCode),
   entities_created: async (entities_created: Entity[]) => ({ entities_upserted: entities_created }), // Map legacy key to new key
+  options_created: async (options_created: OptionCreate[]) => ({
+    options_created: options_created.map(removeNullLabelsFromOption), // Null values aren't accepted by the validation schema
+  }),
   answers: async (answers: { body: string }[]) => ({ answers: answers.filter(a => a.body !== '') }), // remove any empty answers
 });
 
@@ -112,20 +137,22 @@ export async function translateSurveyResponseObject(
     throw new ValidationError('Payload must contain survey_response_object');
   }
 
+  const cleanedSurveyResponse = stripNullishFields(surveyResponseObject);
+
   const surveyResponseTranslators = constructSurveyResponseTranslators(models);
   const answerTranslators = constructAnswerTranslators(models);
 
   if (
     !requiresSurveyResponseTranslation(
-      surveyResponseObject,
+      cleanedSurveyResponse,
       surveyResponseTranslators,
       answerTranslators,
     )
   ) {
-    return surveyResponseObject;
+    return cleanedSurveyResponse;
   }
 
-  const translatedSurveyResponseObject = cloneDeep(surveyResponseObject);
+  const translatedSurveyResponseObject = cloneDeep(cleanedSurveyResponse);
   await translateObjectFields(translatedSurveyResponseObject, surveyResponseTranslators);
 
   const { answers } = translatedSurveyResponseObject;

@@ -46,12 +46,14 @@ jest.mock('cli-progress', () => ({
 describe('compare', () => {
   const baseClient = new MockTupaiaApiClient({
     central: new MockCentralApi({
-      reports: [
-        { code: 'same', latest_data_parameters: SAME_REPORT.parameters },
-        { code: 'different', latest_data_parameters: BASE_DIFFERENT_REPORT.parameters },
-        { code: 'skipped', latest_data_parameters: SKIPPED_REPORT.parameters },
-        { code: 'error', latest_data_parameters: ERROR_REPORT.parameters },
-      ],
+      mockData: {
+        reports: [
+          { code: 'same', latest_data_parameters: SAME_REPORT.parameters },
+          { code: 'different', latest_data_parameters: BASE_DIFFERENT_REPORT.parameters },
+          { code: 'skipped', latest_data_parameters: SKIPPED_REPORT.parameters },
+          { code: 'error', latest_data_parameters: ERROR_REPORT.parameters },
+        ],
+      },
     }),
     report: new MockReportApi({
       same: SAME_REPORT,

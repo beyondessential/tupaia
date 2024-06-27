@@ -7,7 +7,7 @@ import { constructAccessToken } from '@tupaia/auth';
 import { clearTestData, getTestDatabase, getTestModels, upsertDummyRecord } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { oneSecondSleep, randomIntBetween, createBearerHeader } from '@tupaia/utils';
-import { SyncableChangeEnqueuer, createPermissionsBasedMeditrakSyncQueue } from '../../../../sync';
+import { SyncableChangeEnqueuer } from '../../../../sync';
 import { MeditrakAppServerModelRegistry } from '../../../../types';
 import { TestModelRegistry } from '../../../types';
 import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../../utilities';
@@ -23,7 +23,6 @@ describe('changes/count', () => {
   syncableChangeEnqueuer.setDebounceTime(50);
 
   beforeAll(async () => {
-    await createPermissionsBasedMeditrakSyncQueue(models.database);
     syncableChangeEnqueuer.listenForChanges();
     app = await setupTestApp();
 
@@ -217,42 +216,6 @@ describe('changes/count', () => {
       },
     });
     expect(response.body).toEqual({ changeCount: numberOfQuestionsToDeleteFromSecondUpdate });
-  });
-
-  it('should return the correct number of changes based on the models the appVersion supports', async () => {
-    const since = Date.now();
-    await oneSecondSleep();
-
-    const numberOfEntitiesToAdd = randomIntBetween(1, 20);
-    const entitySupportedAppVersion = '1.7.102';
-    const entityUnsupportedAppVersion = '1.7.101';
-
-    for (let i = 0; i < numberOfEntitiesToAdd; i++) {
-      await upsertDummyRecord(models.entity, {});
-    }
-
-    // Wait for the triggers to have properly added the changes to the queue
-    await models.database.waitForAllChangeHandlers();
-    const entitySupportedResponse = await app.get('changes/count', {
-      headers: {
-        Authorization: authHeader,
-      },
-      query: {
-        since,
-        appVersion: entitySupportedAppVersion,
-      },
-    });
-    const entityUnsupportedResponse = await app.get('changes/count', {
-      headers: {
-        Authorization: authHeader,
-      },
-      query: {
-        since,
-        appVersion: entityUnsupportedAppVersion,
-      },
-    });
-    expect(entitySupportedResponse.body).toEqual({ changeCount: numberOfEntitiesToAdd });
-    expect(entityUnsupportedResponse.body).toEqual({ changeCount: 0 });
   });
 
   it('should return the correct number of changes based on the requested record types', async () => {

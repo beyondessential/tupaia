@@ -5,14 +5,10 @@
 
 import { AccessPolicyBuilder } from '../AccessPolicyBuilder';
 import { buildAccessPolicy } from '../buildAccessPolicy';
-import { buildLegacyAccessPolicy } from '../buildLegacyAccessPolicy';
 
 jest.mock('../buildAccessPolicy');
-jest.mock('../buildLegacyAccessPolicy');
 
 describe('AccessPolicyBuilder', () => {
-  let notifyPermissionsChange;
-  let notifyPermissionGroupChange;
   const models = {
     userEntityPermission: {
       addChangeHandler: onPermissionsChanged => {
@@ -31,7 +27,6 @@ describe('AccessPolicyBuilder', () => {
   };
   const userId = 'xxx';
   let buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
-  let buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
 
   it('throws error when userId is undefined', () => {
     const builder = new AccessPolicyBuilder(models);
@@ -40,37 +35,15 @@ describe('AccessPolicyBuilder', () => {
     );
   });
 
-  describe('selecting modern vs. legacy builder', () => {
-    const testData = [
-      [
-        'builds a modern access policy by default',
-        [undefined, [buildAccessPolicyMock, buildLegacyAccessPolicyMock]],
-      ],
-      [
-        'builds a modern access policy when useLegacyFormat is set to false',
-        [false, [buildAccessPolicyMock, buildLegacyAccessPolicyMock]],
-      ],
-      [
-        'builds a legacy access policy when useLegacyFormat is set to true',
-        [true, [buildLegacyAccessPolicyMock, buildAccessPolicyMock]],
-      ],
-    ];
-
-    it.each(testData)(
-      '%s',
-      async (_, [useLegacyFormat, [policyToBeCalled, policyNotToBeCalled]]) => {
-        const builder = new AccessPolicyBuilder(models);
-        await builder.getPolicyForUser(userId, useLegacyFormat);
-        expect(policyToBeCalled).toHaveBeenCalledOnceWith(models, userId);
-        expect(policyNotToBeCalled).not.toHaveBeenCalled();
-      },
-    );
+  it('builds an access policy', async () => {
+    const builder = new AccessPolicyBuilder(models);
+    await builder.getPolicyForUser(userId);
+    expect(buildAccessPolicyMock).toHaveBeenCalledOnceWith(models, userId);
   });
 
   describe('handles caching and cache invalidation', () => {
     beforeEach(() => {
       buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
-      buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
     });
 
     it('does not cache the policy if the response throws an error', async () => {

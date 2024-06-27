@@ -4,3 +4,4 @@
  */
 
 export { checkAppVersion } from './checkAppVersion';
+export { errorHandler } from './errorHandler';

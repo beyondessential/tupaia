@@ -34,11 +34,13 @@ jest.mock('cli-progress', () => ({
 describe('healthCheck', () => {
   const apiClient = new MockTupaiaApiClient({
     central: new MockCentralApi({
-      reports: [
-        { code: 'healthy', latest_data_parameters: HEALTHY_REPORT.parameters },
-        { code: 'skipped', latest_data_parameters: SKIPPED_REPORT.parameters },
-        { code: 'unhealthy', latest_data_parameters: UNHEALTHY_REPORT.parameters },
-      ],
+      mockData: {
+        reports: [
+          { code: 'healthy', latest_data_parameters: HEALTHY_REPORT.parameters },
+          { code: 'skipped', latest_data_parameters: SKIPPED_REPORT.parameters },
+          { code: 'unhealthy', latest_data_parameters: UNHEALTHY_REPORT.parameters },
+        ],
+      },
     }),
     report: new MockReportApi({
       healthy: HEALTHY_REPORT,

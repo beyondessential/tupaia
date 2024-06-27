@@ -95,6 +95,8 @@ export enum DashboardItemType {
   Matrix = 'matrix',
   Component = 'component',
 }
-export type EntityAttributes = Record<string, unknown> & {
+
+export type EntityAttributes = {
   type?: string;
+  [key: string]: unknown;
 };

@@ -13,4 +13,3 @@ export type {
 export * from './activityFeed';
 export * from './entity';
 export * from './userAccountDetails';
-export * from './userRewards';
