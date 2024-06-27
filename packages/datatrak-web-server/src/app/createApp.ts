@@ -6,47 +6,49 @@
 import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
-  OrchestratorApiBuilder,
-  handleWith,
   attachSessionIfAvailable,
-  SessionSwitchingAuthHandler,
   forwardRequest,
+  handleWith,
+  OrchestratorApiBuilder,
+  SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 import { DataTrakSessionModel } from '../models';
 import {
-  UserRoute,
-  UserRequest,
-  SurveysRoute,
-  SurveysRequest,
-  SurveyResponsesRequest,
-  SurveyResponsesRoute,
-  ProjectsRoute,
-  ProjectsRequest,
-  SurveyRequest,
-  SurveyRoute,
-  SingleEntityRequest,
-  SingleEntityRoute,
-  EntityDescendantsRequest,
-  EntityDescendantsRoute,
-  ProjectRequest,
-  ProjectRoute,
-  SubmitSurveyResponseRoute,
-  SubmitSurveyResponseRequest,
-  RecentSurveysRequest,
-  RecentSurveysRoute,
-  LeaderboardRequest,
-  LeaderboardRoute,
   ActivityFeedRequest,
   ActivityFeedRoute,
-  SingleSurveyResponseRoute,
-  SingleSurveyResponseRequest,
-  EntitiesRoute,
   EntitiesRequest,
-  GenerateLoginTokenRoute,
+  EntitiesRoute,
+  EntityDescendantsRequest,
+  EntityDescendantsRoute,
   GenerateLoginTokenRequest,
+  GenerateLoginTokenRoute,
+  LeaderboardRequest,
+  LeaderboardRoute,
+  ProjectRequest,
+  ProjectRoute,
+  ProjectsRequest,
+  ProjectsRoute,
+  RecentSurveysRequest,
+  RecentSurveysRoute,
+  SaveTaskRequest,
+  SaveTaskRoute,
+  SingleEntityRequest,
+  SingleEntityRoute,
+  SingleSurveyResponseRequest,
+  SingleSurveyResponseRoute,
+  SubmitSurveyResponseRequest,
+  SubmitSurveyResponseRoute,
+  SurveyRequest,
+  SurveyResponsesRequest,
+  SurveyResponsesRoute,
+  SurveyRoute,
+  SurveysRequest,
+  SurveysRoute,
   TasksRequest,
   TasksRoute,
+  UserRequest,
+  UserRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 
@@ -63,11 +65,7 @@ export async function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .use('*', attachAccessPolicy)
     .attachApiClientToContext(authHandlerProvider)
-    .post<SubmitSurveyResponseRequest>(
-      'submitSurveyResponse',
-      handleWith(SubmitSurveyResponseRoute),
-    )
-    .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
+    // Get Routes
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:entityCode', handleWith(SingleEntityRoute))
     .get<EntityDescendantsRequest>('entityDescendants', handleWith(EntityDescendantsRoute))
@@ -82,6 +80,14 @@ export async function createApp() {
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TasksRequest>('tasks', handleWith(TasksRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
+    // Post Routes
+    .post<SubmitSurveyResponseRequest>(
+      'submitSurveyResponse',
+      handleWith(SubmitSurveyResponseRoute),
+    )
+    .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
+    // Put Routes
+    .put<SaveTaskRequest>('tasks/:taskId', handleWith(SaveTaskRoute))
     // Forward auth requests to web-config
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
