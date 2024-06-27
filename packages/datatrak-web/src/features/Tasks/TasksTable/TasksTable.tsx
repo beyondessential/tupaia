@@ -5,12 +5,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { generatePath, useSearchParams, Link, useLocation } from 'react-router-dom';
-import { FilterableTable } from '@tupaia/ui-components';
+import { generatePath, Link, useLocation, useSearchParams } from 'react-router-dom';
+import { ActionsMenu, FilterableTable } from '@tupaia/ui-components';
 import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
 import { TaskStatusType } from '../../../types';
 import { Button } from '../../../components';
-import { useCurrentUserContext, useTasks } from '../../../api';
+import { useCurrentUserContext, useEditTask, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { ROUTES } from '../../../constants';
 import { StatusPill } from '../StatusPill';
@@ -25,7 +25,6 @@ const ActionButtonComponent = styled(Button).attrs({
 })`
   padding-inline: 1.2rem;
   padding-block: 0.4rem;
-  width: 100%;
   .MuiButton-label {
     font-size: 0.75rem;
     line-height: normal;
@@ -74,6 +73,33 @@ const ActionButton = (task: Task) => {
     </ActionButtonComponent>
   );
 };
+
+export const ActionsMenuButton = ({ id }) => {
+  const { mutate, isLoading } = useEditTask();
+
+  console.log('is loading', isLoading);
+  const cancelTask = () => {
+    console.log('cancel task', id);
+
+    mutate({ id, status: TaskStatus.cancelled });
+  };
+
+  const actions = [
+    {
+      label: 'Cancel task',
+      action: cancelTask,
+    },
+  ];
+
+  return <ActionsMenu options={actions} />;
+};
+
+const Actions = row => (
+  <div>
+    <ActionButton {...row} />
+    <ActionsMenuButton {...row} />
+  </div>
+);
 
 const COLUMNS = [
   {
@@ -124,7 +150,8 @@ const COLUMNS = [
   },
   {
     Header: '',
-    accessor: row => <ActionButton {...row} />,
+    accessor: row => <Actions {...row} />,
+    width: 190,
     id: 'actions',
     filterable: false,
     disableSortBy: true,
