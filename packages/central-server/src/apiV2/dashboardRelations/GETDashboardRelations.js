@@ -4,6 +4,7 @@
  */
 
 import { RECORDS } from '@tupaia/database';
+import { fullyQualifyColumnSelector } from '../GETHandler/helpers';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardGetPermissions } from '../dashboards';
@@ -14,7 +15,6 @@ import {
   createDashboardRelationsViaParentDashboardDBFilter,
   createDashboardRelationsViaParentDashboardItemDBFilter,
 } from './assertDashboardRelationsPermissions';
-import { fullyQualifyColumnSelector } from '../GETHandler/helpers';
 
 /**
  * Handles endpoints:
