@@ -51393,12 +51393,6 @@ export const DashboardItemSchema = {
 		"legacy": {
 			"type": "boolean"
 		},
-		"permission_group_ids": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
 		"report_code": {
 			"type": "string"
 		}
@@ -60069,12 +60063,6 @@ export const DashboardItemCreateSchema = {
 		"legacy": {
 			"type": "boolean"
 		},
-		"permission_group_ids": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
 		"report_code": {
 			"type": "string"
 		}
@@ -68744,12 +68732,6 @@ export const DashboardItemUpdateSchema = {
 		},
 		"legacy": {
 			"type": "boolean"
-		},
-		"permission_group_ids": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
 		},
 		"report_code": {
 			"type": "string"
@@ -84605,9 +84587,6 @@ export const ReportSchema = {
 		"latest_data_parameters": {
 			"type": "object",
 			"properties": {}
-		},
-		"permission_group_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -84615,8 +84594,7 @@ export const ReportSchema = {
 		"code",
 		"config",
 		"id",
-		"latest_data_parameters",
-		"permission_group_id"
+		"latest_data_parameters"
 	]
 } 
 
@@ -84677,16 +84655,12 @@ export const ReportCreateSchema = {
 		"latest_data_parameters": {
 			"type": "object",
 			"properties": {}
-		},
-		"permission_group_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"config",
-		"permission_group_id"
+		"config"
 	]
 } 
 
@@ -84750,9 +84724,6 @@ export const ReportUpdateSchema = {
 		"latest_data_parameters": {
 			"type": "object",
 			"properties": {}
-		},
-		"permission_group_id": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -96216,12 +96187,6 @@ export const DashboardWithMetadataSchema = {
 					},
 					"legacy": {
 						"type": "boolean"
-					},
-					"permission_group_ids": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
 					},
 					"report_code": {
 						"type": "string"

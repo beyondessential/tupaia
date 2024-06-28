@@ -297,14 +297,12 @@ export interface DashboardItem {
   'config': DashboardItemConfig;
   'id': string;
   'legacy': boolean;
-  'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
 }
 export interface DashboardItemCreate {
   'code': string;
   'config'?: DashboardItemConfig;
   'legacy'?: boolean;
-  'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
 }
 export interface DashboardItemUpdate {
@@ -312,7 +310,6 @@ export interface DashboardItemUpdate {
   'config'?: DashboardItemConfig;
   'id'?: string;
   'legacy'?: boolean;
-  'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
 }
 export interface DashboardMailingList {
@@ -1311,20 +1308,17 @@ export interface Report {
   'config': ReportConfig;
   'id': string;
   'latest_data_parameters': {};
-  'permission_group_id': string;
 }
 export interface ReportCreate {
   'code': string;
   'config': ReportConfig;
   'latest_data_parameters'?: {};
-  'permission_group_id': string;
 }
 export interface ReportUpdate {
   'code'?: string;
   'config'?: ReportConfig;
   'id'?: string;
   'latest_data_parameters'?: {};
-  'permission_group_id'?: string;
 }
 export interface Setting {
   'id': string;
