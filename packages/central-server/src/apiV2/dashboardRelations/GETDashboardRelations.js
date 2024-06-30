@@ -4,6 +4,7 @@
  */
 
 import { RECORDS } from '@tupaia/database';
+import { fullyQualifyColumnSelector } from '../GETHandler/helpers';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardGetPermissions } from '../dashboards';
@@ -33,6 +34,19 @@ export class GETDashboardRelations extends GETHandler {
       farTableKey: 'dashboard_item.id',
     },
   };
+
+  getDbQueryCriteria() {
+    const { filter: filterString } = this.req.query;
+    const filter = filterString ? JSON.parse(filterString) : {};
+    const processedObject = {};
+    Object.entries(filter).forEach(([columnSelector, value]) => {
+      // We don't want to use the customColumnSelectors for dashboard relations since they are not
+      // compatible with the database query so just use fullyQualifyColumnSelector
+      processedObject[fullyQualifyColumnSelector(this.models, columnSelector, this.recordType)] =
+        value;
+    });
+    return processedObject;
+  }
 
   async findSingleRecord(dashboardRelationId, options) {
     const dashboardRelation = await super.findSingleRecord(dashboardRelationId, options);
