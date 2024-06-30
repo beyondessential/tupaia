@@ -67,18 +67,16 @@ export const Breadcrumbs = () => {
 
   return (
     <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      {breadcrumbs.map(
-        ({ code: entityCode, name: entityName }: { code: string; name: string }, index: number) => {
-          const isLast = index === breadcrumbs.length - 1;
-          return isLast ? (
-            <ActiveCrumb key={entityCode}>{entityName}</ActiveCrumb>
-          ) : (
-            <Crumb key={entityCode} to={{ ...location, pathname: `/${projectCode}/${entityCode}` }}>
-              {entityName}
-            </Crumb>
-          );
-        },
-      )}
+      {breadcrumbs.map(({ code, name }, index: number) => {
+        const isLast = index === breadcrumbs.length - 1;
+        return isLast ? (
+          <ActiveCrumb key={code}>{name}</ActiveCrumb>
+        ) : (
+          <Crumb key={code} to={{ ...location, pathname: `/${projectCode}/${code}` }}>
+            {name}
+          </Crumb>
+        );
+      })}
     </StyledBreadcrumbs>
   );
 };

@@ -7,11 +7,13 @@ import { useQuery, QueryObserverOptions } from 'react-query';
 import { get } from '../api';
 import { Entity } from '../../types';
 
+type QueryOptions = QueryObserverOptions<Entity[], Error, Entity[]>;
+
 export const useEntities = (
   projectCode?: string,
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
-  queryOptions?: QueryObserverOptions,
+  queryOptions?: QueryOptions,
 ) => {
   let enabled = !!projectCode && !!entityCode;
 
@@ -50,7 +52,7 @@ export const useEntitiesWithLocation = (
   projectCode?: string,
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
-  queryOptions: QueryObserverOptions = {},
+  queryOptions: QueryOptions = {},
 ) =>
   useEntities(
     projectCode,

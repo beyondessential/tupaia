@@ -33,6 +33,7 @@ const useZoomToEntity = () => {
         animate: false, // don't animate, as it can slow things down a bit
       });
     } else {
+      if (!entity.point) return;
       const currentZoom = map.getZoom();
       // if already zoomed in beyond the POINT_ZOOM_LEVEL, don't zoom out
       const zoomLevel = currentZoom > POINT_ZOOM_LEVEL ? currentZoom : POINT_ZOOM_LEVEL;
