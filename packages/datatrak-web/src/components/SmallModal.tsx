@@ -55,7 +55,7 @@ interface ModalProps {
   primaryButton?: ButtonProps | null;
   secondaryButton?: ButtonProps | null;
   children?: ReactNode;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export const SmallModal = ({

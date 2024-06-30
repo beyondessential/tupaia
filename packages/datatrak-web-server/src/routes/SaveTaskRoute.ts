@@ -6,18 +6,15 @@ import { Request } from 'express';
 import { KeysToCamelCase, Task } from '@tupaia/types';
 import { Route } from '@tupaia/server-boilerplate';
 
-// Todo: update api type with this
-type TaskRequest = KeysToCamelCase<Task>;
-
-type Params = Record<string, never>;
-type ResBody = {
-  id: string;
-  message: string;
-};
-type ReqBody = Record<string, never>;
-type ReqQuery = Record<string, never>;
-
-export type SaveTaskRequest = Request<Params, ResBody, ReqBody, ReqQuery>;
+export type SaveTaskRequest = Request<
+  Record<string, never>,
+  {
+    id: string;
+    message: string;
+  },
+  KeysToCamelCase<Task>,
+  Record<string, never>
+>;
 
 export class SaveTaskRoute extends Route<SaveTaskRequest> {
   public async buildResponse() {
@@ -25,11 +22,8 @@ export class SaveTaskRoute extends Route<SaveTaskRequest> {
     const { taskId } = this.req.params;
     const { task } = this.req.models;
 
-    let result;
-
     // Update task if id exists
     if (taskId) {
-      console.log('Update task', taskId, status);
       await task.updateById(taskId, { status });
     } else {
       // Todo: create new task record
