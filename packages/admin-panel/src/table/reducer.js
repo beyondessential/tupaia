@@ -16,9 +16,6 @@ import {
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
   FILTERS_CHANGE,
-  EXPANSIONS_CHANGE,
-  EXPANSIONS_TAB_CHANGE,
-  COLUMNS_RESIZE,
   SORTING_CHANGE,
   DATA_CHANGE_REQUEST,
   DEFAULT_TABLE_STATE,
@@ -77,17 +74,12 @@ const stateChanges = {
   }),
   [FILTERS_CHANGE]: payload => ({
     ...payload,
+    pageIndex: 0,
   }),
-  [EXPANSIONS_CHANGE]: payload => payload,
-  [EXPANSIONS_TAB_CHANGE]: ({ rowId, tabValue }, currentState) => ({
-    expansionTabStates: {
-      ...currentState.expansionTabStates,
-      [rowId]: tabValue,
-    },
-  }),
-  [COLUMNS_RESIZE]: payload => payload,
+
   [SORTING_CHANGE]: payload => ({
     ...payload,
+    pageIndex: 0,
   }),
   [CLEAR_ERROR]: () => ({
     errorMessage: DEFAULT_TABLE_STATE.errorMessage,
