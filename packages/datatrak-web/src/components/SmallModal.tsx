@@ -12,6 +12,7 @@ import { Button, Modal } from '.';
 const Wrapper = styled.div`
   width: 25rem;
   padding: 0 2rem 1rem 2rem;
+  text-wrap: initial;
 `;
 
 const ButtonWrapper = styled.div`
@@ -54,6 +55,7 @@ interface ModalProps {
   primaryButton?: ButtonProps | null;
   secondaryButton?: ButtonProps | null;
   children?: ReactNode;
+  isLoading?: boolean;
 }
 
 export const SmallModal = ({
@@ -63,6 +65,7 @@ export const SmallModal = ({
   primaryButton,
   secondaryButton,
   children,
+  isLoading = false,
 }: ModalProps) => {
   return (
     <Modal open={open} onClose={onClose}>
@@ -80,7 +83,9 @@ export const SmallModal = ({
             </ModalButton>
           )}
           {primaryButton && (
-            <ModalButton onClick={primaryButton.onClick}>{primaryButton.label}</ModalButton>
+            <ModalButton onClick={primaryButton.onClick} isLoading={isLoading}>
+              {primaryButton.label}
+            </ModalButton>
           )}
         </ButtonWrapper>
       </Wrapper>

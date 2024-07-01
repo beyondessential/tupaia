@@ -7,6 +7,7 @@ export { useLogin } from './useLogin';
 export { useLogout } from './useLogout';
 export { useRegister } from './useRegister';
 export { useEditUser } from './useEditUser';
+export { useEditTask } from './useEditTask';
 export { useResendVerificationEmail } from './useResendVerificationEmail';
 export { useRequestProjectAccess } from './useRequestProjectAccess';
 export { useSubmitSurveyResponse } from './useSubmitSurveyResponse';
