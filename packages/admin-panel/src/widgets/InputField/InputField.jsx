@@ -16,7 +16,7 @@ const getInputType = ({ options, optionsEndpoint, type }) => {
   if (options && type !== 'radio') {
     return 'enum';
   }
-  if (optionsEndpoint) {
+  if (optionsEndpoint && type !== 'checkboxList') {
     return 'autocomplete';
   }
   return type;

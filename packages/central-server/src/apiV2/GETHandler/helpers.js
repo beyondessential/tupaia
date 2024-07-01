@@ -55,7 +55,7 @@ export const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, ba
 export const processColumnSelectorKeys = (models, object, recordType) => {
   const processedObject = {};
   Object.entries(object).forEach(([columnSelector, value]) => {
-    processedObject[fullyQualifyColumnSelector(models, columnSelector, recordType)] = value;
+    processedObject[processColumnSelector(models, columnSelector, recordType)] = value;
   });
   return processedObject;
 };

@@ -47,7 +47,7 @@ const palette = {
     300: COLORS.GREY_E2,
     400: COLORS.GREY_DE,
     500: COLORS.GREY_9F,
-    600: COLORS.GREY_72,
+    600: COLORS.GREY_B8,
   },
   background: {
     default: COLORS.LIGHTGREY,
@@ -180,8 +180,15 @@ const overrides = {
     '@global': {
       label: {
         fontWeight: 500,
-        '& .MuiSvgIcon-root': {
-          color: palette.text.secondary, // tooltip icon color
+      },
+    },
+  },
+  MuiSvgIcon: {
+    root: {
+      'label &': {
+        color: palette.text.secondary,
+        '&.checkbox': {
+          fill: 'transparent',
         },
       },
     },

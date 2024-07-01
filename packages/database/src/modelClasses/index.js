@@ -59,6 +59,7 @@ import { DataServiceEntityModel } from './DataServiceEntity';
 import { DhisInstanceModel } from './DhisInstance';
 import { DataElementDataServiceModel } from './DataElementDataService';
 import { SupersetInstanceModel } from './SupersetInstance';
+import { TaskModel } from './Task';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -114,6 +115,7 @@ export const modelClasses = {
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
   SyncGroupLog: SyncGroupLogModel,
+  Task: TaskModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
@@ -181,3 +183,4 @@ export {
 export { DashboardRelationRecord, DashboardRelationModel } from './DashboardRelation';
 export { OneTimeLoginRecord, OneTimeLoginModel } from './OneTimeLogin';
 export { AnswerModel, AnswerRecord } from './Answer';
+export { TaskModel, TaskRecord } from './Task';

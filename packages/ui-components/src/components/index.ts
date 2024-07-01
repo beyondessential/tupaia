@@ -23,6 +23,7 @@ export * from './EnvBanner';
 export * from './ErrorBoundary';
 export * from './FavouriteButton';
 export * from './FetchLoader';
+export * from './FilterableTable';
 export * from './HomeButton';
 export * from './HorizontalTree';
 export * from './IconButton';

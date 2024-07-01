@@ -4,6 +4,7 @@
  */
 import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
+import { QUERY_CONJUNCTIONS } from './TupaiaDatabase';
 
 export class DatabaseModel {
   otherModels = {};
@@ -76,6 +77,7 @@ export class DatabaseModel {
   async fetchFieldNames() {
     if (!this.fieldNames) {
       const schema = await this.fetchSchema();
+
       this.fieldNames = Object.keys(schema);
     }
     return this.fieldNames;
@@ -100,8 +102,18 @@ export class DatabaseModel {
   // A helper for the 'xById' methods, which disambiguates the id field to ensure joins are handled
   getIdClause(id) {
     return {
-      [`${this.databaseRecord}.id`]: id,
+      [this.fullyQualifyColumn('id')]: id,
     };
+  }
+
+  // A helper function to ensure that we're using fully qualified column names to avoid ambiguous references when joins are being used
+  fullyQualifyColumn(column) {
+    if (column.includes('.')) {
+      // Already fully qualified
+      return column;
+    }
+
+    return `${this.databaseRecord}.${column}`;
   }
 
   async getColumnsForQuery() {
@@ -109,7 +121,7 @@ export class DatabaseModel {
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
     return fieldNames.map(fieldName => {
-      const qualifiedName = `${this.databaseRecord}.${fieldName}`;
+      const qualifiedName = this.fullyQualifyColumn(fieldName);
       const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
       if (customSelector) {
         return { [fieldName]: customSelector(qualifiedName) };
@@ -134,6 +146,30 @@ export class DatabaseModel {
     }
 
     return { ...options, ...customQueryOptions };
+  }
+
+  async getDbConditions(dbConditions = {}) {
+    const fieldNames = await this.fetchFieldNames();
+    const fullyQualifiedConditions = {};
+
+    const whereClauses = Object.entries(dbConditions);
+    for (let i = 0; i < whereClauses.length; i++) {
+      const [field, value] = whereClauses[i];
+      if (field === QUERY_CONJUNCTIONS.AND || field === QUERY_CONJUNCTIONS.OR) {
+        // Recursively proccess AND and OR conditions
+        fullyQualifiedConditions[field] = await this.getDbConditions(value);
+      } else if (field === QUERY_CONJUNCTIONS.RAW) {
+        // Don't touch RAW conditions
+        fullyQualifiedConditions[field] = value;
+      } else {
+        const fullyQualifiedField = fieldNames.includes(field)
+          ? this.fullyQualifyColumn(field)
+          : field;
+        fullyQualifiedConditions[fullyQualifiedField] = value;
+      }
+    }
+
+    return fullyQualifiedConditions;
   }
 
   /**
@@ -171,7 +207,12 @@ export class DatabaseModel {
 
   async findOne(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
-    const result = await this.database.findOne(this.databaseRecord, dbConditions, queryOptions);
+    const processedDbConditions = await this.getDbConditions(dbConditions);
+    const result = await this.database.findOne(
+      this.databaseRecord,
+      processedDbConditions,
+      queryOptions,
+    );
     if (!result) return null;
     return this.generateInstance(result);
   }
@@ -184,7 +225,12 @@ export class DatabaseModel {
    */
   async find(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
-    const dbResults = await this.database.find(this.databaseRecord, dbConditions, queryOptions);
+    const processedDbConditions = await this.getDbConditions(dbConditions);
+    const dbResults = await this.database.find(
+      this.databaseRecord,
+      processedDbConditions,
+      queryOptions,
+    );
     return Promise.all(dbResults.map(result => this.generateInstance(result)));
   }
 

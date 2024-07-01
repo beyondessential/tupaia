@@ -8,10 +8,10 @@ import { prettyArray } from '../../utilities';
 
 export const RESOURCE_NAME = { singular: 'dashboard relation' };
 
-// export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
-export const DASHBOARD_RELATION_COLUMNS = [
-  {
+
+export const FIELDS = {
+  DASHBOARD_CODE: {
     Header: 'Dashboard code',
     source: 'dashboard.code',
     editConfig: {
@@ -21,7 +21,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
       sourceKey: 'dashboard_id',
     },
   },
-  {
+  DASHBOARD_ITEM_CODE: {
     Header: 'Dashboard item code',
     source: 'dashboard_item.code',
     editConfig: {
@@ -31,7 +31,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
       sourceKey: 'child_id',
     },
   },
-  {
+  PERMISSION_GROUPS: {
     Header: 'Permission groups',
     source: 'permission_groups',
     Filter: ArrayFilter,
@@ -44,7 +44,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
       allowMultipleValues: true,
     },
   },
-  {
+  ENTITY_TYPES: {
     Header: 'Entity types',
     source: 'entity_types',
     Filter: ArrayFilter,
@@ -58,13 +58,13 @@ export const DASHBOARD_RELATION_COLUMNS = [
       secondaryLabel: 'Input the entity types you want. e.g: ‘country’, ‘sub_district’',
     },
   },
-  {
+  ATTRIBUTES_FILTER: {
     Header: 'Attributes filter',
     source: 'attributes_filter',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
-  {
+  PROJECT_CODES: {
     Header: 'Project codes',
     source: 'project_codes',
     Filter: ArrayFilter,
@@ -77,10 +77,20 @@ export const DASHBOARD_RELATION_COLUMNS = [
       allowMultipleValues: true,
     },
   },
-  {
+  SORT_ORDER: {
     Header: 'Sort order',
     source: 'sort_order',
   },
+};
+
+export const DASHBOARD_RELATION_COLUMNS = [
+  FIELDS.DASHBOARD_CODE,
+  FIELDS.DASHBOARD_ITEM_CODE,
+  FIELDS.PERMISSION_GROUPS,
+  FIELDS.ENTITY_TYPES,
+  FIELDS.ATTRIBUTES_FILTER,
+  FIELDS.PROJECT_CODES,
+  FIELDS.SORT_ORDER,
 ];
 
 const COLUMNS = [

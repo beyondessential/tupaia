@@ -12,15 +12,12 @@ import {
   ACTION_CONFIRM,
   ACTION_REQUEST,
   CLEAR_ERROR,
-  COLUMNS_RESIZE,
   DATA_CHANGE_ERROR,
   DATA_CHANGE_REQUEST,
   DATA_CHANGE_SUCCESS,
   DATA_FETCH_ERROR,
   DATA_FETCH_REQUEST,
   DATA_FETCH_SUCCESS,
-  EXPANSIONS_CHANGE,
-  EXPANSIONS_TAB_CHANGE,
   FILTERS_CHANGE,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
@@ -42,28 +39,9 @@ export const changePageSize = (reduxId, pageSize, pageIndex) => ({
   reduxId,
 });
 
-export const changeExpansions = (reduxId, expansions) => ({
-  type: EXPANSIONS_CHANGE,
-  expansions,
-  reduxId,
-});
-
-export const changeExpansionsTab = (reduxId, rowId, tabValue) => ({
-  type: EXPANSIONS_TAB_CHANGE,
-  reduxId,
-  rowId,
-  tabValue,
-});
-
 export const changeFilters = (reduxId, filters) => ({
   type: FILTERS_CHANGE,
   filters,
-  reduxId,
-});
-
-export const changeResizedColumns = (reduxId, resizedColumns) => ({
-  type: COLUMNS_RESIZE,
-  resizedColumns,
   reduxId,
 });
 

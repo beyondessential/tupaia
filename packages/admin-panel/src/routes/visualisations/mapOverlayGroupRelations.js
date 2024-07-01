@@ -7,11 +7,10 @@ const RESOURCE_NAME = { singular: 'map overlay group relation' };
 
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
-const FIELDS = [
-  {
+export const FIELDS = {
+  MAP_OVERLAY_GROUP_CODE: {
     Header: 'Map overlay group code',
     source: 'map_overlay_group.code',
-
     editConfig: {
       optionsEndpoint: 'mapOverlayGroups',
       optionLabelKey: 'map_overlay_group.code',
@@ -19,23 +18,9 @@ const FIELDS = [
       sourceKey: 'map_overlay_group_id',
     },
   },
-  {
-    Header: 'Child ID',
-    source: 'child_id',
-
-    editConfig: {
-      optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'mapOverlay.id',
-      optionValueKey: 'mapOverlay.id',
-      canCreateNewOptions: true,
-      sourceKey: 'child_id',
-    },
-  },
-  {
+  CHILD_TYPE: {
     Header: 'Child type',
-    width: 160,
     source: 'child_type',
-
     editConfig: {
       options: [
         {
@@ -49,29 +34,68 @@ const FIELDS = [
       ],
     },
   },
-  {
+  CHILD_CODE: {
+    Header: 'Child code',
+    source: 'child_code',
+  },
+  CHILD_MAP_OVERLAY_CODE: {
+    Header: 'Child map overlay code',
+    id: 'child_map_overlay_code',
+    source: 'child_code',
+    editConfig: {
+      optionsEndpoint: 'mapOverlays',
+      optionLabelKey: 'mapOverlay.code',
+      optionValueKey: 'mapOverlay.id',
+      sourceKey: 'child_id',
+      visibilityCriteria: { child_type: 'mapOverlay' },
+    },
+  },
+  CHILD_MAP_OVERLAY_GROUP_CODE: {
+    Header: 'Child map overlay group code',
+    id: 'child_map_overlay_group_code',
+    source: 'child_code',
+    editConfig: {
+      optionsEndpoint: 'mapOverlayGroups',
+      optionLabelKey: 'mapOverlayGroups.code',
+      optionValueKey: 'mapOverlayGroups.id',
+      sourceKey: 'child_id',
+      visibilityCriteria: { child_type: 'mapOverlayGroup' },
+    },
+  },
+  SORT_ORDER: {
     Header: 'Sort order',
     source: 'sort_order',
   },
+};
+
+const EDIT_FIELDS = [
+  FIELDS.MAP_OVERLAY_GROUP_CODE,
+  FIELDS.CHILD_TYPE,
+  FIELDS.CHILD_MAP_OVERLAY_CODE,
+  FIELDS.CHILD_MAP_OVERLAY_GROUP_CODE,
+  FIELDS.SORT_ORDER,
 ];
 
 const COLUMNS = [
-  ...FIELDS,
+  FIELDS.MAP_OVERLAY_GROUP_CODE,
+  FIELDS.CHILD_TYPE,
+  FIELDS.CHILD_CODE,
+  FIELDS.SORT_ORDER,
   {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
       title: `Edit ${RESOURCE_NAME.singular}`,
-      editEndpoint: 'mapOverlayGroupRelations',
-      fields: FIELDS,
+      editEndpoint: RELATION_ENDPOINT,
+      fields: EDIT_FIELDS,
     },
   },
   {
     Header: 'Delete',
     type: 'delete',
     actionConfig: {
-      endpoint: 'mapOverlayGroupRelations',
+      endpoint: RELATION_ENDPOINT,
     },
   },
 ];
@@ -79,7 +103,7 @@ const COLUMNS = [
 const CREATE_CONFIG = {
   actionConfig: {
     editEndpoint: RELATION_ENDPOINT,
-    fields: FIELDS,
+    fields: EDIT_FIELDS,
   },
 };
 
