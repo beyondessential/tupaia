@@ -45,10 +45,10 @@ export const FileQuestion = ({
   label,
   required,
   detailLabel,
-  controllerProps: { onChange, value: selectedFile, name },
+  controllerProps: { onChange, name },
 }: SurveyQuestionInputProps) => {
-  const handleChange = async (_e, _name, files) => {
-    if (!files) {
+  const handleChange = async files => {
+    if (!files || files.length === 0) {
       onChange(null);
       return;
     }
@@ -65,12 +65,10 @@ export const FileQuestion = ({
     <Wrapper>
       <FileUploadField
         name={name}
-        fileName={selectedFile?.name}
         onChange={handleChange}
         label={label!}
         helperText={detailLabel!}
         maxSizeInBytes={MAX_FILE_SIZE_BYTES}
-        showFileSize
         FormHelperTextComponent={InputHelperText}
         required={required}
       />
