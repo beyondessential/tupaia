@@ -21,7 +21,7 @@ export const getTypesToExclude = async (
 
   if (config?.frontendExcluded) {
     const typesFilter = [];
-    for (const excludedConfig of config?.frontendExcluded) {
+    for (const excludedConfig of config.frontendExcluded) {
       const { types, exceptions } = excludedConfig;
 
       const exceptedPermissionGroups = exceptions?.permissionGroups ?? [];
