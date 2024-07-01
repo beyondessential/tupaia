@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import keyBy from 'lodash.keyby';
 import {
   FormGroup as MuiFormGroup,
   FormControlLabel as MuiFormControlLabel,
@@ -45,18 +46,32 @@ const Checkbox = ({ name, value, label, onChange }) => {
   );
 };
 
-export const FilterToolbar = () => {
-  const [state, setState] = React.useState({
-    allAssignees: true,
-    allCompleted: false,
-    allCancelled: false,
-  });
+const customFilters = {
+  allAssignees: (value, filters) => {
+    console.log('filter allAssignees', value);
+    return filters;
+  },
+  allCompleted: (value, filters) => {
+    return value ? { ...filters, task_status: { id: 'task_status', value: 'to_do' } } : filters;
+  },
+  allCancelled: (value, filters) => {
+    return value ? { ...filters, task_status: { id: 'task_status', value: 'to_do' } } : filters;
+  },
+};
 
+export const FilterToolbar = ({ onChangeFilters, filters }) => {
+  const filtersById = keyBy(filters, 'id');
+  console.log('filters', filters, filtersById);
   const handleChange = event => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    const { name: id, checked: value } = event.target;
+    const customFilter = customFilters[id];
+    const updatedFilters = customFilter(value, filters);
+    console.log('updatedFilters', updatedFilters);
+    console.log('as array', Object.values(updatedFilters));
+    onChangeFilters(Object.values(updatedFilters));
   };
 
-  const { allAssignees, allCompleted, allCancelled } = state;
+  const getValue = id => filtersById[id]?.value || false;
 
   return (
     <Container>
@@ -64,20 +79,20 @@ export const FilterToolbar = () => {
         <Checkbox
           name="allAssignees"
           label="Show all assignees"
-          value={allAssignees}
-          handleChange={handleChange}
+          value={getValue('allAssignees')}
+          onChange={handleChange}
         />
         <Checkbox
           name="allCompleted"
           label="Show completed tasks"
-          value={allCompleted}
-          handleChange={handleChange}
+          value={getValue('allCompleted')}
+          onChange={handleChange}
         />
         <Checkbox
           name="allCancelled"
           label="Show cancelled tasks"
-          value={allCancelled}
-          handleChange={handleChange}
+          value={getValue('allCancelled')}
+          onChange={handleChange}
         />
       </FormGroup>
     </Container>
