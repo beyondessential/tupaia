@@ -39,20 +39,25 @@ export const Breadcrumbs = ({
   details,
   getDisplayValue,
   onClickLinks,
+  showBackButton = true,
 }) => {
   const itemDisplayValue = getDisplayValue ? getDisplayValue(details) : details?.[displayProperty];
 
   const parentTitle = parent ? parent.title ?? generateTitle(parent.resourceName) : null;
 
+  const parentLink = parent?.isStatic ? null : parent?.to ?? '/';
+
   return (
     <Wrapper>
-      <BackButton component={Link} to={parent?.to || '/'} onClick={onClickLinks}>
-        <ArrowBack />
-      </BackButton>
+      {showBackButton && (
+        <BackButton component={Link} to={parent?.to || '/'} onClick={onClickLinks}>
+          <ArrowBack />
+        </BackButton>
+      )}
       <MuiBreadcrumbs separator="|">
         <Breadcrumb
-          component={Link}
-          to={parent?.to || '/'}
+          component={parent?.isStatic ? undefined : Link}
+          to={parentLink}
           onClick={onClickLinks}
           color="textPrimary"
         >
@@ -72,6 +77,7 @@ Breadcrumbs.propTypes = {
   details: PropTypes.object,
   getDisplayValue: PropTypes.func,
   onClickLinks: PropTypes.func,
+  showBackButton: PropTypes.bool,
 };
 
 Breadcrumbs.defaultProps = {
@@ -81,4 +87,5 @@ Breadcrumbs.defaultProps = {
   details: null,
   getDisplayValue: null,
   onClickLinks: null,
+  showBackButton: true,
 };

@@ -21,7 +21,9 @@ const FileNameAndFileSize = styled.span`
 `;
 
 const FileUploadContainer = styled(FlexStart)`
-  margin-top: 1rem;
+  span + & {
+    margin-block-start: 1rem;
+  }
 `;
 
 const RemoveButton = styled(Button).attrs({
@@ -61,6 +63,9 @@ interface FileUploadFieldProps {
   required?: boolean;
   buttonVariant?: 'text' | 'outlined' | 'contained';
   accept?: string;
+  ariaLabelledBy?: string;
+  ariaDescribedBy?: string;
+  buttonColor?: 'primary' | 'secondary' | 'default';
 }
 
 export const FileUploadField = ({
@@ -78,6 +83,8 @@ export const FileUploadField = ({
   required,
   buttonVariant = 'contained',
   accept = '*',
+  ariaLabelledBy,
+  ariaDescribedBy,
 }: FileUploadFieldProps) => {
   const inputEl = useRef<HTMLInputElement | null>(null);
   const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
@@ -136,7 +143,7 @@ export const FileUploadField = ({
   return (
     <>
       <FormLabel htmlFor={name}>
-        <InputLabel label={label} tooltip={tooltip} as="span" />
+        {label && <InputLabel label={label} tooltip={tooltip} as="span" />}
         <FileUploadContainer>
           <HiddenFileInput
             ref={inputEl}
@@ -148,6 +155,8 @@ export const FileUploadField = ({
             multiple={multiple}
             required={required}
             accept={accept}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
           />
 
           {!fileName && (

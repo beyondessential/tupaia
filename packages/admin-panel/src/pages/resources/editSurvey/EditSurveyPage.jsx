@@ -2,12 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
@@ -16,6 +17,7 @@ import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
 import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
+import { EditSurveyQuestionsModal } from './EditSurveyQuestionsModal';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -61,6 +63,16 @@ const Section = styled.section`
   }
 `;
 
+const ButtonGroup = styled.div`
+  display: flex;
+  margin-block-start: 1rem;
+  align-items: center;
+  button,
+  p {
+    margin-inline-end: 1rem;
+  }
+`;
+
 const SectionBlock = styled.div`
   > div {
     margin: 0;
@@ -100,6 +112,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     isLoading,
     resetEditorToDefaultState,
   }) => {
+    const [editQuestionsModalOpen, setEditQuestionsModalOpen] = useState(false);
     const errorAlertRef = useRef(null);
     const navigate = useNavigate();
     const { '*': unusedParam, locale, ...params } = useParams();
@@ -163,16 +176,18 @@ const EditSurveyPageComponent = withConnectedEditor(
       onSave(files, navigateBack);
     };
 
-    const initialFileName = Array.isArray(recordData?.surveyQuestions)
-      ? null
-      : recordData?.surveyQuestions;
-
     // on error, scroll to the error alert
     useEffect(() => {
       if (errorMessage && errorAlertRef.current) {
         errorAlertRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }, [errorMessage]);
+
+    const toggleEditQuestionsModal = () => setEditQuestionsModalOpen(!editQuestionsModalOpen);
+
+    const onSetFormFile = file => {
+      handleSetFormFile('surveyQuestions', file);
+    };
 
     return (
       <Wrapper>
@@ -196,16 +211,31 @@ const EditSurveyPageComponent = withConnectedEditor(
             {errorMessage}
           </ErrorAlert>
           <Section>
-            <FileUploadField
-              id="survey-questions"
-              name="survey-questions"
-              onChange={({ fileName, file }) =>
-                handleSetFormFile('surveyQuestions', { fileName, file })
-              }
-              accept=".xlsx,.xls,.csv"
-              initialFileName={initialFileName}
-              label="Survey questions"
-            />
+            <Typography variant="h2" gutterBottom id="survey-questions-label">
+              Survey Questions
+            </Typography>
+            <Typography color="textSecondary" id="survey-questions-desc">
+              Edit survey questions below or choose a file to upload
+            </Typography>
+            <ButtonGroup>
+              {!files.surveyQuestions && (
+                <>
+                  <Button color="primary" onClick={toggleEditQuestionsModal}>
+                    Edit questions
+                  </Button>
+                  <Typography>or</Typography>
+                </>
+              )}
+              <FileUploadField
+                id="survey-questions"
+                name="survey-questions"
+                onChange={onSetFormFile}
+                accept=".xlsx,.xls,.csv"
+                buttonVariant="outlined"
+                ariaDescribedBy="survey-questions-desc"
+                ariaLabelledBy="survey-questions-label"
+              />
+            </ButtonGroup>
           </Section>
           <Section>
             <FieldsEditor
@@ -227,6 +257,15 @@ const EditSurveyPageComponent = withConnectedEditor(
             Save changes
           </Button>
         </StickyFooter>
+        <EditSurveyQuestionsModal
+          open={editQuestionsModalOpen}
+          onClose={toggleEditQuestionsModal}
+          survey={details}
+          onSave={onSave}
+          currentFile={files.surveyQuestions}
+          isSaving={isLoading}
+          errorMessage={errorMessage}
+        />
       </Wrapper>
     );
   },

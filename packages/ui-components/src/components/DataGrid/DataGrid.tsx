@@ -1,24 +1,14 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { DataGrid as MuiDataGrid, GridRowsProp, GridColDef, GridDensity } from '@mui/x-data-grid';
-
-interface DataGridProps {
-  columns: GridColDef[];
-  rows: GridRowsProp;
-  autoPageSize?: boolean;
-  density?: GridDensity;
-}
+import { DataGrid as MuiDataGrid, DataGridProps } from '@mui/x-data-grid';
 
 export const DataGrid = ({
-  columns,
-  rows,
   autoPageSize = false,
   density = 'compact',
+  ...props
 }: DataGridProps) => {
-  return (
-    <MuiDataGrid rows={rows} columns={columns} autoPageSize={autoPageSize} density={density} />
-  );
+  return <MuiDataGrid autoPageSize={autoPageSize} density={density} {...props} />;
 };

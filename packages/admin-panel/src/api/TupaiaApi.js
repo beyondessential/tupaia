@@ -9,7 +9,7 @@ import { logout } from '../authentication';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 
-const FETCH_TIMEOUT = 120 * 1000; // 120 seconds in milliseconds
+const FETCH_TIMEOUT = 2 * 60 * 1000; // 2 minutes in milliseconds
 
 const isJsonResponse = response => {
   const contentType = response.headers.get('content-type');
@@ -98,7 +98,7 @@ export class TupaiaApi {
    * @param {string?} fileName if provided, overrides the fileName returned from the server
    * @return {Promise<{}|{headers, body: ({emailTimeoutHit}|*)}>}
    */
-  async download(endpoint, queryParameters, fileName = null) {
+  async download(endpoint, queryParameters, fileName = null, returnBlob = false) {
     const response = await this.request(endpoint, queryParameters, this.buildFetchConfig('GET'));
 
     // Check if this is an early response indicating it will be emailed
@@ -121,6 +121,9 @@ export class TupaiaApi {
     }
 
     const responseBlob = await response.blob();
+    if (returnBlob) {
+      return responseBlob;
+    }
     saveAs(responseBlob, resolvedFileName);
     return {};
   }

@@ -17,6 +17,9 @@ export const FileUploadField = ({
   maxSizeInBytes,
   initialFileName = null,
   accept = '*',
+  ariaLabelledBy,
+  ariaDescribedBy,
+  buttonVariant,
 }) => {
   const [fileName, setFileName] = useState(initialFileName);
 
@@ -54,6 +57,9 @@ export const FileUploadField = ({
       showFileSize={showFileSize}
       maxSizeInBytes={maxSizeInBytes}
       accept={accept}
+      ariaLabelledBy={ariaLabelledBy}
+      ariaDescribedBy={ariaDescribedBy}
+      buttonVariant={buttonVariant}
     />
   );
 };
@@ -68,6 +74,9 @@ FileUploadField.propTypes = {
   maxSizeInBytes: PropTypes.number,
   initialFileName: PropTypes.string,
   accept: PropTypes.string,
+  ariaLabelledBy: PropTypes.string,
+  ariaDescribedBy: PropTypes.string,
+  buttonVariant: PropTypes.string,
 };
 
 FileUploadField.defaultProps = {
@@ -79,4 +88,7 @@ FileUploadField.defaultProps = {
   maxSizeInBytes: null,
   initialFileName: null,
   accept: '*',
+  ariaLabelledBy: null,
+  ariaDescribedBy: null,
+  buttonVariant: 'contained',
 };
