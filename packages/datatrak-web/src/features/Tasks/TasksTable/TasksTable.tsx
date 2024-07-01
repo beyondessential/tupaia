@@ -15,6 +15,7 @@ import { StatusFilter } from './StatusFilter';
 import { DueDateFilter } from './DueDateFilter';
 import { TaskActionsMenu } from './TaskActionsMenu';
 import { TaskCompleteButton } from './TaskCompleteButton';
+import { FilterToolbar } from './FilterToolbar';
 
 const Container = styled.div`
   display: flex;
@@ -173,6 +174,7 @@ export const TasksTable = () => {
 
   return (
     <Container>
+      <FilterToolbar />
       <FilterableTable
         columns={columns}
         data={data}
