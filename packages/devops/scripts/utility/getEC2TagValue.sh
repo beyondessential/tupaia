@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 # Get the stage tag of this ec2 instance from AWS
 TAG_NAME=$1

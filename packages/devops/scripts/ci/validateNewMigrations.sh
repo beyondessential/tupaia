@@ -1,15 +1,16 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 DIR=$(dirname "$0")
-ROOT="${DIR}/../../../../"
+ROOT="$DIR/../../../../"
 
-. ${DIR}/utils.sh
+. "$DIR/utils.sh"
 
 function get_date_command() {
-  if [[ $(uname) == "Darwin" ]]; then
-    echo "gdate" # install gdate on MacOs: brew install coreutils
+  if [[ $(uname) = Darwin ]]; then
+    echo 'gdate' # install gdate on MacOs: brew install coreutils
   else
-    echo "date"
+    echo 'date'
   fi
 }
 
@@ -18,7 +19,7 @@ date_command=$(get_date_command)
 function convert_timestamp_to_date() {
   local timestamp=$1
   local date=$($date_command -d @$timestamp '+%Y-%m-%d')
-  echo $date
+  echo "$date"
 }
 
 
@@ -34,7 +35,7 @@ function check_migration_outdated() {
   day=${migration_name:39:2}
   migration_timestamp=$($date_command -d "${year}-${month}-${day}" +%s)
 
-  if (( $migration_timestamp < $included_migrations_timestamp )); then
+  if (( migration_timestamp < included_migrations_timestamp )); then
     log_error "❌ New migration should be created after $valid_migration_date. Invalid migration name: '$migration_name'"
   fi
 }
@@ -47,24 +48,24 @@ function validate_migrations(){
     local errors="";
 
     while read -r migration_name; do
-      if [[ "$migration_name" == "" ]]; then
+      if [[ $migration_name = '' ]]; then
         break
       fi
       errors="$errors$(check_migration_outdated "$migration_name")"
     done <<< "$new_migration_names_in_string"
 
-    if [[ "$errors" != "" ]]; then
-        echo $errors;
+    if [[ $errors != '' ]]; then
+        echo "$errors";
         exit 1;
     fi
 }
 
 current_branch_name=$(get_branch_name)
-origin_branch_name="master"
+origin_branch_name='master'
 
 # Skip validation if current branch name is master
-if [[ "$current_branch_name" == "$origin_branch_name" ]]; then
-  echo "Skipping validation step while current branch is the same as origin"
+if [[ $current_branch_name = "$origin_branch_name" ]]; then
+  echo 'Skipping validation step while current branch is the same as origin'
   exit 0
 fi
 
@@ -73,11 +74,11 @@ fi
 git remote remove origin
 git remote add origin https://github.com/beyondessential/tupaia.git
 # Remove this sub module because it uses ssh 
-git rm $ROOT/packages/data-api/scripts/pg-mv-fast-refresh
+git rm "$ROOT/packages/data-api/scripts/pg-mv-fast-refresh"
 
 git fetch --quiet
-git fetch origin $origin_branch_name:$origin_branch_name --quiet
-validate_migrations $current_branch_name $origin_branch_name
+git fetch origin "$origin_branch_name:$origin_branch_name" --quiet
+validate_migrations "$current_branch_name" "$origin_branch_name"
 
 log_success "✔ New migrations are valid!"
 exit 0
