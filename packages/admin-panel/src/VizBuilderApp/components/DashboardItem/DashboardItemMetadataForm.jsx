@@ -6,9 +6,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
-import { useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfigContext } from '../../context';
-import { useDebounce } from '../../../utilities';
 import { DASHBOARD_ITEM_VIZ_TYPES } from '../../constants';
 
 export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
@@ -24,17 +22,10 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
 
   // Save the default values here so that they are frozen from the store when the component first mounts
   const [defaults] = useState(visualisation);
-  const { code, permissionGroup, presentation } = defaults;
-  const [permissionGroupSearchInput, setPermissionGroupSearchInput] = useState(
-    permissionGroup || '',
-  );
-  const debouncedPermissionGroupSearchInput = useDebounce(permissionGroupSearchInput, 200);
-  const { data: permissionGroups = [], isLoading: isLoadingPermissionGroups } =
-    useSearchPermissionGroups({ search: debouncedPermissionGroupSearchInput });
+  const { code, presentation } = defaults;
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
-    setVisualisationValue('permissionGroup', data.permissionGroup);
     const selectedVizType = vizTypeOptions.find(({ label }) => label === data.vizType).value;
     setVizType(selectedVizType);
     if (Object.keys(presentation).length === 0) {
@@ -68,24 +59,6 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
           inputRef={register({
             required: 'Required',
           })}
-        />
-        <Autocomplete
-          id="permissionGroup"
-          name="permissionGroup"
-          label="Permission Group"
-          placeholder="Select Permission Group"
-          defaultValue={permissionGroup}
-          options={permissionGroups.map(p => p.name)}
-          disabled={isLoadingPermissionGroups}
-          error={!!errors.permissionGroup}
-          helperText={errors.permissionGroup && errors.permissionGroup.message}
-          inputRef={register({
-            required: 'Required',
-          })}
-          value={permissionGroupSearchInput}
-          onInputChange={(event, newValue) => {
-            setPermissionGroupSearchInput(newValue);
-          }}
         />
         <Autocomplete
           id="vizType"

@@ -7,11 +7,11 @@ import { isNil, omitBy } from 'lodash';
 
 import { snakeKeys, yup } from '@tupaia/utils';
 
-import type { MapOverlayVisualisationResource } from './types';
 import type { LegacyReport, Report, ExpandType } from '../types';
 import { PreviewMode } from '../types';
 import { baseVisualisationValidator, baseVisualisationDataValidator } from '../validators';
 import { getVizOutputConfig } from '../utils';
+import type { MapOverlayVisualisationResource } from './types';
 
 export class MapOverlayVisualisationExtractor<
   MapOverlayValidator extends yup.AnyObjectSchema,
@@ -83,7 +83,7 @@ export class MapOverlayVisualisationExtractor<
   private vizToReport(
     previewMode: PreviewMode = PreviewMode.PRESENTATION,
   ): Record<keyof Report, unknown> {
-    const { code, reportPermissionGroup: permissionGroup, data, presentation } = this.visualisation;
+    const { code, data, presentation } = this.visualisation;
     const validatedData = baseVisualisationDataValidator.validateSync(data);
 
     const { transform } = validatedData;
@@ -99,7 +99,6 @@ export class MapOverlayVisualisationExtractor<
 
     return {
       code,
-      permissionGroup,
       config,
       latestDataParameters: {},
     };

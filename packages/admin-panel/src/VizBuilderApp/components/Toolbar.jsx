@@ -57,7 +57,7 @@ export const Toolbar = () => {
   const [{ project, visualisation }] = useVizConfigContext();
   const { dashboardItemOrMapOverlay } = useParams();
 
-  const permissionGroup = visualisation.permissionGroup ?? visualisation.mapOverlayPermissionGroup;
+  const permissionGroup = visualisation.mapOverlayPermissionGroup;
   const name =
     dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM
       ? visualisation.presentation?.name

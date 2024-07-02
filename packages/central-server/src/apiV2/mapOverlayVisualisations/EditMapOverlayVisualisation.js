@@ -17,14 +17,12 @@ import {
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
 
-const buildReport = async (models, reportRecord) => {
-  const { code, permission_group: permissionGroupName, config } = reportRecord;
-  const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
+const buildReport = async reportRecord => {
+  const { code, config } = reportRecord;
 
   return {
     code,
     config,
-    permission_group_id: permissionGroup.id,
   };
 };
 
@@ -61,7 +59,7 @@ export class EditMapOverlayVisualisation extends EditHandler {
     const legacy = mapOverlayRecord.legacy ?? mapOverlay.legacy;
     const { report_code: code } = mapOverlayRecord;
 
-    const report = legacy ? reportRecord : await buildReport(models, reportRecord);
+    const report = legacy ? reportRecord : await buildReport(reportRecord);
 
     if (isFieldUpdated(mapOverlay, mapOverlayRecord, 'legacy')) {
       // `Legacy` value has been updated, need to use a different table for the report
@@ -98,10 +96,7 @@ export class EditMapOverlayVisualisation extends EditHandler {
     const reportRecord = this.getReportRecord();
 
     return this.models.wrapInTransaction(async transactingModels => {
-      await assertPermissionGroupsAccess(this.accessPolicy, [
-        mapOverlayRecord.permission_group,
-        reportRecord.permission_group,
-      ]);
+      assertPermissionGroupsAccess(this.accessPolicy, [mapOverlayRecord.permission_group]);
 
       if (mapOverlayRecord.id !== undefined && mapOverlayRecord.id !== this.recordId) {
         throw new Error(`mapOverlay.id is different from resource id: ${this.recordId}`);

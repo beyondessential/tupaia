@@ -15,20 +15,17 @@ import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertAdminPanelAccess,
-  assertPermissionGroupAccess,
 } from '../../permissions';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
 
-const buildReport = async (models, reportRecord) => {
-  const { code, permission_group: permissionGroupName, config } = reportRecord;
-  const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
+const buildReport = reportRecord => {
+  const { code, config } = reportRecord;
 
   return {
     code,
     config,
-    permission_group_id: permissionGroup.id,
   };
 };
 
@@ -61,7 +58,7 @@ export class EditDashboardVisualisation extends EditHandler {
     const legacy = dashboardItemRecord.legacy ?? dashboardItem.legacy;
     const { report_code: code } = dashboardItemRecord;
 
-    const report = legacy ? reportRecord : await buildReport(models, reportRecord);
+    const report = legacy ? reportRecord : buildReport(reportRecord);
 
     if (isFieldUpdated(dashboardItem, dashboardItemRecord, 'legacy')) {
       // `Legacy` value has been updated, need to use a different table for the report
@@ -96,11 +93,6 @@ export class EditDashboardVisualisation extends EditHandler {
   }
 
   async editRecord() {
-    const { report } = this.req.body;
-    // Skip permission check as legacy report has no permission group
-    if (report.permission_group) {
-      assertPermissionGroupAccess(this.accessPolicy, report.permission_group);
-    }
     return this.models.wrapInTransaction(async transactingModels => {
       const dashboardItemRecord = this.getDashboardItemRecord();
       const reportRecord = this.getReportRecord();

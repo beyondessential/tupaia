@@ -44,18 +44,11 @@ export class CreateMapOverlayVisualisation extends CreateHandler {
   }
 
   async createReport(transactingModels, reportRecord) {
-    const { code, permission_group: permissionGroupName, config } = reportRecord;
-    const permissionGroup = await transactingModels.permissionGroup.findOne({
-      name: permissionGroupName,
-    });
-    if (!permissionGroup) {
-      throw new Error(`Could not find permission group with name '${permissionGroupName}'`);
-    }
-    await assertPermissionGroupsAccess(this.accessPolicy, [permissionGroupName]);
+    const { code, config } = reportRecord;
+
     const report = {
       code,
       config,
-      permission_group_id: permissionGroup.id,
     };
 
     return transactingModels.report.create(report);
@@ -64,6 +57,7 @@ export class CreateMapOverlayVisualisation extends CreateHandler {
   async createRecord() {
     const mapOverlayRecord = this.getMapOverlayRecord();
     const reportRecord = this.getReportRecord();
+    assertPermissionGroupsAccess(this.accessPolicy, [mapOverlayRecord.permission_group]);
 
     return this.models.wrapInTransaction(async transactingModels => {
       if (mapOverlayRecord.legacy) {

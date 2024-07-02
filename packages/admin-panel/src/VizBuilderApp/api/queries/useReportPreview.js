@@ -29,7 +29,6 @@ export const useReportPreview = ({
           endDate,
           dashboardItemOrMapOverlay,
           previewMode,
-          permissionGroup: visualisation.permissionGroup || visualisation.reportPermissionGroup,
         },
         data: {
           testData,

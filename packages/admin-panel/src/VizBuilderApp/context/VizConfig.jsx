@@ -20,7 +20,6 @@ const initialConfigState = {
   visualisation: {
     id: null,
     code: null,
-    permissionGroup: null,
     data: {
       transform: [],
     },

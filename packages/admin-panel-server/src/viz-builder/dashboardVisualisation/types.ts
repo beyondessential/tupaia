@@ -17,7 +17,6 @@ type DashboardVisualisation = {
   legacy: false;
   data: VizData;
   presentation: Presentation;
-  permissionGroup: string;
   latestDataParameters?: BaseReportType['latest_data_parameters'];
 };
 

@@ -44,7 +44,6 @@ describe('testCustomReport', () => {
 
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
-    permissionGroup: 'Public',
     services: new MockTupaiaApiClient({ entity: new MockEntityApi(ENTITIES, RELATIONS) }),
     accessPolicy: new AccessPolicy({ AU: ['Public'] }),
     aggregator: {} as ReportServerAggregator,

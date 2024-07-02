@@ -13,10 +13,9 @@ import {
   assertBESAdminAccess,
   assertAdminPanelAccess,
   assertAnyPermissions,
-  assertPermissionGroupsAccess,
 } from '../../permissions';
 
-const buildReportObject = (report, legacy, permissionGroupsById) => {
+const buildReportObject = (report, legacy) => {
   if (legacy) {
     return {
       code: report.code,
@@ -29,14 +28,13 @@ const buildReportObject = (report, legacy, permissionGroupsById) => {
   return {
     code: report.code,
     config: report.config,
-    permissionGroup: permissionGroupsById[report.permission_group_id]?.name || null,
     latestDataParameters: report.latest_data_parameters,
   };
 };
 
 const buildVisualisationObject = (dashboardItemObject, referencedRecords) => {
   const { model, ...dashboardItem } = dashboardItemObject;
-  const { reportsByCode, legacyReportsByCode, permissionGroupsById } = referencedRecords;
+  const { reportsByCode, legacyReportsByCode } = referencedRecords;
   const { report_code: reportCode, legacy } = dashboardItem;
 
   const report = reportsByCode[reportCode] || legacyReportsByCode[reportCode];
@@ -47,7 +45,7 @@ const buildVisualisationObject = (dashboardItemObject, referencedRecords) => {
 
   return {
     dashboardItem: camelKeys(dashboardItem),
-    report: buildReportObject(report, legacy, permissionGroupsById),
+    report: buildReportObject(report, legacy),
   };
 };
 
@@ -107,15 +105,10 @@ export class GETDashboardVisualisations extends GETHandler {
   async findReferencedRecords(dashboardItems) {
     const reports = await this.findReportsByLegacyValue(dashboardItems, false);
     const legacyReports = await this.findReportsByLegacyValue(dashboardItems, true);
-    const permissionGroups = await this.models.permissionGroup.find({
-      id: reports.map(r => r.permission_group_id).filter(r => !!r),
-    });
-    const permissionGroupNames = permissionGroups.map(permissionGroup => permissionGroup.name);
-    await assertPermissionGroupsAccess(this.accessPolicy, permissionGroupNames);
+
     return {
       reportsByCode: keyBy(reports, 'code'),
       legacyReportsByCode: keyBy(legacyReports, 'code'),
-      permissionGroupsById: keyBy(permissionGroups, 'id'),
     };
   }
 

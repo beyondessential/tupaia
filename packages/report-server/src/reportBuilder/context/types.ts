@@ -11,7 +11,6 @@ import { Row } from '../types';
 export type ReqContext = {
   query: FetchReportQuery;
   hierarchy: string;
-  permissionGroup: string;
   services: RequestContext['services'];
   accessPolicy: AccessPolicy;
   aggregator: ReportServerAggregator;
