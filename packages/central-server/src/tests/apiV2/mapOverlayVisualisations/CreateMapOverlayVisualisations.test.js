@@ -25,8 +25,6 @@ describe('POST map overlay visualisations', async () => {
     DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
   };
 
-  const permissionGroupId = generateId();
-
   const NEW_VISUALISATION = {
     mapOverlay: {
       id: generateId(),
@@ -43,7 +41,6 @@ describe('POST map overlay visualisations', async () => {
     },
     report: {
       code: 'new_visual_report',
-      permission_group: 'Viz_Permissions',
       config: {
         code: 'new_visual_report',
         config: {
@@ -53,7 +50,6 @@ describe('POST map overlay visualisations', async () => {
           },
           transform: [{ by: '=$dataElement', transform: 'sortRows' }],
         },
-        permission_group_id: permissionGroupId,
       },
     },
   };

@@ -5,8 +5,6 @@
 
 import { generateId } from '@tupaia/database';
 
-const permissionGroupId = generateId();
-
 const DASHBOARD_ITEMS = [
   {
     id: generateId(),
@@ -14,7 +12,6 @@ const DASHBOARD_ITEMS = [
     config: { name: 'Modern Dashboard Item', type: 'view', viewType: 'singleValue' },
     report_code: 'Modern_Report',
     legacy: false,
-    permissionGroupIds: [],
   },
   {
     id: generateId(),
@@ -22,7 +19,6 @@ const DASHBOARD_ITEMS = [
     config: { name: 'Legacy Dashboard Item', type: 'chart', chartType: 'bar' },
     report_code: 'Legacy_Report',
     legacy: true,
-    permissionGroupIds: [],
   },
   {
     id: generateId(),
@@ -39,13 +35,6 @@ const DASHBOARD_ITEMS = [
   },
 ];
 
-const PERMISSION_GROUPS = [
-  {
-    id: permissionGroupId,
-    name: 'Viz_Permissions',
-  },
-];
-
 const REPORTS = [
   {
     code: 'Modern_Report',
@@ -56,7 +45,6 @@ const REPORTS = [
       },
       transform: [{ by: '=$dataElement', transform: 'sortRows' }],
     },
-    permission_group_id: permissionGroupId,
   },
 ];
 
@@ -74,7 +62,6 @@ const LEGACY_REPORTS = [
 export const TEST_SETUP = {
   dbRecords: {
     dashboardItem: DASHBOARD_ITEMS,
-    permissionGroup: PERMISSION_GROUPS,
     report: REPORTS,
     legacyReport: LEGACY_REPORTS,
   },

@@ -82,7 +82,6 @@ describe('GET map overlay visualisations', () => {
           },
           report: {
             code: modernReport.code,
-            permissionGroup: 'Viz_Permissions',
             config: modernReport.config,
             latestDataParameters: {},
           },

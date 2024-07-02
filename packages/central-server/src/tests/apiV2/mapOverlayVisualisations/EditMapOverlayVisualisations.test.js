@@ -28,7 +28,6 @@ describe('PUT map overlay visualisations', async () => {
     mapOverlay: modernMapOverlay,
     report: {
       code: modernReport.code,
-      permission_group: 'Test Permission Group',
       config: {
         fetch: {
           dataElements: ['BCD1'],

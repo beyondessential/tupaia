@@ -29,7 +29,6 @@ describe('GET dashboard visualisations', () => {
     report: {
       code: modernReport.code,
       config: modernReport.config,
-      permissionGroup: 'Viz_Permissions',
       latestDataParameters: {},
     },
   };
