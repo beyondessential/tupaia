@@ -113,7 +113,7 @@ const DataFetchingTableComponent = memo(
     baseFilter,
     basePath,
     resourceName,
-    actionLabel = 'Action',
+    actionLabel,
   }) => {
     const formattedColumns = useMemo(() => {
       const cols = columns.map(column => formatColumnForReactTable(column));
@@ -143,7 +143,7 @@ const DataFetchingTableComponent = memo(
       const buttonWidths = buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0);
       // Group all button columns into a single column so they can be displayed together under a single header
       const singleButtonColumn = {
-        Header: actionLabel,
+        Header: actionLabel || 'Action',
         maxWidth: buttonWidths,
         width: buttonWidths,
         // eslint-disable-next-line react/prop-types

@@ -134,9 +134,7 @@ const CREATE_CONFIG = {
           optionsEndpoint: 'countries',
           optionLabelKey: 'name',
           optionValueKey: 'name',
-          labelTooltip: 'Select the country to grant this user access to',
-          type: 'checkboxList',
-          pageSize: 'ALL',
+          secondaryLabel: 'Select the country to grant this user access to',
         },
       },
       {
