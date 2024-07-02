@@ -7,9 +7,10 @@ import styled from 'styled-components';
 import { To, Link as RouterLink } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
+import { useSurveyForm } from '../../SurveyContext';
 import { useIsMobile } from '../../../../utils';
 import { getSurveyScreenNumber } from '../../utils';
-import { useSurveyForm } from '../../SurveyContext';
+import { useSurveyRouting } from '../../useSurveyRouting';
 import { SideMenuButton } from './SideMenuButton';
 
 export const SIDE_MENU_WIDTH = '20rem';
@@ -104,6 +105,7 @@ export const SurveySideMenu = () => {
     isReviewScreen,
     isSuccessScreen,
     isResponseScreen,
+    numberOfScreens,
   } = useSurveyForm();
   if (isReviewScreen || isSuccessScreen || isResponseScreen) return null;
   const onChangeScreen = () => {
@@ -120,6 +122,8 @@ export const SurveySideMenu = () => {
     return screens;
   };
   const screenMenuItems = getFormattedScreens();
+
+  const { getScreenPath } = useSurveyRouting(numberOfScreens);
 
   return (
     <>
@@ -138,7 +142,7 @@ export const SurveySideMenu = () => {
             return (
               <li key={screen.id}>
                 <SurveyMenuItem
-                  to={`./${num}`}
+                  to={getScreenPath(num)}
                   $active={screenNumber === num}
                   onClick={onChangeScreen}
                   $isInstructionOnly={!screen.screenNumber}

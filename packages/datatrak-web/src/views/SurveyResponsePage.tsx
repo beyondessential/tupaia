@@ -1,10 +1,9 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect } from 'react';
-import { useFormContext } from 'react-hook-form';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -13,7 +12,6 @@ import { useSurveyResponse } from '../api/queries';
 import { SurveyReviewSection } from '../features/Survey/Components';
 import { Button, SurveyTickIcon } from '../components';
 import { displayDate } from '../utils';
-import { useSurveyForm } from '../features';
 
 const Header = styled.div`
   display: flex;
@@ -80,24 +78,8 @@ const getSubHeadingText = surveyResponse => {
 
 export const SurveyResponsePage = () => {
   const { surveyResponseId } = useParams();
-  const { setFormData } = useSurveyForm();
-  const formContext = useFormContext();
   const { data: surveyResponse } = useSurveyResponse(surveyResponseId);
-  const answers = surveyResponse?.answers || {};
   const subHeading = getSubHeadingText(surveyResponse);
-
-  useEffect(() => {
-    if (answers) {
-      // Format the answers to be compatible with the form, i.e. parse stringified objects
-      const formattedAnswers = Object.entries(answers).reduce((acc, [key, value]) => {
-        // If the value is a stringified object, parse it
-        const isStringifiedObject = typeof value === 'string' && value.startsWith('{');
-        return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
-      }, {});
-      formContext.reset(formattedAnswers);
-      setFormData(formattedAnswers);
-    }
-  }, [JSON.stringify(answers)]);
 
   return (
     <>

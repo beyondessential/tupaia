@@ -1,30 +1,26 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 20211Beyond Essential Systems Pty Ltd
- *
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { useMutation } from 'react-query';
+
+import { useMutation, useQueryClient } from 'react-query';
 import { useApiContext } from '../../utilities/ApiProvider';
 
-export const useResubmitSurveyResponse = (
-  surveyResponseId,
-  updatedSurveyResponse,
-  filesByQuestionCode,
-) => {
+export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyResponse) => {
+  const queryClient = useQueryClient();
   const api = useApiContext();
   return useMutation(
     [`surveyResubmit`, surveyResponseId, updatedSurveyResponse],
     () => {
-      return api.multipartPost({
-        endpoint: `surveyResponse/${surveyResponseId}/resubmit`,
-        filesByMultipartKey: filesByQuestionCode,
-        payload: {
-          ...updatedSurveyResponse,
-        },
-      });
+      return api.post(`surveyResponse/${surveyResponseId}/resubmit`, null, updatedSurveyResponse);
     },
     {
       throwOnError: true,
+      onSuccess: async () => {
+        // invalidate the survey response data
+        await queryClient.invalidateQueries(['surveyResubmitData', surveyResponseId]);
+        return 'completed';
+      },
     },
   );
 };
