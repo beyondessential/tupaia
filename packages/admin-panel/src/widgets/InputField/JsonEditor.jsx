@@ -39,9 +39,6 @@ const HelperText = styled(Typography)`
 `;
 
 export const JsonEditor = ({ inputKey, label, helperText, value, onChange, stringify }) => {
-  if (!value) {
-    return null;
-  }
 
   let editorValue = value;
 
@@ -57,7 +54,7 @@ export const JsonEditor = ({ inputKey, label, helperText, value, onChange, strin
         mainMenuBar={false}
         statusBar={false}
         mode="code"
-        onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
+        onChange={json => onChange(inputKey, stringify ? JSON.stringify(json ?? {}) : json)}
         value={editorValue}
       />
       {helperText && <HelperText>{helperText}</HelperText>}
