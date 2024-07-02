@@ -266,7 +266,11 @@ export default class extends DataAggregatingRouteHandler {
 
     const { periodGranularity } = measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
-    const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
+    let dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
+
+    if (startDate && endDate && !periodGranularity) {
+      dates = getDateRange('day', startDate, endDate);
+    }
 
     const baseOptions = {
       ...restOfPresentationConfig,
