@@ -133,7 +133,6 @@ export const constructForSingle = (models, recordType) => {
       return {
         code: [constructRecordNotExistsWithField(models.report, 'code')],
         config: [hasContent],
-        permission_group: [hasContent],
       };
     case RECORDS.LEGACY_REPORT:
       return {

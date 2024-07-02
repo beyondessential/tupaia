@@ -42,7 +42,6 @@ describe('tongaCovidRawData', () => {
   const reportServerAggregator = new ReportServerAggregator(aggregator);
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
-    permissionGroup: 'Public',
     services: new MockTupaiaApiClient({
       entity: new MockEntityApi(ENTITIES, RELATIONS),
     }),

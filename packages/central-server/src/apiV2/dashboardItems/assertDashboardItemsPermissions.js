@@ -9,19 +9,17 @@ import {
   hasDashboardRelationEditPermissions,
   createDashboardRelationsDBFilter,
 } from '../dashboardRelations';
-import { hasBESAdminAccess, hasSomePermissionGroupsAccess } from '../../permissions';
+import { hasBESAdminAccess } from '../../permissions';
 
 import { mergeFilter } from '../utilities';
 
 export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
-  const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
 
-  // To view a dashboard item, the user has to have access to the relation between the
-  // dashboard item and ANY of the dashboards it is in
-  // OR user's access policy covers the dashboard item's permission_group_ids column
-
-  if (permittedDashboardItems.includes(dashboardItemId)) {
+  // To view a dashboard item,
+  // - the dashboard_item has no relations
+  // - OR the user has to have access to ANY of its relations
+  if (dashboards.length === 0) {
     return true;
   }
 
@@ -45,13 +43,11 @@ export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashb
 
 export const hasDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
-  const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
 
-  // To edit a dashboard item, the user has to have access to the relation between the
-  // dashboard item and ALL of the dashboards it is in
-  // OR user's access policy covers the dashboard item's permission_group_ids column
-
-  if (permittedDashboardItems.includes(dashboardItemId)) {
+  // To edit a dashboard item,
+  // - the dashboard_item has no relations
+  // - OR the user has to have access to ALL of its relations
+  if (dashboards.length === 0) {
     return true;
   }
 
@@ -112,37 +108,16 @@ export const createDashboardItemsDBFilter = async (accessPolicy, models, criteri
     d => d.id,
   );
 
-  const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
+  const dashboardItemsWithNoRelationsIds = await models.database.executeSql(`
+    SELECT dashboard_item.id FROM dashboard_item
+    LEFT JOIN dashboard_relation ON dashboard_item.id = dashboard_relation.child_id
+    WHERE dashboard_relation.id IS NULL
+  `);
 
   dbConditions['dashboard_item.id'] = mergeFilter(
-    [...permittedDashboardItemsFromRelationsIds, ...permittedDashboardItems],
+    [...permittedDashboardItemsFromRelationsIds, ...dashboardItemsWithNoRelationsIds],
     dbConditions['dashboard_item.id'],
   );
 
   return dbConditions;
-};
-
-const getPermittedDashboardItems = async (accessPolicy, models) => {
-  const allDashboardItems = await models.dashboardItem.all();
-  const allPermissionGroups = await models.permissionGroup.all();
-  const permissionGroupIdToName = {};
-  allPermissionGroups.forEach(permissionGroup => {
-    permissionGroupIdToName[permissionGroup.id] = permissionGroup.name;
-  });
-
-  const permittedItems = allDashboardItems
-    .filter(item => {
-      if (!item.permission_group_ids) {
-        return false;
-      }
-      const permissionGroupNames = item.permission_group_ids.map(
-        permissionGroupId => permissionGroupIdToName[permissionGroupId],
-      );
-
-      const hasPermission = hasSomePermissionGroupsAccess(accessPolicy, permissionGroupNames);
-      return !!hasPermission;
-    })
-    .map(item => item.id);
-
-  return permittedItems;
 };

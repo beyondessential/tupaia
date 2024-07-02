@@ -14,7 +14,6 @@ import { analyticsDataTable, ENTITIES, HIERARCHY, RELATIONS } from './fixtures';
 export const getContext = (queryOverrides?: Partial<FetchReportQuery>) => {
   const reqContext: ReqContext = {
     hierarchy: HIERARCHY,
-    permissionGroup: 'Admin',
     services: new MockTupaiaApiClient({
       entity: new MockEntityApi(ENTITIES, RELATIONS),
       dataTable: new MockDataTableApi({ analytics: analyticsDataTable, events: eventsDataTable }),
