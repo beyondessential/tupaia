@@ -33,7 +33,7 @@ export class CreateProject extends BESAdminCreateHandler {
       code: rawProjectCode,
       name,
       description,
-      sort_order: sortOrder,
+      sort_order: sortOrder = null,
       permission_groups: permissionGroups,
       countries,
       entityTypes,

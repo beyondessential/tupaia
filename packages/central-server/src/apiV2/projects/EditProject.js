@@ -47,6 +47,7 @@ export class EditProject extends EditHandler {
       image_url: encodedBackgroundImage,
       logo_url: encodedLogoImage,
       code: updatedCode,
+      sort_order: updatedSortOrder,
     } = this.updatedFields;
     const updatedFields = { ...this.updatedFields };
 
@@ -75,6 +76,10 @@ export class EditProject extends EditHandler {
         true,
         existingLogoImage,
       );
+    }
+    // If the sort_order is an empty string, we want to set the sort_order to null, as the sort_order field is an integer and an empty string will cause an error
+    if (updatedSortOrder === '') {
+      updatedFields.sort_order = null;
     }
     await this.models.project.updateById(this.recordId, updatedFields);
   }
