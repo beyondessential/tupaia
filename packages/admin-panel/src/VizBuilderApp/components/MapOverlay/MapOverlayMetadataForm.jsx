@@ -45,7 +45,6 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     setVisualisationValue('code', data.code);
     setVisualisationValue('name', data.name);
     setVisualisationValue('mapOverlayPermissionGroup', data.mapOverlayPermissionGroup);
-    setVisualisationValue('reportPermissionGroup', data.mapOverlayPermissionGroup);
     setVisualisationValue('projectCodes', projectCodes);
     setVisualisationValue('countryCodes', countryCodes);
     const selectedVizType = vizTypeOptions.find(({ label }) => label === data.vizType).value;

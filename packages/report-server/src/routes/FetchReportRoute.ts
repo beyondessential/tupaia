@@ -57,7 +57,6 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     const { organisationUnitCodes, hierarchy = 'explore', ...restOfParams } = { ...query, ...body };
 
     const report = await this.findReport();
-    const permissionGroupName = await report.permissionGroupName();
 
     const reportQuery = {
       organisationUnitCodes: parseOrgUnitCodes(organisationUnitCodes),
@@ -68,7 +67,6 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     const reqContext = {
       query: reportQuery,
       hierarchy,
-      permissionGroup: permissionGroupName,
       services: this.req.ctx.services,
       accessPolicy: this.req.accessPolicy,
       aggregator: new ReportServerAggregator(

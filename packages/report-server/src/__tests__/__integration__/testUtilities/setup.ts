@@ -36,14 +36,6 @@ jest.mock('@tupaia/data-broker', () => ({
 }));
 
 export const setupTestData = async () => {
-  const permissionGroup = await findOrCreateDummyRecord(
-    models.permissionGroup,
-    {
-      name: PUBLIC_PERMISSION_GROUP.name,
-    },
-    PUBLIC_PERMISSION_GROUP,
-  );
-
   // add report
   await findOrCreateDummyRecord(
     models.report,
@@ -52,7 +44,6 @@ export const setupTestData = async () => {
     },
     {
       ...REPORT,
-      permission_group_id: permissionGroup.id,
     },
   );
 

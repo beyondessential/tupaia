@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { Report as BaseReportType, StandardReportConfig } from '@tupaia/types';
+import { Report as BaseReportType, KeysToCamelCase, StandardReportConfig } from '@tupaia/types';
 
 export type VizData = {
   transform: StandardReportConfig['transform'];
@@ -14,12 +14,7 @@ export enum PreviewMode {
   PRESENTATION = 'presentation',
 }
 
-export type Report = {
-  code: string;
-  permissionGroup: string;
-  config: BaseReportType['config'];
-  latestDataParameters: BaseReportType['latest_data_parameters'];
-};
+export type Report = KeysToCamelCase<Omit<BaseReportType, 'id'>>;
 
 export type LegacyReport = {
   code: string;
@@ -27,8 +22,6 @@ export type LegacyReport = {
   config: Record<string, unknown>;
   dataServices: { isDataRegional: boolean }[];
 };
-
-export type ReportRecord = CamelKeysToSnake<Report> & { id: string };
 
 type CamelToSnake<T extends string> = T extends `${infer Char}${infer Rest}`
   ? `${Char extends Uppercase<Char> ? '_' : ''}${Lowercase<Char>}${CamelToSnake<Rest>}`

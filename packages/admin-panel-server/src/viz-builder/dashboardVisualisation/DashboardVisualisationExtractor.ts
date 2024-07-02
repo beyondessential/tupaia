@@ -68,7 +68,7 @@ export class DashboardVisualisationExtractor<
   private vizToReport(
     previewMode: PreviewMode = PreviewMode.PRESENTATION,
   ): Record<keyof Report, unknown> {
-    const { code, permissionGroup, data, presentation } = this.visualisation;
+    const { code, data, presentation } = this.visualisation;
     const validatedData = baseVisualisationDataValidator.validateSync(data);
 
     if (validatedData.customReport) {
@@ -77,7 +77,6 @@ export class DashboardVisualisationExtractor<
           customReport: validatedData.customReport,
         },
         code,
-        permissionGroup,
         latestDataParameters: {},
       };
     }
@@ -95,7 +94,6 @@ export class DashboardVisualisationExtractor<
 
     return {
       code,
-      permissionGroup,
       config,
       latestDataParameters: {},
     };
