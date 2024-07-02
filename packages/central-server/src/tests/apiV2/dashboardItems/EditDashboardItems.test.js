@@ -35,6 +35,7 @@ describe('EditDashboardItems', async () => {
   let dashboardItemDLPublicLAAdmin;
   let dashboardItemDLPublicSBAdmin;
   let dashboardItemKIAdmin;
+  let dashboardItemNoRelation;
   let reportKIAdmin;
   let legacyDashboardItemKIAdmin;
 
@@ -108,6 +109,12 @@ describe('EditDashboardItems', async () => {
       config: { name: 'Favourite Pokemon' },
       legacy: false,
     });
+    dashboardItemNoRelation = await findOrCreateDummyRecord(models.dashboardItem, {
+      code: 'SHINY_PKMN',
+      report_code: 'SHINY_PKMN',
+      config: { name: 'Shiny Pokemon' },
+      legacy: false,
+    });
 
     legacyDashboardItemKIAdmin = await findOrCreateDummyRecord(models.dashboardItem, {
       code: 'LEGACY_FAV_PKMN',
@@ -118,7 +125,6 @@ describe('EditDashboardItems', async () => {
 
     reportKIAdmin = await findOrCreateDummyRecord(models.report, {
       code: 'ALT_FAV_PKMN',
-      permission_group_id: publicPermissionGroup.id,
       config: {},
     });
 
@@ -229,6 +235,17 @@ describe('EditDashboardItems', async () => {
           body: { config: { name: newName } },
         });
         const result = await models.dashboardItem.findById(dashboardItemDLPublicLAAdmin.id);
+
+        expect(result.config.name).to.equal(newName);
+      });
+
+      it('Allow editing of a dashboard item if it has no relations', async () => {
+        const newName = 'Where to find cool pokemon';
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`dashboardItems/${dashboardItemNoRelation.id}`, {
+          body: { config: { name: newName } },
+        });
+        const result = await models.dashboardItem.findById(dashboardItemNoRelation.id);
 
         expect(result.config.name).to.equal(newName);
       });

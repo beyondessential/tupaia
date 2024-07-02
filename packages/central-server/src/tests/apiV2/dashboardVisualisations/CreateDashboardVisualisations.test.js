@@ -30,7 +30,6 @@ describe('POST dashboard visualisations', () => {
     },
     report: {
       code: 'test_visualisation',
-      permission_group: 'Viz_Permissions',
       config: {},
     },
   };

@@ -45,7 +45,6 @@ const REPORTS = [
       },
       transform: [{ by: '=$dataElement', transform: 'sortRows' }],
     },
-    permission_group_id: permissionGroupId,
   },
 ];
 

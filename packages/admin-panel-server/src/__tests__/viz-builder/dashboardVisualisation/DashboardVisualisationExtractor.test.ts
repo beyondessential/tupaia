@@ -283,7 +283,6 @@ describe('DashboardVisualisationExtractor', () => {
               y: 'BCD1',
             },
           },
-          permissionGroup: 'Admin',
         },
         draftDashboardItemValidator,
         draftReportValidator,
@@ -301,7 +300,6 @@ describe('DashboardVisualisationExtractor', () => {
             y: 'BCD1',
           },
         },
-        permissionGroup: 'Admin',
         latestDataParameters: {},
       });
     });
@@ -323,7 +321,6 @@ describe('DashboardVisualisationExtractor', () => {
               y: 'BCD1',
             },
           },
-          permissionGroup: 'Admin',
         },
         draftDashboardItemValidator,
         draftReportValidator,
@@ -341,7 +338,6 @@ describe('DashboardVisualisationExtractor', () => {
             y: 'BCD1',
           },
         },
-        permissionGroup: 'Admin',
         latestDataParameters: {},
       });
     });
@@ -363,7 +359,6 @@ describe('DashboardVisualisationExtractor', () => {
               y: 'BCD1',
             },
           },
-          permissionGroup: 'Admin',
         },
         draftDashboardItemValidator,
         draftReportValidator,
@@ -379,7 +374,6 @@ describe('DashboardVisualisationExtractor', () => {
             type: 'rowsAndColumns',
           },
         },
-        permissionGroup: 'Admin',
         latestDataParameters: {},
       });
     });
@@ -401,7 +395,6 @@ describe('DashboardVisualisationExtractor', () => {
               type: 'bar',
             },
           },
-          permissionGroup: 'Admin',
         },
         draftDashboardItemValidator,
         draftReportValidator,
@@ -438,7 +431,6 @@ describe('DashboardVisualisationExtractor', () => {
               type: 'bar',
             },
           },
-          permissionGroup: 'Admin',
         },
         draftDashboardItemValidator,
         draftReportValidator,
@@ -455,7 +447,6 @@ describe('DashboardVisualisationExtractor', () => {
               type: 'bar',
             },
           },
-          permission_group: 'Admin',
           latest_data_parameters: {},
         },
         dashboardItem: {
