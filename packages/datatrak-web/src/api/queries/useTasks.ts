@@ -24,6 +24,15 @@ export const useTasks = (
   filters: Filter[] = [],
   sortBy?: SortBy[],
 ) => {
+  const baseFilters = [
+    {
+      id: 'task_status',
+      value: {
+        comparisonValue: 'completed',
+        comparator: '!=',
+      },
+    },
+  ];
   return useQuery(
     ['tasks', projectId, pageSize, page, filters, sortBy],
     (): Promise<DatatrakWebTasksRequest.ResBody> =>
@@ -37,6 +46,7 @@ export const useTasks = (
               id: 'survey.project_id',
               value: projectId,
             },
+            ...baseFilters,
           ],
           sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
         },

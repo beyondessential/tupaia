@@ -68,7 +68,17 @@ export const FilterToolbar = ({ onChangeFilters, filters }) => {
     const updatedFilters = customFilter(value, filters);
     console.log('updatedFilters', updatedFilters);
     console.log('as array', Object.values(updatedFilters));
-    onChangeFilters(Object.values(updatedFilters));
+
+    const foo = [
+      {
+        id: 'task_status',
+        value: {
+          comparisonValue: 'completed',
+          comparator: '!=',
+        },
+      },
+    ];
+    onChangeFilters(foo);
   };
 
   const getValue = id => filtersById[id]?.value || false;

@@ -7,6 +7,7 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
 import { mergeMultiJoin } from '../utilities';
 import { assertUserHasTaskPermissions, createTaskDBFilter } from './assertTaskPermissions';
+import { processColumnSelectorKeys } from '../GETHandler/helpers';
 
 export class GETTasks extends GETHandler {
   permissionsFilteredInternally = true;
@@ -23,6 +24,13 @@ export class GETTasks extends GETHandler {
     );
 
     return super.findSingleRecord(projectId, options);
+  }
+
+  getDbQueryCriteria() {
+    const { filter: filterString } = this.req.query;
+    const filter = filterString ? JSON.parse(filterString) : {};
+    console.log('FILTER: ', filter);
+    return processColumnSelectorKeys(this.models, filter, this.recordType);
   }
 
   async getDbQueryOptions() {
