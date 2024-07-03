@@ -66,6 +66,7 @@ const queryForCount = async (filter: FormattedFilters, models: DatatrakWebServer
   });
 };
 
+const CUSTOM_FILTERS = ['all_assignees', 'all_completed', 'all_cancelled'];
 const EQUALITY_FILTERS = ['due_date', 'survey.project_id', 'task_status'];
 
 const formatFilters = (filters: Record<string, string>[]) => {
@@ -73,6 +74,11 @@ const formatFilters = (filters: Record<string, string>[]) => {
 
   filters.forEach(({ id, value }) => {
     if (value === '' || value === undefined || value === null) return;
+
+    if (CUSTOM_FILTERS.includes(id)) {
+      console.log('ID', id);
+      return;
+    }
     if (EQUALITY_FILTERS.includes(id)) {
       formattedFilters[id] = value;
       return;
@@ -98,6 +104,8 @@ export class TasksRoute extends Route<TasksRequest> {
   public async buildResponse() {
     const { ctx, query = {}, models } = this.req;
     const { filters = [], pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
+
+    console.log('FILTERS', filters);
 
     const formattedFilters = formatFilters(filters);
 

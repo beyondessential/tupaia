@@ -17,20 +17,6 @@ type SortBy = {
   desc: boolean;
 };
 
-const getProcessedFilters = (filters: Filter[], { projectId }) => {
-  const processedFilters = filters;
-  // Todo: task_status filter
-  // If one is already selected do nothing
-  // If none is selected, add one based on the table filter settings
-  return [
-    ...filters,
-    {
-      id: 'survey.project_id',
-      value: projectId,
-    },
-  ];
-};
-
 export const useTasks = (
   projectId?: string,
   pageSize?: number,
@@ -38,8 +24,6 @@ export const useTasks = (
   filters: Filter[] = [],
   sortBy?: SortBy[],
 ) => {
-  const processedFilters = getProcessedFilters(filters, { projectId });
-
   return useQuery(
     ['tasks', projectId, pageSize, page, filters, sortBy],
     (): Promise<DatatrakWebTasksRequest.ResBody> =>
@@ -47,7 +31,13 @@ export const useTasks = (
         params: {
           pageSize,
           page,
-          filters: processedFilters,
+          filters: [
+            {
+              id: 'survey.project_id',
+              value: projectId,
+            },
+            ...filters,
+          ],
           sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
         },
         enabled: !!projectId,

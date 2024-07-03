@@ -46,39 +46,13 @@ const Checkbox = ({ name, value, label, onChange }) => {
   );
 };
 
-const customFilters = {
-  allAssignees: (value, filters) => {
-    console.log('filter allAssignees', value);
-    return filters;
-  },
-  allCompleted: (value, filters) => {
-    return value ? { ...filters, task_status: { id: 'task_status', value: 'to_do' } } : filters;
-  },
-  allCancelled: (value, filters) => {
-    return value ? { ...filters, task_status: { id: 'task_status', value: 'to_do' } } : filters;
-  },
-};
-
 export const FilterToolbar = ({ onChangeFilters, filters }) => {
   const filtersById = keyBy(filters, 'id');
-  console.log('filters', filters, filtersById);
   const handleChange = event => {
     const { name: id, checked: value } = event.target;
-    const customFilter = customFilters[id];
-    const updatedFilters = customFilter(value, filters);
-    console.log('updatedFilters', updatedFilters);
-    console.log('as array', Object.values(updatedFilters));
-
-    const foo = [
-      {
-        id: 'task_status',
-        value: {
-          comparisonValue: 'completed',
-          comparator: '!=',
-        },
-      },
-    ];
-    onChangeFilters(foo);
+    filtersById[id] = { id, value };
+    const updatedFilters = Object.values(filtersById);
+    onChangeFilters(updatedFilters);
   };
 
   const getValue = id => filtersById[id]?.value || false;
@@ -87,21 +61,21 @@ export const FilterToolbar = ({ onChangeFilters, filters }) => {
     <Container>
       <FormGroup>
         <Checkbox
-          name="allAssignees"
+          name="all_assignees"
           label="Show all assignees"
-          value={getValue('allAssignees')}
+          value={getValue('all_assignees')}
           onChange={handleChange}
         />
         <Checkbox
-          name="allCompleted"
+          name="all_completed"
           label="Show completed tasks"
-          value={getValue('allCompleted')}
+          value={getValue('all_completed')}
           onChange={handleChange}
         />
         <Checkbox
-          name="allCancelled"
+          name="all_cancelled"
           label="Show cancelled tasks"
-          value={getValue('allCancelled')}
+          value={getValue('all_cancelled')}
           onChange={handleChange}
         />
       </FormGroup>
