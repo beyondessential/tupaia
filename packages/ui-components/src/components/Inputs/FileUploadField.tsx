@@ -124,12 +124,24 @@ const humanFileSize = (sizeInBytes: number) => {
   );
 };
 
-interface FileUploadFieldProps {
+export interface FileUploadFieldProps {
+  /**
+   * The parent of {@link FileUploadField} manages state for which files are staged to be uploaded.
+   * This change handler propagates state changes in the {@link FileUploadField} to its parent.
+   */
   onChange: (
-    files: File[] | FileList | null,
     event: React.ChangeEvent<HTMLInputElement> | null,
+    fileName?: string | null,
+    files?: File[] | FileList,
   ) => void;
   name: string;
+  /**
+   * In some places, such as DataTrak’s survey review screen, we use a read-only (disabled) version
+   * of the {@link FileUploadField} with a “pre-selected“ file. Since `<input>`’s value cannot be
+   * programmatically set (except to ''), we simply show a filename so it appears as if a file is
+   * selected.
+   */
+  fileName: string;
   multiple?: boolean;
   label?: string;
   tooltip?: string;
@@ -138,6 +150,12 @@ interface FileUploadFieldProps {
   FormHelperTextComponent?: React.ElementType;
   required?: boolean;
   accept?: string;
+  /**
+   * Puts this component in a read-only mode. This hides the dropzone entirely. Use this prop in
+   * tandem with the `fileName` prop to programmatically show a `FileUploadField` that looks like it
+   * has a file selected.
+   */
+  disabled?: boolean;
 }
 
 export const FileUploadField = ({
@@ -151,7 +169,23 @@ export const FileUploadField = ({
   name,
   required = false,
   tooltip,
+  disabled = false,
+  fileName,
 }: FileUploadFieldProps) => {
+  const fileOrFiles = multiple ? 'files' : 'file';
+
+  if (disabled)
+    return (
+      <Uploader>
+        <SelectedFileList $doesNeedBorder={false}>
+          <SelectedFileListItem>
+            {fileName ?? <em>File uploader disabled</em>}
+            <RemoveButton disabled>Remove</RemoveButton>
+          </SelectedFileListItem>
+        </SelectedFileList>
+      </Uploader>
+    );
+
   /**
    * `useDropzone` can provide an `acceptedFiles` array, but it provides no way to programmatically
    * add/remove elements. We manage file selection state manually for some custom behaviour:
@@ -190,7 +224,7 @@ export const FileUploadField = ({
 
   /** Propagates file selection changes to parent */
   useEffect(() => {
-    onChange(files, null);
+    onChange(null, null, files);
   }, [files]);
 
   /**
@@ -202,13 +236,13 @@ export const FileUploadField = ({
    * legacy code.
    */
   const { fileRejections, getInputProps, getRootProps, isDragActive } = useDropzone({
+    disabled,
     maxSize: maxSizeInBytes,
     multiple,
     onDropAccepted,
   });
   const { palette } = useTheme();
 
-  const fileOrFiles = multiple ? 'files' : 'file';
   const getDropzoneLabel = () => {
     if (isDragActive) return `Drop ${fileOrFiles} here`;
     return (

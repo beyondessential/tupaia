@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { FileUploadField } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { InputHelperText } from '../../components';
+import { useSurveyForm } from '../Survey';
 
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
@@ -45,9 +46,11 @@ export const FileQuestion = ({
   label,
   required,
   detailLabel,
-  controllerProps: { onChange, name },
+  controllerProps: { onChange, value: selectedFile, name },
 }: SurveyQuestionInputProps) => {
-  const handleChange = async files => {
+  const { isResponseScreen, isReviewScreen } = useSurveyForm();
+
+  const handleChange = async (_e, _name, files) => {
     if (!files || files.length === 0) {
       onChange(null);
       return;
@@ -65,12 +68,14 @@ export const FileQuestion = ({
     <Wrapper>
       <FileUploadField
         name={name}
+        fileName={selectedFile?.name}
         onChange={handleChange}
         label={label!}
         helperText={detailLabel!}
         maxSizeInBytes={MAX_FILE_SIZE_BYTES}
         FormHelperTextComponent={InputHelperText}
         required={required}
+        disabled={isResponseScreen || isReviewScreen}
       />
     </Wrapper>
   );

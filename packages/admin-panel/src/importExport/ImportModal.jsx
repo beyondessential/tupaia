@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -36,7 +36,6 @@ export const ImportModalComponent = React.memo(
     getFinishedMessage,
     confirmButtonText,
     cancelButtonText,
-    uploadButtonText,
   }) => {
     const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
@@ -45,7 +44,6 @@ export const ImportModalComponent = React.memo(
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [files, setFiles] = useState([]);
-    const [fileName, setFileName] = useState(null);
 
     const handleOpen = () => setIsOpen(true);
 
@@ -61,7 +59,6 @@ export const ImportModalComponent = React.memo(
       setErrorMessage(null);
       setFinishedMessage(null);
       setFiles([]);
-      setFileName(null);
     };
 
     const handleClose = () => {
@@ -71,7 +68,6 @@ export const ImportModalComponent = React.memo(
       setIsOpen(false);
       setValues({});
       setFiles([]);
-      setFileName(null);
     };
 
     const handleSubmit = async event => {
@@ -158,8 +154,8 @@ export const ImportModalComponent = React.memo(
 
     const buttons = getButtons();
 
-    const onChangeFile = newFiles => {
-      setFiles(newFiles);
+    const onChangeFile = (_event, newName, newFiles) => {
+      setFiles(newFiles ?? []);
     };
 
     return (
@@ -199,9 +195,7 @@ export const ImportModalComponent = React.memo(
                 <FileUploadField
                   onChange={onChangeFile}
                   name="file-upload"
-                  fileName={fileName}
                   multiple={actionConfig.multiple}
-                  textOnButton={uploadButtonText}
                 />
               </>
             )}
