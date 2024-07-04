@@ -33,6 +33,7 @@ interface StatusFilterProps {
 export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
   const includeCompletedTasks = getTaskFilterSetting('all_completed_tasks');
   const includeCancelledTasks = getTaskFilterSetting('all_cancelled_tasks');
+  const filterValue = filter?.value ?? '';
 
   const options = Object.keys(STATUS_VALUES)
     .filter(value => {
@@ -50,6 +51,11 @@ export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     onChange(event.target.value as string);
   };
+
+  const invalidFilterValue = !options.find(option => option.value === filterValue);
+  if (invalidFilterValue && filter?.value) {
+    onChange('');
+  }
 
   return (
     <Select

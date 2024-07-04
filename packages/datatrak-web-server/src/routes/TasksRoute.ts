@@ -7,7 +7,7 @@ import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { parse } from 'cookie';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
-import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 
 export type TasksRequest = Request<
   DatatrakWebTasksRequest.Params,
@@ -86,46 +86,37 @@ export class TasksRoute extends Route<TasksRequest> {
     if (!cookieString) {
       return;
     }
-    const { id: userId } = await this.req.ctx.services.central.getUser();
     const cookies = getFilterSettings(cookieString);
 
     if (!cookies.allAssignees) {
+      const { id: userId } = await this.req.ctx.services.central.getUser();
       this.filters['assignee_id'] = userId;
     }
 
-    let taskStatusFilter = null;
+    // If the task status filter is already present, don't need to worry about allCompleted and allCancelled filters
+    if ('task_status' in this.filters) {
+      return;
+    }
 
     if (!cookies.allCompleted) {
-      taskStatusFilter = {
+      this.filters['task_status'] = {
         comparator: 'NOT IN',
         comparisonValue: [TaskStatus.completed],
       };
     }
 
     if (!cookies.allCancelled) {
-      taskStatusFilter = {
+      this.filters['task_status'] = {
         comparator: 'NOT IN',
         comparisonValue: [TaskStatus.cancelled],
       };
     }
 
     if (!cookies.allCompleted && !cookies.allCancelled) {
-      taskStatusFilter = {
+      this.filters['task_status'] = {
         comparator: 'NOT IN',
         comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
       };
-    }
-
-    if (!taskStatusFilter) return;
-
-    const isTaskFilter = 'task_status' in this.filters;
-
-    if (isTaskFilter) {
-      this.filters[QUERY_CONJUNCTIONS.AND] = {
-        task_status: taskStatusFilter,
-      };
-    } else {
-      this.filters['task_status'] = taskStatusFilter;
     }
   }
 
@@ -155,8 +146,6 @@ export class TasksRoute extends Route<TasksRequest> {
 
     this.formatFilters();
     await this.processFilterSettings();
-
-    console.log('=====', this.filters, '=====');
 
     const tasks = await ctx.services.central.fetchResources('tasks', {
       filter: this.filters,

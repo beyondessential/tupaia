@@ -40,7 +40,7 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   }
 `;
 
-const Checkbox = ({ name, label }) => {
+const FilterCheckbox = ({ name, label }) => {
   const queryClient = useQueryClient();
 
   const onChange = (event: React.ChangeEvent<{ name: string; checked: boolean }>) => {
@@ -69,9 +69,9 @@ const Checkbox = ({ name, label }) => {
 export const FilterToolbar = () => (
   <Container>
     <FormGroup>
-      <Checkbox name="all_assignees_tasks" label="Show all assignees" />
-      <Checkbox name="all_completed_tasks" label="Show completed tasks" />
-      <Checkbox name="all_cancelled_tasks" label="Show cancelled tasks" />
+      <FilterCheckbox name="all_assignees_tasks" label="Show all assignees" />
+      <FilterCheckbox name="all_completed_tasks" label="Show completed tasks" />
+      <FilterCheckbox name="all_cancelled_tasks" label="Show cancelled tasks" />
     </FormGroup>
   </Container>
 );
