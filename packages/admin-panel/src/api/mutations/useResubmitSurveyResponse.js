@@ -10,9 +10,9 @@ export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyRespons
   const queryClient = useQueryClient();
   const api = useApiContext();
   return useMutation(
-    [`surveyResubmit`, surveyResponseId, updatedSurveyResponse],
+    [`surveyResponseEdit`, surveyResponseId, updatedSurveyResponse],
     () => {
-      return api.post(`surveyResponse/${surveyResponseId}/resubmit`, null, updatedSurveyResponse);
+      return api.put(`surveyResponses/${surveyResponseId}`, null, updatedSurveyResponse);
     },
     {
       throwOnError: true,

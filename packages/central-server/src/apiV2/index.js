@@ -73,6 +73,7 @@ import {
   GETSurveyResponses,
   SubmitSurveyResponses,
   ResubmitSurveyResponse,
+  EditSurveyResponse,
 } from './surveyResponses';
 import {
   DeleteSurveyScreenComponents,
@@ -354,6 +355,7 @@ apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/supersetInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/tasks/:recordId', useRouteHandler(EditTask));
+apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponse));
 
 /**
  * DELETE routes
