@@ -17,7 +17,7 @@ import {
   AccordionDetails,
   CircularProgress,
 } from '@material-ui/core';
-import { useMapOverlayMapData, useMapContext, useTilesets } from '../utils';
+import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
 import { useExportMapOverlay } from '../../../api/mutations';
 import { useEntity, useMapOverlays, useProject } from '../../../api/queries';
@@ -170,12 +170,19 @@ interface DesktopMapOverlaySelectorProps {
   overlayLibraryOpen: boolean;
   toggleOverlayLibrary: () => void;
   hiddenValues: LegendProps['hiddenValues'];
+  activeTileSet: {
+    key: string;
+    label: string;
+    thumbnail: string;
+    url: string;
+  };
 }
 
 export const DesktopMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
   hiddenValues,
+  activeTileSet,
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
@@ -183,7 +190,6 @@ export const DesktopMapOverlaySelector = ({
   const { data: entity } = useEntity(projectCode, entityCode);
   const { period } = useMapOverlayMapData();
   const { map } = useMapContext();
-  const { activeTileSet } = useTilesets();
   const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
   const { mutate: exportMapOverlay, isLoading: isExporting } = useExportMapOverlay(exportFileName);
 

@@ -110,6 +110,8 @@ export const MapOverlayPDFExport = () => {
   const { tileset, zoom, center, hiddenValues } = useExportParams();
   const { period } = useMapOverlayMapData();
 
+  console.log('tileset', tileset);
+
   return (
     <Parent>
       <MapContainer>

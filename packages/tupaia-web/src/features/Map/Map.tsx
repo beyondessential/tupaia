@@ -126,7 +126,7 @@ const MapInner = () => {
       {/* Map Controls need to be outside the map so that the mouse events on controls don't interfere with the map */}
       <MapControlWrapper>
         <MapControlColumn>
-          <MapOverlaySelector hiddenValues={hiddenValues} />
+          <MapOverlaySelector hiddenValues={hiddenValues} activeTileSet={activeTileSet} />
           <MapLegend hiddenValues={hiddenValues} setValueHidden={setValueHidden} />
         </MapControlColumn>
         <TilePickerWrapper>
