@@ -102,7 +102,9 @@ const useExportParams = () => {
   const period =
     urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD) ?? DEFAULT_PERIOD_PARAM_STRING;
 
-  return { tileset, zoom, center, hiddenValues, period };
+  const locale = urlSearchParams.get('locale') ?? 'en-AU';
+
+  return { tileset, zoom, center, hiddenValues, period, locale };
 };
 
 /**
@@ -112,7 +114,7 @@ export const MapOverlayPDFExport = () => {
   const { projectCode, entityCode } = useParams();
 
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { tileset, zoom, center, hiddenValues } = useExportParams();
+  const { tileset, zoom, center, hiddenValues, locale } = useExportParams();
 
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
@@ -121,8 +123,8 @@ export const MapOverlayPDFExport = () => {
 
   const getDateRangeString = () => {
     if (startDate && endDate) {
-      const startDateString = moment(startDate).toDate().toLocaleDateString();
-      const endDateString = moment(endDate).toDate().toLocaleDateString();
+      const startDateString = moment(startDate).toDate().toLocaleDateString(locale);
+      const endDateString = moment(endDate).toDate().toLocaleDateString(locale);
       return `${startDateString} - ${endDateString}`;
     }
     return '';

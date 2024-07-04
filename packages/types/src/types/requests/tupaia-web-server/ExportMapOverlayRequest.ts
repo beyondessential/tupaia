@@ -23,5 +23,6 @@ export type ReqBody = {
   tileset: string;
   hiddenValues: string;
   mapOverlayPeriod?: string;
+  locale?: string;
 };
 export type ReqQuery = Record<string, string>;

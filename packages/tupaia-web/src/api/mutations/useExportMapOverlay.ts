@@ -47,6 +47,7 @@ export const useExportMapOverlay = (fileName: string) => {
           hiddenValues: JSON.stringify(hiddenValues),
           tileset,
           mapOverlayPeriod,
+          locale: window.navigator?.language || 'en-AU',
         },
       });
     },
