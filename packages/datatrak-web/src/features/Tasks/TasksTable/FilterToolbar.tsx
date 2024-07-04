@@ -10,7 +10,11 @@ import {
   FormControlLabel as MuiFormControlLabel,
   Checkbox as MuiCheckbox,
 } from '@material-ui/core';
-import { getTaskFilterSetting, setTaskFilterSetting } from '../utils/taskFilterSettings.ts';
+import {
+  FilterType,
+  getTaskFilterSetting,
+  setTaskFilterSetting,
+} from '../utils/taskFilterSettings';
 
 const Container = styled.div`
   display: flex;
@@ -36,49 +40,38 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   }
 `;
 
-const Checkbox = ({ name, value, label, onChange }) => {
+const Checkbox = ({ name, label }) => {
+  const queryClient = useQueryClient();
+
+  const onChange = (event: React.ChangeEvent<{ name: string; checked: boolean }>) => {
+    const { name, checked: value } = event.target;
+    setTaskFilterSetting(name as FilterType, value);
+    // Clear the cache so that the task data is re-fetched
+    queryClient.invalidateQueries('tasks');
+  };
+
   return (
     <FormControlLabel
       control={
-        <MuiCheckbox checked={value} onChange={onChange} name={name} color="primary" size="small" />
+        <MuiCheckbox
+          checked={getTaskFilterSetting(name)}
+          onChange={onChange}
+          name={name}
+          color="primary"
+          size="small"
+        />
       }
       label={label}
     />
   );
 };
 
-export const FilterToolbar = () => {
-  const queryClient = useQueryClient();
-
-  const handleChange = event => {
-    const { name, checked: value } = event.target;
-    setTaskFilterSetting(name, value);
-    // Clear the cache so that the task data is re-fetched
-    queryClient.invalidateQueries('tasks');
-  };
-
-  return (
-    <Container>
-      <FormGroup>
-        <Checkbox
-          name="all_assignees"
-          label="Show all assignees"
-          value={getTaskFilterSetting('all_assignees')}
-          onChange={handleChange}
-        />
-        <Checkbox
-          name="all_completed"
-          label="Show completed tasks"
-          value={getTaskFilterSetting('all_completed')}
-          onChange={handleChange}
-        />
-        <Checkbox
-          name="all_cancelled"
-          label="Show cancelled tasks"
-          value={getTaskFilterSetting('all_cancelled')}
-          onChange={handleChange}
-        />
-      </FormGroup>
-    </Container>
-  );
-};
+export const FilterToolbar = () => (
+  <Container>
+    <FormGroup>
+      <Checkbox name="all_assignees_tasks" label="Show all assignees" />
+      <Checkbox name="all_completed_tasks" label="Show completed tasks" />
+      <Checkbox name="all_cancelled_tasks" label="Show cancelled tasks" />
+    </FormGroup>
+  </Container>
+);

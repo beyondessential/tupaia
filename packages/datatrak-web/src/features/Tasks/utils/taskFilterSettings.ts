@@ -4,7 +4,7 @@
  */
 import Cookies from 'js-cookie';
 
-type FilterType = 'all_assignees' | 'all_completed' | 'all_cancelled';
+export type FilterType = 'all_assignees_tasks' | 'all_completed_tasks' | 'all_cancelled_tasks';
 
 export const getTaskFilterSetting = (cookieName: FilterType): boolean => {
   return Cookies.get(cookieName) === 'true';

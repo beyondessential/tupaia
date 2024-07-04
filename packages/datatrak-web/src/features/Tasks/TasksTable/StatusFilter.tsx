@@ -6,9 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { MenuItem as MuiMenuItem, Select } from '@material-ui/core';
-import { STATUS_VALUES, StatusPill } from '../StatusPill';
 import { TaskStatus } from '@tupaia/types';
-import { getTaskFilterSetting } from '../utils/taskFilterSettings.ts';
+import { STATUS_VALUES, StatusPill } from '../StatusPill';
+import { FilterType, getTaskFilterSetting } from '../utils/taskFilterSettings';
 
 const PlaceholderText = styled.span`
   color: ${({ theme }) => theme.palette.text.secondary};
@@ -27,28 +27,25 @@ const MenuItem = styled(MuiMenuItem)`
 
 interface StatusFilterProps {
   onChange: (value: string) => void;
-  filter: { value: string } | undefined;
+  filter: { value: FilterType } | undefined;
 }
 
 export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
-  const includeCompletedTasks = getTaskFilterSetting('all_completed');
-  const includeCancelledTasks = getTaskFilterSetting('all_cancelled');
+  const includeCompletedTasks = getTaskFilterSetting('all_completed_tasks');
+  const includeCancelledTasks = getTaskFilterSetting('all_cancelled_tasks');
 
-  const options: { value: string }[] = Object.keys(STATUS_VALUES).reduce(
-    (acc: { value: string }[], value) => {
+  const options = Object.keys(STATUS_VALUES)
+    .filter(value => {
+      // Filter out completed and cancelled tasks if the user has disabled them
       if (
-        (includeCompletedTasks && value === TaskStatus.completed) ||
-        (includeCancelledTasks && value === TaskStatus.cancelled)
+        (!includeCompletedTasks && value === TaskStatus.completed) ||
+        (!includeCancelledTasks && value === TaskStatus.cancelled)
       ) {
-        return acc;
+        return false;
       }
-      acc.push({
-        value: value,
-      });
-      return acc;
-    },
-    [],
-  );
+      return true;
+    })
+    .map(value => ({ value }));
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     onChange(event.target.value as string);
