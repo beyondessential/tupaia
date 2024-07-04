@@ -23,7 +23,7 @@ export const EditModalComponent = withConnectedEditor(
     onEditField,
     onSave,
     recordData,
-    title = 'Edit',
+    title,
     fields,
     FieldsComponent,
     isUnchanged,
