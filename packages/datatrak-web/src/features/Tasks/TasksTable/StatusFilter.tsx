@@ -34,20 +34,21 @@ export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
   const includeCompletedTasks = getTaskFilterSetting('all_completed');
   const includeCancelledTasks = getTaskFilterSetting('all_cancelled');
 
-  const options = Object.entries(STATUS_VALUES)
-    .filter(([value]) => {
-      if (!includeCompletedTasks && value === TaskStatus.completed) {
-        return false;
+  const options: { value: string }[] = Object.keys(STATUS_VALUES).reduce(
+    (acc: { value: string }[], value) => {
+      if (
+        (includeCompletedTasks && value === TaskStatus.completed) ||
+        (includeCancelledTasks && value === TaskStatus.cancelled)
+      ) {
+        return acc;
       }
-      if (!includeCancelledTasks && value === TaskStatus.cancelled) {
-        return false;
-      }
-      return true;
-    })
-    .map(([value, { label }]) => ({
-      value,
-      label,
-    }));
+      acc.push({
+        value: value,
+      });
+      return acc;
+    },
+    [],
+  );
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     onChange(event.target.value as string);

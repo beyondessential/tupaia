@@ -23,7 +23,13 @@ const Pill = styled.span<{
   }
 `;
 
-export const STATUS_VALUES = {
+interface StatusValue {
+  label: string;
+  color: string;
+  // Define other properties if needed
+}
+
+export const STATUS_VALUES: Record<string, StatusValue> = {
   [TaskStatus.to_do]: {
     label: 'To do',
     color: '#1172D1',

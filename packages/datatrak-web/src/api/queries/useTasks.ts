@@ -32,11 +32,11 @@ export const useTasks = (
           pageSize,
           page,
           filters: [
+            ...filters,
             {
               id: 'survey.project_id',
               value: projectId,
             },
-            ...filters,
           ],
           sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
         },

@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-// @ts-nocheck
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
@@ -70,22 +69,36 @@ const queryForCount = async (filter: FormattedFilters, models: DatatrakWebServer
 
 const EQUALITY_FILTERS = ['due_date', 'survey.project_id', 'task_status'];
 
+const getFilterSettings = (cookieString: string) => {
+  const cookies = parse(cookieString);
+  return {
+    allAssignees: cookies['all_assignees'] === 'true',
+    allCompleted: cookies['all_completed'] === 'true',
+    allCancelled: cookies['all_cancelled'] === 'true',
+  };
+};
+
+type Filter = Record<string, any>;
+
 const processFilterSettings = (
-  filters: Record<string, string>[],
+  filters: Filter[],
   cookieString: string | string[] | undefined,
   userId: string,
 ) => {
-  if (typeof cookieString !== 'string') return filters;
+  if (typeof cookieString !== 'string') {
+    return filters;
+  }
+
   const filtersById = keyBy(filters, 'id');
 
-  const cookies = parse(cookieString);
+  const cookies = getFilterSettings(cookieString);
 
-  if (!cookies['all_assignees'] || cookies['all_assignees'] === 'false') {
+  if (!cookies.allAssignees) {
     // add filter for assignee
     filtersById['assignee_id'] = { id: 'assignee_id', value: userId };
   }
 
-  if (!cookies['all_completed'] || cookies['all_completed'] === 'false') {
+  if (!cookies.allCompleted) {
     // add filter to remove completed tasks
     filtersById['task_status'] = {
       id: 'task_status',
@@ -96,7 +109,7 @@ const processFilterSettings = (
     };
   }
 
-  if (!cookies['all_cancelled'] || cookies['all_cancelled'] === 'false') {
+  if (!cookies.allCancelled) {
     // add filter to remove cancelled tasks
     filtersById['task_status'] = {
       id: 'task_status',
@@ -107,11 +120,9 @@ const processFilterSettings = (
     };
   }
 
-  if (
-    (!cookies['all_completed'] || cookies['all_completed'] === 'false') &&
-    (!cookies['all_cancelled'] || cookies['all_cancelled'] === 'false')
-  ) {
+  if (!cookies.allCompleted && !cookies.allCancelled) {
     // add filter to remove completed and cancelled tasks
+    // Todo: conditionally add the QUERY_CONJUNCTIONS.AND depending on whether or not there is a task_status filter set
     filtersById['task_status'] = {
       id: 'task_status',
       value: {
@@ -129,10 +140,7 @@ const processFilterSettings = (
       },
     };
   }
-  console.log('cookies', cookies);
-  const filtersToReturn = Object.values(filtersById);
-  console.log('filtersToReturn', filtersToReturn);
-  return filtersToReturn;
+  return Object.values(filtersById);
 };
 
 const formatFilters = (filters: Record<string, string>[]) => {
@@ -168,13 +176,8 @@ export class TasksRoute extends Route<TasksRequest> {
     const { filters = [], pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
 
     const { id: userId } = await ctx.services.central.getUser();
-    console.log('userId', userId);
-
     const processedFilters = processFilterSettings(filters, headers.cookie, userId);
-    console.log('FILTERS', filters);
     const formattedFilters = formatFilters(processedFilters);
-
-    console.log(' --- formattedFilters ---', formattedFilters);
 
     const tasks = await ctx.services.central.fetchResources('tasks', {
       filter: formattedFilters,

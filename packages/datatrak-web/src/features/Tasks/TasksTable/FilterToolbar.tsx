@@ -53,6 +53,7 @@ export const FilterToolbar = () => {
   const handleChange = event => {
     const { name, checked: value } = event.target;
     setTaskFilterSetting(name, value);
+    // Clear the cache so that the task data is re-fetched
     queryClient.invalidateQueries('tasks');
   };
 
