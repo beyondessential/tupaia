@@ -18,6 +18,7 @@ type ExportDashboardBody = {
   center: LatLng;
   hiddenValues: LegendProps['hiddenValues'];
   tileset: string;
+  mapOverlayPeriod?: string;
 };
 
 // Requests a map overlay PDF export from the server, and returns the response
@@ -31,6 +32,7 @@ export const useExportMapOverlay = (fileName: string) => {
       center,
       hiddenValues,
       tileset,
+      mapOverlayPeriod,
     }: ExportDashboardBody) => {
       // Auth cookies are saved against this domain. Pass this to server, so that when it pretends to be us, it can do the same.
       const cookieDomain = new URL(API_URL).hostname;
@@ -44,6 +46,7 @@ export const useExportMapOverlay = (fileName: string) => {
           center: JSON.stringify(center),
           hiddenValues: JSON.stringify(hiddenValues),
           tileset,
+          mapOverlayPeriod,
         },
       });
     },

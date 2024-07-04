@@ -28,6 +28,7 @@ const downloadMapOverlayAsPdf = (
   center: TupaiaWebExportMapOverlayRequest.ReqBody['center'],
   tileset: TupaiaWebExportMapOverlayRequest.ReqBody['tileset'],
   hiddenValues: TupaiaWebExportMapOverlayRequest.ReqBody['hiddenValues'],
+  mapOverlayPeriod?: TupaiaWebExportMapOverlayRequest.ReqBody['mapOverlayPeriod'],
 ) => {
   const endpoint = `${projectCode}/${entityCode}/map-overlay-pdf-export`;
   const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
@@ -36,6 +37,7 @@ const downloadMapOverlayAsPdf = (
     tileset,
     hiddenValues,
     overlay: mapOverlayCode,
+    overlayPeriod: mapOverlayPeriod,
   });
 
   return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, true);
@@ -46,7 +48,8 @@ export class ExportMapOverlayRoute extends Route<ExportMapOverlayRequest> {
 
   public async buildResponse() {
     const { projectCode, entityCode, mapOverlayCode } = this.req.params;
-    const { baseUrl, cookieDomain, zoom, center, tileset, hiddenValues } = this.req.body;
+    const { baseUrl, cookieDomain, zoom, center, tileset, hiddenValues, mapOverlayPeriod } =
+      this.req.body;
     const { cookie } = this.req.headers;
 
     if (!cookie) {
@@ -64,6 +67,7 @@ export class ExportMapOverlayRoute extends Route<ExportMapOverlayRequest> {
       center,
       tileset,
       hiddenValues,
+      mapOverlayPeriod,
     );
     return { contents: buffer, type: 'application/pdf' };
   }

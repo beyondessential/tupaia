@@ -21,12 +21,17 @@ import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
 import { useExportMapOverlay } from '../../../api/mutations';
 import { useEntity, useMapOverlays, useProject } from '../../../api/queries';
-import { MOBILE_BREAKPOINT } from '../../../constants';
+import {
+  DEFAULT_PERIOD_PARAM_STRING,
+  MOBILE_BREAKPOINT,
+  URL_SEARCH_PARAMS,
+} from '../../../constants';
 import { useGAEffect } from '../../../utils';
 import { MapTableModal } from './MapTableModal';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
+import { useSearchParams } from 'react-router-dom';
 
 const MapButton = styled(IconButton)`
   color: ${({ theme }) => theme.palette.text.primary};
@@ -184,6 +189,7 @@ export const DesktopMapOverlaySelector = ({
   hiddenValues,
   activeTileSet,
 }: DesktopMapOverlaySelectorProps) => {
+  const [urlSearchParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data: project } = useProject(projectCode);
@@ -192,6 +198,8 @@ export const DesktopMapOverlaySelector = ({
   const { map } = useMapContext();
   const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
   const { mutate: exportMapOverlay, isLoading: isExporting } = useExportMapOverlay(exportFileName);
+  const mapOverlayPeriod =
+    urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD) ?? DEFAULT_PERIOD_PARAM_STRING;
 
   const [mapModalOpen, setMapModalOpen] = useState(false);
   // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
@@ -210,6 +218,7 @@ export const DesktopMapOverlaySelector = ({
       zoom: map.getZoom(),
       hiddenValues,
       tileset: activeTileSet.url,
+      mapOverlayPeriod,
     });
   };
 

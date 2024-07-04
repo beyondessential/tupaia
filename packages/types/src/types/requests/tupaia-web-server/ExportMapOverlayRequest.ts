@@ -22,5 +22,6 @@ export type ReqBody = {
   zoom: number;
   tileset: string;
   hiddenValues: string;
+  mapOverlayPeriod?: string;
 };
 export type ReqQuery = Record<string, string>;

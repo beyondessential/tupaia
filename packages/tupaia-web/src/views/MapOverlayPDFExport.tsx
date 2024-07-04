@@ -10,9 +10,12 @@ import { useSearchParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { LeafletMap, TileLayer, getAutoTileSet } from '@tupaia/ui-map-components';
 import { A4_PAGE_HEIGHT_PX, A4_PAGE_WIDTH_PX } from '@tupaia/ui-components';
-import { periodToMoment } from '@tupaia/utils';
+import { momentToDateDisplayString, periodToMoment } from '@tupaia/utils';
 import { MapOverlaysLayer, Legend, useMapOverlayMapData } from '../features/Map';
 import { useMapOverlays } from '../api/queries';
+import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../constants';
+import { useDateRanges } from '../utils';
+import moment from 'moment';
 
 const Parent = styled.div`
   // reverse the width and height to make the map landscape
@@ -96,8 +99,10 @@ const useExportParams = () => {
   const center = urlCenter ? JSON.parse(urlCenter) : undefined;
   const urlHiddenValues = urlSearchParams.get('hiddenValues');
   const hiddenValues = urlHiddenValues ? JSON.parse(urlHiddenValues) : undefined;
+  const period =
+    urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD) ?? DEFAULT_PERIOD_PARAM_STRING;
 
-  return { tileset, zoom, center, hiddenValues };
+  return { tileset, zoom, center, hiddenValues, period };
 };
 
 /**
@@ -107,10 +112,24 @@ export const MapOverlayPDFExport = () => {
   const { projectCode, entityCode } = useParams();
 
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { tileset, zoom, center, hiddenValues } = useExportParams();
+  const { tileset, zoom, center, hiddenValues, period: mapOverlayPeriod } = useExportParams();
   const { period } = useMapOverlayMapData();
 
-  console.log('tileset', tileset);
+  const { startDate, endDate } = useDateRanges(
+    URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
+    selectedOverlay,
+  );
+
+  const getDateRangeString = () => {
+    if (startDate && endDate) {
+      const startDateString = moment(startDate).toDate().toLocaleDateString();
+      const endDateString = moment(endDate).toDate().toLocaleDateString();
+      return `${startDateString} - ${endDateString}`;
+    }
+    return '';
+  };
+
+  const dateRangeString = getDateRangeString();
 
   return (
     <Parent>
@@ -122,9 +141,7 @@ export const MapOverlayPDFExport = () => {
       </MapContainer>
       <MapOverlayInfoContainer>
         <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
-        <LatestDataText>
-          Latest overlay data: {periodToMoment(period?.latestAvailable).format('DD/MM/YYYY')}
-        </LatestDataText>
+        {dateRangeString && <LatestDataText>Date of data: {dateRangeString}</LatestDataText>}
       </MapOverlayInfoContainer>
       <LegendWrapper>
         <Legend hiddenValues={hiddenValues} setValueHidden={() => {}} isExport />
