@@ -14,14 +14,15 @@ import { Entity } from '../../../types';
 import { useMapOverlayTableData } from './useMapOverlayTableData';
 
 /**
- * If the entity is a point, filter it out so that we don’t end up with 
- * navigation points showing no data type. This ensures that the only points on 
+ * If the entity is a point, filter it out so that we don’t end up with
+ * navigation points showing no data type. This ensures that the only points on
  * the map are from an overlay.
  *
  * @see https://linear.app/bes/issue/RN-1328/entities-can-appear-as-black-smudges-on-map
  */
-const filterOutPointEntities = (entities: Entity[]) =>
-  entities.filter(entity => entity.locationType !== 'point');
+const filterOutPointEntities = (entities: Entity[]) => {
+  return entities.filter(entity => entity.locationType !== 'point');
+};
 
 const useEntityRelativesWithLocation = (projectCode, entityCode, enabled) => {
   return useEntitiesWithLocation(

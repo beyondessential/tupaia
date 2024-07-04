@@ -44,6 +44,7 @@ export const useEntities = (
     {
       enabled,
       keepPreviousData: !!queryOptions?.keepPreviousData, // this needs to be false unless otherwise set, otherwise when we change the entity code, the previous data will be returned for a while
+      select: queryOptions?.select,
     },
   );
 };
@@ -53,8 +54,8 @@ export const useEntitiesWithLocation = (
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
   queryOptions: QueryOptions = {},
-) =>
-  useEntities(
+) => {
+  return useEntities(
     projectCode,
     entityCode,
     {
@@ -81,3 +82,4 @@ export const useEntitiesWithLocation = (
       ...queryOptions,
     },
   );
+};
