@@ -132,6 +132,7 @@ export const RadioGroup = ({
           error,
           required,
         }}
+        applyWrapper
       />
 
       {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
