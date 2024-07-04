@@ -2,10 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
+// @ts-nocheck
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
+import { keyBy } from 'lodash';
+import { parse } from 'cookie';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
 import { RECORDS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../types';
@@ -66,8 +68,78 @@ const queryForCount = async (filter: FormattedFilters, models: DatatrakWebServer
   });
 };
 
-const CUSTOM_FILTERS = ['all_assignees', 'all_completed', 'all_cancelled'];
+const CUSTOM_FILTERS = {
+  all_assignees: {
+    comparator: 'eq',
+    comparisonValue: true,
+  },
+  all_completed: {
+    comparator: 'eq',
+    comparisonValue: true,
+  },
+  all_cancelled: {
+    comparator: 'eq',
+    comparisonValue: true,
+  },
+};
+
 const EQUALITY_FILTERS = ['due_date', 'survey.project_id', 'task_status'];
+
+const processFilterSettings = (
+  filters: Record<string, string>[],
+  cookieString: string | string[] | undefined,
+  userId: string,
+) => {
+  if (typeof cookieString !== 'string') return filters;
+  const filtersById = keyBy(filters, 'id');
+
+  const cookies = parse(cookieString);
+
+  if (!cookies['all_assignees'] || cookies['all_assignees'] === 'false') {
+    // add filter for assignee
+    filtersById['assignee_id'] = { id: 'assignee_id', value: userId };
+  }
+
+  if (!cookies['all_completed'] || cookies['all_completed'] === 'false') {
+    // add filter to remove completed tasks
+    filtersById['task_status'] = {
+      id: 'task_status',
+      value: {
+        comparator: 'NOT IN',
+        comparisonValue: ['completed'],
+      },
+    };
+  }
+
+  if (!cookies['all_cancelled'] || cookies['all_cancelled'] === 'false') {
+    // add filter to remove cancelled tasks
+    filtersById['task_status'] = {
+      id: 'task_status',
+      value: {
+        comparator: 'NOT IN',
+        comparisonValue: ['cancelled'],
+      },
+    };
+  }
+
+  if (
+    (!cookies['all_completed'] || cookies['all_completed'] === 'false') &&
+    (!cookies['all_cancelled'] || cookies['all_cancelled'] === 'false')
+  ) {
+    // add filter to remove completed and cancelled tasks
+    filtersById['task_status'] = {
+      id: 'task_status',
+      value: {
+        comparator: 'NOT IN',
+        comparisonValue: ['completed', 'cancelled'],
+      },
+    };
+  }
+  console.log('cookies', cookies);
+  const filtersToReturn = Object.values(filtersById);
+  console.log('filtersToReturn', filtersToReturn);
+  return filtersToReturn;
+};
 
 const formatFilters = (filters: Record<string, string>[]) => {
   let formattedFilters: FormattedFilters = {};
@@ -75,10 +147,6 @@ const formatFilters = (filters: Record<string, string>[]) => {
   filters.forEach(({ id, value }) => {
     if (value === '' || value === undefined || value === null) return;
 
-    if (CUSTOM_FILTERS.includes(id)) {
-      console.log('ID', id);
-      return;
-    }
     if (EQUALITY_FILTERS.includes(id)) {
       formattedFilters[id] = value;
       return;
@@ -102,12 +170,17 @@ const formatFilters = (filters: Record<string, string>[]) => {
 };
 export class TasksRoute extends Route<TasksRequest> {
   public async buildResponse() {
-    const { ctx, query = {}, models } = this.req;
+    const { ctx, query = {}, models, headers } = this.req;
     const { filters = [], pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
 
-    console.log('FILTERS', filters);
+    const { id: userId } = await ctx.services.central.getUser();
+    console.log('userId', userId);
 
-    const formattedFilters = formatFilters(filters);
+    const processedFilters = processFilterSettings(filters, headers.cookie, userId);
+    console.log('FILTERS', filters);
+    const formattedFilters = formatFilters(processedFilters);
+
+    console.log(' --- formattedFilters ---', formattedFilters);
 
     const tasks = await ctx.services.central.fetchResources('tasks', {
       filter: formattedFilters,

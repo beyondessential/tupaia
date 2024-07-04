@@ -4,7 +4,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import keyBy from 'lodash.keyby';
+import { parse } from 'cookie';
+import { useQueryClient } from 'react-query';
 import {
   FormGroup as MuiFormGroup,
   FormControlLabel as MuiFormControlLabel,
@@ -46,16 +47,43 @@ const Checkbox = ({ name, value, label, onChange }) => {
   );
 };
 
-export const FilterToolbar = ({ onChangeFilters, filters }) => {
-  const filtersById = keyBy(filters, 'id');
-  const handleChange = event => {
-    const { name: id, checked: value } = event.target;
-    filtersById[id] = { id, value };
-    const updatedFilters = Object.values(filtersById);
-    onChangeFilters(updatedFilters);
-  };
+const setCookie = (cookieName: string, value: boolean) => {
+  const date = new Date();
+  date.setTime(date.getTime() + 24 * 60 * 60 * 1000); // 24 hours, in milliseconds
+  const expires = 'expires=' + date.toUTCString();
+  document.cookie = `${cookieName}=${value};${expires};path=/`;
+};
 
-  const getValue = id => filtersById[id]?.value || false;
+const getCookie = (cookieName: string) => {
+  // get the cookie
+  const cname = `${cookieName}=`;
+  const decodedCookie = decodeURIComponent(document.cookie);
+
+  // split the cookie into an array
+
+  const ca = decodedCookie.split(';');
+  // return the value of the cookie if it exists, otherwise return undefined
+  return (
+    ca
+      .find(cookie => cookie.trim().startsWith(cname))
+      ?.trim()
+      .substring(cname.length) === 'true'
+  );
+};
+
+const getFilterValue = name => {
+  return getCookie(name);
+};
+
+export const FilterToolbar = () => {
+  const queryClient = useQueryClient();
+
+  const handleChange = event => {
+    const { name, checked: value } = event.target;
+    console.log('CHANGE', name, value);
+    queryClient.invalidateQueries('tasks');
+    setCookie(name, value);
+  };
 
   return (
     <Container>
@@ -63,19 +91,19 @@ export const FilterToolbar = ({ onChangeFilters, filters }) => {
         <Checkbox
           name="all_assignees"
           label="Show all assignees"
-          value={getValue('all_assignees')}
+          value={getFilterValue('all_assignees')}
           onChange={handleChange}
         />
         <Checkbox
           name="all_completed"
           label="Show completed tasks"
-          value={getValue('all_completed')}
+          value={getFilterValue('all_completed')}
           onChange={handleChange}
         />
         <Checkbox
           name="all_cancelled"
           label="Show cancelled tasks"
-          value={getValue('all_cancelled')}
+          value={getFilterValue('all_cancelled')}
           onChange={handleChange}
         />
       </FormGroup>
