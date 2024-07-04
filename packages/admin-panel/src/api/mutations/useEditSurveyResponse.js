@@ -6,7 +6,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { useApiContext } from '../../utilities/ApiProvider';
 
-export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyResponse) => {
+export const useEditSurveyResponse = (surveyResponseId, updatedSurveyResponse) => {
   const queryClient = useQueryClient();
   const api = useApiContext();
   return useMutation(
