@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { MenuItem as MuiMenuItem, Select } from '@material-ui/core';
 import { STATUS_VALUES, StatusPill } from '../StatusPill';
 import { TaskStatus } from '@tupaia/types';
+import { getTaskFilterSetting } from '../utils/taskFilterSettings.ts';
 
 const PlaceholderText = styled.span`
   color: ${({ theme }) => theme.palette.text.secondary};
@@ -30,11 +31,23 @@ interface StatusFilterProps {
 }
 
 export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
-  // TODO: Filter/include cancelled and completed statuses as part of RN_1343
-  const options = Object.entries(STATUS_VALUES).map(([value, { label }]) => ({
-    value,
-    label,
-  }));
+  const includeCompletedTasks = getTaskFilterSetting('all_completed');
+  const includeCancelledTasks = getTaskFilterSetting('all_cancelled');
+
+  const options = Object.entries(STATUS_VALUES)
+    .filter(([value]) => {
+      if (!includeCompletedTasks && value === TaskStatus.completed) {
+        return false;
+      }
+      if (!includeCancelledTasks && value === TaskStatus.cancelled) {
+        return false;
+      }
+      return true;
+    })
+    .map(([value, { label }]) => ({
+      value,
+      label,
+    }));
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     onChange(event.target.value as string);

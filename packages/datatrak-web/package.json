@@ -25,6 +25,7 @@
     "bson-objectid": "^1.2.2",
     "date-fns": "^2.29.2",
     "downloadjs": "1.4.7",
+    "js-cookie": "^3.0.5",
     "leaflet": "^1.7.1",
     "lodash.throttle": "^4.1.1",
     "markdown-to-jsx": "^6.4.1",

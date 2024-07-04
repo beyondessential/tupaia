@@ -174,7 +174,7 @@ export const TasksTable = () => {
 
   return (
     <Container>
-      <FilterToolbar onChangeFilters={updateFilters} filters={filters} />
+      <FilterToolbar />
       <FilterableTable
         columns={columns}
         data={data}

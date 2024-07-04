@@ -9,7 +9,7 @@ import { Route } from '@tupaia/server-boilerplate';
 import { keyBy } from 'lodash';
 import { parse } from 'cookie';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
-import { RECORDS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../types';
 
 export type TasksRequest = Request<
@@ -68,21 +68,6 @@ const queryForCount = async (filter: FormattedFilters, models: DatatrakWebServer
   });
 };
 
-const CUSTOM_FILTERS = {
-  all_assignees: {
-    comparator: 'eq',
-    comparisonValue: true,
-  },
-  all_completed: {
-    comparator: 'eq',
-    comparisonValue: true,
-  },
-  all_cancelled: {
-    comparator: 'eq',
-    comparisonValue: true,
-  },
-};
-
 const EQUALITY_FILTERS = ['due_date', 'survey.project_id', 'task_status'];
 
 const processFilterSettings = (
@@ -130,8 +115,17 @@ const processFilterSettings = (
     filtersById['task_status'] = {
       id: 'task_status',
       value: {
-        comparator: 'NOT IN',
-        comparisonValue: ['completed', 'cancelled'],
+        comparator: '=',
+        comparisonValue: 'to_do',
+      },
+    };
+    filtersById[QUERY_CONJUNCTIONS.AND] = {
+      task_status: {
+        id: 'task_status',
+        value: {
+          comparator: 'NOT IN',
+          comparisonValue: ['completed', 'cancelled'],
+        },
       },
     };
   }

@@ -12076,6 +12076,7 @@ __metadata:
     bson-objectid: ^1.2.2
     date-fns: ^2.29.2
     downloadjs: 1.4.7
+    js-cookie: ^3.0.5
     leaflet: ^1.7.1
     lodash.throttle: ^4.1.1
     markdown-to-jsx: ^6.4.1
@@ -28655,6 +28656,13 @@ __metadata:
     html-beautify: js/bin/html-beautify.js
     js-beautify: js/bin/js-beautify.js
   checksum: edda6f1f32d6a3870503f1ae7b7fb1279ba99ef533872ec3d2d7f9b685671425cc8e5c20bbaaba9440495dfc120797b13e68f867566d59bb23dc435de76dfe7a
+  languageName: node
+  linkType: hard
+
+"js-cookie@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "js-cookie@npm:3.0.5"
+  checksum: 2dbd2809c6180fbcf060c6957cb82dbb47edae0ead6bd71cbeedf448aa6b6923115003b995f7d3e3077bfe2cb76295ea6b584eb7196cca8ba0a09f389f64967a
   languageName: node
   linkType: hard
 

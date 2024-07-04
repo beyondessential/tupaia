@@ -4,13 +4,13 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { parse } from 'cookie';
 import { useQueryClient } from 'react-query';
 import {
   FormGroup as MuiFormGroup,
   FormControlLabel as MuiFormControlLabel,
   Checkbox as MuiCheckbox,
 } from '@material-ui/core';
+import { getTaskFilterSetting, setTaskFilterSetting } from '../utils/taskFilterSettings.ts';
 
 const Container = styled.div`
   display: flex;
@@ -47,42 +47,13 @@ const Checkbox = ({ name, value, label, onChange }) => {
   );
 };
 
-const setCookie = (cookieName: string, value: boolean) => {
-  const date = new Date();
-  date.setTime(date.getTime() + 24 * 60 * 60 * 1000); // 24 hours, in milliseconds
-  const expires = 'expires=' + date.toUTCString();
-  document.cookie = `${cookieName}=${value};${expires};path=/`;
-};
-
-const getCookie = (cookieName: string) => {
-  // get the cookie
-  const cname = `${cookieName}=`;
-  const decodedCookie = decodeURIComponent(document.cookie);
-
-  // split the cookie into an array
-
-  const ca = decodedCookie.split(';');
-  // return the value of the cookie if it exists, otherwise return undefined
-  return (
-    ca
-      .find(cookie => cookie.trim().startsWith(cname))
-      ?.trim()
-      .substring(cname.length) === 'true'
-  );
-};
-
-const getFilterValue = name => {
-  return getCookie(name);
-};
-
 export const FilterToolbar = () => {
   const queryClient = useQueryClient();
 
   const handleChange = event => {
     const { name, checked: value } = event.target;
-    console.log('CHANGE', name, value);
+    setTaskFilterSetting(name, value);
     queryClient.invalidateQueries('tasks');
-    setCookie(name, value);
   };
 
   return (
@@ -91,19 +62,19 @@ export const FilterToolbar = () => {
         <Checkbox
           name="all_assignees"
           label="Show all assignees"
-          value={getFilterValue('all_assignees')}
+          value={getTaskFilterSetting('all_assignees')}
           onChange={handleChange}
         />
         <Checkbox
           name="all_completed"
           label="Show completed tasks"
-          value={getFilterValue('all_completed')}
+          value={getTaskFilterSetting('all_completed')}
           onChange={handleChange}
         />
         <Checkbox
           name="all_cancelled"
           label="Show cancelled tasks"
-          value={getFilterValue('all_cancelled')}
+          value={getTaskFilterSetting('all_cancelled')}
           onChange={handleChange}
         />
       </FormGroup>
