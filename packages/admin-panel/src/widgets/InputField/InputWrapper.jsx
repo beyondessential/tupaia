@@ -13,18 +13,19 @@ const Wrapper = styled.div`
     // override the default margin-bottom from ui-components
     margin-bottom: 0;
   }
-  margin-bottom: 1.2rem;
 `;
 const MessageWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-block-start: 0.2rem;
+  height: 1.2rem;
 `;
 
 const MessageTextWrapper = styled.div`
+  width: 100%;
   &:last-child {
     margin-inline-start: 0.5rem;
-    max-width: 80%;
+    text-align: right;
   }
 `;
 
@@ -35,16 +36,18 @@ const Message = styled(Typography)`
 export const InputWrapper = ({ errorText, helperText, children }) => (
   <Wrapper>
     {children}
-    {(errorText || helperText) && (
-      <MessageWrapper>
+    <MessageWrapper>
+      {errorText && (
         <MessageTextWrapper>
-          {errorText && <Message color="error">{errorText}</Message>}
+          <Message color="error">{errorText}</Message>
         </MessageTextWrapper>
+      )}
+      {helperText && (
         <MessageTextWrapper>
-          {helperText && <Message color="textSecondary">{helperText}</Message>}
+          <Message color="textSecondary">{helperText}</Message>
         </MessageTextWrapper>
-      </MessageWrapper>
-    )}
+      )}
+    </MessageWrapper>
   </Wrapper>
 );
 
