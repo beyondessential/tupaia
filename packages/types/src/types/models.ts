@@ -1761,6 +1761,7 @@ export enum EntityType {
   'maintenance' = 'maintenance',
   'larval_sample' = 'larval_sample',
   'transfer' = 'transfer',
+  'hospital_area' = 'hospital_area',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
