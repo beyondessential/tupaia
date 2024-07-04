@@ -4,18 +4,17 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { LeafletMap, TileLayer, getAutoTileSet } from '@tupaia/ui-map-components';
 import { A4_PAGE_HEIGHT_PX, A4_PAGE_WIDTH_PX } from '@tupaia/ui-components';
-import { momentToDateDisplayString, periodToMoment } from '@tupaia/utils';
-import { MapOverlaysLayer, Legend, useMapOverlayMapData } from '../features/Map';
+import { MapOverlaysLayer, Legend } from '../features/Map';
 import { useMapOverlays } from '../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../constants';
 import { useDateRanges } from '../utils';
-import moment from 'moment';
 
 const Parent = styled.div`
   // reverse the width and height to make the map landscape
@@ -112,8 +111,7 @@ export const MapOverlayPDFExport = () => {
   const { projectCode, entityCode } = useParams();
 
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
-  const { tileset, zoom, center, hiddenValues, period: mapOverlayPeriod } = useExportParams();
-  const { period } = useMapOverlayMapData();
+  const { tileset, zoom, center, hiddenValues } = useExportParams();
 
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
