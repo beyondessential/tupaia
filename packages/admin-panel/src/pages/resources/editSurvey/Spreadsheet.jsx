@@ -25,7 +25,8 @@ const TableContainer = styled.div`
   overflow: hidden;
   font-size: 0.7rem;
   .BaseTable__header-cell {
-    background-color: ${props => props.theme.palette.grey['400']};
+    background-color: ${props => props.theme.palette.secondary.main};
+    color: white;
     border-right: 1px solid white;
     font-weight: ${props => props.theme.typography.fontWeightMedium};
     font-size: 0.7rem;
@@ -40,7 +41,8 @@ const TableContainer = styled.div`
   }
   .BaseTable__table-frozen-left {
     .BaseTable__row-cell {
-      background-color: ${props => props.theme.palette.grey['400']};
+      background-color: ${props => props.theme.palette.secondary.main};
+      color: white;
       font-weight: ${props => props.theme.typography.fontWeightMedium};
     }
     .BaseTable__row {

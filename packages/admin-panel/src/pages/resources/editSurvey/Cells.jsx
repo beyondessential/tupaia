@@ -17,7 +17,7 @@ export const Cell = styled(TableCell)`
 export const HeaderCell = styled(Cell).attrs({
   component: 'th',
 })`
-  background-color: ${({ theme }) => theme.palette.grey['400']};
+  background-color: ${({ theme }) => theme.palette.secondary.main};
   border-color: white;
   border-style: solid;
 `;

@@ -116,7 +116,7 @@ export const EditableCell = ({
     if (!isActive) return;
     if (!cellRef.current) return;
     if (cellRef.current.contains(e.target) || cellRef.current === e.target) return;
-    const editableFieldInput = document.getElementById('editable-field');
+    const editableFieldInput = document.getElementById('editable-field-input');
 
     // this handles the select menu, because we are using a popper, so the click away listener senses a click on the select menu as a click away
     const isDropdown =
@@ -126,7 +126,10 @@ export const EditableCell = ({
     }
 
     // if the click is on the input, don't set as inactive, just remove edit mode so the input can be used
-    if (editableFieldInput && editableFieldInput.contains(e.target)) {
+    if (
+      editableFieldInput &&
+      (editableFieldInput.contains(e.target) || editableFieldInput === e.target)
+    ) {
       setEditMode(false);
       return;
     }

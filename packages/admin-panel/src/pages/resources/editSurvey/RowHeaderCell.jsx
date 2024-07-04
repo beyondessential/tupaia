@@ -18,6 +18,7 @@ const Container = styled.div``;
 
 const MenuButton = styled(IconButton)`
   margin-inline-start: 0.5rem;
+  color: white;
   .MuiSvgIcon-root {
     font-size: 1rem;
   }
