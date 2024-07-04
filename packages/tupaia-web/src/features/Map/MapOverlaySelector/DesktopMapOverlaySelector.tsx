@@ -230,11 +230,19 @@ export const DesktopMapOverlaySelector = ({
           <Heading>Map Overlays</Heading>
           {selectedOverlay && (
             <div>
-              <Tooltip arrow interactive placement="top" title="Export map overlay as PDF">
-                <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
-                  {isExporting ? <LoadingSpinner /> : <GetApp />}
-                </MapButton>
-              </Tooltip>
+              <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
+                {isExporting ? (
+                  <LoadingSpinner />
+                ) : (
+                  <Tooltip
+                    arrow
+                    placement="top"
+                    title={isExporting ? '' : 'Export map overlay as PDF'}
+                  >
+                    <GetApp />
+                  </Tooltip>
+                )}
+              </MapButton>
               <Tooltip arrow interactive placement="top" title="Generate report">
                 <MapButton onClick={toggleMapTableModal}>
                   <Assignment />
