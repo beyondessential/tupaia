@@ -6,7 +6,7 @@
 import { useMutation } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { QuestionType } from '@tupaia/types';
-import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
+import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { post } from '../api';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { SurveyScreenComponent } from '../../types';
@@ -88,12 +88,13 @@ export const useResubmitSurveyResponse = () => {
         return;
       }
       const { answers, files, entityId, dataTime } = processAnswers(surveyAnswers, questionsById);
-
+      const timezone = getBrowserTimeZone();
       const formData = new FormData();
-      const formDataToSubmit = { answers } as {
+      const formDataToSubmit = { answers, timezone } as {
         answers: Record<string, string | number | boolean>;
         entity_id?: string;
         data_time?: string;
+        timezone?: string;
       };
       if (entityId) {
         formDataToSubmit.entity_id = entityId;
@@ -101,6 +102,7 @@ export const useResubmitSurveyResponse = () => {
       if (dataTime) {
         formDataToSubmit.data_time = dataTime;
       }
+
       formData.append('payload', JSON.stringify(formDataToSubmit));
       files.forEach(file => {
         formData.append(file.name, file);
