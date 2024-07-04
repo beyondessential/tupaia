@@ -41,56 +41,65 @@ export const DefaultFilter = styled(TextField).attrs(props => ({
  * Makes boolean fields work with the database filter
  */
 
-export const BooleanSelectFilter = ({ value, onChange, column }) => (
-  <Select
-    id={column.id}
-    options={[
-      { label: 'Show All', value: '' },
-      { label: 'Yes', value: true },
-      { label: 'No', value: false },
-    ]}
-    onChange={e => onChange(e.target.value)}
-    value={value ?? ''}
-  />
-);
+export const BooleanSelectFilter = ({ filter, onChange, column }) => {
+  return (
+    <Select
+      id={column.id}
+      options={[
+        { label: 'Show All', value: '' },
+        { label: 'Yes', value: true },
+        { label: 'No', value: false },
+      ]}
+      onChange={e => onChange(e.target.value)}
+      value={filter?.value ?? ''}
+    />
+  );
+};
 
 BooleanSelectFilter.propTypes = {
   column: PropTypes.PropTypes.shape({
     id: PropTypes.string,
   }),
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+  filter: PropTypes.shape({
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+  }),
   onChange: PropTypes.func,
 };
 
 BooleanSelectFilter.defaultProps = {
   onChange: null,
   column: {},
+  filter: {},
 };
 
-export const VerifiedFilter = ({ value, onChange, column }) => (
-  <Select
-    id={column.id}
-    options={[
-      { label: 'Show All', value: '' },
-      { label: 'Yes', value: 'verified' },
-      { label: 'No', value: 'new_user' },
-      { label: 'Not Applicable', value: 'unverified' },
-    ]}
-    onChange={e => onChange(e.target.value)}
-    value={value ?? ''}
-  />
-);
+export const VerifiedFilter = ({ filter, onChange, column }) => {
+  return (
+    <Select
+      id={column.id}
+      options={[
+        { label: 'Show All', value: '' },
+        { label: 'Yes', value: 'verified' },
+        { label: 'No', value: 'new_user' },
+        { label: 'Not Applicable', value: 'unverified' },
+      ]}
+      onChange={e => onChange(e.target.value)}
+      value={filter.value ?? ''}
+    />
+  );
+};
 
 VerifiedFilter.propTypes = {
   column: PropTypes.PropTypes.shape({
     id: PropTypes.string,
   }),
-  value: PropTypes.string,
+  filter: PropTypes.shape({
+    value: PropTypes.string,
+  }),
   onChange: PropTypes.func,
 };
 
 VerifiedFilter.defaultProps = {
-  value: '',
+  filter: {},
   onChange: null,
   column: {},
 };
@@ -101,54 +110,63 @@ const Chip = styled(MuiChip)`
   }
 `;
 
-export const ArrayFilter = React.memo(({ onChange, value }) => {
-  const [searchTerm, setSearchTerm] = React.useState('');
+export const ArrayFilter = React.memo(
+  ({ onChange, filter }) => {
+    const [searchTerm, setSearchTerm] = React.useState('');
 
-  const onChangeSelection = (event, newSelection) => {
-    onChange(newSelection);
-  };
+    const onChangeSelection = (event, newSelection) => {
+      onChange(newSelection);
+    };
 
-  const getSelection = () => {
-    if (!value) return [];
-    if (Array.isArray(value)) return value;
-    return [value];
-  };
+    const getSelection = () => {
+      if (!filter?.value) return [];
+      if (Array.isArray(filter?.value)) return filter.value;
+      return [filter.value];
+    };
 
-  const selection = getSelection();
-  return (
-    <Autocomplete
-      value={selection}
-      inputValue={searchTerm}
-      onInputChange={(event, newSearchTerm) => setSearchTerm(newSearchTerm)}
-      options={searchTerm.length > 0 ? [searchTerm] : []}
-      getOptionLabel={option => option}
-      getOptionSelected={(option, selected) => {
-        return option === selected;
-      }}
-      onChange={onChangeSelection}
-      muiProps={{
-        freeSolo: true,
-        multiple: true,
-        selectOnFocus: true,
-        clearOnBlur: true,
-        handleHomeEndKeys: true,
-        renderTags: (values, getTagProps) => {
-          return values.map((option, index) => {
-            return <Chip color="primary" label={option} {...getTagProps({ index })} />;
-          });
-        },
-        renderInput: params => <DefaultFilter {...params} />,
-        disablePortal: true,
-      }}
-    />
-  );
-});
+    const selection = getSelection();
+
+    return (
+      <Autocomplete
+        value={selection}
+        inputValue={searchTerm}
+        onInputChange={(event, newSearchTerm) => {
+          if (!event) return null;
+          return setSearchTerm(newSearchTerm);
+        }}
+        options={searchTerm?.length > 0 ? [searchTerm] : []}
+        getOptionLabel={option => option}
+        getOptionSelected={(option, selected) => {
+          return option === selected;
+        }}
+        onChange={onChangeSelection}
+        muiProps={{
+          freeSolo: true,
+          multiple: true,
+          selectOnFocus: true,
+          clearOnBlur: true,
+          handleHomeEndKeys: true,
+          renderTags: (values, getTagProps) => {
+            return values.map((option, index) => {
+              return <Chip color="primary" label={option} {...getTagProps({ index })} />;
+            });
+          },
+          renderInput: params => <DefaultFilter {...params} />,
+          disablePortal: true,
+        }}
+      />
+    );
+  },
+  (prevProps, nextProps) => prevProps.filter.value === nextProps.filter.value,
+);
 
 ArrayFilter.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.arrayOf(PropTypes.string),
+  filter: PropTypes.shape({
+    value: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  }),
 };
 
 ArrayFilter.defaultProps = {
-  value: [],
+  filter: {},
 };

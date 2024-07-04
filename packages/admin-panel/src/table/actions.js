@@ -61,7 +61,13 @@ const refreshDataWithDebounce = debounce(
     // Set up filter
     const filterObject = { ...baseFilter };
     filters.forEach(({ id, value }) => {
-      filterObject[id] = value;
+      if (Array.isArray(value)) {
+        filterObject[id] = {
+          comparator: '@>',
+          comparisonValue: `{${value.join(',')}}`,
+          castAs: 'text[]',
+        };
+      } else filterObject[id] = value;
     });
     const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
 
