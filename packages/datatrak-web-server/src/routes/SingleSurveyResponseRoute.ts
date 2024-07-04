@@ -83,6 +83,6 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
     );
 
     // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
-    return camelcaseKeys({ ...response, answers });
+    return camelcaseKeys({ ...response, userId, answers });
   }
 }

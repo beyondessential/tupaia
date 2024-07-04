@@ -44,6 +44,7 @@ export const processSurveyResponse = async (
     startTime,
     userId,
     timezone,
+    dataTime,
   } = surveyResponseData;
 
   const today = new Date();
@@ -55,7 +56,7 @@ export const processSurveyResponse = async (
     start_time: startTime,
     entity_id: countryId,
     end_time: timestamp,
-    data_time: timestamp,
+    data_time: dataTime || timestamp,
     timestamp,
     timezone,
     entities_upserted: [],

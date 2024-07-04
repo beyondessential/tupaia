@@ -6,6 +6,7 @@
 import { useMutation } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { post } from '../api';
+import { useSurveyResponse } from '../queries';
 import { useSurveyForm } from '../../features';
 import { ROUTES } from '../../constants';
 import { AnswersT, useSurveyResponseData } from './useSubmitSurveyResponse';
@@ -18,6 +19,7 @@ export const useResubmitSurveyResponse = () => {
   const { resetForm } = useSurveyForm();
 
   const surveyResponseData = useSurveyResponseData();
+  const { data: surveyResponse } = useSurveyResponse(surveyResponseId);
 
   return useMutation<any, Error, AnswersT, unknown>(
     async (answers: AnswersT) => {
@@ -25,8 +27,15 @@ export const useResubmitSurveyResponse = () => {
         return;
       }
 
-      return post(`surveyResponse/${surveyResponseId}/resubmit`, {
-        data: { ...surveyResponseData, answers },
+      // TODO: check the data time - use existing or now?
+      return post(`resubmitSurveyResponse/${surveyResponseId}`, {
+        data: {
+          ...surveyResponseData,
+          answers,
+          // keep the same dataTime and userId as the original survey response
+          dataTime: surveyResponse?.dataTime,
+          userId: surveyResponse?.userId,
+        },
       });
     },
     {
