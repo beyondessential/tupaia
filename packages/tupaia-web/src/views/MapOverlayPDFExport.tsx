@@ -66,7 +66,7 @@ const MapOverlayInfoContainer = styled.div`
   left: 2.1rem;
   background-color: white;
   border: 1px solid ${({ theme }) => theme.palette.divider};
-  width: 18rem;
+  width: 20rem;
   padding-inline: 1.3rem;
   padding-block: 1rem;
 `;
@@ -80,6 +80,7 @@ const MapOverlayName = styled(MapOverlayInfoText).attrs({
   variant: 'h2',
 })`
   color: black;
+  font-size: 1rem;
 `;
 
 const LatestDataText = styled(MapOverlayInfoText)`
