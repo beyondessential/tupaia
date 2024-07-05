@@ -18,3 +18,4 @@ export * as DatatrakWebGenerateLoginTokenRequest from './GenerateLoginTokenReque
 export * as DatatrakWebEntityDescendantsRequest from './EntityDescendantsRequest';
 export * as DatatrakWebTasksRequest from './TasksRequest';
 export * as DatatrakWebSurveyUsersRequest from './SurveyUsersRequest';
+export * as DatatrakWebCreateTaskRequest from './CreateTaskRequest';

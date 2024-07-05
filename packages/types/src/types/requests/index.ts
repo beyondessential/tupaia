@@ -21,6 +21,7 @@ export {
   DatatrakWebEntityDescendantsRequest,
   DatatrakWebTasksRequest,
   DatatrakWebSurveyUsersRequest,
+  DatatrakWebCreateTaskRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,
