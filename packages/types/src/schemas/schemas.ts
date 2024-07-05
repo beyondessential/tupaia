@@ -87519,6 +87519,9 @@ export const EntityResponseSchema = {
 		},
 		"isRecent": {
 			"type": "boolean"
+		},
+		"parent_name": {
+			"type": "string"
 		}
 	},
 	"required": [
@@ -87848,6 +87851,23 @@ export const TaskResponseSchema = {
 		"survey",
 		"surveyId",
 		"taskStatus"
+	]
+} 
+
+export const UserResponseSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name"
 	]
 } 
 
