@@ -145,7 +145,7 @@ const useTasksTable = () => {
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
-  const { data, isLoading } = useTasks(projectId, pageSize, page, filters, sortBy);
+  const { data, isLoading, isFetching } = useTasks(projectId, pageSize, page, filters, sortBy);
 
   const updateSorting = newSorting => {
     searchParams.set('sortBy', JSON.stringify(newSorting));
@@ -164,14 +164,17 @@ const useTasksTable = () => {
   };
 
   const onChangePage = newPage => {
-    setSearchParams({ page: newPage });
+    searchParams.set('page', newPage.toString());
+    setSearchParams(searchParams);
   };
 
   const onChangePageSize = newPageSize => {
-    setSearchParams({ pageSize: newPageSize });
+    searchParams.set('pageSize', newPageSize.toString());
+    searchParams.set('page', '0');
+    setSearchParams(searchParams);
   };
 
-  const { tasks = [], count = 0, numberOfPages = 1 } = data || {};
+  const { tasks = [], count = 0, numberOfPages } = data || {};
 
   return {
     columns: COLUMNS,
@@ -186,7 +189,7 @@ const useTasksTable = () => {
     updateFilters,
     onChangePage,
     onChangePageSize,
-    isLoading,
+    isLoading: isLoading || isFetching,
   };
 };
 
@@ -211,7 +214,7 @@ export const TasksTable = () => {
     <Container>
       <FilterableTable
         columns={columns}
-        data={data}
+        data={isLoading ? [] : data}
         pageIndex={pageIndex}
         pageSize={pageSize}
         sorting={sorting}
