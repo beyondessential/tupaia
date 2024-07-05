@@ -107,8 +107,16 @@ interface CreateTaskModalProps {
 }
 
 export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
+  const defaultValues = {
+    surveyCode: null,
+    entityId: null,
+    dueDate: new Date(),
+    repeatSchedule: null,
+    assigneeId: null,
+  };
   const formContext = useForm({
-    mode: 'all',
+    mode: 'onChange',
+    defaultValues,
   });
   const {
     handleSubmit,
@@ -118,12 +126,8 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
     formState: { isValid },
   } = formContext;
 
-  const onCloseModal = () => {
-    reset();
-    onClose();
-  };
   const { countries, selectedCountry, updateSelectedCountry } = useUserCountries();
-  const { mutate: createTask, isLoading: isSaving } = useCreateTask(onCloseModal);
+  const { mutate: createTask, isLoading: isSaving } = useCreateTask(onClose);
 
   const buttons: {
     text: string;
@@ -134,7 +138,7 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
   }[] = [
     {
       text: 'Cancel',
-      onClick: onCloseModal,
+      onClick: onClose,
       variant: 'outlined',
       id: 'cancel',
       disabled: isSaving,
@@ -151,6 +155,12 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
     setValue('surveyCode', null, { shouldValidate: true });
     setValue('entityId', null, { shouldValidate: true });
   }, [selectedCountry?.code]);
+
+  useEffect(() => {
+    if (open) {
+      reset(defaultValues);
+    }
+  }, [open]);
 
   return (
     <Modal isOpen={open} onClose={onClose} title="New task" buttons={buttons} isLoading={isSaving}>

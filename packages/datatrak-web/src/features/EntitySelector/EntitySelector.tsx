@@ -161,7 +161,7 @@ export const EntitySelector = ({
             <ResultsList
               value={value}
               onSelect={onSelect}
-              searchResults={displayResults}
+              searchResults={disableSearch ? [] : displayResults}
               showRecentEntities={showRecentEntities}
             />
           )}
