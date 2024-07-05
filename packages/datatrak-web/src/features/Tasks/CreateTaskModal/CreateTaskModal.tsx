@@ -3,17 +3,18 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { Modal, TextField } from '@tupaia/ui-components';
+import { ButtonProps } from '@material-ui/core';
+import { useCreateTask } from '../../../api';
 import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { DueDatePicker } from '../DueDatePicker';
 import { RepeatScheduleInput } from './RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
 import { AssigneeInput } from './AssigneeInput';
-import { ButtonProps } from '@material-ui/core';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -43,6 +44,13 @@ const Form = styled.form`
   }
   .MuiOutlinedInput-notchedOutline {
     border-color: ${({ theme }) => theme.palette.divider};
+  }
+  .MuiInputBase-root.Mui-error {
+    background-color: transparent;
+  }
+  .loading-screen {
+    border: none;
+    background-color: ${({ theme }) => theme.palette.background.paper};
   }
 `;
 
@@ -100,18 +108,22 @@ interface CreateTaskModalProps {
 
 export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
   const formContext = useForm({
-    mode: 'onChange',
+    mode: 'all',
   });
   const {
     handleSubmit,
     control,
+    setValue,
+    reset,
     formState: { isValid },
   } = formContext;
-  const { countries, isLoading, selectedCountry, updateSelectedCountry } = useUserCountries();
 
-  const onSubmit = data => {
-    console.log(data);
+  const onCloseModal = () => {
+    reset();
+    onClose();
   };
+  const { countries, selectedCountry, updateSelectedCountry } = useUserCountries();
+  const { mutate: createTask, isLoading: isSaving } = useCreateTask(onCloseModal);
 
   const buttons: {
     text: string;
@@ -122,22 +134,28 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
   }[] = [
     {
       text: 'Cancel',
-      onClick: onClose,
+      onClick: onCloseModal,
       variant: 'outlined',
       id: 'cancel',
+      disabled: isSaving,
     },
     {
       text: 'Save',
-      onClick: handleSubmit(onSubmit),
+      onClick: handleSubmit(createTask),
       id: 'save',
-      disabled: !isValid,
+      disabled: !isValid || isSaving,
     },
   ];
 
+  useEffect(() => {
+    setValue('surveyCode', null, { shouldValidate: true });
+    setValue('entityId', null, { shouldValidate: true });
+  }, [selectedCountry?.code]);
+
   return (
-    <Modal isOpen={open} onClose={onClose} title="New task" buttons={buttons}>
+    <Modal isOpen={open} onClose={onClose} title="New task" buttons={buttons} isLoading={isSaving}>
       <FormProvider {...formContext}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(createTask)}>
           <CountrySelectorWrapper>
             <CountrySelector
               countries={countries}
@@ -148,8 +166,8 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
           <Controller
             name="surveyCode"
             control={control}
-            rules={{ required: 'Required' }}
-            render={({ onChange, value }) => (
+            rules={{ required: '*Required' }}
+            render={({ onChange, value }, { invalid }) => (
               <ListSelectWrapper>
                 <GroupedSurveyList
                   selectedSurvey={value}
@@ -160,43 +178,54 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
                     required: true,
                     color: 'primary',
                     component: 'label',
+                    error: invalid,
                   }}
+                  error={invalid ? '*Required' : undefined}
                 />
               </ListSelectWrapper>
             )}
           />
           <Controller
-            name="entity"
+            name="entityId"
             control={control}
-            rules={{ required: 'Required' }}
-            render={({ onChange, value, ref }, { invalid }) => (
-              <ListSelectWrapper>
-                <EntityInput
-                  onChange={onChange}
-                  value={value}
-                  invalid={invalid}
-                  selectedCountry={selectedCountry}
-                  ref={ref}
-                />
-              </ListSelectWrapper>
-            )}
+            rules={{ required: '*Required' }}
+            render={({ onChange, value, ref, name }, { invalid }) => {
+              return (
+                <ListSelectWrapper>
+                  <EntityInput
+                    onChange={onChange}
+                    value={value}
+                    selectedCountry={selectedCountry}
+                    inputRef={ref}
+                    name={name}
+                    invalid={invalid}
+                  />
+                </ListSelectWrapper>
+              );
+            }}
           />
           <InputRow>
             <Controller
               name="dueDate"
+              rules={{ required: '*Required' }}
               control={control}
-              render={({ ref, value, onChange, ...field }) => (
-                <DueDatePicker
-                  {...field}
-                  value={value}
-                  onChange={onChange}
-                  inputRef={ref}
-                  label="Due date"
-                  disablePast
-                  fullWidth
-                  required
-                />
-              )}
+              defaultValue={new Date()}
+              render={({ ref, value, onChange, ...field }, { invalid }) => {
+                return (
+                  <DueDatePicker
+                    {...field}
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    label="Due date"
+                    disablePast
+                    fullWidth
+                    required
+                    invalid={invalid}
+                    helperText={invalid ? '*Required' : undefined}
+                  />
+                );
+              }}
             />
             <Controller
               name="repeatSchedule"
@@ -225,7 +254,6 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
 
           {/** This is a placeholder for when we add in comments functionality */}
           <CommentsInput label="Comments" />
-          {/* <Button type="submit">Create task</Button> */}
         </Form>
       </FormProvider>
     </Modal>

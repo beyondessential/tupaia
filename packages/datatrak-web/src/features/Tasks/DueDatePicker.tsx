@@ -26,6 +26,7 @@ const Wrapper = styled.div`
   }
   .MuiOutlinedInput-adornedEnd {
     padding-inline-end: 0;
+    padding-inline-start: 0;
   }
   .MuiFormLabel-root {
     margin-block-end: 0.25rem;
@@ -46,6 +47,8 @@ interface DueDatePickerProps {
   required?: boolean;
   label?: string;
   inputRef?: React.Ref<any>;
+  invalid?: boolean;
+  helperText?: string;
 }
 
 export const DueDatePicker = ({
@@ -56,14 +59,16 @@ export const DueDatePicker = ({
   fullWidth,
   required,
   inputRef,
+  invalid,
+  helperText,
 }: DueDatePickerProps) => {
   const [date, setDate] = useState<string | null>(value ?? null);
 
   // update in local state to be the end of the selected date
   // this is also to handle invalid dates, so the filter doesn't get updated until a valid date is selected/entered
   const updateSelectedDate = (newValue: string | null) => {
-    if (!newValue) return setDate(null);
-    if (!isValid(new Date(newValue))) return;
+    if (!newValue) return setDate('');
+    if (!isValid(new Date(newValue))) return setDate('');
     const endOfDay = new Date(newValue).setHours(23, 59, 59, 999);
     const newDate = format(endOfDay, DATE_FORMAT);
     setDate(newDate);
@@ -79,7 +84,7 @@ export const DueDatePicker = ({
   useEffect(() => {
     if (value === date) return;
 
-    setDate(value ?? null);
+    setDate(value ?? '');
   }, [value]);
 
   const getLocaleDateFormat = () => {
@@ -117,6 +122,8 @@ export const DueDatePicker = ({
         fullWidth={fullWidth}
         required={required}
         inputRef={inputRef}
+        error={invalid}
+        helperText={helperText}
       />
     </Wrapper>
   );

@@ -13,17 +13,19 @@ import { getAllSurveyComponents } from '../../Survey';
 interface EntityInputProps {
   onChange: (value: string) => void;
   value: string;
-  invalid: boolean;
   selectedCountry?: Country | null;
-  ref?: React.Ref<any>;
+  inputRef?: React.Ref<any>;
+  name: string;
+  invalid?: boolean;
 }
 
 export const EntityInput = ({
   onChange,
   value,
-  invalid,
   selectedCountry,
-  ref,
+  inputRef,
+  name,
+  invalid,
 }: EntityInputProps) => {
   const { surveyCode } = useWatch('surveyCode');
   const user = useCurrentUserContext();
@@ -41,14 +43,13 @@ export const EntityInput = ({
 
   return (
     <EntitySelector
-      id="entity"
-      name="entity"
+      id={name}
+      name={name}
       required
       controllerProps={{
         onChange,
         value,
-        ref,
-        invalid,
+        ref: inputRef,
       }}
       showLegend
       projectCode={user?.project?.code}
@@ -62,6 +63,7 @@ export const EntityInput = ({
       legendProps={{
         required: true,
         color: 'primary',
+        error: invalid,
       }}
     />
   );

@@ -69,7 +69,7 @@ interface RepeatScheduleInputProps {
     value: React.ChangeEvent<{
       name?: string | undefined;
       value: unknown;
-    }>,
+    }> | null,
   ) => void;
 }
 
@@ -82,12 +82,13 @@ export const RepeatScheduleInput = ({ value = '', onChange }: RepeatScheduleInpu
       onChange(null);
     }
   }, [dueDate]);
+
   return (
     <FormControl fullWidth>
       <FormLabel htmlFor="repeatSchedule">Repeating task</FormLabel>
       <Select
         id="repeatSchedule"
-        value={value}
+        value={value ?? ''}
         onChange={onChange}
         fullWidth
         variant="outlined"

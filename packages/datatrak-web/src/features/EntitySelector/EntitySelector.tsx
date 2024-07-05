@@ -51,7 +51,7 @@ interface EntitySelectorProps {
     onChange: (value: string) => void;
     value: string;
     ref: any;
-    invalid: boolean;
+    invalid?: boolean;
   };
   showLegend: boolean;
   projectCode?: string;
@@ -130,42 +130,44 @@ export const EntitySelector = ({
   const showLoader = isLoading || ((isLoadingSearchResults || !isFetched) && !disableSearch);
 
   return (
-    <Container>
-      {showLegend && (
-        <Label {...legendProps} id="entity-selector-legend">
-          {legend}
-        </Label>
-      )}
-      <div className="entity-selector-content">
-        {showSearchInput && (
-          <SearchField
-            id={id}
-            isDirty={isDirty}
-            label={label}
-            detailLabel={detailLabel}
-            name={name!}
-            ref={ref}
-            onChangeSearch={onChangeSearch}
-            searchValue={searchValue}
-            invalid={invalid}
-            required={required}
-            inputProps={{
-              ['aria-labelledby']: showLegend && !label ? 'entity-selector-legend' : undefined,
-            }}
-          />
+    <>
+      <Container>
+        {showLegend && (
+          <Label {...legendProps} id="entity-selector-legend">
+            {legend}
+          </Label>
         )}
-        {errors && errors[name!] && <FormHelperText error>*{errors[name!].message}</FormHelperText>}
-        {showLoader ? (
-          <SpinningLoader />
-        ) : (
-          <ResultsList
-            value={value}
-            onSelect={onSelect}
-            searchResults={displayResults}
-            showRecentEntities={showRecentEntities}
-          />
-        )}
-      </div>
-    </Container>
+        <div className="entity-selector-content">
+          {showSearchInput && (
+            <SearchField
+              id={id}
+              isDirty={isDirty}
+              label={label}
+              detailLabel={detailLabel}
+              name={name!}
+              ref={ref}
+              onChangeSearch={onChangeSearch}
+              searchValue={searchValue}
+              invalid={invalid}
+              required={required}
+              inputProps={{
+                ['aria-labelledby']: showLegend && !label ? 'entity-selector-legend' : undefined,
+              }}
+            />
+          )}
+          {showLoader ? (
+            <SpinningLoader />
+          ) : (
+            <ResultsList
+              value={value}
+              onSelect={onSelect}
+              searchResults={displayResults}
+              showRecentEntities={showRecentEntities}
+            />
+          )}
+        </div>
+      </Container>
+      {errors && errors[name!] && <FormHelperText error>{errors[name!].message}</FormHelperText>}
+    </>
   );
 };
