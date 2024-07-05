@@ -123,7 +123,7 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
     control,
     setValue,
     reset,
-    formState: { isValid },
+    formState: { isValid, dirtyFields },
   } = formContext;
 
   const { countries, selectedCountry, updateSelectedCountry } = useUserCountries();
@@ -152,8 +152,15 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
   ];
 
   useEffect(() => {
-    setValue('surveyCode', null, { shouldValidate: true });
-    setValue('entityId', null, { shouldValidate: true });
+    if (!selectedCountry?.code) return;
+    const { surveyCode, entityId } = dirtyFields;
+    // reset surveyCode and entityId when country changes, if they are dirty
+    if (surveyCode) {
+      setValue('surveyCode', null, { shouldValidate: true });
+    }
+    if (entityId) {
+      setValue('entityId', null, { shouldValidate: true });
+    }
   }, [selectedCountry?.code]);
 
   useEffect(() => {
