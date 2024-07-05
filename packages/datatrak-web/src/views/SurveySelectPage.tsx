@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { useEditUser } from '../api/mutations';
-import { ListItemType, Button } from '../components';
+import { Button } from '../components';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { HEADER_HEIGHT } from '../constants';
 import { CountrySelector, GroupedSurveyList, useUserCountries } from '../features';
