@@ -18,7 +18,6 @@ export const FileUploadField = ({
 }) => {
   const handleChange = async (_event, _filename, files) => {
     const [file] = files || [];
-    console.log('file', file);
     onChange(file ? { fileName: file.name, file } : { fileName: null, file: null });
   };
 
