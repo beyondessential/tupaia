@@ -5,10 +5,10 @@
 
 import React from 'react';
 import { useParams } from 'react-router';
+import { Typography } from '@material-ui/core';
 import { SurveyQuestionInputProps } from '../../types';
 import { useSurveyForm } from '..';
 import { EntitySelector } from '../EntitySelector';
-import { Typography } from '@material-ui/core';
 
 export const EntityQuestion = ({
   id,
