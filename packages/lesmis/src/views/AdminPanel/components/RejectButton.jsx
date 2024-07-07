@@ -7,9 +7,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { ColumnActionButton, DataChangeAction, useApiContext } from '@tupaia/admin-panel';
+import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { Delete } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { useRejectSurveyResponseStatus } from '../api';
 
 const ConfirmModalHeading = styled(Typography).attrs({
