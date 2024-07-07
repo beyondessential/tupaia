@@ -115,8 +115,10 @@ const RemoveButton = styled(Button).attrs({
 
 const humanFileSize = (sizeInBytes: number) => {
   const i = sizeInBytes === 0 ? 0 : Math.floor(Math.log(sizeInBytes) / Math.log(1024));
-  const value = (sizeInBytes / 1024 ** i).toFixed(2);
+  const valueAsFloat = (sizeInBytes / 1024 ** i).toFixed(2);
   const unit = ['B', 'kB', 'MB', 'GB', 'TB'][i];
+  const value = unit === 'B' ? sizeInBytes : valueAsFloat;
+
   return (
     <>
       {value}&nbsp;{unit}
