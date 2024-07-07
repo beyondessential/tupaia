@@ -42,10 +42,7 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
   return formatLinkHeader(linkHeader);
 };
 
-/**
- * Used only by {@link processColumnSelector}, so not exported.
- */
-const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
+export const fullyQualifyColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
   const [resource, column] = unprocessedColumnSelector.includes('.')
     ? unprocessedColumnSelector.split('.')
     : [baseRecordType, unprocessedColumnSelector];
