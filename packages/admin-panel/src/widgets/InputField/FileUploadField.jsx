@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -42,7 +42,7 @@ FileUploadField.propTypes = {
   label: PropTypes.string,
   helperText: PropTypes.string,
   maxSizeInBytes: PropTypes.number,
-  accept: PropTypes.string,
+  accept: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
 };
 
 FileUploadField.defaultProps = {
@@ -50,5 +50,5 @@ FileUploadField.defaultProps = {
   label: null,
   helperText: null,
   maxSizeInBytes: null,
-  accept: '',
+  accept: null,
 };

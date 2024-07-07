@@ -36,11 +36,15 @@ export const SimpleWithTooltip = () => {
   return (
     <Container>
       <FileUploadField
-        accept="image/jpeg,image/png"
         onChange={newFiles => setFiles(newFiles)}
+        accept={{
+          'application/*': ['.xls', '.xlsx'],
+          'image/*': ['.jpeg', '.jpg', '.png'],
+          'text/*': ['.csv'],
+        }}
         name="file-upload"
         label="File Upload"
-        tooltip="PNG and JPEG files only"
+        tooltip="Excel, CSV, JPEG & PNG files only"
       />
     </Container>
   );

@@ -149,7 +149,7 @@ export interface FileUploadFieldProps {
   maxSizeInBytes?: number;
   FormHelperTextComponent?: React.ElementType;
   required?: boolean;
-  accept?: string;
+  accept?: Record<string, string[]>;
   /**
    * Puts this component in a read-only mode. This hides the dropzone entirely. Use this prop in
    * tandem with the `fileName` prop to programmatically show a `FileUploadField` that looks like it
@@ -227,20 +227,14 @@ export const FileUploadField = ({
     onChange(null, null, files);
   }, [files]);
 
-  /**
-   * @privateRemarks `useDropzone` can take an `accept` prop of type `Record<string, string[]>`, but
-   * it is incompatible with existing usages of {@link FileUploadField} (without complex
-   * conversion). See https://react-dropzone.js.org/#section-accepting-specific-file-types.
-   *
-   * We use the `accept` attribute directly on the `<input>` element. It is simpler and agrees with
-   * legacy code.
-   */
   const { fileRejections, getInputProps, getRootProps, isDragActive } = useDropzone({
+    accept,
     disabled,
     maxSize: maxSizeInBytes,
     multiple,
     onDropAccepted,
   });
+
   const { palette } = useTheme();
 
   const getDropzoneLabel = () => {
@@ -252,11 +246,12 @@ export const FileUploadField = ({
     );
   };
 
-  const acceptedFileTypesLabel =
-    accept
-      ?.split(',')
-      .map(str => str.trim())
-      .join(' ') ?? 'any';
+  const acceptedFileExtensions = accept
+    ? Object.values(accept)
+        .flat()
+        .map(str => str.trim())
+    : null;
+  const acceptedFileTypesLabel = acceptedFileExtensions?.join(' ') ?? 'any';
 
   return (
     <>
@@ -266,7 +261,7 @@ export const FileUploadField = ({
       <Uploader>
         {(!hasFileSelected || multiple) && (
           <Dropzone {...getRootProps()} $isDragActive={isDragActive}>
-            <input {...getInputProps()} accept={accept} id={name} name={name} required={required} />
+            <input {...getInputProps()} id={name} name={name} required={required} />
             <FilePickerIcon color={palette.primary.main} />
             <PrimaryLabel>{getDropzoneLabel()}</PrimaryLabel>
             <SecondaryLabel>Supported file types: {acceptedFileTypesLabel}</SecondaryLabel>
