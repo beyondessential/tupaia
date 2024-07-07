@@ -80,7 +80,9 @@ export class DatabaseModel {
 
       const customColumnSelectors = this.customColumnSelectors || {};
 
-      this.fieldNames = [...Object.keys(schema), ...Object.keys(customColumnSelectors)];
+      this.fieldNames = [
+        ...new Set([...Object.keys(schema), ...Object.keys(customColumnSelectors)]),
+      ];
     }
     return this.fieldNames;
   }
@@ -174,7 +176,13 @@ export class DatabaseModel {
         fullyQualifiedConditions[field] = value;
       } else {
         const qualifiedName = this.fullyQualifyColumn(field);
-        const fieldSelector = this.getColumnSelector(field, qualifiedName) ?? qualifiedName;
+        const customSelector = this.getColumnSelector(field, qualifiedName);
+        let fieldSelector = qualifiedName;
+        // if there is a custom selector, and it is a string, use it as the field selector. In some cases it will be an object, e.g. `castAs: 'text'` which is used to cast the field to a specific type, but this is not used as the field selector as an error will be thrown.
+        if (customSelector && typeof customSelector === 'string') {
+          fieldSelector = customSelector;
+        }
+
         const fullyQualifiedField = fieldNames.includes(field) ? fieldSelector : field;
         fullyQualifiedConditions[fullyQualifiedField] = value;
       }
