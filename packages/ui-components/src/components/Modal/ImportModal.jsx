@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import Typography from '@material-ui/core/Typography';
@@ -109,7 +109,10 @@ export const ImportModal = ({
           <>
             <p>{subtitle}</p>
             <form>
-              <FileUploadField onChange={files => setFile(files[0])} name="file-upload" />
+              <FileUploadField
+                onChange={(_event, _filename, files) => setFile(files[0])}
+                name="file-upload"
+              />
             </form>
           </>
         );

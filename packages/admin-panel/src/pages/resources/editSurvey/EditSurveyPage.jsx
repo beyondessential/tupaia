@@ -202,11 +202,11 @@ const EditSurveyPageComponent = withConnectedEditor(
               onChange={({ fileName, file }) =>
                 handleSetFormFile('surveyQuestions', { fileName, file })
               }
-              initialFileName={initialFileName}
               accept={{
                 'application/*': ['.xls', '.xlsx'],
                 'text/*': ['.csv'],
               }}
+              fileName={initialFileName}
               label="Survey questions"
             />
           </Section>

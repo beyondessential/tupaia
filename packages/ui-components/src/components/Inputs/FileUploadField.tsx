@@ -141,7 +141,7 @@ export interface FileUploadFieldProps {
    * programmatically set (except to ''), we simply show a filename so it appears as if a file is
    * selected.
    */
-  fileName: string;
+  fileName?: string;
   multiple?: boolean;
   label?: string;
   tooltip?: string;
