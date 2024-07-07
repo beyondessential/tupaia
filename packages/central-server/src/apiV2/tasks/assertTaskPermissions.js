@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import { fetchCountryCodesByPermissionGroupId, mergeFilter, mergeMultiJoin } from '../utilities';
+import { fetchCountryCodesByPermissionGroupId, mergeFilter } from '../utilities';
 
 const getUserSurveys = async (models, accessPolicy, projectId) => {
   const query = {};
@@ -22,7 +21,7 @@ export const createTaskDBFilter = async (accessPolicy, models, criteria, options
   if (hasBESAdminAccess(accessPolicy)) {
     return { dbConditions: criteria, dbOptions: options };
   }
-  const { projectId, ...dbConditions } = { ...criteria };
+  const { 'survey.project_id': projectId, ...dbConditions } = { ...criteria };
   const dbOptions = { ...options };
 
   const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
@@ -48,15 +47,6 @@ export const createTaskDBFilter = async (accessPolicy, models, criteria, options
     dbConditions['task.survey_id'],
   );
 
-  dbOptions.multiJoin = mergeMultiJoin(
-    [
-      {
-        joinWith: RECORDS.ENTITY,
-        joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.TASK}.entity_id`],
-      },
-    ],
-    dbOptions.multiJoin,
-  );
   return { dbConditions, dbOptions };
 };
 

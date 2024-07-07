@@ -207,7 +207,6 @@ const DataFetchingTableComponent = memo(
         <FilterableTable
           columns={formattedColumns}
           data={data}
-          isLoading={isChangingDataOnServer}
           pageIndex={pageIndex}
           pageSize={pageSize}
           sorting={sorting}
@@ -220,8 +219,6 @@ const DataFetchingTableComponent = memo(
           onChangePage={onPageChange}
           onChangePageSize={onPageSizeChange}
           onChangeSorting={onSortedChange}
-          refreshData={onRefreshData}
-          errorMessage={errorMessage}
           totalRecords={totalRecords}
         />
 
