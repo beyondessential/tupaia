@@ -4,9 +4,10 @@
  */
 
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import moment from 'moment';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
-import { periodToMoment } from '@tupaia/utils';
+import { GRANULARITY_CONFIG, periodToMoment } from '@tupaia/utils';
 import { Tooltip, IconButton } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
 import { ArrowDropDown, Layers, Assignment, GetApp } from '@material-ui/icons';
@@ -21,17 +22,12 @@ import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
 import { useExportMapOverlay } from '../../../api/mutations';
 import { useEntity, useMapOverlays, useProject } from '../../../api/queries';
-import {
-  DEFAULT_PERIOD_PARAM_STRING,
-  MOBILE_BREAKPOINT,
-  URL_SEARCH_PARAMS,
-} from '../../../constants';
-import { useGAEffect } from '../../../utils';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
+import { convertDateRangeToUrlPeriodString, useDateRanges, useGAEffect } from '../../../utils';
 import { MapTableModal } from './MapTableModal';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
-import { useSearchParams } from 'react-router-dom';
 
 const MapButton = styled(IconButton)`
   color: ${({ theme }) => theme.palette.text.primary};
@@ -189,7 +185,6 @@ export const DesktopMapOverlaySelector = ({
   hiddenValues,
   activeTileSet,
 }: DesktopMapOverlaySelectorProps) => {
-  const [urlSearchParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { data: project } = useProject(projectCode);
@@ -198,8 +193,10 @@ export const DesktopMapOverlaySelector = ({
   const { map } = useMapContext();
   const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
   const { mutate: exportMapOverlay, isLoading: isExporting } = useExportMapOverlay(exportFileName);
-  const mapOverlayPeriod =
-    urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD) ?? DEFAULT_PERIOD_PARAM_STRING;
+  const { startDate, endDate } = useDateRanges(
+    URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
+    selectedOverlay,
+  );
 
   const [mapModalOpen, setMapModalOpen] = useState(false);
   // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
@@ -208,8 +205,25 @@ export const DesktopMapOverlaySelector = ({
     setMapModalOpen(!mapModalOpen);
   };
 
+  // Pass the explicit date range to the export function, because the server may not have the correct time zone when the default date range is used
+  const getMapOverlayPeriodForExport = (): string | undefined => {
+    const periodGranularity = GRANULARITY_CONFIG[
+      selectedOverlay?.periodGranularity as keyof typeof GRANULARITY_CONFIG
+    ]?.momentUnit as moment.unitOfTime.StartOf;
+    // if the overlay has no period granularity, return undefined
+    if (!periodGranularity) return undefined;
+    const periodStartDate = moment(startDate).startOf(periodGranularity);
+    const periodEndDate = moment(endDate).endOf(periodGranularity);
+    const urlPeriodString = convertDateRangeToUrlPeriodString({
+      startDate: periodStartDate,
+      endDate: periodEndDate,
+    });
+    return urlPeriodString;
+  };
+
   const onExportMapOverlay = () => {
     if (!map) throw new Error('Map is not ready');
+    const urlPeriodString = getMapOverlayPeriodForExport();
     exportMapOverlay({
       projectCode,
       entityCode,
@@ -218,7 +232,7 @@ export const DesktopMapOverlaySelector = ({
       zoom: map.getZoom(),
       hiddenValues,
       tileset: activeTileSet.url,
-      mapOverlayPeriod,
+      mapOverlayPeriod: urlPeriodString,
     });
   };
 
