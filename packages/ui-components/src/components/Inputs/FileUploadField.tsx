@@ -172,8 +172,6 @@ export const FileUploadField = ({
   disabled = false,
   fileName,
 }: FileUploadFieldProps) => {
-  const fileOrFiles = multiple ? 'files' : 'file';
-
   if (disabled)
     return (
       <Uploader>
@@ -237,6 +235,7 @@ export const FileUploadField = ({
 
   const { palette } = useTheme();
 
+  const fileOrFiles = multiple ? 'files' : 'file';
   const getDropzoneLabel = () => {
     if (isDragActive) return `Drop ${fileOrFiles} here`;
     return (
