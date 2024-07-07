@@ -6,13 +6,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import {
-  ColumnActionButton,
-  DataChangeAction,
-  useApiContext,
-  Modal,
-  ModalCenteredContent,
-} from '@tupaia/admin-panel';
+import { ColumnActionButton, DataChangeAction, useApiContext } from '@tupaia/admin-panel';
+import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { Delete } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useRejectSurveyResponseStatus } from '../api';

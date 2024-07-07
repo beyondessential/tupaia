@@ -8,11 +8,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
+import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM, MODAL_STATUS } from '../../constants';
 import { useVisualisationContext, useVizConfigContext } from '../../context';
 import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
 import { useVizBuilderBasePath } from '../../utils';
-import { Modal, ModalCenteredContent } from '../../../widgets';
 
 const Heading = styled(Typography).attrs({
   variant: 'h3',
