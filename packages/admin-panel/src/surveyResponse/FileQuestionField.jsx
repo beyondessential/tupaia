@@ -121,7 +121,7 @@ export const FileQuestionField = ({ value: uniqueFileName, onChange, label, maxS
 
   const api = useApiContext();
   const downloadFile = async () => {
-    await api.download(`downloadFiles`, { uniqueFileNames: uniqueFileName }, fileName);
+    await api.download('downloadFiles', { uniqueFileNames: uniqueFileName }, fileName);
   };
 
   return (
