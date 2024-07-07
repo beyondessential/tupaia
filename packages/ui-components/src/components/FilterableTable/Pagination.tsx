@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Pagination as UIPagination } from '@tupaia/ui-components';
+import { Pagination as UIPagination } from '../Pagination';
 
 const Wrapper = styled.div`
   .pagination-wrapper {
@@ -18,31 +17,35 @@ const Wrapper = styled.div`
   }
 `;
 
-export const Pagination = ({ page, pageCount, gotoPage, pageSize, setPageSize, totalRecords }) => {
+interface PaginationProps {
+  page: number;
+  pageCount: number;
+  onChangePage: (page: number) => void;
+  pageSize: number;
+  onChangePageSize: (pageSize: number) => void;
+  totalRecords: number;
+}
+
+export const Pagination = ({
+  page,
+  pageCount,
+  onChangePage,
+  pageSize,
+  onChangePageSize,
+  totalRecords,
+}: PaginationProps) => {
   if (!totalRecords) return null;
 
-  const handleChangePage = newPage => {
-    gotoPage(newPage);
-  };
   return (
     <Wrapper>
       <UIPagination
         page={page}
         pageCount={pageCount}
-        onChangePage={handleChangePage}
+        onChangePage={onChangePage}
         pageSize={pageSize}
-        setPageSize={setPageSize}
+        setPageSize={onChangePageSize}
         totalRecords={totalRecords}
       />
     </Wrapper>
   );
-};
-
-Pagination.propTypes = {
-  page: PropTypes.number.isRequired,
-  pageCount: PropTypes.number.isRequired,
-  gotoPage: PropTypes.func.isRequired,
-  pageSize: PropTypes.number.isRequired,
-  setPageSize: PropTypes.func.isRequired,
-  totalRecords: PropTypes.number.isRequired,
 };

@@ -85698,6 +85698,117 @@ export const SyncGroupLogUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const TaskSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entity_id",
+		"id",
+		"survey_id"
+	]
+} 
+
+export const TaskCreateSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entity_id",
+		"survey_id"
+	]
+} 
+
+export const TaskUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const TupaiaWebSessionSchema = {
 	"type": "object",
 	"properties": {
@@ -86234,6 +86345,15 @@ export const VerifiedEmailSchema = {
 		"new_user",
 		"unverified",
 		"verified"
+	],
+	"type": "string"
+} 
+
+export const TaskStatusSchema = {
+	"enum": [
+		"cancelled",
+		"completed",
+		"to_do"
 	],
 	"type": "string"
 } 
