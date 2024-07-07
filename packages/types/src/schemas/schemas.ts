@@ -85704,6 +85704,10 @@ export const TaskSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"due_date": {
 			"type": "string",
 			"format": "date-time"
@@ -85732,6 +85736,7 @@ export const TaskSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"created_at",
 		"entity_id",
 		"id",
 		"survey_id"
@@ -85743,6 +85748,10 @@ export const TaskCreateSchema = {
 	"properties": {
 		"assignee_id": {
 			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"due_date": {
 			"type": "string",
@@ -85779,6 +85788,10 @@ export const TaskUpdateSchema = {
 	"properties": {
 		"assignee_id": {
 			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"due_date": {
 			"type": "string",
