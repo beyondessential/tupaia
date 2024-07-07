@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal } from '../widgets';
+import { Modal } from '@tupaia/ui-components';
 import { useApiContext } from '../utilities/ApiProvider';
 import { ActionButton } from '../editor';
 import { ExportIcon } from '../icons';

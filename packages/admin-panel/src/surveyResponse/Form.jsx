@@ -5,10 +5,9 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@tupaia/ui-components';
+import { Button, ModalContentProvider, ModalFooter } from '@tupaia/ui-components';
 import { Divider } from '@material-ui/core';
 import { useGetExistingData } from './useGetExistingData';
-import { ModalContentProvider, ModalFooter } from '../widgets';
 import { useResubmitSurveyResponse } from '../api/mutations/useResubmitSurveyResponse';
 import { MODAL_STATUS } from './constants';
 import { SurveyScreens } from './SurveyScreens';

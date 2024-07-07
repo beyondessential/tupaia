@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { SmallAlert } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
 import { DialogContent } from '@material-ui/core';
+import { SmallAlert } from '../Alert';
 
 const Content = styled(DialogContent)`
   text-align: left;
@@ -26,7 +25,17 @@ const Heading = styled(Typography)`
   margin-bottom: 18px;
 `;
 
-export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
+interface ModalContentProviderProps {
+  isLoading?: boolean;
+  errorMessage?: string;
+  children: ReactNode;
+}
+
+export const ModalContentProvider = ({
+  isLoading,
+  errorMessage,
+  children,
+}: ModalContentProviderProps) => {
   return (
     <Content>
       {isLoading && 'Please be patient, this can take some time...'}
@@ -42,15 +51,4 @@ export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
       {!isLoading && !errorMessage && children}
     </Content>
   );
-};
-
-ModalContentProvider.propTypes = {
-  isLoading: PropTypes.bool.isRequired,
-  errorMessage: PropTypes.string,
-  children: PropTypes.node,
-};
-
-ModalContentProvider.defaultProps = {
-  errorMessage: null,
-  children: null,
 };

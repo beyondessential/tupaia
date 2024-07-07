@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { Modal, ModalCenteredContent } from './Modal';
+import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 
 const Heading = styled(Typography).attrs({
   variant: 'h3',
