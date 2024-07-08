@@ -7,7 +7,8 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { DataGrid, FetchLoader, FlexSpaceBetween } from '@tupaia/ui-components';
+import { DataGrid } from '@mui/x-data-grid';
+import { FetchLoader, FlexSpaceBetween } from '@tupaia/ui-components';
 import { Chart } from '@tupaia/ui-chart-components';
 import { JsonEditor, JsonTreeEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
@@ -196,7 +197,7 @@ export const PreviewSection = () => {
               isNoData={!rows.length}
               noDataMessage="No Data Found"
             >
-              <DataGrid rows={rows} columns={columns} autoPageSize />
+              <DataGrid rows={rows} columns={columns} autoPageSize density="compact" />
             </FetchLoader>
           ) : (
             <IdleMessage />

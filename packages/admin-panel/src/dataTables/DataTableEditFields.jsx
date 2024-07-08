@@ -10,8 +10,8 @@ import {
   TextField,
   FetchLoader,
   Autocomplete as ExternalDatabaseConnectionAutocomplete,
-  DataGrid,
 } from '@tupaia/ui-components';
+import { DataGrid } from '@mui/x-data-grid';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
@@ -230,7 +230,7 @@ export const DataTableEditFields = React.memo(
                   isNoData={!rows.length}
                   noDataMessage="No Data Found"
                 >
-                  <DataGrid rows={rows} columns={columns} autoPageSize />
+                  <DataGrid rows={rows} columns={columns} autoPageSize density="compact" />
                 </FetchLoader>
               </StyledGrid>
             </Grid>

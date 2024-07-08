@@ -11749,6 +11749,7 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.47
     "@material-ui/styles": ^4.9.10
+    "@mui/x-data-grid": ^4.0.0
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-chart-components": "workspace:*"
@@ -12646,7 +12647,6 @@ __metadata:
     "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
-    "@mui/x-data-grid": ^4.0.0
     "@storybook/addon-essentials": 6.3.9
     "@storybook/react": ^6.3.9
     "@testing-library/jest-dom": ^6.2.0
