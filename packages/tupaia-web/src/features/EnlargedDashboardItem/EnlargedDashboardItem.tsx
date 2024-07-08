@@ -63,10 +63,15 @@ const ContentWrapper = ({ children }: { children: React.ReactNode }) => {
   const isMatrix = currentDashboardItem?.config?.type === 'matrix';
 
   const getHasBigData = () => {
-    if (!reportData || isExportMode || currentDashboardItem?.config?.type !== 'chart') return false;
+    if (!reportData || isExportMode) return false;
     // only charts with more than 20 data points are considered big. Matrix will expand to fit the screen if there is a lot of data, and 'view' type dashboards are always fixed because the data is semi-static
-    const { data } = reportData as BaseReport;
-    return data ? data?.length > 20 : false;
+    const { data = [] } = reportData as BaseReport;
+    if (currentDashboardItem?.config?.type === 'view') {
+      const { viewType } = currentDashboardItem?.config;
+      if (viewType === 'multiPhotograph') return data.length > 12;
+    }
+    if (currentDashboardItem?.config?.type !== 'chart') return false;
+    return data?.length > 20;
   };
 
   const hasBigData = getHasBigData();
