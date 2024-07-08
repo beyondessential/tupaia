@@ -8,7 +8,8 @@ import styled from 'styled-components';
 import { MenuItem as MuiMenuItem, Select } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { STATUS_VALUES, StatusPill } from '../StatusPill';
-import { FilterType, getTaskFilterSetting } from '../utils/taskFilterSettings';
+import { getTaskFilterSetting } from '../../../utils';
+import { TaskFilterType } from '../../../types';
 
 const PlaceholderText = styled.span`
   color: ${({ theme }) => theme.palette.text.secondary};
@@ -27,7 +28,7 @@ const MenuItem = styled(MuiMenuItem)`
 
 interface StatusFilterProps {
   onChange: (value: string) => void;
-  filter: { value: FilterType } | undefined;
+  filter: { value: TaskFilterType } | undefined;
 }
 
 export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
