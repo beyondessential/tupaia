@@ -27,7 +27,6 @@ export const useResubmitSurveyResponse = () => {
         return;
       }
 
-      // TODO: check the data time - use existing or now?
       return post(`resubmitSurveyResponse/${surveyResponseId}`, {
         data: {
           ...surveyResponseData,
