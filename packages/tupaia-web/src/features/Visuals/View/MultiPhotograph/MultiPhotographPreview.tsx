@@ -91,7 +91,7 @@ export const MultiPhotographPreview = ({
     );
   }
 
-  const maxThumbnailsToDisplay = data.length > 4 ? 3 : data.length;
+  const maxThumbnailsToDisplay = 3;
   const thumbnails = data.slice(0, maxThumbnailsToDisplay).map(({ value }) => value);
 
   const remainingThumbnails = data.length - maxThumbnailsToDisplay;
