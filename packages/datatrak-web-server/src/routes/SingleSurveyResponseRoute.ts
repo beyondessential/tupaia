@@ -31,22 +31,39 @@ const DEFAULT_FIELDS = [
   'survey.code',
   'user_id',
   'country.code',
+  'survey.permission_group_id',
 ];
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
 // If the user is not a BES admin or does not have access to the admin panel, they should not be able to view the survey response
-const assertCanViewSurveyResponse = (accessPolicy: AccessPolicy, countryCode: string) => {
+const assertCanViewSurveyResponse = (
+  accessPolicy: AccessPolicy,
+  countryCode: string,
+  surveyPermissionGroupName: string,
+) => {
   const isBESAdmin = accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
-  const hasAdminPanelAccess = accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
-  if (!isBESAdmin && !hasAdminPanelAccess) {
+  if (isBESAdmin) {
+    return true;
+  }
+
+  const hasAdminPanelAccess = accessPolicy.allowsSome(
+    undefined,
+    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  );
+
+  const hasAccessToCountry = accessPolicy.allows(countryCode, surveyPermissionGroupName);
+  // The user must have access to the admin panel AND the country with the survey permission group
+  if (!hasAdminPanelAccess && !hasAccessToCountry) {
     throw new PermissionsError('You do not have access to view this survey response');
   }
+
+  return true;
 };
 
 export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest> {
   public async buildResponse() {
-    const { ctx, params, query, accessPolicy } = this.req;
+    const { ctx, params, query, accessPolicy, models } = this.req;
     const { id: responseId } = params;
 
     const { fields = DEFAULT_FIELDS } = query;
@@ -63,11 +80,20 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       throw new Error(`Survey response with id ${responseId} not found`);
     }
 
-    const { user_id: userId, 'country.code': countryCode, ...response } = surveyResponse;
+    const {
+      user_id: userId,
+      'country.code': countryCode,
+      'survey.permission_group_id': surveyPermissionGroupId,
+      ...response
+    } = surveyResponse;
 
     // If the user is not the owner of the survey response, they should not be able to view the survey response unless they are a BES admin or have access to the admin panel
     if (userId !== id) {
-      assertCanViewSurveyResponse(accessPolicy, countryCode);
+      const permissionGroup = await models.permissionGroup.findById(surveyPermissionGroupId);
+      if (!permissionGroup) {
+        throw new Error('Permission group for survey not found');
+      }
+      assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
     }
 
     const answerList = await ctx.services.central.fetchResources('answers', {
