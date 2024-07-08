@@ -50,7 +50,7 @@ export const FileQuestion = ({
 }: SurveyQuestionInputProps) => {
   const { isResponseScreen, isReviewScreen } = useSurveyForm();
 
-  const handleChange = async (_e, _name, files) => {
+  const handleChange = async (files: File[] | FileList | null) => {
     if (!files || files.length === 0) {
       onChange(null);
       return;

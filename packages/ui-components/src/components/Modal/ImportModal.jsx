@@ -5,7 +5,7 @@
 
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { SmallAlert } from '../Alert';
@@ -109,10 +109,7 @@ export const ImportModal = ({
           <>
             <p>{subtitle}</p>
             <form>
-              <FileUploadField
-                onChange={(_event, _filename, files) => setFile(files[0])}
-                name="file-upload"
-              />
+              <FileUploadField onChange={files => setFile(files[0])} name="file-upload" />
             </form>
           </>
         );

@@ -131,11 +131,7 @@ export interface FileUploadFieldProps {
    * The parent of {@link FileUploadField} manages state for which files are staged to be uploaded.
    * This change handler propagates state changes in the {@link FileUploadField} to its parent.
    */
-  onChange: (
-    event: React.ChangeEvent<HTMLInputElement> | null,
-    fileName?: string | null,
-    files?: File[] | FileList,
-  ) => void;
+  onChange: (files: File[] | FileList | null) => void;
   name: string;
   /**
    * In some places, such as DataTrak’s survey review screen, we use a read-only (disabled) version
@@ -224,7 +220,7 @@ export const FileUploadField = ({
 
   /** Propagates file selection changes to parent */
   useEffect(() => {
-    onChange(null, null, files);
+    onChange(files);
   }, [files]);
 
   const { fileRejections, getInputProps, getRootProps, isDragActive } = useDropzone({

@@ -16,7 +16,7 @@ export const FileUploadField = ({
   fileName,
   maxSizeInBytes,
 }) => {
-  const handleChange = async (_event, _filename, files) => {
+  const handleChange = async files => {
     const [file] = files || [];
     onChange(file ? { fileName: file.name, file } : { fileName: null, file: null });
   };
