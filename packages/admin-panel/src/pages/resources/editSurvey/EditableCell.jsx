@@ -16,7 +16,6 @@ const CellContent = styled.div`
   height: 100%;
   overflow: hidden;
   position: relative;
-  display: flex;
   align-items: center;
   // popper is not full width by default
   > [role='tooltip'] {
