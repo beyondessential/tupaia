@@ -20,7 +20,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 0.3rem 0.3rem 0.2rem;
+  padding: 0.1rem 0 0;
   border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
@@ -31,12 +31,17 @@ const FormGroup = styled(MuiFormGroup)`
 
 const FormControlLabel = styled(MuiFormControlLabel)`
   .MuiFormControlLabel-label {
-    font-size: 0.75rem;
+    font-size: 0.625rem;
     color: ${({ theme }) => theme.palette.text.secondary};
+    padding-right: 0.8rem;
   }
 
-  .MuiCheckbox-root {
-    padding-right: 3px;
+  .MuiButtonBase-root {
+    padding: 0.4rem;
+  }
+
+  .MuiSvgIcon-root {
+    font-size: 1.1rem;
   }
 `;
 

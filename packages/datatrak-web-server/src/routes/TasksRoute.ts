@@ -140,6 +140,7 @@ export class TasksRoute extends Route<TasksRequest> {
       multiJoin: models.task.DatabaseRecordClass.joins,
     });
   }
+
   public async buildResponse() {
     const { ctx, query = {}, models } = this.req;
     const { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
@@ -147,9 +148,15 @@ export class TasksRoute extends Route<TasksRequest> {
     this.formatFilters();
     await this.processFilterSettings();
 
+    // If no sort is provided, default to sorting completed and cancelled tasks to the bottom and by due date
+    const rawSort =
+      !sort &&
+      "CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC";
+
     const tasks = await ctx.services.central.fetchResources('tasks', {
       filter: this.filters,
       columns: FIELDS,
+      rawSort,
       sort,
       pageSize,
       page,
