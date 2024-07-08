@@ -38,11 +38,12 @@ export const ModalHeader = ({ title, onClose, children }) => (
 );
 
 ModalHeader.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   children: PropTypes.node,
 };
 
 ModalHeader.defaultProps = {
   children: null,
+  title: null,
 };
