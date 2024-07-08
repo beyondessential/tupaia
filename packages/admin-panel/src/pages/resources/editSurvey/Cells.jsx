@@ -10,8 +10,7 @@ export const Cell = styled(TableCell)`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  // TODO: fix this once we apply resizable columns
-  max-width: 200px;
+  max-width: 12.5rem;
 `;
 
 export const HeaderCell = styled(Cell).attrs({
