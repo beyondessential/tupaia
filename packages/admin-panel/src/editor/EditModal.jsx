@@ -15,7 +15,7 @@ import { withConnectedEditor } from './withConnectedEditor';
 
 export const EditModalComponent = withConnectedEditor(
   ({
-    errorMessage,
+    error,
     isOpen,
     isLoading,
     onDismiss,
@@ -42,7 +42,7 @@ export const EditModalComponent = withConnectedEditor(
     const buttons = [
       {
         onClick: onDismiss,
-        text: errorMessage ? dismissButtonText : cancelButtonText,
+        text: error ? dismissButtonText : cancelButtonText,
         disabled: isLoading,
         variant: 'outlined',
         id: 'form-button-cancel',
@@ -51,14 +51,19 @@ export const EditModalComponent = withConnectedEditor(
         onClick: () => onSave(files, onDismiss),
         id: 'form-button-save',
         text: saveButtonText,
-        disabled: !!errorMessage || isLoading || isUnchanged,
+        disabled: !!error || isLoading || isUnchanged,
       },
     ];
 
     const generateModalTitle = () => {
       if (title) return title;
-      if (isLoading) return '';
       if (!resourceName) return isNew ? 'Add' : 'Edit';
+      if (error) {
+        const capitalisedResourceName = `${resourceName
+          .charAt(0)
+          .toUpperCase()}${resourceName.slice(1)}`;
+        return `${capitalisedResourceName} error`;
+      }
       if (isNew) return `Add ${resourceName}`;
       return `Edit ${resourceName}`;
     };
@@ -67,7 +72,7 @@ export const EditModalComponent = withConnectedEditor(
 
     return (
       <Modal
-        errorMessage={errorMessage}
+        error={error}
         isLoading={isLoading}
         onClose={onDismiss}
         isOpen={isOpen}

@@ -26,9 +26,17 @@ export const Modal = ({
   buttons,
   ...muiDialogProps
 }) => {
+  const getModalTitle = () => {
+    if (error) {
+      return title || 'Error';
+    }
+    return title;
+  };
+
+  const modalTitle = getModalTitle();
   return (
     <Dialog onClose={onClose} open={isOpen} fullWidth {...muiDialogProps}>
-      <ModalHeader onClose={onClose} title={error ? 'Error' : title} />
+      <ModalHeader onClose={onClose} title={modalTitle} />
       <ModalContentProvider error={error} isLoading={isLoading}>
         {children}
       </ModalContentProvider>

@@ -2,13 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
-import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
+import { Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
 import { withConnectedEditor } from '../../../editor';
@@ -16,6 +16,7 @@ import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
 import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
+import { Modal } from '../../../widgets';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -81,14 +82,10 @@ const StickyFooter = styled.div`
   padding: 1.25rem;
 `;
 
-const ErrorAlert = styled(Alert)`
-  display: ${({ $show }) => ($show ? 'flex' : 'none')};
-`;
-
 const EditSurveyPageComponent = withConnectedEditor(
   ({
     parent,
-    errorMessage,
+    error,
     displayProperty,
     getDisplayValue,
     fields,
@@ -100,7 +97,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     isLoading,
     resetEditorToDefaultState,
   }) => {
-    const errorAlertRef = useRef(null);
+    const [errorModalOpen, setErrorModalOpen] = useState(false);
     const navigate = useNavigate();
     const { '*': unusedParam, locale, ...params } = useParams();
     const { data: details } = useItemDetails(params, parent);
@@ -159,20 +156,16 @@ const EditSurveyPageComponent = withConnectedEditor(
       navigate('../../');
       resetEditorToDefaultState();
     };
+
+    const openErrorModal = () => setErrorModalOpen(true);
+
     const handleSave = () => {
-      onSave(files, navigateBack);
+      onSave(files, navigateBack, openErrorModal);
     };
 
     const initialFileName = Array.isArray(recordData?.surveyQuestions)
       ? null
       : recordData?.surveyQuestions;
-
-    // on error, scroll to the error alert
-    useEffect(() => {
-      if (errorMessage && errorAlertRef.current) {
-        errorAlertRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, [errorMessage]);
 
     return (
       <Wrapper>
@@ -187,14 +180,7 @@ const EditSurveyPageComponent = withConnectedEditor(
 
         <Form $isLoading={isLoading}>
           {isLoading && <SpinningLoader />}
-          <ErrorAlert
-            severity="error"
-            ref={errorAlertRef}
-            $show={!!errorMessage}
-            aria-hidden={!!errorMessage}
-          >
-            {errorMessage}
-          </ErrorAlert>
+
           <Section>
             <FileUploadField
               id="survey-questions"
@@ -207,6 +193,7 @@ const EditSurveyPageComponent = withConnectedEditor(
               label="Survey questions"
             />
           </Section>
+
           <Section>
             <FieldsEditor
               fields={orderedFields}
@@ -227,6 +214,18 @@ const EditSurveyPageComponent = withConnectedEditor(
             Save changes
           </Button>
         </StickyFooter>
+        <Modal
+          open={errorModalOpen}
+          onClose={() => setErrorModalOpen(false)}
+          error={error}
+          title="Survey error"
+          buttons={[
+            {
+              text: 'Close',
+              onClick: () => setErrorModalOpen(false),
+            },
+          ]}
+        />
       </Wrapper>
     );
   },

@@ -40,7 +40,7 @@ const stateChanges = {
   },
   [EDITOR_DATA_EDIT_BEGIN]: payload => ({
     isLoading: true,
-    errorMessage: '',
+    error: null,
     ...payload,
   }),
   [EDITOR_DATA_FETCH_SUCCESS]: payload => ({
@@ -62,7 +62,7 @@ const stateChanges = {
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },
   [LOAD_EDITOR]: payload => {
-    return { ...payload, errorMessage: '' };
+    return { ...payload, error: null };
   },
   [OPEN_EDIT_MODAL]: ({ recordId }) => ({ recordId, isOpen: true }),
   [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields }) => ({
@@ -71,7 +71,7 @@ const stateChanges = {
       [fieldKey]: newValue,
     },
   }),
-  [RESET_EDITS]: () => ({ editedFields: {}, errorMessage: '' }),
+  [RESET_EDITS]: () => ({ editedFields: {}, error: null }),
 };
 
 export const reducer = createReducer(defaultState, stateChanges);
