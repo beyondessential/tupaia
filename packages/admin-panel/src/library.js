@@ -31,14 +31,7 @@ export { PrivateRoute } from './authentication';
 export { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
 export * from './pages/resources';
 export { ReduxAutocomplete } from './autocomplete';
-export {
-  IconButton,
-  ModalContentProvider,
-  Modal,
-  ModalFooter,
-  ModalHeader,
-  ModalCenteredContent,
-} from './widgets';
+export { IconButton } from './widgets';
 export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';
 export { useApiContext } from './utilities/ApiProvider';
 export { DataChangeAction, ActionButton } from './editor';
