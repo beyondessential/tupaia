@@ -462,7 +462,7 @@ export const constructForSingle = (models, recordType) => {
             // If the task has a due date, the repeat schedule is empty
             if (dueDate) {
               if (value) {
-                throw new Error('Non-recurring tasks cannot have a repeat schedule');
+                throw new Error('Recurring tasks cannot have a due date');
               }
               return true;
             }
