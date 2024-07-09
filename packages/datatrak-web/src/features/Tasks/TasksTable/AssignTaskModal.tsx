@@ -22,7 +22,6 @@ export const AssignTaskModal = ({ task, onClose }) => {
   const {
     control,
     handleSubmit,
-    reset,
     formState: { isValid },
   } = formContext;
 
