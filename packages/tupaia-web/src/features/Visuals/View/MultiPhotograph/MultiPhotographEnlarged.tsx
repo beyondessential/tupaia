@@ -71,6 +71,9 @@ const Thumbnail = styled(Slide)<{
   max-width: 100%;
   ${Image} {
     border-radius: 3px;
+    .slick-current & {
+      border: 2px solid ${({ theme }) => theme.palette.text.primary};
+    }
   }
   .slick-slide:has(&) {
     width: ${({ $thumbCount }) => `calc(100% / ${$thumbCount}) !important`};
@@ -137,6 +140,26 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
         slidesToShow={maxThumbnailsToDisplay}
         focusOnSelect
         arrows={maxThumbnailsToDisplay < data?.length}
+        responsive={[
+          {
+            breakpoint: 800,
+            settings: {
+              slidesToShow: 8,
+            },
+          },
+          {
+            breakpoint: 600,
+            settings: {
+              slidesToShow: 6,
+            },
+          },
+          {
+            breakpoint: 400,
+            settings: {
+              slidesToShow: 4,
+            },
+          },
+        ]}
       >
         {thumbnails?.map((photo, index) => (
           <Thumbnail key={photo.value} $thumbCount={thumbnails.length}>
