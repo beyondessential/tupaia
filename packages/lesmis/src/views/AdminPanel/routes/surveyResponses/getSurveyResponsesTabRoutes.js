@@ -13,7 +13,7 @@ const approvedSurveyResponses = (translate, adminUrl) => {
   return {
     ...configs,
     reduxId: 'approvedSurveyResponses', // This is used to store the data in the redux store
-    title: translate('admin.approved'),
+    label: translate('admin.approved'),
     path,
     baseFilter: { approval_status: { comparisonValue: 'approved' } },
     columns: COLUMNS.filter(column => column.type !== 'delete'),
@@ -27,7 +27,7 @@ const rejectedSurveyResponses = (translate, adminUrl) => {
   return {
     ...configs,
     reduxId: 'rejectedSurveyResponses', // This is used to store the data in the redux store
-    title: translate('admin.rejected'),
+    label: translate('admin.rejected'),
     path,
     baseFilter: { approval_status: { comparisonValue: 'rejected' } },
     columns: COLUMNS.filter(column => column.type !== 'delete'),
@@ -61,7 +61,7 @@ const draftSurveyResponses = (translate, adminUrl) => {
   return {
     ...configs,
     reduxId: 'pendingSurveyResponses', // This is used to store the data in the redux store
-    title: translate('admin.review'),
+    label: translate('admin.review'),
     path,
     default: true,
     baseFilter: { approval_status: { comparisonValue: 'pending' } },
@@ -85,7 +85,7 @@ const nonApprovalSurveyResponses = (translate, adminUrl) => {
   return {
     ...configs,
     path,
-    title: translate('admin.approvalNotRequired'),
+    label: translate('admin.approvalNotRequired'),
     baseFilter: { approval_status: { comparisonValue: 'not_required' } },
     columns: NON_APPROVAL_COLUMNS,
   };

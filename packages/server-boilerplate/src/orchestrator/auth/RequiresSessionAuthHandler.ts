@@ -36,6 +36,6 @@ export class RequiresSessionAuthHandler implements AuthHandler {
       throw new UnauthenticatedError('Session is not attached');
     }
 
-    return this.session.getAuthHeader();
+    return this.session.getAuthHeader(this.req);
   }
 }

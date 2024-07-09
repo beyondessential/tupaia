@@ -6,7 +6,7 @@
 
 import { createBasicHeader, requireEnv } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
-import { Credentials, OneTimeCredentials } from '../types';
+import { Credentials, OneTimeCredentials, RequestResetPasswordCredentials } from '../types';
 import { ApiConnection } from '../../connections';
 
 const DEFAULT_NAME = 'TUPAIA-SERVER';
@@ -57,6 +57,13 @@ export class AuthConnection extends ApiConnection {
       { token, deviceName: `${serverName}: ${deviceName}` },
     );
     return this.parseAuthResponse(response);
+  }
+
+  public async requestResetPassword({
+    emailAddress,
+    resetPasswordUrl,
+  }: RequestResetPasswordCredentials) {
+    return this.post('auth/resetPassword', {}, { emailAddress, resetPasswordUrl });
   }
 
   public async refreshAccessToken(refreshToken: string) {
