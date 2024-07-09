@@ -39,6 +39,10 @@ export type MatrixConfig = BaseConfig & {
    * @description A url to an image to be used when a matrix is collapsed.
    */
   placeholder?: string;
+  /**
+   * @description Specify whether to show search filters on the matrix
+   */
+  enableSearch?: boolean;
 };
 
 export type MatrixVizBuilderConfig = MatrixConfig & {

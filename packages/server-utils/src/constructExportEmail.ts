@@ -1,24 +1,37 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import path from 'path';
 import fs from 'fs';
-import { createDownloadLink } from './download';
 
-const EMAIL_EXPORT_FILE_MODES = {
-  ATTACHMENT: 'attachment',
-  DOWNLOAD_LINK: 'downloadLink',
+enum EmailExportFileModes {
+  ATTACHMENT = 'attachment',
+  DOWNLOAD_LINK = 'downloadLink',
+}
+
+const createDownloadLink = (filePath: string) => {
+  const fileName = path.basename(filePath);
+  return `${process.env.ADMIN_PANEL_SERVER_URL}/v1/export/download/${encodeURIComponent(fileName)}`;
 };
 
-const generateAttachments = async filePath => {
+const generateAttachments = async (filePath: string) => {
   const fileName = path.basename(filePath);
   const buffer = await fs.readFileSync(filePath);
   return [{ filename: fileName, content: buffer }];
 };
 
-export const constructExportEmail = async (responseBody, req) => {
-  const { emailExportFileMode = EMAIL_EXPORT_FILE_MODES.DOWNLOAD_LINK } = req.query;
+type ResponseBody = {
+  error?: string;
+  filePath?: string;
+};
+
+type ReqBody = {
+  emailExportFileMode?: EmailExportFileModes;
+};
+
+export const constructExportEmail = async (responseBody: ResponseBody, reqBody: ReqBody) => {
+  const { emailExportFileMode = EmailExportFileModes.ATTACHMENT } = reqBody;
   const { error, filePath } = responseBody;
   const subject = 'Your export from Tupaia';
   if (error) {
@@ -33,7 +46,7 @@ ${error}`,
     throw new Error('No filePath in export response body');
   }
 
-  if (emailExportFileMode === EMAIL_EXPORT_FILE_MODES.ATTACHMENT) {
+  if (emailExportFileMode === EmailExportFileModes.ATTACHMENT) {
     return {
       subject,
       message: 'Please find your requested export attached to this email.',

@@ -25,7 +25,6 @@ export const useLogin = homeLink => {
     {
       onSuccess: async () => {
         await queryClient.invalidateQueries();
-        console.log(from, homeLink);
         if (from) {
           navigate(from, {
             state: null,

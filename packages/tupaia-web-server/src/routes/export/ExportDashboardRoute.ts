@@ -7,7 +7,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { Dashboard, TupaiaWebExportDashboardRequest } from '@tupaia/types';
-import { downloadDashboardAsPdf } from '../utils';
+import { downloadDashboardAsPdf } from '../../utils';
 
 export type ExportDashboardRequest = Request<
   TupaiaWebExportDashboardRequest.Params,

@@ -9,6 +9,7 @@ import { ArrowBack } from '@material-ui/icons';
 import { Breadcrumbs as MuiBreadcrumbs, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { generateTitle } from '../pages/resources/resourceName';
+import { useLinkToPreviousSearchState } from '../utilities';
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,10 +48,14 @@ export const Breadcrumbs = ({
 
   const parentLink = parent?.isStatic ? null : parent?.to ?? '/';
 
+  const pathname = parent?.to || '/';
+
+  const { to, newState } = useLinkToPreviousSearchState(pathname);
+
   return (
     <Wrapper>
       {showBackButton && (
-        <BackButton component={Link} to={parent?.to || '/'} onClick={onClickLinks}>
+        <BackButton component={Link} to={to} onClick={onClickLinks}>
           <ArrowBack />
         </BackButton>
       )}
@@ -60,6 +65,7 @@ export const Breadcrumbs = ({
           to={parentLink}
           onClick={onClickLinks}
           color="textPrimary"
+          state={newState}
         >
           {parentTitle}
         </Breadcrumb>

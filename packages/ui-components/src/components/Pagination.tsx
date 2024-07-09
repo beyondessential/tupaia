@@ -3,19 +3,17 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { IconButton, Input, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import { Select } from '@tupaia/ui-components';
+import { Select } from './Inputs';
 
 const Wrapper = styled.div`
   font-size: 0.75rem;
   display: flex;
   justify-content: space-between;
   width: 100%;
-  border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
-  background-color: ${({ theme }) => theme.palette.background.paper};
+
   padding-block: 0.5rem;
   padding-inline: 1rem;
   label,
@@ -77,25 +75,32 @@ const RowsSelect = styled(Select)`
   width: 12rem;
   .MuiSelect-root {
     padding-block: 0.5rem;
-    padding-inline: 0.8rem 0.2rem;
   }
 `;
 
-const PageSelectComponent = ({ onChangePage, page, pageCount }) => {
+interface PageSelectComponentProps {
+  onChangePage: (newPage: number) => void;
+  page: number;
+  pageCount: number;
+}
+
+const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectComponentProps) => {
   const pageDisplay = page + 1;
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPage = e.target.value ? Number(e.target.value) - 1 : 0;
+    onChangePage(newPage);
+  };
   return (
     <ActionsWrapper>
       <ManualPageInputContainer>
-        <Text id="page-label" htmlFor="page" component="label">
+        <Text id="page-label" htmlFor="page" as="label">
           Page
         </Text>
         <ManualPageInput
           type="number"
           value={pageDisplay}
-          onChange={e => {
-            const newPage = e.target.value ? Number(e.target.value) - 1 : '';
-            onChangePage(newPage);
-          }}
+          onChange={onChange}
           inputProps={{ min: 1, max: pageCount }}
           aria-describedby="page-count"
           id="page"
@@ -121,59 +126,82 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }) => {
   );
 };
 
-PageSelectComponent.propTypes = {
-  onChangePage: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  pageCount: PropTypes.number.isRequired,
-};
+interface RowsSelectComponentProps {
+  pageSize: number;
+  setPageSize?: (pageSize: number) => void;
+  pageSizeOptions: number[];
+}
 
-const RowsSelectComponent = ({ pageSize, setPageSize }) => {
-  const pageSizes = [5, 10, 20, 25, 50, 100];
+const RowsSelectComponent = ({
+  pageSize,
+  setPageSize,
+  pageSizeOptions,
+}: RowsSelectComponentProps) => {
+  const displayOptions = pageSizeOptions.map(size => {
+    return { label: `Rows per page: ${size}`, value: size };
+  });
+
+  const handlePageSizeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    if (!setPageSize) return;
+    setPageSize(Number(event.target.value));
+  };
   return (
     <ActionsWrapper>
       <RowsSelect
         value={pageSize}
-        onChange={event => setPageSize(Number(event.target.value))}
-        options={pageSizes.map(size => ({ label: `Rows per page: ${size}`, value: size }))}
+        onChange={handlePageSizeChange}
+        options={displayOptions}
         variant="standard"
       />
     </ActionsWrapper>
   );
 };
 
-RowsSelectComponent.propTypes = {
-  pageSize: PropTypes.number.isRequired,
-  setPageSize: PropTypes.func.isRequired,
-};
-
-export const Pagination = ({ page, pageCount, gotoPage, pageSize, setPageSize, totalRecords }) => {
+interface PaginationProps {
+  page: number;
+  pageCount: number;
+  onChangePage: PageSelectComponentProps['onChangePage'];
+  pageSize: number;
+  setPageSize?: RowsSelectComponentProps['setPageSize'];
+  totalRecords: number;
+  pageSizeOptions?: RowsSelectComponentProps['pageSizeOptions'];
+  applyRowsPerPage?: boolean;
+  showEntriesCount?: boolean;
+}
+export const Pagination = ({
+  page,
+  pageCount,
+  onChangePage,
+  pageSize,
+  setPageSize,
+  totalRecords,
+  pageSizeOptions = [5, 10, 20, 25, 50, 100],
+  applyRowsPerPage = true,
+  showEntriesCount = true,
+}: PaginationProps) => {
   if (!totalRecords) return null;
   const currentDisplayStart = page * pageSize + 1;
   const currentDisplayEnd = Math.min((page + 1) * pageSize, totalRecords);
 
-  const handleChangePage = newPage => {
-    gotoPage(newPage);
-  };
   return (
-    <Wrapper>
+    <Wrapper className="pagination-wrapper">
       <ActionsWrapper>
-        <Text>
-          {currentDisplayStart} - {currentDisplayEnd} of {totalRecords} entries
-        </Text>
+        {showEntriesCount && (
+          <Text>
+            {currentDisplayStart} - {currentDisplayEnd} of {totalRecords} entries
+          </Text>
+        )}
       </ActionsWrapper>
       <ActionsWrapper>
-        <RowsSelectComponent pageSize={pageSize} setPageSize={setPageSize} />
-        <PageSelectComponent onChangePage={handleChangePage} page={page} pageCount={pageCount} />
+        {applyRowsPerPage && (
+          <RowsSelectComponent
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            pageSizeOptions={pageSizeOptions}
+          />
+        )}
+        <PageSelectComponent onChangePage={onChangePage} page={page} pageCount={pageCount} />
       </ActionsWrapper>
     </Wrapper>
   );
-};
-
-Pagination.propTypes = {
-  page: PropTypes.number.isRequired,
-  pageCount: PropTypes.number.isRequired,
-  gotoPage: PropTypes.func.isRequired,
-  pageSize: PropTypes.number.isRequired,
-  setPageSize: PropTypes.func.isRequired,
-  totalRecords: PropTypes.number.isRequired,
 };
