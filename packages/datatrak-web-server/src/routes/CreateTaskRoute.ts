@@ -6,6 +6,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebCreateTaskRequest, TaskStatus } from '@tupaia/types';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 
 export type CreateTaskRequest = Request<
   DatatrakWebCreateTaskRequest.Params,
@@ -46,8 +47,18 @@ export class CreateTaskRoute extends Route<CreateTaskRequest> {
       });
       taskDetails.due_date = null;
     } else {
+      if (!dueDate) {
+        throw new Error('Due date is required for non-repeating tasks');
+      }
+
       // apply status and due date only if not a repeating task
-      taskDetails.due_date = dueDate;
+      // set due date to end of day
+      const endOfDay = new Date(new Date(dueDate).setHours(23, 59, 59, 999));
+
+      // strip timezone from date so that the returned date is always in the user's timezone
+      const withoutTimezone = stripTimezoneFromDate(endOfDay);
+
+      taskDetails.due_date = withoutTimezone;
 
       taskDetails.status = TaskStatus.to_do;
     }
