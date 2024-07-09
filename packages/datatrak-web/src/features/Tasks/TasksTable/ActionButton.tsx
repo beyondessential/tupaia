@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
+import { TaskStatus } from '@tupaia/types';
 import { generatePath, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
