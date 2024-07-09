@@ -1464,6 +1464,10 @@ export const MatrixConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		},
+		"enableSearch": {
+			"description": "Specify whether to show search filters on the matrix",
+			"type": "boolean"
 		}
 	},
 	"required": [
@@ -2161,6 +2165,10 @@ export const MatrixVizBuilderConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		},
+		"enableSearch": {
+			"description": "Specify whether to show search filters on the matrix",
+			"type": "boolean"
 		},
 		"output": {
 			"description": "Configuration for rows, columns, and categories of the matrix",
@@ -22315,6 +22323,10 @@ export const DashboardItemConfigSchema = {
 				"placeholder": {
 					"description": "A url to an image to be used when a matrix is collapsed.",
 					"type": "string"
+				},
+				"enableSearch": {
+					"description": "Specify whether to show search filters on the matrix",
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -31479,6 +31491,7 @@ export const MeasureConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -31674,6 +31687,7 @@ export const EntityLevelSchema = {
 		"FieldStation",
 		"FijiAspenFacility",
 		"HealthClinicBoundary",
+		"HospitalArea",
 		"HospitalWard",
 		"Household",
 		"Incident",
@@ -32020,6 +32034,7 @@ export const BaseMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -32168,6 +32183,7 @@ export const BaseMapOverlayConfigSchema = {
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalArea",
 							"HospitalWard",
 							"Household",
 							"Incident",
@@ -32306,6 +32322,7 @@ export const BaseMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -32735,6 +32752,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -32883,6 +32901,7 @@ export const SpectrumMapOverlayConfigSchema = {
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalArea",
 							"HospitalWard",
 							"Household",
 							"Incident",
@@ -33021,6 +33040,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -33555,6 +33575,7 @@ export const IconMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -33703,6 +33724,7 @@ export const IconMapOverlayConfigSchema = {
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalArea",
 							"HospitalWard",
 							"Household",
 							"Incident",
@@ -33841,6 +33863,7 @@ export const IconMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -34300,6 +34323,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -34448,6 +34472,7 @@ export const RadiusMapOverlayConfigSchema = {
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalArea",
 							"HospitalWard",
 							"Household",
 							"Incident",
@@ -34586,6 +34611,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -35019,6 +35045,7 @@ export const ColorMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -35167,6 +35194,7 @@ export const ColorMapOverlayConfigSchema = {
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalArea",
 							"HospitalWard",
 							"Household",
 							"Incident",
@@ -35305,6 +35333,7 @@ export const ColorMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -35752,6 +35781,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -35900,6 +35930,7 @@ export const ShadingMapOverlayConfigSchema = {
 							"FieldStation",
 							"FijiAspenFacility",
 							"HealthClinicBoundary",
+							"HospitalArea",
 							"HospitalWard",
 							"Household",
 							"Incident",
@@ -36038,6 +36069,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"FieldStation",
 				"FijiAspenFacility",
 				"HealthClinicBoundary",
+				"HospitalArea",
 				"HospitalWard",
 				"Household",
 				"Incident",
@@ -36477,6 +36509,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -36625,6 +36658,7 @@ export const MapOverlayConfigSchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -36763,6 +36797,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -37296,6 +37331,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -37444,6 +37480,7 @@ export const MapOverlayConfigSchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -37582,6 +37619,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -38040,6 +38078,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -38188,6 +38227,7 @@ export const MapOverlayConfigSchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -38326,6 +38366,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -38758,6 +38799,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -38906,6 +38948,7 @@ export const MapOverlayConfigSchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -39044,6 +39087,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -39490,6 +39534,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -39638,6 +39683,7 @@ export const MapOverlayConfigSchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -39776,6 +39822,7 @@ export const MapOverlayConfigSchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -40415,6 +40462,7 @@ export const EntityQuestionConfigSchema = {
 									"field_station",
 									"fiji_aspen_facility",
 									"health_clinic_boundary",
+									"hospital_area",
 									"hospital_ward",
 									"household",
 									"incident",
@@ -40469,6 +40517,7 @@ export const EntityQuestionConfigSchema = {
 								"field_station",
 								"fiji_aspen_facility",
 								"health_clinic_boundary",
+								"hospital_area",
 								"hospital_ward",
 								"household",
 								"incident",
@@ -40945,6 +40994,7 @@ export const SurveyScreenComponentConfigSchema = {
 											"field_station",
 											"fiji_aspen_facility",
 											"health_clinic_boundary",
+											"hospital_area",
 											"hospital_ward",
 											"household",
 											"incident",
@@ -40999,6 +41049,7 @@ export const SurveyScreenComponentConfigSchema = {
 										"field_station",
 										"fiji_aspen_facility",
 										"health_clinic_boundary",
+										"hospital_area",
 										"hospital_ward",
 										"household",
 										"incident",
@@ -41534,6 +41585,12 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"transfer": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"hospital_area": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -43420,6 +43477,10 @@ export const DashboardItemSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -52095,6 +52156,10 @@ export const DashboardItemCreateSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -60764,6 +60829,10 @@ export const DashboardItemUpdateSchema = {
 						"placeholder": {
 							"description": "A url to an image to be used when a matrix is collapsed.",
 							"type": "string"
+						},
+						"enableSearch": {
+							"description": "Specify whether to show search filters on the matrix",
+							"type": "boolean"
 						}
 					},
 					"required": [
@@ -68933,6 +69002,7 @@ export const DashboardRelationSchema = {
 					"field_station",
 					"fiji_aspen_facility",
 					"health_clinic_boundary",
+					"hospital_area",
 					"hospital_ward",
 					"household",
 					"incident",
@@ -69033,6 +69103,7 @@ export const DashboardRelationCreateSchema = {
 					"field_station",
 					"fiji_aspen_facility",
 					"health_clinic_boundary",
+					"hospital_area",
 					"hospital_ward",
 					"household",
 					"incident",
@@ -69128,6 +69199,7 @@ export const DashboardRelationUpdateSchema = {
 					"field_station",
 					"fiji_aspen_facility",
 					"health_clinic_boundary",
+					"hospital_area",
 					"hospital_ward",
 					"household",
 					"incident",
@@ -70332,6 +70404,7 @@ export const EntitySchema = {
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_area",
 				"hospital_ward",
 				"household",
 				"incident",
@@ -70437,6 +70510,7 @@ export const EntityCreateSchema = {
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_area",
 				"hospital_ward",
 				"household",
 				"incident",
@@ -70542,6 +70616,7 @@ export const EntityUpdateSchema = {
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_area",
 				"hospital_ward",
 				"household",
 				"incident",
@@ -71781,6 +71856,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -71929,6 +72005,7 @@ export const MapOverlaySchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -72067,6 +72144,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -72600,6 +72678,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -72748,6 +72827,7 @@ export const MapOverlaySchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -72886,6 +72966,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -73344,6 +73425,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -73492,6 +73574,7 @@ export const MapOverlaySchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -73630,6 +73713,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -74062,6 +74146,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -74210,6 +74295,7 @@ export const MapOverlaySchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -74348,6 +74434,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -74794,6 +74881,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -74942,6 +75030,7 @@ export const MapOverlaySchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -75080,6 +75169,7 @@ export const MapOverlaySchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -75580,6 +75670,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -75728,6 +75819,7 @@ export const MapOverlayCreateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -75866,6 +75958,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -76399,6 +76492,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -76547,6 +76641,7 @@ export const MapOverlayCreateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -76685,6 +76780,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -77143,6 +77239,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -77291,6 +77388,7 @@ export const MapOverlayCreateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -77429,6 +77527,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -77861,6 +77960,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -78009,6 +78109,7 @@ export const MapOverlayCreateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -78147,6 +78248,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -78593,6 +78695,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -78741,6 +78844,7 @@ export const MapOverlayCreateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -78879,6 +78983,7 @@ export const MapOverlayCreateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -79372,6 +79477,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -79520,6 +79626,7 @@ export const MapOverlayUpdateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -79658,6 +79765,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -80191,6 +80299,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -80339,6 +80448,7 @@ export const MapOverlayUpdateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -80477,6 +80587,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -80935,6 +81046,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -81083,6 +81195,7 @@ export const MapOverlayUpdateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -81221,6 +81334,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -81653,6 +81767,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -81801,6 +81916,7 @@ export const MapOverlayUpdateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -81939,6 +82055,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -82385,6 +82502,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -82533,6 +82651,7 @@ export const MapOverlayUpdateSchema = {
 											"FieldStation",
 											"FijiAspenFacility",
 											"HealthClinicBoundary",
+											"HospitalArea",
 											"HospitalWard",
 											"Household",
 											"Incident",
@@ -82671,6 +82790,7 @@ export const MapOverlayUpdateSchema = {
 								"FieldStation",
 								"FijiAspenFacility",
 								"HealthClinicBoundary",
+								"HospitalArea",
 								"HospitalWard",
 								"Household",
 								"Incident",
@@ -83651,6 +83771,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_area",
 				"hospital_ward",
 				"household",
 				"incident",
@@ -83738,6 +83859,7 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_area",
 				"hospital_ward",
 				"household",
 				"incident",
@@ -83822,6 +83944,7 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_area",
 				"hospital_ward",
 				"household",
 				"incident",
@@ -85575,6 +85698,117 @@ export const SyncGroupLogUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const TaskSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entity_id",
+		"id",
+		"survey_id"
+	]
+} 
+
+export const TaskCreateSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entity_id",
+		"survey_id"
+	]
+} 
+
+export const TaskUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"assignee_id": {
+			"type": "string"
+		},
+		"due_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"repeat_schedule": {
+			"type": "object",
+			"properties": {}
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const TupaiaWebSessionSchema = {
 	"type": "object",
 	"properties": {
@@ -86115,6 +86349,15 @@ export const VerifiedEmailSchema = {
 	"type": "string"
 } 
 
+export const TaskStatusSchema = {
+	"enum": [
+		"cancelled",
+		"completed",
+		"to_do"
+	],
+	"type": "string"
+} 
+
 export const SyncGroupSyncStatusSchema = {
 	"enum": [
 		"ERROR",
@@ -86206,6 +86449,7 @@ export const EntityTypeSchema = {
 		"field_station",
 		"fiji_aspen_facility",
 		"health_clinic_boundary",
+		"hospital_area",
 		"hospital_ward",
 		"household",
 		"incident",
@@ -86538,6 +86782,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"field_station",
 							"fiji_aspen_facility",
 							"health_clinic_boundary",
+							"hospital_area",
 							"hospital_ward",
 							"household",
 							"incident",
@@ -87344,6 +87589,7 @@ export const EntityResponseSchema = {
 				"field_station",
 				"fiji_aspen_facility",
 				"health_clinic_boundary",
+				"hospital_area",
 				"hospital_ward",
 				"household",
 				"incident",
@@ -88112,6 +88358,10 @@ export const DashboardWithMetadataSchema = {
 									"placeholder": {
 										"description": "A url to an image to be used when a matrix is collapsed.",
 										"type": "string"
+									},
+									"enableSearch": {
+										"description": "Specify whether to show search filters on the matrix",
+										"type": "boolean"
 									}
 								},
 								"required": [
@@ -96447,6 +96697,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -96595,6 +96846,7 @@ export const TranslatedMapOverlaySchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -96733,6 +96985,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -97289,6 +97542,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -97437,6 +97691,7 @@ export const TranslatedMapOverlaySchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -97575,6 +97830,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -98056,6 +98312,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -98204,6 +98461,7 @@ export const TranslatedMapOverlaySchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -98342,6 +98600,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -98797,6 +99056,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -98945,6 +99205,7 @@ export const TranslatedMapOverlaySchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -99083,6 +99344,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -99552,6 +99814,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",
@@ -99700,6 +99963,7 @@ export const TranslatedMapOverlaySchema = {
 									"FieldStation",
 									"FijiAspenFacility",
 									"HealthClinicBoundary",
+									"HospitalArea",
 									"HospitalWard",
 									"Household",
 									"Incident",
@@ -99838,6 +100102,7 @@ export const TranslatedMapOverlaySchema = {
 						"FieldStation",
 						"FijiAspenFacility",
 						"HealthClinicBoundary",
+						"HospitalArea",
 						"HospitalWard",
 						"Household",
 						"Incident",

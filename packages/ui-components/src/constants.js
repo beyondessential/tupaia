@@ -12,8 +12,16 @@ export const FORM_FIELD_VALIDATION = {
       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
       message: 'Invalid email',
     },
+    required: {
+      value: true,
+      message: '*Required',
+    },
   },
   PASSWORD: {
     minLength: { value: 8, message: 'Must be at least 8 characters long' },
+    required: {
+      value: true,
+      message: '*Required',
+    },
   },
 };

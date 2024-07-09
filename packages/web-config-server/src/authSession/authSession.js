@@ -17,6 +17,10 @@ const auth = () => async (req, res, next) => {
     const authHeaderUser = await getUserFromAuthHeader(req);
     if (authHeaderUser) {
       req.userJson = { userId: authHeaderUser.id };
+      // to match what is in server boilerplate, until we refactor to use server boilerplate middleware
+      req.user = {
+        id: authHeaderUser.id,
+      };
       req.accessPolicy = await getAccessPolicyForUser(authenticator, authHeaderUser.id);
       next();
       return;
@@ -24,8 +28,13 @@ const auth = () => async (req, res, next) => {
 
     // if logged in
     const userId = req.session?.userJson?.userId;
+
     if (userId) {
       req.userJson = req.session.userJson;
+      // to match what is in server boilerplate, until we refactor to use server boilerplate middleware
+      req.user = {
+        id: authHeaderUser.id,
+      };
       req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
       next();
       return;

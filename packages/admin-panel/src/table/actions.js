@@ -11,16 +11,13 @@ import {
   ACTION_CANCEL,
   ACTION_CONFIRM,
   ACTION_REQUEST,
-  COLUMNS_RESIZE,
+  CLEAR_ERROR,
   DATA_CHANGE_ERROR,
   DATA_CHANGE_REQUEST,
   DATA_CHANGE_SUCCESS,
   DATA_FETCH_ERROR,
   DATA_FETCH_REQUEST,
   DATA_FETCH_SUCCESS,
-  EXPANSIONS_CHANGE,
-  EXPANSIONS_TAB_CHANGE,
-  FILTERS_CHANGE,
   PAGE_INDEX_CHANGE,
   PAGE_SIZE_CHANGE,
   SORTING_CHANGE,
@@ -41,31 +38,6 @@ export const changePageSize = (reduxId, pageSize, pageIndex) => ({
   reduxId,
 });
 
-export const changeExpansions = (reduxId, expansions) => ({
-  type: EXPANSIONS_CHANGE,
-  expansions,
-  reduxId,
-});
-
-export const changeExpansionsTab = (reduxId, rowId, tabValue) => ({
-  type: EXPANSIONS_TAB_CHANGE,
-  reduxId,
-  rowId,
-  tabValue,
-});
-
-export const changeFilters = (reduxId, filters) => ({
-  type: FILTERS_CHANGE,
-  filters,
-  reduxId,
-});
-
-export const changeResizedColumns = (reduxId, resizedColumns) => ({
-  type: COLUMNS_RESIZE,
-  resizedColumns,
-  reduxId,
-});
-
 export const changeSorting = (reduxId, sorting) => ({
   type: SORTING_CHANGE,
   sorting,
@@ -73,13 +45,29 @@ export const changeSorting = (reduxId, sorting) => ({
 });
 
 const refreshDataWithDebounce = debounce(
-  async (reduxId, endpoint, columns, baseFilter, tableState, dispatch, api) => {
-    const { pageIndex, pageSize, filters, sorting } = tableState;
+  async (
+    reduxId,
+    endpoint,
+    columns,
+    baseFilter,
+    filters = [],
+    sorting = [],
+    tableState,
+    dispatch,
+    api,
+  ) => {
+    const { pageIndex, pageSize } = tableState;
 
     // Set up filter
     const filterObject = { ...baseFilter };
     filters.forEach(({ id, value }) => {
-      filterObject[id] = value;
+      if (Array.isArray(value)) {
+        filterObject[id] = {
+          comparator: '@>',
+          comparisonValue: `{${value.join(',')}}`,
+          castAs: 'text[]',
+        };
+      } else filterObject[id] = value;
     });
     const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
 
@@ -113,6 +101,7 @@ const refreshDataWithDebounce = debounce(
       const linkHeader = parseLinkHeader(response.headers.get('Link'));
       const totalRecords = parseInt(response.headers.get('X-Total-Count'), 10);
       const lastPageNumber = parseInt(linkHeader.last.page, 10);
+
       dispatch({
         type: DATA_FETCH_SUCCESS,
         reduxId,
@@ -120,6 +109,8 @@ const refreshDataWithDebounce = debounce(
         numberOfPages: lastPageNumber,
         fetchId,
         totalRecords,
+        pageIndex,
+        pageSize,
       });
     } catch (error) {
       dispatch({
@@ -127,6 +118,8 @@ const refreshDataWithDebounce = debounce(
         reduxId,
         errorMessage: error.message,
         fetchId,
+        pageIndex,
+        pageSize,
       });
     }
   },
@@ -134,13 +127,15 @@ const refreshDataWithDebounce = debounce(
 );
 
 export const refreshData =
-  (reduxId, endpoint, columns, baseFilter, tableState) =>
+  (reduxId, endpoint, columns, baseFilter, filters, sorting, tableState) =>
   async (dispatch, getState, { api }) => {
     return refreshDataWithDebounce(
       reduxId,
       endpoint,
       columns,
       baseFilter,
+      filters,
+      sorting,
       tableState,
       dispatch,
       api,
@@ -190,6 +185,11 @@ export const deleteRecordFromTable =
         reduxId,
         fetchId,
         errorMessage: error.message,
+        confirmActionMessage: '',
       });
     }
   };
+
+export const clearError = () => ({
+  type: CLEAR_ERROR,
+});

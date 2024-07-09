@@ -12005,6 +12005,7 @@ __metadata:
     "@tupaia/auth": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    date-fns: ^2.29.2
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     dotenv: ^16.4.5
@@ -12457,6 +12458,7 @@ __metadata:
     "@tupaia/api-client": "workspace:*"
     "@tupaia/auth": "workspace:*"
     "@tupaia/database": "workspace:*"
+    "@tupaia/server-utils": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -12573,6 +12575,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/dom-to-image": ^2.6.4
     "@types/downloadjs": ^1.4.3
+    "@types/leaflet": ^1.7.1
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
@@ -12580,6 +12583,7 @@ __metadata:
     axios: ^1.6.8
     dom-to-image: 2.6.0
     downloadjs: 1.4.7
+    leaflet: ^1.7.1
     moment: ^2.24.0
     msw: ^2.0.9
     npm-run-all: ^4.1.5
@@ -17999,24 +18003,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001043, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001125, caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001261, caniuse-lite@npm:^1.0.30001370, caniuse-lite@npm:^1.0.30001503":
-  version: 1.0.30001525
-  resolution: "caniuse-lite@npm:1.0.30001525"
-  checksum: a0d190c185b8e1220dbc72e42f310633059aa175ca3396eb781b249ac3da6c62b30cb8efc5fa24d632cb938f58d90b0c7772d1c9942b6643cf418c27c2cb8632
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001541":
-  version: 1.0.30001558
-  resolution: "caniuse-lite@npm:1.0.30001558"
-  checksum: 1bd6ef855a0de6ff052234912910d699e58edabcf2f34848b7df1f97ee40b059bbdf1901ac919d19360a0603e32e2ac30ae89670ceca8f118e750be3280ef5b1
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001565":
-  version: 1.0.30001578
-  resolution: "caniuse-lite@npm:1.0.30001578"
-  checksum: b0cd4fed07ae1224f564baaed5e096c9c479b3063d023fc629df52caa14e59b7436b33498729161e253a5b8974d644374ff1ce47ccf1885ef3d1541f4067705f
+"caniuse-lite@npm:^1.0.30001043, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001125, caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001261, caniuse-lite@npm:^1.0.30001370, caniuse-lite@npm:^1.0.30001503, caniuse-lite@npm:^1.0.30001541, caniuse-lite@npm:^1.0.30001565":
+  version: 1.0.30001625
+  resolution: "caniuse-lite@npm:1.0.30001625"
+  checksum: e7f8b9e10c35a5d9a1d1db76be398cb1c592ee1bc905fabe6bd90313537099d29a65c49c85e6350132fa30ca20e8c0317ecfaa66d997f7fac21ff37ddaece2a9
   languageName: node
   linkType: hard
 

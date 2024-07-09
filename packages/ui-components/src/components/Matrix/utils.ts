@@ -131,8 +131,11 @@ export function checkIfApplyPillCellStyle(
 export function getFlattenedColumns(columns: MatrixColumnType[]): MatrixColumnType[] {
   return columns.reduce((cols, column) => {
     if (column.children) {
-      return [...cols, ...getFlattenedColumns(column.children)];
+      const childCols = getFlattenedColumns(column.children);
+      cols.push(...childCols);
+      return cols;
     }
-    return [...cols, column];
+    cols.push(column);
+    return cols;
   }, [] as MatrixColumnType[]);
 }
