@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import 'slick-carousel/slick/slick.css';
@@ -61,6 +61,10 @@ const ArrowButton = styled(IconButton)`
   &:focus-within {
     color: ${({ theme }) => theme.palette.primary.main};
   }
+  &.slick-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 `;
 
 const Thumbnail = styled(Slide)<{
@@ -76,14 +80,20 @@ const Thumbnail = styled(Slide)<{
     }
   }
   .slick-slide:has(&) {
-    width: ${({ $thumbCount }) => `calc(100% / ${$thumbCount}) !important`};
-    height: auto !important;
+    width: ${({ $thumbCount }) =>
+      `calc(100% / ${$thumbCount}) !important`}; // This is to override the default width set by slick-carousel, and needs to be !important to take effect because slick applies this inline
+    max-width: 7rem;
+    height: auto;
     aspect-ratio: 1 / 1;
     display: flex;
     > div {
       height: 100%;
       width: 100%;
     }
+  }
+  .slick-track:has(&) {
+    display: flex;
+    justify-content: center;
   }
 `;
 
@@ -107,9 +117,26 @@ interface MultiPhotographEnlargedProps {
 }
 
 export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlargedProps) => {
-  const data = [...report?.data, ...report?.data, ...report?.data, ...report?.data];
+  const { data = [] } = report ?? {};
+
+  /**  The following is a workaround for an issue where the slider doesn't link the two sliders together until another re-render, because the ref is not set yet
+   * See [example](https://react-slick.neostack.com/docs/example/as-nav-for)
+   **/
+
   const sliderRef1 = useRef(null);
   const sliderRef2 = useRef(null);
+  const [mainSlider, setMainSlider] = useState(null);
+  const [thumbnailSlider, setThumbnailSlider] = useState(null);
+
+  useEffect(() => {
+    if (!sliderRef1.current || mainSlider) return;
+    setMainSlider(sliderRef1.current);
+  }, [sliderRef1.current]);
+
+  useEffect(() => {
+    if (!sliderRef2.current || thumbnailSlider) return;
+    setThumbnailSlider(sliderRef2.current);
+  }, [sliderRef2.current]);
 
   const settings = {
     infinite: false,
@@ -118,12 +145,13 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
     nextArrow: <ArrowIconWrapper />,
   };
 
-  const maxThumbnailsToDisplay = Math.min(data?.length ?? 12, 12);
-  const thumbnails = data?.slice(0, maxThumbnailsToDisplay);
+  const maxThumbnailsToDisplay = Math.min(data.length ?? 12, 12);
+  const thumbnails = data.slice(0, maxThumbnailsToDisplay);
+
   return (
     <Wrapper>
-      <Slider {...settings} asNavFor={sliderRef2?.current} ref={sliderRef1} slidesToShow={1}>
-        {data?.map((photo, index) => (
+      <Slider {...settings} asNavFor={thumbnailSlider} ref={sliderRef1} slidesToShow={1}>
+        {data.map((photo, index) => (
           <Slide key={photo.value}>
             <Image
               url={photo.value}
@@ -135,10 +163,11 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
       </Slider>
       <Slider
         {...settings}
-        asNavFor={sliderRef1?.current}
+        asNavFor={mainSlider}
         ref={sliderRef2}
         slidesToShow={maxThumbnailsToDisplay}
         focusOnSelect
+        swipeToSlide
         arrows={maxThumbnailsToDisplay < data?.length}
         responsive={[
           {
