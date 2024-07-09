@@ -39,21 +39,36 @@ export const EditModalComponent = withConnectedEditor(
 
     const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
 
-    const buttons = [
-      {
-        onClick: onDismiss,
-        text: error ? dismissButtonText : cancelButtonText,
-        disabled: isLoading,
-        variant: 'outlined',
-        id: 'form-button-cancel',
-      },
-      {
-        onClick: () => onSave(files, onDismiss),
-        id: 'form-button-save',
-        text: saveButtonText,
-        disabled: !!error || isLoading || isUnchanged,
-      },
-    ];
+    const getButtons = () => {
+      if (error) {
+        return [
+          {
+            onClick: onDismiss,
+            text: dismissButtonText,
+            disabled: isLoading,
+            variant: 'contained',
+            id: 'form-button-cancel',
+          },
+        ];
+      }
+      return [
+        {
+          onClick: onDismiss,
+          text: cancelButtonText,
+          disabled: isLoading,
+          variant: 'outlined',
+          id: 'form-button-cancel',
+        },
+        {
+          onClick: () => onSave(files, onDismiss),
+          id: 'form-button-save',
+          text: saveButtonText,
+          disabled: !!error || isLoading || isUnchanged,
+        },
+      ];
+    };
+
+    const buttons = getButtons();
 
     const generateModalTitle = () => {
       if (title) return title;
@@ -121,7 +136,7 @@ EditModalComponent.defaultProps = {
   isUnchanged: false,
   displayUsedBy: false,
   usedByConfig: {},
-  dismissButtonText: 'Dismiss',
+  dismissButtonText: 'Close',
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
   extraDialogProps: null,
