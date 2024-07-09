@@ -156,6 +156,8 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
     setThumbnailSlider(sliderRef2.current);
   }, [sliderRef2.current]);
 
+  // END of workaround
+
   const getThumbsToShow = max => {
     return Math.min(max, data.length);
   };
@@ -172,6 +174,7 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
 
   const getResponsiveSettingForBreakpoint = (breakpoint, maxSlides) => {
     const thumbCount = getThumbsToShow(maxSlides);
+    // only show arrows and allow infinite scrolling if there are more thumbnails than can be displayed
     const isInfinite = data.length > thumbCount;
     return {
       breakpoint,
@@ -179,6 +182,7 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
     };
   };
 
+  // settings for the thumbnail slider to reduce the number of thumbnails shown on smaller screens
   const responsiveSettings = [
     { breakpoint: 400, maxSlides: 4 },
     { breakpoint: 600, maxSlides: 6 },
