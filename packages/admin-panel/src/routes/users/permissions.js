@@ -7,6 +7,21 @@ import { getPluralForm } from '../../pages/resources/resourceName';
 
 const RESOURCE_NAME = { singular: 'permission' };
 
+const EntityField = {
+  Header: 'Entity',
+  source: 'entity.name',
+  editConfig: {
+    optionsEndpoint: 'entities',
+    type: 'checkboxList',
+    baseFilter: { type: 'country' },
+    optionLabelKey: 'entity.name',
+    optionValueKey: 'entity.id',
+    allowMultipleValues: true,
+    labelTooltip: 'Select the countries for which this permission applies',
+    pageSize: 'ALL',
+    sourceKey: 'entity_id',
+  },
+};
 export const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
 export const PERMISSIONS_COLUMNS = [
   {
@@ -77,15 +92,7 @@ const CREATE_CONFIG = {
           allowMultipleValues: true,
         },
       },
-      {
-        Header: 'Entity',
-        source: 'entity.name',
-        editConfig: {
-          optionsEndpoint: 'entities',
-          baseFilter: { type: 'country' },
-          allowMultipleValues: true,
-        },
-      },
+      EntityField,
       {
         Header: 'Permission group',
         source: 'permission_group.name',
