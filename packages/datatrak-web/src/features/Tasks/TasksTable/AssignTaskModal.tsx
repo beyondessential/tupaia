@@ -2,11 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { UserAccount } from '@tupaia/types';
+import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { AssigneeInput } from '../AssigneeInput';
+import { useEditTask } from '../../../api';
 
 const Container = styled(ModalCenteredContent)`
   width: 20rem;
@@ -15,47 +16,67 @@ const Container = styled(ModalCenteredContent)`
 `;
 
 export const AssignTaskModal = ({ task, onClose }) => {
-  const [assigneeId, setAssigneeId] = useState<UserAccount['id'] | null>(null);
+  const formContext = useForm({
+    mode: 'onChange',
+  });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isValid },
+  } = formContext;
 
-  const onCloseModal = () => {
-    setAssigneeId(null);
-    onClose();
-  };
+  const { mutate: editTask, isLoading } = useEditTask(task?.id, onClose);
 
-  const onSubmit = e => {
-    e.preventDefault();
-    console.log('Assign task', assigneeId);
-    // onCloseModal();
-  };
+  if (!task) return null;
 
   const modalButtons = [
     {
       text: 'Cancel',
-      onClick: onCloseModal,
+      onClick: onClose,
       variant: 'outlined',
       id: 'cancel',
+      disabled: isLoading,
     },
     {
       text: 'Save',
-      onClick: onSubmit,
+      onClick: handleSubmit(editTask),
       id: 'save',
       type: 'submit',
-      disabled: !assigneeId,
+      disabled: isLoading || !isValid,
     },
   ];
 
   return (
     <>
-      <Modal isOpen={!!task} onClose={onCloseModal} title="Assign task" buttons={modalButtons}>
+      <Modal
+        isOpen
+        onClose={onClose}
+        title="Assign task"
+        buttons={modalButtons}
+        isLoading={isLoading}
+      >
         <Container>
-          <form onSubmit={onSubmit}>
-            <AssigneeInput
-              value={assigneeId}
-              onChange={setAssigneeId}
-              countryCode={task?.entity?.countryCode}
-              surveyCode={task?.survey?.code}
-            />
-          </form>
+          <FormProvider {...formContext}>
+            <form onSubmit={handleSubmit(editTask)}>
+              <Controller
+                name="assignee_id"
+                control={control}
+                rules={{ required: 'Required' }}
+                render={({ value, onChange, ref }, { invalid }) => (
+                  <AssigneeInput
+                    value={value}
+                    required
+                    onChange={onChange}
+                    inputRef={ref}
+                    countryCode={task?.entity?.countryCode}
+                    surveyCode={task?.survey?.code}
+                    error={invalid}
+                  />
+                )}
+              />
+            </form>
+          </FormProvider>
         </Container>
       </Modal>
     </>

@@ -24,6 +24,9 @@ const Autocomplete = styled(BaseAutocomplete)`
   .MuiOutlinedInput-notchedOutline {
     border-color: ${({ theme }) => theme.palette.divider};
   }
+  .MuiInputLabel-asterisk {
+    color: ${({ theme }) => theme.palette.error.main};
+  }
 `;
 
 type User = DatatrakWebSurveyUsersRequest.ResBody[0];
@@ -34,6 +37,9 @@ interface AssigneeInputProps {
   inputRef?: React.Ref<any>;
   countryCode?: Country['code'];
   surveyCode?: Survey['code'];
+  required?: boolean;
+  name?: string;
+  error?: boolean;
 }
 
 export const AssigneeInput = ({
@@ -42,6 +48,8 @@ export const AssigneeInput = ({
   inputRef,
   countryCode,
   surveyCode,
+  required,
+  error,
 }: AssigneeInputProps) => {
   const [searchValue, setSearchValue] = useState('');
 
@@ -76,6 +84,8 @@ export const AssigneeInput = ({
       getOptionSelected={(option, selected) => option.id === selected?.id}
       placeholder="Search..."
       loading={isLoading}
+      required={required}
+      error={error}
     />
   );
 };
