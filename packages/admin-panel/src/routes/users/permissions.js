@@ -10,6 +10,7 @@ const RESOURCE_NAME = { singular: 'permission' };
 const EntityField = {
   Header: 'Entity',
   source: 'entity.name',
+  required: true,
   editConfig: {
     optionsEndpoint: 'entities',
     type: 'checkboxList',
@@ -95,18 +96,7 @@ const CREATE_CONFIG = {
           allowMultipleValues: true,
         },
       },
-      {
-        Header: 'Entity',
-        source: 'entity.name',
-        required: true,
-        editConfig: {
-          optionsEndpoint: 'entities',
-          optionLabelKey: 'name',
-          baseFilter: { type: 'country' },
-          allowMultipleValues: true,
-          labelTooltip: 'Select the countries for which this permission applies',
-        },
-      },
+      EntityField,
       {
         Header: 'Permission group',
         source: 'permission_group.name',
