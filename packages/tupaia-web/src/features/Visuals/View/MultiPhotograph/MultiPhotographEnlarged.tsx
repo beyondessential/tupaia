@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -35,11 +35,17 @@ const Image = styled.div<{
 const Slide = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const MainSlide = styled(Slide)`
   width: 32rem;
   height: 35rem;
   padding-block: 1rem;
   padding-inline: 2rem;
   max-width: 32rem;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding-inline: 0.5rem;
+  }
 `;
 
 const Caption = styled(Typography)`
@@ -71,12 +77,17 @@ const Thumbnail = styled(Slide)<{
   $thumbCount: number;
 }>`
   padding: 0.4rem;
+  height: 100%;
+  width: 100%;
   max-height: 100%;
   max-width: 100%;
   ${Image} {
     border-radius: 3px;
     .slick-current & {
       border: 2px solid ${({ theme }) => theme.palette.text.primary};
+    }
+    &:hover {
+      border: 1px solid ${({ theme }) => theme.palette.text.primary};
     }
   }
   .slick-slide:has(&) {
@@ -94,7 +105,7 @@ const Thumbnail = styled(Slide)<{
   .slick-track:has(&) {
     display: flex;
     justify-content: center;
-  }
+    
 `;
 
 interface ArrowIconWrapperProps extends Record<string, unknown> {
@@ -102,8 +113,8 @@ interface ArrowIconWrapperProps extends Record<string, unknown> {
   style?: Record<string, string>;
 }
 
-const ArrowIconWrapper = ({ style, ...props }: ArrowIconWrapperProps) => {
-  const Icon = props.left ? KeyboardArrowLeft : KeyboardArrowRight;
+const ArrowIconWrapper = ({ style, left, ...props }: ArrowIconWrapperProps) => {
+  const Icon = left ? KeyboardArrowLeft : KeyboardArrowRight;
   return (
     <ArrowButton {...props}>
       <Icon />
@@ -117,7 +128,9 @@ interface MultiPhotographEnlargedProps {
 }
 
 export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlargedProps) => {
-  const { data = [] } = report ?? {};
+  //  const { data = [] } = report ?? {};
+
+  const data = [...report.data, ...report.data, ...report.data, ...report.data, ...report.data];
 
   /**  The following is a workaround for an issue where the slider doesn't link the two sliders together until another re-render, because the ref is not set yet
    * See [example](https://react-slick.neostack.com/docs/example/as-nav-for)
@@ -138,27 +151,57 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
     setThumbnailSlider(sliderRef2.current);
   }, [sliderRef2.current]);
 
+  const getThumbsToShow = max => {
+    return Math.min(max, data.length);
+  };
+
+  const maxThumbnailsToDisplay = getThumbsToShow(12);
+
   const settings = {
-    infinite: false,
     speed: 500,
     prevArrow: <ArrowIconWrapper left />,
     nextArrow: <ArrowIconWrapper />,
+    slidesToScroll: 1,
+    swipeToSlide: true,
   };
 
-  const maxThumbnailsToDisplay = Math.min(data.length ?? 12, 12);
-  const thumbnails = data.slice(0, maxThumbnailsToDisplay);
+  const getResponsiveSettingForBreakpoint = (breakpoint, maxSlides) => {
+    const thumbCount = getThumbsToShow(maxSlides);
+    const isInfinite = data.length > thumbCount;
+    return {
+      breakpoint,
+      settings: { slidesToShow: thumbCount, infinite: isInfinite, arrows: isInfinite },
+    };
+  };
+
+  const responsiveSettings = [
+    { breakpoint: 400, maxSlides: 4 },
+    { breakpoint: 600, maxSlides: 6 },
+    {
+      breakpoint: 800,
+      maxSlides: 8,
+    },
+  ].map(({ breakpoint, maxSlides }) => getResponsiveSettingForBreakpoint(breakpoint, maxSlides));
+
+  const hasMoreThumbnails = data.length > maxThumbnailsToDisplay;
 
   return (
     <Wrapper>
-      <Slider {...settings} asNavFor={thumbnailSlider} ref={sliderRef1} slidesToShow={1}>
+      <Slider
+        {...settings}
+        asNavFor={thumbnailSlider}
+        ref={sliderRef1}
+        slidesToShow={1}
+        infinite={hasMoreThumbnails}
+      >
         {data.map((photo, index) => (
-          <Slide key={photo.value}>
+          <MainSlide key={photo.value}>
             <Image
               url={photo.value}
               title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
             />
             {photo.label && <Caption>{photo.label}</Caption>}
-          </Slide>
+          </MainSlide>
         ))}
       </Slider>
       <Slider
@@ -167,31 +210,12 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
         ref={sliderRef2}
         slidesToShow={maxThumbnailsToDisplay}
         focusOnSelect
-        swipeToSlide
-        arrows={maxThumbnailsToDisplay < data?.length}
-        responsive={[
-          {
-            breakpoint: 800,
-            settings: {
-              slidesToShow: 8,
-            },
-          },
-          {
-            breakpoint: 600,
-            settings: {
-              slidesToShow: 6,
-            },
-          },
-          {
-            breakpoint: 400,
-            settings: {
-              slidesToShow: 4,
-            },
-          },
-        ]}
+        responsive={responsiveSettings}
+        infinite={hasMoreThumbnails}
+        arrows={hasMoreThumbnails}
       >
-        {thumbnails?.map((photo, index) => (
-          <Thumbnail key={photo.value} $thumbCount={thumbnails.length}>
+        {data?.map((photo, index) => (
+          <Thumbnail key={photo.value} $thumbCount={maxThumbnailsToDisplay}>
             <Image
               url={photo.value}
               title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
