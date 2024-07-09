@@ -14,91 +14,89 @@ import { FieldsEditor } from './FieldsEditor';
 import { withConnectedEditor } from './withConnectedEditor';
 import { useValidationScroll } from './useValidationScroll';
 
-export const EditModalComponent = withConnectedEditor(
-  ({
-    errorMessage,
-    isOpen,
-    isLoading,
-    onDismiss,
+export const EditModalComponent = ({
+  errorMessage,
+  isOpen,
+  isLoading,
+  onDismiss,
+  onEditField,
+  onSave,
+  recordData,
+  title,
+  fields,
+  FieldsComponent,
+  isUnchanged,
+  displayUsedBy,
+  usedByConfig,
+  dismissButtonText,
+  cancelButtonText,
+  saveButtonText,
+  extraDialogProps,
+  validationErrors,
+  resourceName,
+  isNew,
+}) => {
+  const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
+
+  const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
+
+  const handleSave = () => {
+    onSave(files, onDismiss);
+  };
+
+  const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
+    handleSave,
     onEditField,
-    onSave,
-    recordData,
-    title,
-    fields,
-    FieldsComponent,
-    isUnchanged,
-    displayUsedBy,
-    usedByConfig,
-    dismissButtonText,
-    cancelButtonText,
-    saveButtonText,
-    extraDialogProps,
     validationErrors,
-    resourceName,
-    isNew,
-  }) => {
-    const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
+  );
+  const buttons = [
+    {
+      onClick: onDismiss,
+      text: errorMessage ? dismissButtonText : cancelButtonText,
+      disabled: isLoading,
+      variant: 'outlined',
+      id: 'form-button-cancel',
+    },
+    {
+      onClick: onSaveWithTouched,
+      id: 'form-button-save',
+      text: saveButtonText,
+      disabled: !!errorMessage || isLoading || isUnchanged,
+    },
+  ];
 
-    const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
+  const generateModalTitle = () => {
+    if (title) return title;
+    if (isLoading) return '';
+    if (!resourceName) return isNew ? 'Add' : 'Edit';
+    if (isNew) return `Add ${resourceName}`;
+    return `Edit ${resourceName}`;
+  };
 
-    const handleSave = () => {
-      onSave(files, onDismiss);
-    };
+  const modalTitle = generateModalTitle();
 
-    const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
-      handleSave,
-      onEditField,
-      validationErrors,
-    );
-    const buttons = [
-      {
-        onClick: onDismiss,
-        text: errorMessage ? dismissButtonText : cancelButtonText,
-        disabled: isLoading,
-        variant: 'outlined',
-        id: 'form-button-cancel',
-      },
-      {
-        onClick: onSaveWithTouched,
-        id: 'form-button-save',
-        text: saveButtonText,
-        disabled: !!errorMessage || isLoading || isUnchanged,
-      },
-    ];
-
-    const generateModalTitle = () => {
-      if (title) return title;
-      if (isLoading) return '';
-      if (!resourceName) return isNew ? 'Add' : 'Edit';
-      if (isNew) return `Add ${resourceName}`;
-      return `Edit ${resourceName}`;
-    };
-
-    const modalTitle = generateModalTitle();
-
-    return (
-      <Modal
-        errorMessage={errorMessage}
+  return (
+    <Modal
+      errorMessage={errorMessage}
+      isLoading={isLoading}
+      onClose={onDismiss}
+      isOpen={isOpen}
+      disableBackdropClick
+      title={modalTitle}
+      buttons={buttons}
+      {...extraDialogProps}
+    >
+      <FieldsComponentResolved
+        fields={fields}
         isLoading={isLoading}
-        onClose={onDismiss}
-        isOpen={isOpen}
-        disableBackdropClick
-        title={modalTitle}
-        buttons={buttons}
-        {...extraDialogProps}
-      >
-        <FieldsComponentResolved
-          fields={fields}
-          isLoading={isLoading}
-          recordData={recordData}
-          onEditField={onEditWithTouched}
-          onSetFormFile={handleSetFormFile}
-        />
-        {displayUsedBy && <UsedBy {...usedByConfig} />}
-      </Modal>
-    );
-  },
-);
+        recordData={recordData}
+        onEditField={onEditWithTouched}
+        onSetFormFile={handleSetFormFile}
+      />
+      {displayUsedBy && <UsedBy {...usedByConfig} />}
+    </Modal>
+  );
+};
 
 EditModalComponent.propTypes = {
   errorMessage: PropTypes.string,

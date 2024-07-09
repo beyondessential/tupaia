@@ -14,10 +14,12 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Description',
     source: 'description',
+    required: true,
   },
   {
     Header: 'Dashboard',
     source: 'dashboard_group_name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'dashboards',
       optionLabelKey: 'name',
@@ -53,6 +55,7 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Image',
     source: 'image_url',
+    required: true,
     editConfig: {
       type: 'image',
       name: 'image_url',
@@ -65,6 +68,7 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Logo',
     source: 'logo_url',
+    required: true,
     editConfig: {
       type: 'image',
       name: 'logo_url',
@@ -78,7 +82,6 @@ const DEFAULT_FIELDS = [
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
-    required: true,
     editConfig: {
       type: 'jsonEditor',
       labelTooltip: 'eg. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',
@@ -122,6 +125,7 @@ const NEW_PROJECT_COLUMNS = [
     source: 'country.code',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
+    required: true,
     editConfig: {
       optionsEndpoint: 'countries',
       optionLabelKey: 'country.name',
