@@ -13,3 +13,4 @@ export { checkVisibilityCriteriaAreMet } from './visibilityCriteria';
 export { labelToId } from './labelToId';
 export { getColumns, getRows } from './getRowsAndColumns';
 export { getExplodedFields } from './getFields';
+export * from './persistSearch';

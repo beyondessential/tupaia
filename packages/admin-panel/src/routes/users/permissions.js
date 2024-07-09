@@ -24,7 +24,14 @@ const EntityField = {
 };
 export const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
 export const PERMISSIONS_COLUMNS = [
-  EntityField,
+  {
+    Header: 'Entity',
+    source: 'entity.name',
+    editConfig: {
+      optionsEndpoint: 'entities',
+      baseFilter: { type: 'country' },
+    },
+  },
   {
     Header: 'Permission group',
     source: 'permission_group.name',
