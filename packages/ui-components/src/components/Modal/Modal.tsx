@@ -21,6 +21,7 @@ type ButtonT = ButtonProps & {
   text: string;
   component?: React.ElementType;
   to?: string;
+  type?: 'button' | 'submit' | 'reset';
 };
 
 interface ModalProps extends Omit<DialogProps, 'onClose' | 'open'> {

@@ -4,10 +4,27 @@
  */
 import React, { useState } from 'react';
 import throttle from 'lodash.throttle';
-import { useWatch } from 'react-hook-form';
+import styled from 'styled-components';
 import { Country, DatatrakWebSurveyUsersRequest } from '@tupaia/types';
-import { Autocomplete } from '../../components';
+import { Autocomplete as BaseAutocomplete } from '../../components';
 import { useSurveyUsers } from '../../api';
+import { Survey } from '../../types';
+
+const Autocomplete = styled(BaseAutocomplete)`
+  .MuiFormLabel-root {
+    font-size: inherit;
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  }
+  .MuiInputBase-root {
+    font-size: 0.875rem;
+  }
+  input::placeholder {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.divider};
+  }
+`;
 
 type User = DatatrakWebSurveyUsersRequest.ResBody[0];
 
@@ -16,12 +33,17 @@ interface AssigneeInputProps {
   onChange: (value: User['id'] | null) => void;
   inputRef?: React.Ref<any>;
   countryCode?: Country['code'];
+  surveyCode?: Survey['code'];
 }
 
-export const AssigneeInput = ({ value, onChange, inputRef, countryCode }: AssigneeInputProps) => {
+export const AssigneeInput = ({
+  value,
+  onChange,
+  inputRef,
+  countryCode,
+  surveyCode,
+}: AssigneeInputProps) => {
   const [searchValue, setSearchValue] = useState('');
-  const { surveyCode } = useWatch('surveyCode');
-  console.log('surveyCode', surveyCode);
 
   const { data: users = [], isLoading } = useSurveyUsers(surveyCode, countryCode, searchValue);
 
@@ -36,11 +58,13 @@ export const AssigneeInput = ({ value, onChange, inputRef, countryCode }: Assign
       label: user.name,
     })) ?? [];
 
+  const selectedOption = options.find(option => option.id === value) ?? null;
+
   return (
     <Autocomplete
       label="Assignee"
       options={options}
-      value={value}
+      value={selectedOption}
       onChange={onChangeAssignee}
       inputRef={inputRef}
       name="assignee"
@@ -49,7 +73,7 @@ export const AssigneeInput = ({ value, onChange, inputRef, countryCode }: Assign
       }, 200)}
       inputValue={searchValue}
       getOptionLabel={option => option.label}
-      getOptionSelected={(option, selectedOption) => option.id === selectedOption?.id}
+      getOptionSelected={(option, selected) => option.id === selected?.id}
       placeholder="Search..."
       loading={isLoading}
     />

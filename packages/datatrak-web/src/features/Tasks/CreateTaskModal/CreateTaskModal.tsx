@@ -12,9 +12,9 @@ import { useCreateTask } from '../../../api';
 import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { DueDatePicker } from '../DueDatePicker';
+import { AssigneeInput } from '../AssigneeInput';
 import { RepeatScheduleInput } from './RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
-import { AssigneeInput } from '../AssigneeInput';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -123,6 +123,7 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
     control,
     setValue,
     reset,
+    watch,
     formState: { isValid, dirtyFields },
   } = formContext;
 
@@ -168,6 +169,8 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
       reset(defaultValues);
     }
   }, [open]);
+
+  const surveyCode = watch('surveyCode');
 
   return (
     <Modal isOpen={open} onClose={onClose} title="New task" buttons={buttons} isLoading={isSaving}>
@@ -264,6 +267,7 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
                   onChange={onChange}
                   inputRef={ref}
                   countryCode={selectedCountry?.code}
+                  surveyCode={surveyCode}
                 />
               )}
             />

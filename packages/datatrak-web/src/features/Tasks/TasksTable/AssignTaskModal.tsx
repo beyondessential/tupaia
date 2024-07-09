@@ -2,44 +2,61 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect } from 'react';
-import { Modal } from '@tupaia/ui-components';
-import { FormProvider, useForm, Controller } from 'react-hook-form';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { UserAccount } from '@tupaia/types';
+import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { AssigneeInput } from '../AssigneeInput';
 
+const Container = styled(ModalCenteredContent)`
+  width: 20rem;
+  max-width: 100%;
+  margin: 0 auto;
+`;
+
 export const AssignTaskModal = ({ task, onClose }) => {
-  const formContext = useForm();
+  const [assigneeId, setAssigneeId] = useState<UserAccount['id'] | null>(null);
 
-  const { handleSubmit, control, setValue } = formContext;
-
-  const onSubmit = data => {
-    console.log(data);
+  const onCloseModal = () => {
+    setAssigneeId(null);
+    onClose();
   };
 
-  useEffect(() => {
-    setValue('surveyCode', task?.survey.code);
-  }, [task?.survey?.code]);
+  const onSubmit = e => {
+    e.preventDefault();
+    console.log('Assign task', assigneeId);
+    // onCloseModal();
+  };
+
+  const modalButtons = [
+    {
+      text: 'Cancel',
+      onClick: onCloseModal,
+      variant: 'outlined',
+      id: 'cancel',
+    },
+    {
+      text: 'Save',
+      onClick: onSubmit,
+      id: 'save',
+      type: 'submit',
+      disabled: !assigneeId,
+    },
+  ];
 
   return (
     <>
-      <Modal isOpen={!!task} onClose={onClose} title="Assign task">
-        <FormProvider {...formContext}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Controller
-              name="assigneeId"
-              control={control}
-              render={({ ref, value, onChange, ...field }) => (
-                <AssigneeInput
-                  {...field}
-                  value={value}
-                  onChange={onChange}
-                  inputRef={ref}
-                  countryCode={task?.entity?.countryCode}
-                />
-              )}
+      <Modal isOpen={!!task} onClose={onCloseModal} title="Assign task" buttons={modalButtons}>
+        <Container>
+          <form onSubmit={onSubmit}>
+            <AssigneeInput
+              value={assigneeId}
+              onChange={setAssigneeId}
+              countryCode={task?.entity?.countryCode}
+              surveyCode={task?.survey?.code}
             />
           </form>
-        </FormProvider>
+        </Container>
       </Modal>
     </>
   );
