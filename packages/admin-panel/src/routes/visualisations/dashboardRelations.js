@@ -8,10 +8,9 @@ import { prettyArray } from '../../utilities';
 
 export const RESOURCE_NAME = { singular: 'dashboard relation' };
 
-// export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
 
-export const DASHBOARD_RELATION_COLUMNS = {
+export const FIELDS = {
   DASHBOARD_CODE: {
     Header: 'Dashboard code',
     source: 'dashboard.code',
@@ -86,7 +85,15 @@ export const DASHBOARD_RELATION_COLUMNS = {
   },
 };
 
-const FIELDS = Object.values(DASHBOARD_RELATION_COLUMNS);
+export const DASHBOARD_RELATION_COLUMNS = [
+  FIELDS.DASHBOARD_CODE,
+  FIELDS.DASHBOARD_ITEM_CODE,
+  FIELDS.PERMISSION_GROUPS,
+  FIELDS.ENTITY_TYPES,
+  FIELDS.ATTRIBUTES_FILTER,
+  FIELDS.PROJECT_CODES,
+  FIELDS.SORT_ORDER,
+];
 
 const COLUMNS = [
   ...FIELDS,

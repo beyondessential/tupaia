@@ -59,9 +59,9 @@ interface InputLabelProps {
   as?: string | ComponentType<any>;
   className?: string;
   htmlFor?: string;
-  labelProps?: any;
   TooltipIcon?: ComponentType<any>;
   applyWrapper?: boolean;
+  labelProps?: Record<string, any>;
 }
 
 export const InputLabel = ({
