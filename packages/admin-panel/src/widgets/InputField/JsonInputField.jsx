@@ -36,6 +36,8 @@ const GreyCard = styled(Card)`
 
 const Container = styled.fieldset`
   position: relative;
+  border: none;
+  padding: 0px;
 `;
 
 const CardLabel = styled(FormLabel).attrs({

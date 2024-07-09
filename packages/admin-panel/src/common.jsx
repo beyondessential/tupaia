@@ -154,6 +154,7 @@ export const DATA_ELEMENT_FIELDS = [
   {
     Header: 'Permission Groups',
     source: 'permission_groups',
+    required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
