@@ -88,7 +88,7 @@ export const getSyncGroupsPageConfig = translate => {
 
   return {
     ...syncGroups,
-    title: translate('admin.syncGroups'),
+    label: translate('admin.syncGroups'),
     columns: COLUMNS,
     editorConfig,
     createConfig,

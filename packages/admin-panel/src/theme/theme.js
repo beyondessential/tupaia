@@ -35,6 +35,7 @@ const palette = {
     secondary: COLORS.TEXT_MIDGREY,
     tertiary: COLORS.TEXT_LIGHTGREY,
   },
+  divider: COLORS.GREY_DE,
   blue: {
     100: COLORS.BLUE_F6,
     200: COLORS.BLUE_E8,
@@ -46,7 +47,7 @@ const palette = {
     300: COLORS.GREY_E2,
     400: COLORS.GREY_DE,
     500: COLORS.GREY_9F,
-    600: COLORS.GREY_72,
+    600: COLORS.GREY_B8,
   },
   background: {
     default: COLORS.LIGHTGREY,
@@ -129,11 +130,7 @@ const overrides = {
       borderColor: COLORS.GREY_DE,
     },
   },
-  MuiDivider: {
-    root: {
-      backgroundColor: COLORS.GREY_DE,
-    },
-  },
+
   MuiFormLabel: {
     root: {
       fontSize: '0.875rem',
@@ -148,7 +145,7 @@ const overrides = {
     input: {
       fontSize: '0.875rem',
       '&::placeholder': {
-        color: COLORS.GREY_B8,
+        color: COLORS.TEXT_LIGHTGREY,
       },
     },
   },
@@ -183,8 +180,15 @@ const overrides = {
     '@global': {
       label: {
         fontWeight: 500,
-        '& .MuiSvgIcon-root': {
-          color: palette.text.secondary, // tooltip icon color
+      },
+    },
+  },
+  MuiSvgIcon: {
+    root: {
+      'label &': {
+        color: palette.text.secondary,
+        '&.checkbox': {
+          fill: 'transparent',
         },
       },
     },

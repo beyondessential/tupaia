@@ -5,28 +5,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
-import { PageBody, PageHeader } from '../../widgets';
+import { PageHeader } from '../../widgets';
 import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
-import { generateTitle } from './resourceName';
-
-const TableComponent = ({ children }) => (
-  <div className="scroll-container">
-    <div>{children}</div>
-  </div>
-);
-
-TableComponent.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 const useEndpoint = (endpoint, details, params) => {
   if (!details && !params) return endpoint;
@@ -45,7 +33,6 @@ const useEndpoint = (endpoint, details, params) => {
 };
 
 export const ResourcePage = ({
-  resourceName,
   columns,
   createConfig,
   endpoint,
@@ -70,6 +57,7 @@ export const ResourcePage = ({
   hasBESAdminAccess,
   needsBESAdminAccess,
   actionLabel,
+  resourceName,
 }) => {
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
@@ -107,7 +95,6 @@ export const ResourcePage = ({
         />
       )}
       <PageHeader
-        title={title}
         importConfig={canImport && importConfig}
         exportConfig={canExport && exportConfig}
         createConfig={canCreate && createConfig}
@@ -121,7 +108,6 @@ export const ResourcePage = ({
         columns={accessibleColumns}
         baseFilter={baseFilter}
         defaultFilters={defaultFilters}
-        TableComponent={TableComponent}
         defaultSorting={defaultSorting}
         deleteConfig={deleteConfig}
         detailUrl={path}
@@ -129,6 +115,7 @@ export const ResourcePage = ({
         getNestedViewLink={getNestedViewLink}
         basePath={basePath}
         actionLabel={actionLabel}
+        key={updatedEndpoint}
       />
       <EditModal
         onProcessDataForSave={onProcessDataForSave}
@@ -144,7 +131,7 @@ export const ResourcePage = ({
 
 ResourcePage.propTypes = {
   resourceName: PropTypes.shape({
-    singular: PropTypes.string.isRequired,
+    singular: PropTypes.string,
     plural: PropTypes.string,
   }),
   columns: PropTypes.array.isRequired,
@@ -156,14 +143,13 @@ ResourcePage.propTypes = {
   exportConfig: PropTypes.object,
   deleteConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
-  TableComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
   title: PropTypes.string,
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
-  nestedViews: PropTypes.object,
+  nestedViews: PropTypes.arrayOf(PropTypes.object),
   parent: PropTypes.object,
   displayProperty: PropTypes.string,
   getHasNestedView: PropTypes.func,
@@ -172,6 +158,7 @@ ResourcePage.propTypes = {
   basePath: PropTypes.string,
   hasBESAdminAccess: PropTypes.bool.isRequired,
   needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
+  actionLabel: PropTypes.string,
 };
 
 ResourcePage.defaultProps = {
@@ -181,7 +168,6 @@ ResourcePage.defaultProps = {
   exportConfig: {},
   deleteConfig: {},
   ExportModalComponent: null,
-  TableComponent: null,
   LinksComponent: null,
   onProcessDataForSave: null,
   title: null,
@@ -198,4 +184,5 @@ ResourcePage.defaultProps = {
   getNestedViewLink: null,
   basePath: '',
   needsBESAdminAccess: [],
+  actionLabel: 'Action',
 };

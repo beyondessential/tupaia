@@ -129,7 +129,7 @@ export const getDashboardsPageConfig = translate => {
 
   return {
     ...dashboards,
-    title: translate('admin.dashboards'),
+    label: translate('admin.dashboards'),
     columns: COLUMNS,
     createConfig,
     editorConfig,
@@ -138,7 +138,7 @@ export const getDashboardsPageConfig = translate => {
     nestedViews: [
       {
         ...dashboards.nestedViews[0],
-        title: translate('admin.dashboardRelations'),
+        label: translate('admin.dashboardRelations'),
         columns: RELATION_COLUMNS,
       },
     ],
