@@ -14,7 +14,7 @@ import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { DueDatePicker } from '../DueDatePicker';
 import { RepeatScheduleInput } from './RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
-import { AssigneeInput } from './AssigneeInput';
+import { AssigneeInput } from '../AssigneeInput';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -263,7 +263,7 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
                   value={value}
                   onChange={onChange}
                   inputRef={ref}
-                  selectedCountry={selectedCountry}
+                  countryCode={selectedCountry?.code}
                 />
               )}
             />

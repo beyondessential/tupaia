@@ -6,8 +6,8 @@ import React, { useState } from 'react';
 import throttle from 'lodash.throttle';
 import { useWatch } from 'react-hook-form';
 import { Country, DatatrakWebSurveyUsersRequest } from '@tupaia/types';
-import { Autocomplete } from '../../../components';
-import { useSurveyUsers } from '../../../api';
+import { Autocomplete } from '../../components';
+import { useSurveyUsers } from '../../api';
 
 type User = DatatrakWebSurveyUsersRequest.ResBody[0];
 
@@ -15,23 +15,14 @@ interface AssigneeInputProps {
   value: string | null;
   onChange: (value: User['id'] | null) => void;
   inputRef?: React.Ref<any>;
-  selectedCountry?: Country | null;
+  countryCode?: Country['code'] | null;
 }
 
-export const AssigneeInput = ({
-  value,
-  onChange,
-  inputRef,
-  selectedCountry,
-}: AssigneeInputProps) => {
+export const AssigneeInput = ({ value, onChange, inputRef, countryCode }: AssigneeInputProps) => {
   const [searchValue, setSearchValue] = useState('');
   const { surveyCode } = useWatch('surveyCode');
 
-  const { data: users = [], isLoading } = useSurveyUsers(
-    surveyCode,
-    selectedCountry?.code,
-    searchValue,
-  );
+  const { data: users = [], isLoading } = useSurveyUsers(surveyCode, countryCode, searchValue);
 
   const onChangeAssignee = (_e, newSelection: User | null) => {
     onChange(newSelection?.id ?? null);
