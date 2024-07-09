@@ -11,7 +11,8 @@ import { Button, ButtonLink as BaseButtonLink } from '../../components';
 
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
-const SurveyAlert = styled.div`
+const SectionContainer = styled.div`
+  grid-area: surveySelect;
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
   padding: 1rem;
@@ -19,8 +20,22 @@ const SurveyAlert = styled.div`
   position: relative;
   align-items: flex-start;
   justify-content: space-between;
+
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2.3rem;
+    padding: 1rem 3rem 1rem 2.2rem;
+    margin-top: 1.95rem;
+  }
+`;
+
+const SectionContent = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  width: 70%;
+  padding-right: 2rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
   }
 `;
 
@@ -73,7 +88,7 @@ const TextWrapper = styled.div`
 
 const Text = styled(Typography)`
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 1.5;
   }
 `;
@@ -94,7 +109,7 @@ const SurveysImage = styled.img`
   top: -1.5rem;
   ${({ theme }) => theme.breakpoints.up('lg')} {
     top: -20%;
-    right: 2rem;
+    right: -1rem;
     height: 150%;
   }
 
@@ -104,22 +119,10 @@ const SurveysImage = styled.img`
   }
 `;
 
-const SurveyAlertContent = styled.div`
-  display: flex;
-  flex-direction: column-reverse;
-  width: 70%;
-  padding-right: 2rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
-  }
-`;
-
 export const SurveySelectSection = () => {
   return (
-    <SurveyAlert>
-      <SurveyAlertContent>
+    <SectionContainer>
+      <SectionContent>
         <ButtonWrapper>
           <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
           <Button variant="outlined" onClick={() => window.open(TUPAIA_REDIRECT_URL)}>
@@ -137,8 +140,8 @@ export const SurveySelectSection = () => {
             </DesktopText>
           </Text>
         </TextWrapper>
-      </SurveyAlertContent>
+      </SectionContent>
       <SurveysImage src="/surveys.svg" alt="Illustration of woman holding a tablet" />
-    </SurveyAlert>
+    </SectionContainer>
   );
 };

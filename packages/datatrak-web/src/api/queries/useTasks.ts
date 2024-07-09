@@ -9,7 +9,7 @@ import { get } from '../api';
 
 type Filter = {
   id: string;
-  value: string;
+  value: string | object;
 };
 
 type SortBy = {
@@ -17,13 +17,15 @@ type SortBy = {
   desc: boolean;
 };
 
-export const useTasks = (
-  projectId?: string,
-  pageSize?: number,
-  page?: number,
-  filters: Filter[] = [],
-  sortBy?: SortBy[],
-) => {
+interface UseTasksOptions {
+  projectId?: string;
+  pageSize?: number;
+  page?: number;
+  filters?: Filter[];
+  sortBy?: SortBy[];
+}
+
+export const useTasks = ({ projectId, pageSize, page, filters = [], sortBy }: UseTasksOptions) => {
   return useQuery(
     ['tasks', projectId, pageSize, page, filters, sortBy],
     (): Promise<DatatrakWebTasksRequest.ResBody> =>
@@ -31,18 +33,11 @@ export const useTasks = (
         params: {
           pageSize,
           page,
-          filters: [
-            ...filters,
-            {
-              id: 'survey.project_id',
-              value: projectId,
-            },
-          ],
+          filters,
           sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
         },
       }),
     {
-      enabled: !!projectId,
       // This needs to be true so that when changing the page number, the total number of records is not reset
       keepPreviousData: true,
     },

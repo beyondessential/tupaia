@@ -145,7 +145,19 @@ const useTasksTable = () => {
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
-  const { data, isLoading, isFetching } = useTasks(projectId, pageSize, page, filters, sortBy);
+  const { data, isLoading, isFetching } = useTasks({
+    projectId,
+    pageSize,
+    page,
+    filters: [
+      ...filters,
+      {
+        id: 'survey.project_id',
+        value: projectId,
+      },
+    ],
+    sortBy,
+  });
 
   const updateSorting = newSorting => {
     searchParams.set('sortBy', JSON.stringify(newSorting));
