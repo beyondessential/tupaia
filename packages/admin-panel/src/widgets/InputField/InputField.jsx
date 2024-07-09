@@ -51,6 +51,7 @@ export const InputField = ({
   };
 
   const helperText = generateHelperText();
+
   return (
     <InputWrapper errorText={error} helperText={helperText}>
       {InputComponent && (

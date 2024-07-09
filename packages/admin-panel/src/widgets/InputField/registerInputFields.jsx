@@ -107,6 +107,8 @@ export const registerInputFields = () => {
       pageSize={props.pageSize}
       tooltip={props.labelTooltip}
       distinct={props.distinct}
+      required={props.required}
+      error={props.error}
     />
   ));
   registerInputField('json', props => (
