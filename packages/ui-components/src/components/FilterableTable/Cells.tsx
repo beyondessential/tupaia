@@ -32,7 +32,7 @@ const CellContentWrapper = styled.div`
   align-items: center;
 
   tr:not(:last-child) & {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
+    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
   }
   td:first-child & {
     padding-inline-start: 0.2rem;
@@ -53,7 +53,7 @@ const HeaderCell = styled(Cell)`
   color: ${({ theme }) => theme.palette.text.secondary};
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   background-color: ${({ theme }) => theme.palette.background.paper};
-  border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
+  border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
   padding-block: 0.7rem;
   padding-inline: 0.7rem 0;
   display: flex;

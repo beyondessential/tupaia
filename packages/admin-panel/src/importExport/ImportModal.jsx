@@ -6,8 +6,8 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { FileUploadField } from '@tupaia/ui-components';
-import { InputField, Modal } from '../widgets';
+import { FileUploadField, Modal } from '@tupaia/ui-components';
+import { InputField } from '../widgets';
 import { useApiContext } from '../utilities/ApiProvider';
 import { DATA_CHANGE_ERROR, DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';

@@ -16,10 +16,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
-import { InputLabel } from '@tupaia/ui-components';
+import { InputLabel, useDebounce } from '@tupaia/ui-components';
 import { get } from '../../VizBuilderApp/api/api';
 import { Checkbox } from '../Checkbox';
-import { convertSearchTermToFilter, useDebounce } from '../../utilities';
+import { convertSearchTermToFilter } from '../../utilities';
 
 const useOptions = (
   endpoint,
