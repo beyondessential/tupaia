@@ -96,7 +96,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
 ];
 
 const COLUMNS = [
-  ...FIELDS,
+  ...DASHBOARD_RELATION_COLUMNS,
   {
     Header: 'Edit',
     type: 'edit',
