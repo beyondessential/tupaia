@@ -1,9 +1,9 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React, { useEffect, useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -13,8 +13,19 @@ import { IconButton, Typography } from '@material-ui/core';
 
 const Wrapper = styled.div`
   position: relative;
-  padding: 1rem;
-  max-width: 75rem;
+  width: 75rem;
+  max-width: 90%;
+  margin: 0 auto;
+`;
+
+const MainSliderContainer = styled.div`
+  max-width: 37rem;
+  margin: 0 auto;
+`;
+
+const ThumbSliderContainer = styled.div`
+  max-width: 65rem;
+  margin: 0 auto;
 `;
 
 const Image = styled.div<{
@@ -26,7 +37,6 @@ const Image = styled.div<{
   background-position: center;
   height: 100%;
   width: 100%;
-  margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,14 +48,11 @@ const Slide = styled.div`
 `;
 
 const MainSlide = styled(Slide)`
-  width: 32rem;
+  width: 100%;
   height: 35rem;
-  padding-block: 1rem;
-  padding-inline: 2rem;
-  max-width: 32rem;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding-inline: 0.5rem;
-  }
+  padding-block-start: 1rem;
+  padding-block-end: 3.5rem;
+  padding-inline: 1.5rem;
 `;
 
 const Caption = styled(Typography)`
@@ -128,9 +135,7 @@ interface MultiPhotographEnlargedProps {
 }
 
 export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlargedProps) => {
-  //  const { data = [] } = report ?? {};
-
-  const data = [...report.data, ...report.data, ...report.data, ...report.data, ...report.data];
+  const { data = [] } = report ?? {};
 
   /**  The following is a workaround for an issue where the slider doesn't link the two sliders together until another re-render, because the ref is not set yet
    * See [example](https://react-slick.neostack.com/docs/example/as-nav-for)
@@ -187,42 +192,47 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
 
   return (
     <Wrapper>
-      <Slider
-        {...settings}
-        asNavFor={thumbnailSlider}
-        ref={sliderRef1}
-        slidesToShow={1}
-        infinite={hasMoreThumbnails}
-      >
-        {data.map((photo, index) => (
-          <MainSlide key={photo.value}>
-            <Image
-              url={photo.value}
-              title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
-            />
-            {photo.label && <Caption>{photo.label}</Caption>}
-          </MainSlide>
-        ))}
-      </Slider>
-      <Slider
-        {...settings}
-        asNavFor={mainSlider}
-        ref={sliderRef2}
-        slidesToShow={maxThumbnailsToDisplay}
-        focusOnSelect
-        responsive={responsiveSettings}
-        infinite={hasMoreThumbnails}
-        arrows={hasMoreThumbnails}
-      >
-        {data?.map((photo, index) => (
-          <Thumbnail key={photo.value} $thumbCount={maxThumbnailsToDisplay}>
-            <Image
-              url={photo.value}
-              title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
-            />
-          </Thumbnail>
-        ))}
-      </Slider>
+      <MainSliderContainer>
+        <Slider
+          {...settings}
+          asNavFor={thumbnailSlider}
+          ref={sliderRef1}
+          slidesToShow={1}
+          infinite={hasMoreThumbnails}
+        >
+          {data.map((photo, index) => (
+            <MainSlide key={photo.value}>
+              <Image
+                url={photo.value}
+                title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
+              />
+              {photo.label && <Caption>{photo.label}</Caption>}
+            </MainSlide>
+          ))}
+        </Slider>
+      </MainSliderContainer>
+
+      <ThumbSliderContainer>
+        <Slider
+          {...settings}
+          asNavFor={mainSlider}
+          ref={sliderRef2}
+          slidesToShow={maxThumbnailsToDisplay}
+          focusOnSelect
+          responsive={responsiveSettings}
+          infinite={hasMoreThumbnails}
+          arrows={hasMoreThumbnails}
+        >
+          {data?.map((photo, index) => (
+            <Thumbnail key={photo.value} $thumbCount={maxThumbnailsToDisplay}>
+              <Image
+                url={photo.value}
+                title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
+              />
+            </Thumbnail>
+          ))}
+        </Slider>
+      </ThumbSliderContainer>
     </Wrapper>
   );
 };
