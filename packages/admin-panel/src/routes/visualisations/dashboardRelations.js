@@ -85,7 +85,7 @@ export const FIELDS = {
   },
 };
 
-export const DASHBOARD_RELATION_COLUMNS = [
+const DASHBOARD_RELATION_FIELDS = [
   FIELDS.DASHBOARD_CODE,
   FIELDS.DASHBOARD_ITEM_CODE,
   FIELDS.PERMISSION_GROUPS,
@@ -96,7 +96,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
 ];
 
 const COLUMNS = [
-  ...DASHBOARD_RELATION_COLUMNS,
+  ...DASHBOARD_RELATION_FIELDS,
   {
     Header: 'Edit',
     type: 'edit',
@@ -104,7 +104,7 @@ const COLUMNS = [
     actionConfig: {
       title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: DASHBOARD_RELATION_ENDPOINT,
-      fields: FIELDS,
+      fields: DASHBOARD_RELATION_FIELDS,
     },
   },
   {
@@ -120,7 +120,7 @@ const CREATE_CONFIG = {
   actionConfig: {
     title: 'Add relation between dashboard and dashboard item',
     editEndpoint: DASHBOARD_RELATION_ENDPOINT,
-    fields: FIELDS,
+    fields: DASHBOARD_RELATION_FIELDS,
   },
 };
 
