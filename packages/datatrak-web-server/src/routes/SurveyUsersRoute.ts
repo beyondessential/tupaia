@@ -24,7 +24,7 @@ export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
     const { models, params, query } = this.req;
     const { surveyCode, countryCode } = params;
 
-    const { filter } = query;
+    const { searchTerm } = query;
 
     const survey = await models.survey.findOne({ code: surveyCode });
 
@@ -61,21 +61,23 @@ export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
 
     const userIds = userEntityPermissions.map(uep => uep.user_id);
 
-    const users = await models.user.find(
-      {
-        id: userIds,
-        ...filter,
-        // exclude the e2e user and any user with a tupaia.org email, as these are api-client users
-        email: { comparator: '!=', comparisonValue: E2E_USER },
-        [QUERY_CONJUNCTIONS.AND]: {
-          email: { comparator: 'not like', comparisonValue: '%@tupaia.org' },
-        },
+    const usersFilter = {
+      id: userIds,
+      // exclude the e2e user and any user with a tupaia.org email, as these are api-client users
+      email: { comparator: '!=', comparisonValue: E2E_USER },
+      [QUERY_CONJUNCTIONS.AND]: {
+        email: { comparator: 'not like', comparisonValue: '%@tupaia.org' },
       },
-      {
-        sort: ['full_name ASC'],
-        limit: DEFAULT_PAGE_SIZE,
-      },
-    );
+    } as Record<string, any>;
+
+    if (searchTerm) {
+      usersFilter.full_name = { comparator: 'ilike', comparisonValue: `${searchTerm}%` };
+    }
+
+    const users = await models.user.find(usersFilter, {
+      sort: ['full_name ASC'],
+      limit: DEFAULT_PAGE_SIZE,
+    });
     const userData = users.map(user => ({
       id: user.id,
       name: user.full_name,

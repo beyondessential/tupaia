@@ -13,5 +13,5 @@ type UserResponse = {
 export type ResBody = UserResponse[];
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
-  filter?: Record<string, any>;
+  searchTerm?: string;
 }

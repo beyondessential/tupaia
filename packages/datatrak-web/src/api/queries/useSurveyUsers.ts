@@ -18,14 +18,7 @@ export const useSurveyUsers = (
     (): Promise<DatatrakWebSurveyUsersRequest.ResBody> =>
       get(`users/${surveyCode}/${countryCode}`, {
         params: {
-          filter: searchTerm
-            ? {
-                full_name: {
-                  comparator: 'ilike',
-                  comparisonValue: `${searchTerm}%`,
-                },
-              }
-            : undefined,
+          searchTerm,
         },
       }),
     {
