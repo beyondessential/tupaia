@@ -107,8 +107,8 @@ export const ModalContentProvider = ({ isLoading, error, children }) => {
       {error?.message && (
         <ErrorsWrapper>
           <Heading>{heading}</Heading>
-          {errors.map(({ message, details }) => (
-            <Error key={message} message={message} details={details} />
+          {errors.map(({ message, extraFields }) => (
+            <Error key={message} message={message} details={extraFields?.details} />
           ))}
         </ErrorsWrapper>
       )}
