@@ -16,6 +16,7 @@ import { format } from 'date-fns';
 import { Autocomplete } from '../autocomplete';
 import { useDebounce } from '../utilities';
 import { useEntities } from '../VizBuilderApp/api';
+import { EntityOptionLabel } from '../widgets/EntityOptionLabel';
 
 const SectionWrapper = styled.div`
   display: grid;
@@ -81,6 +82,9 @@ export const ResponseFields = ({
             return option.id === selected.id;
           }}
           getOptionLabel={option => option?.name || ''}
+          renderOption={(props, option) => {
+            return ( <EntityOptionLabel {...props}/>);
+          }}
           isLoading={entityIsLoading}
           onChangeSelection={(event, selectedValue) => {
             if (!selectedValue) {

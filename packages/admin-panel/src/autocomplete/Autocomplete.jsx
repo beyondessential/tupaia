@@ -38,6 +38,7 @@ export const Autocomplete = props => {
     canCreateNewOptions,
     allowMultipleValues,
     optionLabelKey,
+    renderOption,
     muiProps,
     tooltip,
     required,
@@ -109,6 +110,7 @@ export const Autocomplete = props => {
       options={options}
       getOptionSelected={getOptionSelected}
       getOptionLabel={getOptionLabel}
+      renderOption={renderOption}
       loading={isLoading}
       onChange={onChangeSelection}
       onInputChange={(event, newValue) => {
@@ -132,6 +134,7 @@ Autocomplete.propTypes = {
   options: PropTypes.array.isRequired,
   getOptionSelected: PropTypes.func.isRequired,
   getOptionLabel: PropTypes.func.isRequired,
+  renderOption: PropTypes.func,
   isLoading: PropTypes.bool,
   onChangeSelection: PropTypes.func.isRequired,
   onChangeSearchTerm: PropTypes.func,
