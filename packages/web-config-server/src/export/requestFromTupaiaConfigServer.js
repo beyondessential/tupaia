@@ -46,6 +46,7 @@ export const requestFromTupaiaConfigServer = async (
         sessionCookieName,
         sessionCookie,
         false,
+        additionalHeaders,
       );
     }
     throw error;

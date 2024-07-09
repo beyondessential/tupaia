@@ -19,3 +19,8 @@ export interface OneTimeCredentials {
   token: string;
   deviceName: string;
 }
+
+export interface RequestResetPasswordCredentials {
+  emailAddress: string;
+  resetPasswordUrl: string;
+}

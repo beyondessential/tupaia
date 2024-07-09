@@ -11,7 +11,6 @@ import {
   QuestionType,
 } from '@tupaia/types';
 import { SurveyScreenComponent } from '../../../types';
-import { formatSurveyScreenQuestions } from '../utils';
 import { generateMongoId, generateShortId } from './generateId';
 
 export const getIsQuestionVisible = (
@@ -28,7 +27,12 @@ export const getIsQuestionVisible = (
   return Object.entries(dependantQuestions)[operator](([questionId, validAnswers]) => {
     const answer = formData[questionId];
     if (answer === undefined) return false;
-    return Array.isArray(validAnswers) ? validAnswers?.includes(answer) : validAnswers === answer;
+
+    // stringify the answer to compare with the validAnswers so that the types are always the same
+    const stringifiedAnswer = String(answer);
+    return Array.isArray(validAnswers)
+      ? validAnswers?.map(validAnswer => String(validAnswer)).includes(stringifiedAnswer)
+      : String(validAnswers) === stringifiedAnswer;
   });
 };
 
@@ -60,7 +64,6 @@ export const getIsDependentQuestion = (
 export const getDisplayQuestions = (
   activeScreen: SurveyScreenComponent[] = [],
   screenComponents: SurveyScreenComponent[],
-  screenNumber?: number | null,
 ) => {
   // If the first question is an instruction, don't render it since we always just
   // show the text of first questions as the heading. Format the questions with a question number to display
@@ -79,7 +82,7 @@ export const getDisplayQuestions = (
     }
     return question;
   });
-  return formatSurveyScreenQuestions(displayQuestions, screenNumber!);
+  return displayQuestions;
 };
 
 const getConditionIsMet = (expressionParser, formData, { formula, defaultValues = {} }) => {
@@ -168,18 +171,21 @@ const resetInvisibleQuestions = (
 
 const hasConditionConfig = (
   ssc: SurveyScreenComponent,
-): ssc is SurveyScreenComponent & { config: { condition: ConditionQuestionConfig } } =>
-  ssc.type === QuestionType.Condition && ssc.config?.condition !== undefined;
+): ssc is SurveyScreenComponent & {
+  config: { condition: ConditionQuestionConfig };
+} => ssc.type === QuestionType.Condition && ssc.config?.condition !== undefined;
 
 const hasArithmeticConfig = (
   ssc: SurveyScreenComponent,
-): ssc is SurveyScreenComponent & { config: { arithmetic: ArithmeticQuestionConfig } } =>
-  ssc.type === QuestionType.Arithmetic && ssc.config?.arithmetic !== undefined;
+): ssc is SurveyScreenComponent & {
+  config: { arithmetic: ArithmeticQuestionConfig };
+} => ssc.type === QuestionType.Arithmetic && ssc.config?.arithmetic !== undefined;
 
 const hasCodeGeneratorConfig = (
   ssc: SurveyScreenComponent,
-): ssc is SurveyScreenComponent & { config: { codeGenerator: CodeGeneratorQuestionConfig } } =>
-  ssc.type === QuestionType.CodeGenerator && ssc.config?.codeGenerator !== undefined;
+): ssc is SurveyScreenComponent & {
+  config: { codeGenerator: CodeGeneratorQuestionConfig };
+} => ssc.type === QuestionType.CodeGenerator && ssc.config?.codeGenerator !== undefined;
 
 const updateDependentQuestions = (
   formData: Record<string, any>,

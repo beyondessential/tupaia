@@ -9,18 +9,18 @@ import PropTypes from 'prop-types';
 import {
   Button,
   StatusMessage,
-  TupaiaLogo,
-  TextInput,
   Text,
+  TextInput,
   TouchableOpacity,
   TupaiaBackground,
+  TupaiaLogo,
 } from '../widgets';
 
 import {
   DEFAULT_PADDING,
-  THEME_FONT_FAMILY,
-  THEME_COLOR_ONE,
   THEME_COLOR_DARK,
+  THEME_COLOR_ONE,
+  THEME_FONT_FAMILY,
   THEME_FONT_SIZE_ONE,
 } from '../globalStyles';
 
@@ -61,6 +61,7 @@ export class LoginPage extends React.Component {
       onChangePassword,
       onChangeEmailAddress,
       onCreateAccount,
+      onForgotPassword,
       onLogin,
       password,
       emailAddress,
@@ -114,6 +115,11 @@ export class LoginPage extends React.Component {
               }}
             />
           </View>
+          <View style={[localStyles.linkButton, localStyles.forgotPasswordButton]}>
+            <TouchableOpacity onPress={onForgotPassword} analyticsLabel="Login: Forgot Password">
+              <Text style={localStyles.linkButtonEmphasis}>Forgot password?</Text>
+            </TouchableOpacity>
+          </View>
           <View style={localStyles.actions}>
             {isLoggingIn && renderLoadingSpinner()}
             {!isLoggingIn &&
@@ -134,6 +140,7 @@ LoginPage.propTypes = {
   onChangeEmailAddress: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
   onCreateAccount: PropTypes.func.isRequired,
+  onForgotPassword: PropTypes.func.isRequired,
   password: PropTypes.string,
   emailAddress: PropTypes.string,
   isLoggingIn: PropTypes.bool,
@@ -196,6 +203,11 @@ const localStyles = StyleSheet.create({
   },
   linkButtonEmphasis: {
     textDecorationLine: 'underline',
+  },
+  forgotPasswordButton: {
+    alignSelf: 'flex-end',
+    marginHorizontal: HORIZONTAL_MARGIN,
+    paddingHorizontal: 0,
   },
   errorMessage: {
     marginHorizontal: DEFAULT_PADDING,

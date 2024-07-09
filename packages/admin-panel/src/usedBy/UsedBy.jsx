@@ -39,7 +39,7 @@ const StyledLink = styled(Link)`
   }
   .MuiSvgIcon-root {
     width: 16px;
-    color: ${props => props.theme.palette.text.tertiary};
+    color: ${props => props.theme.palette.text.secondary};
     margin-left: 15px;
   }
 `;

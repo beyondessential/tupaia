@@ -3,7 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { RESOURCE_NAME as DASHBOARD_RELATION_RESOURCE_NAME } from './dashboardRelations';
+import {
+  DASHBOARD_RELATION_ENDPOINT,
+  FIELDS as DASHBOARD_RELATION_FIELDS,
+  RESOURCE_NAME as DASHBOARD_RELATION_RESOURCE_NAME,
+} from './dashboardRelations';
 
 const RESOURCE_NAME = { singular: 'dashboard' };
 
@@ -61,44 +65,10 @@ const RELATION_FIELDS = [
     source: 'dashboard_item.code',
     editable: false,
   },
-  {
-    Header: 'Permission groups',
-    source: 'permission_groups',
-    editConfig: {
-      optionsEndpoint: 'permissionGroups',
-      optionLabelKey: 'name',
-      optionValueKey: 'name',
-      sourceKey: 'permission_groups',
-      allowMultipleValues: true,
-    },
-  },
-  {
-    Header: 'Entity types',
-    source: 'entity_types',
-    editConfig: {
-      type: 'autocomplete',
-      allowMultipleValues: true,
-      canCreateNewOptions: true,
-      optionLabelKey: 'entityTypes',
-      optionValueKey: 'entityTypes',
-      secondaryLabel: 'Input the entity types you want. e.g. ‘country’, ‘sub_district’',
-    },
-  },
-  {
-    Header: 'Project codes',
-    source: 'project_codes',
-    editConfig: {
-      optionsEndpoint: 'projects',
-      optionLabelKey: 'code',
-      optionValueKey: 'code',
-      sourceKey: 'project_codes',
-      allowMultipleValues: true,
-    },
-  },
-  {
-    Header: 'Sort order',
-    source: 'sort_order',
-  },
+  DASHBOARD_RELATION_FIELDS.PERMISSION_GROUPS,
+  DASHBOARD_RELATION_FIELDS.ENTITY_TYPES,
+  DASHBOARD_RELATION_FIELDS.PROJECT_CODES,
+  DASHBOARD_RELATION_FIELDS.SORT_ORDER,
 ];
 
 const RELATION_COLUMNS = [
@@ -108,8 +78,15 @@ const RELATION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'dashboardRelations',
+      editEndpoint: DASHBOARD_RELATION_ENDPOINT,
       fields: RELATION_FIELDS,
+    },
+  },
+  {
+    Header: 'Delete',
+    type: 'delete',
+    actionConfig: {
+      endpoint: DASHBOARD_RELATION_ENDPOINT,
     },
   },
 ];
