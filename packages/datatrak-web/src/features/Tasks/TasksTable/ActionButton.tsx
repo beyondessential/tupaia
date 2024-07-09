@@ -9,8 +9,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
 import { ROUTES } from '../../../constants';
-
-type Task = DatatrakWebTasksRequest.ResBody['tasks'][0];
+import { Task } from '../../../types';
 
 const ActionButtonComponent = styled(Button).attrs({
   color: 'primary',
@@ -29,13 +28,25 @@ const ActionButtonComponent = styled(Button).attrs({
   }
 `;
 
-export const ActionButton = (task: Task) => {
+interface ActionButtonProps {
+  task: Task;
+  onAssignTask: (task: Task | null) => void;
+}
+
+export const ActionButton = ({ task, onAssignTask }: ActionButtonProps) => {
   const location = useLocation();
   if (!task) return null;
   const { assigneeId, survey, entity, status } = task;
   if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
+  const openAssignTaskModal = () => {
+    onAssignTask(task);
+  };
   if (!assigneeId) {
-    return <ActionButtonComponent variant="outlined">Assign</ActionButtonComponent>;
+    return (
+      <ActionButtonComponent variant="outlined" onClick={openAssignTaskModal}>
+        Assign
+      </ActionButtonComponent>
+    );
   }
 
   const surveyLink = generatePath(ROUTES.SURVEY, {

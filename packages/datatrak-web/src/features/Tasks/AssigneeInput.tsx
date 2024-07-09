@@ -15,12 +15,13 @@ interface AssigneeInputProps {
   value: string | null;
   onChange: (value: User['id'] | null) => void;
   inputRef?: React.Ref<any>;
-  countryCode?: Country['code'] | null;
+  countryCode?: Country['code'];
 }
 
 export const AssigneeInput = ({ value, onChange, inputRef, countryCode }: AssigneeInputProps) => {
   const [searchValue, setSearchValue] = useState('');
   const { surveyCode } = useWatch('surveyCode');
+  console.log('surveyCode', surveyCode);
 
   const { data: users = [], isLoading } = useSurveyUsers(surveyCode, countryCode, searchValue);
 

@@ -3,17 +3,18 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
-import { TaskStatusType } from '../../../types';
+import { Task, TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
+import { AssignTaskModal } from './AssignTaskModal';
 
 const Container = styled.div`
   display: flex;
@@ -28,6 +29,7 @@ const Container = styled.div`
 `;
 
 const useTasksTable = () => {
+  const [assignTaskModalApplied, setAssignTaskModalApplied] = useState<Task | null>(null);
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -120,7 +122,7 @@ const useTasksTable = () => {
     },
     {
       Header: '',
-      accessor: row => <ActionButton {...row} />,
+      accessor: task => <ActionButton task={task} onAssignTask={setAssignTaskModalApplied} />,
       id: 'actions',
       filterable: false,
       disableSortBy: true,
@@ -142,6 +144,8 @@ const useTasksTable = () => {
     onChangePage,
     onChangePageSize,
     isLoading: isLoading || isFetching,
+    assignTaskModalApplied,
+    setAssignTaskModalApplied,
   };
 };
 
@@ -160,6 +164,8 @@ export const TasksTable = () => {
     onChangePage,
     onChangePageSize,
     isLoading,
+    assignTaskModalApplied,
+    setAssignTaskModalApplied,
   } = useTasksTable();
 
   return (
@@ -179,6 +185,10 @@ export const TasksTable = () => {
         onChangePageSize={onChangePageSize}
         noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
+      />
+      <AssignTaskModal
+        task={assignTaskModalApplied}
+        onClose={() => setAssignTaskModalApplied(null)}
       />
     </Container>
   );
