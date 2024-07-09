@@ -22,6 +22,11 @@ export const useLinkToPreviousSearchState = url => {
   const location = useLocation();
   const { state } = location;
   const prevSearch = state?.[url];
+  if (!url)
+    return {
+      to: null,
+      newState: null,
+    };
   return {
     to: {
       ...location,
