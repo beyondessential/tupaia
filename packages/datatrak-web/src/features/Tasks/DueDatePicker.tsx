@@ -38,8 +38,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';
-
 interface DueDatePickerProps {
   value?: string | null;
   onChange: (value: string | null) => void;
