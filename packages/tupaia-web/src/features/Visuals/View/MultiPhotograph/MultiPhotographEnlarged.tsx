@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import 'slick-carousel/slick/slick.css';
@@ -14,6 +14,7 @@ import { IconButton, Typography } from '@material-ui/core';
 const Wrapper = styled.div`
   position: relative;
   padding: 1rem;
+  max-width: 75rem;
 `;
 
 const Image = styled.div<{
@@ -62,10 +63,25 @@ const ArrowButton = styled(IconButton)`
   }
 `;
 
-const Thumbnail = styled(Slide)`
-  width: 5rem !important;
-  height: 5rem;
+const Thumbnail = styled(Slide)<{
+  $thumbCount: number;
+}>`
   padding: 0.4rem;
+  max-height: 100%;
+  max-width: 100%;
+  ${Image} {
+    border-radius: 3px;
+  }
+  .slick-slide:has(&) {
+    width: ${({ $thumbCount }) => `calc(100% / ${$thumbCount}) !important`};
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    > div {
+      height: 100%;
+      width: 100%;
+    }
+  }
 `;
 
 interface ArrowIconWrapperProps extends Record<string, unknown> {
@@ -88,7 +104,7 @@ interface MultiPhotographEnlargedProps {
 }
 
 export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlargedProps) => {
-  const data = [...report?.data, ...report?.data, ...report?.data];
+  const data = [...report?.data, ...report?.data, ...report?.data, ...report?.data];
   const sliderRef1 = useRef(null);
   const sliderRef2 = useRef(null);
 
@@ -100,6 +116,7 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
   };
 
   const maxThumbnailsToDisplay = Math.min(data?.length ?? 12, 12);
+  const thumbnails = data?.slice(0, maxThumbnailsToDisplay);
   return (
     <Wrapper>
       <Slider {...settings} asNavFor={sliderRef2?.current} ref={sliderRef1} slidesToShow={1}>
@@ -121,8 +138,8 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
         focusOnSelect
         arrows={maxThumbnailsToDisplay < data?.length}
       >
-        {data?.map((photo, index) => (
-          <Thumbnail key={photo.value}>
+        {thumbnails?.map((photo, index) => (
+          <Thumbnail key={photo.value} $thumbCount={thumbnails.length}>
             <Image
               url={photo.value}
               title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
