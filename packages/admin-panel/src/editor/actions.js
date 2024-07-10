@@ -195,7 +195,7 @@ export const editField = (fieldSource, newValue) => (dispatch, getState) => {
   dispatch({
     type: EDITOR_FIELD_EDIT,
     fieldKey: fieldSourceToEdit,
-    newValue,
+    newValue: newValue === '' ? null : newValue,
   });
 };
 
