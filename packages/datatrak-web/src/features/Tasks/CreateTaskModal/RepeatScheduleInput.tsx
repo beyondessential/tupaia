@@ -16,7 +16,7 @@ const Select = styled(BaseSelect)`
 
 const useRepeatScheduleOptions = dueDate => {
   const noRepeat = {
-    label: 'Does not repeat',
+    label: "Doesn't repeat",
     value: '',
   };
 
