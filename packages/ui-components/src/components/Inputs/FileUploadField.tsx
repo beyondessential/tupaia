@@ -224,7 +224,8 @@ export const FileUploadField = ({
   }, [files]);
 
   const { fileRejections, getInputProps, getRootProps, isDragActive } = useDropzone({
-    accept,
+    // Explicitly fall back to undefined, because null causes TypeError in Chromium
+    accept: accept ?? undefined,
     disabled,
     maxSize: maxSizeInBytes,
     multiple,
