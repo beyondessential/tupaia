@@ -183,11 +183,15 @@ export const editField = (fieldSource, newValue) => (dispatch, getState) => {
   if (!field) return;
   const editKey = getFieldEditKey(field); // this needs to be here, because there are several places that use this action, and they all need to edit the correct field.
 
+  const otherValidationErrorsToClear =
+    field.editConfig?.type === 'json' ? Object.keys(newValue) : [];
+
   // Edit key will be different in cases where we are editing a saved record, because the value that comes back from the server is not always keyed the same as the field source we have configured
   dispatch({
     type: EDITOR_FIELD_EDIT,
     fieldKey: editKey,
     newValue,
+    otherValidationErrorsToClear,
   });
 };
 

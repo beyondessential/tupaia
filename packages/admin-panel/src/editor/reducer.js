@@ -68,7 +68,10 @@ const stateChanges = {
     errorMessage: '',
   }),
   [OPEN_EDIT_MODAL]: ({ recordId }) => ({ recordId, isOpen: true }),
-  [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields, validationErrors }) => ({
+  [EDITOR_FIELD_EDIT]: (
+    { fieldKey, newValue, otherValidationErrorsToClear = [] },
+    { editedFields, validationErrors },
+  ) => ({
     editedFields: {
       ...editedFields,
       [fieldKey]: newValue,
@@ -76,6 +79,11 @@ const stateChanges = {
     validationErrors: {
       ...validationErrors,
       [fieldKey]: null, // Clear the validation error for this field as the user has made a change
+      // clear nested validation errors when editing a field
+      ...otherValidationErrorsToClear.reduce((acc, key) => {
+        acc[key] = null;
+        return acc;
+      }, {}),
     },
   }),
   [SET_VALIDATION_ERRORS]: payload => ({
