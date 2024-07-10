@@ -178,6 +178,11 @@ const SURVEY_COLUMNS = [
     show: false,
   },
   {
+    Header: 'countries',
+    source: 'countryCodes',
+    show: false,
+  },
+  {
     Header: 'Permission group',
     source: 'permission_group.name',
   },
@@ -189,7 +194,11 @@ const SURVEY_COLUMNS = [
     Header: 'Preview',
     type: 'externalLink',
     actionConfig: {
-      url: `${REACT_APP_DATATRAK_WEB_URL}/survey?projectId={project.id}`,
+      generateUrl: row => {
+        const { code, countryCodes } = row;
+        if (!countryCodes || countryCodes.length === 0) return null;
+        return `${REACT_APP_DATATRAK_WEB_URL}/survey/${countryCodes[0]}/${code}/1`;
+      },
       title: 'Preview survey',
     },
   },

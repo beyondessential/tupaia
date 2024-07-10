@@ -11,7 +11,14 @@ import { ColumnActionButton } from './ColumnActionButton';
 import { makeSubstitutionsInString } from '../../utilities';
 
 export const ExternalLinkButton = ({ actionConfig, row }) => {
-  const fullUrl = makeSubstitutionsInString(actionConfig.url, row.original);
+  const getUrl = () => {
+    if (actionConfig.generateUrl) {
+      return actionConfig.generateUrl(row.original);
+    }
+    return makeSubstitutionsInString(actionConfig.url, row.original);
+  };
+  const fullUrl = getUrl();
+  if (!fullUrl) return null;
 
   return (
     <ColumnActionButton
