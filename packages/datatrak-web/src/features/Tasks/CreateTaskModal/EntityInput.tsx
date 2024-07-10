@@ -36,7 +36,15 @@ export const EntityInput = ({
     const primaryEntityQuestion = flattenedQuestions.find(
       question => question.type === QuestionType.PrimaryEntity,
     );
-    return primaryEntityQuestion?.config ?? {};
+    if (primaryEntityQuestion?.config?.entity?.filter) return primaryEntityQuestion.config;
+    // default to country filter if no primary entity question is found or it doesn't have an entity filter
+    return {
+      entity: {
+        filter: {
+          type: 'country',
+        },
+      },
+    };
   };
 
   const primaryEntityQuestionConfig = getPrimaryEntityQuestionConfig();
