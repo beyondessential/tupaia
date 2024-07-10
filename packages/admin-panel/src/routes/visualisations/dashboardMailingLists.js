@@ -48,6 +48,8 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
       optionsEndpoint: 'entities',
       optionLabelKey: 'name',
       optionValueKey: 'id',
+      optionType: 'entity',
+      sourceColumns: ['id', 'code', 'name'],
       secondaryLabel: 'Select the entity this dashboard mailing list should be for',
     },
   },
