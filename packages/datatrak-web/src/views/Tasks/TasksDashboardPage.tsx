@@ -46,7 +46,7 @@ export const TasksDashboardPage = () => {
       <TaskPageHeader title="Tasks">
         <ButtonContainer>
           <CreateButton onClick={toggleCreateModal}>
-            <AddIcon /> Create Task
+            <AddIcon /> Create task
           </CreateButton>
         </ButtonContainer>
       </TaskPageHeader>
