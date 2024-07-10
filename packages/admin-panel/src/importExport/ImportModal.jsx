@@ -154,10 +154,6 @@ export const ImportModalComponent = React.memo(
 
     const buttons = getButtons();
 
-    const onChangeFile = (_event, newName, newFiles) => {
-      setFiles(newFiles ?? []);
-    };
-
     return (
       <>
         <Modal
@@ -193,7 +189,7 @@ export const ImportModalComponent = React.memo(
                     );
                   })}
                 <FileUploadField
-                  onChange={onChangeFile}
+                  onChange={newFiles => setFiles(newFiles ?? [])}
                   name="file-upload"
                   multiple={actionConfig.multiple}
                 />
