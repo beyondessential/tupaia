@@ -6,7 +6,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
-import { LoadingContainer, Modal, SpinningLoader, TextField } from '@tupaia/ui-components';
+import { LoadingContainer, Modal, TextField } from '@tupaia/ui-components';
 import { ButtonProps } from '@material-ui/core';
 import { useCreateTask, useUser } from '../../../api';
 import { CountrySelector, useUserCountries } from '../../CountrySelector';
