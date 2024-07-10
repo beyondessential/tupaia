@@ -65,7 +65,12 @@ const validateData = (fields, data) => {
     if (!fieldInfo.required) return errors;
 
     const value = data[editKey];
-    if (value === undefined || value === null || value === '') {
+    if (
+      value === undefined ||
+      value === null ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
       return {
         ...errors,
         [editKey]: REQUIRED_FIELD_ERROR,

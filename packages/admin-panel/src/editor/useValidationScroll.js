@@ -9,6 +9,7 @@ const scrollToValidationError = () => {
   const firstError = document.querySelector('.Mui-error');
   if (!firstError) return;
   firstError.focus();
+  firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
 export const useValidationScroll = (onSave, onEdit, validationErrors) => {

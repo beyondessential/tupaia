@@ -117,6 +117,8 @@ EditModalComponent.propTypes = {
   saveButtonText: PropTypes.string,
   extraDialogProps: PropTypes.object,
   validationErrors: PropTypes.object,
+  resourceName: PropTypes.string,
+  isNew: PropTypes.bool.isRequired,
 };
 
 EditModalComponent.defaultProps = {
@@ -131,6 +133,8 @@ EditModalComponent.defaultProps = {
   saveButtonText: 'Save',
   extraDialogProps: null,
   validationErrors: {},
+  title: null,
+  resourceName: null,
 };
 
 const mapDispatchToProps = dispatch => ({
