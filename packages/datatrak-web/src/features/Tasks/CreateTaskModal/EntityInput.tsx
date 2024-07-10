@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { useWatch } from 'react-hook-form';
-import { Country, QuestionType } from '@tupaia/types';
+import { Country, EntityType, QuestionType } from '@tupaia/types';
 import { EntitySelector } from '../../EntitySelector';
 import { useCurrentUserContext, useSurvey } from '../../../api';
 import { getAllSurveyComponents } from '../../Survey';
@@ -41,7 +41,7 @@ export const EntityInput = ({
     return {
       entity: {
         filter: {
-          type: 'country',
+          type: EntityType.country,
         },
       },
     };
