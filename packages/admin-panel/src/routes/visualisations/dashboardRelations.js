@@ -37,6 +37,7 @@ export const FIELDS = {
     Header: 'Permission groups',
     source: 'permission_groups',
     Filter: ArrayFilter,
+    required: true,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'permissionGroups',
@@ -50,6 +51,7 @@ export const FIELDS = {
     Header: 'Entity types',
     source: 'entity_types',
     Filter: ArrayFilter,
+    required: true,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       type: 'autocomplete',
@@ -70,6 +72,7 @@ export const FIELDS = {
     Header: 'Project codes',
     source: 'project_codes',
     Filter: ArrayFilter,
+    required: true,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'projects',
@@ -120,7 +123,14 @@ const CREATE_CONFIG = {
   actionConfig: {
     title: 'Add relation between dashboard and dashboard item',
     editEndpoint: DASHBOARD_RELATION_ENDPOINT,
-    fields: DASHBOARD_RELATION_FIELDS,
+    fields: [
+      FIELDS.DASHBOARD_CODE,
+      FIELDS.DASHBOARD_ITEM_CODE,
+      FIELDS.PERMISSION_GROUPS,
+      FIELDS.ENTITY_TYPES,
+      FIELDS.PROJECT_CODES,
+      FIELDS.SORT_ORDER,
+    ],
   },
 };
 
