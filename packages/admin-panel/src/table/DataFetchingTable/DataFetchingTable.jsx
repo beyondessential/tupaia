@@ -280,6 +280,7 @@ DataFetchingTableComponent.propTypes = {
   actionLabel: PropTypes.string,
   defaultFilters: PropTypes.array,
   editorState: PropTypes.object,
+  defaultSorting: PropTypes.array,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -297,6 +298,7 @@ DataFetchingTableComponent.defaultProps = {
   actionLabel: 'Action',
   defaultFilters: [],
   editorState: {},
+  defaultSorting: [],
 };
 
 const mapStateToProps = (state, { reduxId, ...ownProps }) => ({
