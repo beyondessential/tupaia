@@ -8,13 +8,14 @@ import { useParams } from 'react-router';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
+import { TextField } from '@tupaia/ui-components';
 import { useTask } from '../../../api';
+import { Button } from '../../../components';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
+import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
-import { AssigneeInput } from '../AssigneeInput';
-import { TextField } from '@tupaia/ui-components';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -33,6 +34,8 @@ const MainColumn = styled.div`
 
 const SideColumn = styled.div`
   width: 25%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ItemWrapper = styled.div`
@@ -59,6 +62,14 @@ const CommentsInput = styled(TextField).attrs({
   }
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 1rem;
+  flex: 1;
+`;
+
 export const TaskDetails = () => {
   const { taskId } = useParams();
   const { data: task } = useTask(taskId);
@@ -70,11 +81,16 @@ export const TaskDetails = () => {
       assigneeId: task?.assigneeId ?? null,
     },
   });
-  const { control, handleSubmit, setValue } = formContext;
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { isDirty, isValid },
+  } = formContext;
 
   useEffect(() => {
     if (!task) return;
-    setValue('dueDate', task?.dueDate);
+    setValue('dueDate', task?.dueDate, { shouldValidate: true });
     setValue('repeatSchedule', task?.repeatSchedule?.frequency ?? null);
     setValue('assigneeId', task?.assigneeId ?? null);
   }, [JSON.stringify(task)]);
@@ -82,6 +98,8 @@ export const TaskDetails = () => {
   const onSubmit = data => {
     console.log(data);
   };
+
+  const buttonDisabled = !isDirty || !isValid;
 
   return (
     <FormProvider {...formContext}>
@@ -147,7 +165,16 @@ export const TaskDetails = () => {
             {/** This is a placeholder for when we add in comments functionality */}
             <CommentsInput label="Add comment" />
           </MainColumn>
-          <SideColumn />
+          <SideColumn>
+            <ButtonWrapper>
+              <Button variant="text" disabled={!isDirty}>
+                Clear changes
+              </Button>
+              <Button type="submit" disabled={buttonDisabled} variant="outlined">
+                Save changes
+              </Button>
+            </ButtonWrapper>
+          </SideColumn>
         </Container>
       </TaskForm>
     </FormProvider>
