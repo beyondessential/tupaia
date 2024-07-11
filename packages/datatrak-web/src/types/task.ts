@@ -4,7 +4,7 @@
  */
 
 import { TaskStatus } from '@tupaia/types';
-enum OtherTaskStatus {
+export enum OtherTaskStatus {
   overdue = 'overdue',
   repeating = 'repeating',
 }
