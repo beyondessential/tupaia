@@ -17,3 +17,4 @@ export { useOneTimeLogin } from './useOneTimeLogin';
 export * from './useExportSurveyResponses';
 export { useTupaiaRedirect } from './useTupaiaRedirect';
 export { useCreateTask } from './useCreateTask';
+export { useEditTask } from './useEditTask';
