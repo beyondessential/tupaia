@@ -35,7 +35,6 @@ export const PopoverMenu = ({ menuOpen, onCloseMenu }: PopoverMenuProps) => {
   return (
     <Popover
       open={menuOpen}
-      disablePortal
       PaperProps={{
         component: Paper,
       }}
