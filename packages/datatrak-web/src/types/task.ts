@@ -3,10 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { TaskStatus } from '@tupaia/types';
-export enum OtherTaskStatus {
-  overdue = 'overdue',
-  repeating = 'repeating',
-}
+import { DatatrakWebTaskRequest, TaskStatus } from '@tupaia/types';
 
-export type TaskStatusType = TaskStatus | OtherTaskStatus;
+export type TaskStatusType = TaskStatus | 'overdue' | 'repeating';
+
+export type Task = DatatrakWebTaskRequest.ResBody;

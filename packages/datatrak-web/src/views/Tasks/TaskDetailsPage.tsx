@@ -6,10 +6,9 @@
 import React from 'react';
 import { TaskStatus } from '@tupaia/types';
 import { generatePath, useParams } from 'react-router-dom';
-import { Button, PageContainer } from '../../components';
-import { TaskPageHeader } from '../../features';
+import { Button } from '../../components';
+import { TaskDetails, TaskPageHeader } from '../../features';
 import { useTask } from '../../api';
-import { OtherTaskStatus } from '../../types';
 import { ROUTES } from '../../constants';
 import { useFromLocation } from '../../utils';
 
@@ -18,7 +17,7 @@ export const TaskDetailsPage = () => {
   const { data: task } = useTask(taskId);
 
   const showCompleteButton =
-    task?.taskStatus === TaskStatus.to_do || task?.taskStatus === OtherTaskStatus.overdue;
+    task?.taskStatus === TaskStatus.to_do || task?.taskStatus === 'repeating';
 
   const surveyUrl = task
     ? generatePath(ROUTES.SURVEY_SCREEN, {
@@ -30,7 +29,7 @@ export const TaskDetailsPage = () => {
 
   const from = useFromLocation();
   return (
-    <PageContainer>
+    <>
       <TaskPageHeader title="Task details">
         {showCompleteButton && (
           <Button to={surveyUrl} state={{ from }}>
@@ -38,6 +37,7 @@ export const TaskDetailsPage = () => {
           </Button>
         )}
       </TaskPageHeader>
-    </PageContainer>
+      <TaskDetails />
+    </>
   );
 };
