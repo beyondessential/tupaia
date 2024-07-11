@@ -31,8 +31,6 @@ import {
   ProjectsRoute,
   RecentSurveysRequest,
   RecentSurveysRoute,
-  SaveTaskRequest,
-  SaveTaskRoute,
   SingleEntityRequest,
   SingleEntityRoute,
   SingleSurveyResponseRequest,
@@ -86,8 +84,6 @@ export async function createApp() {
       handleWith(SubmitSurveyResponseRoute),
     )
     .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
-    // Put Routes
-    .put<SaveTaskRequest>('tasks/:taskId', handleWith(SaveTaskRoute))
     // Forward auth requests to web-config
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
