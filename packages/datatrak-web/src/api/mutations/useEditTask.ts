@@ -7,20 +7,20 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Task } from '@tupaia/types';
 import { put } from '../api';
 
-type Data = Partial<Task>;
+type PartialTask = Partial<Task>;
 
 export const useEditTask = (taskId: Task['id'], onSuccess?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation<any, Error, Data, unknown>(
-    (data: Data) => {
+  return useMutation<any, Error, PartialTask, unknown>(
+    (task: PartialTask) => {
       return put(`tasks/${taskId}`, {
-        data,
+        data: task,
       });
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('tasks');
         if (onSuccess) onSuccess();
+        queryClient.invalidateQueries('tasks');
       },
     },
   );

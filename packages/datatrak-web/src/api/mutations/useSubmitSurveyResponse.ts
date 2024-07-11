@@ -35,7 +35,7 @@ export const useSurveyResponseData = () => {
   };
 };
 
-export const useSubmitSurveyResponse = () => {
+export const useSubmitSurveyResponse = (fromLocation: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
@@ -86,6 +86,7 @@ export const useSubmitSurveyResponse = () => {
         // include the survey response data in the location state, so that we can use it to generate QR codes
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
           state: {
+            ...(fromLocation && { from: fromLocation }),
             surveyResponse: JSON.stringify(data),
           },
         });

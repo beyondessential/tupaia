@@ -1,16 +1,15 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
-import { TaskStatus } from '@tupaia/types';
-import { generatePath, useLocation } from 'react-router';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from '@tupaia/ui-components';
+import { generatePath, Link, useLocation } from 'react-router-dom';
+import { TaskStatus } from '@tupaia/types';
 import { ROUTES } from '../../../constants';
+import { Button } from '../../../components';
 import { Task } from '../../../types';
-import { AssignTaskModal } from './AssignTaskModal.tsx';
 
 const ActionButtonComponent = styled(Button).attrs({
   color: 'primary',
@@ -18,7 +17,6 @@ const ActionButtonComponent = styled(Button).attrs({
 })`
   padding-inline: 1.2rem;
   padding-block: 0.4rem;
-  width: 5.5rem;
   .MuiButton-label {
     font-size: 0.75rem;
     line-height: normal;
@@ -29,26 +27,13 @@ const ActionButtonComponent = styled(Button).attrs({
   }
 `;
 
-interface ActionButtonProps {
-  task: Task;
-}
-
-export const ActionButton = ({ task }: ActionButtonProps) => {
+export const TaskCompleteButton = (task: Task) => {
   const location = useLocation();
   if (!task) return null;
   const { assigneeId, survey, entity, status } = task;
   if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
   if (!assigneeId) {
-    return (
-      <AssignTaskModal
-        task={task}
-        Button={({ onClick }) => (
-          <ActionButtonComponent onClick={onClick} variant="outlined">
-            Assign
-          </ActionButtonComponent>
-        )}
-      />
-    );
+    return <ActionButtonComponent variant="outlined">Assign</ActionButtonComponent>;
   }
 
   const surveyLink = generatePath(ROUTES.SURVEY, {
@@ -58,10 +43,10 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
   return (
     <ActionButtonComponent
       component={Link}
-      to={surveyLink}
+      to={`${surveyLink}/1`}
       variant="contained"
       state={{
-        from: JSON.stringify(location),
+        from: location.pathname,
       }}
     >
       Complete

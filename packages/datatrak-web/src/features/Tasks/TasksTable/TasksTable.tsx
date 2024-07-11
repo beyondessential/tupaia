@@ -3,18 +3,18 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
-import { Task, TaskStatusType } from '../../../types';
+import { TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
-import { AssignTaskModal } from './AssignTaskModal';
+import { TaskActionsMenu } from './TaskActionsMenu';
 
 const Container = styled.div`
   display: flex;
@@ -29,7 +29,6 @@ const Container = styled.div`
 `;
 
 const useTasksTable = () => {
-  const [assignTaskModalApplied, setAssignTaskModalApplied] = useState<Task | null>(null);
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -42,7 +41,7 @@ const useTasksTable = () => {
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
-  const { data, isLoading, isFetching } = useTasks(projectId, pageSize, page, filters, sortBy);
+  const { data, isLoading } = useTasks(projectId, pageSize, page, filters, sortBy);
 
   const updateSorting = newSorting => {
     searchParams.set('sortBy', JSON.stringify(newSorting));
@@ -122,7 +121,13 @@ const useTasksTable = () => {
     },
     {
       Header: '',
-      accessor: task => <ActionButton task={task} onAssignTask={setAssignTaskModalApplied} />,
+      width: 180,
+      accessor: task => (
+        <>
+          <ActionButton task={task} />
+          <TaskActionsMenu id={task.id} />
+        </>
+      ),
       id: 'actions',
       filterable: false,
       disableSortBy: true,
@@ -143,9 +148,7 @@ const useTasksTable = () => {
     updateFilters,
     onChangePage,
     onChangePageSize,
-    isLoading: isLoading || isFetching,
-    assignTaskModalApplied,
-    setAssignTaskModalApplied,
+    isLoading: isLoading,
   };
 };
 
@@ -164,8 +167,6 @@ export const TasksTable = () => {
     onChangePage,
     onChangePageSize,
     isLoading,
-    assignTaskModalApplied,
-    setAssignTaskModalApplied,
   } = useTasksTable();
 
   return (
@@ -185,10 +186,6 @@ export const TasksTable = () => {
         onChangePageSize={onChangePageSize}
         noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
-      />
-      <AssignTaskModal
-        task={assignTaskModalApplied}
-        onClose={() => setAssignTaskModalApplied(null)}
       />
     </Container>
   );
