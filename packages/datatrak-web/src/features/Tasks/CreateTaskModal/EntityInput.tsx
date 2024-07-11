@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { useWatch } from 'react-hook-form';
-import { Country, QuestionType } from '@tupaia/types';
+import { Country, EntityType, QuestionType } from '@tupaia/types';
 import { EntitySelector } from '../../EntitySelector';
 import { useCurrentUserContext, useSurvey } from '../../../api';
 import { getAllSurveyComponents } from '../../Survey';
@@ -36,7 +36,15 @@ export const EntityInput = ({
     const primaryEntityQuestion = flattenedQuestions.find(
       question => question.type === QuestionType.PrimaryEntity,
     );
-    return primaryEntityQuestion?.config ?? {};
+    if (primaryEntityQuestion?.config?.entity?.filter) return primaryEntityQuestion.config;
+    // default to country filter if no primary entity question is found or it doesn't have an entity filter
+    return {
+      entity: {
+        filter: {
+          type: EntityType.country,
+        },
+      },
+    };
   };
 
   const primaryEntityQuestionConfig = getPrimaryEntityQuestionConfig();

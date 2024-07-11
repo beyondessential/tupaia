@@ -66,13 +66,13 @@ export const AssigneeInput = ({
       label: user.name,
     })) ?? [];
 
-  const selectedOption = options.find(option => option.id === value) ?? null;
+  const selection = options.find(option => option.id === value);
 
   return (
     <Autocomplete
       label="Assignee"
       options={options}
-      value={selectedOption}
+      value={selection}
       onChange={onChangeAssignee}
       inputRef={inputRef}
       name="assignee"
@@ -81,7 +81,7 @@ export const AssigneeInput = ({
       }, 200)}
       inputValue={searchValue}
       getOptionLabel={option => option.label}
-      getOptionSelected={(option, selected) => option.id === selected?.id}
+      getOptionSelected={option => option.id === value}
       placeholder="Search..."
       loading={isLoading}
       required={required}

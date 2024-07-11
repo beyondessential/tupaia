@@ -8,6 +8,21 @@ import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyUsersRequest, EntityType } from '@tupaia/types';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 
+const USERS_EXCLUDED_FROM_LIST = [
+  'edmofro@gmail.com', // Edwin
+  'kahlinda.mahoney@gmail.com', // Kahlinda
+  'lparish1980@gmail.com', // Lewis
+  'sus.lake@gmail.com', // Susie
+  'michaelnunan@hotmail.com', // Michael
+  'vanbeekandrew@gmail.com', // Andrew
+  'gerardckelly@gmail.com', // Gerry K
+  'geoffreyfisher@hotmail.com', // Geoff F
+  'josh@sussol.net', // mSupply API Client
+  'unicef.laos.edu@gmail.com', // Laos Schools Data Collector
+  'tamanu-server@tupaia.org', // Tamanu Server
+  'public@tupaia.org', // Public User
+];
+
 export type SurveyUsersRequest = Request<
   DatatrakWebSurveyUsersRequest.Params,
   DatatrakWebSurveyUsersRequest.ResBody,
@@ -16,8 +31,6 @@ export type SurveyUsersRequest = Request<
 >;
 
 const DEFAULT_PAGE_SIZE = 100;
-
-const E2E_USER = 'test_e2e@beyondessential.com.au';
 
 export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
   public async buildResponse() {
@@ -63,10 +76,10 @@ export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
 
     const usersFilter = {
       id: userIds,
-      // exclude the e2e user and any user with a tupaia.org email, as these are api-client users
-      email: { comparator: '!=', comparisonValue: E2E_USER },
-      [QUERY_CONJUNCTIONS.AND]: {
-        email: { comparator: 'not like', comparisonValue: '%@tupaia.org' },
+      email: { comparator: 'not in', comparisonValue: USERS_EXCLUDED_FROM_LIST },
+      [QUERY_CONJUNCTIONS.RAW]: {
+        // exclude E2E users and any internal users
+        sql: `(email NOT LIKE '%tupaia.org' AND email NOT LIKE '%beyondessential.com.au' AND email NOT LIKE '%@bes.au')`,
       },
     } as Record<string, any>;
 

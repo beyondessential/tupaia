@@ -10,11 +10,16 @@ import RoomIcon from '@material-ui/icons/Room';
 import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { ListItemType, SelectList } from '../../components';
 
+const DARK_BLUE = '#004975';
+
 const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
   margin-top: 0.9rem;
+  li .MuiSvgIcon-root {
+    color: ${DARK_BLUE};
+  }
 `;
 
 const SubListWrapper = styled.div`
