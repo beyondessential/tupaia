@@ -3,38 +3,18 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { generatePath, useSearchParams, Link, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
-import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
-import { Button } from '../../../components';
+import { Task, TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
-import { ROUTES } from '../../../constants';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
-import { LinkCell } from './LinkCell';
-
-type Task = DatatrakWebTasksRequest.ResBody['tasks'][0];
-
-const ActionButtonComponent = styled(Button).attrs({
-  color: 'primary',
-  size: 'small',
-})`
-  padding-inline: 1.2rem;
-  padding-block: 0.4rem;
-  width: 100%;
-  .MuiButton-label {
-    font-size: 0.75rem;
-    line-height: normal;
-  }
-  .cell-content:has(&) {
-    padding-block: 0.2rem;
-    padding-inline-start: 1.5rem;
-  }
-`;
+import { ActionButton } from './ActionButton';
+import { AssignTaskModal } from './AssignTaskModal';
 
 const Container = styled.div`
   display: flex;
@@ -48,110 +28,8 @@ const Container = styled.div`
   }
 `;
 
-const ActionButton = (task: Task) => {
-  const location = useLocation();
-  if (!task) return null;
-  const { assigneeId, survey, entity, status } = task;
-  if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
-  if (!assigneeId) {
-    return <ActionButtonComponent variant="outlined">Assign</ActionButtonComponent>;
-  }
-
-  const surveyLink = generatePath(ROUTES.SURVEY, {
-    surveyCode: survey.code,
-    countryCode: entity.countryCode,
-  });
-  return (
-    <ActionButtonComponent
-      component={Link}
-      to={surveyLink}
-      variant="contained"
-      state={{
-        from: JSON.stringify(location),
-      }}
-    >
-      Complete
-    </ActionButtonComponent>
-  );
-};
-
-const COLUMNS = [
-  {
-    // only the survey name can be resized
-    Header: 'Survey',
-    accessor: (row: any) => row.survey.name,
-    id: 'survey.name',
-    filterable: true,
-  },
-  {
-    Header: 'Entity',
-    accessor: (row: any) => row.entity.name,
-    id: 'entity.name',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Assignee',
-    accessor: row => row.assigneeName ?? 'Unassigned',
-    id: 'assignee_name',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Repeating task',
-    // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
-    accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
-    id: 'repeat_schedule',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Due Date',
-    accessor: row => displayDate(row.dueDate),
-    id: 'due_date',
-    filterable: true,
-    Filter: DueDatePicker,
-    disableResizing: true,
-  },
-  {
-    Header: 'Status',
-    filterable: true,
-    accessor: 'taskStatus',
-    id: 'task_status',
-    DisplayCell: ({ value }) => <StatusPill status={value} />,
-    Filter: StatusFilter,
-    disableResizing: true,
-  },
-  {
-    Header: '',
-    accessor: row => <ActionButton {...row} />,
-    id: 'actions',
-    filterable: false,
-    disableSortBy: true,
-    disableResizing: true,
-  },
-].map(column => {
-  if (column.id === 'actions') return column;
-  const { DisplayCell } = column;
-  if (DisplayCell) {
-    return {
-      ...column,
-      Cell: ({ row, value }) => (
-        <LinkCell {...row.original}>
-          <DisplayCell value={value} />
-        </LinkCell>
-      ),
-    };
-  }
-  return {
-    ...column,
-    Cell: ({ row, value }) => {
-      return <LinkCell {...row.original}>{value}</LinkCell>;
-    },
-  };
-});
-
 const useTasksTable = () => {
+  const [assignTaskModalApplied, setAssignTaskModalApplied] = useState<Task | null>(null);
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -195,6 +73,63 @@ const useTasksTable = () => {
 
   const { tasks = [], count = 0, numberOfPages } = data || {};
 
+  const COLUMNS = [
+    {
+      // only the survey name can be resized
+      Header: 'Survey',
+      accessor: (row: any) => row.survey.name,
+      id: 'survey.name',
+      filterable: true,
+    },
+    {
+      Header: 'Entity',
+      accessor: (row: any) => row.entity.name,
+      id: 'entity.name',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Assignee',
+      accessor: row => row.assigneeName ?? 'Unassigned',
+      id: 'assignee_name',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Repeating task',
+      // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
+      accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
+      id: 'repeat_schedule',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Due Date',
+      accessor: row => displayDate(row.dueDate),
+      id: 'due_date',
+      filterable: true,
+      Filter: DueDatePicker,
+      disableResizing: true,
+    },
+    {
+      Header: 'Status',
+      filterable: true,
+      accessor: 'taskStatus',
+      id: 'task_status',
+      Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
+      Filter: StatusFilter,
+      disableResizing: true,
+    },
+    {
+      Header: '',
+      accessor: task => <ActionButton task={task} onAssignTask={setAssignTaskModalApplied} />,
+      id: 'actions',
+      filterable: false,
+      disableSortBy: true,
+      disableResizing: true,
+    },
+  ];
+
   return {
     columns: COLUMNS,
     data: tasks,
@@ -209,6 +144,8 @@ const useTasksTable = () => {
     onChangePage,
     onChangePageSize,
     isLoading: isLoading || isFetching,
+    assignTaskModalApplied,
+    setAssignTaskModalApplied,
   };
 };
 
@@ -227,6 +164,8 @@ export const TasksTable = () => {
     onChangePage,
     onChangePageSize,
     isLoading,
+    assignTaskModalApplied,
+    setAssignTaskModalApplied,
   } = useTasksTable();
 
   return (
@@ -246,6 +185,10 @@ export const TasksTable = () => {
         onChangePageSize={onChangePageSize}
         noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
+      />
+      <AssignTaskModal
+        task={assignTaskModalApplied}
+        onClose={() => setAssignTaskModalApplied(null)}
       />
     </Container>
   );
