@@ -14,7 +14,7 @@ export type TaskT = Omit<Task, 'created_at'> & {
   task_status: DatatrakWebTaskRequest.ResBody['taskStatus'];
 };
 
-export const formatTask = (task: TaskT): DatatrakWebTaskRequest.ResBody => {
+export const formatTaskResponse = (task: TaskT): DatatrakWebTaskRequest.ResBody => {
   const {
     entity_id: entityId,
     'entity.name': entityName,
@@ -41,5 +41,5 @@ export const formatTask = (task: TaskT): DatatrakWebTaskRequest.ResBody => {
     },
   };
 
-  return camelcaseKeys(formattedTask);
+  return camelcaseKeys(formattedTask) as DatatrakWebTaskRequest.ResBody;
 };

@@ -60,7 +60,7 @@ export const AssignTaskModal = ({ task, onClose }) => {
           <FormProvider {...formContext}>
             <TaskForm onSubmit={handleSubmit(editTask)}>
               <Controller
-                name="assignee_id"
+                name="assigneeId"
                 control={control}
                 rules={{ required: 'Required' }}
                 render={({ value, onChange, ref }, { invalid }) => (

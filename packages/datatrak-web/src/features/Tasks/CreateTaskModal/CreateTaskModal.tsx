@@ -25,13 +25,6 @@ const CountrySelectorWrapper = styled.div`
   }
 `;
 
-const Form = styled(TaskForm)`
-  .loading-screen {
-    border: none;
-    background-color: ${({ theme }) => theme.palette.background.paper};
-  }
-`;
-
 const ListSelectWrapper = styled.div`
   margin-block-end: 1.8rem;
   .list-wrapper {
@@ -169,7 +162,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
       <Wrapper>
         <LoadingContainer isLoading={isLoadingData} heading="Loading data for project" text="">
           <FormProvider {...formContext}>
-            <Form onSubmit={handleSubmit(createTask)}>
+            <TaskForm onSubmit={handleSubmit(createTask)}>
               <CountrySelectorWrapper>
                 <CountrySelector
                   countries={countries}
@@ -269,7 +262,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
               {/** This is a placeholder for when we add in comments functionality */}
               <CommentsInput label="Comments" />
-            </Form>
+            </TaskForm>
           </FormProvider>
         </LoadingContainer>
       </Wrapper>

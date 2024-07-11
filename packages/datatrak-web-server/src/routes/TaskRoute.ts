@@ -6,7 +6,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTaskRequest } from '@tupaia/types';
-import { TaskT, formatTask } from '../utils';
+import { TaskT, formatTaskResponse } from '../utils';
 
 export type TaskRequest = Request<
   DatatrakWebTaskRequest.Params,
@@ -42,6 +42,6 @@ export class TaskRoute extends Route<TaskRequest> {
       throw new Error(`Task with id ${taskId} not found`);
     }
 
-    return formatTask(task);
+    return formatTaskResponse(task);
   }
 }

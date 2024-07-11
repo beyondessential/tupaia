@@ -14,6 +14,10 @@ const PageContainer = styled(BasePageContainer)`
   padding-block-start: 0.75rem;
   padding-block-end: 2rem;
   padding-inline: 3rem;
+  .loading-screen {
+    border: none;
+    background-color: ${({ theme }) => theme.palette.background.paper};
+  }
 `;
 
 export const TasksLayout = () => {

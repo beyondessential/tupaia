@@ -8,7 +8,7 @@ import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
 import { RECORDS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../types';
-import { TaskT, formatTask } from '../utils';
+import { TaskT, formatTaskResponse } from '../utils';
 
 export type TasksRequest = Request<
   DatatrakWebTasksRequest.Params,
@@ -107,7 +107,7 @@ export class TasksRoute extends Route<TasksRequest> {
 
     const numberOfPages = Math.ceil(count / pageSize);
 
-    const formattedTasks = tasks.map((task: TaskT) => formatTask(task));
+    const formattedTasks = tasks.map((task: TaskT) => formatTaskResponse(task));
 
     return {
       tasks: formattedTasks,
