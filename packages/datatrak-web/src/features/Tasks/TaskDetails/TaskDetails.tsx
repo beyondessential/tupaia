@@ -23,11 +23,11 @@ const Container = styled(Paper).attrs({
 `;
 
 const MainColumn = styled.div`
-  width: 50%;
+  width: 45%;
 `;
 
 const SideColumn = styled.div`
-  width: 25%;
+  width: 30%;
 `;
 
 const ItemWrapper = styled.div`

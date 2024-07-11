@@ -54,7 +54,8 @@ const Pin = styled.img.attrs({
 
 const CountryWrapper = styled.div`
   display: flex;
-  align-items: center;
+  width: 100%;
+  justify-content: flex-end;
 `;
 
 export const TaskMetadata = ({ task }: { task?: Task }) => {
