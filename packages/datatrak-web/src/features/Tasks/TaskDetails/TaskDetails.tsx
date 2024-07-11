@@ -73,19 +73,22 @@ const ButtonWrapper = styled.div`
 export const TaskDetails = () => {
   const { taskId } = useParams();
   const { data: task, isLoading } = useTask(taskId);
+
+  const defaultValues = {
+    dueDate: task?.dueDate ?? null,
+    repeatSchedule: task?.repeatSchedule?.frequency ?? null,
+    assigneeId: task?.assigneeId ?? null,
+  };
   const formContext = useForm({
     mode: 'onChange',
-    defaultValues: {
-      dueDate: task?.dueDate ?? null,
-      repeatSchedule: task?.repeatSchedule?.frequency ?? null,
-      assigneeId: task?.assigneeId ?? null,
-    },
+    defaultValues,
   });
   const {
     control,
     handleSubmit,
     setValue,
     formState: { isValid, dirtyFields },
+    reset,
   } = formContext;
 
   const { mutate: editTask } = useEditTask(taskId);
@@ -98,6 +101,10 @@ export const TaskDetails = () => {
   }, [JSON.stringify(task)]);
 
   const isDirty = Object.keys(dirtyFields).length > 0;
+
+  const onClearEdit = () => {
+    reset(defaultValues);
+  };
 
   return (
     <FormProvider {...formContext}>
@@ -147,6 +154,7 @@ export const TaskDetails = () => {
                 <Controller
                   name="assigneeId"
                   control={control}
+                  defaultValue={task?.assigneeId ?? null}
                   render={({ value, onChange, ref }) => (
                     <AssigneeInput
                       value={value}
@@ -166,7 +174,7 @@ export const TaskDetails = () => {
             </MainColumn>
             <SideColumn>
               <ButtonWrapper>
-                <Button variant="text" disabled={!isDirty}>
+                <Button variant="text" disabled={!isDirty} onClick={onClearEdit}>
                   Clear changes
                 </Button>
                 <Button type="submit" disabled={!isDirty || !isValid} variant="outlined">
