@@ -28,6 +28,7 @@ export class UserRoute extends Route<UserRequest> {
 
     const {
       id,
+      full_name: fullName,
       first_name: firstName,
       last_name: lastName,
       email,
@@ -57,7 +58,7 @@ export class UserRoute extends Route<UserRequest> {
     }
 
     return {
-      userName: `${firstName} ${lastName}`,
+      fullName,
       firstName,
       lastName,
       email,

@@ -12,9 +12,9 @@ import { Button } from '../../../components';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { ROUTES } from '../../../constants';
+import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
-import { DueDateFilter } from './DueDateFilter';
 import { LinkCell } from './LinkCell';
 
 type Task = DatatrakWebTasksRequest.ResBody['tasks'][0];
@@ -110,7 +110,7 @@ const COLUMNS = [
     accessor: row => displayDate(row.dueDate),
     id: 'due_date',
     filterable: true,
-    Filter: DueDateFilter,
+    Filter: DueDatePicker,
     disableResizing: true,
   },
   {

@@ -6,3 +6,4 @@
 export { TaskPageHeader } from './TaskPageHeader';
 export { TasksTable } from './TasksTable';
 export { TaskDetails } from './TaskDetails';
+export { CreateTaskModal } from './CreateTaskModal';

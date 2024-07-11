@@ -105,7 +105,7 @@ export const DrawerMenu = ({ menuOpen, onCloseMenu, openProjectModal }: DrawerMe
     >
       <MenuHeader>
         <UserDetails>
-          {user.userName && <UserName>{user.userName}</UserName>}
+          {user.fullName && <UserName>{user.fullName}</UserName>}
           {user.project?.name && (
             <UserProject onClick={openProjectModal} title="Change project">
               {user.project.name}

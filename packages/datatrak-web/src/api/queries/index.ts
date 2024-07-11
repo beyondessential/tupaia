@@ -22,3 +22,4 @@ export { useProjectSurveys } from './useProjectSurveys';
 export { useEntities } from './useEntities';
 export { useTasks } from './useTasks';
 export { useTask } from './useTask';
+export { useSurveyUsers } from './useSurveyUsers';
