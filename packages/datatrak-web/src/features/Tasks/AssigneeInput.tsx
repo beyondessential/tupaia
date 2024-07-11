@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
 import { Country, DatatrakWebSurveyUsersRequest } from '@tupaia/types';
 import { Autocomplete } from '../../components';
@@ -46,7 +46,15 @@ export const AssigneeInput = ({
       label: user.name,
     })) ?? [];
 
-  const selection = options.find(option => option.id === value);
+  const selection = options.find(option => option.id === value) ?? null;
+
+  // If we programmatically set the value of the input, we need to update the search value
+  useEffect(() => {
+    // if the selection is the same as the search value, do not update the search value
+    if (selection?.label === searchValue || isLoading) return;
+
+    setSearchValue(selection?.label ?? '');
+  }, [JSON.stringify(selection)]);
 
   return (
     <Autocomplete
@@ -56,7 +64,8 @@ export const AssigneeInput = ({
       onChange={onChangeAssignee}
       inputRef={inputRef}
       name="assignee"
-      onInputChange={throttle((_, newValue) => {
+      onInputChange={throttle((e, newValue) => {
+        if (!e) return;
         setSearchValue(newValue);
       }, 200)}
       inputValue={searchValue}

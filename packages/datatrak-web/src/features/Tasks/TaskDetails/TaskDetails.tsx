@@ -13,6 +13,7 @@ import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
+import { AssigneeInput } from '../AssigneeInput';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -44,6 +45,7 @@ export const TaskDetails = () => {
     defaultValues: {
       dueDate: task?.dueDate ?? null,
       repeatSchedule: task?.repeatSchedule?.frequency ?? null,
+      assigneeId: task?.assigneeId ?? null,
     },
   });
   const { control, handleSubmit, setValue } = formContext;
@@ -52,6 +54,7 @@ export const TaskDetails = () => {
     if (!task) return;
     setValue('dueDate', task?.dueDate);
     setValue('repeatSchedule', task?.repeatSchedule?.frequency ?? null);
+    setValue('assigneeId', task?.assigneeId ?? null);
   }, [JSON.stringify(task)]);
 
   const onSubmit = data => {
@@ -97,6 +100,21 @@ export const TaskDetails = () => {
                     value={value}
                     onChange={onChange}
                     resetOnDueDateChange={false}
+                  />
+                )}
+              />
+            </ItemWrapper>
+            <ItemWrapper>
+              <Controller
+                name="assigneeId"
+                control={control}
+                render={({ value, onChange, ref }) => (
+                  <AssigneeInput
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    countryCode={task?.entity?.countryCode}
+                    surveyCode={task?.survey?.code}
                   />
                 )}
               />
