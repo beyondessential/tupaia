@@ -156,8 +156,6 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
   const surveyCode = watch('surveyCode');
 
-  const surveyCode = watch('surveyCode');
-
   return (
     <Modal
       isOpen
