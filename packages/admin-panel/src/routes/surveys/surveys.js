@@ -197,7 +197,8 @@ const SURVEY_COLUMNS = [
       generateUrl: row => {
         const { code, countryCodes } = row;
         if (!countryCodes || countryCodes.length === 0) return null;
-        return `${REACT_APP_DATATRAK_WEB_URL}/survey/${countryCodes[0]}/${code}/1`;
+        const countryCodeToUse = countryCodes.includes('DL') ? 'DL' : countryCodes[0];
+        return `${REACT_APP_DATATRAK_WEB_URL}/survey/${countryCodeToUse}/${code}/1`;
       },
       title: 'Preview survey',
     },

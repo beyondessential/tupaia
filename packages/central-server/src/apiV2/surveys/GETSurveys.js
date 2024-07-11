@@ -185,7 +185,7 @@ export class GETSurveys extends GETHandler {
     `,
       surveyIds,
     );
-    return Object.fromEntries(rows.map(row => [row.id, row.country_codes]));
+    return Object.fromEntries(rows.map(row => [row.id, row.country_codes.sort()]));
   }
 }
 
