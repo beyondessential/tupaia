@@ -174,6 +174,14 @@ const DataFetchingTableComponent = memo(
       onRefreshData(filters, sorting, pageIndex, pageSize);
     }, [pageSize, pageIndex]);
 
+    // when a delete is successful, the confirmActionMessage will be set to null. Refresh the data here
+    useEffect(() => {
+      // Don't refresh data if there is a confirmActionMessage or errorMessage, or if data is being changed on the server
+      if (confirmActionMessage || errorMessage || isChangingDataOnServer) return;
+
+      onRefreshData(filters, sorting, pageIndex, pageSize);
+    }, [confirmActionMessage, errorMessage, isChangingDataOnServer]);
+
     useEffect(() => {
       if (editorState?.isOpen) return;
       onRefreshData(filters, sorting, pageIndex, pageSize);
