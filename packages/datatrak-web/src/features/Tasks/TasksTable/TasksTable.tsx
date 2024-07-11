@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
+import { TaskStatus } from '@tupaia/types';
 import { TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
@@ -84,8 +85,12 @@ const COLUMNS = [
     Header: '',
     accessor: row => (
       <ActionsCell>
-        <TaskCompleteButton {...row} />
-        <TaskActionsMenu {...row} />
+        {row.taskStatus !== TaskStatus.cancelled && (
+          <>
+            <TaskCompleteButton {...row} />
+            <TaskActionsMenu {...row} />
+          </>
+        )}
       </ActionsCell>
     ),
     width: 180,
