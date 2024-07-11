@@ -9,9 +9,11 @@ import {
   FeedItemModel,
   OneTimeLoginModel,
   OptionModel,
+  PermissionGroupModel,
   SurveyModel,
   SurveyResponseModel,
   TaskModel,
+  UserEntityPermissionModel,
   UserModel,
 } from '@tupaia/server-boilerplate';
 
@@ -25,4 +27,6 @@ export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly oneTimeLogin: OneTimeLoginModel;
   readonly option: OptionModel;
   readonly task: TaskModel;
+  readonly permissionGroup: PermissionGroupModel;
+  readonly userEntityPermission: UserEntityPermissionModel;
 }

@@ -12057,6 +12057,7 @@ __metadata:
     "@material-ui/core": ^4.9.11
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
+    "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@testing-library/react": 12.1.2

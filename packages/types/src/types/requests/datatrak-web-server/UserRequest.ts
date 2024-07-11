@@ -9,7 +9,7 @@ import { Country } from '../../models';
 export type Params = Record<string, never>;
 export interface ResBody {
   id?: string;
-  userName?: string;
+  fullName?: string;
   firstName?: string;
   lastName?: string;
   email?: string;
