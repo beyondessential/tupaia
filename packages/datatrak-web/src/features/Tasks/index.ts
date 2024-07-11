@@ -5,3 +5,5 @@
 
 export { TaskPageHeader } from './TaskPageHeader';
 export { TasksTable } from './TasksTable';
+export { NoTasksSection } from './NoTasksSection';
+export { TaskTile } from './TaskTile';

@@ -7,9 +7,11 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
+import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
 import { SectionHeading } from './SectionHeading';
 import { useCurrentUserContext, useTasks } from '../../api';
-import { TaskTile } from '../../features/Tasks/TaskTile';
+import { NoTasksSection, TaskTile } from '../../features/Tasks';
+import { ROUTES } from '../../constants';
 
 const SectionContainer = styled.section`
   grid-area: tasks;
@@ -25,19 +27,8 @@ const Paper = styled.div`
   overflow: auto;
 `;
 
-const TasksContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 const TextButton = styled(Button)`
   font-size: 0.75rem;
-`;
-
-const SectionHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 `;
 
 export const TasksSection = () => {
@@ -52,22 +43,32 @@ export const TasksSection = () => {
       },
     },
   ];
-  const { data } = useTasks({ filters });
+  const { data, isFetching } = useTasks({ filters });
+
+  if (isFetching) {
+    return 'loading...';
+  }
 
   return (
     <SectionContainer>
-      <SectionHeader>
+      <FlexSpaceBetween>
         <SectionHeading>My tasks</SectionHeading>
-        <TextButton component={Link} to="tasks">
-          View more...
-        </TextButton>
-      </SectionHeader>
+        {data.tasks.length < 0 && (
+          <TextButton component={Link} to={ROUTES.TASKS}>
+            View more...
+          </TextButton>
+        )}
+      </FlexSpaceBetween>
       <Paper>
-        <TasksContainer>
-          {data?.tasks.map(task => (
-            <TaskTile key={task.id} task={task} />
-          ))}
-        </TasksContainer>
+        {data?.tasks?.length < 0 ? (
+          <FlexColumn>
+            {data?.tasks.map(task => (
+              <TaskTile key={task.id} task={task} />
+            ))}
+          </FlexColumn>
+        ) : (
+          <NoTasksSection />
+        )}
       </Paper>
     </SectionContainer>
   );
