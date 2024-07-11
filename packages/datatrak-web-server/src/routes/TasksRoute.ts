@@ -4,11 +4,11 @@
  */
 
 import { Request } from 'express';
-import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
 import { RECORDS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../types';
+import { TaskT, formatTask } from '../utils';
 
 export type TasksRequest = Request<
   DatatrakWebTasksRequest.Params,
@@ -33,13 +33,6 @@ const FIELDS = [
 ];
 
 const DEFAULT_PAGE_SIZE = 20;
-
-type SingleTask = Task & {
-  'survey.name': string;
-  'survey.code': string;
-  'entity.name': string;
-  'entity.country_code': string;
-};
 
 type FormattedFilter =
   | string
@@ -114,33 +107,10 @@ export class TasksRoute extends Route<TasksRequest> {
 
     const numberOfPages = Math.ceil(count / pageSize);
 
-    const formattedTasks = tasks.map((task: SingleTask) => {
-      const {
-        entity_id: entityId,
-        'entity.name': entityName,
-        'entity.country_code': entityCountryCode,
-        'survey.code': surveyCode,
-        survey_id: surveyId,
-        'survey.name': surveyName,
-        ...rest
-      } = task;
-      return {
-        ...rest,
-        entity: {
-          id: entityId,
-          name: entityName,
-          countryCode: entityCountryCode,
-        },
-        survey: {
-          id: surveyId,
-          name: surveyName,
-          code: surveyCode,
-        },
-      };
-    });
+    const formattedTasks = tasks.map((task: TaskT) => formatTask(task));
 
     return {
-      tasks: camelcaseKeys(formattedTasks, { deep: true }),
+      tasks: formattedTasks,
       count,
       numberOfPages,
     };

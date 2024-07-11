@@ -5,3 +5,4 @@
 
 export { sortSearchResults } from './sortSearchResults';
 export { addRecentEntities } from './addRecentEntities';
+export * from './formatTask';
