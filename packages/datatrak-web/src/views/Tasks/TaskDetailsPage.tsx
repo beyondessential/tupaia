@@ -20,11 +20,13 @@ export const TaskDetailsPage = () => {
   const showCompleteButton =
     task?.taskStatus === TaskStatus.to_do || task?.taskStatus === OtherTaskStatus.overdue;
 
-  const surveyUrl = generatePath(ROUTES.SURVEY_SCREEN, {
-    countryCode: task?.entity?.countryCode,
-    surveyCode: task?.survey?.code,
-    screenNumber: '1',
-  });
+  const surveyUrl = task
+    ? generatePath(ROUTES.SURVEY_SCREEN, {
+        countryCode: task?.entity?.countryCode,
+        surveyCode: task?.survey?.code,
+        screenNumber: '1',
+      })
+    : '';
 
   const from = useFromLocation();
   return (
