@@ -10,6 +10,7 @@ import {
   EntityHierarchyCacher,
   ModelRegistry,
   SurveyResponseOutdater,
+  TaskCompletionHandler,
   TupaiaDatabase,
   getDbMigrator,
 } from '@tupaia/database';
@@ -54,6 +55,10 @@ configureEnv();
   // Add listener to handle survey response changes
   const surveyResponseOutdater = new SurveyResponseOutdater(models);
   surveyResponseOutdater.listenForChanges();
+
+  // Add listener to handle survey response changes for tasks
+  const taskCompletionHandler = new TaskCompletionHandler(models);
+  taskCompletionHandler.listenForChanges();
 
   /**
    * Set up actual app with routes etc.
