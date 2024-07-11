@@ -5,9 +5,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
-import { FlexColumn, FlexSpaceBetween } from '@tupaia/ui-components';
+import { FlexSpaceBetween, TextButton } from '@tupaia/ui-components';
 import { SectionHeading } from './SectionHeading';
 import { useCurrentUserContext, useTasks } from '../../api';
 import { NoTasksSection, TaskTile } from '../../features/Tasks';
@@ -27,8 +26,9 @@ const Paper = styled.div`
   overflow: auto;
 `;
 
-const TextButton = styled(Button)`
+const ViewMoreButton = styled(TextButton)`
   font-size: 0.75rem;
+  font-weight: 500;
 `;
 
 export const TasksSection = () => {
@@ -43,32 +43,23 @@ export const TasksSection = () => {
       },
     },
   ];
-  const { data, isFetching } = useTasks({ filters });
-
-  if (isFetching) {
-    return 'loading...';
-  }
+  const { data, isSuccess } = useTasks({ filters });
+  const hasTasks = isSuccess && data?.tasks.length > 0;
+  const hasNoTasks = isSuccess && data?.tasks.length === 0;
 
   return (
     <SectionContainer>
       <FlexSpaceBetween>
         <SectionHeading>My tasks</SectionHeading>
-        {data.tasks.length < 0 && (
-          <TextButton component={Link} to={ROUTES.TASKS}>
+        {hasTasks && (
+          <ViewMoreButton component={Link} to={ROUTES.TASKS}>
             View more...
-          </TextButton>
+          </ViewMoreButton>
         )}
       </FlexSpaceBetween>
       <Paper>
-        {data?.tasks?.length < 0 ? (
-          <FlexColumn>
-            {data?.tasks.map(task => (
-              <TaskTile key={task.id} task={task} />
-            ))}
-          </FlexColumn>
-        ) : (
-          <NoTasksSection />
-        )}
+        {hasTasks && data?.tasks.map(task => <TaskTile key={task.id} task={task} />)}
+        {hasNoTasks && <NoTasksSection />}
       </Paper>
     </SectionContainer>
   );

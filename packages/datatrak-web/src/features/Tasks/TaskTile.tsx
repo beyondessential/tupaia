@@ -73,10 +73,12 @@ const CommentsContainer = styled.div`
   }
 `;
 
-const Comments = () => {
+// Todo: Update with actual comments count and set default to 0
+const Comments = ({ commentsCount = 2 }) => {
   return (
     <CommentsContainer>
-      <ChatIcon />2
+      <ChatIcon />
+      {commentsCount}
     </CommentsContainer>
   );
 };

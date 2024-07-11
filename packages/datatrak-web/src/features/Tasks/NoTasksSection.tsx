@@ -5,10 +5,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { FlexColumn } from '@tupaia/ui-components';
+import { Button as UIButton } from '@tupaia/ui-components';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants';
-import { Button } from '../../components';
+
+const Container = styled.div`
+  text-align: center;
+  padding: 0.5rem 0.5rem 1rem;
+`;
 
 const Image = styled.img.attrs({
   src: '/tupaia-high-five.svg',
@@ -22,12 +26,18 @@ const Image = styled.img.attrs({
 
 const Text = styled(Typography)`
   text-align: center;
-  font-size: 15px;
-  line-height: 22px;
+  font-size: 0.93rem;
+  line-height: 1.5;
   margin-bottom: 1rem;
 `;
+
+const Button = styled(UIButton)`
+  font-size: 0.75rem;
+  max-width: 10rem;
+  padding: 0.25rem 1rem;
+`;
 export const NoTasksSection = () => (
-  <FlexColumn>
+  <Container>
     <Image />
     <Text>
       Congratulations, you have no tasks to complete! You can view all other tasks for your project
@@ -36,5 +46,5 @@ export const NoTasksSection = () => (
     <Button to={ROUTES.TASKS} component={Link}>
       View all tasks
     </Button>
-  </FlexColumn>
+  </Container>
 );
