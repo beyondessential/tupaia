@@ -1535,6 +1535,7 @@ export interface SyncGroupLogUpdate {
 }
 export interface Task {
   'assignee_id'?: string | null;
+  'created_at': Date;
   'due_date'?: Date | null;
   'entity_id': string;
   'id': string;
@@ -1544,6 +1545,7 @@ export interface Task {
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;
+  'created_at'?: Date;
   'due_date'?: Date | null;
   'entity_id': string;
   'repeat_schedule'?: {} | null;
@@ -1552,6 +1554,7 @@ export interface TaskCreate {
 }
 export interface TaskUpdate {
   'assignee_id'?: string | null;
+  'created_at'?: Date;
   'due_date'?: Date | null;
   'entity_id'?: string;
   'id'?: string;
@@ -1792,6 +1795,7 @@ export enum EntityType {
   'maintenance' = 'maintenance',
   'larval_sample' = 'larval_sample',
   'transfer' = 'transfer',
+  'hospital_area' = 'hospital_area',
 }
 export enum DataTableType {
   'analytics' = 'analytics',

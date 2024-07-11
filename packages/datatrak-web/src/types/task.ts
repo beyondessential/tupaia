@@ -4,7 +4,6 @@
  */
 
 import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
-
 enum OtherTaskStatus {
   overdue = 'overdue',
   repeating = 'repeating',

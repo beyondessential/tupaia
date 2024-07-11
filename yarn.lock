@@ -12057,6 +12057,7 @@ __metadata:
     "@material-ui/core": ^4.9.11
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
+    "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@testing-library/react": 12.1.2
@@ -12578,6 +12579,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/dom-to-image": ^2.6.4
     "@types/downloadjs": ^1.4.3
+    "@types/leaflet": ^1.7.1
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
@@ -12585,6 +12587,7 @@ __metadata:
     axios: ^1.6.8
     dom-to-image: 2.6.0
     downloadjs: 1.4.7
+    leaflet: ^1.7.1
     moment: ^2.24.0
     msw: ^2.0.9
     npm-run-all: ^4.1.5

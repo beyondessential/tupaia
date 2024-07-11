@@ -17,6 +17,8 @@ import { DataTrakSessionModel } from '../models';
 import {
   ActivityFeedRequest,
   ActivityFeedRoute,
+  CreateTaskRequest,
+  CreateTaskRoute,
   EntitiesRequest,
   EntitiesRoute,
   EntityDescendantsRequest,
@@ -78,7 +80,9 @@ export async function createApp() {
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TasksRequest>('tasks', handleWith(TasksRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
+    .get<SurveyUsersRequest>('users/:surveyCode/:countryCode', handleWith(SurveyUsersRoute))
     // Post Routes
+    .post<CreateTaskRequest>('tasks', handleWith(CreateTaskRoute))
     .post<SubmitSurveyResponseRequest>(
       'submitSurveyResponse',
       handleWith(SubmitSurveyResponseRoute),

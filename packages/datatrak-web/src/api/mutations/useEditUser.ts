@@ -45,6 +45,7 @@ export const useEditUser = (onSuccess?: () => void) => {
         // If the user changes their project, we need to invalidate the entity descendants query so that recent entities are updated if they change back to the previous project without refreshing the page
         if (variables.projectId) {
           queryClient.invalidateQueries('entityDescendants');
+          queryClient.invalidateQueries('tasks');
         }
         if (onSuccess) onSuccess();
       },

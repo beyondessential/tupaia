@@ -17,3 +17,5 @@ export * as DatatrakWebActivityFeedRequest from './ActivityFeedRequest';
 export * as DatatrakWebGenerateLoginTokenRequest from './GenerateLoginTokenRequest';
 export * as DatatrakWebEntityDescendantsRequest from './EntityDescendantsRequest';
 export * as DatatrakWebTasksRequest from './TasksRequest';
+export * as DatatrakWebSurveyUsersRequest from './SurveyUsersRequest';
+export * as DatatrakWebCreateTaskRequest from './CreateTaskRequest';

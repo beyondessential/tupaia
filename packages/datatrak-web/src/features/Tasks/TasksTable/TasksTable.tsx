@@ -3,19 +3,18 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
-import { TaskStatus } from '@tupaia/types';
-import { TaskStatusType } from '../../../types';
+import { Task, TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
+import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
-import { DueDateFilter } from './DueDateFilter';
-import { TaskActionsMenu } from './TaskActionsMenu';
-import { TaskCompleteButton } from './TaskCompleteButton';
+import { ActionButton } from './ActionButton';
+import { AssignTaskModal } from './AssignTaskModal';
 
 const Container = styled.div`
   display: flex;
@@ -29,79 +28,8 @@ const Container = styled.div`
   }
 `;
 
-const ActionsCell = styled.div`
-  margin-top: 5px;
-  margin-bottom: 2px;
-`;
-
-const COLUMNS = [
-  {
-    // only the survey name can be resized
-    Header: 'Survey',
-    accessor: (row: any) => row.survey.name,
-    id: 'survey.name',
-    filterable: true,
-  },
-  {
-    Header: 'Entity',
-    accessor: (row: any) => row.entity.name,
-    id: 'entity.name',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Assignee',
-    accessor: row => row.assigneeName ?? 'Unassigned',
-    id: 'assignee_name',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Repeating task',
-    // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
-    accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
-    id: 'repeat_schedule',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Due Date',
-    accessor: row => displayDate(row.dueDate),
-    id: 'due_date',
-    filterable: true,
-    Filter: DueDateFilter,
-    disableResizing: true,
-  },
-  {
-    Header: 'Status',
-    filterable: true,
-    accessor: 'taskStatus',
-    id: 'task_status',
-    Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
-    Filter: StatusFilter,
-    disableResizing: true,
-  },
-  {
-    Header: '',
-    accessor: row => (
-      <ActionsCell>
-        {row.taskStatus !== TaskStatus.cancelled && (
-          <>
-            <TaskCompleteButton {...row} />
-            <TaskActionsMenu {...row} />
-          </>
-        )}
-      </ActionsCell>
-    ),
-    width: 180,
-    id: 'actions',
-    filterable: false,
-    disableSortBy: true,
-    disableResizing: true,
-  },
-];
-
 const useTasksTable = () => {
+  const [assignTaskModalApplied, setAssignTaskModalApplied] = useState<Task | null>(null);
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -114,7 +42,7 @@ const useTasksTable = () => {
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
-  const { data, isLoading } = useTasks(projectId, pageSize, page, filters, sortBy);
+  const { data, isLoading, isFetching } = useTasks(projectId, pageSize, page, filters, sortBy);
 
   const updateSorting = newSorting => {
     searchParams.set('sortBy', JSON.stringify(newSorting));
@@ -133,14 +61,74 @@ const useTasksTable = () => {
   };
 
   const onChangePage = newPage => {
-    setSearchParams({ page: newPage });
+    searchParams.set('page', newPage.toString());
+    setSearchParams(searchParams);
   };
 
   const onChangePageSize = newPageSize => {
-    setSearchParams({ pageSize: newPageSize });
+    searchParams.set('pageSize', newPageSize.toString());
+    searchParams.set('page', '0');
+    setSearchParams(searchParams);
   };
 
-  const { tasks = [], count = 0, numberOfPages = 1 } = data || {};
+  const { tasks = [], count = 0, numberOfPages } = data || {};
+
+  const COLUMNS = [
+    {
+      // only the survey name can be resized
+      Header: 'Survey',
+      accessor: (row: any) => row.survey.name,
+      id: 'survey.name',
+      filterable: true,
+    },
+    {
+      Header: 'Entity',
+      accessor: (row: any) => row.entity.name,
+      id: 'entity.name',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Assignee',
+      accessor: row => row.assigneeName ?? 'Unassigned',
+      id: 'assignee_name',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Repeating task',
+      // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
+      accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
+      id: 'repeat_schedule',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Due Date',
+      accessor: row => displayDate(row.dueDate),
+      id: 'due_date',
+      filterable: true,
+      Filter: DueDatePicker,
+      disableResizing: true,
+    },
+    {
+      Header: 'Status',
+      filterable: true,
+      accessor: 'taskStatus',
+      id: 'task_status',
+      Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
+      Filter: StatusFilter,
+      disableResizing: true,
+    },
+    {
+      Header: '',
+      accessor: task => <ActionButton task={task} onAssignTask={setAssignTaskModalApplied} />,
+      id: 'actions',
+      filterable: false,
+      disableSortBy: true,
+      disableResizing: true,
+    },
+  ];
 
   return {
     columns: COLUMNS,
@@ -155,7 +143,9 @@ const useTasksTable = () => {
     updateFilters,
     onChangePage,
     onChangePageSize,
-    isLoading,
+    isLoading: isLoading || isFetching,
+    assignTaskModalApplied,
+    setAssignTaskModalApplied,
   };
 };
 
@@ -174,13 +164,15 @@ export const TasksTable = () => {
     onChangePage,
     onChangePageSize,
     isLoading,
+    assignTaskModalApplied,
+    setAssignTaskModalApplied,
   } = useTasksTable();
 
   return (
     <Container>
       <FilterableTable
         columns={columns}
-        data={data}
+        data={isLoading ? [] : data}
         pageIndex={pageIndex}
         pageSize={pageSize}
         sorting={sorting}
@@ -193,6 +185,10 @@ export const TasksTable = () => {
         onChangePageSize={onChangePageSize}
         noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
+      />
+      <AssignTaskModal
+        task={assignTaskModalApplied}
+        onClose={() => setAssignTaskModalApplied(null)}
       />
     </Container>
   );
