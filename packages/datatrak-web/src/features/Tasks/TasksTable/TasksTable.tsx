@@ -5,36 +5,17 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { generatePath, useSearchParams, Link, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
-import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
+import { TaskStatus } from '@tupaia/types';
 import { TaskStatusType } from '../../../types';
-import { Button } from '../../../components';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
-import { ROUTES } from '../../../constants';
 import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
 import { DueDateFilter } from './DueDateFilter';
-
-type Task = DatatrakWebTasksRequest.ResBody['tasks'][0];
-
-const ActionButtonComponent = styled(Button).attrs({
-  color: 'primary',
-  size: 'small',
-})`
-  padding-inline: 1.2rem;
-  padding-block: 0.4rem;
-  width: 100%;
-  .MuiButton-label {
-    font-size: 0.75rem;
-    line-height: normal;
-  }
-  .cell-content:has(&) {
-    padding-block: 0.2rem;
-    padding-inline-start: 1.5rem;
-  }
-`;
+import { TaskActionsMenu } from './TaskActionsMenu';
+import { TaskCompleteButton } from './TaskCompleteButton';
 
 const Container = styled.div`
   display: flex;
@@ -48,32 +29,10 @@ const Container = styled.div`
   }
 `;
 
-const ActionButton = (task: Task) => {
-  const location = useLocation();
-  if (!task) return null;
-  const { assigneeId, survey, entity, status } = task;
-  if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
-  if (!assigneeId) {
-    return <ActionButtonComponent variant="outlined">Assign</ActionButtonComponent>;
-  }
-
-  const surveyLink = generatePath(ROUTES.SURVEY, {
-    surveyCode: survey.code,
-    countryCode: entity.countryCode,
-  });
-  return (
-    <ActionButtonComponent
-      component={Link}
-      to={`${surveyLink}/1`}
-      variant="contained"
-      state={{
-        from: location.pathname,
-      }}
-    >
-      Complete
-    </ActionButtonComponent>
-  );
-};
+const ActionsCell = styled.div`
+  margin-top: 5px;
+  margin-bottom: 2px;
+`;
 
 const COLUMNS = [
   {
@@ -124,7 +83,17 @@ const COLUMNS = [
   },
   {
     Header: '',
-    accessor: row => <ActionButton {...row} />,
+    accessor: row => (
+      <ActionsCell>
+        {row.taskStatus !== TaskStatus.cancelled && (
+          <>
+            <TaskCompleteButton {...row} />
+            <TaskActionsMenu {...row} />
+          </>
+        )}
+      </ActionsCell>
+    ),
+    width: 180,
     id: 'actions',
     filterable: false,
     disableSortBy: true,
