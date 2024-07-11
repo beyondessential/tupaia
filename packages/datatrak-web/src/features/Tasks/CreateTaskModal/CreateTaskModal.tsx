@@ -13,9 +13,9 @@ import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
+import { TaskForm } from '../TaskForm';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
-import { TaskForm } from '../TaskForm';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;

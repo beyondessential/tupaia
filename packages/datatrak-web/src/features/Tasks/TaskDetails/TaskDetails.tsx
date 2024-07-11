@@ -14,6 +14,7 @@ import { DueDatePicker } from '../DueDatePicker';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
 import { AssigneeInput } from '../AssigneeInput';
+import { TextField } from '@tupaia/ui-components';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -24,16 +25,37 @@ const Container = styled(Paper).attrs({
 `;
 
 const MainColumn = styled.div`
-  width: 45%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 `;
 
 const SideColumn = styled.div`
-  width: 30%;
+  width: 25%;
 `;
 
 const ItemWrapper = styled.div`
   &:not(:last-child) {
     margin-block-end: 1.2rem;
+  }
+`;
+
+const CommentsPlaceholder = styled(ItemWrapper)`
+  flex: 1;
+  border: 1px solid ${({ theme }) => theme.palette.divider};
+  border-radius: 4px;
+`;
+
+const CommentsInput = styled(TextField).attrs({
+  multiline: true,
+  variant: 'outlined',
+  fullWidth: true,
+  rows: 4,
+})`
+  margin-block-end: 0;
+  .MuiOutlinedInput-inputMultiline {
+    padding-inline: 1rem;
   }
 `;
 
@@ -120,7 +142,11 @@ export const TaskDetails = () => {
               />
             </ItemWrapper>
           </SideColumn>
-          <MainColumn />
+          <MainColumn>
+            <CommentsPlaceholder />
+            {/** This is a placeholder for when we add in comments functionality */}
+            <CommentsInput label="Add comment" />
+          </MainColumn>
           <SideColumn />
         </Container>
       </TaskForm>
