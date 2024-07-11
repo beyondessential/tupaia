@@ -17,6 +17,7 @@ const Wrapper = styled.div`
 const HeadingContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-inline-end: 1.2rem;
 `;
 
 const Title = styled(Typography).attrs({
