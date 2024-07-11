@@ -130,7 +130,26 @@ const COLUMNS = [
     disableSortBy: true,
     disableResizing: true,
   },
-];
+].map(column => {
+  if (column.id === 'actions') return column;
+  const { DisplayCell } = column;
+  if (DisplayCell) {
+    return {
+      ...column,
+      Cell: ({ row, value }) => (
+        <LinkCell {...row.original}>
+          <DisplayCell value={value} />
+        </LinkCell>
+      ),
+    };
+  }
+  return {
+    ...column,
+    Cell: ({ row, value }) => {
+      return <LinkCell {...row.original}>{value}</LinkCell>;
+    },
+  };
+});
 
 const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
@@ -176,30 +195,8 @@ const useTasksTable = () => {
 
   const { tasks = [], count = 0, numberOfPages } = data || {};
 
-  // add the link to the column cells
-  const formattedColumns = COLUMNS.map(column => {
-    if (column.id === 'actions') return column;
-    const { DisplayCell } = column;
-    if (DisplayCell) {
-      return {
-        ...column,
-        Cell: ({ row, value }) => (
-          <LinkCell {...row.original}>
-            <DisplayCell value={value} />
-          </LinkCell>
-        ),
-      };
-    }
-    return {
-      ...column,
-      Cell: ({ row, value }) => {
-        return <LinkCell {...row.original}>{value}</LinkCell>;
-      },
-    };
-  });
-
   return {
-    columns: formattedColumns,
+    columns: COLUMNS,
     data: tasks,
     totalRecords: count,
     pageIndex: page,
