@@ -45,6 +45,8 @@ import {
   SurveyRoute,
   SurveysRequest,
   SurveysRoute,
+  SurveyUsersRequest,
+  SurveyUsersRoute,
   TasksRequest,
   TasksRoute,
   UserRequest,

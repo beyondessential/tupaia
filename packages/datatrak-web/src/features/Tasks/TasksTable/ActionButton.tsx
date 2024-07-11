@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
 import { ROUTES } from '../../../constants';
 import { Task } from '../../../types';
+import { AssignTaskModal } from './AssignTaskModal.tsx';
 
 const ActionButtonComponent = styled(Button).attrs({
   color: 'primary',
@@ -17,7 +18,7 @@ const ActionButtonComponent = styled(Button).attrs({
 })`
   padding-inline: 1.2rem;
   padding-block: 0.4rem;
-  width: 100%;
+  width: 5.5rem;
   .MuiButton-label {
     font-size: 0.75rem;
     line-height: normal;
@@ -30,22 +31,23 @@ const ActionButtonComponent = styled(Button).attrs({
 
 interface ActionButtonProps {
   task: Task;
-  onAssignTask: (task: Task | null) => void;
 }
 
-export const ActionButton = ({ task, onAssignTask }: ActionButtonProps) => {
+export const ActionButton = ({ task }: ActionButtonProps) => {
   const location = useLocation();
   if (!task) return null;
   const { assigneeId, survey, entity, status } = task;
   if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
-  const openAssignTaskModal = () => {
-    onAssignTask(task);
-  };
   if (!assigneeId) {
     return (
-      <ActionButtonComponent variant="outlined" onClick={openAssignTaskModal}>
-        Assign
-      </ActionButtonComponent>
+      <AssignTaskModal
+        task={task}
+        Button={({ onClick }) => (
+          <ActionButtonComponent onClick={onClick} variant="outlined">
+            Assign
+          </ActionButtonComponent>
+        )}
+      />
     );
   }
 

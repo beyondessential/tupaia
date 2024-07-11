@@ -47,15 +47,15 @@ const CancelTaskModal = ({ isOpen, onClose, onCancelTask, isLoading }: ModalProp
   </SmallModal>
 );
 
-export const TaskActionsMenu = ({ id: taskId }: Task) => {
+export const TaskActionsMenu = ({ id }: { id: Task['id'] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
 
-  const { mutate, isLoading } = useEditTask(onClose);
+  const { mutate, isLoading } = useEditTask(id, onClose);
 
   const onCancelTask = () => {
-    mutate({ id: taskId, status: TaskStatus.cancelled });
+    mutate({ status: TaskStatus.cancelled });
   };
 
   const actions = [
