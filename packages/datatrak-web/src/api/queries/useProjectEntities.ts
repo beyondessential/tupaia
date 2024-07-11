@@ -9,6 +9,7 @@ import { get } from '../api';
 export const useProjectEntities = (
   projectCode?: string,
   params?: DatatrakWebEntityDescendantsRequest.ReqBody,
+  enabled = true,
 ) => {
   return useQuery(
     ['entityDescendants', projectCode, params],
@@ -17,6 +18,6 @@ export const useProjectEntities = (
         params: { ...params, filter: { ...params?.filter, projectCode } },
       });
     },
-    { enabled: !!projectCode },
+    { enabled: !!projectCode && enabled },
   );
 };

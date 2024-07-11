@@ -10,11 +10,11 @@ import { FilterableTable } from '@tupaia/ui-components';
 import { TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
+import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
-import { DueDateFilter } from './DueDateFilter';
+import { ActionButton } from './ActionButton';
 import { TaskActionsMenu } from './TaskActionsMenu';
-import { TaskCompleteButton } from './TaskCompleteButton';
 import { FilterToolbar } from './FilterToolbar';
 
 const Container = styled.div`
@@ -28,74 +28,6 @@ const Container = styled.div`
     border-radius: 3px;
   }
 `;
-
-const ActionsCell = styled.div`
-  margin-top: 5px;
-  margin-bottom: 2px;
-`;
-
-const COLUMNS = [
-  {
-    // only the survey name can be resized
-    Header: 'Survey',
-    accessor: (row: any) => row.survey.name,
-    id: 'survey.name',
-    filterable: true,
-  },
-  {
-    Header: 'Entity',
-    accessor: (row: any) => row.entity.name,
-    id: 'entity.name',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Assignee',
-    accessor: row => row.assigneeName ?? 'Unassigned',
-    id: 'assignee_name',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Repeating task',
-    // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
-    accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
-    id: 'repeat_schedule',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Due Date',
-    accessor: row => displayDate(row.dueDate),
-    id: 'due_date',
-    filterable: true,
-    Filter: DueDateFilter,
-    disableResizing: true,
-  },
-  {
-    Header: 'Status',
-    filterable: true,
-    accessor: 'taskStatus',
-    id: 'task_status',
-    Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
-    Filter: StatusFilter,
-    disableResizing: true,
-  },
-  {
-    Header: '',
-    accessor: row => (
-      <ActionsCell>
-        <TaskCompleteButton {...row} />
-        <TaskActionsMenu {...row} />
-      </ActionsCell>
-    ),
-    width: 180,
-    id: 'actions',
-    filterable: false,
-    disableSortBy: true,
-    disableResizing: true,
-  },
-];
 
 const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
@@ -129,14 +61,80 @@ const useTasksTable = () => {
   };
 
   const onChangePage = newPage => {
-    setSearchParams({ page: newPage });
+    searchParams.set('page', newPage.toString());
+    setSearchParams(searchParams);
   };
 
   const onChangePageSize = newPageSize => {
-    setSearchParams({ pageSize: newPageSize });
+    searchParams.set('pageSize', newPageSize.toString());
+    searchParams.set('page', '0');
+    setSearchParams(searchParams);
   };
 
-  const { tasks = [], count = 0, numberOfPages = 1 } = data || {};
+  const { tasks = [], count = 0, numberOfPages } = data || {};
+
+  const COLUMNS = [
+    {
+      // only the survey name can be resized
+      Header: 'Survey',
+      accessor: (row: any) => row.survey.name,
+      id: 'survey.name',
+      filterable: true,
+    },
+    {
+      Header: 'Entity',
+      accessor: (row: any) => row.entity.name,
+      id: 'entity.name',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Assignee',
+      accessor: row => row.assigneeName ?? 'Unassigned',
+      id: 'assignee_name',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Repeating task',
+      // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
+      accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
+      id: 'repeat_schedule',
+      filterable: true,
+      disableResizing: true,
+    },
+    {
+      Header: 'Due Date',
+      accessor: row => displayDate(row.dueDate),
+      id: 'due_date',
+      filterable: true,
+      Filter: DueDatePicker,
+      disableResizing: true,
+    },
+    {
+      Header: 'Status',
+      filterable: true,
+      accessor: 'taskStatus',
+      id: 'task_status',
+      Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
+      Filter: StatusFilter,
+      disableResizing: true,
+    },
+    {
+      Header: '',
+      width: 180,
+      accessor: task => (
+        <>
+          <ActionButton task={task} />
+          <TaskActionsMenu id={task.id} />
+        </>
+      ),
+      id: 'actions',
+      filterable: false,
+      disableSortBy: true,
+      disableResizing: true,
+    },
+  ];
 
   return {
     columns: COLUMNS,
@@ -151,7 +149,7 @@ const useTasksTable = () => {
     updateFilters,
     onChangePage,
     onChangePageSize,
-    isLoading,
+    isLoading: isLoading,
   };
 };
 
@@ -177,7 +175,7 @@ export const TasksTable = () => {
       <FilterToolbar />
       <FilterableTable
         columns={columns}
-        data={data}
+        data={isLoading ? [] : data}
         pageIndex={pageIndex}
         pageSize={pageSize}
         sorting={sorting}

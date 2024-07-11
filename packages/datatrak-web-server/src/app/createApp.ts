@@ -17,6 +17,8 @@ import { DataTrakSessionModel } from '../models';
 import {
   ActivityFeedRequest,
   ActivityFeedRoute,
+  CreateTaskRequest,
+  CreateTaskRoute,
   EntitiesRequest,
   EntitiesRoute,
   EntityDescendantsRequest,
@@ -31,8 +33,6 @@ import {
   ProjectsRoute,
   RecentSurveysRequest,
   RecentSurveysRoute,
-  SaveTaskRequest,
-  SaveTaskRoute,
   SingleEntityRequest,
   SingleEntityRoute,
   SingleSurveyResponseRequest,
@@ -45,6 +45,8 @@ import {
   SurveyRoute,
   SurveysRequest,
   SurveysRoute,
+  SurveyUsersRequest,
+  SurveyUsersRoute,
   TasksRequest,
   TasksRoute,
   UserRequest,
@@ -80,14 +82,14 @@ export async function createApp() {
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TasksRequest>('tasks', handleWith(TasksRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
+    .get<SurveyUsersRequest>('users/:surveyCode/:countryCode', handleWith(SurveyUsersRoute))
     // Post Routes
+    .post<CreateTaskRequest>('tasks', handleWith(CreateTaskRoute))
     .post<SubmitSurveyResponseRequest>(
       'submitSurveyResponse',
       handleWith(SubmitSurveyResponseRoute),
     )
     .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
-    // Put Routes
-    .put<SaveTaskRequest>('tasks/:taskId', handleWith(SaveTaskRoute))
     // Forward auth requests to web-config
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

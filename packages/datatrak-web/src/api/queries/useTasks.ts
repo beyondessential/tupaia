@@ -40,7 +40,11 @@ export const useTasks = (
           ],
           sort: sortBy?.map(({ id, desc }) => `${id} ${desc ? 'DESC' : 'ASC'}`) ?? [],
         },
-        enabled: !!projectId,
       }),
+    {
+      enabled: !!projectId,
+      // This needs to be true so that when changing the page number, the total number of records is not reset
+      keepPreviousData: true,
+    },
   );
 };

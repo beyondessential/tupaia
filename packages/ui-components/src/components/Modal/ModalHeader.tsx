@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode } from 'react';
 import { Typography } from '@material-ui/core';
-import { FlexStart, IconButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { Close } from '@material-ui/icons';
+import { FlexStart } from '../Layout';
+import { IconButton } from '../IconButton';
 
 const Header = styled(FlexStart)`
   position: relative;
@@ -27,7 +27,13 @@ const CloseButton = styled(IconButton)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const ModalHeader = ({ title, onClose, children }) => (
+interface ModalHeaderProps {
+  title: string;
+  onClose: () => void;
+  children?: ReactNode;
+}
+
+export const ModalHeader = ({ title, onClose, children }: ModalHeaderProps) => (
   <Header>
     <Title variant="h2">{title}</Title>
     {children}
@@ -36,13 +42,3 @@ export const ModalHeader = ({ title, onClose, children }) => (
     </CloseButton>
   </Header>
 );
-
-ModalHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
-  children: PropTypes.node,
-};
-
-ModalHeader.defaultProps = {
-  children: null,
-};

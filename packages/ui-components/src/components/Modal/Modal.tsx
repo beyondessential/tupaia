@@ -4,9 +4,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { DialogFooter as BaseDialogFooter, Button } from '@tupaia/ui-components';
-import { Dialog } from '@material-ui/core';
+import { ButtonProps, Dialog, DialogProps } from '@material-ui/core';
+import { DialogFooter as BaseDialogFooter } from '../Dialog';
+import { Button } from '../Button';
 import { ModalContentProvider } from './ModalContentProvider';
 import { ModalHeader } from './ModalHeader';
 
@@ -16,6 +16,25 @@ export const ModalFooter = styled(BaseDialogFooter)`
   padding-inline: 1.9rem;
 `;
 
+type ButtonT = Omit<ButtonProps, 'variant'> & {
+  id: string;
+  text: string;
+  component?: React.ElementType;
+  to?: string;
+  type?: string;
+  variant?: string; // declare as a string here because passing 'contained' or 'outlined' is coming up as invalid elsewhere
+};
+
+interface ModalProps extends Omit<DialogProps, 'onClose' | 'open'> {
+  children: React.ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  isLoading?: boolean;
+  errorMessage?: string;
+  buttons?: ButtonT[];
+}
+
 export const Modal = ({
   children,
   isOpen,
@@ -23,9 +42,9 @@ export const Modal = ({
   title,
   isLoading,
   errorMessage,
-  buttons,
+  buttons = [],
   ...muiDialogProps
-}) => {
+}: ModalProps) => {
   return (
     <Dialog onClose={onClose} open={isOpen} fullWidth {...muiDialogProps}>
       <ModalHeader onClose={onClose} title={title} />
@@ -47,6 +66,7 @@ export const Modal = ({
               to,
             }) => (
               <Button
+                key={id}
                 onClick={onClick}
                 color={color}
                 id={id}
@@ -64,32 +84,4 @@ export const Modal = ({
       )}
     </Dialog>
   );
-};
-
-Modal.propTypes = {
-  children: PropTypes.node.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  isLoading: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  buttons: PropTypes.arrayOf(
-    PropTypes.shape({
-      onClick: PropTypes.func.isRequired,
-      color: PropTypes.string,
-      text: PropTypes.string.isRequired,
-      id: PropTypes.string,
-      disabled: PropTypes.bool,
-      variant: PropTypes.string,
-      type: PropTypes.string,
-      component: PropTypes.elementType,
-      to: PropTypes.string,
-    }),
-  ),
-};
-
-Modal.defaultProps = {
-  buttons: [],
-  errorMessage: '',
-  isLoading: false,
 };

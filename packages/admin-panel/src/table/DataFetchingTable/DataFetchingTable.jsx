@@ -6,7 +6,6 @@ import React, { memo, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
-import queryString from 'query-string';
 import PropTypes from 'prop-types';
 import { Alert, FilterableTable } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
@@ -14,16 +13,16 @@ import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
 import {
   cancelAction,
-  changeFilters,
   changePage,
   changePageSize,
   changeSorting,
-  clearError,
   confirmAction,
   refreshData,
 } from '../actions';
 import { ConfirmDeleteModal } from '../../widgets';
+import { useColumnFilters } from './useColumnFilters';
 import { DisplayCell } from './Cells';
+import { getEditorState } from '../../editor/selectors';
 
 const ErrorAlert = styled(Alert).attrs({
   severity: 'error',
@@ -91,9 +90,6 @@ const DataFetchingTableComponent = memo(
     pageIndex = 0,
     onPageChange,
     onPageSizeChange,
-    initialiseTable,
-    nestingLevel,
-    filters,
     sorting,
     isChangingDataOnServer,
     errorMessage,
@@ -102,18 +98,17 @@ const DataFetchingTableComponent = memo(
     onConfirmAction,
     onCancelAction,
     deleteConfig,
-    onFilteredChange,
     totalRecords,
     isFetchingData,
     onSortedChange,
     detailUrl,
     getHasNestedView,
-    endpoint,
     getNestedViewLink,
-    baseFilter,
     basePath,
     resourceName,
-    actionLabel = 'Action',
+    actionLabel,
+    defaultFilters,
+    editorState,
   }) => {
     const formattedColumns = useMemo(() => {
       const cols = columns.map(column => formatColumnForReactTable(column));
@@ -143,7 +138,7 @@ const DataFetchingTableComponent = memo(
       const buttonWidths = buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0);
       // Group all button columns into a single column so they can be displayed together under a single header
       const singleButtonColumn = {
-        Header: actionLabel,
+        Header: actionLabel || 'Action',
         maxWidth: buttonWidths,
         width: buttonWidths,
         // eslint-disable-next-line react/prop-types
@@ -164,27 +159,25 @@ const DataFetchingTableComponent = memo(
       return [...nonButtonColumns, singleButtonColumn];
     }, [JSON.stringify(columns)]);
 
-    useEffect(() => {
-      if (!isChangingDataOnServer && !errorMessage) {
-        onRefreshData();
-      }
-    }, [errorMessage, isChangingDataOnServer]);
-
-    // initial render/re-render when endpoint changes
-    useEffect(() => {
-      if (nestingLevel === 0) {
-        // Page-level filters only apply to top-level data tables
-        const params = queryString.parse(location.search); // set filters from query params
-        const parsedFilters = params.filters ? JSON.parse(params.filters) : undefined;
-        initialiseTable(parsedFilters);
-      } else {
-        initialiseTable();
-      }
-    }, [endpoint, JSON.stringify(baseFilter)]);
+    // Listen for changes in filters in the URL and refresh the data accordingly
+    const { filters, onChangeFilters } = useColumnFilters(defaultFilters);
 
     useEffect(() => {
-      onRefreshData();
-    }, [filters, pageIndex, pageSize, JSON.stringify(sorting)]);
+      // if the page index is already 0, we can just refresh the data
+      if (pageIndex === 0) {
+        onRefreshData(filters, sorting, pageIndex, pageSize);
+        // if the page index is not 0, we need to reset it to 0, which will trigger a refresh
+      } else onPageChange(0);
+    }, [JSON.stringify(filters), JSON.stringify(sorting)]);
+
+    useEffect(() => {
+      onRefreshData(filters, sorting, pageIndex, pageSize);
+    }, [pageSize, pageIndex]);
+
+    useEffect(() => {
+      if (editorState?.isOpen) return;
+      onRefreshData(filters, sorting, pageIndex, pageSize);
+    }, [editorState?.isOpen]);
 
     const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -211,7 +204,7 @@ const DataFetchingTableComponent = memo(
           pageSize={pageSize}
           sorting={sorting}
           numberOfPages={numberOfPages}
-          onChangeFilters={onFilteredChange}
+          onChangeFilters={onChangeFilters}
           filters={filters}
           hiddenColumns={columns
             .filter(column => column.show === false)
@@ -245,32 +238,28 @@ DataFetchingTableComponent.propTypes = {
   confirmActionMessage: PropTypes.string,
   errorMessage: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.shape({})),
-  filters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
   numberOfPages: PropTypes.number,
   onCancelAction: PropTypes.func.isRequired,
   onConfirmAction: PropTypes.func.isRequired,
-  onFilteredChange: PropTypes.func.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onPageSizeChange: PropTypes.func.isRequired,
   onRefreshData: PropTypes.func.isRequired,
   onSortedChange: PropTypes.func.isRequired,
-  initialiseTable: PropTypes.func.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   sorting: PropTypes.array.isRequired,
-  nestingLevel: PropTypes.number,
   deleteConfig: PropTypes.object,
   totalRecords: PropTypes.number,
   detailUrl: PropTypes.string,
   getHasNestedView: PropTypes.func,
-  endpoint: PropTypes.string.isRequired,
   getNestedViewLink: PropTypes.func,
-  baseFilter: PropTypes.object,
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
   actionLabel: PropTypes.string,
+  defaultFilters: PropTypes.array,
+  editorState: PropTypes.object,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -278,16 +267,16 @@ DataFetchingTableComponent.defaultProps = {
   data: [],
   errorMessage: '',
   numberOfPages: 0,
-  nestingLevel: 0,
   deleteConfig: {},
   totalRecords: 0,
   detailUrl: '',
   getHasNestedView: null,
   getNestedViewLink: null,
-  baseFilter: null,
   basePath: '',
   resourceName: {},
   actionLabel: 'Action',
+  defaultFilters: [],
+  editorState: {},
 };
 
 const mapStateToProps = (state, { reduxId, ...ownProps }) => ({
@@ -295,6 +284,7 @@ const mapStateToProps = (state, { reduxId, ...ownProps }) => ({
   isChangingDataOnServer: getIsChangingDataOnServer(state),
   ...ownProps,
   ...getTableState(state, reduxId),
+  editorState: getEditorState(state),
 });
 
 const mapDispatchToProps = (dispatch, { reduxId }) => ({
@@ -305,34 +295,25 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
   onPageSizeChange: (newPageSize, newPageIndex) =>
     dispatch(changePageSize(reduxId, newPageSize, newPageIndex)),
   onSortedChange: newSorting => dispatch(changeSorting(reduxId, newSorting)),
-  onFilteredChange: newFilters => dispatch(changeFilters(reduxId, newFilters)),
 });
 
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
-  const {
-    baseFilter = {},
-    defaultFilters = [],
-    defaultSorting = [],
-    endpoint,
-    columns,
-    reduxId,
-    ...restOfOwnProps
-  } = ownProps;
-  const onRefreshData = () =>
-    dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
-  const initialiseTable = (filters = defaultFilters) => {
-    dispatch(changePageSize(reduxId, 20, 0));
-    dispatch(changeSorting(reduxId, defaultSorting));
-    dispatch(changeFilters(reduxId, filters)); // will trigger a data fetch afterwards
-    dispatch(clearError());
-  };
+  const { baseFilter = {}, endpoint, columns, reduxId, ...restOfOwnProps } = ownProps;
+  const onRefreshData = (filters, sorting, pageIndex, pageSize) =>
+    dispatch(
+      refreshData(reduxId, endpoint, columns, baseFilter, filters, sorting, {
+        ...stateProps,
+        pageIndex,
+        pageSize,
+      }),
+    );
+
   return {
     reduxId,
     ...restOfOwnProps,
     ...stateProps,
     ...dispatchProps,
     onRefreshData,
-    initialiseTable,
   };
 };
 

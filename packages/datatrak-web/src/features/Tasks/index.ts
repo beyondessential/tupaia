@@ -5,3 +5,4 @@
 
 export { TaskPageHeader } from './TaskPageHeader';
 export { TasksTable } from './TasksTable';
+export { CreateTaskModal } from './CreateTaskModal';

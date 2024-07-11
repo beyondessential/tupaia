@@ -15,6 +15,10 @@ jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'blue',
     surveyProjectCode: 'explore',
+    formData: {
+      theParentQuestionId: 'blue',
+      theCodeQuestionId: 'blue',
+    },
   }),
 }));
 
