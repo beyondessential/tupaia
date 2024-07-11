@@ -20,6 +20,7 @@ import {
   AccountSettingsPage,
   ReportsPage,
   TasksDashboardPage,
+  TaskDetailsPage,
 } from '../views';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
@@ -62,6 +63,7 @@ export const Routes = () => {
           <Route index element={<LandingPage />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
           <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />
+          <Route path={ROUTES.TASK_DETAILS} element={<TaskDetailsPage />} />
           <Route
             path="/"
             element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}
