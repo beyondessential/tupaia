@@ -13,7 +13,7 @@ import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
-import { RepeatScheduleInput } from './RepeatScheduleInput';
+import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
 
 const CountrySelectorWrapper = styled.div`
@@ -25,29 +25,6 @@ const CountrySelectorWrapper = styled.div`
 `;
 
 const Form = styled.form`
-  .MuiFormLabel-root {
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    margin-block-end: 0.2rem;
-    font-size: 0.875rem;
-  }
-  .MuiFormLabel-asterisk {
-    color: ${({ theme }) => theme.palette.error.main};
-  }
-  .MuiInputBase-root {
-    font-size: 0.875rem;
-  }
-  .MuiOutlinedInput-input {
-    padding-block: 0.9rem;
-  }
-  input::placeholder {
-    color: ${({ theme }) => theme.palette.text.secondary};
-  }
-  .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.divider};
-  }
-  .MuiInputBase-root.Mui-error {
-    background-color: transparent;
-  }
   .loading-screen {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
@@ -109,11 +86,10 @@ const Wrapper = styled.div`
 `;
 
 interface CreateTaskModalProps {
-  open: boolean;
   onClose: () => void;
 }
 
-export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
+export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   const defaultValues = {
     surveyCode: null,
     entityId: null,
@@ -129,7 +105,6 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
     handleSubmit,
     control,
     setValue,
-    reset,
     watch,
     formState: { isValid, dirtyFields },
   } = formContext;
@@ -179,16 +154,17 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
     }
   }, [selectedCountry?.code]);
 
-  useEffect(() => {
-    if (open) {
-      reset(defaultValues);
-    }
-  }, [open]);
-
   const surveyCode = watch('surveyCode');
 
   return (
-    <Modal isOpen={open} onClose={onClose} title="New task" buttons={buttons} isLoading={isSaving}>
+    <Modal
+      isOpen
+      onClose={onClose}
+      title="New task"
+      buttons={buttons}
+      isLoading={isSaving}
+      disablePortal
+    >
       <Wrapper>
         <LoadingContainer isLoading={isLoadingData} heading="Loading data for project" text="">
           <FormProvider {...formContext}>

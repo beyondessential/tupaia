@@ -3,12 +3,15 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
+import { useForm, Controller, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { useTask } from '../../../api';
+import { DueDatePicker } from '../DueDatePicker';
 import { TaskMetadata } from './TaskMetadata';
+import { RepeatScheduleInput } from '../RepeatScheduleInput';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -26,17 +29,76 @@ const SideColumn = styled.div`
   width: 25%;
 `;
 
+const ItemWrapper = styled.div`
+  &:not(:last-child) {
+    margin-block-end: 1.2rem;
+  }
+`;
+
 export const TaskDetails = () => {
   const { taskId } = useParams();
   const { data: task } = useTask(taskId);
-  return (
-    <Container>
-      <SideColumn>
-        <TaskMetadata task={task} />
-      </SideColumn>
-      <MainColumn />
+  const formContext = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      dueDate: task?.dueDate ?? null,
+      repeatSchedule: task?.repeatSchedule?.frequency ?? null,
+    },
+  });
+  const { control, handleSubmit, setValue } = formContext;
 
-      <SideColumn />
-    </Container>
+  useEffect(() => {
+    if (!task) return;
+    setValue('dueDate', task?.dueDate);
+    setValue('repeatSchedule', task?.repeatSchedule?.frequency ?? null);
+  }, [JSON.stringify(task)]);
+
+  return (
+    <FormProvider {...formContext}>
+      <Container>
+        <SideColumn>
+          <ItemWrapper>
+            <TaskMetadata task={task} />
+          </ItemWrapper>
+          <ItemWrapper>
+            <Controller
+              name="dueDate"
+              control={control}
+              rules={{ required: '*Required' }}
+              defaultValue={task?.dueDate}
+              render={({ value, onChange, ref }, { invalid }) => (
+                <DueDatePicker
+                  value={value}
+                  onChange={onChange}
+                  inputRef={ref}
+                  label="Due date"
+                  disablePast
+                  fullWidth
+                  required
+                  invalid={invalid}
+                />
+              )}
+            />
+          </ItemWrapper>
+
+          <ItemWrapper>
+            <Controller
+              name="repeatSchedule"
+              control={control}
+              defaultValue={task?.repeatSchedule?.frequency ?? null}
+              render={({ value, onChange }) => (
+                <RepeatScheduleInput
+                  value={value}
+                  onChange={onChange}
+                  resetOnDueDateChange={false}
+                />
+              )}
+            />
+          </ItemWrapper>
+        </SideColumn>
+        <MainColumn />
+        <SideColumn />
+      </Container>
+    </FormProvider>
   );
 };

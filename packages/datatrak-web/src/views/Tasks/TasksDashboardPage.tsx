@@ -42,7 +42,7 @@ export const TasksDashboardPage = () => {
         </ButtonContainer>
       </TaskPageHeader>
       <TasksTable />
-      <CreateTaskModal open={createModalOpen} onClose={toggleCreateModal} />
+      {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
     </>
   );
 };

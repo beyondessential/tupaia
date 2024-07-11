@@ -71,17 +71,25 @@ interface RepeatScheduleInputProps {
       value: unknown;
     }> | null,
   ) => void;
+  resetOnDueDateChange?: boolean;
 }
 
-export const RepeatScheduleInput = ({ value = '', onChange }: RepeatScheduleInputProps) => {
+export const RepeatScheduleInput = ({
+  value = '',
+  onChange,
+  resetOnDueDateChange = true,
+}: RepeatScheduleInputProps) => {
   const { dueDate } = useWatch('dueDate');
   const repeatScheduleOptions = useRepeatScheduleOptions(dueDate);
 
   useEffect(() => {
+    if (!resetOnDueDateChange) return;
     if (!dueDate) {
       onChange(null);
     }
   }, [dueDate]);
+
+  const isDisabled = resetOnDueDateChange && !dueDate;
 
   return (
     <FormControl fullWidth>
@@ -92,7 +100,7 @@ export const RepeatScheduleInput = ({ value = '', onChange }: RepeatScheduleInpu
         onChange={onChange}
         fullWidth
         variant="outlined"
-        disabled={!dueDate}
+        disabled={isDisabled}
         displayEmpty
       >
         {repeatScheduleOptions.map(option => (
