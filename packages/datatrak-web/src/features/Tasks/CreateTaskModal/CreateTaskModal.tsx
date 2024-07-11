@@ -15,6 +15,7 @@ import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
+import { TaskForm } from '../TaskForm';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const CountrySelectorWrapper = styled.div`
   }
 `;
 
-const Form = styled.form`
+const Form = styled(TaskForm)`
   .loading-screen {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};

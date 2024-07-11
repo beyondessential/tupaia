@@ -8,6 +8,7 @@ import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { AssigneeInput } from '../AssigneeInput';
 import { useEditTask } from '../../../api';
+import { TaskForm } from '../TaskForm';
 
 const Container = styled(ModalCenteredContent)`
   width: 20rem;
@@ -57,7 +58,7 @@ export const AssignTaskModal = ({ task, onClose }) => {
       >
         <Container>
           <FormProvider {...formContext}>
-            <form onSubmit={handleSubmit(editTask)}>
+            <TaskForm onSubmit={handleSubmit(editTask)}>
               <Controller
                 name="assignee_id"
                 control={control}
@@ -74,7 +75,7 @@ export const AssignTaskModal = ({ task, onClose }) => {
                   />
                 )}
               />
-            </form>
+            </TaskForm>
           </FormProvider>
         </Container>
       </Modal>

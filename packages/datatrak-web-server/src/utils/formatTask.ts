@@ -6,7 +6,7 @@
 import { DatatrakWebTaskRequest, Entity, Survey, Task } from '@tupaia/types';
 import camelcaseKeys from 'camelcase-keys';
 
-export type TaskT = Task & {
+export type TaskT = Omit<Task, 'created_at'> & {
   'entity.name': Entity['name'];
   'entity.country_code': string;
   'survey.code': Survey['code'];

@@ -4,30 +4,10 @@
  */
 import React, { useState } from 'react';
 import throttle from 'lodash.throttle';
-import styled from 'styled-components';
 import { Country, DatatrakWebSurveyUsersRequest } from '@tupaia/types';
-import { Autocomplete as BaseAutocomplete } from '../../components';
+import { Autocomplete } from '../../components';
 import { useSurveyUsers } from '../../api';
 import { Survey } from '../../types';
-
-const Autocomplete = styled(BaseAutocomplete)`
-  .MuiFormLabel-root {
-    font-size: inherit;
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  }
-  .MuiInputBase-root {
-    font-size: 0.875rem;
-  }
-  input::placeholder {
-    color: ${({ theme }) => theme.palette.text.secondary};
-  }
-  .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.divider};
-  }
-  .MuiInputLabel-asterisk {
-    color: ${({ theme }) => theme.palette.error.main};
-  }
-`;
 
 type User = DatatrakWebSurveyUsersRequest.ResBody[0];
 

@@ -9,9 +9,10 @@ import { useForm, Controller, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { useTask } from '../../../api';
-import { DueDatePicker } from '../DueDatePicker';
-import { TaskMetadata } from './TaskMetadata';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
+import { DueDatePicker } from '../DueDatePicker';
+import { TaskForm } from '../TaskForm';
+import { TaskMetadata } from './TaskMetadata';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -53,52 +54,58 @@ export const TaskDetails = () => {
     setValue('repeatSchedule', task?.repeatSchedule?.frequency ?? null);
   }, [JSON.stringify(task)]);
 
+  const onSubmit = data => {
+    console.log(data);
+  };
+
   return (
     <FormProvider {...formContext}>
-      <Container>
-        <SideColumn>
-          <ItemWrapper>
-            <TaskMetadata task={task} />
-          </ItemWrapper>
-          <ItemWrapper>
-            <Controller
-              name="dueDate"
-              control={control}
-              rules={{ required: '*Required' }}
-              defaultValue={task?.dueDate}
-              render={({ value, onChange, ref }, { invalid }) => (
-                <DueDatePicker
-                  value={value}
-                  onChange={onChange}
-                  inputRef={ref}
-                  label="Due date"
-                  disablePast
-                  fullWidth
-                  required
-                  invalid={invalid}
-                />
-              )}
-            />
-          </ItemWrapper>
+      <TaskForm onSubmit={handleSubmit(onSubmit)}>
+        <Container>
+          <SideColumn>
+            <ItemWrapper>
+              <TaskMetadata task={task} />
+            </ItemWrapper>
+            <ItemWrapper>
+              <Controller
+                name="dueDate"
+                control={control}
+                rules={{ required: '*Required' }}
+                defaultValue={task?.dueDate}
+                render={({ value, onChange, ref }, { invalid }) => (
+                  <DueDatePicker
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    label="Due date"
+                    disablePast
+                    fullWidth
+                    required
+                    invalid={invalid}
+                  />
+                )}
+              />
+            </ItemWrapper>
 
-          <ItemWrapper>
-            <Controller
-              name="repeatSchedule"
-              control={control}
-              defaultValue={task?.repeatSchedule?.frequency ?? null}
-              render={({ value, onChange }) => (
-                <RepeatScheduleInput
-                  value={value}
-                  onChange={onChange}
-                  resetOnDueDateChange={false}
-                />
-              )}
-            />
-          </ItemWrapper>
-        </SideColumn>
-        <MainColumn />
-        <SideColumn />
-      </Container>
+            <ItemWrapper>
+              <Controller
+                name="repeatSchedule"
+                control={control}
+                defaultValue={task?.repeatSchedule?.frequency ?? null}
+                render={({ value, onChange }) => (
+                  <RepeatScheduleInput
+                    value={value}
+                    onChange={onChange}
+                    resetOnDueDateChange={false}
+                  />
+                )}
+              />
+            </ItemWrapper>
+          </SideColumn>
+          <MainColumn />
+          <SideColumn />
+        </Container>
+      </TaskForm>
     </FormProvider>
   );
 };
