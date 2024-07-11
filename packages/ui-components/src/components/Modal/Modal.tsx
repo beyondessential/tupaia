@@ -16,11 +16,13 @@ export const ModalFooter = styled(BaseDialogFooter)`
   padding-inline: 1.9rem;
 `;
 
-type ButtonT = ButtonProps & {
+type ButtonT = Omit<ButtonProps, 'variant'> & {
   id: string;
   text: string;
   component?: React.ElementType;
   to?: string;
+  type?: string;
+  variant?: string; // declare as a string here because passing 'contained' or 'outlined' is coming up as invalid elsewhere
 };
 
 interface ModalProps extends Omit<DialogProps, 'onClose' | 'open'> {
