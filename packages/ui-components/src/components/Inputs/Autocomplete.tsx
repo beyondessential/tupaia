@@ -113,6 +113,7 @@ export const Autocomplete = ({
     getOptionLabel={getOptionLabel}
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
+    blurOnSelect
     renderInput={params => (
       <TextField
         {...(params as any)}
