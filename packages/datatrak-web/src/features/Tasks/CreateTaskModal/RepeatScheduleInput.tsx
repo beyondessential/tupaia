@@ -29,7 +29,7 @@ const useRepeatScheduleOptions = dueDate => {
   const dayOfWeek = format(dueDateObject, 'EEEE');
   const dateOfMonth = format(dueDateObject, 'do');
 
-  const month = format(dueDateObject, 'MMM');
+  const month = format(dueDateObject, 'MMMM');
 
   const lastDateOfMonth = format(lastDayOfMonth(dueDateObject), 'do');
 
