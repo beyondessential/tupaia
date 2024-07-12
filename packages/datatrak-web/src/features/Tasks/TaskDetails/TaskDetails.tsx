@@ -8,6 +8,7 @@ import { useParams } from 'react-router';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
+import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer, TextField } from '@tupaia/ui-components';
 import { useEditTask, useTask } from '../../../api';
 import { Button } from '../../../components';
@@ -16,27 +17,37 @@ import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
-import { TaskStatus } from '@tupaia/types';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
-  padding: 2.5rem;
+  padding: 1.5rem;
   display: flex;
-  gap: 2.5rem;
+  flex-direction: column;
+  gap: min(2.5rem, 2%);
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+    padding: 2.5rem;
+  }
 `;
 
 const MainColumn = styled.div`
-  width: 50%;
   display: flex;
   flex-direction: column;
   flex: 1;
+  margin-block: 1.2rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    width: 44%;
+    margin-block: 0;
+  }
 `;
 
 const SideColumn = styled.div`
-  width: 25%;
   display: flex;
   flex-direction: column;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    width: 28%;
+  }
 `;
 
 const ItemWrapper = styled.div`
@@ -46,9 +57,14 @@ const ItemWrapper = styled.div`
 `;
 
 const CommentsPlaceholder = styled(ItemWrapper)`
-  flex: 1;
+  height: 10rem;
+  width: 100%;
   border: 1px solid ${({ theme }) => theme.palette.divider};
   border-radius: 4px;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex: 1;
+    height: 100%;
+  }
 `;
 
 const CommentsInput = styled(TextField).attrs({
@@ -63,11 +79,22 @@ const CommentsInput = styled(TextField).attrs({
   }
 `;
 
+const SaveButton = styled(Button).attrs({
+  variant: 'outlined',
+})`
+  padding: 0.5rem;
+`;
+
+const ClearButton = styled(Button).attrs({
+  variant: 'text',
+})`
+  padding-inline: 0.5rem;
+`;
+
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
-  gap: 1rem;
   flex: 1;
 `;
 
@@ -180,12 +207,12 @@ export const TaskDetails = () => {
             </MainColumn>
             <SideColumn>
               <ButtonWrapper>
-                <Button variant="text" disabled={!isDirty} onClick={onClearEdit}>
+                <ClearButton disabled={!isDirty} onClick={onClearEdit}>
                   Clear changes
-                </Button>
-                <Button type="submit" disabled={!isDirty || !isValid} variant="outlined">
+                </ClearButton>
+                <SaveButton type="submit" disabled={!isDirty || !isValid} variant="outlined">
                   Save changes
-                </Button>
+                </SaveButton>
               </ButtonWrapper>
             </SideColumn>
           </Container>
