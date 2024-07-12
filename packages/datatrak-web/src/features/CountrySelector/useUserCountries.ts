@@ -9,12 +9,13 @@ import { Entity } from '../../types';
 export const useUserCountries = () => {
   const user = useCurrentUserContext();
   const [newSelectedCountry, setSelectedCountry] = useState<Entity | null>(null);
-  const { data: countries, isLoading: isLoadingCountries } = useProjectEntities(
-    user.project?.code,
-    {
-      filter: { type: 'country' },
-    },
-  );
+  const {
+    data: countries,
+    isLoading: isLoadingCountries,
+    isError,
+  } = useProjectEntities(user.project?.code, {
+    filter: { type: 'country' },
+  });
 
   // sort the countries alphabetically so they are in a consistent order for the user
   const alphabetisedCountries = countries?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
@@ -44,7 +45,7 @@ export const useUserCountries = () => {
   const selectedCountry = getSelectedCountry();
 
   return {
-    isLoading: isLoadingCountries || !countries,
+    isLoading: isLoadingCountries || (!countries && !isError),
     countries: alphabetisedCountries,
     selectedCountry,
     updateSelectedCountry: setSelectedCountry,
