@@ -16,6 +16,7 @@ import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
+import { TaskStatus } from '@tupaia/types';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -106,6 +107,9 @@ export const TaskDetails = () => {
     reset(defaultValues);
   };
 
+  const canEditFields =
+    task?.taskStatus !== TaskStatus.completed && task?.taskStatus !== TaskStatus.cancelled;
+
   return (
     <FormProvider {...formContext}>
       <LoadingContainer isLoading={isLoading} heading="Loading task" text="">
@@ -131,6 +135,7 @@ export const TaskDetails = () => {
                       fullWidth
                       required
                       invalid={invalid}
+                      disabled={!canEditFields}
                     />
                   )}
                 />
@@ -145,7 +150,7 @@ export const TaskDetails = () => {
                     <RepeatScheduleInput
                       value={value}
                       onChange={onChange}
-                      resetOnDueDateChange={false}
+                      disabled={!canEditFields}
                     />
                   )}
                 />
@@ -162,6 +167,7 @@ export const TaskDetails = () => {
                       inputRef={ref}
                       countryCode={task?.entity?.countryCode}
                       surveyCode={task?.survey?.code}
+                      disabled={!canEditFields}
                     />
                   )}
                 />

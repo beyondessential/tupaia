@@ -20,6 +20,7 @@ interface AssigneeInputProps {
   required?: boolean;
   name?: string;
   error?: boolean;
+  disabled?: boolean;
 }
 
 export const AssigneeInput = ({
@@ -30,6 +31,7 @@ export const AssigneeInput = ({
   surveyCode,
   required,
   error,
+  disabled,
 }: AssigneeInputProps) => {
   const [searchValue, setSearchValue] = useState('');
 
@@ -75,6 +77,7 @@ export const AssigneeInput = ({
       loading={isLoading}
       required={required}
       error={error}
+      disabled={disabled}
     />
   );
 };

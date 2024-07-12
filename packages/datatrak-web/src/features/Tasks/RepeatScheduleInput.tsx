@@ -3,16 +3,10 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React, { useEffect } from 'react';
-import { Select as BaseSelect, MenuItem, FormControl, FormLabel } from '@material-ui/core';
+import { FormControl } from '@material-ui/core';
 import { format, lastDayOfMonth } from 'date-fns';
 import { useWatch } from 'react-hook-form';
-import styled from 'styled-components';
-
-const Select = styled(BaseSelect)`
-  &.Mui-disabled {
-    background-color: ${({ theme }) => theme.palette.background.default};
-  }
-`;
+import { Autocomplete } from '../../components';
 
 const useRepeatScheduleOptions = dueDate => {
   const noRepeat = {
@@ -29,7 +23,7 @@ const useRepeatScheduleOptions = dueDate => {
   const dayOfWeek = format(dueDateObject, 'EEEE');
   const dateOfMonth = format(dueDateObject, 'do');
 
-  const month = format(dueDateObject, 'MMM');
+  const month = format(dueDateObject, 'MMMM');
 
   const lastDateOfMonth = format(lastDayOfMonth(dueDateObject), 'do');
 
@@ -71,44 +65,42 @@ interface RepeatScheduleInputProps {
       value: unknown;
     }> | null,
   ) => void;
-  resetOnDueDateChange?: boolean;
+  disabled?: boolean;
 }
 
 export const RepeatScheduleInput = ({
   value = '',
   onChange,
-  resetOnDueDateChange = true,
+  disabled,
 }: RepeatScheduleInputProps) => {
   const { dueDate } = useWatch('dueDate');
   const repeatScheduleOptions = useRepeatScheduleOptions(dueDate);
 
   useEffect(() => {
-    if (!resetOnDueDateChange) return;
     if (!dueDate) {
       onChange(null);
     }
   }, [dueDate]);
 
-  const isDisabled = resetOnDueDateChange && !dueDate;
+  const selectedOption =
+    repeatScheduleOptions.find(option => option.value === value) ?? repeatScheduleOptions[0];
 
   return (
     <FormControl fullWidth>
-      <FormLabel htmlFor="repeatSchedule">Repeating task</FormLabel>
-      <Select
+      <Autocomplete
         id="repeatSchedule"
-        value={value ?? ''}
-        onChange={onChange}
-        fullWidth
-        variant="outlined"
-        disabled={isDisabled}
-        displayEmpty
-      >
-        {repeatScheduleOptions.map(option => (
-          <MenuItem key={option.label} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
+        value={selectedOption}
+        onChange={(_, newValue) => {
+          return onChange(newValue?.value ?? null);
+        }}
+        disabled={!dueDate || disabled}
+        options={repeatScheduleOptions}
+        getOptionLabel={option => option.label}
+        label="Repeating task"
+        muiProps={{
+          disableClearable: !value,
+        }}
+      />
     </FormControl>
   );
 };
