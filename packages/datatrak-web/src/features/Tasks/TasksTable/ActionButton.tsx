@@ -36,8 +36,8 @@ interface ActionButtonProps {
 export const ActionButton = ({ task }: ActionButtonProps) => {
   const location = useLocation();
   if (!task) return null;
-  const { assigneeId, survey, entity, status } = task;
-  if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
+  const { assigneeId, survey, entity, taskStatus } = task;
+  if (taskStatus === TaskStatus.cancelled || taskStatus === TaskStatus.completed) return null;
   if (!assigneeId) {
     return (
       <AssignTaskModal

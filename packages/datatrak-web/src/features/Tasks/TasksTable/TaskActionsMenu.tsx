@@ -47,7 +47,7 @@ const CancelTaskModal = ({ isOpen, onClose, onCancelTask, isLoading }: ModalProp
   </SmallModal>
 );
 
-export const TaskActionsMenu = ({ id }: { id: Task['id'] }) => {
+export const TaskActionsMenu = ({ id, taskStatus }: Task) => {
   const [isOpen, setIsOpen] = useState(false);
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
@@ -64,6 +64,8 @@ export const TaskActionsMenu = ({ id }: { id: Task['id'] }) => {
       action: onOpen,
     },
   ];
+
+  if (taskStatus === TaskStatus.cancelled || taskStatus === TaskStatus.completed) return null;
 
   return (
     <>

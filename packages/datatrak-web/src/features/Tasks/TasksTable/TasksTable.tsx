@@ -30,6 +30,12 @@ const Container = styled.div`
   }
 `;
 
+const ActionCellContent = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
 const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -130,10 +136,10 @@ const useTasksTable = () => {
       Header: '',
       width: 180,
       accessor: task => (
-        <>
+        <ActionCellContent>
           <ActionButton task={task} />
-          <TaskActionsMenu id={task.id} />
-        </>
+          <TaskActionsMenu {...task} />
+        </ActionCellContent>
       ),
       id: 'actions',
       filterable: false,
