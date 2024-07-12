@@ -12,12 +12,12 @@ const StyledEntityOptionLabel = styled.div`
 `;
 
 const Name = styled.span`
-  font-style: bold;
+  font-style: ${props => props.theme.typography.fontWeightBold};
   color: ${props => props.theme.palette.text.primary};
 `;
 
 const Code = styled.span`
-  margin-top: 4px; 
+  margin-top: 0.25rem;
   color: ${props => props.theme.palette.text.secondary}; 
 `;
 

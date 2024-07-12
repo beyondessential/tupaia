@@ -50,7 +50,6 @@ export const changeSearchTerm =
         columns: JSON.stringify(columns ? columns : [labelColumn, valueColumn]),
         distinct,
       });
-      console.log(response);
       dispatch({
         type: AUTOCOMPLETE_RESULTS_CHANGE,
         results: response.body,
