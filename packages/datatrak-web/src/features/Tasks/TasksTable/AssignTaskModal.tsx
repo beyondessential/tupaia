@@ -2,12 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
-import { AssigneeInput } from '../AssigneeInput';
 import { useEditTask } from '../../../api';
+import { Task } from '../../../types';
+import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 
 const Container = styled(ModalCenteredContent)`
@@ -16,19 +17,22 @@ const Container = styled(ModalCenteredContent)`
   margin: 0 auto;
 `;
 
-export const AssignTaskModal = ({ task, onClose }) => {
-  const formContext = useForm({
-    mode: 'onChange',
-  });
+interface AssignTaskModalProps {
+  task: Task;
+  Button: React.ComponentType<{ onClick: () => void }>;
+}
+
+export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
+  const [isOpen, setIsOpen] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { isValid },
-  } = formContext;
-
+  } = useForm({
+    mode: 'onChange',
+  });
+  const onClose = () => setIsOpen(false);
   const { mutate: editTask, isLoading } = useEditTask(task?.id, onClose);
-
-  if (!task) return null;
 
   const modalButtons = [
     {
@@ -49,8 +53,9 @@ export const AssignTaskModal = ({ task, onClose }) => {
 
   return (
     <>
+      <Button onClick={() => setIsOpen(true)} />
       <Modal
-        isOpen
+        isOpen={isOpen}
         onClose={onClose}
         title="Assign task"
         buttons={modalButtons}

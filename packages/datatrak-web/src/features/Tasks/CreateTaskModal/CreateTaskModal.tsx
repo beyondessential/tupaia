@@ -76,6 +76,9 @@ const Wrapper = styled.div`
   .loading-screen {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
+    .MuiTypography-h5 {
+      font-size: 1.125rem;
+    }
   }
 `;
 
