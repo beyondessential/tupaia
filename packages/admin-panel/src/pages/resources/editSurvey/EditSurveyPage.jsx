@@ -16,7 +16,7 @@ import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
 import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
-import { useLinkToPreviousSearchState, useLinkWithSearchState } from '../../../utilities';
+import { useLinkToPreviousSearchState } from '../../../utilities';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -209,8 +209,9 @@ const EditSurveyPageComponent = withConnectedEditor(
                 handleSetFormFile('surveyQuestions', { fileName, file })
               }
               accept={{
-                'application/*': ['.xls', '.xlsx'],
-                'text/*': ['.csv'],
+                'application/vnd.ms-excel': ['.xls'],
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                'text/csv': ['.csv'],
               }}
               fileName={initialFileName}
               label="Survey questions"
