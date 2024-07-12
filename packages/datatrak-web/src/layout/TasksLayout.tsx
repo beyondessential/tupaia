@@ -6,6 +6,7 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { PageContainer as BasePageContainer } from '../components';
+import { HeaderLessFullHeightContainer } from './ScrollableLayout';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -14,6 +15,7 @@ const PageContainer = styled(BasePageContainer)`
   padding-block-start: 0.75rem;
   padding-block-end: 2rem;
   padding-inline: 3rem;
+  max-height: 100%;
   .loading-screen {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
@@ -22,8 +24,10 @@ const PageContainer = styled(BasePageContainer)`
 
 export const TasksLayout = () => {
   return (
-    <PageContainer>
-      <Outlet />
-    </PageContainer>
+    <HeaderLessFullHeightContainer>
+      <PageContainer>
+        <Outlet />
+      </PageContainer>
+    </HeaderLessFullHeightContainer>
   );
 };

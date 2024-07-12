@@ -4,7 +4,7 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { useEditTask } from '../../../api';
 import { Task } from '../../../types';
@@ -24,13 +24,14 @@ interface AssignTaskModalProps {
 
 export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const formContext = useForm({
+    mode: 'onChange',
+  });
   const {
     control,
     handleSubmit,
     formState: { isValid },
-  } = useForm({
-    mode: 'onChange',
-  });
+  } = formContext;
   const onClose = () => setIsOpen(false);
   const { mutate: editTask, isLoading } = useEditTask(task?.id, onClose);
 
