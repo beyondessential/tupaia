@@ -20,6 +20,6 @@ export { RequestProjectAccess } from './RequestProjectAccess';
 export { MobileAppPrompt } from './MobileAppPrompt';
 export { Leaderboard } from './Leaderboard';
 export { Reports } from './Reports';
-export { TaskPageHeader, TasksTable, TaskDetails, CreateTaskModal } from './Tasks';
+export { TaskPageHeader, TasksTable, TaskDetails, CreateTaskModal, TaskActionsMenu } from './Tasks';
 export { useUserCountries, CountrySelector } from './CountrySelector';
 export { GroupedSurveyList } from './GroupedSurveyList';

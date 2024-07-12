@@ -8,9 +8,9 @@ import { IconButton, Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { ActionsMenu } from '@tupaia/ui-components';
 import styled from 'styled-components';
-import { useEditTask } from '../../../api';
-import { SmallModal } from '../../../components';
-import { Task } from '../../../types';
+import { useEditTask } from '../../api';
+import { SmallModal } from '../../components';
+import { Task } from '../../types';
 
 const MenuButton = styled(IconButton)`
   &.MuiIconButton-root {

@@ -12,10 +12,10 @@ import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
+import { TaskActionsMenu } from '../TaskActionsMenu';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { LinkCell } from './LinkCell';
-import { TaskActionsMenu } from './TaskActionsMenu';
 
 const Container = styled.div`
   display: flex;

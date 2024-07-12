@@ -79,12 +79,6 @@ const CommentsInput = styled(TextField).attrs({
   }
 `;
 
-const SaveButton = styled(Button).attrs({
-  variant: 'outlined',
-})`
-  padding: 0.5rem;
-`;
-
 const ClearButton = styled(Button).attrs({
   variant: 'text',
 })`
@@ -210,9 +204,9 @@ export const TaskDetails = () => {
                 <ClearButton disabled={!isDirty} onClick={onClearEdit}>
                   Clear changes
                 </ClearButton>
-                <SaveButton type="submit" disabled={!isDirty || !isValid} variant="outlined">
+                <Button type="submit" disabled={!isDirty || !isValid} variant="outlined">
                   Save changes
-                </SaveButton>
+                </Button>
               </ButtonWrapper>
             </SideColumn>
           </Container>

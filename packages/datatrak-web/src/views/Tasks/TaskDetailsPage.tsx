@@ -4,20 +4,27 @@
  */
 
 import React from 'react';
-import { TaskStatus } from '@tupaia/types';
 import { generatePath, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { TaskStatus } from '@tupaia/types';
 import { Button } from '../../components';
-import { TaskDetails, TaskPageHeader } from '../../features';
+import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
 import { ROUTES } from '../../constants';
 import { useFromLocation } from '../../utils';
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+`;
 
 export const TaskDetailsPage = () => {
   const { taskId } = useParams();
   const { data: task } = useTask(taskId);
 
   const showCompleteButton =
-    task?.taskStatus === TaskStatus.to_do || task?.taskStatus === 'repeating';
+    task && task?.taskStatus !== TaskStatus.completed && task?.taskStatus !== TaskStatus.cancelled;
 
   const surveyUrl = task
     ? generatePath(ROUTES.SURVEY_SCREEN, {
@@ -32,9 +39,12 @@ export const TaskDetailsPage = () => {
     <>
       <TaskPageHeader title="Task details">
         {showCompleteButton && (
-          <Button to={surveyUrl} state={{ from }}>
-            Complete
-          </Button>
+          <ButtonWrapper>
+            <Button to={surveyUrl} state={{ from }}>
+              Complete
+            </Button>
+            <TaskActionsMenu {...task} />
+          </ButtonWrapper>
         )}
       </TaskPageHeader>
       <TaskDetails />
