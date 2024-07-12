@@ -13,6 +13,7 @@ const PageContainer = styled(BasePageContainer)`
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-height: 100%;
   padding-block-start: 0.75rem;
   padding-block-end: 2rem;
   padding-inline: 3rem;

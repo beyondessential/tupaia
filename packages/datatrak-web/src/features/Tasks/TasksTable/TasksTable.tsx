@@ -20,11 +20,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-height: 100%;
   border: 1px solid ${({ theme }) => theme.palette.divider};
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 3px;
   .MuiTableContainer-root {
     border-radius: 3px;
+    max-height: 100%;
   }
 `;
 
@@ -86,6 +88,7 @@ const useTasksTable = () => {
       id: 'entity.name',
       filterable: true,
       disableResizing: true,
+      width: 180,
     },
     {
       Header: 'Assignee',
@@ -93,6 +96,7 @@ const useTasksTable = () => {
       id: 'assignee_name',
       filterable: true,
       disableResizing: true,
+      width: 180,
     },
     {
       Header: 'Repeating task',
@@ -101,6 +105,7 @@ const useTasksTable = () => {
       id: 'repeat_schedule',
       filterable: true,
       disableResizing: true,
+      width: 180,
     },
     {
       Header: 'Due Date',
@@ -109,6 +114,7 @@ const useTasksTable = () => {
       filterable: true,
       Filter: DueDatePicker,
       disableResizing: true,
+      width: 180,
     },
     {
       Header: 'Status',
@@ -118,6 +124,7 @@ const useTasksTable = () => {
       Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
       Filter: StatusFilter,
       disableResizing: true,
+      width: 180,
     },
     {
       Header: '',

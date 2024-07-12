@@ -27,6 +27,7 @@ import { useFromLocation } from '../utils';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
+import { ScrollableLayout } from '../layout/ScrollableLayout';
 
 /**
  * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
@@ -61,7 +62,9 @@ export const Routes = () => {
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<LandingPage />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
-          <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />
+          <Route element={<ScrollableLayout />}>
+            <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />
+          </Route>
           <Route
             path="/"
             element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}
