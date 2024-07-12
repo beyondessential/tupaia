@@ -278,11 +278,9 @@ export const FileUploadField = ({
       </Uploader>
       {fileRejections.map(({ file, errors }) =>
         errors.map(error => (
-          <>
-            <FormHelperText error key={`${file.name}-${error.code}`}>
-              ‘{file.name}’ not allowed &ndash; {error.message}
-            </FormHelperText>
-          </>
+          <FormHelperText error key={`${file.name}-${error.code}`}>
+            ‘{file.name}’ not allowed &ndash; {error.message}
+          </FormHelperText>
         )),
       )}
       {helperText && (
