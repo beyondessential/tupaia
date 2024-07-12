@@ -30,8 +30,8 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   &.MuiButtonBase-root {
     &:hover,
     &.Mui-selected:hover,
-    &:focus,
-    &.Mui-selected:focus {
+    &:focus-visible,
+    &.Mui-selected:focus-visible {
       background-color: ${({ theme }) => theme.palette.primary.main}33;
     }
   }
