@@ -26,12 +26,14 @@ type ResponseBody = {
   filePath?: string;
 };
 
-type ReqBody = {
-  emailExportFileMode?: EmailExportFileModes;
+type Req = {
+  query: {
+    emailExportFileMode?: EmailExportFileModes;
+  };
 };
 
-export const constructExportEmail = async (responseBody: ResponseBody, reqBody: ReqBody) => {
-  const { emailExportFileMode = EmailExportFileModes.ATTACHMENT } = reqBody;
+export const constructExportEmail = async (responseBody: ResponseBody, req: Req) => {
+  const { emailExportFileMode = EmailExportFileModes.DOWNLOAD_LINK } = req.query;
   const { error, filePath } = responseBody;
   const subject = 'Your export from Tupaia';
   if (error) {
