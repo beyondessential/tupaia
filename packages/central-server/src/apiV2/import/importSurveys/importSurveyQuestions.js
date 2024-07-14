@@ -268,12 +268,8 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
         detail_label: detailLabel,
       });
 
-      try {
-        const componentId = currentSurveyScreenComponent.id;
-        await configImporter.add(rowIndex, componentId);
-      } catch (error) {
-        throw new ImportValidationError(error.message, excelRowNumber, 'config');
-      }
+      const componentId = currentSurveyScreenComponent.id;
+      await configImporter.add(rowIndex, componentId, constructImportValidationError);
     } catch (e) {
       errors.push(e);
       continue;
