@@ -7,11 +7,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { InputGroup } from '@tupaia/ui-components';
-import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 import { SECTION_FIELD_TYPE } from './constants';
+import { EditorInputField } from './EditorInputField';
+import { getFieldEditKey } from './utils';
 
-const EditorWrapper = styled.div`
+const EditorWrapper = styled.form`
   .file_upload_label {
     font-size: 0.9375rem;
     text-transform: initial;
@@ -26,21 +27,27 @@ const EditorWrapper = styled.div`
   }
 `;
 
+export const onInputChange = async (
+  inputKey,
+  inputValue,
+  editConfig = {},
+  recordData,
+  onEditField,
+) => {
+  const { setFieldsOnChange } = editConfig;
+  if (setFieldsOnChange) {
+    const newFields = setFieldsOnChange(inputValue, recordData);
+    Object.entries(newFields).forEach(([fieldKey, fieldValue]) => {
+      onEditField(fieldKey, fieldValue);
+    });
+  }
+  onEditField(inputKey, inputValue);
+};
+
 export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile }) => {
   if (!fields || fields.length === 0) {
     return false;
   }
-
-  const onInputChange = async (inputKey, inputValue, editConfig = {}) => {
-    const { setFieldsOnChange } = editConfig;
-    if (setFieldsOnChange) {
-      const newFields = setFieldsOnChange(inputValue, recordData);
-      Object.entries(newFields).forEach(([fieldKey, fieldValue]) => {
-        onEditField(fieldKey, fieldValue);
-      });
-    }
-    onEditField(inputKey, inputValue);
-  };
 
   const selectValue = (editConfig, accessor, source) => {
     if (editConfig.accessor) {
@@ -83,6 +90,7 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
       accessor,
       type,
       WrapperComponent,
+      required,
     } = field;
     if (type === SECTION_FIELD_TYPE) {
       return (
@@ -94,17 +102,22 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
         />
       );
     }
+    const editKey = getFieldEditKey(field);
     return (
-      <InputField
+      <EditorInputField
         key={source}
         inputKey={source}
         label={Header}
-        onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
+        onChange={(inputKey, value) =>
+          onInputChange(inputKey, value, editConfig, recordData, onEditField)
+        }
         onSetFormFile={onSetFormFile}
         value={selectValue(editConfig, accessor, source)}
         disabled={!editable}
         recordData={recordData}
         id={`inputField-${labelToId(source)}`}
+        required={required}
+        editKey={editKey}
         {...editConfig}
       />
     );

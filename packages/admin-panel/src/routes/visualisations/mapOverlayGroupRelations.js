@@ -11,6 +11,7 @@ export const FIELDS = {
   MAP_OVERLAY_GROUP_CODE: {
     Header: 'Map overlay group code',
     source: 'map_overlay_group.code',
+    required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlayGroups',
       optionLabelKey: 'map_overlay_group.code',
@@ -20,6 +21,7 @@ export const FIELDS = {
   },
   CHILD_TYPE: {
     Header: 'Child type',
+    required: true,
     source: 'child_type',
     editConfig: {
       options: [
@@ -42,6 +44,7 @@ export const FIELDS = {
     Header: 'Child map overlay code',
     id: 'child_map_overlay_code',
     source: 'child_code',
+    required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'mapOverlay.code',
@@ -53,6 +56,7 @@ export const FIELDS = {
   CHILD_MAP_OVERLAY_GROUP_CODE: {
     Header: 'Child map overlay group code',
     id: 'child_map_overlay_group_code',
+    required: true,
     source: 'child_code',
     editConfig: {
       optionsEndpoint: 'mapOverlayGroups',

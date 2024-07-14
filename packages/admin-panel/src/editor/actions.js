@@ -10,6 +10,7 @@ import {
   EDITOR_DISMISS,
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
+  SET_VALIDATION_ERRORS,
   LOAD_EDITOR,
   OPEN_EDIT_MODAL,
   RESET_EDITS,
@@ -19,22 +20,10 @@ import {
   getExplodedFields,
   makeSubstitutionsInString,
 } from '../utilities';
+import { getEditorState } from './selectors';
+import { getValidationErrors } from './validation';
 import { fetchUsedBy } from '../usedBy';
-
-const getFieldSourceToEdit = field => {
-  const { source, editConfig = {} } = field;
-  if (editConfig.optionsEndpoint) {
-    if (editConfig.sourceKey) {
-      return editConfig.sourceKey;
-    }
-    const sourceComponents = source.split('.');
-    if (sourceComponents.length > 1) {
-      const [resource] = sourceComponents;
-      return `${resource}_id`;
-    }
-  }
-  return source;
-};
+import { getFieldEditKey } from './utils';
 
 const STATIC_FIELD_TYPES = ['link'];
 
@@ -158,6 +147,7 @@ export const loadEditor =
               .map(field => field.source),
           ), // Fetch fields based on their source
         });
+
         dispatch({
           type: EDITOR_DATA_FETCH_SUCCESS,
           recordData: response.body,
@@ -191,21 +181,40 @@ export const editField = (fieldSource, newValue) => (dispatch, getState) => {
   const { fields } = getState().editor;
   const field = getExplodedFields(fields).find(f => f.source === fieldSource);
   if (!field) return;
-  const fieldSourceToEdit = getFieldSourceToEdit(field);
+  const editKey = getFieldEditKey(field); // this needs to be here, because there are several places that use this action, and they all need to edit the correct field.
+
+  const otherValidationErrorsToClear =
+    field.editConfig?.type === 'json' ? Object.keys(newValue) : [];
+
+  // Edit key will be different in cases where we are editing a saved record, because the value that comes back from the server is not always keyed the same as the field source we have configured
   dispatch({
     type: EDITOR_FIELD_EDIT,
-    fieldKey: fieldSourceToEdit,
+    fieldKey: editKey,
     newValue: newValue === '' ? null : newValue,
+    otherValidationErrorsToClear,
   });
 };
 
 export const saveEdits =
   (endpoint, editedFields, isNew, filesByFieldKey = {}, onSuccess) =>
   async (dispatch, getState, { api }) => {
-    dispatch({
-      type: EDITOR_DATA_EDIT_BEGIN,
-    });
     try {
+      const { recordData, fields } = getEditorState(getState());
+
+      const validationErrors = getValidationErrors(fields, recordData, editedFields, isNew);
+
+      if (Object.keys(validationErrors).length > 0) {
+        dispatch({
+          type: SET_VALIDATION_ERRORS,
+          payload: validationErrors,
+        });
+        return;
+      }
+
+      dispatch({
+        type: EDITOR_DATA_EDIT_BEGIN,
+      });
+
       if (filesByFieldKey && Object.keys(filesByFieldKey).length > 0) {
         if (isNew) {
           await api.multipartPost({
