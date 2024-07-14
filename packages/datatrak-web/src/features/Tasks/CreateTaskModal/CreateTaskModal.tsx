@@ -87,7 +87,7 @@ interface CreateTaskModalProps {
   onClose: () => void;
 }
 
-export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
+export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   const generateDefaultDueDate = () => {
     const now = new Date();
     now.setHours(23, 59, 59, 999);
