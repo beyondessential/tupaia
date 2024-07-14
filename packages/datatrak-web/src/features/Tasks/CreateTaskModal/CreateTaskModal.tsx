@@ -16,6 +16,7 @@ import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -86,11 +87,18 @@ interface CreateTaskModalProps {
   onClose: () => void;
 }
 
-export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
+export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
+  const generateDefaultDueDate = () => {
+    const now = new Date();
+    now.setHours(23, 59, 59, 999);
+    return stripTimezoneFromDate(now);
+  };
+
+  const defaultDueDate = generateDefaultDueDate();
   const defaultValues = {
     surveyCode: null,
     entityId: null,
-    dueDate: new Date(),
+    dueDate: defaultDueDate,
     repeatSchedule: null,
     assigneeId: null,
   };
@@ -219,7 +227,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                   name="dueDate"
                   rules={{ required: '*Required' }}
                   control={control}
-                  defaultValue={new Date()}
+                  defaultValue={defaultDueDate}
                   render={({ ref, value, onChange, ...field }, { invalid }) => {
                     return (
                       <DueDatePicker

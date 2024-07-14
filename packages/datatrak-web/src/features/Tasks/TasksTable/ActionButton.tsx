@@ -18,7 +18,7 @@ const ActionButtonComponent = styled(Button).attrs({
 })`
   padding-inline: 1.2rem;
   padding-block: 0.4rem;
-  width: 5.5rem;
+  width: 6.5rem;
   .MuiButton-label {
     font-size: 0.75rem;
     line-height: normal;
@@ -64,7 +64,7 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
         from: JSON.stringify(location),
       }}
     >
-      Complete
+      Complete task
     </ActionButtonComponent>
   );
 };

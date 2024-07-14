@@ -135,7 +135,7 @@ const useTasksTable = () => {
     },
     {
       Header: '',
-      width: 180,
+      width: 200,
       accessor: task => (
         <ActionCellContent>
           <ActionButton task={task} />
