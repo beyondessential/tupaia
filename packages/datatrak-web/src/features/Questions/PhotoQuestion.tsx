@@ -52,7 +52,7 @@ export const PhotoQuestion = ({
         required={required}
         avatarVariant="square"
         FormHelperTextComponent={InputHelperText}
-        invalid={invalid}
+        error={invalid}
       />
     </Wrapper>
   );

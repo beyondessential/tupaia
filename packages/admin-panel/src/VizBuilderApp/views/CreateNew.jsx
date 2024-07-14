@@ -76,7 +76,7 @@ export const CreateNew = () => {
           onSubmit={handleCreate}
           Header={() => (
             <Header>
-              <Heading>Create new Visualisation</Heading>
+              <Heading>Create new visualisation</Heading>
             </Header>
           )}
           Body={Body}

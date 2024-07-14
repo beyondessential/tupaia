@@ -8,7 +8,7 @@ import { emailAfterTimeout } from '@tupaia/server-boilerplate';
 import { constructExportEmail } from '@tupaia/server-utils';
 import { catchAsyncErrors } from '../middleware';
 import { useRouteHandler } from '../RouteHandler';
-import { DownloadHandler } from './download';
+import { DownloadHandler } from './DownloadHandler';
 import { exportOptionSet } from './exportOptionSet';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
