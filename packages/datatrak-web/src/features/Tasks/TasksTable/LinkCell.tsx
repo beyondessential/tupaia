@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Link as BaseLink } from 'react-router-dom';
+import { Link as BaseLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Link = styled(BaseLink)`
@@ -12,5 +12,13 @@ const Link = styled(BaseLink)`
 `;
 
 export const LinkCell = ({ children, id }) => {
-  return <Link to={`/tasks/${id}`}>{children}</Link>;
+  const location = useLocation();
+  const newState = {
+    from: `${location.pathname}${location.search}`,
+  };
+  return (
+    <Link to={`/tasks/${id}`} state={newState}>
+      {children}
+    </Link>
+  );
 };

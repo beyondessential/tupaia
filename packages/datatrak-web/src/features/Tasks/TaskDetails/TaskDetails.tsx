@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
@@ -12,11 +12,13 @@ import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer, TextField } from '@tupaia/ui-components';
 import { useEditTask, useTask } from '../../../api';
 import { Button } from '../../../components';
+import { useFromLocation } from '../../../utils';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
+import { ROUTES } from '../../../constants';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -100,6 +102,8 @@ const Form = styled(TaskForm)`
 
 export const TaskDetails = () => {
   const { taskId } = useParams();
+  const navigate = useNavigate();
+  const backLink = useFromLocation();
   const { data: task, isLoading } = useTask(taskId);
 
   const defaultValues = {
@@ -119,7 +123,11 @@ export const TaskDetails = () => {
     reset,
   } = formContext;
 
-  const { mutate: editTask } = useEditTask(taskId);
+  const navigateBack = () => {
+    navigate(backLink || ROUTES.TASKS);
+  };
+
+  const { mutate: editTask, isLoading: isSaving } = useEditTask(taskId, navigateBack);
 
   useEffect(() => {
     if (!task) return;
@@ -140,7 +148,11 @@ export const TaskDetails = () => {
   return (
     <FormProvider {...formContext}>
       <Form onSubmit={handleSubmit(editTask)}>
-        <LoadingContainer isLoading={isLoading} heading="Loading task" text="">
+        <LoadingContainer
+          isLoading={isLoading || isSaving}
+          heading={isSaving ? 'Saving task' : 'Loading task'}
+          text=""
+        >
           <Container>
             <SideColumn>
               <ItemWrapper>
