@@ -129,13 +129,9 @@ export const ImportModalComponent = React.memo(
         case STATUS.ERROR:
           return [
             {
-              text: 'Dismiss',
+              text: 'Close',
               onClick: handleDismiss,
-              variant: 'outlined',
-            },
-            {
-              text: confirmButtonText,
-              disabled: true,
+              variant: 'contained',
             },
           ];
         default:
