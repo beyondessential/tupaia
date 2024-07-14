@@ -7,8 +7,8 @@ import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { ScrollableBody } from '../layout';
+import { Dialog, Typography } from '@material-ui/core';
+import { ModalContentProvider, ModalFooter, ModalHeader } from '@tupaia/ui-components';
 import { useSurveyResponse } from '../api/queries';
 import { SurveyReviewSection } from '../features/Survey/Components';
 import { Button, SurveyTickIcon } from '../components';
@@ -18,20 +18,12 @@ import { useSurveyForm } from '../features';
 const Header = styled.div`
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem;
   width: 100%;
-  border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
 
   .MuiSvgIcon-root {
     font-size: 2.5em;
     margin-right: 0.35em;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2rem;
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 1.375rem 2rem;
   }
 `;
 
@@ -53,17 +45,6 @@ const SubHeading = styled(Typography)`
   font-size: 1rem;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     font-size: 0.875rem;
-  }
-`;
-
-const FormActions = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 1rem 0.5rem;
-  border-top: 1px solid ${props => props.theme.palette.divider};
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 1rem;
   }
 `;
 
@@ -99,21 +80,27 @@ export const SurveyResponsePage = () => {
     }
   }, [JSON.stringify(answers)]);
 
+  const onClose = () => {
+    // Redirect to the previous page
+  };
+
   return (
-    <>
-      <Header>
-        <SurveyTickIcon />
-        <div>
-          <Heading>{surveyResponse?.surveyName}</Heading>
-          <SubHeading>{subHeading}</SubHeading>
-        </div>
-      </Header>
-      <ScrollableBody>
+    <Dialog open={true} onClose={onClose} maxWidth="md">
+      <ModalHeader onClose={onClose}>
+        <Header>
+          <SurveyTickIcon />
+          <div>
+            <Heading>{surveyResponse?.surveyName}</Heading>
+            <SubHeading>{subHeading}</SubHeading>
+          </div>
+        </Header>
+      </ModalHeader>
+      <ModalContentProvider>
         <SurveyReviewSection />
-      </ScrollableBody>
-      <FormActions>
+      </ModalContentProvider>
+      <ModalFooter>
         <Button to="/">Close</Button>
-      </FormActions>
-    </>
+      </ModalFooter>
+    </Dialog>
   );
 };
