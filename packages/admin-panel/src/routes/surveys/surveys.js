@@ -205,7 +205,7 @@ const SURVEY_COLUMNS = [
         const countryCodeToUse = countryCodes.includes('DL') ? 'DL' : countryCodes[0];
         return `${REACT_APP_DATATRAK_WEB_URL}/survey/${countryCodeToUse}/${code}/1`;
       },
-      title: 'View in Datatrak',
+      title: 'View in DataTrak',
     },
   },
   {
