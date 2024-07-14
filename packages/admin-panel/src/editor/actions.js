@@ -190,7 +190,7 @@ export const editField = (fieldSource, newValue) => (dispatch, getState) => {
   dispatch({
     type: EDITOR_FIELD_EDIT,
     fieldKey: editKey,
-    newValue,
+    newValue: newValue === '' ? null : newValue,
     otherValidationErrorsToClear,
   });
 };
