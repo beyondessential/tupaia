@@ -92,6 +92,12 @@ const ButtonWrapper = styled.div`
   flex: 1;
 `;
 
+const Form = styled(TaskForm)`
+  .loading-screen {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
+  }
+`;
+
 export const TaskDetails = () => {
   const { taskId } = useParams();
   const { data: task, isLoading } = useTask(taskId);
@@ -133,8 +139,8 @@ export const TaskDetails = () => {
 
   return (
     <FormProvider {...formContext}>
-      <LoadingContainer isLoading={isLoading} heading="Loading task" text="">
-        <TaskForm onSubmit={handleSubmit(editTask)}>
+      <Form onSubmit={handleSubmit(editTask)}>
+        <LoadingContainer isLoading={isLoading} heading="Loading task" text="">
           <Container>
             <SideColumn>
               <ItemWrapper>
@@ -210,8 +216,8 @@ export const TaskDetails = () => {
               </ButtonWrapper>
             </SideColumn>
           </Container>
-        </TaskForm>
-      </LoadingContainer>
+        </LoadingContainer>
+      </Form>
     </FormProvider>
   );
 };
