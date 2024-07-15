@@ -6,14 +6,20 @@ import { useState } from 'react';
 import { useProjectEntities, useCurrentUserContext } from '../../api';
 import { Entity } from '../../types';
 
-export const useUserCountries = () => {
+export const useUserCountries = (onError?: (error: any) => void) => {
   const user = useCurrentUserContext();
   const [newSelectedCountry, setSelectedCountry] = useState<Entity | null>(null);
-  const { data: countries, isLoading: isLoadingCountries } = useProjectEntities(
+  const {
+    data: countries,
+    isLoading: isLoadingCountries,
+    isError,
+  } = useProjectEntities(
     user.project?.code,
     {
       filter: { type: 'country' },
     },
+    undefined,
+    { onError },
   );
 
   // sort the countries alphabetically so they are in a consistent order for the user
@@ -44,7 +50,7 @@ export const useUserCountries = () => {
   const selectedCountry = getSelectedCountry();
 
   return {
-    isLoading: isLoadingCountries || !countries,
+    isLoading: isLoadingCountries || (!countries && !isError),
     countries: alphabetisedCountries,
     selectedCountry,
     updateSelectedCountry: setSelectedCountry,

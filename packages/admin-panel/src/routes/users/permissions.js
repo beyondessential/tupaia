@@ -10,6 +10,7 @@ const RESOURCE_NAME = { singular: 'permission' };
 const EntityField = {
   Header: 'Entity',
   source: 'entity.name',
+  required: true,
   editConfig: {
     optionsEndpoint: 'entities',
     type: 'checkboxList',
@@ -27,6 +28,7 @@ export const PERMISSIONS_COLUMNS = [
   {
     Header: 'Entity',
     source: 'entity.name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'entities',
       baseFilter: { type: 'country' },
@@ -35,6 +37,7 @@ export const PERMISSIONS_COLUMNS = [
   {
     Header: 'Permission group',
     source: 'permission_group.name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
     },
@@ -86,6 +89,7 @@ const CREATE_CONFIG = {
       {
         Header: 'User email',
         source: 'user.email',
+        required: true,
         editConfig: {
           optionsEndpoint: 'users',
           optionLabelKey: 'email',
@@ -96,6 +100,7 @@ const CREATE_CONFIG = {
       {
         Header: 'Permission group',
         source: 'permission_group.name',
+        required: true,
         editConfig: {
           optionsEndpoint: 'permissionGroups',
           allowMultipleValues: true,

@@ -18,7 +18,7 @@ const ActionButtonComponent = styled(Button).attrs({
 })`
   padding-inline: 1.2rem;
   padding-block: 0.4rem;
-  width: 5.5rem;
+  width: 6.5rem;
   .MuiButton-label {
     font-size: 0.75rem;
     line-height: normal;
@@ -36,8 +36,8 @@ interface ActionButtonProps {
 export const ActionButton = ({ task }: ActionButtonProps) => {
   const location = useLocation();
   if (!task) return null;
-  const { assigneeId, survey, entity, status } = task;
-  if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
+  const { assigneeId, survey, entity, taskStatus } = task;
+  if (taskStatus === TaskStatus.cancelled || taskStatus === TaskStatus.completed) return null;
   if (!assigneeId) {
     return (
       <AssignTaskModal
@@ -64,7 +64,7 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
         from: JSON.stringify(location),
       }}
     >
-      Complete
+      Complete task
     </ActionButtonComponent>
   );
 };
