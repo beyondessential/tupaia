@@ -14,8 +14,8 @@ export const useLogout = () => {
     onSuccess: () => {
       queryClient.invalidateQueries();
       setTaskFilterSetting('all_assignees_tasks', false);
-      setTaskFilterSetting('all_completed_tasks', false);
-      setTaskFilterSetting('all_cancelled_tasks', false);
+      setTaskFilterSetting('show_completed_tasks', false);
+      setTaskFilterSetting('show_cancelled_tasks', false);
     },
   });
 };

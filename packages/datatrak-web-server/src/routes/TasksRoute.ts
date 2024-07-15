@@ -48,8 +48,8 @@ const getFilterSettings = (cookieString: string) => {
   const cookies = parse(cookieString);
   return {
     allAssignees: cookies['all_assignees_tasks'] === 'true',
-    allCompleted: cookies['all_completed_tasks'] === 'true',
-    allCancelled: cookies['all_cancelled_tasks'] === 'true',
+    allCompleted: cookies['show_completed_tasks'] === 'true',
+    allCancelled: cookies['show_cancelled_tasks'] === 'true',
   };
 };
 

@@ -14,4 +14,7 @@ export type TaskStatusType = TaskStatus | OtherTaskStatus;
 
 export type Task = DatatrakWebTasksRequest.ResBody['tasks'][0];
 
-export type TaskFilterType = 'all_assignees_tasks' | 'all_completed_tasks' | 'all_cancelled_tasks';
+export type TaskFilterType =
+  | 'all_assignees_tasks'
+  | 'show_completed_tasks'
+  | 'show_cancelled_tasks';

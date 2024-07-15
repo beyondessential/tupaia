@@ -40,8 +40,8 @@ interface StatusFilterProps {
 
 export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const includeCompletedTasks = getTaskFilterSetting('all_completed_tasks');
-  const includeCancelledTasks = getTaskFilterSetting('all_cancelled_tasks');
+  const includeCompletedTasks = getTaskFilterSetting('show_completed_tasks');
+  const includeCancelledTasks = getTaskFilterSetting('show_cancelled_tasks');
   const filterValue = filter?.value ?? '';
 
   const options = Object.keys(STATUS_VALUES)

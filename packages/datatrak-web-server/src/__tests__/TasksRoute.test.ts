@@ -11,7 +11,7 @@ const makeMockRequest = (overwrites: any) => {
   return {
     headers: {
       // defaults to make the tests simpler
-      cookie: 'all_completed_tasks=true;all_cancelled_tasks=true;all_assignees_tasks=true',
+      cookie: 'show_completed_tasks=true;show_cancelled_tasks=true;all_assignees_tasks=true',
     },
     query: {},
     models: {
@@ -57,7 +57,7 @@ describe('TaskRoute', () => {
         'Default filter settings',
         {
           headers: {
-            cookie: 'all_completed_tasks=true;all_cancelled_tasks=true;all_assignees_tasks=true',
+            cookie: 'show_completed_tasks=true;show_cancelled_tasks=true;all_assignees_tasks=true',
           },
         },
         {
@@ -102,7 +102,7 @@ describe('TaskRoute', () => {
         'All completed tasks setting false',
         {
           headers: {
-            cookie: 'all_completed_tasks=false;all_cancelled_tasks=true;all_assignees_tasks=true',
+            cookie: 'show_completed_tasks=false;show_cancelled_tasks=true;all_assignees_tasks=true',
           },
         },
         {
@@ -115,7 +115,7 @@ describe('TaskRoute', () => {
         'All assignee filter setting false',
         {
           headers: {
-            cookie: 'all_completed_tasks=true;all_cancelled_tasks=true;all_assignees_tasks=false',
+            cookie: 'show_completed_tasks=true;show_cancelled_tasks=true;all_assignees_tasks=false',
           },
         },
         {
@@ -128,7 +128,7 @@ describe('TaskRoute', () => {
         'All completed tasks setting false and completed status filter',
         {
           headers: {
-            cookie: 'all_completed_tasks=false;all_cancelled_tasks=true;all_assignees_tasks=true',
+            cookie: 'show_completed_tasks=false;show_cancelled_tasks=true;all_assignees_tasks=true',
           },
           query: {
             filters: [
@@ -149,7 +149,7 @@ describe('TaskRoute', () => {
         'All completed tasks setting false and to_do status filter',
         {
           headers: {
-            cookie: 'all_completed_tasks=false;all_cancelled_tasks=true;all_assignees_tasks=true',
+            cookie: 'show_completed_tasks=false;show_cancelled_tasks=true;all_assignees_tasks=true',
           },
           query: {
             filters: [

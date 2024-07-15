@@ -30,7 +30,7 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   .MuiFormControlLabel-label {
     font-size: 0.625rem;
     color: ${({ theme }) => theme.palette.text.secondary};
-    padding-right: 0.8rem;
+    padding-inline-end: 0.8rem;
   }
 
   .MuiButtonBase-root {
@@ -72,8 +72,8 @@ export const FilterToolbar = () => (
   <Container>
     <FormGroup>
       <FilterCheckbox name="all_assignees_tasks" label="Show all assignees" />
-      <FilterCheckbox name="all_completed_tasks" label="Show completed tasks" />
-      <FilterCheckbox name="all_cancelled_tasks" label="Show cancelled tasks" />
+      <FilterCheckbox name="show_completed_tasks" label="Show completed tasks" />
+      <FilterCheckbox name="show_cancelled_tasks" label="Show cancelled tasks" />
     </FormGroup>
   </Container>
 );
