@@ -18,6 +18,10 @@ const SectionContainer = styled.section`
   flex-direction: column;
 `;
 
+const SectionHeader = styled(FlexSpaceBetween)`
+  height: 2rem;
+`;
+
 const Paper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 10px;
@@ -49,14 +53,14 @@ export const TasksSection = () => {
 
   return (
     <SectionContainer>
-      <FlexSpaceBetween>
+      <SectionHeader>
         <SectionHeading>My tasks</SectionHeading>
         {hasTasks && (
           <ViewMoreButton component={Link} to={ROUTES.TASKS}>
             View more...
           </ViewMoreButton>
         )}
-      </FlexSpaceBetween>
+      </SectionHeader>
       <Paper>
         {hasTasks && data?.tasks.map(task => <TaskTile key={task.id} task={task} />)}
         {hasNoTasks && <NoTasksSection />}

@@ -11,7 +11,7 @@ import { Button, ButtonLink as BaseButtonLink } from '../../components';
 
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
-const SectionContainer = styled.div`
+const SectionContainer = styled.section`
   grid-area: surveySelect;
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
@@ -20,10 +20,11 @@ const SectionContainer = styled.div`
   position: relative;
   align-items: flex-start;
   justify-content: space-between;
+  overflow: visible !important;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 3rem 1rem 2.2rem;
-    margin-top: 1.95rem;
+    margin-top: 0.5rem;
   }
 `;
 
@@ -71,10 +72,11 @@ const ButtonWrapper = styled.div`
 `;
 
 const TextWrapper = styled.div`
-  margin: 0;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-bottom: 0;
     padding-right: 4rem;
     max-width: 75%;
     padding-left: 2rem;
@@ -94,28 +96,25 @@ const Text = styled(Typography)`
 `;
 
 const DesktopText = styled.span`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
+  ${({ theme }) => theme.breakpoints.down('xs')} {
     display: none;
   }
 `;
 
 const SurveysImage = styled.img`
-  width: auto;
-  height: calc(100% + 3rem);
   position: absolute;
+  width: auto;
   display: flex;
   align-items: center;
-  right: 0;
-  top: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1rem;
+  height: 100%;
+
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    top: -20%;
+    top: 60%;
     right: -1rem;
     height: 150%;
-  }
-
-  ${DESKTOP_MEDIA_QUERY} {
-    top: -2rem;
-    height: calc(100% + 6rem);
   }
 `;
 

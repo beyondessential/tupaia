@@ -22,7 +22,7 @@ const PageContainer = styled(BasePageContainer)`
 const PageBody = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 0 1.5rem;
+  padding: 0.5rem 0 1.5rem;
   width: 100%;
   max-width: 85rem;
   margin: 0 auto;
@@ -30,7 +30,7 @@ const PageBody = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     height: calc(100vh - ${HEADER_HEIGHT});
-    padding: 2rem 2.75rem 0.8rem 2.75rem;
+    padding: 1rem 2.75rem 0.8rem 2.75rem;
   }
 
   ${DESKTOP_MEDIA_QUERY} {
@@ -61,10 +61,9 @@ const Grid = styled.div`
     grid-template-rows: auto auto;
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      'surveySelect surveySelect'
-      'tasks tasks'
-      'recentSurveys leaderboard'
-      'recentResponses activityFeed';
+      'surveySelect surveySelect tasks tasks'
+      'recentSurveys recentSurveys recentResponses recentResponses'
+      'activityFeed activityFeed leaderboard leaderboard';
 
     > section {
       margin: 0;
