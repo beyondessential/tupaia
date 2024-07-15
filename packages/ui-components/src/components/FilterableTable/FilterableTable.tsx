@@ -108,7 +108,7 @@ export const FilterableTable = ({
 
   const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
 
-  const updateSorting = (id: string, isDesc: boolean) => {
+  const updateSorting = (id: string, isDesc?: boolean) => {
     const currentSorting = sorting.find(sort => sort.id === id);
     if (!currentSorting) {
       return onChangeSorting([{ id, desc: false }]);
