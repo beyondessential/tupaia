@@ -43,7 +43,7 @@ const ReduxAutocompleteComponent = ({
   tooltip,
   optionValueKey,
   renderOption,
-  optionFields
+  optionFields,
 }) => {
   const [hasUpdated, setHasUpdated] = React.useState(false);
   React.useEffect(() => {
@@ -72,11 +72,11 @@ const ReduxAutocompleteComponent = ({
     selectedValue = [];
   }
 
-  const getOptionRendered = (option) => {
-    if(renderOption) return renderOption(option);
-    if(!option || !option[optionLabelKey]) return '';
-    return option[optionLabelKey]
-  } 
+  const getOptionRendered = option => {
+    if (renderOption) return renderOption(option);
+    if (!option || !option[optionLabelKey]) return '';
+    return option[optionLabelKey];
+  };
 
   return (
     <Autocomplete
@@ -160,7 +160,7 @@ const mapDispatchToProps = (
     baseFilter,
     pageSize,
     distinct,
-    optionFields
+    optionFields,
   },
 ) => ({
   programaticallyChangeSelection: initialValue => {
@@ -211,7 +211,7 @@ const mapDispatchToProps = (
         baseFilter,
         pageSize,
         distinct,
-        optionFields
+        optionFields,
       ),
     ),
   onClearState: () => dispatch(clearState(reduxId)),

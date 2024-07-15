@@ -40,8 +40,8 @@ export const LocationField = () => {
         setLocationSearch(newValue);
       }}
       getOptionLabel={option => option.name}
-      renderOption={(option) => {
-        return ( <EntityOptionLabel {...option}/>);
+      renderOption={option => {
+        return <EntityOptionLabel {...option} />;
       }}
       onChange={(_, newLocation) => {
         setLocation(newLocation);

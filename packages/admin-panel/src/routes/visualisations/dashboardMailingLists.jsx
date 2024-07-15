@@ -10,10 +10,6 @@ import { EntityOptionLabel } from '../../widgets';
 
 const RESOURCE_NAME = { singular: 'dashboard mailing list' };
 
-const renderOption = (option) => { 
-  return <EntityOptionLabel {...option}/>
-}
-
 const DASHBOARD_MAILING_LIST_FIELDS = {
   project: {
     Header: 'Project',
@@ -58,7 +54,7 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
       optionLabelKey: 'name',
       optionValueKey: 'id',
       labelTooltip: 'Select the entity this dashboard mailing list should be for',
-      renderOption: renderOption,
+      renderOption: option => <EntityOptionLabel {...option} />,
       optionFields: ['id', 'code', 'name'],
     },
   },

@@ -18,7 +18,7 @@ const Name = styled.span`
 
 const Code = styled.span`
   margin-top: 0.25rem;
-  color: ${props => props.theme.palette.text.secondary}; 
+  color: ${props => props.theme.palette.text.secondary};
 `;
 
 export const EntityOptionLabel = ({ name, code }) => {

@@ -82,8 +82,8 @@ export const ResponseFields = ({
             return option.id === selected.id;
           }}
           getOptionLabel={option => option?.name || ''}
-          renderOption={(option) => {
-            return ( <EntityOptionLabel {...option}/>);
+          renderOption={option => {
+            return <EntityOptionLabel {...option} />;
           }}
           isLoading={entityIsLoading}
           onChangeSelection={(event, selectedValue) => {
