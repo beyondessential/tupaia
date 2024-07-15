@@ -3,11 +3,14 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { MenuItem as MuiMenuItem, Select } from '@material-ui/core';
-import { STATUS_VALUES, StatusPill } from '../StatusPill';
 import { TaskStatus } from '@tupaia/types';
+import { MenuItem as MuiMenuItem, Select as MuiSelect } from '@material-ui/core';
+import { KeyboardArrowDown } from '@material-ui/icons';
+import { STATUS_VALUES, StatusPill } from '../StatusPill';
+import { getTaskFilterSetting } from '../../../utils';
+import { TaskFilterType } from '../../../types';
 
 const PlaceholderText = styled.span`
   color: ${({ theme }) => theme.palette.text.secondary};
@@ -24,24 +27,52 @@ const MenuItem = styled(MuiMenuItem)`
   margin-block: 0.2rem;
 `;
 
+const Select = styled(MuiSelect)`
+  .MuiInputBase-input {
+    background: transparent;
+  }
+`;
+
 interface StatusFilterProps {
   onChange: (value: string) => void;
-  filter: { value: string } | undefined;
+  filter: { value: TaskFilterType } | undefined;
 }
 
 export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
-  // TODO: Filter/include cancelled and completed statuses as part of RN_1343
-  const options = Object.entries(STATUS_VALUES).map(([value, { label }]) => ({
-    value,
-    label,
-  }));
+  const ref = useRef<HTMLDivElement>(null);
+  const includeCompletedTasks = getTaskFilterSetting('show_completed_tasks');
+  const includeCancelledTasks = getTaskFilterSetting('show_cancelled_tasks');
+  const filterValue = filter?.value ?? '';
+
+  const options = Object.keys(STATUS_VALUES)
+    .filter(value => {
+      // Filter out completed and cancelled tasks if the user has disabled them
+      if (
+        (!includeCompletedTasks && value === TaskStatus.completed) ||
+        (!includeCancelledTasks && value === TaskStatus.cancelled)
+      ) {
+        return false;
+      }
+      return true;
+    })
+    .map(value => ({ value }));
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     onChange(event.target.value as string);
+    if (ref.current) {
+      ref.current.blur();
+      ref.current.classList.remove('Mui-focused');
+    }
   };
+
+  const invalidFilterValue = !options.find(option => option.value === filterValue);
+  if (invalidFilterValue && filter?.value) {
+    onChange('');
+  }
 
   return (
     <Select
+      ref={ref}
       value={filter?.value ?? ''}
       onChange={handleChange}
       variant="outlined"
@@ -51,6 +82,7 @@ export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
         if (!value) return <PlaceholderText>Select</PlaceholderText>;
         return <StatusPill status={value as TaskStatus} />;
       }}
+      IconComponent={KeyboardArrowDown}
     >
       {/** Include a placeholder option so that the user can clear the status filter */}
       <PlaceholderOption value="">Show all</PlaceholderOption>

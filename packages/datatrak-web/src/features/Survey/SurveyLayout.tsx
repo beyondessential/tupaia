@@ -15,6 +15,7 @@ import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { ROUTES } from '../../constants';
 import { useSubmitSurveyResponse } from '../../api/mutations';
 import { getErrorsByScreen } from './utils';
+import { useFromLocation } from '../../utils';
 
 const ScrollableLayout = styled.div<{
   $sideMenuClosed?: boolean;
@@ -71,6 +72,7 @@ const LoadingContainer = styled.div`
  */
 export const SurveyLayout = () => {
   const navigate = useNavigate();
+  const from = useFromLocation();
   const params = useParams<SurveyParams>();
   const {
     updateFormData,
@@ -85,11 +87,13 @@ export const SurveyLayout = () => {
   } = useSurveyForm();
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurveyResponse, isLoading: isSubmittingSurveyResponse } =
-    useSubmitSurveyResponse();
+    useSubmitSurveyResponse(from);
 
   const handleStep = (path, data) => {
     updateFormData({ ...formData, ...data });
-    navigate(path);
+    navigate(path, {
+      state: { ...(from && { from }) },
+    });
   };
 
   const onStepPrevious = () => {
@@ -136,6 +140,7 @@ export const SurveyLayout = () => {
       }),
       {
         state: {
+          ...(from && { from }),
           errors: stringifiedErrors,
         },
       },

@@ -120,7 +120,7 @@ export const LeaderboardTable = ({
         <TableFooter>
           <FooterRow>
             <FooterCell>&mdash;</FooterCell>
-            <FooterCell>{user?.userName}</FooterCell>
+            <FooterCell>{user?.fullName}</FooterCell>
             <FooterCell>{userRewards?.coconuts}</FooterCell>
           </FooterRow>
         </TableFooter>

@@ -12041,6 +12041,7 @@ __metadata:
     "@types/lodash.keyby": ^4.6.0
     "@types/lodash.sortby": ^4.6.0
     camelcase-keys: ^6.2.2
+    cookie: ^0.6.0
     express: ^4.19.2
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -12057,6 +12058,7 @@ __metadata:
     "@material-ui/core": ^4.9.11
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
+    "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@testing-library/react": 12.1.2
@@ -12075,6 +12077,7 @@ __metadata:
     bson-objectid: ^1.2.2
     date-fns: ^2.29.2
     downloadjs: 1.4.7
+    js-cookie: ^3.0.5
     leaflet: ^1.7.1
     lodash.throttle: ^4.1.1
     markdown-to-jsx: ^6.4.1
@@ -12578,6 +12581,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/dom-to-image": ^2.6.4
     "@types/downloadjs": ^1.4.3
+    "@types/leaflet": ^1.7.1
     "@types/mapbox__polyline": ^1.0.2
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
@@ -12585,6 +12589,7 @@ __metadata:
     axios: ^1.6.8
     dom-to-image: 2.6.0
     downloadjs: 1.4.7
+    leaflet: ^1.7.1
     moment: ^2.24.0
     msw: ^2.0.9
     npm-run-all: ^4.1.5
@@ -19328,7 +19333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:0.6.0":
+"cookie@npm:0.6.0, cookie@npm:^0.6.0":
   version: 0.6.0
   resolution: "cookie@npm:0.6.0"
   checksum: f56a7d32a07db5458e79c726b77e3c2eff655c36792f2b6c58d351fb5f61531e5b1ab7f46987150136e366c65213cbe31729e02a3eaed630c3bf7334635fb410
@@ -28654,6 +28659,13 @@ __metadata:
     html-beautify: js/bin/html-beautify.js
     js-beautify: js/bin/js-beautify.js
   checksum: edda6f1f32d6a3870503f1ae7b7fb1279ba99ef533872ec3d2d7f9b685671425cc8e5c20bbaaba9440495dfc120797b13e68f867566d59bb23dc435de76dfe7a
+  languageName: node
+  linkType: hard
+
+"js-cookie@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "js-cookie@npm:3.0.5"
+  checksum: 2dbd2809c6180fbcf060c6957cb82dbb47edae0ead6bd71cbeedf448aa6b6923115003b995f7d3e3077bfe2cb76295ea6b584eb7196cca8ba0a09f389f64967a
   languageName: node
   linkType: hard
 

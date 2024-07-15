@@ -22,3 +22,5 @@ export { ActivityFeedRequest, ActivityFeedRoute } from './ActivityFeedRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { GenerateLoginTokenRequest, GenerateLoginTokenRoute } from './GenerateLoginTokenRoute';
 export { TasksRequest, TasksRoute } from './TasksRoute';
+export { SurveyUsersRequest, SurveyUsersRoute } from './SurveyUsersRoute';
+export { CreateTaskRequest, CreateTaskRoute } from './CreateTaskRoute';

@@ -15,7 +15,7 @@ import { CurrentUserContextProvider } from './api';
 import { REDIRECT_ERROR_PARAM } from './constants';
 
 const handleError = (error: any, query: any) => {
-  if (error.responseData.redirectClient) {
+  if (error.responseData?.redirectClient) {
     // Redirect the browser to the specified URL and display the error
     window.location.href = `${error.responseData.redirectClient}?${REDIRECT_ERROR_PARAM}=${error.message}`;
   }

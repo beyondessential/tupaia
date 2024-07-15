@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import styled from 'styled-components';
@@ -42,17 +42,17 @@ const CountrySelectWrapper = styled.div`
   align-items: center;
 `;
 
-interface SurveyCountrySelectorProps {
+interface CountrySelectorProps {
   countries: Entity[];
   selectedCountry?: Country | null;
   onChangeCountry: (country: Entity | null) => void;
 }
 
-export const SurveyCountrySelector = ({
+export const CountrySelector = ({
   countries,
   selectedCountry,
   onChangeCountry,
-}: SurveyCountrySelectorProps) => {
+}: CountrySelectorProps) => {
   const updateSelectedCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChangeCountry(countries.find(country => country.code === e.target.value) || null);
   };

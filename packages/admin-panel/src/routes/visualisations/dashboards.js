@@ -17,14 +17,17 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   {
     Header: 'Organisation unit code',
     source: 'root_entity_code',
+    required: true,
     editConfig: {
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',

@@ -5,132 +5,37 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { generatePath, useSearchParams, Link, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
-import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
 import { TaskStatusType } from '../../../types';
-import { Button } from '../../../components';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
-import { ROUTES } from '../../../constants';
+import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { StatusFilter } from './StatusFilter';
-import { DueDateFilter } from './DueDateFilter';
-
-type Task = DatatrakWebTasksRequest.ResBody['tasks'][0];
-
-const ActionButtonComponent = styled(Button).attrs({
-  color: 'primary',
-  size: 'small',
-})`
-  padding-inline: 1.2rem;
-  padding-block: 0.4rem;
-  width: 100%;
-  .MuiButton-label {
-    font-size: 0.75rem;
-    line-height: normal;
-  }
-  .cell-content:has(&) {
-    padding-block: 0.2rem;
-    padding-inline-start: 1.5rem;
-  }
-`;
+import { ActionButton } from './ActionButton';
+import { TaskActionsMenu } from './TaskActionsMenu';
+import { FilterToolbar } from './FilterToolbar';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-height: 100%;
   border: 1px solid ${({ theme }) => theme.palette.divider};
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 3px;
   .MuiTableContainer-root {
     border-radius: 3px;
+    max-height: 100%;
   }
 `;
 
-const ActionButton = (task: Task) => {
-  const location = useLocation();
-  if (!task) return null;
-  const { assigneeId, survey, entity, status } = task;
-  if (status === TaskStatus.cancelled || status === TaskStatus.completed) return null;
-  if (!assigneeId) {
-    return <ActionButtonComponent variant="outlined">Assign</ActionButtonComponent>;
-  }
-
-  const surveyLink = generatePath(ROUTES.SURVEY, {
-    surveyCode: survey.code,
-    countryCode: entity.countryCode,
-  });
-  return (
-    <ActionButtonComponent
-      component={Link}
-      to={surveyLink}
-      variant="contained"
-      state={{
-        from: JSON.stringify(location),
-      }}
-    >
-      Complete
-    </ActionButtonComponent>
-  );
-};
-
-const COLUMNS = [
-  {
-    // only the survey name can be resized
-    Header: 'Survey',
-    accessor: (row: any) => row.survey.name,
-    id: 'survey.name',
-    filterable: true,
-  },
-  {
-    Header: 'Entity',
-    accessor: (row: any) => row.entity.name,
-    id: 'entity.name',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Assignee',
-    accessor: row => row.assigneeName ?? 'Unassigned',
-    id: 'assignee_name',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Repeating task',
-    // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
-    accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
-    id: 'repeat_schedule',
-    filterable: true,
-    disableResizing: true,
-  },
-  {
-    Header: 'Due Date',
-    accessor: row => displayDate(row.dueDate),
-    id: 'due_date',
-    filterable: true,
-    Filter: DueDateFilter,
-    disableResizing: true,
-  },
-  {
-    Header: 'Status',
-    filterable: true,
-    accessor: 'taskStatus',
-    id: 'task_status',
-    Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
-    Filter: StatusFilter,
-    disableResizing: true,
-  },
-  {
-    Header: '',
-    accessor: row => <ActionButton {...row} />,
-    id: 'actions',
-    filterable: false,
-    disableSortBy: true,
-    disableResizing: true,
-  },
-];
+const ActionCellContent = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
 
 const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
@@ -145,19 +50,7 @@ const useTasksTable = () => {
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
-  const { data, isLoading, isFetching } = useTasks({
-    projectId,
-    pageSize,
-    page,
-    filters: [
-      ...filters,
-      {
-        id: 'survey.project_id',
-        value: projectId,
-      },
-    ],
-    sortBy,
-  });
+  const { data, isLoading } = useTasks(projectId, pageSize, page, filters, sortBy);
 
   const updateSorting = newSorting => {
     searchParams.set('sortBy', JSON.stringify(newSorting));
@@ -188,6 +81,74 @@ const useTasksTable = () => {
 
   const { tasks = [], count = 0, numberOfPages } = data || {};
 
+  const COLUMNS = [
+    {
+      // only the survey name can be resized
+      Header: 'Survey',
+      accessor: (row: any) => row.survey.name,
+      id: 'survey.name',
+      filterable: true,
+    },
+    {
+      Header: 'Entity',
+      accessor: (row: any) => row.entity.name,
+      id: 'entity.name',
+      filterable: true,
+      disableResizing: true,
+      width: 180,
+    },
+    {
+      Header: 'Assignee',
+      accessor: row => row.assigneeName ?? 'Unassigned',
+      id: 'assignee_name',
+      filterable: true,
+      disableResizing: true,
+      width: 180,
+    },
+    {
+      Header: 'Repeating task',
+      // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
+      accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
+      id: 'repeat_schedule',
+      filterable: true,
+      disableResizing: true,
+      width: 180,
+    },
+    {
+      Header: 'Due Date',
+      accessor: row => displayDate(row.dueDate),
+      id: 'due_date',
+      filterable: true,
+      Filter: DueDatePicker,
+      disableResizing: true,
+      width: 180,
+    },
+    {
+      Header: 'Status',
+      filterable: true,
+      accessor: 'taskStatus',
+      id: 'task_status',
+      Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
+      Filter: StatusFilter,
+      disableResizing: true,
+      width: 180,
+    },
+    {
+      Header: '',
+      width: 200,
+      accessor: task => (
+        <ActionCellContent>
+          <ActionButton task={task} />
+          <TaskActionsMenu {...task} />
+        </ActionCellContent>
+      ),
+      id: 'actions',
+      filterable: false,
+      disableSortBy: true,
+      disableResizing: true,
+    },
+  ];
+
   return {
     columns: COLUMNS,
     data: tasks,
@@ -201,7 +162,7 @@ const useTasksTable = () => {
     updateFilters,
     onChangePage,
     onChangePageSize,
-    isLoading: isLoading || isFetching,
+    isLoading: isLoading,
   };
 };
 
@@ -224,6 +185,7 @@ export const TasksTable = () => {
 
   return (
     <Container>
+      <FilterToolbar />
       <FilterableTable
         columns={columns}
         data={isLoading ? [] : data}

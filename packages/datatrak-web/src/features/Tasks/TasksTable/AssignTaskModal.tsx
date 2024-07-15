@@ -1,0 +1,86 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { useForm, Controller } from 'react-hook-form';
+import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
+import { AssigneeInput } from '../AssigneeInput';
+import { useEditTask } from '../../../api';
+import { Task } from '../../../types';
+
+const Container = styled(ModalCenteredContent)`
+  width: 20rem;
+  max-width: 100%;
+  margin: 0 auto;
+`;
+
+interface AssignTaskModalProps {
+  task: Task;
+  Button: React.ComponentType<{ onClick: () => void }>;
+}
+
+export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm({
+    mode: 'onChange',
+  });
+  const onClose = () => setIsOpen(false);
+  const { mutate: editTask, isLoading } = useEditTask(task?.id, onClose);
+
+  const modalButtons = [
+    {
+      text: 'Cancel',
+      onClick: onClose,
+      variant: 'outlined',
+      id: 'cancel',
+      disabled: isLoading,
+    },
+    {
+      text: 'Save',
+      onClick: handleSubmit(editTask),
+      id: 'save',
+      type: 'submit',
+      disabled: isLoading || !isValid,
+    },
+  ];
+
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)} />
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Assign task"
+        buttons={modalButtons}
+        isLoading={isLoading}
+      >
+        <Container>
+          <form onSubmit={handleSubmit(editTask)}>
+            <Controller
+              name="assignee_id"
+              control={control}
+              rules={{ required: 'Required' }}
+              render={({ value, onChange, ref }, { invalid }) => (
+                <AssigneeInput
+                  value={value}
+                  required
+                  onChange={onChange}
+                  inputRef={ref}
+                  countryCode={task?.entity?.countryCode}
+                  surveyCode={task?.survey?.code}
+                  error={invalid}
+                />
+              )}
+            />
+          </form>
+        </Container>
+      </Modal>
+    </>
+  );
+};

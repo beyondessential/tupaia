@@ -31,9 +31,13 @@ export class GETTasks extends GETHandler {
     return {
       ...restOfOptions,
       // Strip table prefix from `task_status` and `assignee_name` as these are customColumns
-      sort: sort.map(s =>
-        s.replace('task.task_status', 'task_status').replace('task.assignee_name', 'assignee_name'),
-      ),
+      sort:
+        !restOfOptions.rawSort &&
+        sort?.map(s =>
+          s
+            .replace('task.task_status', 'task_status')
+            .replace('task.assignee_name', 'assignee_name'),
+        ),
       // Appending the multi-join from the Record class so that we can fetch the `task_status` and `assignee_name`
       multiJoin: mergeMultiJoin(multiJoin, this.models.task.DatabaseRecordClass.joins),
     };
