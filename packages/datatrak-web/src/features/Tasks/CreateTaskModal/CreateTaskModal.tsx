@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { LoadingContainer, Modal, TextField } from '@tupaia/ui-components';
 import { ButtonProps } from '@material-ui/core';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import { useCreateTask, useUser } from '../../../api';
 import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
@@ -15,7 +16,6 @@ import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { RepeatScheduleInput } from './RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
-import { stripTimezoneFromDate } from '@tupaia/utils';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -81,7 +81,7 @@ const InputRow = styled.div`
   display: flex;
   justify-content: space-between;
   margin-block-end: 1.2rem;
-  > * {
+  > div {
     width: 48%;
     margin-block-end: 0;
   }
