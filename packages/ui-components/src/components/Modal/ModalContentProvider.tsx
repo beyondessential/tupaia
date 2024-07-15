@@ -21,8 +21,9 @@ const Content = styled(DialogContent)`
   flex-direction: column;
 `;
 
-const Heading = styled(Typography)`
-  margin-bottom: 18px;
+const ErrorHeading = styled(Typography)`
+  margin-bottom: 1.1rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
 interface ModalContentProviderProps {
@@ -41,7 +42,7 @@ export const ModalContentProvider = ({
       {isLoading && 'Please be patient, this can take some time...'}
       {!!errorMessage && (
         <>
-          <Heading variant="h6">An error has occurred.</Heading>
+          <ErrorHeading>An error has occurred</ErrorHeading>
           <SmallAlert severity="error" variant="standard">
             {errorMessage}
           </SmallAlert>
