@@ -4,6 +4,7 @@
  */
 
 import { DatatrakWebTasksRequest, TaskStatus } from '@tupaia/types';
+
 enum OtherTaskStatus {
   overdue = 'overdue',
   repeating = 'repeating',
@@ -12,3 +13,8 @@ enum OtherTaskStatus {
 export type TaskStatusType = TaskStatus | OtherTaskStatus;
 
 export type Task = DatatrakWebTasksRequest.ResBody['tasks'][0];
+
+export type TaskFilterType =
+  | 'all_assignees_tasks'
+  | 'show_completed_tasks'
+  | 'show_cancelled_tasks';

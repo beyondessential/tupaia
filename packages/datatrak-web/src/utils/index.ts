@@ -9,3 +9,4 @@ export { useFromLocation } from './useFromLocation';
 export * from './date';
 export * from './detectDevice';
 export { gaEvent } from './ga';
+export { setTaskFilterSetting, getTaskFilterSetting } from './taskFilterSettings';
