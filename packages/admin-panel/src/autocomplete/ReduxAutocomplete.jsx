@@ -116,6 +116,7 @@ ReduxAutocompleteComponent.propTypes = {
   initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   required: PropTypes.bool,
   optionValueKey: PropTypes.string.isRequired,
+  renderOption: PropTypes.func,
 };
 
 ReduxAutocompleteComponent.defaultProps = {
