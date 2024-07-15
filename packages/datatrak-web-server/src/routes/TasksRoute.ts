@@ -70,14 +70,14 @@ export class TasksRoute extends Route<TasksRequest> {
       if (id === 'repeat_schedule') {
         this.filters[id] = {
           comparator: 'ilike',
-          comparisonValue: `${value}%`,
+          comparisonValue: `%${value}%`,
           castAs: 'text',
         };
         return;
       }
       this.filters[id] = {
         comparator: 'ilike',
-        comparisonValue: `${value}%`,
+        comparisonValue: `%${value}%`,
       };
     });
   }
@@ -142,7 +142,7 @@ export class TasksRoute extends Route<TasksRequest> {
   }
 
   public async buildResponse() {
-    const { ctx, query = {}, models } = this.req;
+    const { ctx, query = {} } = this.req;
     const { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
 
     this.formatFilters();
