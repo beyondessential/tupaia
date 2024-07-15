@@ -97,6 +97,7 @@ const ReduxAutocompleteComponent = ({
       required={required}
       error={error}
       tooltip={tooltip}
+      renderOption={getOptionRendered}
     />
   );
 };
