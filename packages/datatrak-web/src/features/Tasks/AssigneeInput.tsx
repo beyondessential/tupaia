@@ -76,10 +76,11 @@ export const AssigneeInput = ({
       onChange={onChangeAssignee}
       inputRef={inputRef}
       name="assignee"
-      onInputChange={throttle((_, newValue) => {
+      onInputChange={throttle((e, newValue) => {
+        if (!e) return;
         setSearchValue(newValue);
       }, 200)}
-      inputValue={searchValue}
+      inputValue={selection?.label ?? searchValue}
       getOptionLabel={option => option.label}
       getOptionSelected={option => option.id === value}
       placeholder="Search..."

@@ -9,12 +9,12 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    width: 300,
+    required: true,
   },
   {
     Header: 'Builder',
     source: 'builder',
-    width: 170,
+    required: true,
     editConfig: {
       optionsEndpoint: 'indicators',
       optionLabelKey: 'builder',

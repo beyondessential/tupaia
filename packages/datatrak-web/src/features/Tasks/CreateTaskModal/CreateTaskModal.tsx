@@ -8,14 +8,16 @@ import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { LoadingContainer, Modal, TextField } from '@tupaia/ui-components';
 import { ButtonProps } from '@material-ui/core';
-import { useCreateTask, useUser } from '../../../api';
+import { stripTimezoneFromDate } from '@tupaia/utils';
+import { useNavigate } from 'react-router';
+import { ROUTES } from '../../../constants';
+import { useCreateTask, useEditUser, useUser } from '../../../api';
 import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { RepeatScheduleInput } from './RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
-import { stripTimezoneFromDate } from '@tupaia/utils';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -81,7 +83,7 @@ const InputRow = styled.div`
   display: flex;
   justify-content: space-between;
   margin-block-end: 1.2rem;
-  > * {
+  > div {
     width: 48%;
     margin-block-end: 0;
   }
@@ -114,6 +116,12 @@ interface CreateTaskModalProps {
 }
 
 export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
+  const navigate = useNavigate();
+  const navigateToProjectScreen = () => {
+    navigate(ROUTES.PROJECT_SELECT);
+  };
+  const { mutate: editUser } = useEditUser(navigateToProjectScreen);
+
   const generateDefaultDueDate = () => {
     const now = new Date();
     now.setHours(23, 59, 59, 999);
@@ -141,12 +149,18 @@ export const CreateTaskModal = ({ open, onClose }: CreateTaskModalProps) => {
     formState: { isValid, dirtyFields },
   } = formContext;
 
+  const handleCountriesError = async (error: any) => {
+    if (error?.code !== 403) return;
+    // in this case it is a permissions error, so the user needs to be redirected to the project screen after the user's project is updated
+    editUser({ projectId: null });
+  };
+
   const {
     countries,
     selectedCountry,
     updateSelectedCountry,
     isLoading: isLoadingCountries,
-  } = useUserCountries();
+  } = useUserCountries(handleCountriesError);
   const { isLoading: isLoadingUser, isFetching: isFetchingUser } = useUser();
 
   const isLoadingData = isLoadingCountries || isLoadingUser || isFetchingUser;
