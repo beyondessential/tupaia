@@ -31,15 +31,16 @@ const defaultContext = {
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
+  countryCode: '',
 } as SurveyFormContextType;
 
 const SurveyFormContext = createContext(defaultContext);
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
-export const SurveyContext = ({ children }) => {
+export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
-  const { surveyCode, ...params } = useParams<SurveyParams>();
+  const params = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
   const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
@@ -100,6 +101,8 @@ export const SurveyContext = ({ children }) => {
         screenHeader,
         screenDetail,
         visibleScreens,
+        countryCode,
+        surveyCode,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>

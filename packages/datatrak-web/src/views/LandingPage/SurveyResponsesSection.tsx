@@ -59,7 +59,7 @@ export const SurveyResponsesSection = () => {
                     key={id}
                     title={surveyName}
                     text={entityName}
-                    to={`/survey/${countryCode}/${surveyCode}/response/${id}`}
+                    to={`?responseId=${id}&surveyCode=${surveyCode}&countryCode=${countryCode}`}
                     tooltip={
                       <>
                         {surveyName}
