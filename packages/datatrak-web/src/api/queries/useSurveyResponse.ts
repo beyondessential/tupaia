@@ -12,10 +12,7 @@ import { useSurvey } from './useSurvey';
 
 export const useSurveyResponse = (
   surveyResponseId?: string | null,
-  options?: {
-    onSuccess?: (data: DatatrakWebSingleSurveyResponseRequest.ResBody) => void;
-    enabled?: boolean;
-  },
+  options?: Record<string, unknown> & { enabled?: boolean },
 ) => {
   return useQuery(
     ['surveyResponse', surveyResponseId],
@@ -41,6 +38,9 @@ export const useSurveyResponseWithForm = (surveyResponseId?: string | null) => {
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const queryResult = useSurveyResponse(surveyResponseId, {
     enabled: !surveyLoading,
+    meta: {
+      applyCustomErrorHandling: true,
+    },
   });
 
   // Populate the form with the survey response data - this is not in in the onSuccess hook because it doesn't get called if the response has previously been fetched and is in the cache

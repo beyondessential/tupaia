@@ -15,9 +15,9 @@ import {
   SpinningLoader,
 } from '@tupaia/ui-components';
 import { useSurveyResponseWithForm } from '../api/queries';
-import { SurveyReviewSection } from './Survey/Components';
 import { Button, SurveyTickIcon } from '../components';
 import { displayDate } from '../utils';
+import { SurveyReviewSection } from './Survey/Components';
 import { SurveyContext } from '.';
 
 const Header = styled.div`
@@ -79,6 +79,7 @@ const SurveyResponseModalContent = ({ onClose }: { onClose: () => void }) => {
     data: surveyResponse,
     isLoading,
     isFetched,
+    error,
   } = useSurveyResponseWithForm(surveyResponseId);
 
   const subHeading = getSubHeadingText(surveyResponse);
@@ -87,8 +88,8 @@ const SurveyResponseModalContent = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <>
-      <ModalHeader onClose={onClose}>
-        {!showLoading && (
+      <ModalHeader onClose={onClose} title={error ? 'Error loading survey response' : ''}>
+        {!showLoading && !error && (
           <Header>
             <SurveyTickIcon />
             <div>
@@ -98,8 +99,9 @@ const SurveyResponseModalContent = ({ onClose }: { onClose: () => void }) => {
           </Header>
         )}
       </ModalHeader>
-      <ModalContentProvider>
-        {showLoading ? <Loader /> : <SurveyReviewSection />}
+      <ModalContentProvider errorMessage={error?.message}>
+        {showLoading && <Loader />}
+        {!showLoading && !error && <SurveyReviewSection />}
       </ModalContentProvider>
       <ModalFooter>
         <Button to="/">Close</Button>
