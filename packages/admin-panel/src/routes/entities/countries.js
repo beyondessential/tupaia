@@ -12,10 +12,12 @@ const FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
 ];
 

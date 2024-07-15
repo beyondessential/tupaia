@@ -40,6 +40,7 @@ export const Autocomplete = props => {
     optionLabelKey,
     renderOption,
     muiProps,
+    error,
     tooltip,
     required,
   } = props;
@@ -121,6 +122,7 @@ export const Autocomplete = props => {
       placeholder={placeholder}
       helperText={helperText}
       muiProps={extraMuiProps}
+      error={error}
       tooltip={tooltip}
       required={required}
     />
@@ -145,6 +147,7 @@ Autocomplete.propTypes = {
   allowMultipleValues: PropTypes.bool,
   optionLabelKey: PropTypes.string,
   muiProps: PropTypes.object,
+  error: PropTypes.bool,
   tooltip: PropTypes.string,
   required: PropTypes.bool,
 };
@@ -161,6 +164,7 @@ Autocomplete.defaultProps = {
   muiProps: {},
   optionLabelKey: null,
   onChangeSearchTerm: () => {},
+  error: false,
   tooltip: null,
   required: false,
 };
