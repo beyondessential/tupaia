@@ -4,7 +4,7 @@
  */
 
 import React, { createContext, Dispatch, useContext, useEffect, useReducer } from 'react';
-import { useMatch, useParams } from 'react-router-dom';
+import { useMatch, useParams, useSearchParams } from 'react-router-dom';
 import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
@@ -39,11 +39,12 @@ const SurveyFormContext = createContext(defaultContext);
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
 export const SurveyContext = ({ children, surveyCode, countryCode }) => {
+  const [urlSearchParams] = useSearchParams();
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const params = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
-  const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
+  const isResponseScreen = !!urlSearchParams.get('responseId');
 
   const { formData } = state;
 
@@ -113,6 +114,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
 };
 
 export const useSurveyForm = () => {
+  const [urlSearchParams] = useSearchParams();
   const surveyFormContext = useContext(SurveyFormContext);
   const { surveyScreens, formData, screenNumber, visibleScreens } = surveyFormContext;
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
@@ -122,7 +124,7 @@ export const useSurveyForm = () => {
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
+  const isResponseScreen = !!urlSearchParams.get('responseId');
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
