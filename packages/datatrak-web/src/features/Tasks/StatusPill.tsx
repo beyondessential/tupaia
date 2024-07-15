@@ -46,7 +46,7 @@ export const STATUS_VALUES = {
   },
 };
 
-export const StatusPill = ({ status }: { status?: TaskStatusType | null }) => {
+export const StatusPill = ({ status }: { status: TaskStatusType }) => {
   if (!status) {
     return null;
   }

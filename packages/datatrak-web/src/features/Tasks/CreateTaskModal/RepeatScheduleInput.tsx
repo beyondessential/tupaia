@@ -8,7 +8,7 @@ import { format, lastDayOfMonth } from 'date-fns';
 import { useWatch } from 'react-hook-form';
 import { Autocomplete } from '../../../components';
 
-export const useRepeatScheduleOptions = dueDate => {
+export const getRepeatScheduleOptions = dueDate => {
   const noRepeat = {
     label: "Doesn't repeat",
     value: '',
@@ -69,7 +69,7 @@ interface RepeatScheduleInputProps {
 
 export const RepeatScheduleInput = ({ value = '', onChange }: RepeatScheduleInputProps) => {
   const { dueDate } = useWatch('dueDate');
-  const repeatScheduleOptions = useRepeatScheduleOptions(dueDate);
+  const repeatScheduleOptions = getRepeatScheduleOptions(dueDate);
 
   useEffect(() => {
     if (!dueDate) {

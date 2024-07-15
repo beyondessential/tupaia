@@ -10,7 +10,7 @@ import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { AssigneeInput } from '../AssigneeInput';
 import { useEditTask } from '../../../api';
 import { Task } from '../../../types';
-import { useRepeatScheduleOptions } from '../CreateTaskModal/RepeatScheduleInput';
+import { getRepeatScheduleOptions } from '../CreateTaskModal/RepeatScheduleInput';
 import { StatusPill } from '../StatusPill';
 import { displayDate } from '../../../utils';
 
@@ -80,15 +80,15 @@ interface AssignTaskModalProps {
 
 const useDisplayRepeatSchedule = (task: Task) => {
   // TODO: When repeating tasks are implemented, make sure the repeat schedule is displayed correctly once a due date is returned with the task
-  const repeatScheduleOptions = useRepeatScheduleOptions(task?.dueDate);
+  const repeatScheduleOptions = getRepeatScheduleOptions(task.dueDate);
   const { label } = repeatScheduleOptions[0];
-  if (!task?.repeatSchedule?.frequency) {
+  if (!task.repeatSchedule?.frequency) {
     return label;
   }
-  return (
-    repeatScheduleOptions.find(option => option.value === task?.repeatSchedule?.frequency)?.label ||
-    label
-  );
+  const { frequency } = task.repeatSchedule;
+  const selectedOption = repeatScheduleOptions.find(option => option.value === frequency);
+  if (selectedOption) return selectedOption.label;
+  return label;
 };
 
 export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
@@ -101,7 +101,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
     mode: 'onChange',
   });
   const onClose = () => setIsOpen(false);
-  const { mutate: editTask, isLoading } = useEditTask(task?.id, onClose);
+  const { mutate: editTask, isLoading } = useEditTask(task.id, onClose);
 
   const modalButtons = [
     {
@@ -138,7 +138,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
               <Column>
                 <ItemWrapper>
                   <Title>Survey</Title>
-                  <Value>{task?.survey?.name}</Value>
+                  <Value>{task.survey.name}</Value>
                 </ItemWrapper>
                 <ItemWrapper>
                   <Title>Repeating task</Title>
@@ -148,17 +148,17 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
               <Column>
                 <ItemWrapper>
                   <Title>Entity</Title>
-                  <Value>{task?.entity?.name}</Value>
+                  <Value>{task.entity.name}</Value>
                 </ItemWrapper>
                 <ItemWrapper>
                   <Title>Due date</Title>
-                  <Value>{displayDate(task?.dueDate)}</Value>
+                  <Value>{displayDate(task.dueDate)}</Value>
                 </ItemWrapper>
               </Column>
             </Row>
             <ItemWrapper>
               <Title>Status</Title>
-              <StatusPill status={task?.taskStatus} />
+              <StatusPill status={task.taskStatus} />
             </ItemWrapper>
           </MetaDataContainer>
           <form onSubmit={handleSubmit(editTask)}>
@@ -171,8 +171,8 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
                   value={value}
                   onChange={onChange}
                   inputRef={ref}
-                  countryCode={task?.entity?.countryCode}
-                  surveyCode={task?.survey?.code}
+                  countryCode={task.entity.countryCode}
+                  surveyCode={task.survey.code}
                   error={invalid}
                 />
               )}
