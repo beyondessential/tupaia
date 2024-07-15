@@ -16,7 +16,7 @@ import { format } from 'date-fns';
 import { Autocomplete } from '../autocomplete';
 import { useDebounce } from '../utilities';
 import { useEntities } from '../VizBuilderApp/api';
-import { EntityOptionLabel } from '../widgets/EntityOptionLabel';
+import { EntityOptionLabel } from '../widgets';
 
 const SectionWrapper = styled.div`
   display: grid;

@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { Autocomplete } from './Autocomplete';
 import { useVizConfigContext } from '../../context';
 import { useEntityByCode, useLocations } from '../../api';
-import { EntityOptionLabel } from '../../../widgets/EntityOptionLabel';
+import { EntityOptionLabel } from '../../../widgets';
 
 export const LocationField = () => {
   const [locationSearch, setLocationSearch] = useState('');

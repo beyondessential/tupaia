@@ -81,8 +81,8 @@ export const registerInputFields = () => {
       endpoint={props.optionsEndpoint}
       optionLabelKey={props.optionLabelKey}
       optionValueKey={props.optionValueKey}
-      optionType = {props.optionType}
-      sourceColumns = {props.sourceColumns}
+      optionFields = {props.optionFields}
+      renderOption = {props.renderOption}
       reduxId={props.inputKey}
       onChange={inputValue => props.onChange(props.inputKey, inputValue)}
       canCreateNewOptions={props.canCreateNewOptions}

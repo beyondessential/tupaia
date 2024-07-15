@@ -3,10 +3,16 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import React from 'react';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
+import { EntityOptionLabel } from '../../widgets';
 
 const RESOURCE_NAME = { singular: 'dashboard mailing list' };
+
+const renderOption = (option) => { 
+  return <EntityOptionLabel {...option}/>
+}
 
 const DASHBOARD_MAILING_LIST_FIELDS = {
   project: {
@@ -48,8 +54,8 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
       optionsEndpoint: 'entities',
       optionLabelKey: 'name',
       optionValueKey: 'id',
-      optionType: 'entity',
-      sourceColumns: ['id', 'code', 'name'],
+      renderOption: renderOption,
+      optionFields: ['id', 'code', 'name'],
       secondaryLabel: 'Select the entity this dashboard mailing list should be for',
     },
   },

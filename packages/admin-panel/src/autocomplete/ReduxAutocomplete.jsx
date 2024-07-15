@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { getAutocompleteState } from './selectors';
 import { changeSelection, changeSearchTerm, clearState } from './actions';
 import { Autocomplete } from './Autocomplete';
-import { EntityOptionLabel } from '../widgets/EntityOptionLabel';
+import { EntityOptionLabel } from '../widgets';
 
 const getPlaceholder = (placeholder, selection) => {
   if (selection && selection.length) {
@@ -40,8 +40,8 @@ const ReduxAutocompleteComponent = ({
   helperText,
   required,
   optionValueKey,
-  optionType,
-  sourceColumns
+  renderOption,
+  optionFields
 }) => {
   const [hasUpdated, setHasUpdated] = React.useState(false);
   React.useEffect(() => {
@@ -70,12 +70,11 @@ const ReduxAutocompleteComponent = ({
     selectedValue = [];
   }
 
-  const renderOption = (option) => { 
-    if(optionType === 'entity'){
-      return <EntityOptionLabel {...option}/>
-    } 
-    return (option && option[optionLabelKey] ? option[optionLabelKey] : '');
-  }
+  const getOptionRendered = (option) => {
+    if(renderOption) return renderOption(option);
+    if(!option || !option[optionLabelKey]) return '';
+    return option[optionLabelKey]
+  } 
 
   return (
     <Autocomplete
@@ -94,7 +93,7 @@ const ReduxAutocompleteComponent = ({
       allowMultipleValues={allowMultipleValues}
       optionLabelKey={optionLabelKey}
       required={required}
-      renderOption={renderOption}
+      renderOption={getOptionRendered}
     />
   );
 };
@@ -117,7 +116,6 @@ ReduxAutocompleteComponent.propTypes = {
   initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   required: PropTypes.bool,
   optionValueKey: PropTypes.string.isRequired,
-  optionType: PropTypes.string
 };
 
 ReduxAutocompleteComponent.defaultProps = {
@@ -155,7 +153,7 @@ const mapDispatchToProps = (
     baseFilter,
     pageSize,
     distinct,
-    sourceColumns
+    optionFields
   },
 ) => ({
   programaticallyChangeSelection: initialValue => {
@@ -206,7 +204,7 @@ const mapDispatchToProps = (
         baseFilter,
         pageSize,
         distinct,
-        sourceColumns
+        optionFields
       ),
     ),
   onClearState: () => dispatch(clearState(reduxId)),
