@@ -85732,6 +85732,9 @@ export const TaskSchema = {
 		},
 		"survey_id": {
 			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -85773,6 +85776,9 @@ export const TaskCreateSchema = {
 			"type": "string"
 		},
 		"survey_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
 			"type": "string"
 		}
 	},
@@ -85816,6 +85822,9 @@ export const TaskUpdateSchema = {
 			"type": "string"
 		},
 		"survey_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
 			"type": "string"
 		}
 	},
@@ -87893,6 +87902,9 @@ export const TaskResponseSchema = {
 				"completed",
 				"to_do"
 			],
+			"type": "string"
+		},
+		"surveyResponseId": {
 			"type": "string"
 		},
 		"assigneeName": {
