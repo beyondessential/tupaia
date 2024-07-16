@@ -7,6 +7,7 @@ import React from 'react';
 import { generatePath, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { TaskStatus } from '@tupaia/types';
+import { SpinningLoader } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
@@ -21,10 +22,10 @@ const ButtonWrapper = styled.div`
 
 export const TaskDetailsPage = () => {
   const { taskId } = useParams();
-  const { data: task } = useTask(taskId);
+  const { data: task, isLoading } = useTask(taskId);
 
   const showCompleteButton =
-    task && task?.taskStatus !== TaskStatus.completed && task?.taskStatus !== TaskStatus.cancelled;
+    task && task.taskStatus !== TaskStatus.completed && task.taskStatus !== TaskStatus.cancelled;
 
   const surveyUrl = task
     ? generatePath(ROUTES.SURVEY_SCREEN, {
@@ -47,7 +48,8 @@ export const TaskDetailsPage = () => {
           </ButtonWrapper>
         )}
       </TaskPageHeader>
-      <TaskDetails />
+      {isLoading && <SpinningLoader />}
+      {task && <TaskDetails task={task} />}
     </>
   );
 };

@@ -9,7 +9,7 @@ import { get } from '../api';
 
 export const useTask = (taskId?: string) => {
   return useQuery(
-    ['task', taskId],
+    ['tasks', taskId],
     (): Promise<DatatrakWebTasksRequest.ResBody['tasks'][0]> => get(`tasks/${taskId}`),
     {
       enabled: !!taskId,

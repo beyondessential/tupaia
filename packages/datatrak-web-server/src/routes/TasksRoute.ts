@@ -2,12 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { parse } from 'cookie';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
 import { RECORDS } from '@tupaia/database';
-import { DatatrakWebServerModelRegistry } from '../types';
 import { TaskT, formatTaskResponse } from '../utils';
 
 export type TasksRequest = Request<
@@ -34,80 +33,140 @@ const FIELDS = [
 
 const DEFAULT_PAGE_SIZE = 20;
 
-type FormattedFilter =
-  | string
-  | { comparator: string; comparisonValue: string; castAs?: string }
-  | TaskStatus;
-
-type FormattedFilters = Record<string, FormattedFilter>;
-
-const queryForCount = async (filter: FormattedFilters, models: DatatrakWebServerModelRegistry) => {
-  const filtersWithColumnSelectors = { ...filter };
-
-  // use column selectors for custom columns being used in filters
-  for (const [key, value] of Object.entries(filter)) {
-    if (key in models.task.customColumnSelectors) {
-      const colKey =
-        models.task.customColumnSelectors[key as keyof typeof models.task.customColumnSelectors]();
-      filtersWithColumnSelectors[colKey] = value;
-      delete filtersWithColumnSelectors[key];
-    }
-  }
-
-  return models.database.count(RECORDS.TASK, filtersWithColumnSelectors, {
-    multiJoin: models.task.DatabaseRecordClass.joins,
-  });
+type SingleTask = Task & {
+  'survey.name': string;
+  'survey.code': string;
+  'entity.name': string;
+  'entity.country_code': string;
 };
+
+type FormattedFilters = Record<string, any>;
 
 const EQUALITY_FILTERS = ['due_date', 'survey.project_id', 'task_status'];
 
-const formatFilters = (filters: Record<string, string>[]) => {
-  let formattedFilters: FormattedFilters = {};
-
-  filters.forEach(({ id, value }) => {
-    if (value === '' || value === undefined || value === null) return;
-    if (EQUALITY_FILTERS.includes(id)) {
-      formattedFilters[id] = value;
-      return;
-    }
-
-    if (id === 'repeat_schedule') {
-      formattedFilters[id] = {
-        comparator: 'ilike',
-        comparisonValue: `${value}%`,
-        castAs: 'text',
-      };
-      return;
-    }
-    formattedFilters[id] = {
-      comparator: 'ilike',
-      comparisonValue: `${value}%`,
-    };
-  });
-
-  return formattedFilters;
+const getFilterSettings = (cookieString: string) => {
+  const cookies = parse(cookieString);
+  return {
+    allAssignees: cookies['all_assignees_tasks'] === 'true',
+    allCompleted: cookies['show_completed_tasks'] === 'true',
+    allCancelled: cookies['show_cancelled_tasks'] === 'true',
+  };
 };
-export class TasksRoute extends Route<TasksRequest> {
-  public async buildResponse() {
-    const { ctx, query = {}, models } = this.req;
-    const { filters = [], pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
 
-    const formattedFilters = formatFilters(filters);
+export class TasksRoute extends Route<TasksRequest> {
+  private filters: FormattedFilters = {};
+  private formatFilters() {
+    const { query } = this.req;
+    const { filters = [] } = query;
+
+    filters.forEach(({ id, value }) => {
+      if (value === '' || value === undefined || value === null) return;
+
+      if (EQUALITY_FILTERS.includes(id)) {
+        this.filters[id] = value;
+        return;
+      }
+
+      if (id === 'repeat_schedule') {
+        this.filters[id] = {
+          comparator: 'ilike',
+          comparisonValue: `%${value}%`,
+          castAs: 'text',
+        };
+        return;
+      }
+      this.filters[id] = {
+        comparator: 'ilike',
+        comparisonValue: `%${value}%`,
+      };
+    });
+  }
+  private async processFilterSettings() {
+    const cookieString = this.req.headers.cookie;
+    if (!cookieString) {
+      return;
+    }
+    const cookies = getFilterSettings(cookieString);
+
+    if (!cookies.allAssignees) {
+      const { id: userId } = await this.req.ctx.services.central.getUser();
+      this.filters['assignee_id'] = userId;
+    }
+
+    // If the task status filter is already present, don't need to worry about allCompleted and allCancelled filters
+    if ('task_status' in this.filters) {
+      return;
+    }
+
+    if (!cookies.allCompleted) {
+      this.filters['task_status'] = {
+        comparator: 'NOT IN',
+        comparisonValue: [TaskStatus.completed],
+      };
+    }
+
+    if (!cookies.allCancelled) {
+      this.filters['task_status'] = {
+        comparator: 'NOT IN',
+        comparisonValue: [TaskStatus.cancelled],
+      };
+    }
+
+    if (!cookies.allCompleted && !cookies.allCancelled) {
+      this.filters['task_status'] = {
+        comparator: 'NOT IN',
+        comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+      };
+    }
+  }
+
+  private async queryForCount() {
+    const { models } = this.req;
+    const filtersWithColumnSelectors = { ...this.filters };
+
+    // use column selectors for custom columns being used in filters
+    for (const [key, value] of Object.entries(this.filters)) {
+      if (key in models.task.customColumnSelectors) {
+        const colKey =
+          models.task.customColumnSelectors[
+            key as keyof typeof models.task.customColumnSelectors
+          ]();
+        filtersWithColumnSelectors[colKey] = value;
+        delete filtersWithColumnSelectors[key];
+      }
+    }
+
+    return models.database.count(RECORDS.TASK, filtersWithColumnSelectors, {
+      multiJoin: models.task.DatabaseRecordClass.joins,
+    });
+  }
+
+  public async buildResponse() {
+    const { ctx, query = {} } = this.req;
+    const { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
+
+    this.formatFilters();
+    await this.processFilterSettings();
+
+    // If no sort is provided, default to sorting completed and cancelled tasks to the bottom and by due date
+    const rawSort =
+      !sort &&
+      "CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC";
 
     const tasks = await ctx.services.central.fetchResources('tasks', {
-      filter: formattedFilters,
+      filter: this.filters,
       columns: FIELDS,
+      rawSort,
       sort,
       pageSize,
       page,
     });
 
-    // Get all task ids for pagination
-    const count = await queryForCount(formattedFilters, models);
-
-    const numberOfPages = Math.ceil(count / pageSize);
-
     const formattedTasks = tasks.map((task: TaskT) => formatTaskResponse(task));
+
+    // Get all task ids for pagination
+    const count = await this.queryForCount();
+    const numberOfPages = Math.ceil(count / pageSize);
 
     return {
       tasks: formattedTasks,

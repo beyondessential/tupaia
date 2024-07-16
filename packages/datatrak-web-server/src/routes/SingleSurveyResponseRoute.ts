@@ -26,6 +26,7 @@ const DEFAULT_FIELDS = [
   'id',
   'survey.name',
   'survey.code',
+  'country.code',
 ];
 
 export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest> {
