@@ -48,6 +48,7 @@ interface DueDatePickerProps {
   inputRef?: React.Ref<any>;
   invalid?: boolean;
   helperText?: string;
+  disabled?: boolean;
 }
 
 export const DueDatePicker = ({
@@ -60,6 +61,7 @@ export const DueDatePicker = ({
   inputRef,
   invalid,
   helperText,
+  disabled,
 }: DueDatePickerProps) => {
   const [date, setDate] = useState<string | null>(value ?? null);
 
@@ -123,6 +125,7 @@ export const DueDatePicker = ({
         inputRef={inputRef}
         error={invalid}
         helperText={helperText}
+        disabled={disabled}
       />
     </Wrapper>
   );

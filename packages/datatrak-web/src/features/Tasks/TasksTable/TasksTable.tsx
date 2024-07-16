@@ -12,9 +12,10 @@ import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
+import { TaskActionsMenu } from '../TaskActionsMenu';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
-import { TaskActionsMenu } from './TaskActionsMenu';
+import { LinkCell } from './LinkCell';
 import { FilterToolbar } from './FilterToolbar';
 
 const Container = styled.div`
@@ -128,7 +129,7 @@ const useTasksTable = () => {
       filterable: true,
       accessor: 'taskStatus',
       id: 'task_status',
-      Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
+      DisplayCell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
       Filter: StatusFilter,
       disableResizing: true,
       width: 180,
@@ -147,7 +148,26 @@ const useTasksTable = () => {
       disableSortBy: true,
       disableResizing: true,
     },
-  ];
+  ].map(column => {
+    if (column.id === 'actions') return column;
+    const { DisplayCell } = column;
+    if (DisplayCell) {
+      return {
+        ...column,
+        Cell: ({ row, value }) => (
+          <LinkCell {...row.original}>
+            <DisplayCell value={value} />
+          </LinkCell>
+        ),
+      };
+    }
+    return {
+      ...column,
+      Cell: ({ row, value }) => {
+        return <LinkCell {...row.original}>{value}</LinkCell>;
+      },
+    };
+  });
 
   return {
     columns: COLUMNS,

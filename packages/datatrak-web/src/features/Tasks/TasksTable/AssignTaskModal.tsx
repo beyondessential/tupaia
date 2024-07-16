@@ -7,12 +7,13 @@ import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
 import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
-import { AssigneeInput } from '../AssigneeInput';
 import { useEditTask } from '../../../api';
 import { Task } from '../../../types';
-import { getRepeatScheduleOptions } from '../CreateTaskModal/RepeatScheduleInput';
+import { AssigneeInput } from '../AssigneeInput';
+import { TaskForm } from '../TaskForm';
 import { StatusPill } from '../StatusPill';
 import { displayDate } from '../../../utils';
+import { getRepeatScheduleOptions } from '../RepeatScheduleInput';
 
 const Container = styled(ModalCenteredContent)`
   width: 26rem;
@@ -93,13 +94,14 @@ const useDisplayRepeatSchedule = (task: Task) => {
 
 export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const formContext = useForm({
+    mode: 'onChange',
+  });
   const {
     control,
     handleSubmit,
     formState: { isValid },
-  } = useForm({
-    mode: 'onChange',
-  });
+  } = formContext;
   const onClose = () => setIsOpen(false);
   const { mutate: editTask, isLoading } = useEditTask(task.id, onClose);
 
@@ -161,7 +163,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
               <StatusPill status={task.taskStatus} />
             </ItemWrapper>
           </MetaDataContainer>
-          <form onSubmit={handleSubmit(editTask)}>
+          <TaskForm onSubmit={handleSubmit(editTask)}>
             <Controller
               name="assignee_id"
               control={control}
@@ -177,7 +179,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
                 />
               )}
             />
-          </form>
+          </TaskForm>
         </Container>
       </Modal>
     </>

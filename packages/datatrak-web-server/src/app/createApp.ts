@@ -19,6 +19,8 @@ import {
   ActivityFeedRoute,
   CreateTaskRequest,
   CreateTaskRoute,
+  EditTaskRequest,
+  EditTaskRoute,
   EntitiesRequest,
   EntitiesRoute,
   EntityDescendantsRequest,
@@ -47,6 +49,8 @@ import {
   SurveysRoute,
   SurveyUsersRequest,
   SurveyUsersRoute,
+  TaskRequest,
+  TaskRoute,
   TasksRequest,
   TasksRoute,
   UserRequest,
@@ -81,10 +85,12 @@ export async function createApp() {
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TasksRequest>('tasks', handleWith(TasksRoute))
+    .get<TaskRequest>('tasks/:taskId', handleWith(TaskRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
     .get<SurveyUsersRequest>('users/:surveyCode/:countryCode', handleWith(SurveyUsersRoute))
     // Post Routes
     .post<CreateTaskRequest>('tasks', handleWith(CreateTaskRoute))
+    .put<EditTaskRequest>('tasks/:taskId', handleWith(EditTaskRoute))
     .post<SubmitSurveyResponseRequest>(
       'submitSurveyResponse',
       handleWith(SubmitSurveyResponseRoute),
