@@ -6,7 +6,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { DESKTOP_MEDIA_QUERY, ROUTES } from '../../constants';
+import { ROUTES } from '../../constants';
 import { Button, ButtonLink as BaseButtonLink } from '../../components';
 
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
@@ -24,7 +24,7 @@ const SectionContainer = styled.section`
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 3rem 1rem 2.2rem;
-    margin-top: 0.5rem;
+    margin-top: 2.1rem !important;
   }
 `;
 
@@ -112,9 +112,9 @@ const SurveysImage = styled.img`
   height: 100%;
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    top: 60%;
+    top: 50%;
     right: -1rem;
-    height: 150%;
+    height: 160%;
   }
 `;
 

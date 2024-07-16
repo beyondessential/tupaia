@@ -18,10 +18,6 @@ const SectionContainer = styled.section`
   flex-direction: column;
 `;
 
-const SectionHeader = styled(FlexSpaceBetween)`
-  height: 2rem;
-`;
-
 const Paper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 10px;
@@ -31,8 +27,19 @@ const Paper = styled.div`
 `;
 
 const ViewMoreButton = styled(TextButton)`
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding-block: 0;
+  margin-block-end: 0.5rem;
+
+  .MuiButton-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #4e3838;
+  }
+
+  &:hover {
+    text-decoration: underline;
+    background-color: initial;
+  }
 `;
 
 export const TasksSection = () => {
@@ -53,14 +60,14 @@ export const TasksSection = () => {
 
   return (
     <SectionContainer>
-      <SectionHeader>
+      <FlexSpaceBetween>
         <SectionHeading>My tasks</SectionHeading>
         {hasTasks && (
           <ViewMoreButton component={Link} to={ROUTES.TASKS}>
             View more...
           </ViewMoreButton>
         )}
-      </SectionHeader>
+      </FlexSpaceBetween>
       <Paper>
         {hasTasks && data?.tasks.map(task => <TaskTile key={task.id} task={task} />)}
         {hasNoTasks && <NoTasksSection />}

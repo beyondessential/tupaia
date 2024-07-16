@@ -30,12 +30,11 @@ const PageBody = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     height: calc(100vh - ${HEADER_HEIGHT});
-    padding: 1rem 2.75rem 0.8rem 2.75rem;
+    padding: 0.2rem 1rem 0.8rem;
   }
 
   ${DESKTOP_MEDIA_QUERY} {
-    padding-top: 1rem;
-    padding-bottom: 2.5rem;
+    padding: 1rem 2.75rem 2rem;
   }
 `;
 
@@ -72,7 +71,7 @@ const Grid = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    grid-template-columns: 23% 1fr 1fr 28%;
+    grid-template-columns: 23% 1fr 1fr 30%;
     grid-template-areas:
       'surveySelect surveySelect surveySelect tasks'
       'recentSurveys recentSurveys recentSurveys tasks'
@@ -88,12 +87,14 @@ const Grid = styled.div`
 `;
 
 export const LandingPage = () => {
+  const showTasks = process.env.REACT_APP_TUPAIA_TASKS;
+
   return (
     <PageContainer>
       <PageBody>
         <Grid>
           <SurveySelectSection />
-          <TasksSection />
+          {showTasks && <TasksSection />}
           <LeaderboardSection />
           <RecentSurveysSection />
           <SurveyResponsesSection />
