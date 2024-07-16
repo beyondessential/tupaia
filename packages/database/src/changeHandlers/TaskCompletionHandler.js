@@ -31,9 +31,9 @@ export class TaskCompletionHandler extends ChangeHandler {
   }
 
   /**
-   * @private Fetches all tasks that have the same survey_id and entity_id as the survey responses, and have a created_at date that is less than or equal to the data_time of the survey response
+   * @private Fetches all tasks that have the same survey_id and entity_id as the survey responses, and have a created_at date that is less than or equal to the data_time of the survey response, and returns a map of survey response ids to task ids
    */
-  async fetchTaskIdsToUpdate(surveyResponses) {
+  async fetchTasksForSurveyResponses(surveyResponses) {
     const surveyIdAndEntityIdPairs = getUniqueEntries(
       surveyResponses.map(surveyResponse => ({
         surveyId: surveyResponse.survey_id,
@@ -57,23 +57,37 @@ export class TaskCompletionHandler extends ChangeHandler {
       },
     });
 
-    return tasks.map(task => task.id);
+    const mappedTasksToSurveyResponses = {};
+
+    // map the task ids to the survey response ids
+    tasks.forEach(task => {
+      const { survey_id: surveyId, entity_id: entityId, created_at: createdAt, id } = task;
+      const matchingSurveyResponse = surveyResponses.find(
+        surveyResponse =>
+          surveyResponse.survey_id === surveyId &&
+          surveyResponse.entity_id === entityId &&
+          surveyResponse.data_time >= createdAt,
+      );
+      if (matchingSurveyResponse) {
+        mappedTasksToSurveyResponses[id] = matchingSurveyResponse.id;
+      }
+    });
+    return mappedTasksToSurveyResponses;
   }
 
   async handleChanges(transactingModels, changedResponses) {
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
-    const taskIdsToUpdate = await this.fetchTaskIdsToUpdate(changedResponses);
+    const tasksToUpdate = await this.fetchTasksForSurveyResponses(changedResponses);
 
     // if there are no tasks to update, we don't need to do anything
-    if (taskIdsToUpdate.length === 0) return;
+    if (Object.values(tasksToUpdate).length === 0) return;
 
-    // update the tasks to be completed
-    await transactingModels.task.update(
-      {
-        id: taskIdsToUpdate,
-      },
-      { status: 'completed' },
-    );
+    for (const [taskId, surveyResponseId] of Object.entries(tasksToUpdate)) {
+      await this.models.task.updateById(taskId, {
+        status: 'completed',
+        survey_response_id: surveyResponseId,
+      });
+    }
   }
 }

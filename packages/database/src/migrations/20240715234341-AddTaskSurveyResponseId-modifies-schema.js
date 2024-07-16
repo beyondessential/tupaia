@@ -21,8 +21,11 @@ exports.up = async function (db) {
       name: 'task_survey_response_id_fk',
       table: 'survey_response',
       mapping: 'id',
-      // Don't cascade delete, as we want to keep the task even if the survey response is deleted
-      rules: {},
+      // Don't cascade delete, as we want to keep the task even if the survey response is deleted, just set as null
+      rules: {
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+      },
     },
     ifNotExists: true,
   });
