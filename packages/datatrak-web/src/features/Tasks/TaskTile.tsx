@@ -17,7 +17,6 @@ const TileContainer = styled.div`
   justify-content: space-between;
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.palette.divider};
-  //height: 3.75rem;
   width: 100%;
   padding: 0.4rem 0.7rem;
   margin-block-end: 0.5rem;
