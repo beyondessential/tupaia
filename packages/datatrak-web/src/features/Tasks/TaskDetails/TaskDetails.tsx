@@ -3,22 +3,23 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
+import React from 'react';
+import { useNavigate } from 'react-router';
+import { useForm, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer, TextField } from '@tupaia/ui-components';
-import { useEditTask, useTask } from '../../../api';
+import { useEditTask } from '../../../api';
 import { Button } from '../../../components';
 import { useFromLocation } from '../../../utils';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
-import { TaskMetadata } from './TaskMetadata';
 import { ROUTES } from '../../../constants';
+import { Task } from '../../../types';
+import { TaskMetadata } from './TaskMetadata';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -100,16 +101,14 @@ const Form = styled(TaskForm)`
   }
 `;
 
-export const TaskDetails = () => {
-  const { taskId } = useParams();
+export const TaskDetails = ({ task }: { task: Task }) => {
   const navigate = useNavigate();
   const backLink = useFromLocation();
-  const { data: task, isLoading } = useTask(taskId);
 
   const defaultValues = {
-    dueDate: task?.dueDate ?? null,
-    repeatSchedule: task?.repeatSchedule?.frequency ?? null,
-    assigneeId: task?.assigneeId ?? null,
+    dueDate: task.dueDate ?? null,
+    repeatSchedule: task.repeatSchedule?.frequency ?? null,
+    assigneeId: task.assigneeId ?? null,
   };
   const formContext = useForm({
     mode: 'onChange',
@@ -118,7 +117,7 @@ export const TaskDetails = () => {
   const {
     control,
     handleSubmit,
-    setValue,
+    watch,
     formState: { isValid, dirtyFields },
     reset,
   } = formContext;
@@ -127,109 +126,99 @@ export const TaskDetails = () => {
     navigate(backLink || ROUTES.TASKS);
   };
 
-  const { mutate: editTask, isLoading: isSaving } = useEditTask(taskId, navigateBack);
-
-  useEffect(() => {
-    if (!task) return;
-    setValue('dueDate', task?.dueDate, { shouldDirty: false, shouldValidate: true });
-    setValue('repeatSchedule', task?.repeatSchedule?.frequency ?? null);
-    setValue('assigneeId', task?.assigneeId ?? null);
-  }, [JSON.stringify(task)]);
+  const { mutate: editTask, isLoading: isSaving } = useEditTask(task.id, navigateBack);
 
   const isDirty = Object.keys(dirtyFields).length > 0;
 
   const onClearEdit = () => {
-    reset(defaultValues);
+    reset();
   };
 
   const canEditFields =
-    task?.taskStatus !== TaskStatus.completed && task?.taskStatus !== TaskStatus.cancelled;
+    task.taskStatus !== TaskStatus.completed && task.taskStatus !== TaskStatus.cancelled;
+
+  const dueDate = watch('dueDate');
 
   return (
-    <FormProvider {...formContext}>
-      <Form onSubmit={handleSubmit(editTask)}>
-        <LoadingContainer
-          isLoading={isLoading || isSaving}
-          heading={isSaving ? 'Saving task' : 'Loading task'}
-          text=""
-        >
-          <Container>
-            <SideColumn>
-              <ItemWrapper>
-                <TaskMetadata task={task} />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="dueDate"
-                  control={control}
-                  rules={{ required: '*Required' }}
-                  defaultValue={task?.dueDate}
-                  render={({ value, onChange, ref }, { invalid }) => (
-                    <DueDatePicker
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      label="Due date"
-                      disablePast
-                      fullWidth
-                      required
-                      invalid={invalid}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
+    <Form onSubmit={handleSubmit(editTask)}>
+      <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
+        <Container>
+          <SideColumn>
+            <ItemWrapper>
+              <TaskMetadata task={task} />
+            </ItemWrapper>
+            <ItemWrapper>
+              <Controller
+                name="dueDate"
+                control={control}
+                rules={{ required: '*Required' }}
+                defaultValue={defaultValues.dueDate}
+                render={({ value, onChange, ref }, { invalid }) => (
+                  <DueDatePicker
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    label="Due date"
+                    disablePast
+                    fullWidth
+                    required
+                    invalid={invalid}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
+            </ItemWrapper>
 
-              <ItemWrapper>
-                <Controller
-                  name="repeatSchedule"
-                  control={control}
-                  defaultValue={task?.repeatSchedule?.frequency ?? null}
-                  render={({ value, onChange }) => (
-                    <RepeatScheduleInput
-                      value={value}
-                      onChange={onChange}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="assigneeId"
-                  control={control}
-                  defaultValue={task?.assigneeId ?? null}
-                  render={({ value, onChange, ref }) => (
-                    <AssigneeInput
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      countryCode={task?.entity?.countryCode}
-                      surveyCode={task?.survey?.code}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-            </SideColumn>
-            <MainColumn>
-              <CommentsPlaceholder />
-              {/** This is a placeholder for when we add in comments functionality */}
-              <CommentsInput label="Add comment" />
-            </MainColumn>
-            <SideColumn>
-              <ButtonWrapper>
-                <ClearButton disabled={!isDirty} onClick={onClearEdit}>
-                  Clear changes
-                </ClearButton>
-                <Button type="submit" disabled={!isDirty || !isValid} variant="outlined">
-                  Save changes
-                </Button>
-              </ButtonWrapper>
-            </SideColumn>
-          </Container>
-        </LoadingContainer>
-      </Form>
-    </FormProvider>
+            <ItemWrapper>
+              <Controller
+                name="repeatSchedule"
+                control={control}
+                defaultValue={defaultValues.repeatSchedule}
+                render={({ value, onChange }) => (
+                  <RepeatScheduleInput
+                    value={value}
+                    onChange={onChange}
+                    disabled={!canEditFields}
+                    dueDate={dueDate}
+                  />
+                )}
+              />
+            </ItemWrapper>
+            <ItemWrapper>
+              <Controller
+                name="assigneeId"
+                control={control}
+                defaultValue={defaultValues.assigneeId}
+                render={({ value, onChange, ref }) => (
+                  <AssigneeInput
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    countryCode={task.entity.countryCode}
+                    surveyCode={task.survey.code}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
+            </ItemWrapper>
+          </SideColumn>
+          <MainColumn>
+            <CommentsPlaceholder />
+            {/** This is a placeholder for when we add in comments functionality */}
+            <CommentsInput label="Add comment" />
+          </MainColumn>
+          <SideColumn>
+            <ButtonWrapper>
+              <ClearButton disabled={!isDirty} onClick={onClearEdit}>
+                Clear changes
+              </ClearButton>
+              <Button type="submit" disabled={!isDirty || !isValid} variant="outlined">
+                Save changes
+              </Button>
+            </ButtonWrapper>
+          </SideColumn>
+        </Container>
+      </LoadingContainer>
+    </Form>
   );
 };

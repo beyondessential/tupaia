@@ -16,6 +16,7 @@ import { TaskActionsMenu } from '../TaskActionsMenu';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { LinkCell } from './LinkCell';
+import { FilterToolbar } from './FilterToolbar';
 
 const Container = styled.div`
   display: flex;
@@ -204,6 +205,7 @@ export const TasksTable = () => {
 
   return (
     <Container>
+      <FilterToolbar />
       <FilterableTable
         columns={columns}
         data={isLoading ? [] : data}

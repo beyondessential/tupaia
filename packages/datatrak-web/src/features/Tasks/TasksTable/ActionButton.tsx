@@ -55,13 +55,14 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
     surveyCode: survey.code,
     countryCode: entity.countryCode,
   });
+
   return (
     <ActionButtonComponent
       component={Link}
       to={surveyLink}
       variant="contained"
       state={{
-        from: JSON.stringify(location),
+        from: location.pathname,
       }}
     >
       Complete task
