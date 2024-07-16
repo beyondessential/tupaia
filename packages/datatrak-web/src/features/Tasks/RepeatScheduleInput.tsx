@@ -5,7 +5,6 @@
 import React, { useEffect } from 'react';
 import { FormControl } from '@material-ui/core';
 import { format, lastDayOfMonth } from 'date-fns';
-import { useWatch } from 'react-hook-form';
 import { Autocomplete } from '../../components';
 
 export const getRepeatScheduleOptions = dueDate => {
@@ -66,14 +65,15 @@ interface RepeatScheduleInputProps {
     }> | null,
   ) => void;
   disabled?: boolean;
+  dueDate?: string | null;
 }
 
 export const RepeatScheduleInput = ({
   value = '',
   onChange,
   disabled,
+  dueDate,
 }: RepeatScheduleInputProps) => {
-  const { dueDate } = useWatch('dueDate');
   const repeatScheduleOptions = getRepeatScheduleOptions(dueDate);
 
   useEffect(() => {

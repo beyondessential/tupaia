@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
@@ -112,10 +112,12 @@ export const TaskDetails = ({ task }: { task: Task }) => {
   };
   const formContext = useForm({
     mode: 'onChange',
+    defaultValues,
   });
   const {
     control,
     handleSubmit,
+    watch,
     formState: { isValid, dirtyFields },
     reset,
   } = formContext;
@@ -135,87 +137,88 @@ export const TaskDetails = ({ task }: { task: Task }) => {
   const canEditFields =
     task.taskStatus !== TaskStatus.completed && task.taskStatus !== TaskStatus.cancelled;
 
-  return (
-    <FormProvider {...formContext}>
-      <Form onSubmit={handleSubmit(editTask)}>
-        <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
-          <Container>
-            <SideColumn>
-              <ItemWrapper>
-                <TaskMetadata task={task} />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="dueDate"
-                  control={control}
-                  rules={{ required: '*Required' }}
-                  defaultValue={defaultValues.dueDate}
-                  render={({ value, onChange, ref }, { invalid }) => (
-                    <DueDatePicker
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      label="Due date"
-                      disablePast
-                      fullWidth
-                      required
-                      invalid={invalid}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
+  const dueDate = watch('dueDate');
 
-              <ItemWrapper>
-                <Controller
-                  name="repeatSchedule"
-                  control={control}
-                  defaultValue={defaultValues.repeatSchedule}
-                  render={({ value, onChange }) => (
-                    <RepeatScheduleInput
-                      value={value}
-                      onChange={onChange}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="assigneeId"
-                  control={control}
-                  defaultValue={defaultValues.assigneeId}
-                  render={({ value, onChange, ref }) => (
-                    <AssigneeInput
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      countryCode={task.entity.countryCode}
-                      surveyCode={task.survey.code}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-            </SideColumn>
-            <MainColumn>
-              <CommentsPlaceholder />
-              {/** This is a placeholder for when we add in comments functionality */}
-              <CommentsInput label="Add comment" />
-            </MainColumn>
-            <SideColumn>
-              <ButtonWrapper>
-                <ClearButton disabled={!isDirty} onClick={onClearEdit}>
-                  Clear changes
-                </ClearButton>
-                <Button type="submit" disabled={!isDirty || !isValid} variant="outlined">
-                  Save changes
-                </Button>
-              </ButtonWrapper>
-            </SideColumn>
-          </Container>
-        </LoadingContainer>
-      </Form>
-    </FormProvider>
+  return (
+    <Form onSubmit={handleSubmit(editTask)}>
+      <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
+        <Container>
+          <SideColumn>
+            <ItemWrapper>
+              <TaskMetadata task={task} />
+            </ItemWrapper>
+            <ItemWrapper>
+              <Controller
+                name="dueDate"
+                control={control}
+                rules={{ required: '*Required' }}
+                defaultValue={defaultValues.dueDate}
+                render={({ value, onChange, ref }, { invalid }) => (
+                  <DueDatePicker
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    label="Due date"
+                    disablePast
+                    fullWidth
+                    required
+                    invalid={invalid}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
+            </ItemWrapper>
+
+            <ItemWrapper>
+              <Controller
+                name="repeatSchedule"
+                control={control}
+                defaultValue={defaultValues.repeatSchedule}
+                render={({ value, onChange }) => (
+                  <RepeatScheduleInput
+                    value={value}
+                    onChange={onChange}
+                    disabled={!canEditFields}
+                    dueDate={dueDate}
+                  />
+                )}
+              />
+            </ItemWrapper>
+            <ItemWrapper>
+              <Controller
+                name="assigneeId"
+                control={control}
+                defaultValue={defaultValues.assigneeId}
+                render={({ value, onChange, ref }) => (
+                  <AssigneeInput
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    countryCode={task.entity.countryCode}
+                    surveyCode={task.survey.code}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
+            </ItemWrapper>
+          </SideColumn>
+          <MainColumn>
+            <CommentsPlaceholder />
+            {/** This is a placeholder for when we add in comments functionality */}
+            <CommentsInput label="Add comment" />
+          </MainColumn>
+          <SideColumn>
+            <ButtonWrapper>
+              <ClearButton disabled={!isDirty} onClick={onClearEdit}>
+                Clear changes
+              </ClearButton>
+              <Button type="submit" disabled={!isDirty || !isValid} variant="outlined">
+                Save changes
+              </Button>
+            </ButtonWrapper>
+          </SideColumn>
+        </Container>
+      </LoadingContainer>
+    </Form>
   );
 };

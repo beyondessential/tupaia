@@ -174,6 +174,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   }, [selectedCountry?.code]);
 
   const surveyCode = watch('surveyCode');
+  const dueDate = watch('dueDate');
 
   return (
     <Modal
@@ -231,6 +232,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                         inputRef={ref}
                         name={name}
                         invalid={invalid}
+                        surveyCode={surveyCode}
                       />
                     </ListSelectWrapper>
                   );
@@ -263,7 +265,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                   name="repeatSchedule"
                   control={control}
                   render={({ onChange, value }) => (
-                    <RepeatScheduleInput value={value} onChange={onChange} />
+                    <RepeatScheduleInput value={value} onChange={onChange} dueDate={dueDate} />
                   )}
                 />
               </InputRow>

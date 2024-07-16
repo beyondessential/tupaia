@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { useWatch } from 'react-hook-form';
 import { Country, EntityType, QuestionType } from '@tupaia/types';
 import { EntitySelector } from '../../EntitySelector';
 import { useCurrentUserContext, useSurvey } from '../../../api';
@@ -17,6 +16,7 @@ interface EntityInputProps {
   inputRef?: React.Ref<any>;
   name: string;
   invalid?: boolean;
+  surveyCode?: string;
 }
 
 export const EntityInput = ({
@@ -26,8 +26,8 @@ export const EntityInput = ({
   inputRef,
   name,
   invalid,
+  surveyCode,
 }: EntityInputProps) => {
-  const { surveyCode } = useWatch('surveyCode');
   const user = useCurrentUserContext();
   const { data: survey, isLoading: isLoadingSurvey } = useSurvey(surveyCode);
   const getPrimaryEntityQuestionConfig = () => {
