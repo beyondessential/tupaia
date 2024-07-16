@@ -94,10 +94,10 @@ export const processSurveyResponse = async (
             `Unexpected data type for EntityQuestion answer, expected string but got: ${typeof answer}`,
           );
         }
-        surveyResponse.recent_entities.push(answer);
       } else {
         throw new Error(`EntityQuestion is a required field`);
       }
+      surveyResponse.recent_entities.push(answer);
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;
