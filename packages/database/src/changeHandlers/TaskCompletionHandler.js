@@ -31,7 +31,7 @@ export class TaskCompletionHandler extends ChangeHandler {
   }
 
   /**
-   * @private Fetches all tasks that have the same survey_id and entity_id as the survey responses, and have a created_at date that is less than or equal to the data_time of the survey response, and returns a map of survey response ids to task ids
+   * @private Fetches all tasks that have the same survey_id and entity_id as the survey responses, and have a created_at date that is less than or equal to the data_time of the survey response
    */
   async fetchTasksForSurveyResponses(surveyResponses) {
     const surveyIdAndEntityIdPairs = getUniqueEntries(
