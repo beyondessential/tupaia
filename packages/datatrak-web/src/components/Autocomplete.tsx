@@ -39,10 +39,8 @@ const SelectedOption = styled(OptionWrapper)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 0.425rem;
-  padding-right: 0.425rem;
-  margin-left: 0.45rem;
-  margin-right: 0.45rem;
+  padding-inline: 0.425rem;
+  margin-inline: 0.45rem;
   border-radius: 3px;
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   .MuiSvgIcon-root {
@@ -56,8 +54,9 @@ const Label = styled.span`
 `;
 
 const Code = styled.span`
-  margin-left: 0.45rem;
-  margin-right: 0.45rem;
+  margin-inline: 0.45rem;
+  padding-left: 0.45rem;
+  border-left: 1px solid ${props => props.theme.palette.text.secondary};
   color: ${props => props.theme.palette.text.secondary};
   flex: 1;
 `;
@@ -70,7 +69,7 @@ const DisplayOption = ({ option, state }) => {
     ) : (
       <>
         <Label>{option.label || option.value}</Label>
-        {option.code ? <Code>{'| ' + option.code}</Code> : null}
+        {option.secondaryLabel ? <Code>{option.secondaryLabel}</Code> : null}
       </>
     );
 
@@ -86,9 +85,9 @@ const DisplayOption = ({ option, state }) => {
 
 export const Autocomplete = styled(BaseAutocomplete).attrs(props => ({
   muiProps: {
-    ...(props.muiProps || {}),
     renderOption: (option, state) => <DisplayOption option={option} state={state} />,
     PaperComponent: StyledPaper,
+    ...(props.muiProps || {}),
   },
 }))`
   width: 100%;
