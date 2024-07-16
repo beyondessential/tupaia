@@ -12,7 +12,7 @@ import { Typography } from '@material-ui/core';
 import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
-import { withConnectedEditor } from '../../../editor';
+import { withConnectedEditor, useValidationScroll } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
@@ -83,7 +83,7 @@ const SectionBlock = styled.div`
 const RowSection = styled(SectionBlock)`
   > div {
     display: flex;
-    > fieldset:last-child {
+    > div:last-child {
       margin-left: 1.2rem;
     }
   }
@@ -112,6 +112,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     onSave,
     isLoading,
     resetEditorToDefaultState,
+    validationErrors,
   }) => {
     const [editQuestionsModalOpen, setEditQuestionsModalOpen] = useState(false);
     const errorAlertRef = useRef(null);
@@ -126,6 +127,26 @@ const EditSurveyPageComponent = withConnectedEditor(
     }, [params.id, JSON.stringify(parent)]);
 
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
+
+    // need to explicity state the path here because using '../../' doesn't apply the search state
+    const { to, newState } = useLinkToPreviousSearchState('/surveys');
+
+    const navigateBack = () => {
+      navigate(to, {
+        state: newState,
+      });
+      resetEditorToDefaultState();
+    };
+    const handleSave = () => {
+      onSave(files, navigateBack);
+    };
+
+    const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
+      handleSave,
+      onEditField,
+      validationErrors,
+      files,
+    );
 
     const fieldsBySource = keyBy(fields, 'source');
 
@@ -169,18 +190,9 @@ const EditSurveyPageComponent = withConnectedEditor(
           ]
         : [];
 
-    // need to explicity state the path here because using '../../' doesn't apply the search state
-    const { to, newState } = useLinkToPreviousSearchState('/surveys');
-
-    const navigateBack = () => {
-      navigate(to, {
-        state: newState,
-      });
-      resetEditorToDefaultState();
-    };
-    const handleSave = () => {
-      onSave(files, navigateBack);
-    };
+    const initialFileName = Array.isArray(recordData?.surveyQuestions)
+      ? null
+      : recordData?.surveyQuestions;
 
     // on error, scroll to the error alert
     useEffect(() => {
@@ -240,6 +252,7 @@ const EditSurveyPageComponent = withConnectedEditor(
                 buttonVariant="outlined"
                 ariaDescribedBy="survey-questions-desc"
                 ariaLabelledBy="survey-questions-label"
+                initialFileName={initialFileName}
               />
             </ButtonGroup>
           </Section>
@@ -247,7 +260,7 @@ const EditSurveyPageComponent = withConnectedEditor(
             <FieldsEditor
               fields={orderedFields}
               recordData={recordData}
-              onEditField={onEditField}
+              onEditField={onEditWithTouched}
             />
           </Section>
         </Form>
@@ -258,7 +271,7 @@ const EditSurveyPageComponent = withConnectedEditor(
             variant="contained"
             color="primary"
             disabled={isUnchanged || isLoading}
-            onClick={handleSave}
+            onClick={onSaveWithTouched}
           >
             Save changes
           </Button>
