@@ -24,7 +24,7 @@ export const TaskDetailsPage = () => {
   const { data: task } = useTask(taskId);
 
   const showCompleteButton =
-    task && task?.taskStatus !== TaskStatus.completed && task?.taskStatus !== TaskStatus.cancelled;
+    task && task.taskStatus !== TaskStatus.completed && task.taskStatus !== TaskStatus.cancelled;
 
   const surveyUrl = task
     ? generatePath(ROUTES.SURVEY_SCREEN, {

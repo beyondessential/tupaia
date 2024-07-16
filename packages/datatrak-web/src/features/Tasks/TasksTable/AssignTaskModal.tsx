@@ -11,9 +11,9 @@ import { useEditTask } from '../../../api';
 import { Task } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
-import { getRepeatScheduleOptions } from '../CreateTaskModal/RepeatScheduleInput';
 import { StatusPill } from '../StatusPill';
 import { displayDate } from '../../../utils';
+import { getRepeatScheduleOptions } from '../RepeatScheduleInput';
 
 const Container = styled(ModalCenteredContent)`
   width: 26rem;

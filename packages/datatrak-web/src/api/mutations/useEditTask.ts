@@ -21,7 +21,7 @@ export const useEditTask = (taskId?: Task['id'], onSuccess?: () => void) => {
       onSuccess: () => {
         if (onSuccess) onSuccess();
         queryClient.invalidateQueries('tasks');
-        queryClient.invalidateQueries(['task', taskId]);
+        queryClient.invalidateQueries(['tasks', taskId]);
       },
     },
   );
