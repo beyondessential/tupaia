@@ -50,9 +50,29 @@ const SelectedOption = styled(OptionWrapper)`
   }
 `;
 
+const Label = styled.span`
+  font-style: ${props => props.theme.typography.fontWeightBold};
+  color: ${props => props.theme.palette.text.primary};
+`;
+
+const Code = styled.span`
+  margin-left: 0.45rem;
+  margin-right: 0.45rem;
+  color: ${props => props.theme.palette.text.secondary};
+  flex: 1;
+`;
+
 const DisplayOption = ({ option, state }) => {
   const { selected } = state;
-  const label = typeof option === 'string' ? option : option.label || option.value;
+  const label =
+    typeof option === 'string' ? (
+      option
+    ) : (
+      <>
+        <Label>{option.label || option.value}</Label>
+        {option.code ? <Code>{'| ' + option.code}</Code> : null}
+      </>
+    );
 
   if (selected)
     return (
