@@ -24,7 +24,7 @@ const SectionContainer = styled.section`
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 3rem 1rem 2.2rem;
-    margin-top: 2.1rem !important;
+    margin-block-start: 2.1rem !important;
   }
 `;
 
@@ -32,7 +32,7 @@ const SectionContent = styled.div`
   display: flex;
   flex-direction: column-reverse;
   width: 70%;
-  padding-right: 2rem;
+  padding-inline-end: 2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     width: 100%;
@@ -42,13 +42,12 @@ const SectionContent = styled.div`
 
 const ButtonLink = styled(BaseButtonLink)`
   font-size: 1rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-inline: 0.5rem;
   & ~ .MuiButtonBase-root {
-    margin-left: 0; // override default margin from ui-components
+    margin-inline-start: 0; // override default margin from ui-components
   }
   &:last-child {
-    margin-top: 1rem;
+    margin-block-start: 1rem;
   }
 `;
 
@@ -66,24 +65,23 @@ const ButtonWrapper = styled.div`
     line-height: 1.1;
     padding: 0.75rem;
     &:last-child {
-      margin-top: 0.625rem;
+      margin-block-start: 0.625rem;
     }
   }
 `;
 
 const TextWrapper = styled.div`
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-bottom: 0;
-    padding-right: 4rem;
+    margin-block-end: 0;
     max-width: 75%;
-    padding-left: 2rem;
+    padding-inline: 2rem 4rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-right: 1rem;
+    padding-inline-end: 1rem;
     max-width: 80%;
   }
 `;

@@ -28,7 +28,7 @@ const Text = styled(Typography)`
   text-align: center;
   font-size: 0.93rem;
   line-height: 1.5;
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
 `;
 
 const Button = styled(UIButton)`

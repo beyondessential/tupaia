@@ -72,8 +72,10 @@ const CommentsContainer = styled.div`
   }
 `;
 
-// Todo: Update with actual comments count and set default to 0
-const Comments = ({ commentsCount = 2 }) => {
+const Comments = ({ commentsCount = 0 }) => {
+  if (!commentsCount) {
+    return null;
+  }
   return (
     <CommentsContainer>
       <ChatIcon />
@@ -100,7 +102,7 @@ export const TaskTile = ({ task }) => {
       </TileLeft>
       <TileRight>
         <ButtonLink to={surveyLink} component={Link}>
-          Complete
+          Complete task
         </ButtonLink>
       </TileRight>
     </TileContainer>
