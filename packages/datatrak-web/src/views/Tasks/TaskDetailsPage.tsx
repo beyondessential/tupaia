@@ -24,9 +24,6 @@ export const TaskDetailsPage = () => {
   const { taskId } = useParams();
   const { data: task, isLoading } = useTask(taskId);
 
-  const showCompleteButton =
-    task && task.taskStatus !== TaskStatus.completed && task.taskStatus !== TaskStatus.cancelled;
-
   const surveyUrl = task
     ? generatePath(ROUTES.SURVEY_SCREEN, {
         countryCode: task?.entity?.countryCode,
@@ -36,17 +33,37 @@ export const TaskDetailsPage = () => {
     : '';
 
   const from = useFromLocation();
+
+  const ButtonComponent = () => {
+    if (!task) return null;
+    switch (task.taskStatus) {
+      case TaskStatus.cancelled: {
+        return null;
+      }
+      case TaskStatus.completed: {
+        return (
+          <Button to={`?responseId=${task.surveyResponseId}`} variant="outlined">
+            View completed survey
+          </Button>
+        );
+      }
+      default: {
+        return (
+          <Button to={surveyUrl} state={{ from }}>
+            Complete
+          </Button>
+        );
+      }
+    }
+  };
+
   return (
     <>
       <TaskPageHeader title="Task details">
-        {showCompleteButton && (
-          <ButtonWrapper>
-            <Button to={surveyUrl} state={{ from }}>
-              Complete
-            </Button>
-            <TaskActionsMenu {...task} />
-          </ButtonWrapper>
-        )}
+        <ButtonWrapper>
+          <ButtonComponent />
+          {task && <TaskActionsMenu {...task} />}
+        </ButtonWrapper>
       </TaskPageHeader>
       {isLoading && <SpinningLoader />}
       {task && <TaskDetails task={task} />}
