@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-export const displayDate = (date?: Date) => {
+export const displayDate = (date?: Date | null) => {
   if (!date) {
     return '';
   }
