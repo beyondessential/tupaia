@@ -14,10 +14,11 @@ import {
   ModalHeader,
   SpinningLoader,
 } from '@tupaia/ui-components';
-import { useSurveyResponseWithForm } from '../api/queries';
+import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
+import { useSurveyResponse } from '../api/queries';
 import { Button, SurveyTickIcon } from '../components';
 import { displayDate } from '../utils';
-import { SurveyReviewSection } from './Survey/Components';
+import { SurveyReviewSection, useSurveyResponseWithForm } from './Survey';
 import { SurveyContext } from '.';
 
 const Header = styled.div`
@@ -63,28 +64,30 @@ const getSubHeadingText = surveyResponse => {
     return null;
   }
   const date = displayDate(surveyResponse.dataTime);
-  const country = surveyResponse?.countryName;
-  const entity = surveyResponse?.entityName;
+  const country = surveyResponse.countryName;
+  const entity = surveyResponse.entityName;
   const location = country === entity ? country : `${entity} | ${country}`;
   return `${location} ${date}`;
 };
+interface SurveyResponseModalContentProps {
+  onClose: () => void;
+  surveyResponse?: DatatrakWebSingleSurveyResponseRequest.ResBody;
+  error?: Error;
+  isLoading?: boolean;
+}
 
 // Needs to be wrapped in a context provider to provide the form data to the form
-const SurveyResponseModalContent = ({ onClose }: { onClose: () => void }) => {
-  const [urlSearchParams] = useSearchParams();
-
-  const surveyResponseId = urlSearchParams.get('responseId');
-
-  const {
-    data: surveyResponse,
-    isLoading,
-    isFetched,
-    error,
-  } = useSurveyResponseWithForm(surveyResponseId);
+const SurveyResponseModalContent = ({
+  onClose,
+  isLoading,
+  surveyResponse,
+  error,
+}: SurveyResponseModalContentProps) => {
+  const { surveyLoading } = useSurveyResponseWithForm(surveyResponse);
 
   const subHeading = getSubHeadingText(surveyResponse);
 
-  const showLoading = isLoading || !isFetched;
+  const showLoading = isLoading || surveyLoading;
 
   return (
     <>
@@ -115,14 +118,14 @@ export const SurveyResponseModal = () => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
   const surveyResponseId = urlSearchParams.get('responseId');
-  const surveyCode = urlSearchParams.get('surveyCode');
-  const countryCode = urlSearchParams.get('countryCode');
+
+  const { data: surveyResponse, isLoading, error, isFetched } = useSurveyResponse(surveyResponseId);
+
+  const isLoadingSurveyResponse = isLoading || !isFetched;
 
   const onClose = () => {
     // Redirect to the previous page by removing all the query params
     urlSearchParams.delete('responseId');
-    urlSearchParams.delete('surveyCode');
-    urlSearchParams.delete('countryCode');
     setUrlSearchParams(urlSearchParams);
   };
 
@@ -131,8 +134,16 @@ export const SurveyResponseModal = () => {
   return (
     <Dialog open onClose={onClose} maxWidth="md">
       <FormProvider {...formContext}>
-        <SurveyContext surveyCode={surveyCode} countryCode={countryCode}>
-          <SurveyResponseModalContent onClose={onClose} />
+        <SurveyContext
+          surveyCode={surveyResponse?.surveyCode}
+          countryCode={surveyResponse?.countryCode}
+        >
+          <SurveyResponseModalContent
+            onClose={onClose}
+            isLoading={isLoadingSurveyResponse}
+            surveyResponse={surveyResponse}
+            error={error as Error}
+          />
         </SurveyContext>
       </FormProvider>
     </Dialog>
