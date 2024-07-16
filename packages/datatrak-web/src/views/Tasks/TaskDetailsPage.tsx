@@ -3,11 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { generatePath, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
-import { SpinningLoader } from '@tupaia/ui-components';
+import { Modal, ModalCenteredContent, SpinningLoader } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
@@ -20,7 +21,32 @@ const ButtonWrapper = styled.div`
   flex: 1;
 `;
 
+const ErrorModal = ({ isOpen, onClose }) => {
+  return (
+    <Modal
+      title="Error loading survey response"
+      isOpen={isOpen}
+      onClose={onClose}
+      buttons={[
+        {
+          text: 'Close',
+          onClick: onClose,
+          id: 'close',
+        },
+      ]}
+    >
+      <ModalCenteredContent>
+        <Typography>
+          This response has since been deleted in the admin panel. Please contact your system
+          administrator for further questions.
+        </Typography>
+      </ModalCenteredContent>
+    </Modal>
+  );
+};
+
 export const TaskDetailsPage = () => {
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
   const { taskId } = useParams();
   const { data: task, isLoading } = useTask(taskId);
 
@@ -36,25 +62,25 @@ export const TaskDetailsPage = () => {
 
   const ButtonComponent = () => {
     if (!task) return null;
-    switch (task.taskStatus) {
-      case TaskStatus.cancelled: {
-        return null;
-      }
-      case TaskStatus.completed: {
+    if (task.taskStatus === TaskStatus.cancelled) return null;
+    if (task.taskStatus === TaskStatus.completed) {
+      if (!task.surveyResponseId)
         return (
-          <Button to={`?responseId=${task.surveyResponseId}`} variant="outlined">
+          <Button onClick={() => setErrorModalOpen(true)} variant="outlined">
             View completed survey
           </Button>
         );
-      }
-      default: {
-        return (
-          <Button to={surveyUrl} state={{ from }}>
-            Complete
-          </Button>
-        );
-      }
+      return (
+        <Button to={`?responseId=${task.surveyResponseId}`} variant="outlined">
+          View completed survey
+        </Button>
+      );
     }
+    return (
+      <Button to={surveyUrl} state={{ from }}>
+        Complete
+      </Button>
+    );
   };
 
   return (
@@ -67,6 +93,7 @@ export const TaskDetailsPage = () => {
       </TaskPageHeader>
       {isLoading && <SpinningLoader />}
       {task && <TaskDetails task={task} />}
+      <ErrorModal isOpen={errorModalOpen} onClose={() => setErrorModalOpen(false)} />
     </>
   );
 };
