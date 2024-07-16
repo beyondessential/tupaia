@@ -88,16 +88,17 @@ export const processSurveyResponse = async (
           surveyResponse.qr_codes_to_create?.push(entityObj);
         }
       }
+      if (type === QuestionType.PrimaryEntity && !answer) {
+        throw new Error(`Primary Entity Question is a required field`);
+      }
       if (answer) {
         if (typeof answer !== 'string') {
           throw new Error(
             `Unexpected data type for EntityQuestion answer, expected string but got: ${typeof answer}`,
           );
         }
-      } else {
-        throw new Error(`EntityQuestion is a required field`);
+        surveyResponse.recent_entities.push(answer);
       }
-      surveyResponse.recent_entities.push(answer);
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;
