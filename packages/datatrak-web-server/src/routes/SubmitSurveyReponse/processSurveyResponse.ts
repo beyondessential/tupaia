@@ -95,6 +95,8 @@ export const processSurveyResponse = async (
           );
         }
         surveyResponse.recent_entities.push(answer);
+      } else {
+        throw new Error(`EntityQuestion is a required field`);
       }
     }
     if (answer === undefined || answer === null || answer === '') {
