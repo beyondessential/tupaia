@@ -5,7 +5,7 @@
 
 import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
-import { setTaskFilterSetting } from '../../utils';
+import { removeTaskFilterSetting } from '../../utils';
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
@@ -13,9 +13,9 @@ export const useLogout = () => {
   return useMutation('logout', () => post('logout'), {
     onSuccess: () => {
       queryClient.invalidateQueries();
-      setTaskFilterSetting('all_assignees_tasks', false);
-      setTaskFilterSetting('show_completed_tasks', false);
-      setTaskFilterSetting('show_cancelled_tasks', false);
+      removeTaskFilterSetting('all_assignees_tasks');
+      removeTaskFilterSetting('show_completed_tasks');
+      removeTaskFilterSetting('show_cancelled_tasks');
     },
   });
 };
