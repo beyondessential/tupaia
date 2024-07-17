@@ -51,10 +51,12 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
     );
   }
 
-  const surveyLink = generatePath(ROUTES.SURVEY, {
+  const path = generatePath(ROUTES.SURVEY, {
     surveyCode: survey.code,
     countryCode: entity.countryCode,
   });
+  // Link needs to include page number because if the redirect happens, the "from" state is lost
+  const surveyLink = `${path}/1`;
 
   return (
     <ActionButtonComponent
