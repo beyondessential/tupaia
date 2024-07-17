@@ -17,7 +17,8 @@ const useInitialFile = (surveyId, isOpen, uploadedFile = null) => {
     try {
       setIsLoading(true);
       const blob = await api.download(`export/surveys/${surveyId}`, {}, null, true);
-      const arrayBuffer = await blob.arrayBuffer();
+      // convert the blob to an array buffer
+      const arrayBuffer = new Uint8Array(await blob.arrayBuffer());
 
       setFile(arrayBuffer);
     } catch (e) {
@@ -45,10 +46,12 @@ export const useSpreadsheetJSON = (surveyId, isOpen, uploadedFile = null) => {
 
   useEffect(() => {
     if (!file || json) return;
+
     const wb = xlsx.read(file, { type: 'array' });
     const sheetJson = xlsx.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+
     setJson([...sheetJson]);
-  }, [file]);
+  }, [JSON.stringify(file)]);
 
   useEffect(() => {
     if (!json || initialData?.current) return;

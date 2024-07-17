@@ -11799,7 +11799,7 @@ __metadata:
     styled-components: ^5.1.0
     uuid: ^3.2.1
     vite: ^4.5.3
-    xlsx: ^0.10.9
+    xlsx: ^0.17.0
   languageName: unknown
   linkType: soft
 

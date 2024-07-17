@@ -19,6 +19,7 @@ import {
 import { Breadcrumbs } from '../../../layout';
 import { Spreadsheet } from './Spreadsheet';
 import { useSpreadsheetJSON } from './useSpreadsheetJSON';
+import download from 'downloadjs';
 
 const StyledDialog = styled(Dialog)`
   // remove the breadcrumbs border
@@ -57,17 +58,22 @@ export const EditSurveyQuestionsModal = ({
     onClose();
   };
 
-  const onSaveFile = () => {
+  const onSaveFile = async () => {
     const wb = xlsx.utils.book_new();
     const ws = xlsx.utils.json_to_sheet(json);
     xlsx.utils.book_append_sheet(wb, ws, survey.name);
-    const wbOutput = xlsx.write(wb, { bookType: 'xlsx', type: 'array' });
-    const file = new Blob([wbOutput], { type: 'application/octet-stream' });
-    const fileName = `${survey?.name}_questions.xlsx`;
+    const wbOutput = xlsx.write(wb, { bookType: 'xlsx', type: 'base64' });
+    const fullBase64 = `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${wbOutput}`;
 
+    // convert to blob
+    const base64Response = await fetch(fullBase64);
+
+    const blob = await base64Response.blob();
+
+    const fileName = `${survey.name}.xlsx`;
     onSave(
       {
-        surveyQuestions: file,
+        surveyQuestions: blob,
       },
       onClose,
       {
