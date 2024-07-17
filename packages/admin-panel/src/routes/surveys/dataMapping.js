@@ -15,14 +15,17 @@ const FIELDS = [
   {
     Header: 'Data element',
     source: 'data_element_code',
+    required: true,
   },
   {
     Header: 'Country code',
     source: 'country_code',
+    required: true,
   },
   {
     Header: 'Service type',
     source: 'service_type',
+    required: true,
     editConfig: {
       options: SERVICE_TYPE_OPTIONS,
     },
