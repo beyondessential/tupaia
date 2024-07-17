@@ -19,7 +19,6 @@ import {
 import { Breadcrumbs } from '../../../layout';
 import { Spreadsheet } from './Spreadsheet';
 import { useSpreadsheetJSON } from './useSpreadsheetJSON';
-import download from 'downloadjs';
 
 const StyledDialog = styled(Dialog)`
   // remove the breadcrumbs border
