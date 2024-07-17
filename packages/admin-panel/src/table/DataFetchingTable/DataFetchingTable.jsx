@@ -109,6 +109,7 @@ const DataFetchingTableComponent = memo(
     actionLabel,
     defaultFilters,
     editorState,
+    defaultSorting,
   }) => {
     const formattedColumns = useMemo(() => {
       const cols = columns.map(column => formatColumnForReactTable(column));
@@ -159,19 +160,27 @@ const DataFetchingTableComponent = memo(
       return [...nonButtonColumns, singleButtonColumn];
     }, [JSON.stringify(columns)]);
 
+    const getSortingToUse = () => {
+      // If there is no sorting, return the default sorting, if it exists, otherwise return an empty array
+      if (!sorting || sorting.length === 0) return defaultSorting || [];
+      return sorting;
+    };
+
+    const sortingToUse = getSortingToUse();
+
     // Listen for changes in filters in the URL and refresh the data accordingly
     const { filters, onChangeFilters } = useColumnFilters(defaultFilters);
 
     useEffect(() => {
       // if the page index is already 0, we can just refresh the data
       if (pageIndex === 0) {
-        onRefreshData(filters, sorting, pageIndex, pageSize);
+        onRefreshData(filters, sortingToUse, pageIndex, pageSize);
         // if the page index is not 0, we need to reset it to 0, which will trigger a refresh
       } else onPageChange(0);
-    }, [JSON.stringify(filters), JSON.stringify(sorting)]);
+    }, [JSON.stringify(filters), JSON.stringify(sortingToUse)]);
 
     useEffect(() => {
-      onRefreshData(filters, sorting, pageIndex, pageSize);
+      onRefreshData(filters, sortingToUse, pageIndex, pageSize);
     }, [pageSize, pageIndex]);
 
     // when a delete is successful, the confirmActionMessage will be set to null. Refresh the data here
@@ -179,12 +188,12 @@ const DataFetchingTableComponent = memo(
       // Don't refresh data if there is a confirmActionMessage or errorMessage, or if data is being changed on the server
       if (confirmActionMessage || errorMessage || isChangingDataOnServer) return;
 
-      onRefreshData(filters, sorting, pageIndex, pageSize);
+      onRefreshData(filters, sortingToUse, pageIndex, pageSize);
     }, [confirmActionMessage, errorMessage, isChangingDataOnServer]);
 
     useEffect(() => {
       if (editorState?.isOpen) return;
-      onRefreshData(filters, sorting, pageIndex, pageSize);
+      onRefreshData(filters, sortingToUse, pageIndex, pageSize);
     }, [editorState?.isOpen]);
 
     const isLoading = isFetchingData || isChangingDataOnServer;
@@ -211,7 +220,7 @@ const DataFetchingTableComponent = memo(
           isLoading={isChangingDataOnServer}
           pageIndex={pageIndex}
           pageSize={pageSize}
-          sorting={sorting}
+          sorting={sortingToUse}
           numberOfPages={numberOfPages}
           onChangeFilters={onChangeFilters}
           filters={filters}
@@ -271,6 +280,7 @@ DataFetchingTableComponent.propTypes = {
   actionLabel: PropTypes.string,
   defaultFilters: PropTypes.array,
   editorState: PropTypes.object,
+  defaultSorting: PropTypes.array,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -288,6 +298,7 @@ DataFetchingTableComponent.defaultProps = {
   actionLabel: 'Action',
   defaultFilters: [],
   editorState: {},
+  defaultSorting: [],
 };
 
 const mapStateToProps = (state, { reduxId, ...ownProps }) => ({

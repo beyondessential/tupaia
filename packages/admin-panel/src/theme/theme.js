@@ -136,6 +136,12 @@ const overrides = {
       fontSize: '0.875rem',
       fontWeight: 500,
       color: palette.text.primary,
+      '&.Mui-error': {
+        color: palette.text.primary,
+      },
+    },
+    asterisk: {
+      color: palette.error.main,
     },
     asterisk: {
       color: palette.error.main,

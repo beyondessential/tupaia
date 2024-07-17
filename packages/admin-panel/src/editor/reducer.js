@@ -12,6 +12,7 @@ import {
   EDITOR_DISMISS,
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
+  SET_VALIDATION_ERRORS,
   LOAD_EDITOR,
   OPEN_EDIT_MODAL,
   RESET_EDITS,
@@ -29,6 +30,7 @@ const defaultState = {
   title: 'Edit',
   editedFields: {},
   extraDialogProps: {},
+  validationErrors: {},
 };
 
 const stateChanges = {
@@ -65,11 +67,26 @@ const stateChanges = {
     return { ...payload, error: null };
   },
   [OPEN_EDIT_MODAL]: ({ recordId }) => ({ recordId, isOpen: true }),
-  [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields }) => ({
+  [EDITOR_FIELD_EDIT]: (
+    { fieldKey, newValue, otherValidationErrorsToClear = [] },
+    { editedFields, validationErrors },
+  ) => ({
     editedFields: {
       ...editedFields,
       [fieldKey]: newValue,
     },
+    validationErrors: {
+      ...validationErrors,
+      [fieldKey]: null, // Clear the validation error for this field as the user has made a change
+      // clear nested validation errors when editing a field
+      ...otherValidationErrorsToClear.reduce((acc, key) => {
+        acc[key] = null;
+        return acc;
+      }, {}),
+    },
+  }),
+  [SET_VALIDATION_ERRORS]: payload => ({
+    validationErrors: payload,
   }),
   [RESET_EDITS]: () => ({ editedFields: {}, error: null }),
 };

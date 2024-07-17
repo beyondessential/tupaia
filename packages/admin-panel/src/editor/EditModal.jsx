@@ -12,102 +12,112 @@ import { Modal } from '../widgets';
 import { useEditFiles } from './useEditFiles';
 import { FieldsEditor } from './FieldsEditor';
 import { withConnectedEditor } from './withConnectedEditor';
+import { useValidationScroll } from './useValidationScroll';
 
-export const EditModalComponent = withConnectedEditor(
-  ({
-    error,
-    isOpen,
-    isLoading,
-    onDismiss,
+export const EditModalComponent = ({
+  error,
+  isOpen,
+  isLoading,
+  onDismiss,
+  onEditField,
+  onSave,
+  recordData,
+  title,
+  fields,
+  FieldsComponent,
+  isUnchanged,
+  displayUsedBy,
+  usedByConfig,
+  dismissButtonText,
+  cancelButtonText,
+  saveButtonText,
+  extraDialogProps,
+  validationErrors,
+  resourceName,
+  isNew,
+}) => {
+  const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
+
+  const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
+
+  const handleSave = () => {
+    onSave(files, onDismiss);
+  };
+
+  const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
+    handleSave,
     onEditField,
-    onSave,
-    recordData,
-    title,
-    fields,
-    FieldsComponent,
-    isUnchanged,
-    displayUsedBy,
-    usedByConfig,
-    dismissButtonText,
-    cancelButtonText,
-    saveButtonText,
-    extraDialogProps,
-    resourceName,
-    isNew,
-  }) => {
-    const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
+    validationErrors,
+  );
 
-    const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
-
-    const getButtons = () => {
-      if (error) {
-        return [
-          {
-            onClick: onDismiss,
-            text: dismissButtonText,
-            disabled: isLoading,
-            variant: 'contained',
-            id: 'form-button-cancel',
-          },
-        ];
-      }
+  const getButtons = () => {
+    if (error) {
       return [
         {
           onClick: onDismiss,
-          text: cancelButtonText,
+          text: dismissButtonText,
           disabled: isLoading,
-          variant: 'outlined',
+          variant: 'contained',
           id: 'form-button-cancel',
         },
-        {
-          onClick: () => onSave(files, onDismiss),
-          id: 'form-button-save',
-          text: saveButtonText,
-          disabled: !!error || isLoading || isUnchanged,
-        },
       ];
-    };
+    }
+    return [
+      {
+        onClick: onDismiss,
+        text: cancelButtonText,
+        disabled: isLoading,
+        variant: 'outlined',
+        id: 'form-button-cancel',
+      },
+      {
+        onClick: onSaveWithTouched,
+        id: 'form-button-save',
+        text: saveButtonText,
+        disabled: !!error || isLoading || isUnchanged,
+      },
+    ];
+  };
 
-    const buttons = getButtons();
+  const buttons = getButtons();
 
-    const generateModalTitle = () => {
-      if (title) return title;
-      if (!resourceName) return isNew ? 'Add' : 'Edit';
-      if (error) {
-        const capitalisedResourceName = `${resourceName
-          .charAt(0)
-          .toUpperCase()}${resourceName.slice(1)}`;
-        return `${capitalisedResourceName} error`;
-      }
-      if (isNew) return `Add ${resourceName}`;
-      return `Edit ${resourceName}`;
-    };
+  const generateModalTitle = () => {
+    if (title) return title;
+    if (!resourceName) return isNew ? 'Add' : 'Edit';
+    if (error) {
+      const capitalisedResourceName = `${resourceName.charAt(0).toUpperCase()}${resourceName.slice(
+        1,
+      )}`;
+      return `${capitalisedResourceName} error`;
+    }
+    if (isNew) return `Add ${resourceName}`;
+    return `Edit ${resourceName}`;
+  };
 
-    const modalTitle = generateModalTitle();
+  const modalTitle = generateModalTitle();
 
-    return (
-      <Modal
-        error={error}
+  return (
+    <Modal
+      error={error}
+      isLoading={isLoading}
+      onClose={onDismiss}
+      isOpen={isOpen}
+      disableBackdropClick
+      title={modalTitle}
+      buttons={buttons}
+      {...extraDialogProps}
+    >
+      <FieldsComponentResolved
+        fields={fields}
         isLoading={isLoading}
-        onClose={onDismiss}
-        isOpen={isOpen}
-        disableBackdropClick
-        title={modalTitle}
-        buttons={buttons}
-        {...extraDialogProps}
-      >
-        <FieldsComponentResolved
-          fields={fields}
-          isLoading={isLoading}
-          recordData={recordData}
-          onEditField={onEditField}
-          onSetFormFile={handleSetFormFile}
-        />
-        {displayUsedBy && <UsedBy {...usedByConfig} />}
-      </Modal>
-    );
-  },
-);
+        recordData={recordData}
+        onEditField={onEditWithTouched}
+        onSetFormFile={handleSetFormFile}
+      />
+      {displayUsedBy && <UsedBy {...usedByConfig} />}
+    </Modal>
+  );
+};
 
 EditModalComponent.propTypes = {
   error: PropTypes.object,
@@ -127,10 +137,13 @@ EditModalComponent.propTypes = {
   cancelButtonText: PropTypes.string,
   saveButtonText: PropTypes.string,
   extraDialogProps: PropTypes.object,
+  validationErrors: PropTypes.object,
+  resourceName: PropTypes.string,
+  isNew: PropTypes.bool.isRequired,
 };
 
 EditModalComponent.defaultProps = {
-  errorMessage: null,
+  error: null,
   recordData: null,
   FieldsComponent: null,
   isUnchanged: false,
@@ -140,10 +153,13 @@ EditModalComponent.defaultProps = {
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
   extraDialogProps: null,
+  validationErrors: {},
+  title: null,
+  resourceName: null,
 };
 
 const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(dismissEditor()),
 });
 
-export const EditModal = connect(null, mapDispatchToProps)(EditModalComponent);
+export const EditModal = withConnectedEditor(connect(null, mapDispatchToProps)(EditModalComponent));
