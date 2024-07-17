@@ -61,6 +61,7 @@ interface InputLabelProps {
   htmlFor?: string;
   TooltipIcon?: ComponentType<any>;
   applyWrapper?: boolean;
+  labelProps?: Record<string, unknown>;
 }
 
 export const InputLabel = ({
@@ -69,9 +70,9 @@ export const InputLabel = ({
   as = FormLabel,
   className,
   htmlFor,
+  labelProps = {},
   TooltipIcon = HelpOutline,
   applyWrapper = false,
-  ...props
 }: InputLabelProps) => {
   // If no label, don't render anything, so there isn't an empty label tag in the DOM
   if (!label) return null;
@@ -83,7 +84,7 @@ export const InputLabel = ({
     // contained in a label element, for example when using MUI's TextField component. Otherwise
     // defaults to a label element so that it can be a standalone label
     <Wrapper>
-      <Label as={as} className={className} htmlFor={htmlFor} {...props}>
+      <Label as={as} className={className} htmlFor={htmlFor} {...labelProps}>
         {label}
       </Label>
       {tooltip && (
