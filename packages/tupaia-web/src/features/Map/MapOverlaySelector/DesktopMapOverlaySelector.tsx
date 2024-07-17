@@ -21,7 +21,7 @@ import {
 import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
 import { useExportMapOverlay } from '../../../api/mutations';
-import { useEntity, useMapOverlays, useProject } from '../../../api/queries';
+import { useEntity, useMapOverlays, useProject, useUser } from '../../../api/queries';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { convertDateRangeToUrlPeriodString, useDateRanges, useGAEffect } from '../../../utils';
 import { MapTableModal } from './MapTableModal';
@@ -191,6 +191,7 @@ export const DesktopMapOverlaySelector = ({
   const { data: entity } = useEntity(projectCode, entityCode);
   const { period } = useMapOverlayMapData();
   const { map } = useMapContext();
+  const { isLoggedIn } = useUser();
   const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
   const { mutate: exportMapOverlay, isLoading: isExporting } = useExportMapOverlay(exportFileName);
   const { startDate, endDate } = useDateRanges(
@@ -236,6 +237,16 @@ export const DesktopMapOverlaySelector = ({
     });
   };
 
+  const getExportTooltip = () => {
+    if (isExporting) {
+      return '';
+    }
+
+    return 'Export map overlay as PDF';
+  };
+
+  const exportTooltip = getExportTooltip();
+
   return (
     <>
       {mapModalOpen && <MapTableModal onClose={toggleMapTableModal} />}
@@ -244,15 +255,11 @@ export const DesktopMapOverlaySelector = ({
           <Heading>Map Overlays</Heading>
           {selectedOverlay && (
             <div>
-              <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
+              <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map || !isLoggedIn}>
                 {isExporting ? (
                   <LoadingSpinner />
                 ) : (
-                  <Tooltip
-                    arrow
-                    placement="top"
-                    title={isExporting ? '' : 'Export map overlay as PDF'}
-                  >
+                  <Tooltip arrow placement="top" title={exportTooltip}>
                     <GetApp />
                   </Tooltip>
                 )}
