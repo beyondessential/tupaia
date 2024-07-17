@@ -55,7 +55,7 @@ export class ExportMapOverlayRoute extends Route<ExportMapOverlayRequest> {
     const { cookie } = this.req.headers;
 
     if (!cookie) {
-      throw new Error(`Must have a valid session to export a dashboard`);
+      throw new Error(`Must have a valid session to export a map overlay`);
     }
 
     const buffer = await downloadMapOverlayAsPdf(
