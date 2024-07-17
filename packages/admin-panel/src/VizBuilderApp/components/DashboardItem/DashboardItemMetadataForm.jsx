@@ -4,19 +4,23 @@
  */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfigContext } from '../../context';
 import { useDebounce } from '../../../utilities';
 import { DASHBOARD_ITEM_VIZ_TYPES } from '../../constants';
+import { REQUIRED_FIELD_ERROR } from '../../../editor/validation';
 
 export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const vizTypeOptions = Object.entries(DASHBOARD_ITEM_VIZ_TYPES).map(([vizType, { name }]) => ({
     value: vizType,
     label: name,
   }));
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register, errors, control } = useForm({
+    mode: 'onChange',
+  });
+
   const [
     { visualisation, vizType },
     { setVisualisationValue, setVizType, setPresentation, setPresentationValue },
@@ -35,11 +39,10 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
     setVisualisationValue('permissionGroup', data.permissionGroup);
-    const selectedVizType = vizTypeOptions.find(({ label }) => label === data.vizType).value;
-    setVizType(selectedVizType);
+    setVizType(data.vizType.value);
     if (Object.keys(presentation).length === 0) {
       // If no presentation config exists, set the initial config by vizType
-      setPresentation(DASHBOARD_ITEM_VIZ_TYPES[selectedVizType].initialConfig);
+      setPresentation(DASHBOARD_ITEM_VIZ_TYPES[data.vizType.value].initialConfig);
     }
     setPresentationValue('name', data.name);
     onSubmit();
@@ -54,53 +57,82 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
           label="Code"
           defaultValue={code}
           error={!!errors.code}
+          required
           helperText={errors.code && errors.code.message}
           inputRef={register({
-            required: 'Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
         <TextField
           name="name"
           label="Name"
+          required
           defaultValue={presentation.name}
           error={!!errors.name}
           helperText={errors.name && errors.name.message}
           inputRef={register({
-            required: 'Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
-        <Autocomplete
-          id="permissionGroup"
+        <Controller
           name="permissionGroup"
-          label="Permission Group"
-          placeholder="Select Permission Group"
+          control={control}
+          required
           defaultValue={permissionGroup}
-          options={permissionGroups.map(p => p.name)}
-          disabled={isLoadingPermissionGroups}
-          error={!!errors.permissionGroup}
-          helperText={errors.permissionGroup && errors.permissionGroup.message}
-          inputRef={register({
-            required: 'Required',
-          })}
-          value={permissionGroupSearchInput}
-          onInputChange={(event, newValue) => {
-            setPermissionGroupSearchInput(newValue);
+          rules={{ required: REQUIRED_FIELD_ERROR }}
+          render={({ onChange, value, ref, name }) => {
+            return (
+              <Autocomplete
+                id={name}
+                name={name}
+                label="Permission group"
+                required
+                placeholder="Select permission group"
+                defaultValue={permissionGroup}
+                options={permissionGroups.map(p => p.name)}
+                disabled={isLoadingPermissionGroups}
+                error={!!errors.permissionGroup}
+                helperText={errors.permissionGroup && errors.permissionGroup.message}
+                inputRef={ref}
+                inputValue={permissionGroupSearchInput}
+                onInputChange={(event, newValue) => {
+                  setPermissionGroupSearchInput(newValue);
+                }}
+                onChange={(event, newValue) => {
+                  onChange(newValue);
+                }}
+                value={value}
+              />
+            );
           }}
         />
-        <Autocomplete
-          id="vizType"
+        <Controller
           name="vizType"
-          label="Visualisation Type"
-          placeholder="Select Visualisation Type"
-          defaultValue={vizTypeOptions.find(({ value }) => value === vizType)}
-          options={vizTypeOptions}
-          getOptionLabel={option => option.label}
-          getOptionSelected={option => option.value}
-          error={!!errors.vizType}
-          helperText={errors.vizType && errors.vizType.message}
-          inputRef={register({
-            required: 'Required',
-          })}
+          control={control}
+          required
+          defaultValue={vizTypeOptions.find(({ value: optionValue }) => optionValue === vizType)}
+          rules={{ required: REQUIRED_FIELD_ERROR }}
+          render={({ onChange, value, ref, name }) => (
+            <Autocomplete
+              id={name}
+              name={name}
+              required
+              label="Visualisation type"
+              placeholder="Select visualisation type"
+              options={vizTypeOptions}
+              getOptionLabel={option => option.label}
+              getOptionSelected={option => {
+                return option.value === value;
+              }}
+              error={!!errors.vizType}
+              helperText={errors.vizType && errors.vizType.message}
+              inputRef={ref}
+              onChange={(event, newValue) => {
+                onChange(newValue);
+              }}
+              value={value}
+            />
+          )}
         />
       </Body>
       <Footer />

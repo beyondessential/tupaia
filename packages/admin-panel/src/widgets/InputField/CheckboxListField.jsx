@@ -52,12 +52,14 @@ const Container = styled.div`
   height: 100%;
   max-height: 15rem;
   overflow-y: auto;
-  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  border: 1px solid
+    ${({ theme, $invalid }) => {
+      return $invalid ? theme.palette.error.main : theme.palette.grey['400'];
+    }};
   padding-inline: 1rem;
   padding-block-start: 0.2rem;
   border-radius: 4px;
   margin-block-start: 0.5rem;
-  margin-block-end: 1.2rem;
 `;
 
 const FormGroup = styled(MuiFormGroup)`
@@ -182,7 +184,7 @@ export const CheckboxListField = ({
         <InputLabel label={label} as={Legend} tooltip={tooltip} error={error} required={required} />
       </LegendWrapper>
 
-      <Container>
+      <Container $invalid={error}>
         <SearchField value={searchTerm} onChange={event => setSearchTerm(event.target.value)} />
         <FormGroup>
           {isLoading && <div>Loading...</div>}
