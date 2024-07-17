@@ -8,9 +8,9 @@ import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import styled from 'styled-components';
 import { GRANULARITY_CONFIG, periodToMoment } from '@tupaia/utils';
-import { Tooltip, IconButton } from '@tupaia/ui-components';
+import { Tooltip, IconButton, SmallAlert } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';
-import { ArrowDropDown, Layers, Assignment, GetApp } from '@material-ui/icons';
+import { ArrowDropDown, Layers, Assignment, GetApp, Close } from '@material-ui/icons';
 import {
   Accordion,
   Typography,
@@ -166,6 +166,25 @@ const LoadingSpinner = styled(CircularProgress).attrs({
   color: ${({ theme }) => theme.palette.text.primary};
 `;
 
+const ErrorAlert = styled(SmallAlert)`
+  padding-inline-end: 0.5rem;
+  .MuiAlert-message {
+    display: flex;
+    position: relative;
+    span {
+      width: 85%;
+    }
+  }
+`;
+
+const ErrorCloseButton = styled(IconButton)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.2rem;
+  color: ${({ theme }) => theme.palette.text.primary};
+`;
+
 interface DesktopMapOverlaySelectorProps {
   entityName?: Entity['name'];
   overlayLibraryOpen: boolean;
@@ -193,7 +212,12 @@ export const DesktopMapOverlaySelector = ({
   const { map } = useMapContext();
   const { isLoggedIn } = useUser();
   const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
-  const { mutate: exportMapOverlay, isLoading: isExporting } = useExportMapOverlay(exportFileName);
+  const {
+    mutate: exportMapOverlay,
+    isLoading: isExporting,
+    error,
+    reset,
+  } = useExportMapOverlay(exportFileName);
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
@@ -274,6 +298,14 @@ export const DesktopMapOverlaySelector = ({
         </Header>
         <Container>
           <TitleWrapper>
+            {error && (
+              <ErrorAlert severity="error">
+                <span>{error.message}</span>
+                <ErrorCloseButton onClick={reset} title="Clear error">
+                  <Close />
+                </ErrorCloseButton>
+              </ErrorAlert>
+            )}
             <MapOverlaySelectorTitle />
             <MapOverlayDatePicker />
           </TitleWrapper>
