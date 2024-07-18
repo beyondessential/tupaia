@@ -11,6 +11,7 @@ const OPTION_SET_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
 ];
 
@@ -36,10 +37,11 @@ const OPTION_SET_COLUMNS = [
   },
 ];
 
-const OPTION_FIELDS = [
+export const BASE_OPTION_FIELDS = [
   {
     Header: 'Value',
     source: 'value',
+    required: true,
   },
   {
     Header: 'Label',
@@ -49,6 +51,10 @@ const OPTION_FIELDS = [
     Header: 'Sort order',
     source: 'sort_order',
   },
+];
+
+const OPTION_FIELDS = [
+  ...BASE_OPTION_FIELDS,
   {
     Header: 'Attributes',
     source: 'attributes',
@@ -78,7 +84,7 @@ const IMPORT_CONFIG = {
   queryParameters: [
     {
       label: `${capitalizeFirst(RESOURCE_NAME.singular)} names`,
-      secondaryLabel: `Please enter the names of the ${getPluralForm(
+      labelTooltip: `Please enter the names of the ${getPluralForm(
         RESOURCE_NAME,
       )} to be imported. These should match the tab names in the file.`,
       parameterKey: 'optionSetNames',

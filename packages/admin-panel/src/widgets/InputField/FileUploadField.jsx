@@ -1,47 +1,25 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { FileUploadField as BaseFileUploadField } from '@tupaia/ui-components';
 
 export const FileUploadField = ({
+  accept,
   onChange,
   name,
   label,
   helperText,
-  textOnButton,
-  showFileSize,
+  fileName,
   maxSizeInBytes,
-  initialFileName = null,
-  accept = '*',
 }) => {
-  const [fileName, setFileName] = useState(initialFileName);
-
-  const handleChange = async (event, newFileName, files) => {
-    setFileName(newFileName);
-
+  const handleChange = async files => {
     const [file] = files || [];
-    if (!file) {
-      onChange({
-        fileName: null,
-        file: null,
-      });
-      return;
-    }
-
-    onChange({
-      fileName: newFileName,
-      file,
-    });
+    onChange(file ? { fileName: file.name, file } : { fileName: null, file: null });
   };
-
-  // Allows programmatic setting of the file name
-  useEffect(() => {
-    setFileName(initialFileName);
-  }, [initialFileName]);
 
   return (
     <BaseFileUploadField
@@ -50,8 +28,6 @@ export const FileUploadField = ({
       fileName={fileName}
       label={label}
       helperText={helperText}
-      textOnButton={textOnButton}
-      showFileSize={showFileSize}
       maxSizeInBytes={maxSizeInBytes}
       accept={accept}
     />
@@ -63,20 +39,16 @@ FileUploadField.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   helperText: PropTypes.string,
-  textOnButton: PropTypes.string,
-  showFileSize: PropTypes.bool,
   maxSizeInBytes: PropTypes.number,
-  initialFileName: PropTypes.string,
-  accept: PropTypes.string,
+  fileName: PropTypes.string,
+  accept: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
 };
 
 FileUploadField.defaultProps = {
   onChange: () => {},
   label: null,
   helperText: null,
-  textOnButton: null,
-  showFileSize: false,
   maxSizeInBytes: null,
-  initialFileName: null,
-  accept: '*',
+  fileName: null,
+  accept: null,
 };
