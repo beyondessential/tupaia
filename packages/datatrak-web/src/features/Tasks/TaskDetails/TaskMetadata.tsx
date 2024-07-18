@@ -15,6 +15,7 @@ const Container = styled.div`
   padding-block: 1.2rem;
   padding-inline: 1rem;
   border-radius: 4px;
+  background-color: ${props => props.theme.palette.background.default};
 `;
 
 const Title = styled(Typography).attrs({

@@ -63,6 +63,7 @@ const CommentsPlaceholder = styled(ItemWrapper)`
   height: 10rem;
   width: 100%;
   border: 1px solid ${({ theme }) => theme.palette.divider};
+  background-color: ${({ theme }) => theme.palette.background.default};
   border-radius: 4px;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex: 1;
