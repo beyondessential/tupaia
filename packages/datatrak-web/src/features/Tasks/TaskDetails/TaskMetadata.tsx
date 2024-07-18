@@ -32,6 +32,7 @@ const Value = styled(Typography)`
 `;
 
 const DataWrapper = styled.div`
+  width: 100%;
   &:not(:first-child) {
     margin-block-start: 1rem;
   }

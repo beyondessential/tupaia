@@ -71,7 +71,7 @@ const CellLink = styled(Link)`
   color: inherit;
   text-decoration: none;
   &:hover {
-    tr:has(&) td > * {
+    tr:has(&) td {
       background-color: ${({ theme }) => `${theme.palette.primary.main}18`}; // 18 is 10% opacity
     }
   }
