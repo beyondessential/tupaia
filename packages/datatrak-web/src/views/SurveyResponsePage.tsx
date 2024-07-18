@@ -90,7 +90,7 @@ export const SurveyResponsePage = () => {
   useEffect(() => {
     if (answers) {
       // Format the answers to be compatible with the form, i.e. parse stringified objects
-      let formattedAnswers = Object.entries(answers).reduce((acc, [key, value]) => {
+      const formattedAnswers = Object.entries(answers).reduce((acc, [key, value]) => {
         // If the value is a stringified object, parse it
         const isStringifiedObject = typeof value === 'string' && value.startsWith('{');
         return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
