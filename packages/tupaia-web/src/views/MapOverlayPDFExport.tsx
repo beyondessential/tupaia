@@ -35,6 +35,8 @@ const MapContainer = styled.div`
 
   .leaflet-container {
     min-height: 15rem;
+    // This is to compensate for the pdf resolution scaling the map down to look smaller than what the screen was displaying. We cannot always do this via map zoom, because the map zoom is limited to the tile set zoom levels.
+    zoom: 1.5;
   }
 `;
 
