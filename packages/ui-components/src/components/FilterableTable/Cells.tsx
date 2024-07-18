@@ -116,15 +116,20 @@ interface TableCellProps {
   width?: string;
   row: Record<string, any>;
   maxWidth?: number;
+  column?: Record<string, any>;
 }
-export const TableCell = ({ children, width, row, maxWidth, ...props }: TableCellProps) => {
-  const url = row?.original?.url;
+export const TableCell = ({ children, width, row, maxWidth, column, ...props }: TableCellProps) => {
+  const getRowUrl = () => {
+    if (!row) return {};
+    if (row.url) return { to: row.url };
+    if (column?.generateUrl) return column.generateUrl(row);
+    return {};
+  };
+  const { to, state } = getRowUrl();
   return (
     <Cell {...props} $maxWidth={maxWidth}>
-      <CellContentWrapper className="cell-content">
-        <CellContentContainer to={url} as={url ? CellLink : 'div'}>
-          {children}
-        </CellContentContainer>
+      <CellContentWrapper className="cell-content" as={to ? CellLink : 'div'} to={to} state={state}>
+        <CellContentContainer>{children}</CellContentContainer>
       </CellContentWrapper>
     </Cell>
   );

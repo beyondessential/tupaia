@@ -63,8 +63,12 @@ type SortBy = {
   desc: boolean;
 };
 
+type ColumnInstance = Record<string, any> & {
+  CellContentComponent?: React.ComponentType<any>;
+};
+
 interface FilterableTableProps {
-  columns: Column<Record<string, any>>[];
+  columns: Column<ColumnInstance>[];
   data?: Record<string, any>[];
   pageIndex?: number;
   pageSize?: number;
@@ -210,13 +214,14 @@ export const FilterableTable = ({
               return (
                 <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
                   {row.cells.map(({ getCellProps, render }, i) => {
-                    const col = visibleColumns[i];
+                    const col = visibleColumns[i] as ColumnInstance;
                     return (
                       <TableCell
                         {...getCellProps()}
                         key={`table-row-${row.id}-cell-${col.id}`}
                         row={row.original}
                         maxWidth={col.maxWidth}
+                        column={col}
                       >
                         {render('Cell')}
                       </TableCell>
