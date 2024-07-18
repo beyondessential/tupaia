@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { Request } from 'express';
-import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { parse } from 'cookie';
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
 import { RECORDS } from '@tupaia/database';
+import { TaskT, formatTaskResponse } from '../utils';
 
 export type TasksRequest = Request<
   DatatrakWebTasksRequest.Params,
@@ -70,14 +70,14 @@ export class TasksRoute extends Route<TasksRequest> {
       if (id === 'repeat_schedule') {
         this.filters[id] = {
           comparator: 'ilike',
-          comparisonValue: `${value}%`,
+          comparisonValue: `%${value}%`,
           castAs: 'text',
         };
         return;
       }
       this.filters[id] = {
         comparator: 'ilike',
-        comparisonValue: `${value}%`,
+        comparisonValue: `%${value}%`,
       };
     });
   }
@@ -142,7 +142,7 @@ export class TasksRoute extends Route<TasksRequest> {
   }
 
   public async buildResponse() {
-    const { ctx, query = {}, models } = this.req;
+    const { ctx, query = {} } = this.req;
     const { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
 
     this.formatFilters();
@@ -162,37 +162,14 @@ export class TasksRoute extends Route<TasksRequest> {
       page,
     });
 
-    const formattedTasks = tasks.map((task: SingleTask) => {
-      const {
-        entity_id: entityId,
-        'entity.name': entityName,
-        'entity.country_code': entityCountryCode,
-        'survey.code': surveyCode,
-        survey_id: surveyId,
-        'survey.name': surveyName,
-        ...rest
-      } = task;
-      return {
-        ...rest,
-        entity: {
-          id: entityId,
-          name: entityName,
-          countryCode: entityCountryCode,
-        },
-        survey: {
-          id: surveyId,
-          name: surveyName,
-          code: surveyCode,
-        },
-      };
-    });
+    const formattedTasks = tasks.map((task: TaskT) => formatTaskResponse(task));
 
     // Get all task ids for pagination
     const count = await this.queryForCount();
     const numberOfPages = Math.ceil(count / pageSize);
 
     return {
-      tasks: camelcaseKeys(formattedTasks, { deep: true }),
+      tasks: formattedTasks,
       count,
       numberOfPages,
     };

@@ -63,8 +63,12 @@ type SortBy = {
   desc: boolean;
 };
 
+type ColumnInstance = Record<string, any> & {
+  CellContentComponent?: React.ComponentType<any>;
+};
+
 interface FilterableTableProps {
-  columns: Column<Record<string, any>>[];
+  columns: Column<ColumnInstance>[];
   data?: Record<string, any>[];
   pageIndex?: number;
   pageSize?: number;
@@ -126,20 +130,17 @@ export const FilterableTable = ({
 
   const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
 
-  const updateSorting = (id: string) => {
+  const updateSorting = (id: string, isDesc?: boolean) => {
     const currentSorting = sorting.find(sort => sort.id === id);
-    const getNewSorting = () => {
-      // if the column is not sorted, add it to the sorting array, ascending first
-      if (!currentSorting) return [...sorting, { id, desc: false }];
-      // If the column is sorted descending, remove it from the sorting array, so it can have an 'off' state
-      if (currentSorting.desc) return sorting.filter(sort => sort.id !== id);
-      // If the column is sorted ascending, toggle it to descending
-      return sorting.map(sort => (sort.id === id ? { ...sort, desc: !sort.desc } : sort));
-    };
+    if (!currentSorting) {
+      return onChangeSorting([{ id, desc: false }]);
+    }
 
-    const newSorting = getNewSorting();
+    if (isDesc) {
+      return onChangeSorting([]);
+    }
 
-    onChangeSorting(newSorting);
+    return onChangeSorting([{ id, desc: true }]);
   };
 
   const getSortedConfig = (id: string) => {
@@ -179,7 +180,7 @@ export const FilterableTable = ({
                             active={!!sortedConfig}
                             direction={sortedConfig?.desc ? 'asc' : 'desc'}
                             IconComponent={KeyboardArrowDown}
-                            onClick={() => updateSorting(id)}
+                            onClick={() => updateSorting(id, sortedConfig?.desc)}
                           />
                         )}
                       </HeaderDisplayCell>
@@ -210,13 +211,14 @@ export const FilterableTable = ({
               return (
                 <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
                   {row.cells.map(({ getCellProps, render }, i) => {
-                    const col = visibleColumns[i];
+                    const col = visibleColumns[i] as ColumnInstance;
                     return (
                       <TableCell
                         {...getCellProps()}
                         key={`table-row-${row.id}-cell-${col.id}`}
                         row={row.original}
                         maxWidth={col.maxWidth}
+                        column={col}
                       >
                         {render('Cell')}
                       </TableCell>

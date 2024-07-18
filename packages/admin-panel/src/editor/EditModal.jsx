@@ -15,7 +15,7 @@ import { withConnectedEditor } from './withConnectedEditor';
 import { useValidationScroll } from './useValidationScroll';
 
 export const EditModalComponent = ({
-  errorMessage,
+  error,
   isOpen,
   isLoading,
   onDismiss,
@@ -49,26 +49,47 @@ export const EditModalComponent = ({
     onEditField,
     validationErrors,
   );
-  const buttons = [
-    {
-      onClick: onDismiss,
-      text: errorMessage ? dismissButtonText : cancelButtonText,
-      disabled: isLoading,
-      variant: 'outlined',
-      id: 'form-button-cancel',
-    },
-    {
-      onClick: onSaveWithTouched,
-      id: 'form-button-save',
-      text: saveButtonText,
-      disabled: !!errorMessage || isLoading || isUnchanged,
-    },
-  ];
+
+  const getButtons = () => {
+    if (error) {
+      return [
+        {
+          onClick: onDismiss,
+          text: dismissButtonText,
+          disabled: isLoading,
+          variant: 'contained',
+          id: 'form-button-cancel',
+        },
+      ];
+    }
+    return [
+      {
+        onClick: onDismiss,
+        text: cancelButtonText,
+        disabled: isLoading,
+        variant: 'outlined',
+        id: 'form-button-cancel',
+      },
+      {
+        onClick: onSaveWithTouched,
+        id: 'form-button-save',
+        text: saveButtonText,
+        disabled: !!error || isLoading || isUnchanged,
+      },
+    ];
+  };
+
+  const buttons = getButtons();
 
   const generateModalTitle = () => {
     if (title) return title;
-    if (isLoading) return '';
     if (!resourceName) return isNew ? 'Add' : 'Edit';
+    if (error) {
+      const capitalisedResourceName = `${resourceName.charAt(0).toUpperCase()}${resourceName.slice(
+        1,
+      )}`;
+      return `${capitalisedResourceName} error`;
+    }
     if (isNew) return `Add ${resourceName}`;
     return `Edit ${resourceName}`;
   };
@@ -77,7 +98,7 @@ export const EditModalComponent = ({
 
   return (
     <Modal
-      errorMessage={errorMessage}
+      error={error}
       isLoading={isLoading}
       onClose={onDismiss}
       isOpen={isOpen}
@@ -99,7 +120,7 @@ export const EditModalComponent = ({
 };
 
 EditModalComponent.propTypes = {
-  errorMessage: PropTypes.string,
+  error: PropTypes.object,
   isOpen: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
@@ -122,13 +143,13 @@ EditModalComponent.propTypes = {
 };
 
 EditModalComponent.defaultProps = {
-  errorMessage: null,
+  error: null,
   recordData: null,
   FieldsComponent: null,
   isUnchanged: false,
   displayUsedBy: false,
   usedByConfig: {},
-  dismissButtonText: 'Dismiss',
+  dismissButtonText: 'Close',
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
   extraDialogProps: null,

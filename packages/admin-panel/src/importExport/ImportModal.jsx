@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -36,16 +36,14 @@ export const ImportModalComponent = React.memo(
     getFinishedMessage,
     confirmButtonText,
     cancelButtonText,
-    uploadButtonText,
   }) => {
     const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
     const [finishedMessage, setFinishedMessage] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [error, setError] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [files, setFiles] = useState([]);
-    const [fileName, setFileName] = useState(null);
 
     const handleOpen = () => setIsOpen(true);
 
@@ -58,25 +56,23 @@ export const ImportModalComponent = React.memo(
 
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
-      setErrorMessage(null);
+      setError(null);
       setFinishedMessage(null);
       setFiles([]);
-      setFileName(null);
     };
 
     const handleClose = () => {
       setStatus(STATUS.IDLE);
-      setErrorMessage(null);
+      setError(null);
       setFinishedMessage(null);
       setIsOpen(false);
       setValues({});
       setFiles([]);
-      setFileName(null);
     };
 
     const handleSubmit = async event => {
       event.preventDefault();
-      setErrorMessage(null);
+      setError(null);
       setFinishedMessage(null);
       setStatus(STATUS.LOADING);
       changeRequest();
@@ -99,20 +95,22 @@ export const ImportModalComponent = React.memo(
           setFinishedMessage(getFinishedMessage(response));
         }
         changeSuccess();
-      } catch (error) {
+      } catch (e) {
+        // Print a more descriptive network timeout error
+        // TODO: Remove this after https://github.com/beyondessential/tupaia-backlog/issues/1009 is fixed
+        const errorMessage =
+          e.message === 'Network request timed out'
+            ? 'Request timed out, but may have still succeeded. Please wait 2 minutes and check to see if the data has changed'
+            : e.message;
         setStatus(STATUS.ERROR);
         setFinishedMessage(null);
-        setErrorMessage(error.message);
+        setError({
+          ...e,
+          message: errorMessage,
+        });
         changeError();
       }
     };
-
-    // Print a more descriptive network timeout error
-    // TODO: Remove this after https://github.com/beyondessential/tupaia-backlog/issues/1009 is fixed
-    const fileErrorMessage =
-      errorMessage === 'Network request timed out'
-        ? 'Request timed out, but may have still succeeded. Please wait 2 minutes and check to see if the data has changed'
-        : errorMessage;
 
     const getButtons = () => {
       switch (status) {
@@ -127,13 +125,9 @@ export const ImportModalComponent = React.memo(
         case STATUS.ERROR:
           return [
             {
-              text: 'Dismiss',
+              text: 'Close',
               onClick: handleDismiss,
-              variant: 'outlined',
-            },
-            {
-              text: confirmButtonText,
-              disabled: true,
+              variant: 'contained',
             },
           ];
         default:
@@ -158,23 +152,14 @@ export const ImportModalComponent = React.memo(
 
     const buttons = getButtons();
 
-    const onChangeFile = (event, newName) => {
-      setFileName(newName);
-      if (event?.target?.files?.length > 0) {
-        setFiles(Array.from(event.target.files));
-      } else {
-        setFiles([]);
-      }
-    };
-
     return (
       <>
         <Modal
           onClose={handleClose}
           isOpen={isOpen}
           disableBackdropClick
-          title={fileErrorMessage ? 'Error' : title}
-          errorMessage={fileErrorMessage}
+          title={error ? 'Error' : title}
+          error={error}
           isLoading={status === STATUS.LOADING}
           buttons={buttons}
         >
@@ -202,11 +187,9 @@ export const ImportModalComponent = React.memo(
                     );
                   })}
                 <FileUploadField
-                  onChange={onChangeFile}
+                  onChange={newFiles => setFiles(newFiles ?? [])}
                   name="file-upload"
-                  fileName={fileName}
                   multiple={actionConfig.multiple}
-                  textOnButton={uploadButtonText}
                 />
               </>
             )}

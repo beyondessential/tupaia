@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { ButtonProps, Dialog, DialogProps } from '@material-ui/core';
 import { DialogFooter as BaseDialogFooter } from '../Dialog';
 import { Button } from '../Button';
-import { ModalContentProvider } from './ModalContentProvider';
+import { ModalContentProvider, ModalContentProviderProps } from './ModalContentProvider';
 import { ModalHeader } from './ModalHeader';
 
 export const ModalFooter = styled(BaseDialogFooter)`
@@ -31,7 +31,7 @@ interface ModalProps extends Omit<DialogProps, 'onClose' | 'open'> {
   onClose: () => void;
   title: string;
   isLoading?: boolean;
-  errorMessage?: string;
+  error?: ModalContentProviderProps['error'];
   buttons?: ButtonT[];
 }
 
@@ -41,14 +41,22 @@ export const Modal = ({
   onClose,
   title,
   isLoading,
-  errorMessage,
+  error,
   buttons = [],
   ...muiDialogProps
 }: ModalProps) => {
+  const getModalTitle = () => {
+    if (error) {
+      return title || 'Error';
+    }
+    return title;
+  };
+
+  const modalTitle = getModalTitle();
   return (
     <Dialog onClose={onClose} open={isOpen} fullWidth {...muiDialogProps}>
-      <ModalHeader onClose={onClose} title={title} />
-      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
+      <ModalHeader onClose={onClose} title={modalTitle} />
+      <ModalContentProvider error={error} isLoading={isLoading}>
         {children}
       </ModalContentProvider>
       {buttons?.length > 0 && (

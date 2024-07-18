@@ -5,16 +5,16 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
 import { TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
+import { TaskActionsMenu } from '../TaskActionsMenu';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
-import { TaskActionsMenu } from './TaskActionsMenu';
 import { FilterToolbar } from './FilterToolbar';
 
 const Container = styled.div`
@@ -81,6 +81,8 @@ const useTasksTable = () => {
 
   const { tasks = [], count = 0, numberOfPages } = data || {};
 
+  const location = useLocation();
+
   const COLUMNS = [
     {
       // only the survey name can be resized
@@ -99,7 +101,7 @@ const useTasksTable = () => {
     },
     {
       Header: 'Assignee',
-      accessor: row => row.assigneeName ?? 'Unassigned',
+      accessor: row => row.assigneeName,
       id: 'assignee_name',
       filterable: true,
       disableResizing: true,
@@ -147,7 +149,20 @@ const useTasksTable = () => {
       disableSortBy: true,
       disableResizing: true,
     },
-  ];
+  ].map(column => {
+    if (column.id === 'actions') return column;
+    return {
+      ...column,
+      generateUrl: row => {
+        return {
+          to: `/tasks/${row.id}`,
+          state: {
+            from: `${location.pathname}${location.search}`,
+          },
+        };
+      },
+    };
+  });
 
   return {
     columns: COLUMNS,

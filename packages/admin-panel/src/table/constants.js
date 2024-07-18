@@ -34,5 +34,5 @@ export const DEFAULT_TABLE_STATE = {
   fetchId: null,
   pageIndex: 0,
   pageSize: 20,
-  sorting: [],
+  sorting: null,
 };

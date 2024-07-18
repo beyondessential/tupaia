@@ -66,7 +66,7 @@ export class TaskModel extends DatabaseModel {
     END`,
     assignee_name: () =>
       `CASE 
-        WHEN assignee_id IS NULL THEN NULL 
+        WHEN assignee_id IS NULL THEN 'Unassigned' 
         WHEN assignee.last_name IS NULL THEN assignee.first_name 
         ELSE assignee.first_name || ' ' || assignee.last_name 
       END`,

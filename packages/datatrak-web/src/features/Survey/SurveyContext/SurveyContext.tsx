@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { createContext, Dispatch, useContext, useEffect, useReducer } from 'react';
+import React, { createContext, Dispatch, useContext, useReducer, useState } from 'react';
 import { useMatch, useParams } from 'react-router-dom';
+import { QuestionType } from '@tupaia/types';
 import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
@@ -17,6 +18,7 @@ import {
 } from './utils';
 import { SurveyFormContextType, surveyReducer } from './reducer';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
+import { usePrimaryEntityLocation } from '../../../utils';
 
 const defaultContext = {
   startTime: new Date().toISOString(),
@@ -31,6 +33,7 @@ const defaultContext = {
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
+  primaryEntityQuestion: null,
 } as SurveyFormContextType;
 
 const SurveyFormContext = createContext(defaultContext);
@@ -38,6 +41,8 @@ const SurveyFormContext = createContext(defaultContext);
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
 export const SurveyContext = ({ children }) => {
+  const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
+  const primaryEntity = usePrimaryEntityLocation();
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const { surveyCode, ...params } = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
@@ -62,27 +67,36 @@ export const SurveyContext = ({ children }) => {
     .filter(screen => screen.surveyScreenComponents.length > 0);
 
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
+  const primaryEntityQuestion = flattenedScreenComponents.find(
+    question => question.type === QuestionType.PrimaryEntity,
+  );
 
-  useEffect(() => {
-    const initialiseFormData = () => {
-      if (!surveyCode || isResponseScreen) return;
-      // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
-      const initialFormData = generateCodeForCodeGeneratorQuestions(
-        flattenedScreenComponents,
-        formData,
-      );
-      dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
-      // update the start time when a survey is started, so that it can be passed on when submitting the survey
+  const initialiseFormData = () => {
+    if (!surveyCode || isResponseScreen) return;
+    // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
+    let initialFormData = generateCodeForCodeGeneratorQuestions(
+      flattenedScreenComponents,
+      formData,
+    );
 
-      const currentDate = new Date();
-      dispatch({
-        type: ACTION_TYPES.SET_SURVEY_START_TIME,
-        payload: currentDate.toISOString(),
-      });
-    };
+    if (primaryEntity && primaryEntityQuestion) {
+      initialFormData[primaryEntityQuestion.id as string] = primaryEntity;
+    }
+    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
+    // update the start time when a survey is started, so that it can be passed on when submitting the survey
 
+    const currentDate = new Date();
+    dispatch({
+      type: ACTION_TYPES.SET_SURVEY_START_TIME,
+      payload: currentDate.toISOString(),
+    });
+  };
+
+  // @see https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (surveyCode !== prevSurveyCode) {
+    setPrevSurveyCode(surveyCode as string);
     initialiseFormData();
-  }, [surveyCode]);
+  }
 
   const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
   const screenHeader = activeScreen?.[0]?.text;
@@ -100,6 +114,7 @@ export const SurveyContext = ({ children }) => {
         screenHeader,
         screenDetail,
         visibleScreens,
+        primaryEntityQuestion,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>

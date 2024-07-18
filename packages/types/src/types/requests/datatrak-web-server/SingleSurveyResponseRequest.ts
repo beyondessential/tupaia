@@ -14,6 +14,7 @@ export interface ResBody extends KeysToCamelCase<SurveyResponse> {
   answers: Record<string, string>;
   countryName: Country['name'];
   entityName: Entity['name'];
+  entityId: Entity['id'];
   surveyName: Survey['name'];
   surveyCode: Survey['code'];
 }

@@ -9,7 +9,7 @@ import { put } from '../api';
 
 type PartialTask = Partial<Task>;
 
-export const useEditTask = (taskId: Task['id'], onSuccess?: () => void) => {
+export const useEditTask = (taskId?: Task['id'], onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation<any, Error, PartialTask, unknown>(
     (task: PartialTask) => {
@@ -19,8 +19,9 @@ export const useEditTask = (taskId: Task['id'], onSuccess?: () => void) => {
     },
     {
       onSuccess: () => {
-        if (onSuccess) onSuccess();
         queryClient.invalidateQueries('tasks');
+        queryClient.invalidateQueries(['tasks', taskId]);
+        if (onSuccess) onSuccess();
       },
     },
   );

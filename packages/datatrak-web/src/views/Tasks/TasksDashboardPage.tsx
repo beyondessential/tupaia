@@ -6,18 +6,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
-import { PageContainer as BasePageContainer, Button } from '../../components';
+import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
-
-const PageContainer = styled(BasePageContainer)`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  max-height: 100%;
-  padding-block-start: 0.75rem;
-  padding-block-end: 2rem;
-  padding-inline: 3rem;
-`;
 
 const ButtonContainer = styled.div`
   margin-inline-start: auto;
@@ -43,7 +33,7 @@ export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
-    <PageContainer>
+    <>
       <TaskPageHeader title="Tasks">
         <ButtonContainer>
           <CreateButton onClick={toggleCreateModal}>
@@ -52,7 +42,7 @@ export const TasksDashboardPage = () => {
         </ButtonContainer>
       </TaskPageHeader>
       <TasksTable />
-      <CreateTaskModal open={createModalOpen} onClose={toggleCreateModal} />
-    </PageContainer>
+      {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
+    </>
   );
 };

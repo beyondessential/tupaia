@@ -2,32 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
-import styled from 'styled-components';
 import { Country, DatatrakWebSurveyUsersRequest } from '@tupaia/types';
-import { Autocomplete as BaseAutocomplete } from '../../components';
+import { Autocomplete } from '../../components';
 import { useSurveyUsers } from '../../api';
 import { Survey } from '../../types';
-
-const Autocomplete = styled(BaseAutocomplete)`
-  .MuiFormLabel-root {
-    font-size: inherit;
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  }
-  .MuiInputBase-root {
-    font-size: 0.875rem;
-  }
-  input::placeholder {
-    color: ${({ theme }) => theme.palette.text.secondary};
-  }
-  .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.divider};
-  }
-  .MuiInputLabel-asterisk {
-    color: ${({ theme }) => theme.palette.error.main};
-  }
-`;
 
 type User = DatatrakWebSurveyUsersRequest.ResBody[0];
 
@@ -40,6 +20,7 @@ interface AssigneeInputProps {
   required?: boolean;
   name?: string;
   error?: boolean;
+  disabled?: boolean;
 }
 
 export const AssigneeInput = ({
@@ -50,6 +31,7 @@ export const AssigneeInput = ({
   surveyCode,
   required,
   error,
+  disabled,
 }: AssigneeInputProps) => {
   const [searchValue, setSearchValue] = useState('');
 
@@ -66,7 +48,15 @@ export const AssigneeInput = ({
       label: user.name,
     })) ?? [];
 
-  const selection = options.find(option => option.id === value);
+  const selection = options.find(option => option.id === value) ?? null;
+
+  // If we programmatically set the value of the input, we need to update the search value
+  useEffect(() => {
+    // if the selection is the same as the search value, do not update the search value
+    if (selection?.label === searchValue || isLoading) return;
+
+    setSearchValue(selection?.label ?? '');
+  }, [JSON.stringify(selection)]);
 
   return (
     <Autocomplete
@@ -87,6 +77,7 @@ export const AssigneeInput = ({
       loading={isLoading}
       required={required}
       error={error}
+      disabled={disabled}
     />
   );
 };

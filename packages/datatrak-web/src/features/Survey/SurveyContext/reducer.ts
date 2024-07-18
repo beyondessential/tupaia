@@ -25,6 +25,7 @@ export type SurveyFormContextType = {
   surveyStartTime?: string;
   isSuccessScreen?: boolean;
   cancelModalOpen: boolean;
+  primaryEntityQuestion?: SurveyScreenComponent | null;
 };
 
 export const surveyReducer = (
