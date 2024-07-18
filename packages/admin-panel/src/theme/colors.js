@@ -21,7 +21,7 @@ export const DARK_BLUE = '#328DE5';
 export const DARK_GREEN = '#00972E';
 
 export const LIGHT_BLUE = '#99D6FF';
-export const LIGHT_RED = '#FEE2E2';
+export const LIGHT_RED = '#F76853';
 export const LIGHT_ORANGE = '#FFECE1';
 
 // Greys (based on first 2 letters of hex code)

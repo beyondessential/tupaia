@@ -80,6 +80,7 @@ const AttachModal = ({ isOpen, onClose, maxSizeInBytes, onAttachFile, title }) =
         label="Select a file"
         showFileSize
         maxSizeInBytes={maxSizeInBytes}
+        name="file-question-field"
         onChange={handleSelectFile}
       />
     </Modal>

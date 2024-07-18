@@ -21,7 +21,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   const [resubmitStatus, setResubmitStatus] = useState(MODAL_STATUS.INITIAL);
 
   const [selectedEntity, setSelectedEntity] = useState({});
-  const [resubmitErrorMessage, setResubmitErrorMessage] = useState(null);
+  const [resubmitError, setResubmitError] = useState(null);
 
   const useResubmitResponse = () => {
     // Swap filesByQuestionCode to filesByUniqueFileName.
@@ -42,7 +42,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
       await resubmitResponse();
     } catch (e) {
       setResubmitStatus(MODAL_STATUS.ERROR);
-      setResubmitErrorMessage(e.message);
+      setResubmitError(e);
       return;
     }
     setResubmitStatus(MODAL_STATUS.SUCCESS);
@@ -50,7 +50,6 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   });
 
   const { data, isLoading: isFetching, error: fetchError } = useGetExistingData(surveyResponseId);
-  const fetchErrorMessage = fetchError?.message;
 
   useEffect(() => {
     if (!data) {
@@ -62,7 +61,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
 
   const handleDismissError = () => {
     setResubmitStatus(MODAL_STATUS.INITIAL);
-    setResubmitErrorMessage(null);
+    setResubmitError(null);
   };
 
   const onSetFormFile = (questionCode, file) => {
@@ -115,7 +114,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
     <>
       <ModalContentProvider
         isLoading={isFetching || isResubmitting}
-        errorMessage={fetchErrorMessage || resubmitErrorMessage}
+        error={fetchError || resubmitError}
       >
         {!isFetching && !isResubmitSuccess && (
           <>
