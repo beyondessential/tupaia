@@ -34,7 +34,11 @@ export class HttpError extends Error {
 
 export class DatabaseError extends RespondingError {
   constructor(message, originalError) {
-    super(`Database error: ${message}${originalError ? ` - ${originalError.message}` : ''}`, 500);
+    super(
+      `Database error: ${message}${originalError ? ` - ${originalError.message}` : ''}`,
+      500,
+      originalError.extraFields,
+    );
   }
 }
 
@@ -128,8 +132,9 @@ export class UploadError extends RespondingError {
 }
 
 export class ValidationError extends RespondingError {
-  constructor(message) {
-    super(message, 400);
+  constructor(message, details = null) {
+    const extraFields = details ? { details } : null;
+    super(message, 400, extraFields);
   }
 }
 
@@ -154,14 +159,15 @@ export class TypeValidationError extends ValidationError {
 }
 
 export class ImportValidationError extends ValidationError {
-  constructor(message, rowNumber = undefined, field = undefined, tabName = undefined) {
-    const errorMessage =
-      'Import failed' +
-      `${tabName !== undefined ? ` in tab ${tabName}` : ''}` +
-      `${rowNumber !== undefined ? ` at row ${rowNumber}` : ''}` +
-      `${field !== undefined ? ` on the field '${field}'` : ''}` +
-      ` with the message '${message}'`;
-    super(errorMessage);
+  constructor(message, rowNumber = undefined, field = undefined, tabName = undefined, details) {
+    const tabError = tabName !== undefined ? `Tab ${tabName}` : '';
+    const rowError = rowNumber !== undefined ? `Row ${rowNumber}` : '';
+    const fieldError = field !== undefined ? `field '${field}'` : '';
+
+    const errors = [tabError, rowError, fieldError].filter(e => e).join(', ');
+
+    const errorMessage = `${errors}. ${message}`;
+    super(errorMessage, details);
   }
 }
 
@@ -191,10 +197,10 @@ export class CustomError extends RespondingError {
       ...jsonFields,
       ...extraJsonFields,
     };
-    const { responseText, responseStatus, description } = json;
+    const { responseText, responseStatus, description, ...restOfJson } = json;
     const { status, details } = responseText;
     const errorMessage = status || responseText;
-    super(errorMessage, responseStatus, { description, status, details });
+    super(errorMessage, responseStatus, { description, status, details, ...restOfJson });
   }
 }
 

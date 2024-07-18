@@ -61,13 +61,13 @@ const mergeProps = (
       ...editedFields,
     }, // Include edits in visible record data
     isNew,
-    onSave: (files, onSuccess) => {
+    onSave: (files, onSuccess, onError) => {
       // If there is no record data, this is a new record
       let fieldValuesToSave = isNew ? { ...initialValues, ...editedFields } : { ...editedFields };
       if (onProcessDataForSave) {
         fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
       }
-      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew, files, onSuccess));
+      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew, files, onSuccess, onError));
     },
     usedByConfig,
   };
