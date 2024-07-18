@@ -311,7 +311,8 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
 
   if (dateOffset) {
     defaultStartDate = addMomentOffset(defaultStartDate, dateOffset);
-    defaultEndDate = addMomentOffset(defaultEndDate, dateOffset);
+    // Round the new end date to the end of the period
+    defaultEndDate = roundEndDate(periodGranularity, defaultEndDate, dateOffset);
   }
 
   return { startDate: defaultStartDate, endDate: defaultEndDate };

@@ -4,8 +4,8 @@
  *
  */
 import React from 'react';
-import { Moment } from 'moment';
-import { GRANULARITIES_WITH_ONE_DATE, roundEndDate, roundStartDate } from '@tupaia/utils';
+import moment, { Moment } from 'moment';
+import { GRANULARITIES_WITH_ONE_DATE, roundStartDate } from '@tupaia/utils';
 import { YearPickerProps } from '../../types';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
@@ -72,7 +72,7 @@ export const YearPicker = ({
     yearOptions.push({
       ...dates,
       displayValue,
-      value: momentToYear(startDate),
+      value: startDate.toISOString(),
     });
   }
 
@@ -82,11 +82,12 @@ export const YearPicker = ({
     </MenuItem>
   ));
 
-  const selectedOption = yearOptions.find(
-    ({ startDate, endDate }) =>
+  const selectedOption = yearOptions.find(({ startDate, endDate }) => {
+    return (
       momentDateValue.clone().isSameOrBefore(endDate) &&
-      momentDateValue.clone().isSameOrAfter(startDate),
-  );
+      momentDateValue.clone().isSameOrAfter(startDate)
+    );
+  });
 
   const getLabel = () => {
     if (!dateOffset || isSetRangeGranularity) return 'Year';
@@ -96,11 +97,16 @@ export const YearPicker = ({
 
   const label = getLabel();
 
+  const onChangeValue = (value: number) => {
+    const newValue = moment(value);
+    onChange(newValue);
+  };
+
   return (
     <DatePicker
       label={label}
       selectedValue={selectedOption?.value}
-      onChange={e => onChange(momentToYear(momentDateValue.clone(), e.target.value))}
+      onChange={e => onChangeValue(e.target.value)}
       menuItems={menuItems}
     />
   );
