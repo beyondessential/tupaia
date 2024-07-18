@@ -57,7 +57,7 @@ const Button = styled(UIButton)`
 `;
 
 export const TasksSection = () => {
-  const { id: userId } = useCurrentUserContext();
+  const { id: userId, projectId } = useCurrentUserContext();
   const filters = [
     { id: 'assignee_id', value: userId as string },
     {
@@ -68,9 +68,13 @@ export const TasksSection = () => {
       },
     },
   ];
-  const { data, isLoading, isSuccess } = useTasks({ filters, pageSize: 5 });
-  const tasks = data?.tasks ?? [];
-  const showTasksDashboardLink = data?.numberOfPages > 1;
+  const {
+    data = { tasks: [], numberOfPages: 0 },
+    isLoading,
+    isSuccess,
+  } = useTasks({ projectId, filters, pageSize: 5 });
+  const tasks = data.tasks;
+  const showTasksDashboardLink = data.numberOfPages > 1;
   const hasTasks = isSuccess && tasks.length > 0;
 
   let Contents: React.ReactNode;
