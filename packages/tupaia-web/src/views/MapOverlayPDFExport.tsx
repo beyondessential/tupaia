@@ -12,7 +12,7 @@ import { Typography } from '@material-ui/core';
 import { LeafletMap, TileLayer, getAutoTileSet } from '@tupaia/ui-map-components';
 import { A4_PAGE_HEIGHT_PX, A4_PAGE_WIDTH_PX } from '@tupaia/ui-components';
 import { MapOverlaysLayer, Legend } from '../features/Map';
-import { useMapOverlays } from '../api/queries';
+import { useMapOverlays, useProject } from '../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../constants';
 import { useDateRanges } from '../utils';
 
@@ -66,9 +66,12 @@ const MapOverlayInfoContainer = styled.div`
   left: 2.1rem;
   background-color: white;
   border: 1px solid ${({ theme }) => theme.palette.divider};
-  width: 20rem;
+  max-width: 24rem;
+  min-width: 20rem;
   padding-inline: 1.3rem;
   padding-block: 1rem;
+  display: flex;
+  align-items: center;
 `;
 
 const MapOverlayInfoText = styled(Typography)`
@@ -86,6 +89,24 @@ const MapOverlayName = styled(MapOverlayInfoText).attrs({
 const LatestDataText = styled(MapOverlayInfoText)`
   color: ${({ theme }) => theme.palette.divider};
   margin-block-start: 0.4rem;
+`;
+
+const LogoWrapper = styled.div`
+  width: 5rem;
+  height: 5rem;
+  border-right: 1px solid ${({ theme }) => theme.palette.divider};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline-end: 0.8rem;
+`;
+const ProjectLogo = styled.img`
+  max-width: 100%;
+  height: auto;
+`;
+
+const TextWrapper = styled.div`
+  margin-inline-start: 0.8rem;
 `;
 
 const useExportParams = () => {
@@ -112,6 +133,8 @@ const useExportParams = () => {
  */
 export const MapOverlayPDFExport = () => {
   const { projectCode, entityCode } = useParams();
+
+  const { data: project } = useProject(projectCode);
 
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
   const { tileset, zoom, center, hiddenValues, locale } = useExportParams();
@@ -141,8 +164,13 @@ export const MapOverlayPDFExport = () => {
         </StyledMap>
       </MapContainer>
       <MapOverlayInfoContainer>
-        <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
-        {dateRangeString && <LatestDataText>Date of data: {dateRangeString}</LatestDataText>}
+        <LogoWrapper>
+          <ProjectLogo src={project?.logoUrl || '/tupaia-logo-dark.svg'} alt={project?.name} />
+        </LogoWrapper>
+        <TextWrapper>
+          <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
+          {dateRangeString && <LatestDataText>Date of data: {dateRangeString}</LatestDataText>}
+        </TextWrapper>
       </MapOverlayInfoContainer>
       <LegendWrapper>
         <Legend hiddenValues={hiddenValues} setValueHidden={() => {}} isExport />
