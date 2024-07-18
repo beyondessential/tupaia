@@ -26,35 +26,35 @@ const VerifiedCell = ({ value }) => {
   );
 };
 
-const EDIT_FIELDS = [
-  {
+const FIELDS = {
+  first_name: {
     Header: 'First Name',
     source: 'first_name',
     required: true,
   },
-  {
+  last_name: {
     Header: 'Last Name',
     source: 'last_name',
     required: true,
   },
-  {
+  email: {
     Header: 'Email address',
     source: 'email',
     required: true,
   },
-  {
+  phone: {
     Header: 'Phone number',
     source: 'mobile_number',
   },
-  {
+  position: {
     Header: 'Position',
     source: 'position',
   },
-  {
+  employer: {
     Header: 'Employer',
     source: 'employer',
   },
-  {
+  verified: {
     Header: 'Verified',
     source: 'verified_email',
     editConfig: {
@@ -70,13 +70,69 @@ const EDIT_FIELDS = [
       ],
     },
   },
-  {
+  password: {
     Header: 'Password',
     source: 'password',
-    required: true,
     hideValue: true,
     editConfig: {
       type: 'password',
+    },
+  },
+};
+
+const EDIT_FIELDS = [
+  FIELDS.first_name,
+  FIELDS.last_name,
+  FIELDS.email,
+  FIELDS.phone,
+  FIELDS.position,
+  FIELDS.employer,
+  FIELDS.verified,
+  FIELDS.password,
+];
+
+const CREATE_FIELDS = [
+  FIELDS.first_name,
+  FIELDS.last_name,
+  FIELDS.email,
+  FIELDS.phone,
+  FIELDS.position,
+  FIELDS.employer,
+  FIELDS.verified,
+  {
+    ...FIELDS.password,
+    required: true,
+  },
+  {
+    Header: 'Country',
+    source: 'countryName',
+    required: true,
+    editConfig: {
+      sourceKey: 'countryName',
+      optionsEndpoint: 'countries',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      labelTooltip: 'Select the country to grant this user access to',
+    },
+  },
+  {
+    Header: 'Permission group',
+    source: 'permissionGroupName',
+    required: true,
+    editConfig: {
+      sourceKey: 'permissionGroupName',
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      labelTooltip: 'Select the permission group to grant this user access to',
+    },
+  },
+  {
+    Header: 'API Client (not required for most users, see README of admin-panel for usage)',
+    source: 'is_api_client',
+    type: 'boolean',
+    editConfig: {
+      type: 'boolean',
     },
   },
 ];
@@ -128,41 +184,7 @@ const IMPORT_CONFIG = {
 const CREATE_CONFIG = {
   actionConfig: {
     editEndpoint: 'users',
-    fields: [
-      ...EDIT_FIELDS,
-      {
-        Header: 'Country',
-        source: 'countryName',
-        required: true,
-        editConfig: {
-          sourceKey: 'countryName',
-          optionsEndpoint: 'countries',
-          optionLabelKey: 'name',
-          optionValueKey: 'name',
-          labelTooltip: 'Select the country to grant this user access to',
-        },
-      },
-      {
-        Header: 'Permission group',
-        source: 'permissionGroupName',
-        required: true,
-        editConfig: {
-          sourceKey: 'permissionGroupName',
-          optionsEndpoint: 'permissionGroups',
-          optionLabelKey: 'name',
-          optionValueKey: 'name',
-          labelTooltip: 'Select the permission group to grant this user access to',
-        },
-      },
-      {
-        Header: 'API Client (not required for most users, see README of admin-panel for usage)',
-        source: 'is_api_client',
-        type: 'boolean',
-        editConfig: {
-          type: 'boolean',
-        },
-      },
-    ],
+    fields: CREATE_FIELDS,
   },
 };
 
