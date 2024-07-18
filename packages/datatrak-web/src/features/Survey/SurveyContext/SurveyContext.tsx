@@ -33,6 +33,7 @@ const defaultContext = {
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
+  primaryEntityQuestion: null,
 } as SurveyFormContextType;
 
 const SurveyFormContext = createContext(defaultContext);
@@ -66,6 +67,9 @@ export const SurveyContext = ({ children }) => {
     .filter(screen => screen.surveyScreenComponents.length > 0);
 
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
+  const primaryEntityQuestion = flattenedScreenComponents.find(
+    question => question.type === QuestionType.PrimaryEntity,
+  );
 
   const initialiseFormData = () => {
     if (!surveyCode || isResponseScreen) return;
@@ -75,13 +79,8 @@ export const SurveyContext = ({ children }) => {
       formData,
     );
 
-    if (primaryEntity) {
-      const primaryEntityQuestion = flattenedScreenComponents.find(
-        question => question.type === QuestionType.PrimaryEntity,
-      );
-      if (primaryEntityQuestion) {
-        initialFormData[primaryEntityQuestion.id] = primaryEntity;
-      }
+    if (primaryEntity && primaryEntityQuestion) {
+      initialFormData[primaryEntityQuestion.id as string] = primaryEntity;
     }
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
     // update the start time when a survey is started, so that it can be passed on when submitting the survey
@@ -115,6 +114,7 @@ export const SurveyContext = ({ children }) => {
         screenHeader,
         screenDetail,
         visibleScreens,
+        primaryEntityQuestion,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
