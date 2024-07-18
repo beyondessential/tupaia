@@ -71,6 +71,7 @@ const Grid = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
+    grid-template-rows: 10.5rem auto auto;
     grid-template-columns: 23% 1fr 1fr 30%;
     grid-template-areas:
       'surveySelect surveySelect surveySelect tasks'

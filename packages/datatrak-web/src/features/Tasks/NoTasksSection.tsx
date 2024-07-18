@@ -32,7 +32,9 @@ const Text = styled(Typography)`
 `;
 
 const Button = styled(UIButton)`
-  font-size: 0.75rem;
+  .MuiButton-label {
+    font-size: 0.75rem;
+  }
   max-width: 10rem;
   padding: 0.25rem 1rem;
 `;

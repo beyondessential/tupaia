@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { FlexSpaceBetween, TextButton } from '@tupaia/ui-components';
+import { FlexSpaceBetween, TextButton, Button as UIButton } from '@tupaia/ui-components';
 import { SectionHeading } from './SectionHeading';
 import { useCurrentUserContext, useTasks } from '../../api';
 import { NoTasksSection, TaskTile } from '../../features/Tasks';
@@ -16,9 +16,13 @@ const SectionContainer = styled.section`
   grid-area: tasks;
   display: flex;
   flex-direction: column;
+  ${({ theme }) => theme.breakpoints.up('lg')} {
+    max-height: 21.5rem;
+  }
 `;
 
 const Paper = styled.div`
+  text-align: center;
   background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 10px;
   flex: 1;
@@ -42,6 +46,15 @@ const ViewMoreButton = styled(TextButton)`
   }
 `;
 
+const Button = styled(UIButton)`
+  margin: 0.3rem auto 0;
+  display: inline-block;
+  padding: 0.1rem 1rem 0.2rem;
+  .MuiButton-label {
+    font-size: 0.75rem;
+  }
+`;
+
 export const TasksSection = () => {
   const { id: userId } = useCurrentUserContext();
   const filters = [
@@ -54,9 +67,11 @@ export const TasksSection = () => {
       },
     },
   ];
-  const { data, isSuccess } = useTasks({ filters });
-  const hasTasks = isSuccess && data?.tasks.length > 0;
-  const hasNoTasks = isSuccess && data?.tasks.length === 0;
+  const { data, isSuccess } = useTasks({ filters, pageSize: 5 });
+  const tasks = data?.tasks ?? [];
+  const showTasksDashboardLink = data?.numberOfPages > 1;
+  const hasTasks = tasks.length > 0;
+  const hasNoTasks = isSuccess && tasks.length === 0;
 
   return (
     <SectionContainer>
@@ -69,7 +84,18 @@ export const TasksSection = () => {
         )}
       </FlexSpaceBetween>
       <Paper>
-        {hasTasks && data?.tasks.map(task => <TaskTile key={task.id} task={task} />)}
+        {hasTasks && (
+          <>
+            {tasks.map(task => (
+              <TaskTile key={task.id} task={task} />
+            ))}
+            {showTasksDashboardLink && (
+              <Button component={Link} to={ROUTES.TASKS}>
+                View more
+              </Button>
+            )}
+          </>
+        )}
         {hasNoTasks && <NoTasksSection />}
       </Paper>
     </SectionContainer>

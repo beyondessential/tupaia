@@ -14,6 +14,7 @@ import { ButtonLink } from '../../components';
 
 const TileContainer = styled.div`
   display: flex;
+  text-align: left;
   justify-content: space-between;
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.palette.divider};

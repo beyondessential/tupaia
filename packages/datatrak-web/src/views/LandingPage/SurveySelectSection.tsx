@@ -21,6 +21,7 @@ const SectionContainer = styled.section`
   align-items: flex-start;
   justify-content: space-between;
   overflow: visible !important;
+  height: max-content;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 3rem 1rem 2.2rem;
