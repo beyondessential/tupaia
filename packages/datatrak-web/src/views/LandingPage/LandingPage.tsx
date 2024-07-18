@@ -32,10 +32,6 @@ const PageBody = styled.div`
     height: calc(100vh - ${HEADER_HEIGHT});
     padding: 0.2rem 1rem 0.8rem;
   }
-
-  ${DESKTOP_MEDIA_QUERY} {
-    padding: 1rem 2.75rem 2rem;
-  }
 `;
 
 const Grid = styled.div`
@@ -44,6 +40,8 @@ const Grid = styled.div`
   flex-direction: column;
   margin-top: 1rem;
   min-height: 0; // This is needed to stop the grid overflowing the flex container
+  max-width: 38rem;
+  margin-inline: auto;
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
@@ -57,12 +55,13 @@ const Grid = styled.div`
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: grid;
     gap: 1.25rem;
-    grid-template-rows: auto auto;
-    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 20rem auto auto;
+    grid-template-columns: 2fr 1fr;
     grid-template-areas:
-      'surveySelect surveySelect tasks tasks'
-      'recentSurveys recentSurveys recentResponses recentResponses'
-      'activityFeed activityFeed leaderboard leaderboard';
+      'surveySelect tasks'
+      'recentSurveys recentResponses'
+      'activityFeed leaderboard';
+    max-width: none;
 
     > section {
       margin: 0;

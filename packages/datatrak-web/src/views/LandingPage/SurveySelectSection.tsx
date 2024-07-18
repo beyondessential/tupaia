@@ -110,9 +110,11 @@ const SurveysImage = styled.img`
   right: 1rem;
   height: 100%;
 
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    top: 50%;
+  ${({ theme }) => theme.breakpoints.up('md')} {
     right: -1rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('lg')} {
     height: 160%;
   }
 `;

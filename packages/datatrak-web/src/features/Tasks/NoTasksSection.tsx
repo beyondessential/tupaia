@@ -10,33 +10,38 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
   text-align: center;
-  padding: 0.5rem 0.5rem 1rem;
 `;
 
 const Image = styled.img.attrs({
   src: '/tupaia-high-five.svg',
   alt: 'Illustration of two hands giving a high five',
 })`
+  flex: 1;
   height: auto;
-  max-width: 100%;
-  width: 8rem;
+  min-height: 5rem;
+  width: auto;
   margin: 0 auto 1rem;
 `;
 
 const Text = styled(Typography)`
   text-align: center;
-  font-size: 0.93rem;
+  font-size: 0.9rem;
   line-height: 1.5;
-  margin-block-end: 1rem;
+  margin-block-end: 0.5rem;
 `;
 
 const Button = styled(UIButton)`
+  padding: 0.25rem 1rem;
+  margin-block-end: 0.5rem;
+
   .MuiButton-label {
     font-size: 0.75rem;
   }
-  max-width: 10rem;
-  padding: 0.25rem 1rem;
 `;
 export const NoTasksSection = () => (
   <Container>
