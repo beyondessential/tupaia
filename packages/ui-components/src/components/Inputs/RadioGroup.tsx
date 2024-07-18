@@ -4,8 +4,8 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import MuiRadio, { RadioProps } from '@material-ui/core/Radio';
 import { FormLabel } from '@material-ui/core';
+import MuiRadio, { RadioProps } from '@material-ui/core/Radio';
 import MuiRadioGroup, { RadioGroupProps as MuiRadioGroupProps } from '@material-ui/core/RadioGroup';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
@@ -13,11 +13,6 @@ import MuiFormControl, { FormControlProps } from '@material-ui/core/FormControl'
 import { OverrideableComponentProps } from '../../types';
 import { InputLabel } from './InputLabel';
 
-const LegendWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.25rem;
-`;
 const FormControl = styled(MuiFormControl)<OverrideableComponentProps<FormControlProps>>`
   display: block;
   margin-bottom: 1.2rem;
@@ -57,6 +52,9 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   & + & {
     margin-left: 0.625rem;
   }
+  &.error {
+    border-color: ${props => props.theme.palette.error.main};
+  }
 `;
 
 const Radio = styled(MuiRadio)<
@@ -72,6 +70,9 @@ const Radio = styled(MuiRadio)<
 
   .MuiSvgIcon-root {
     font-size: 1rem;
+  }
+  .error & {
+    color: ${props => props.theme.palette.error.main};
   }
 `;
 
@@ -92,6 +93,7 @@ interface RadioGroupProps {
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
   required?: boolean;
   radioGroupProps?: MuiRadioGroupProps;
+  error?: boolean;
 }
 
 export const RadioGroup = ({
@@ -110,31 +112,50 @@ export const RadioGroup = ({
   inputRef,
   inputProps,
   required,
+  error,
   radioGroupProps,
-}: RadioGroupProps) => (
-  <FormControl component="fieldset" className={className} color="primary" id={id}>
-    <LegendWrapper>
-      <InputLabel label={<Legend required={required}>{label}</Legend>} tooltip={tooltip} />
-    </LegendWrapper>
-    {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
-    <StyledRadioGroup name={name} value={value} onChange={onChange} {...radioGroupProps}>
-      {options.map((option, i) => (
-        <FormControlLabel
-          control={
-            <Radio
-              inputRef={inputRef}
-              inputProps={{
-                'aria-describedby': helperText ? `${name}-helperText` : undefined,
-                ...(inputProps || {}),
-                required: required && i === 0, // only the first radio button is required for a radio group if it is required
-              }}
-            />
-          }
-          key={option[valueKey].toString()}
-          value={option[valueKey]}
-          label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} as="span" />}
-        />
-      ))}
-    </StyledRadioGroup>
-  </FormControl>
-);
+}: RadioGroupProps) => {
+  return (
+    <FormControl
+      component="fieldset"
+      className={className}
+      color="primary"
+      id={id}
+      required={required}
+      error={error}
+    >
+      <InputLabel
+        label={label}
+        as={Legend}
+        tooltip={tooltip}
+        labelProps={{
+          error,
+          required,
+        }}
+        applyWrapper
+      />
+
+      {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
+      <StyledRadioGroup name={name} value={value} onChange={onChange} {...radioGroupProps}>
+        {options.map((option, i) => (
+          <FormControlLabel
+            control={
+              <Radio
+                inputRef={inputRef}
+                inputProps={{
+                  'aria-describedby': helperText ? `${name}-helperText` : undefined,
+                  ...(inputProps || {}),
+                  required: required && i === 0, // only the first radio button is required for a radio group if it is required
+                }}
+              />
+            }
+            key={option[valueKey].toString()}
+            value={option[valueKey]}
+            label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} as="span" />}
+            className={error ? 'error' : undefined}
+          />
+        ))}
+      </StyledRadioGroup>
+    </FormControl>
+  );
+};

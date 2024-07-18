@@ -36,7 +36,6 @@ const FIELDS = [
   {
     Header: 'Creation date',
     source: 'creation_date',
-
     accessor: row => moment(row.creation_date).local().toString(),
     editConfig: {
       type: 'datetime-local',
@@ -51,6 +50,7 @@ const FIELDS = [
         {
           label: 'Title',
           fieldName: 'title',
+          required: true,
         },
         {
           label: 'Image',
