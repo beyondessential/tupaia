@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
-import { withConnectedEditor, useValidationScroll } from '../../../editor';
+import { useValidationScroll, withConnectedEditor } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
@@ -201,8 +201,12 @@ const EditSurveyPageComponent = withConnectedEditor(
               onChange={({ fileName, file }) =>
                 handleSetFormFile('surveyQuestions', { fileName, file })
               }
-              accept=".xlsx,.xls,.csv"
-              initialFileName={initialFileName}
+              accept={{
+                'application/vnd.ms-excel': ['.xls'],
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                'text/csv': ['.csv'],
+              }}
+              fileName={initialFileName}
               label="Survey questions"
             />
           </Section>
