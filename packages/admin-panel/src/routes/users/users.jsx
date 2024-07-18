@@ -30,14 +30,17 @@ const EDIT_FIELDS = [
   {
     Header: 'First Name',
     source: 'first_name',
+    required: true,
   },
   {
     Header: 'Last Name',
     source: 'last_name',
+    required: true,
   },
   {
     Header: 'Email address',
     source: 'email',
+    required: true,
   },
   {
     Header: 'Phone number',
@@ -70,6 +73,7 @@ const EDIT_FIELDS = [
   {
     Header: 'Password',
     source: 'password',
+    required: true,
     hideValue: true,
     editConfig: {
       type: 'password',
@@ -129,25 +133,25 @@ const CREATE_CONFIG = {
       {
         Header: 'Country',
         source: 'countryName',
+        required: true,
         editConfig: {
           sourceKey: 'countryName',
           optionsEndpoint: 'countries',
           optionLabelKey: 'name',
           optionValueKey: 'name',
           labelTooltip: 'Select the country to grant this user access to',
-          type: 'checkboxList',
-          pageSize: 'ALL',
         },
       },
       {
         Header: 'Permission group',
         source: 'permissionGroupName',
+        required: true,
         editConfig: {
           sourceKey: 'permissionGroupName',
           optionsEndpoint: 'permissionGroups',
           optionLabelKey: 'name',
           optionValueKey: 'name',
-          secondaryLabel: 'Select the permission group to grant this user access to',
+          labelTooltip: 'Select the permission group to grant this user access to',
         },
       },
       {

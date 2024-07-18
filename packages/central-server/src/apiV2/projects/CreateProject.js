@@ -33,7 +33,7 @@ export class CreateProject extends BESAdminCreateHandler {
       code: rawProjectCode,
       name,
       description,
-      sort_order: sortOrder,
+      sort_order: sortOrder = null,
       permission_groups: permissionGroups,
       countries,
       entityTypes,
@@ -74,7 +74,7 @@ export class CreateProject extends BESAdminCreateHandler {
       const newProject = await transactingModels.project.create({
         code: projectCode,
         description,
-        sort_order: sortOrder,
+        sort_order: sortOrder === '' ? null : sortOrder,
         image_url: '',
         logo_url: '',
         permission_groups: [projectPermissionGroup.name, ...permissionGroups],

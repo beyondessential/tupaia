@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
+import { InputLabel } from '@tupaia/ui-components';
 import { JsonEditor as Editor } from '../JsonEditor';
 
 const Container = styled.div`
@@ -15,31 +15,29 @@ const Container = styled.div`
   min-height: 300px;
   margin-bottom: 20px;
 
-  > div {
+  .jsoneditor-parent {
     display: flex;
     flex: 1;
   }
 
   .jsoneditor {
     height: auto;
+    border-color: ${({ theme, $invalid }) => {
+      return $invalid ? theme.palette.error.main : theme.palette.text.primary;
+    }};
   }
 `;
 
-const Label = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-  font-size: 0.9rem;
-  line-height: 1.1rem;
-`;
-
-const HelperText = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-  font-size: 0.75rem;
-  margin-top: 3px;
-  line-height: 1.66;
-`;
-
-export const JsonEditor = ({ inputKey, label, helperText, value, onChange, stringify }) => {
-
+export const JsonEditor = ({
+  inputKey,
+  label,
+  value,
+  onChange,
+  stringify,
+  error,
+  required,
+  tooltip,
+}) => {
   let editorValue = value;
 
   if (typeof value === 'string') {
@@ -47,8 +45,16 @@ export const JsonEditor = ({ inputKey, label, helperText, value, onChange, strin
   }
 
   return (
-    <Container>
-      <Label gutterBottom>{label}</Label>
+    <Container $invalid={error}>
+      <InputLabel
+        label={label}
+        labelProps={{
+          required,
+          error,
+        }}
+        tooltip={tooltip}
+        applyWrapper
+      />
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
         mainMenuBar={false}
@@ -56,8 +62,10 @@ export const JsonEditor = ({ inputKey, label, helperText, value, onChange, strin
         mode="code"
         onChange={json => onChange(inputKey, stringify ? JSON.stringify(json ?? {}) : json)}
         value={editorValue}
+        htmlElementProps={{
+          className: 'jsoneditor-parent',
+        }}
       />
-      {helperText && <HelperText>{helperText}</HelperText>}
     </Container>
   );
 };
@@ -67,12 +75,16 @@ JsonEditor.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
   onChange: PropTypes.func.isRequired,
-  helperText: PropTypes.string,
   stringify: PropTypes.bool,
+  error: PropTypes.bool,
+  required: PropTypes.bool,
+  tooltip: PropTypes.string,
 };
 
 JsonEditor.defaultProps = {
-  helperText: null,
   value: null,
   stringify: true,
+  error: false,
+  required: false,
+  tooltip: null,
 };
