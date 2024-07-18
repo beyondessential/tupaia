@@ -6,9 +6,10 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { DialogContent } from '@material-ui/core';
-import { SmallAlert, TooltipIconButton } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import HelpOutline from '@material-ui/icons/HelpOutline';
+import { TooltipIconButton } from '../TooltipIconButton';
+import { SmallAlert } from '../Alert';
 
 const LIGHT_RED = '#F76853';
 const RED = '#F76853';
