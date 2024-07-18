@@ -14,6 +14,7 @@ import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
 import { ROUTES } from '../../constants';
 import { useFromLocation } from '../../utils';
+import { Task } from '../../types';
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -45,10 +46,10 @@ const ErrorModal = ({ isOpen, onClose }) => {
   );
 };
 
-export const TaskDetailsPage = () => {
-  const [errorModalOpen, setErrorModalOpen] = useState(false);
-  const { taskId } = useParams();
-  const { data: task, isLoading } = useTask(taskId);
+const ButtonComponent = ({ task, openErrorModal }: { task?: Task; openErrorModal: () => void }) => {
+  const from = useFromLocation();
+
+  if (!task) return null;
 
   const surveyUrl = task
     ? generatePath(ROUTES.SURVEY_SCREEN, {
@@ -58,36 +59,37 @@ export const TaskDetailsPage = () => {
       })
     : '';
 
-  const from = useFromLocation();
-
-  const ButtonComponent = () => {
-    if (!task) return null;
-    if (task.taskStatus === TaskStatus.cancelled) return null;
-    if (task.taskStatus === TaskStatus.completed) {
-      if (!task.surveyResponseId)
-        return (
-          <Button onClick={() => setErrorModalOpen(true)} variant="outlined">
-            View completed survey
-          </Button>
-        );
+  if (task.taskStatus === TaskStatus.cancelled) return null;
+  if (task.taskStatus === TaskStatus.completed) {
+    if (!task.surveyResponseId)
       return (
-        <Button to={`?responseId=${task.surveyResponseId}`} variant="outlined">
+        <Button onClick={openErrorModal} variant="outlined">
           View completed survey
         </Button>
       );
-    }
     return (
-      <Button to={surveyUrl} state={{ from }}>
-        Complete
+      <Button to={`?responseId=${task.surveyResponseId}`} variant="outlined">
+        View completed survey
       </Button>
     );
-  };
+  }
+  return (
+    <Button to={surveyUrl} state={{ from }}>
+      Complete task
+    </Button>
+  );
+};
+
+export const TaskDetailsPage = () => {
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const { taskId } = useParams();
+  const { data: task, isLoading } = useTask(taskId);
 
   return (
     <>
       <TaskPageHeader title="Task details">
         <ButtonWrapper>
-          <ButtonComponent />
+          <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
           {task && <TaskActionsMenu {...task} />}
         </ButtonWrapper>
       </TaskPageHeader>
