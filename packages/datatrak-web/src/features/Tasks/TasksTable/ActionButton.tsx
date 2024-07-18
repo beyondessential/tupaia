@@ -65,6 +65,7 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
       variant="contained"
       state={{
         from: location.pathname,
+        primaryEntity: entity.id,
       }}
     >
       Complete task

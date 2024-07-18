@@ -80,10 +80,11 @@ const getSubHeadingText = surveyResponse => {
 
 export const SurveyResponsePage = () => {
   const { surveyResponseId } = useParams();
-  const { setFormData } = useSurveyForm();
+  const { setFormData, primaryEntityQuestion } = useSurveyForm();
   const formContext = useFormContext();
   const { data: surveyResponse } = useSurveyResponse(surveyResponseId);
   const answers = surveyResponse?.answers || {};
+  const primaryEntityId = surveyResponse?.entityId;
   const subHeading = getSubHeadingText(surveyResponse);
 
   useEffect(() => {
@@ -94,6 +95,9 @@ export const SurveyResponsePage = () => {
         const isStringifiedObject = typeof value === 'string' && value.startsWith('{');
         return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
       }, {});
+      if (primaryEntityQuestion) {
+        formattedAnswers[primaryEntityQuestion.id as string] = primaryEntityId;
+      }
       formContext.reset(formattedAnswers);
       setFormData(formattedAnswers);
     }
