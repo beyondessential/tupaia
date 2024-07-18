@@ -47,7 +47,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
         };
       };
       if (firstError?.ref) {
-        firstError?.ref.focus();
+        firstError.ref.focus();
       }
     }
   }, [JSON.stringify(errors)]);
