@@ -7,11 +7,28 @@ import { getPluralForm } from '../../pages/resources/resourceName';
 
 const RESOURCE_NAME = { singular: 'permission' };
 
+const EntityField = {
+  Header: 'Entity',
+  source: 'entity.name',
+  required: true,
+  editConfig: {
+    optionsEndpoint: 'entities',
+    type: 'checkboxList',
+    baseFilter: { type: 'country' },
+    optionLabelKey: 'entity.name',
+    optionValueKey: 'entity.id',
+    allowMultipleValues: true,
+    labelTooltip: 'Select the countries for which this permission applies',
+    pageSize: 'ALL',
+    sourceKey: 'entity_id',
+  },
+};
 export const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
 export const PERMISSIONS_COLUMNS = [
   {
     Header: 'Entity',
     source: 'entity.name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'entities',
       baseFilter: { type: 'country' },
@@ -20,6 +37,7 @@ export const PERMISSIONS_COLUMNS = [
   {
     Header: 'Permission group',
     source: 'permission_group.name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
     },
@@ -71,24 +89,18 @@ const CREATE_CONFIG = {
       {
         Header: 'User email',
         source: 'user.email',
+        required: true,
         editConfig: {
           optionsEndpoint: 'users',
           optionLabelKey: 'email',
           allowMultipleValues: true,
         },
       },
-      {
-        Header: 'Entity',
-        source: 'entity.name',
-        editConfig: {
-          optionsEndpoint: 'entities',
-          baseFilter: { type: 'country' },
-          allowMultipleValues: true,
-        },
-      },
+      EntityField,
       {
         Header: 'Permission group',
         source: 'permission_group.name',
+        required: true,
         editConfig: {
           optionsEndpoint: 'permissionGroups',
           allowMultipleValues: true,

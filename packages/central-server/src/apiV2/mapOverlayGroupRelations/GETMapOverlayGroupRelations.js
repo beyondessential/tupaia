@@ -30,10 +30,6 @@ export class GETMapOverlayGroupRelations extends GETHandler {
       nearTableKey: 'map_overlay_group_relation.map_overlay_group_id',
       farTableKey: 'map_overlay_group.id',
     },
-    map_overlay: {
-      nearTableKey: 'map_overlay_group_relation.child_id',
-      farTableKey: 'map_overlay.id',
-    },
   };
 
   async findSingleRecord(mapOverlayGroupRelationId, options) {
@@ -52,6 +48,17 @@ export class GETMapOverlayGroupRelations extends GETHandler {
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
 
     return mapOverlayGroupRelation;
+  }
+
+  async getDbQueryOptions() {
+    const { multiJoin, sort, ...restOfOptions } = await super.getDbQueryOptions();
+    return {
+      ...restOfOptions,
+      // Strip table prefix from `child_code` as it’s a `customColumn`
+      sort: sort.map(s => s.replace('map_overlay_group_relation.child_code', 'child_code')),
+      // Appending the multi-join from the Record class so that we can fetch the `child_code`
+      multiJoin: multiJoin.concat(this.models.mapOverlayGroupRelation.DatabaseRecordClass.joins),
+    };
   }
 
   async getPermissionsFilter(criteria, options) {

@@ -14,10 +14,12 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Description',
     source: 'description',
+    required: true,
   },
   {
     Header: 'Dashboard',
     source: 'dashboard_group_name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'dashboards',
       optionLabelKey: 'name',
@@ -29,6 +31,7 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Map overlay code',
     source: 'default_measure',
+    required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'code',
@@ -40,6 +43,7 @@ const DEFAULT_FIELDS = [
     Header: 'Permission group',
     source: 'permission_groups',
     type: 'jsonTooltip',
+    required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
@@ -51,11 +55,12 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Image',
     source: 'image_url',
+    required: true,
     editConfig: {
       type: 'image',
       name: 'image_url',
       avatarVariant: 'square',
-      secondaryLabel: 'Recommended size: 480 × 240 px',
+      labelTooltip: 'Recommended size: 480 × 240 px',
       maxHeight: 240,
       maxWidth: 480,
     },
@@ -63,11 +68,12 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Logo',
     source: 'logo_url',
+    required: true,
     editConfig: {
       type: 'image',
       name: 'logo_url',
       avatarVariant: 'square',
-      secondaryLabel: 'Recommended size: 480 × 240 px',
+      labelTooltip: 'Recommended size: 480 × 240 px',
       maxHeight: 240,
       maxWidth: 480,
     },
@@ -78,8 +84,8 @@ const DEFAULT_FIELDS = [
     type: 'jsonTooltip',
     editConfig: {
       type: 'jsonEditor',
+      labelTooltip: 'eg. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',
     },
-    secondaryLabel: 'e.g. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',
   },
   {
     Header: 'Sort',
@@ -92,6 +98,7 @@ const CREATE_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   ...DEFAULT_FIELDS,
 ];
@@ -101,6 +108,7 @@ const EDIT_FIELDS = [
     Header: 'Code',
     source: 'code',
     editable: false,
+    required: true,
   },
   ...DEFAULT_FIELDS,
 ];
@@ -109,19 +117,22 @@ const NEW_PROJECT_COLUMNS = [
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   ...CREATE_FIELDS,
   {
-    Header: 'Country code(s)',
+    Header: 'Countries',
     source: 'country.code',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
+    required: true,
     editConfig: {
       optionsEndpoint: 'countries',
-      optionLabelKey: 'country.code',
+      optionLabelKey: 'country.name',
       optionValueKey: 'country.id',
       sourceKey: 'countries',
-      allowMultipleValues: true,
+      pageSize: 'ALL',
+      type: 'checkboxList',
     },
   },
   {

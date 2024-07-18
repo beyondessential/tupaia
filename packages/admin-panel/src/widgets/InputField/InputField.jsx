@@ -5,29 +5,65 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { InputWrapper } from './InputWrapper';
 
-const InputFieldComponents = {};
+const InputFields = {};
 
 export const registerInputField = (type, Component) => {
-  InputFieldComponents[type] = Component;
+  InputFields[type] = Component;
 };
 
 const getInputType = ({ options, optionsEndpoint, type }) => {
   if (options && type !== 'radio') {
     return 'enum';
   }
-  if (optionsEndpoint) {
+  if (optionsEndpoint && type !== 'checkboxList') {
     return 'autocomplete';
   }
   return type;
 };
 
-export const InputField = ({ type, ...inputProps }) => {
+export const InputField = ({
+  type,
+  maxLength,
+  minLength,
+  secondaryLabel,
+  error,
+  ...inputProps
+}) => {
   const { options, optionsEndpoint } = inputProps;
   const inputType = getInputType({ options, optionsEndpoint, type });
-  const InputComponent = InputFieldComponents[inputType];
+  const InputComponent = InputFields[inputType];
 
-  return <InputComponent {...inputProps} />;
+  const generateHelperText = () => {
+    if (secondaryLabel) return secondaryLabel;
+    if (maxLength && minLength !== undefined && minLength !== null) {
+      return `Must be between ${minLength} and ${maxLength} characters`;
+    }
+
+    if (maxLength) {
+      return `Max ${maxLength} characters`;
+    }
+
+    if (minLength !== undefined && minLength !== null) {
+      return `Min ${minLength} characters`;
+    }
+  };
+
+  const helperText = generateHelperText();
+
+  return (
+    <InputWrapper errorText={error} helperText={helperText}>
+      {InputComponent && (
+        <InputComponent
+          {...inputProps}
+          error={!!error}
+          maxLength={maxLength}
+          minLength={minLength}
+        />
+      )}
+    </InputWrapper>
+  );
 };
 
 export const inputFieldPropTypes = {
@@ -55,6 +91,10 @@ export const inputFieldPropTypes = {
   parentRecord: PropTypes.object,
   secondaryLabel: PropTypes.string,
   variant: PropTypes.string,
+  required: PropTypes.bool,
+  error: PropTypes.string,
+  maxLength: PropTypes.number,
+  minLength: PropTypes.number,
 };
 
 export const inputFieldDefaultProps = {
@@ -73,6 +113,10 @@ export const inputFieldDefaultProps = {
   parentRecord: {},
   secondaryLabel: null,
   variant: null,
+  required: false,
+  error: null,
+  maxLength: null,
+  minLength: null,
 };
 
 InputField.propTypes = inputFieldPropTypes;

@@ -15,20 +15,23 @@ const FIELDS = [
   {
     Header: 'Data element',
     source: 'data_element_code',
+    required: true,
   },
   {
     Header: 'Country code',
     source: 'country_code',
+    required: true,
   },
   {
     Header: 'Service type',
     source: 'service_type',
+    required: true,
     editConfig: {
       options: SERVICE_TYPE_OPTIONS,
     },
   },
   {
-    Header: 'Data service sonfiguration',
+    Header: 'Data service configuration',
     source: 'service_config',
     Cell: DataSourceConfigView,
     editConfig: DATA_ELEMENT_FIELD_EDIT_CONFIG,

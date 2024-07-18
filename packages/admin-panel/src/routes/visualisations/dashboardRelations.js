@@ -8,12 +8,13 @@ import { prettyArray } from '../../utilities';
 
 export const RESOURCE_NAME = { singular: 'dashboard relation' };
 
-// export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
-export const DASHBOARD_RELATION_COLUMNS = [
-  {
+
+export const FIELDS = {
+  DASHBOARD_CODE: {
     Header: 'Dashboard code',
     source: 'dashboard.code',
+    required: true,
     editConfig: {
       optionsEndpoint: 'dashboards',
       optionLabelKey: 'dashboard.code',
@@ -21,9 +22,10 @@ export const DASHBOARD_RELATION_COLUMNS = [
       sourceKey: 'dashboard_id',
     },
   },
-  {
+  DASHBOARD_ITEM_CODE: {
     Header: 'Dashboard item code',
     source: 'dashboard_item.code',
+    required: true,
     editConfig: {
       optionsEndpoint: 'dashboardItems',
       optionLabelKey: 'dashboard_item.code',
@@ -31,10 +33,11 @@ export const DASHBOARD_RELATION_COLUMNS = [
       sourceKey: 'child_id',
     },
   },
-  {
+  PERMISSION_GROUPS: {
     Header: 'Permission groups',
     source: 'permission_groups',
     Filter: ArrayFilter,
+    required: true,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'permissionGroups',
@@ -44,10 +47,11 @@ export const DASHBOARD_RELATION_COLUMNS = [
       allowMultipleValues: true,
     },
   },
-  {
+  ENTITY_TYPES: {
     Header: 'Entity types',
     source: 'entity_types',
     Filter: ArrayFilter,
+    required: true,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       type: 'autocomplete',
@@ -55,19 +59,20 @@ export const DASHBOARD_RELATION_COLUMNS = [
       canCreateNewOptions: true,
       optionLabelKey: 'entityTypes',
       optionValueKey: 'entityTypes',
-      secondaryLabel: 'Input the entity types you want. e.g: ‘country’, ‘sub_district’',
+      labelTooltip: "Input the entity types you want. Eg: 'country', 'sub_district'",
     },
   },
-  {
+  ATTRIBUTES_FILTER: {
     Header: 'Attributes filter',
     source: 'attributes_filter',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
-  {
+  PROJECT_CODES: {
     Header: 'Project codes',
     source: 'project_codes',
     Filter: ArrayFilter,
+    required: true,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'projects',
@@ -77,14 +82,24 @@ export const DASHBOARD_RELATION_COLUMNS = [
       allowMultipleValues: true,
     },
   },
-  {
+  SORT_ORDER: {
     Header: 'Sort order',
     source: 'sort_order',
   },
+};
+
+const DASHBOARD_RELATION_FIELDS = [
+  FIELDS.DASHBOARD_CODE,
+  FIELDS.DASHBOARD_ITEM_CODE,
+  FIELDS.PERMISSION_GROUPS,
+  FIELDS.ENTITY_TYPES,
+  FIELDS.ATTRIBUTES_FILTER,
+  FIELDS.PROJECT_CODES,
+  FIELDS.SORT_ORDER,
 ];
 
 const COLUMNS = [
-  ...DASHBOARD_RELATION_COLUMNS,
+  ...DASHBOARD_RELATION_FIELDS,
   {
     Header: 'Edit',
     type: 'edit',
@@ -92,7 +107,7 @@ const COLUMNS = [
     actionConfig: {
       title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: DASHBOARD_RELATION_ENDPOINT,
-      fields: DASHBOARD_RELATION_COLUMNS,
+      fields: DASHBOARD_RELATION_FIELDS,
     },
   },
   {
@@ -108,7 +123,14 @@ const CREATE_CONFIG = {
   actionConfig: {
     title: 'Add relation between dashboard and dashboard item',
     editEndpoint: DASHBOARD_RELATION_ENDPOINT,
-    fields: DASHBOARD_RELATION_COLUMNS,
+    fields: [
+      FIELDS.DASHBOARD_CODE,
+      FIELDS.DASHBOARD_ITEM_CODE,
+      FIELDS.PERMISSION_GROUPS,
+      FIELDS.ENTITY_TYPES,
+      FIELDS.PROJECT_CODES,
+      FIELDS.SORT_ORDER,
+    ],
   },
 };
 

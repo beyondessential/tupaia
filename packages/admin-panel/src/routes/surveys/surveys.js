@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
+import { QUESTION_FIELDS as BASE_QUESTION_FIELDS } from './questions';
 import { EditSurveyPage } from '../../pages/resources';
 
 const RESOURCE_NAME = { singular: 'survey' };
@@ -24,6 +25,7 @@ const SURVEY_FIELDS = {
   project: {
     Header: 'Project',
     source: 'project.code',
+    required: true,
     editConfig: {
       sourceKey: 'project.code',
       optionsEndpoint: 'projects',
@@ -37,15 +39,16 @@ const SURVEY_FIELDS = {
   name: {
     Header: 'Name',
     source: 'name',
+    required: true,
     editConfig: {
       maxLength: 50,
-      secondaryLabel: 'Max 50 characters',
       required: true,
     },
   },
   code: {
     Header: 'Code',
     source: 'code',
+    required: true,
     editConfig: {
       labelTooltip: 'A short unique code. Suggestions appear when you enter a name.',
       required: true,
@@ -54,19 +57,21 @@ const SURVEY_FIELDS = {
   country_ids: {
     Header: 'Countries',
     source: 'countryNames', // TODO: cleanup as part of RN-910
+    required: true,
     editConfig: {
+      type: 'checkboxList',
       sourceKey: 'countryNames',
       optionsEndpoint: 'countries',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      allowMultipleValues: true,
       labelTooltip: 'Select the countries this survey should be available in',
-      required: true,
+      pageSize: 'ALL',
     },
   },
   permission_group_id: {
     Header: 'Permission group',
     source: 'permission_group.name', // TODO: cleanup as part of RN-910
+    required: true,
     editConfig: {
       sourceKey: 'permission_group.name',
       optionsEndpoint: 'permissionGroups',
@@ -148,6 +153,7 @@ const SURVEY_FIELDS = {
                 optionsEndpoint: 'dhisInstances',
                 optionLabelKey: 'code',
                 optionValueKey: 'code',
+                required: true,
               },
             ]
           : [],
@@ -239,37 +245,10 @@ const CREATE_CONFIG = {
   },
 };
 
-const QUESTION_FIELDS = [
-  {
-    Header: 'Code',
-    source: 'question.code',
-    editable: false,
-  },
-  {
-    Header: 'Type',
-    source: 'question.type',
-  },
-  {
-    Header: 'Name',
-    source: 'question.name',
-  },
-  {
-    Header: 'Question',
-    source: 'question.text',
-  },
-  {
-    Header: 'Detail',
-    source: 'question.detail',
-  },
-  {
-    Header: 'Question label',
-    source: 'question_label',
-  },
-  {
-    Header: 'Detail label',
-    source: 'detail_label',
-  },
-];
+const QUESTION_FIELDS = BASE_QUESTION_FIELDS.map(field => ({
+  ...field,
+  source: `question.${field.source}`,
+}));
 
 const QUESTION_COLUMNS = [
   ...QUESTION_FIELDS,

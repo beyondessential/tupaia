@@ -20,7 +20,7 @@ const palette = {
   },
   error: {
     main: COLORS.RED,
-    light: COLORS.LIGHT_RED,
+    light: `${COLORS.LIGHT_RED}1A`, // 10% opacity
   },
   warning: {
     main: COLORS.RED,
@@ -47,7 +47,7 @@ const palette = {
     300: COLORS.GREY_E2,
     400: COLORS.GREY_DE,
     500: COLORS.GREY_9F,
-    600: COLORS.GREY_72,
+    600: COLORS.GREY_B8,
   },
   background: {
     default: COLORS.LIGHTGREY,
@@ -136,6 +136,12 @@ const overrides = {
       fontSize: '0.875rem',
       fontWeight: 500,
       color: palette.text.primary,
+      '&.Mui-error': {
+        color: palette.text.primary,
+      },
+    },
+    asterisk: {
+      color: palette.error.main,
     },
     asterisk: {
       color: palette.error.main,
@@ -176,12 +182,34 @@ const overrides = {
       },
     },
   },
+  MuiAlert: {
+    standardError: {
+      border: `1px solid ${COLORS.LIGHT_RED}`,
+      color: palette.text.primary,
+      paddingBlock: '0',
+      '& > .MuiAlert-icon > .MuiSvgIcon-root': {
+        padding: 0,
+        fontSize: '1rem',
+        marginBlockEnd: 0,
+      },
+    },
+    message: {
+      paddingBlock: '0.5rem',
+    },
+  },
   MuiCssBaseline: {
     '@global': {
       label: {
         fontWeight: 500,
-        '& .MuiSvgIcon-root': {
-          color: palette.text.secondary, // tooltip icon color
+      },
+    },
+  },
+  MuiSvgIcon: {
+    root: {
+      'label &': {
+        color: palette.text.secondary,
+        '&.checkbox': {
+          fill: 'transparent',
         },
       },
     },

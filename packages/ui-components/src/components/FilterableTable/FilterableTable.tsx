@@ -1,0 +1,220 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
+import React, { useMemo } from 'react';
+import {
+  TableContainer as MuiTableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+} from '@material-ui/core';
+import styled from 'styled-components';
+import { Column, useFlexLayout, useResizeColumns, useTable, SortingRule } from 'react-table';
+import { KeyboardArrowDown } from '@material-ui/icons';
+import { HeaderDisplayCell, TableCell } from './Cells';
+import { FilterCell, FilterCellProps, Filters } from './FilterCell';
+import { Pagination } from './Pagination';
+
+const TableContainer = styled(MuiTableContainer)`
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  table {
+    min-width: 45rem;
+  }
+  // Because we want two header rows to be sticky, we need to set the position of the thead to sticky
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: ${({ theme }) => theme.palette.background.paper};
+  }
+  tr {
+    display: flex;
+    
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.primary.main};
+  }
+`;
+
+type SortBy = {
+  id: string;
+  desc: boolean;
+};
+
+interface FilterableTableProps {
+  columns: Column<Record<string, any>>[];
+  data?: Record<string, any>[];
+  pageIndex?: number;
+  pageSize?: number;
+  sorting?: SortBy[];
+  numberOfPages?: number;
+  hiddenColumns?: string[];
+  onChangePage: (pageIndex: number) => void;
+  onChangePageSize: (pageSize: number) => void;
+  onChangeSorting: (sorting: SortingRule<Record<string, any>>[]) => void;
+  refreshData: () => void;
+  isLoading: boolean;
+  errorMessage: string;
+  onChangeFilters: FilterCellProps['onChangeFilters'];
+  filters?: Filters;
+  totalRecords: number;
+}
+
+export const FilterableTable = ({
+  columns,
+  data,
+  pageIndex = 0,
+  pageSize = 20,
+  sorting = [],
+  numberOfPages = 1,
+  hiddenColumns = [],
+  onChangePage,
+  onChangePageSize,
+  onChangeSorting,
+  onChangeFilters,
+  filters = [],
+  totalRecords,
+}: FilterableTableProps) => {
+  const memoisedData = useMemo(() => data ?? [], [data]);
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    pageCount,
+    visibleColumns,
+    // Get the state from the instance
+  } = useTable(
+    {
+      columns,
+      data: memoisedData,
+      initialState: {
+        sortBy: sorting,
+        hiddenColumns,
+      },
+      manualPagination: true,
+      pageCount: numberOfPages,
+      manualSortBy: true,
+    },
+    useFlexLayout,
+    useResizeColumns,
+  );
+
+  const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
+
+  const updateSorting = (id: string, isDesc?: boolean) => {
+    const currentSorting = sorting.find(sort => sort.id === id);
+    if (!currentSorting) {
+      return onChangeSorting([{ id, desc: false }]);
+    }
+
+    if (isDesc) {
+      return onChangeSorting([]);
+    }
+
+    return onChangeSorting([{ id, desc: true }]);
+  };
+
+  const getSortedConfig = (id: string) => {
+    return sorting.find(sort => sort.id === id);
+  };
+
+  return (
+    <>
+      <TableContainer>
+        <Table {...getTableProps()} stickyHeader className="data-fetching-table">
+          <TableHead>
+            {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
+                {headers.map(
+                  ({
+                    getHeaderProps,
+                    render,
+                    disableSortBy,
+                    getResizerProps,
+                    canResize,
+                    maxWidth,
+                    id,
+                  }) => {
+                    const sortedConfig = getSortedConfig(id);
+                    return (
+                      <HeaderDisplayCell
+                        {...getHeaderProps()}
+                        key={`header-${id}`}
+                        canResize={canResize}
+                        getResizerProps={getResizerProps}
+                        maxWidth={maxWidth}
+                      >
+                        {render('Header')}
+                        {!disableSortBy && (
+                          <TableSortLabel
+                            active={!!sortedConfig}
+                            direction={sortedConfig?.desc ? 'asc' : 'desc'}
+                            IconComponent={KeyboardArrowDown}
+                            onClick={() => updateSorting(id, sortedConfig?.desc)}
+                          />
+                        )}
+                      </HeaderDisplayCell>
+                    );
+                  },
+                )}
+              </TableRow>
+            ))}
+            {displayFilterRow && (
+              <TableRow>
+                {visibleColumns.map(column => {
+                  return (
+                    <FilterCell
+                      {...column.getHeaderProps()}
+                      key={column.id}
+                      column={column}
+                      onChangeFilters={onChangeFilters}
+                      filters={filters}
+                    />
+                  );
+                })}
+              </TableRow>
+            )}
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
+            {rows.map(row => {
+              prepareRow(row);
+              return (
+                <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
+                  {row.cells.map(({ getCellProps, render }, i) => {
+                    const col = visibleColumns[i];
+                    return (
+                      <TableCell
+                        {...getCellProps()}
+                        key={`table-row-${row.id}-cell-${col.id}`}
+                        row={row.original}
+                        maxWidth={col.maxWidth}
+                      >
+                        {render('Cell')}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Pagination
+        page={pageIndex}
+        pageCount={pageCount}
+        onChangePage={onChangePage}
+        pageSize={pageSize}
+        onChangePageSize={onChangePageSize}
+        totalRecords={totalRecords}
+      />
+    </>
+  );
+};
