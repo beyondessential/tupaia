@@ -95,7 +95,7 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
       isOpen={isOpen}
       title="Save visualisation"
       isLoading={status === MODAL_STATUS.LOADING}
-      errorMessage={error?.message}
+      error={error}
       buttons={[
         {
           text: 'Cancel',
