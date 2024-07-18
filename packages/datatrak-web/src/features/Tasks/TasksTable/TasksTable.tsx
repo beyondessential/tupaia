@@ -100,7 +100,7 @@ const useTasksTable = () => {
     },
     {
       Header: 'Assignee',
-      accessor: row => row.assigneeName ?? 'Unassigned',
+      accessor: row => row.assigneeName,
       id: 'assignee_name',
       filterable: true,
       disableResizing: true,
