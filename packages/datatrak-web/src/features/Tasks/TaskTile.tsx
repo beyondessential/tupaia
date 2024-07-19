@@ -102,7 +102,7 @@ export const TaskTile = ({ task }) => {
         </TileContent>
       </TileLeft>
       <TileRight>
-        <ButtonLink to={surveyLink} component={Link}>
+        <ButtonLink to={surveyLink} component={Link} state={{ primaryEntity: entity.id }}>
           Complete task
         </ButtonLink>
       </TileRight>
