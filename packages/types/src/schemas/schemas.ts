@@ -85822,6 +85822,117 @@ export const TaskUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const TaskCommentSchema = {
+	"type": "object",
+	"properties": {
+		"comment": {
+			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"comment",
+		"created_at",
+		"id",
+		"task_id",
+		"type",
+		"user_name"
+	]
+} 
+
+export const TaskCommentCreateSchema = {
+	"type": "object",
+	"properties": {
+		"comment": {
+			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"comment",
+		"created_at",
+		"task_id",
+		"type",
+		"user_name"
+	]
+} 
+
+export const TaskCommentUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"comment": {
+			"type": "string"
+		},
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const TupaiaWebSessionSchema = {
 	"type": "object",
 	"properties": {
@@ -86367,6 +86478,14 @@ export const TaskStatusSchema = {
 		"cancelled",
 		"completed",
 		"to_do"
+	],
+	"type": "string"
+} 
+
+export const TaskCommentTypeSchema = {
+	"enum": [
+		"system",
+		"user"
 	],
 	"type": "string"
 } 

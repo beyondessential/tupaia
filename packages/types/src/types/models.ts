@@ -1562,6 +1562,32 @@ export interface TaskUpdate {
   'status'?: TaskStatus | null;
   'survey_id'?: string;
 }
+export interface TaskComment {
+  'comment': string;
+  'created_at': Date;
+  'id': string;
+  'task_id': string;
+  'type': TaskCommentType;
+  'user_id'?: string | null;
+  'user_name': string;
+}
+export interface TaskCommentCreate {
+  'comment': string;
+  'created_at': Date;
+  'task_id': string;
+  'type': TaskCommentType;
+  'user_id'?: string | null;
+  'user_name': string;
+}
+export interface TaskCommentUpdate {
+  'comment'?: string;
+  'created_at'?: Date;
+  'id'?: string;
+  'task_id'?: string;
+  'type'?: TaskCommentType;
+  'user_id'?: string | null;
+  'user_name'?: string;
+}
 export interface TupaiaWebSession {
   'access_policy': {};
   'access_token': string;
@@ -1698,6 +1724,10 @@ export enum TaskStatus {
   'to_do' = 'to_do',
   'cancelled' = 'cancelled',
   'completed' = 'completed',
+}
+export enum TaskCommentType {
+  'user' = 'user',
+  'system' = 'system',
 }
 export enum SyncGroupSyncStatus {
   'IDLE' = 'IDLE',
