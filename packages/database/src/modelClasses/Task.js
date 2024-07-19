@@ -32,14 +32,14 @@ export class TaskRecord extends DatabaseRecord {
     },
     {
       joinWith: RECORDS.TASK_COMMENT,
-      joinAs: 'comments',
+      joinAs: 'comment',
       joinType: JOIN_TYPES.LEFT,
-      joinCondition: ['id', `${RECORDS.TASK_COMMENT}.task_id`],
+      joinCondition: [`${RECORDS.TASK}.id`, 'comment.task_id'],
       fields: {
         id: 'comment_id',
         user_id: 'comment_user_id',
         user_name: 'comment_user_name',
-        comment: 'comment',
+        message: 'comment_message',
         type: 'comment_type',
         created_at: 'comment_created_at',
       },

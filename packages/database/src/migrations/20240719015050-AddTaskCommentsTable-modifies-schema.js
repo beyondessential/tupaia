@@ -50,7 +50,7 @@ exports.up = async function (db) {
         foreignKey: createForeignKey('user_id', 'user_account', false),
       },
       user_name: { type: 'text', notNull: true },
-      comment: { type: 'text', notNull: true },
+      message: { type: 'text', notNull: true },
       type: { type: 'TASK_COMMENT_TYPE', notNull: true },
       created_at: { type: 'timestamp', notNull: true },
     },
@@ -64,7 +64,7 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  await db.dropTable('task');
+  await db.dropTable('task_comment');
   return db.runSql('DROP TYPE TASK_COMMENT_TYPE;');
 };
 

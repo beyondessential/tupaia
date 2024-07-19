@@ -490,6 +490,15 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
       };
+
+    case RECORDS.TASK_COMMENT:
+      return {
+        user_id: [constructRecordExistsWithId(models.user)],
+        user_name: [hasContent],
+        task_id: [constructRecordExistsWithId(models.task)],
+        message: [hasContent, isAString],
+        type: [constructIsOneOf(['user', 'system'])],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }
