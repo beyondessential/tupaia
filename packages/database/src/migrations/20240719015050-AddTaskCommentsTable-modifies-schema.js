@@ -51,13 +51,19 @@ exports.up = async function (db) {
       },
       user_name: { type: 'text', notNull: true },
       message: { type: 'text', notNull: true },
-      type: { type: 'TASK_COMMENT_TYPE', notNull: true },
-      created_at: { type: 'timestamp', notNull: true },
+      type: { type: 'TASK_COMMENT_TYPE', notNull: true, defaultValue: 'user' },
+      created_at: {
+        type: 'timestamp',
+        notNull: true,
+      },
     },
     ifNotExists: true,
   });
 
   return db.runSql(` 
+    ALTER TABLE task_comment 
+      ALTER COLUMN created_at SET DEFAULT now();
+      
     CREATE INDEX task_comment_task_id_idx ON task_comment USING btree (task_id);
     CREATE INDEX task_comment_user_id_idx ON task_comment USING btree (user_id); 
   `);

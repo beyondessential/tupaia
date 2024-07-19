@@ -38,8 +38,8 @@ describe('Permissions checker for CreateTaskComment', async () => {
   };
 
   const BASE_COMMENT = {
-    comment: 'This is a test comment',
-    created_at: new Date('2021-12-31'),
+    message: 'This is a test comment',
+    type: 'user',
   };
 
   before(async () => {
@@ -141,13 +141,12 @@ describe('Permissions checker for CreateTaskComment', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.post('taskComments', {
         body: {
-          ...BASE_TASK,
-          entity_id: facilities[0].id,
-          survey_id: surveys[0].survey.id,
+          ...BASE_COMMENT,
+          task_id: tasks[0].id,
         },
       });
 
-      expect(result.message).to.equal('Successfully created tasks');
+      expect(result.message).to.equal('Successfully created task comments');
     });
   });
 });

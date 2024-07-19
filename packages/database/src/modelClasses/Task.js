@@ -30,20 +30,6 @@ export class TaskRecord extends DatabaseRecord {
       joinCondition: ['survey_id', `${RECORDS.SURVEY}.id`],
       fields: { name: 'survey_name', code: 'survey_code' },
     },
-    {
-      joinWith: RECORDS.TASK_COMMENT,
-      joinAs: 'comment',
-      joinType: JOIN_TYPES.LEFT,
-      joinCondition: [`${RECORDS.TASK}.id`, 'comment.task_id'],
-      fields: {
-        id: 'comment_id',
-        user_id: 'comment_user_id',
-        user_name: 'comment_user_name',
-        message: 'comment_message',
-        type: 'comment_type',
-        created_at: 'comment_created_at',
-      },
-    },
   ];
 
   async entity() {

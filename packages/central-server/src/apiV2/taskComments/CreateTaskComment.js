@@ -22,14 +22,15 @@ export class CreateTaskComment extends CreateHandler {
 
   async createRecord() {
     const { id: userId } = this.req.user;
-    const { task_id: taskId, ...restOfTaskComment } = this.newRecordData;
-    await this.models.wrapInTransaction(async transactingModels => {
-      const user = await transactingModels.user.findById(userId); // Check if user exists
-      if (!user) {
-        throw new Error(`User with id ${userId} not found`);
-      }
+    const user = await this.models.user.findById(userId); // Check if user exists
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`);
+    }
 
-      const { user_full_name: userFullName } = user;
-    });
+    const { user_full_name: userFullName } = user;
+    this.newRecordData.user_id = userId;
+    this.newRecordData.user_name = userFullName;
+
+    return this.insertRecord();
   }
 }

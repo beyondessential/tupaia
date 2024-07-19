@@ -6,18 +6,8 @@
 import { hasBESAdminAccess } from '../../permissions';
 import {
   assertUserHasPermissionToCreateTask,
-  assertUserHasTaskPermissions,
   createTaskDBFilter,
 } from '../tasks/assertTaskPermissions';
-import { mergeFilter } from '../utilities';
-
-export const assertUserHasCommentPermissions = async (accessPolicy, models, commentId) => {
-  const comment = await models.taskComment.findById(commentId);
-  if (!comment) {
-    throw new Error(`No comment found with id ${commentId}`);
-  }
-  return assertUserHasTaskPermissions(accessPolicy, models, comment.task_id);
-};
 
 export const createTaskCommentDBFilter = async (accessPolicy, models, criteria, options) => {
   if (hasBESAdminAccess(accessPolicy)) {

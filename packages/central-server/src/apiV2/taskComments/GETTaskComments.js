@@ -5,10 +5,13 @@
 
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
-import {
-  assertUserHasCommentPermissions,
-  createTaskCommentDBFilter,
-} from './assertTaskCommentPermissions';
+import { assertUserHasTaskPermissions } from '../tasks/assertTaskPermissions';
+import { createTaskCommentDBFilter } from './assertTaskCommentPermissions';
+
+/**
+ * Handles endpoints:
+ * - /tasks/:taskId/comments
+ */
 
 export class GETTaskComments extends GETHandler {
   permissionsFilteredInternally = true;
@@ -17,13 +20,19 @@ export class GETTaskComments extends GETHandler {
     return createTaskCommentDBFilter(this.accessPolicy, this.models, criteria, options);
   }
 
-  async findSingleRecord(commentId, options) {
-    const taskCommentPermissionChecker = accessPolicy =>
-      assertUserHasCommentPermissions(accessPolicy, this.models, commentId);
+  async getPermissionsViaParentFilter(criteria, options) {
+    const taskPermissionsChecker = accessPolicy =>
+      assertUserHasTaskPermissions(accessPolicy, this.models, this.parentRecordId);
     await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, taskCommentPermissionChecker]),
+      assertAnyPermissions([assertBESAdminAccess, taskPermissionsChecker]),
     );
+    // Filter by parent
+    const dbConditions = { 'task_comment.task_id': this.parentRecordId, ...criteria };
 
-    return super.findSingleRecord(commentId, options);
+    // Apply regular permissions
+    return {
+      dbConditions,
+      dbOptions: options,
+    };
   }
 }

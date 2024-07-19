@@ -270,7 +270,7 @@ apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(GETEntityHierarchy));
 apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 apiV2.get('/tasks/:recordId?', useRouteHandler(GETTasks));
-apiV2.get('/taskComments/:recordId?', useRouteHandler(GETTaskComments));
+apiV2.get('/tasks/:parentRecordId/taskComments', useRouteHandler(GETTaskComments));
 /**
  * POST routes
  */
@@ -318,7 +318,7 @@ apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/tasks', useRouteHandler(CreateTask));
-apiV2.post('/taskComments', useRouteHandler(CreateTaskComment));
+apiV2.post('/tasks/:taskId/taskComments', useRouteHandler(CreateTaskComment));
 /**
  * PUT routes
  */
