@@ -30,6 +30,20 @@ export class TaskRecord extends DatabaseRecord {
       joinCondition: ['survey_id', `${RECORDS.SURVEY}.id`],
       fields: { name: 'survey_name', code: 'survey_code' },
     },
+    {
+      joinWith: RECORDS.TASK_COMMENT,
+      joinAs: 'comments',
+      joinType: JOIN_TYPES.LEFT,
+      joinCondition: ['id', `${RECORDS.TASK_COMMENT}.task_id`],
+      fields: {
+        id: 'comment_id',
+        user_id: 'comment_user_id',
+        user_name: 'comment_user_name',
+        comment: 'comment',
+        type: 'comment_type',
+        created_at: 'comment_created_at',
+      },
+    },
   ];
 
   async entity() {
@@ -42,6 +56,18 @@ export class TaskRecord extends DatabaseRecord {
 
   async survey() {
     return this.otherModels.survey.findById(this.survey_id);
+  }
+
+  async comments() {
+    return this.otherModels.taskComment.find({ task_id: this.id });
+  }
+
+  async userComments() {
+    return this.otherModels.taskComment.find({ task_id: this.id, type: 'user' });
+  }
+
+  async systemComments() {
+    return this.otherModels.taskComment.find({ task_id: this.id, type: 'system' });
   }
 }
 
