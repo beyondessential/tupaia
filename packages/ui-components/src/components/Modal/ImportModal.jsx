@@ -89,7 +89,7 @@ export const ImportModal = ({
           {children}
         </LoadingContainer>
       )
-    : ({ children }) => <>{children}</>;
+    : React.Fragment;
 
   const renderContent = useCallback(() => {
     switch (status) {

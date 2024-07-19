@@ -46,8 +46,8 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
           focus: () => void;
         };
       };
-      if (firstError && firstError?.ref) {
-        firstError?.ref?.focus();
+      if (firstError?.ref) {
+        firstError.ref.focus();
       }
     }
   }, [JSON.stringify(errors)]);

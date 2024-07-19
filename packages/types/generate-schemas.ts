@@ -16,12 +16,10 @@ const settings: TJS.PartialArgs = {
 
 function getTsFiles(dir: string): string[] {
   const dirContents = fs.readdirSync(dir);
-  const files = dirContents
-    .map(dirItem => {
-      const res = resolve(dir, dirItem);
-      return fs.statSync(res).isDirectory() ? getTsFiles(res) : res;
-    })
-    .flat();
+  const files = dirContents.flatMap(dirItem => {
+    const res = resolve(dir, dirItem);
+    return fs.statSync(res).isDirectory() ? getTsFiles(res) : res;
+  });
 
   return files.filter(fileName => fileName.endsWith('.ts'));
 }
