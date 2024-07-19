@@ -115,4 +115,24 @@ describe('TaskCompletionHandler', () => {
       await assertTaskStatus(task.id, 'to_do', null);
     });
   });
+
+  describe('Repeating tasks', () => {
+    it.only('updating a survey response for a repeating task, creates a new completed task', async () => {
+      const repeatTask = await findOrCreateDummyRecord(models.task, {
+        entity_id: tonga.id,
+        survey_id: SURVEY.id,
+        created_at: '2024-07-08',
+        status: 'to_do',
+        due_date: '2024-07-25',
+        repeat_schedule: {
+          frequency: 'daily',
+        },
+      });
+
+      await createResponses([{ entity_id: tonga.id, date: '2024-07-20' }]);
+      await assertTaskStatus(repeatTask.id, 'to_do');
+
+      const newTask = await models.task.find({});
+    });
+  });
 });
