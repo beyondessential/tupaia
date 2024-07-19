@@ -61,6 +61,8 @@ export class TaskCompletionHandler extends ChangeHandler {
   }
 
   async handleChanges(_transactingModels, changedResponses) {
+    console.log('HANDLE CHANGES');
+
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
     const tasksToUpdate = await this.fetchTasksForSurveyResponses(changedResponses);
@@ -74,6 +76,7 @@ export class TaskCompletionHandler extends ChangeHandler {
         entity_id: entityId,
         created_at: createdAt,
         repeat_schedule: repeatSchedule,
+        assignee_id: assigneeId,
         id,
       } = task;
       const matchingSurveyResponse = changedResponses.find(
@@ -88,6 +91,7 @@ export class TaskCompletionHandler extends ChangeHandler {
       if (repeatSchedule) {
         // Create a new task with the same details as the current task and mark as completed
         await this.models.task.create({
+          assignee_id: assigneeId,
           survey_id: surveyId,
           entity_id: entityId,
           repeat_schedule: repeatSchedule,

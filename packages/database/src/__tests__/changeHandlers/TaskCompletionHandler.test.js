@@ -123,13 +123,13 @@ describe('TaskCompletionHandler', () => {
         survey_id: SURVEY.id,
         created_at: '2024-07-08',
         status: 'to_do',
-        due_date: '2024-07-25',
         repeat_schedule: {
           frequency: 'daily',
         },
       });
 
       const responses = await createResponses([{ entity_id: tonga.id, date: '2024-07-20' }]);
+      // Check that the repeat task has stayed as is
       await assertTaskStatus(repeatTask.id, 'to_do', null);
 
       const newTask = await models.task.find({
@@ -137,6 +137,39 @@ describe('TaskCompletionHandler', () => {
         survey_response_id: responses[0],
       });
       await assertTaskStatus(newTask[0].id, 'completed', responses[0]);
+    });
+
+    it.only('Creates no more than one new completed task per schedule', async () => {
+      const newTask = await findOrCreateDummyRecord(models.task, {
+        entity_id: tonga.id,
+        survey_id: SURVEY.id,
+        created_at: '2024-07-08',
+        status: 'to_do',
+        repeat_schedule: {
+          frequency: 'monthly',
+        },
+      });
+
+      const tasksBefore = await models.task.find({
+        entity_id: tonga.id,
+        survey_id: SURVEY.id,
+      });
+      console.log('tasksBefore', tasksBefore.length);
+
+      await createResponses([
+        { entity_id: tonga.id, date: '2024-07-20' },
+        { entity_id: tonga.id, date: '2024-07-21' },
+      ]);
+      await createResponses([{ entity_id: tonga.id, date: '2024-07-22' }]);
+      // Check that the repeat task has stayed as is
+      await assertTaskStatus(newTask.id, 'to_do', null);
+
+      const tasksAfter = await models.task.find({
+        entity_id: tonga.id,
+        survey_id: SURVEY.id,
+      });
+      console.log('extraTask', tasksAfter.length);
+      expect(tasksAfter.length).toBe(tasksBefore.length + 1);
     });
   });
 });
