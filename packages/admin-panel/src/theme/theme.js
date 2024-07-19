@@ -20,7 +20,7 @@ const palette = {
   },
   error: {
     main: COLORS.RED,
-    light: COLORS.LIGHT_RED,
+    light: `${COLORS.LIGHT_RED}1A`, // 10% opacity
   },
   warning: {
     main: COLORS.RED,
@@ -136,6 +136,12 @@ const overrides = {
       fontSize: '0.875rem',
       fontWeight: 500,
       color: palette.text.primary,
+      '&.Mui-error': {
+        color: palette.text.primary,
+      },
+    },
+    asterisk: {
+      color: palette.error.main,
     },
     asterisk: {
       color: palette.error.main,
@@ -174,6 +180,21 @@ const overrides = {
       '&.MuiButtonBase-root': {
         fontSize: '0.875rem',
       },
+    },
+  },
+  MuiAlert: {
+    standardError: {
+      border: `1px solid ${COLORS.LIGHT_RED}`,
+      color: palette.text.primary,
+      paddingBlock: '0',
+      '& > .MuiAlert-icon > .MuiSvgIcon-root': {
+        padding: 0,
+        fontSize: '1rem',
+        marginBlockEnd: 0,
+      },
+    },
+    message: {
+      paddingBlock: '0.5rem',
     },
   },
   MuiCssBaseline: {
