@@ -68,7 +68,7 @@ const MapOverlayInfoContainer = styled.div`
   left: 2.1rem;
   background-color: white;
   border: 1px solid ${({ theme }) => theme.palette.divider};
-  max-width: 24rem;
+  max-width: 27rem;
   min-width: 20rem;
   padding-inline: 1.3rem;
   padding-block: 1rem;
