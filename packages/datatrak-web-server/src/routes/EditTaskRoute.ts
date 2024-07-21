@@ -10,11 +10,11 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { formatTaskChanges } from '../utils';
-import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
+import { DatatrakWebTaskChangeRequest, TaskCommentType } from '@tupaia/types';
 
 export type EditTaskRequest = Request<
   { taskId: string },
-  Record<string, never>,
+  { message: string },
   Partial<DatatrakWebTaskChangeRequest.ReqBody>,
   Record<string, never>
 >;
@@ -24,9 +24,25 @@ export class EditTaskRoute extends Route<EditTaskRequest> {
     const { body, ctx, params } = this.req;
 
     const { taskId } = params;
+    const { comment, ...rest } = body;
 
-    const taskDetails = formatTaskChanges(body);
+    const taskDetails = formatTaskChanges(rest);
 
-    return ctx.services.central.updateResource(`tasks/${taskId}`, {}, taskDetails);
+    await ctx.services.central.updateResource(`tasks/${taskId}`, {}, taskDetails);
+
+    if (comment) {
+      await ctx.services.central.createResource(
+        `tasks/${taskId}/taskComments`,
+        {},
+        {
+          message: comment,
+          type: TaskCommentType.user,
+        },
+      );
+    }
+
+    return {
+      message: 'Task updated successfully',
+    };
   }
 }
