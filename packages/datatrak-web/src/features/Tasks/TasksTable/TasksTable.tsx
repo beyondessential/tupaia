@@ -19,6 +19,7 @@ import { TaskActionsMenu } from '../TaskActionsMenu';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
+import { CommentsCount } from '../CommentsCount';
 
 const Container = styled.div`
   display: flex;
@@ -40,35 +41,14 @@ const ActionCellContent = styled.div`
   align-items: center;
 `;
 
-const CommentsCountWrapper = styled.div`
-  color: ${({ theme }) => theme.palette.text.secondary};
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 0;
-  .MuiSvgIcon-root {
-    font-size: 1rem;
-  }
-`;
-
-const CommentCountText = styled(Typography)`
-  font-size: 0.75rem;
-  margin-inline-start: 0.25rem;
-`;
-
 const StatusCellContent = styled.div`
   display: flex;
+  justify-content: space-between;
+  a:has(&) {
+    // This is a workaround to make the comments count display at the edge of the cell
+    padding-inline-end: 0;
+  }
 `;
-
-const CommentsCount = ({ commentsCount }: { commentsCount: number }) => {
-  if (!commentsCount) return null;
-  return (
-    <CommentsCountWrapper title="Number of user generated comments on this task">
-      <CommentIcon />
-      <CommentCountText>{commentsCount}</CommentCountText>
-    </CommentsCountWrapper>
-  );
-};
 
 const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
