@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebTaskChangeRequest, TaskStatus } from '@tupaia/types';
+import { DatatrakWebTaskChangeRequest, TaskCommentType, TaskStatus } from '@tupaia/types';
 import { formatTaskChanges } from '../utils';
 
 export type CreateTaskRequest = Request<
@@ -19,7 +19,7 @@ export class CreateTaskRoute extends Route<CreateTaskRequest> {
   public async buildResponse() {
     const { models, body, ctx } = this.req;
 
-    const { surveyCode, entityId } = body;
+    const { surveyCode, entityId, comment } = body;
 
     const survey = await models.survey.findOne({ code: surveyCode });
     if (!survey) {
@@ -36,6 +36,21 @@ export class CreateTaskRoute extends Route<CreateTaskRequest> {
       taskDetails.status = TaskStatus.to_do;
     }
 
-    return ctx.services.central.createResource('tasks', {}, taskDetails);
+    const task = await ctx.services.central.createResource('tasks', {}, taskDetails);
+
+    if (comment) {
+      await ctx.services.central.createResource(
+        `tasks/${task.id}/taskComments`,
+        {},
+        {
+          message: comment,
+          type: TaskCommentType.user,
+        },
+      );
+    }
+
+    return {
+      message: 'Task created successfully',
+    };
   }
 }
