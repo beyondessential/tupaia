@@ -318,7 +318,7 @@ apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/tasks', useRouteHandler(CreateTask));
-apiV2.post('/tasks/:taskId/taskComments', useRouteHandler(CreateTaskComment));
+apiV2.post('/tasks/:parentRecordId/taskComments', useRouteHandler(CreateTaskComment));
 /**
  * PUT routes
  */

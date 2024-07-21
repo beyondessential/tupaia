@@ -4,10 +4,7 @@
  */
 
 import { hasBESAdminAccess } from '../../permissions';
-import {
-  assertUserHasPermissionToCreateTask,
-  createTaskDBFilter,
-} from '../tasks/assertTaskPermissions';
+import { createTaskDBFilter } from '../tasks/assertTaskPermissions';
 
 export const createTaskCommentDBFilter = async (accessPolicy, models, criteria, options) => {
   if (hasBESAdminAccess(accessPolicy)) {
@@ -38,17 +35,4 @@ export const createTaskCommentDBFilter = async (accessPolicy, models, criteria, 
     },
     dbOptions: options,
   };
-};
-
-export const assertUserHasPermissionToCreateTaskComment = async (
-  accessPolicy,
-  models,
-  newRecordData,
-) => {
-  const { task_id: taskId } = newRecordData;
-  const task = await models.task.findById(taskId);
-  if (!task) {
-    throw new Error(`No task found with id ${taskId}`);
-  }
-  return assertUserHasPermissionToCreateTask(accessPolicy, models, task);
 };

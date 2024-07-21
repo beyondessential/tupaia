@@ -30,7 +30,7 @@ import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
-  const { SURVEY_RESPONSE, COMMENT } = RECORDS;
+  const { SURVEY_RESPONSE, COMMENT, TASK, TASK_COMMENT } = RECORDS;
 
   switch (combinedRecordType) {
     case `${SURVEY_RESPONSE}/${COMMENT}`:
@@ -38,6 +38,11 @@ export const constructForParent = (models, recordType, parentRecordType) => {
         survey_response_id: [constructRecordExistsWithId(models.surveyResponse)],
         user_id: [constructRecordExistsWithId(models.user)],
         text: [hasContent],
+      };
+    case `${TASK}/${TASK_COMMENT}`:
+      return {
+        message: [hasContent, isAString],
+        type: [constructIsOneOf(['user', 'system'])],
       };
     default:
       throw new ValidationError(
@@ -491,14 +496,6 @@ export const constructForSingle = (models, recordType) => {
         ],
       };
 
-    case RECORDS.TASK_COMMENT:
-      return {
-        user_id: [constructRecordExistsWithId(models.user)],
-        user_name: [hasContent],
-        task_id: [constructRecordExistsWithId(models.task)],
-        message: [hasContent, isAString],
-        type: [constructIsOneOf(['user', 'system'])],
-      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }

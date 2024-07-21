@@ -28,10 +28,8 @@ describe('Permissions checker for GETTaskComments', async () => {
 
   const app = new TestableApp();
   const { models } = app;
-  let task;
-  let comment;
 
-  before(async () => {
+  const generateData = async () => {
     const { country: tongaCountry } = await findOrCreateDummyCountryEntity(models, {
       code: 'TO',
       name: 'Tonga',
@@ -66,7 +64,7 @@ describe('Permissions checker for GETTaskComments', async () => {
 
     const dueDate = new Date('2021-12-31');
 
-    task = {
+    const task = {
       id: generateId(),
       survey_id: survey.id,
       entity_id: facility[0].id,
@@ -75,7 +73,7 @@ describe('Permissions checker for GETTaskComments', async () => {
       repeat_schedule: null,
     };
 
-    comment = {
+    const comment = {
       id: generateId(),
       task_id: task.id,
       user_id: user.id,
@@ -100,6 +98,20 @@ describe('Permissions checker for GETTaskComments', async () => {
       },
       comment,
     );
+    return {
+      task,
+      user,
+      comment,
+    };
+  };
+
+  let task;
+  let comment;
+
+  before(async () => {
+    const { task: createdTask, comment: createdComment } = await generateData();
+    task = createdTask;
+    comment = createdComment;
   });
 
   afterEach(() => {

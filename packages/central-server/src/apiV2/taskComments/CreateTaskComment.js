@@ -2,18 +2,22 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+import { RECORDS } from '@tupaia/database';
 import { CreateHandler } from '../CreateHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertUserHasPermissionToCreateTaskComment } from './assertTaskCommentPermissions';
+import { assertUserHasTaskPermissions } from '../tasks/assertTaskPermissions';
+
 /**
  * Handles POST endpoints:
- * - /taskComments
+ * - /tasks/:parentRecordId/taskComments
  */
 
 export class CreateTaskComment extends CreateHandler {
+  parentRecordType = RECORDS.TASK;
+
   async assertUserHasAccess() {
     const createPermissionChecker = accessPolicy =>
-      assertUserHasPermissionToCreateTaskComment(accessPolicy, this.models, this.newRecordData);
+      assertUserHasTaskPermissions(accessPolicy, this.models, this.parentRecordId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, createPermissionChecker]),
@@ -27,9 +31,10 @@ export class CreateTaskComment extends CreateHandler {
       throw new Error(`User with id ${userId} not found`);
     }
 
-    const { user_full_name: userFullName } = user;
+    const { full_name: userFullName } = user;
     this.newRecordData.user_id = userId;
     this.newRecordData.user_name = userFullName;
+    this.newRecordData.task_id = this.parentRecordId;
 
     return this.insertRecord();
   }
