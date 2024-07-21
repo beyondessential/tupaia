@@ -1563,26 +1563,26 @@ export interface TaskUpdate {
   'survey_id'?: string;
 }
 export interface TaskComment {
-  'comment': string;
   'created_at': Date;
   'id': string;
+  'message': string;
   'task_id': string;
   'type': TaskCommentType;
   'user_id'?: string | null;
   'user_name': string;
 }
 export interface TaskCommentCreate {
-  'comment': string;
-  'created_at': Date;
+  'created_at'?: Date;
+  'message': string;
   'task_id': string;
-  'type': TaskCommentType;
+  'type'?: TaskCommentType;
   'user_id'?: string | null;
   'user_name': string;
 }
 export interface TaskCommentUpdate {
-  'comment'?: string;
   'created_at'?: Date;
   'id'?: string;
+  'message'?: string;
   'task_id'?: string;
   'type'?: TaskCommentType;
   'user_id'?: string | null;

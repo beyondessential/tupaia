@@ -85825,14 +85825,14 @@ export const TaskUpdateSchema = {
 export const TaskCommentSchema = {
 	"type": "object",
 	"properties": {
-		"comment": {
-			"type": "string"
-		},
 		"created_at": {
 			"type": "string",
 			"format": "date-time"
 		},
 		"id": {
+			"type": "string"
+		},
+		"message": {
 			"type": "string"
 		},
 		"task_id": {
@@ -85854,9 +85854,9 @@ export const TaskCommentSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"comment",
 		"created_at",
 		"id",
+		"message",
 		"task_id",
 		"type",
 		"user_name"
@@ -85866,12 +85866,12 @@ export const TaskCommentSchema = {
 export const TaskCommentCreateSchema = {
 	"type": "object",
 	"properties": {
-		"comment": {
-			"type": "string"
-		},
 		"created_at": {
 			"type": "string",
 			"format": "date-time"
+		},
+		"message": {
+			"type": "string"
 		},
 		"task_id": {
 			"type": "string"
@@ -85892,10 +85892,8 @@ export const TaskCommentCreateSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"comment",
-		"created_at",
+		"message",
 		"task_id",
-		"type",
 		"user_name"
 	]
 } 
@@ -85903,14 +85901,14 @@ export const TaskCommentCreateSchema = {
 export const TaskCommentUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"comment": {
-			"type": "string"
-		},
 		"created_at": {
 			"type": "string",
 			"format": "date-time"
 		},
 		"id": {
+			"type": "string"
+		},
+		"message": {
 			"type": "string"
 		},
 		"task_id": {
