@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { ComponentType } from 'react';
@@ -54,14 +54,14 @@ const LabelWrapper = styled(FlexCenter)`
 `;
 
 interface InputLabelProps {
-  label?: string | React.ReactNode;
+  label?: React.ReactNode;
   tooltip?: string;
   as?: string | ComponentType<any>;
   className?: string;
   htmlFor?: string;
   TooltipIcon?: ComponentType<any>;
   applyWrapper?: boolean;
-  labelProps?: Record<string, any>;
+  labelProps?: Record<string, unknown>;
 }
 
 export const InputLabel = ({
@@ -77,10 +77,12 @@ export const InputLabel = ({
   // If no label, don't render anything, so there isn't an empty label tag in the DOM
   if (!label) return null;
 
-  // wrapper won't work correctly when using TextField, so we need to conditionally apply it
+  // Wrapper won’t work correctly when using TextField, so we need to conditionally apply it
   const Wrapper = applyWrapper ? LabelWrapper : React.Fragment;
   return (
-    // allows us to pass in a custom element to render as, e.g. a span if it is going to be contained in a label element, for example when using MUI's TextField component. Otherwise defaults to a label element so that it can be a standalone label
+    // Allows us to pass in a custom element to render as, e.g. a span if it is going to be
+    // contained in a label element, for example when using MUI's TextField component. Otherwise
+    // defaults to a label element so that it can be a standalone label
     <Wrapper>
       <Label as={as} className={className} htmlFor={htmlFor} {...labelProps}>
         {label}

@@ -2,21 +2,21 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
-import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
+import { Button, SpinningLoader, Modal } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
-import { withConnectedEditor, useValidationScroll } from '../../../editor';
+import { useValidationScroll, withConnectedEditor } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
 import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
-import { useLinkToPreviousSearchState, useLinkWithSearchState } from '../../../utilities';
+import { useLinkToPreviousSearchState } from '../../../utilities';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -82,14 +82,10 @@ const StickyFooter = styled.div`
   padding: 1.25rem;
 `;
 
-const ErrorAlert = styled(Alert)`
-  display: ${({ $show }) => ($show ? 'flex' : 'none')};
-`;
-
 const EditSurveyPageComponent = withConnectedEditor(
   ({
     parent,
-    errorMessage,
+    error,
     displayProperty,
     getDisplayValue,
     fields,
@@ -102,7 +98,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     resetEditorToDefaultState,
     validationErrors,
   }) => {
-    const errorAlertRef = useRef(null);
+    const [errorModalOpen, setErrorModalOpen] = useState(false);
     const navigate = useNavigate();
     const { '*': unusedParam, locale, ...params } = useParams();
     const { data: details } = useItemDetails(params, parent);
@@ -118,6 +114,8 @@ const EditSurveyPageComponent = withConnectedEditor(
     // need to explicity state the path here because using '../../' doesn't apply the search state
     const { to, newState } = useLinkToPreviousSearchState('/surveys');
 
+    const openErrorModal = () => setErrorModalOpen(true);
+
     const navigateBack = () => {
       navigate(to, {
         state: newState,
@@ -125,7 +123,7 @@ const EditSurveyPageComponent = withConnectedEditor(
       resetEditorToDefaultState();
     };
     const handleSave = () => {
-      onSave(files, navigateBack);
+      onSave(files, navigateBack, openErrorModal);
     };
 
     const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
@@ -181,13 +179,6 @@ const EditSurveyPageComponent = withConnectedEditor(
       ? null
       : recordData?.surveyQuestions;
 
-    // on error, scroll to the error alert
-    useEffect(() => {
-      if (errorMessage && errorAlertRef.current) {
-        errorAlertRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, [errorMessage]);
-
     return (
       <Wrapper>
         <Breadcrumbs
@@ -201,14 +192,7 @@ const EditSurveyPageComponent = withConnectedEditor(
 
         <Form $isLoading={isLoading}>
           {isLoading && <SpinningLoader />}
-          <ErrorAlert
-            severity="error"
-            ref={errorAlertRef}
-            $show={!!errorMessage}
-            aria-hidden={!!errorMessage}
-          >
-            {errorMessage}
-          </ErrorAlert>
+
           <Section>
             <FileUploadField
               id="survey-questions"
@@ -216,11 +200,16 @@ const EditSurveyPageComponent = withConnectedEditor(
               onChange={({ fileName, file }) =>
                 handleSetFormFile('surveyQuestions', { fileName, file })
               }
-              accept=".xlsx,.xls,.csv"
-              initialFileName={initialFileName}
+              accept={{
+                'application/vnd.ms-excel': ['.xls'],
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                'text/csv': ['.csv'],
+              }}
+              fileName={initialFileName}
               label="Survey questions"
             />
           </Section>
+
           <Section>
             <FieldsEditor
               fields={orderedFields}
@@ -241,6 +230,18 @@ const EditSurveyPageComponent = withConnectedEditor(
             Save changes
           </Button>
         </StickyFooter>
+        <Modal
+          open={errorModalOpen}
+          onClose={() => setErrorModalOpen(false)}
+          error={error}
+          title="Survey error"
+          buttons={[
+            {
+              text: 'Close',
+              onClick: () => setErrorModalOpen(false),
+            },
+          ]}
+        />
       </Wrapper>
     );
   },

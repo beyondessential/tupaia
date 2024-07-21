@@ -20,12 +20,12 @@ const ConfirmModalHeading = styled(Typography).attrs({
   margin-bottom: 0.5rem;
 `;
 
-const RejectConfirmModal = ({ isOpen, onClose, onConfirm, errorMessage, translate, isLoading }) => (
+const RejectConfirmModal = ({ isOpen, onClose, onConfirm, error, translate, isLoading }) => (
   <Modal
     onClose={onClose}
     isOpen={isOpen}
     isLoading={isLoading}
-    errorMessage={errorMessage}
+    error={error}
     buttons={[
       {
         text: translate('admin.cancel'),
@@ -58,13 +58,13 @@ RejectConfirmModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
-  errorMessage: PropTypes.string,
+  error: PropTypes.object,
   translate: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
 };
 
 RejectConfirmModal.defaultProps = {
-  errorMessage: null,
+  error: null,
 };
 
 export const getRejectButton = translate => {
@@ -100,7 +100,7 @@ export const getRejectButton = translate => {
               isOpen={isOpen}
               onClose={() => setIsOpen(false)}
               onConfirm={() => handleClickReject(props)}
-              errorMessage={error?.message}
+              error={error}
               translate={translate}
               isLoading={isLoading}
             />

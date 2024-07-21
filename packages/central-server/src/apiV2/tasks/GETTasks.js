@@ -26,20 +26,23 @@ export class GETTasks extends GETHandler {
   }
 
   async getDbQueryOptions() {
-    const { multiJoin, sort, ...restOfOptions } = await super.getDbQueryOptions();
+    const { multiJoin, sort, rawSort, ...restOfOptions } = await super.getDbQueryOptions();
 
-    return {
+    const options = {
       ...restOfOptions,
-      // Strip table prefix from `task_status` and `assignee_name` as these are customColumns
-      sort:
-        !restOfOptions.rawSort &&
-        sort?.map(s =>
-          s
-            .replace('task.task_status', 'task_status')
-            .replace('task.assignee_name', 'assignee_name'),
-        ),
       // Appending the multi-join from the Record class so that we can fetch the `task_status` and `assignee_name`
       multiJoin: mergeMultiJoin(multiJoin, this.models.task.DatabaseRecordClass.joins),
     };
+
+    if (rawSort) {
+      options.rawSort = rawSort;
+    } else {
+      // Strip table prefix from `task_status` and `assignee_name` as these are customColumns
+      options.sort = sort?.map(s =>
+        s.replace('task.task_status', 'task_status').replace('task.assignee_name', 'assignee_name'),
+      );
+    }
+
+    return options;
   }
 }

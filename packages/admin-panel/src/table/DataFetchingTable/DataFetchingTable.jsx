@@ -162,7 +162,7 @@ const DataFetchingTableComponent = memo(
 
     const getSortingToUse = () => {
       // If there is no sorting, return the default sorting, if it exists, otherwise return an empty array
-      if (!sorting || sorting.length === 0) return defaultSorting || [];
+      if (!sorting) return defaultSorting ?? [];
       return sorting;
     };
 

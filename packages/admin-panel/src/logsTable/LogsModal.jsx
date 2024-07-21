@@ -11,7 +11,7 @@ import { changeLogsTablePage, closeLogsModal } from './actions';
 import { LogsTable } from './LogsTable';
 
 export const LogsModalComponent = ({
-  errorMessage,
+  error,
   logs,
   logsCount,
   page,
@@ -29,14 +29,14 @@ export const LogsModalComponent = ({
       disableBackdropClick
       maxWidth="xl"
       title={title}
-      errorMessage={errorMessage}
+      error={error}
       isLoading={isLoading}
       buttons={[
         {
           disabled: isLoading,
           variant: 'outlined',
           onClick: onDismiss,
-          text: errorMessage ? 'Dismiss' : 'Cancel',
+          text: error ? 'Dismiss' : 'Cancel',
         },
       ]}
     >
@@ -52,7 +52,7 @@ export const LogsModalComponent = ({
 };
 
 LogsModalComponent.propTypes = {
-  errorMessage: PropTypes.string,
+  error: PropTypes.object,
   isLoading: PropTypes.bool,
   isOpen: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
@@ -66,7 +66,7 @@ LogsModalComponent.propTypes = {
 
 LogsModalComponent.defaultProps = {
   isLoading: false,
-  errorMessage: null,
+  error: null,
   logsCount: null,
   title: 'Logs',
 };

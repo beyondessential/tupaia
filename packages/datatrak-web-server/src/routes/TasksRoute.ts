@@ -147,7 +147,6 @@ export class TasksRoute extends Route<TasksRequest> {
 
     this.formatFilters();
     await this.processFilterSettings();
-
     // If no sort is provided, default to sorting completed and cancelled tasks to the bottom and by due date
     const rawSort =
       !sort &&
