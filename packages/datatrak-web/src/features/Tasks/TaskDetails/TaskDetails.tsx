@@ -20,6 +20,7 @@ import { TaskForm } from '../TaskForm';
 import { ROUTES } from '../../../constants';
 import { Task } from '../../../types';
 import { TaskMetadata } from './TaskMetadata';
+import { TaskComments } from './TaskComments';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -37,6 +38,7 @@ const Container = styled(Paper).attrs({
 const MainColumn = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   flex: 1;
   margin-block: 1.2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -48,6 +50,7 @@ const MainColumn = styled.div`
 const SideColumn = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   ${({ theme }) => theme.breakpoints.up('md')} {
     width: 28%;
   }
@@ -56,18 +59,6 @@ const SideColumn = styled.div`
 const ItemWrapper = styled.div`
   &:not(:last-child) {
     margin-block-end: 1.2rem;
-  }
-`;
-
-const CommentsPlaceholder = styled(ItemWrapper)`
-  height: 10rem;
-  width: 100%;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  background-color: ${({ theme }) => theme.palette.background.default};
-  border-radius: 4px;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    flex: 1;
-    height: 100%;
   }
 `;
 
@@ -119,6 +110,7 @@ export const TaskDetails = ({ task }: { task: Task }) => {
     control,
     handleSubmit,
     watch,
+    register,
     formState: { isValid, dirtyFields },
     reset,
   } = formContext;
@@ -204,9 +196,8 @@ export const TaskDetails = ({ task }: { task: Task }) => {
             </ItemWrapper>
           </SideColumn>
           <MainColumn>
-            <CommentsPlaceholder />
-            {/** This is a placeholder for when we add in comments functionality */}
-            <CommentsInput label="Add comment" />
+            <TaskComments comments={task.comments} />
+            <CommentsInput label="Add comment" name="comment" inputRef={register} />
           </MainColumn>
           <SideColumn>
             <ButtonWrapper>

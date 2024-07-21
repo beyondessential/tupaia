@@ -12,6 +12,7 @@ export type TaskT = Omit<Task, 'created_at'> & {
   'survey.code': Survey['code'];
   'survey.name': Survey['name'];
   task_status: DatatrakWebTaskRequest.ResBody['taskStatus'];
+  comments: DatatrakWebTaskRequest.ResBody['comments'];
 };
 
 export const formatTaskResponse = (task: TaskT): DatatrakWebTaskRequest.ResBody => {
@@ -41,5 +42,7 @@ export const formatTaskResponse = (task: TaskT): DatatrakWebTaskRequest.ResBody 
     },
   };
 
-  return camelcaseKeys(formattedTask) as DatatrakWebTaskRequest.ResBody;
+  return camelcaseKeys(formattedTask, {
+    deep: true,
+  }) as DatatrakWebTaskRequest.ResBody;
 };
