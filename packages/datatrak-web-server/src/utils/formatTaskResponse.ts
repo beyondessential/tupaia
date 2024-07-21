@@ -12,7 +12,7 @@ export type TaskT = Omit<Task, 'created_at'> & {
   'survey.code': Survey['code'];
   'survey.name': Survey['name'];
   task_status: DatatrakWebTaskRequest.ResBody['taskStatus'];
-  comments: DatatrakWebTaskRequest.ResBody['comments'];
+  comments?: DatatrakWebTaskRequest.ResBody['comments'];
 };
 
 export const formatTaskResponse = (task: TaskT): DatatrakWebTaskRequest.ResBody => {

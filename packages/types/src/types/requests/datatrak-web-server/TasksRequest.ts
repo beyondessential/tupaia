@@ -30,7 +30,10 @@ export type TaskResponse = KeysToCamelCase<
 };
 
 export type ResBody = {
-  tasks: TaskResponse[];
+  tasks: TaskResponse &
+    {
+      commentsCount: number;
+    }[];
   count: number;
   numberOfPages: number;
 };

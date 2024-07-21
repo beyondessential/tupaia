@@ -5,7 +5,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { parse } from 'cookie';
-import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
+import { DatatrakWebTasksRequest, Task, TaskCommentType, TaskStatus } from '@tupaia/types';
 import { RECORDS } from '@tupaia/database';
 import { TaskT, formatTaskResponse } from '../utils';
 
@@ -32,13 +32,6 @@ const FIELDS = [
 ];
 
 const DEFAULT_PAGE_SIZE = 20;
-
-type SingleTask = Task & {
-  'survey.name': string;
-  'survey.code': string;
-  'entity.name': string;
-  'entity.country_code': string;
-};
 
 type FormattedFilters = Record<string, any>;
 
@@ -142,7 +135,7 @@ export class TasksRoute extends Route<TasksRequest> {
   }
 
   public async buildResponse() {
-    const { ctx, query = {} } = this.req;
+    const { ctx, query = {}, models } = this.req;
     const { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
 
     this.formatFilters();
@@ -161,7 +154,20 @@ export class TasksRoute extends Route<TasksRequest> {
       page,
     });
 
-    const formattedTasks = tasks.map((task: TaskT) => formatTaskResponse(task));
+    const formattedTasks = (await Promise.all(
+      tasks.map(async (task: TaskT) => {
+        const formattedTask = formatTaskResponse(task);
+        // Get comment count for each task
+        const commentsCount = await models.taskComment.count({
+          task_id: task.id,
+          type: TaskCommentType.user,
+        });
+        return {
+          ...formattedTask,
+          commentsCount,
+        };
+      }),
+    )) as DatatrakWebTasksRequest.ResBody['tasks'];
 
     // Get all task ids for pagination
     const count = await this.queryForCount();

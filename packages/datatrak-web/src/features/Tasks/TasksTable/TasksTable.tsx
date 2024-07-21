@@ -5,8 +5,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { FilterableTable } from '@tupaia/ui-components';
+import { CommentIcon } from '../../../components';
 import { TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
@@ -36,6 +39,36 @@ const ActionCellContent = styled.div`
   justify-content: flex-end;
   align-items: center;
 `;
+
+const CommentsCountWrapper = styled.div`
+  color: ${({ theme }) => theme.palette.text.secondary};
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  .MuiSvgIcon-root {
+    font-size: 1rem;
+  }
+`;
+
+const CommentCountText = styled(Typography)`
+  font-size: 0.75rem;
+  margin-inline-start: 0.25rem;
+`;
+
+const StatusCellContent = styled.div`
+  display: flex;
+`;
+
+const CommentsCount = ({ commentsCount }: { commentsCount: number }) => {
+  if (!commentsCount) return null;
+  return (
+    <CommentsCountWrapper title="Number of user generated comments on this task">
+      <CommentIcon />
+      <CommentCountText>{commentsCount}</CommentCountText>
+    </CommentsCountWrapper>
+  );
+};
 
 const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
@@ -130,7 +163,22 @@ const useTasksTable = () => {
       filterable: true,
       accessor: 'taskStatus',
       id: 'task_status',
-      Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
+      Cell: ({
+        value,
+        row,
+      }: {
+        value: TaskStatusType;
+        row: {
+          original: DatatrakWebTasksRequest.ResBody['tasks'][0];
+        };
+      }) => {
+        return (
+          <StatusCellContent>
+            <StatusPill status={value} />
+            <CommentsCount commentsCount={row.original.commentsCount} />
+          </StatusCellContent>
+        );
+      },
       Filter: StatusFilter,
       disableResizing: true,
       width: 180,
