@@ -67,7 +67,7 @@ describe('Permissions checker for GETTaskComments', async () => {
     const task = {
       id: generateId(),
       survey_id: survey.id,
-      entity_id: facility[0].id,
+      entity_id: facility.id,
       due_date: dueDate,
       status: 'to_do',
       repeat_schedule: null,
