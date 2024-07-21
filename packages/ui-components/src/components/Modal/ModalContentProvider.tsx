@@ -25,8 +25,9 @@ const Content = styled(DialogContent)`
   flex-direction: column;
 `;
 
-const Heading = styled(Typography)`
+const ErrorHeading = styled(Typography)`
   margin-bottom: 1.1rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: ${props => props.theme.typography.body1.fontSize};
 `;
 
@@ -116,7 +117,7 @@ export const ModalContentProvider = ({ isLoading, error, children }: ModalConten
       {isLoading && 'Please be patient, this can take some time...'}
       {error?.message && (
         <ErrorsWrapper>
-          <Heading>{heading}</Heading>
+          <ErrorHeading>{heading}</ErrorHeading>
           {errors.map(({ message, extraFields }) => (
             <Error key={message} message={message} details={extraFields?.details} />
           ))}

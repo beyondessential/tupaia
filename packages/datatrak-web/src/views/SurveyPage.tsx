@@ -108,7 +108,7 @@ export const SurveyPage = () => {
   }, [survey?.id]);
 
   return (
-    <SurveyContext>
+    <SurveyContext surveyCode={surveyCode} countryCode={countryCode}>
       <SurveyPageInner />
     </SurveyContext>
   );

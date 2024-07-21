@@ -44,6 +44,7 @@ describe('TaskCompletionHandler', () => {
           data_time: datetime,
           user_id: userId,
           survey_id: SURVEY.id,
+          id: generateId(),
           ...otherFields,
         };
       }),
@@ -52,11 +53,12 @@ describe('TaskCompletionHandler', () => {
     return surveyResponses.map(sr => sr.id);
   };
 
-  const assertTaskStatus = async (taskId, expectedStatus) => {
+  const assertTaskStatus = async (taskId, expectedStatus, expectedSurveyResponseId) => {
     await models.database.waitForAllChangeHandlers();
     const task = await models.task.findById(taskId);
 
     expect(task.status).toBe(expectedStatus);
+    expect(task.survey_response_id).toBe(expectedSurveyResponseId);
   };
 
   let tonga;
@@ -71,6 +73,7 @@ describe('TaskCompletionHandler', () => {
       created_at: '2024-07-08',
       status: 'to_do',
       due_date: '2024-07-25',
+      survey_response_id: null,
     });
     await upsertDummyRecord(models.user, { id: userId });
   });
@@ -82,23 +85,26 @@ describe('TaskCompletionHandler', () => {
   afterEach(async () => {
     taskCompletionHandler.stopListeningForChanges();
     await models.surveyResponse.delete({ survey_id: SURVEY.id });
-    await models.task.update({ id: task.id }, { status: 'to_do' });
+    await models.task.update({ id: task.id }, { status: 'to_do', survey_response_id: null });
   });
 
   describe('creating a survey response', () => {
-    it('created response marks associated tasks as completed if created_time < data_time', async () => {
-      await createResponses([{ entity_id: tonga.id, date: '2024-07-20' }]);
-      await assertTaskStatus(task.id, 'completed');
+    it('created response marks associated tasks as completed if created_time < data_time, and links survey response IDs to the task', async () => {
+      const responseIds = await createResponses([
+        { entity_id: tonga.id, date: '2024-07-20' },
+        { entity_id: tonga.id, date: '2024-07-21' },
+      ]);
+      await assertTaskStatus(task.id, 'completed', responseIds[0]);
     });
 
     it('created response marks associated tasks as completed if created_time === data_time', async () => {
-      await createResponses([{ entity_id: tonga.id, date: '2024-07-08' }]);
-      await assertTaskStatus(task.id, 'completed');
+      const responseIds = await createResponses([{ entity_id: tonga.id, date: '2024-07-08' }]);
+      await assertTaskStatus(task.id, 'completed', responseIds[0]);
     });
 
     it('created response does not mark associated tasks as completed if created_time > data_time', async () => {
       await createResponses([{ entity_id: tonga.id, date: '2021-07-08' }]);
-      await assertTaskStatus(task.id, 'to_do');
+      await assertTaskStatus(task.id, 'to_do', null);
     });
   });
 
@@ -106,7 +112,7 @@ describe('TaskCompletionHandler', () => {
     it('updating a survey response does not mark a task as completed', async () => {
       await createResponses([{ entity_id: tonga.id, date: '2021-07-20' }]);
       await models.surveyResponse.update({ entity_id: tonga.id }, { data_time: '2024-07-25' });
-      await assertTaskStatus(task.id, 'to_do');
+      await assertTaskStatus(task.id, 'to_do', null);
     });
   });
 });
