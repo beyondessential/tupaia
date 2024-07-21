@@ -102,7 +102,7 @@ const SurveyResponseModalContent = ({
           </Header>
         )}
       </ModalHeader>
-      <ModalContentProvider errorMessage={(error as Error)?.message}>
+      <ModalContentProvider error={error as Error}>
         {showLoading && <Loader />}
         {!showLoading && !error && <SurveyReviewSection />}
       </ModalContentProvider>
