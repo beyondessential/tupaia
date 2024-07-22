@@ -11,6 +11,7 @@ type Input = Partial<DatatrakWebTaskChangeRequest.ReqBody> &
 
 type Output = Partial<Omit<Task, 'due_date'>> & {
   due_date?: string | null;
+  comment?: string;
 };
 
 export const formatTaskChanges = (task: Input) => {
@@ -18,19 +19,14 @@ export const formatTaskChanges = (task: Input) => {
 
   const taskDetails: Output = restOfTask;
 
-  if (repeatSchedule !== undefined) {
-    if (repeatSchedule === null) {
-      taskDetails.repeat_schedule = null;
-    } else {
-      // if task is repeating, clear due date
-      taskDetails.repeat_schedule = {
-        // TODO: format this correctly when recurring tasks are implemented
-        frequency: repeatSchedule,
-      };
-      taskDetails.due_date = null;
-    }
-  }
-  if (dueDate) {
+  if (repeatSchedule) {
+    // if task is repeating, clear due date
+    taskDetails.repeat_schedule = {
+      // TODO: format this correctly when recurring tasks are implemented
+      frequency: repeatSchedule,
+    };
+    taskDetails.due_date = null;
+  } else if (dueDate) {
     // apply status and due date only if not a repeating task
     // set due date to end of day
     const endOfDay = new Date(new Date(dueDate).setHours(23, 59, 59, 999));

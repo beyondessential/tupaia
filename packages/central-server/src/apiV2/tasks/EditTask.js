@@ -15,11 +15,20 @@ export class EditTask extends EditHandler {
   }
 
   async editRecord() {
+    const { comment, ...updatedFields } = this.updatedFields;
     const originalRecord = await this.models.task.findById(this.recordId);
+
     return this.models.wrapInTransaction(async transactingModels => {
-      const newRecord = await transactingModels.task.updateById(this.recordId, this.updatedFields);
+      const taskRecord = await transactingModels.task.findById(this.recordId);
+      if (comment) {
+        await taskRecord.addComment(comment, this.req.user.id, 'user');
+      }
       await originalRecord.addSystemCommentsOnUpdate(this.updatedFields, this.req.user.id);
-      return newRecord;
+      // an edit can be just a comment, so we need to check if there are any other fields to update before calling updateById so we don't get an error
+      if (Object.keys(updatedFields).length > 0) {
+        return transactingModels.task.updateById(this.recordId, updatedFields);
+      }
+      return taskRecord;
     });
   }
 }
