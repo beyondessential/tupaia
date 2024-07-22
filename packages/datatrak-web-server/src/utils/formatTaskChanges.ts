@@ -35,7 +35,6 @@ export const formatTaskChanges = (task: Input) => {
     const withoutTimezone = stripTimezoneFromDate(endOfDay);
 
     taskDetails.due_date = withoutTimezone;
-
     taskDetails.repeat_schedule = null;
   }
 

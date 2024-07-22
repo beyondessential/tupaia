@@ -85732,6 +85732,9 @@ export const TaskSchema = {
 		},
 		"survey_id": {
 			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -85773,6 +85776,9 @@ export const TaskCreateSchema = {
 			"type": "string"
 		},
 		"survey_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
 			"type": "string"
 		}
 	},
@@ -85816,6 +85822,9 @@ export const TaskUpdateSchema = {
 			"type": "string"
 		},
 		"survey_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
 			"type": "string"
 		}
 	},
@@ -87784,6 +87793,9 @@ export const TaskResponseSchema = {
 			],
 			"type": "string"
 		},
+		"surveyResponseId": {
+			"type": "string"
+		},
 		"assigneeName": {
 			"type": "string"
 		},
@@ -87837,22 +87849,18 @@ export const TaskResponseSchema = {
 				"name"
 			]
 		},
+		"repeatSchedule": {
+			"type": "object",
+			"additionalProperties": false
+		},
 		"dueDate": {
 			"type": "string",
 			"format": "date-time"
-		},
-		"repeatSchedule": {
-			"type": "object",
-			"properties": {
-				"frequency": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
 		}
 	},
 	"required": [
 		"entity",
+		"repeatSchedule",
 		"survey",
 		"taskStatus"
 	]
