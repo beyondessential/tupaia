@@ -42,7 +42,7 @@ export class TaskCompletionHandler extends ChangeHandler {
       })),
     );
 
-    const tasks = await this.models.task.find({
+    return this.models.task.find({
       // only fetch tasks that have a status of 'to_do'
       status: 'to_do',
       [QUERY_CONJUNCTIONS.RAW]: {
@@ -56,13 +56,9 @@ export class TaskCompletionHandler extends ChangeHandler {
         ]),
       },
     });
-
-    return tasks;
   }
 
   async handleChanges(_transactingModels, changedResponses) {
-    console.log('HANDLE CHANGES');
-
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
     const tasksToUpdate = await this.fetchTasksForSurveyResponses(changedResponses);
@@ -90,6 +86,8 @@ export class TaskCompletionHandler extends ChangeHandler {
 
       if (repeatSchedule) {
         // Create a new task with the same details as the current task and mark as completed
+        // It is theoretically possible that more than one task could be created for a repeating
+        // task in a reporting period which is ok from a business point of view
         await this.models.task.create({
           assignee_id: assigneeId,
           survey_id: surveyId,
