@@ -109,6 +109,7 @@ const ProjectLogo = styled.img`
 
 const TextWrapper = styled.div`
   margin-inline-start: 0.8rem;
+  width: calc(100% - 5rem);
 `;
 
 const useExportParams = () => {
