@@ -14,3 +14,4 @@ export {
   getTaskFilterSetting,
   removeTaskFilterSetting,
 } from './taskFilterSettings';
+export { usePrimaryEntityLocation } from './usePrimaryEntityLocation';

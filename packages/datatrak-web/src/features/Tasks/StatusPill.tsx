@@ -14,9 +14,9 @@ const Pill = styled.span<{
 }>`
   background-color: ${({ $color }) => `${$color}22`};
   color: ${({ $color }) => $color};
-  font-size: 0.7rem;
+  font-size: 0.625rem;
   padding-inline: 0.7rem;
-  padding-block: 0.3rem;
+  padding-block: 0.2rem;
   border-radius: 20px;
   .cell-content > div:has(&) {
     overflow: visible;

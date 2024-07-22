@@ -80,6 +80,7 @@ const AttachModal = ({ isOpen, onClose, maxSizeInBytes, onAttachFile, title }) =
         label="Select a file"
         showFileSize
         maxSizeInBytes={maxSizeInBytes}
+        name="file-question-field"
         onChange={handleSelectFile}
       />
     </Modal>
@@ -121,7 +122,7 @@ export const FileQuestionField = ({ value: uniqueFileName, onChange, label, maxS
 
   const api = useApiContext();
   const downloadFile = async () => {
-    await api.download(`downloadFiles`, { uniqueFileNames: uniqueFileName }, fileName);
+    await api.download('downloadFiles', { uniqueFileNames: uniqueFileName }, fileName);
   };
 
   return (

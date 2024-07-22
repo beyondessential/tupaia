@@ -26,6 +26,7 @@ export type SurveyFormContextType = {
   isSuccessScreen?: boolean;
   cancelModalOpen: boolean;
   countryCode: string;
+  primaryEntityQuestion?: SurveyScreenComponent | null;
 };
 
 export const surveyReducer = (

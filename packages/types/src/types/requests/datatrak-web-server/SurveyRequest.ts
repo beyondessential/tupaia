@@ -56,6 +56,7 @@ export type SurveyScreenComponent = CamelCasedComponent &
     label?: BaseSurveyScreenComponent['question_label'];
     options?: Option[] | null;
     screenId?: string;
+    id?: string;
   };
 
 type CamelCasedSurveyScreen = KeysToCamelCase<Pick<BaseSurveyScreen, 'id' | 'screen_number'>>;

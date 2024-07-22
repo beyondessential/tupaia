@@ -68,7 +68,7 @@ async function runValidators(validators, object, fieldKey, constructError) {
       await validators[j](object[fieldKey], object, fieldKey);
     } catch (error) {
       throw constructError
-        ? constructError(error.message, fieldKey)
+        ? constructError(error.message, fieldKey, error.extraFields || {})
         : new ValidationError(
             `Invalid content for field "${fieldKey}" causing message "${error.message}"`,
           );
@@ -82,7 +82,7 @@ function runValidatorsSync(validators, object, fieldKey, constructError) {
       validators[j](object[fieldKey], object, fieldKey);
     } catch (error) {
       throw constructError
-        ? constructError(error.message, fieldKey)
+        ? constructError(error.message, fieldKey, error.details)
         : new ValidationError(
             `Invalid content for field "${fieldKey}" causing message "${error.message}"`,
           );

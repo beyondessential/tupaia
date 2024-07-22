@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { FilterableTable } from '@tupaia/ui-components';
 import { TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
@@ -15,7 +15,6 @@ import { StatusPill } from '../StatusPill';
 import { TaskActionsMenu } from '../TaskActionsMenu';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
-import { LinkCell } from './LinkCell';
 import { FilterToolbar } from './FilterToolbar';
 
 const Container = styled.div`
@@ -51,7 +50,7 @@ const useTasksTable = () => {
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
-  const { data, isLoading } = useTasks(projectId, pageSize, page, filters, sortBy);
+  const { data, isLoading } = useTasks({ projectId, pageSize, page, filters, sortBy });
 
   const updateSorting = newSorting => {
     searchParams.set('sortBy', JSON.stringify(newSorting));
@@ -82,6 +81,8 @@ const useTasksTable = () => {
 
   const { tasks = [], count = 0, numberOfPages } = data || {};
 
+  const location = useLocation();
+
   const COLUMNS = [
     {
       // only the survey name can be resized
@@ -100,7 +101,7 @@ const useTasksTable = () => {
     },
     {
       Header: 'Assignee',
-      accessor: row => row.assigneeName ?? 'Unassigned',
+      accessor: row => row.assigneeName,
       id: 'assignee_name',
       filterable: true,
       disableResizing: true,
@@ -129,7 +130,7 @@ const useTasksTable = () => {
       filterable: true,
       accessor: 'taskStatus',
       id: 'task_status',
-      DisplayCell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
+      Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
       Filter: StatusFilter,
       disableResizing: true,
       width: 180,
@@ -150,21 +151,15 @@ const useTasksTable = () => {
     },
   ].map(column => {
     if (column.id === 'actions') return column;
-    const { DisplayCell } = column;
-    if (DisplayCell) {
-      return {
-        ...column,
-        Cell: ({ row, value }) => (
-          <LinkCell {...row.original}>
-            <DisplayCell value={value} />
-          </LinkCell>
-        ),
-      };
-    }
     return {
       ...column,
-      Cell: ({ row, value }) => {
-        return <LinkCell {...row.original}>{value}</LinkCell>;
+      generateUrl: row => {
+        return {
+          to: `/tasks/${row.id}`,
+          state: {
+            from: `${location.pathname}${location.search}`,
+          },
+        };
       },
     };
   });

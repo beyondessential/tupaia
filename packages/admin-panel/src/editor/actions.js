@@ -196,7 +196,7 @@ export const editField = (fieldSource, newValue) => (dispatch, getState) => {
 };
 
 export const saveEdits =
-  (endpoint, editedFields, isNew, filesByFieldKey = {}, onSuccess) =>
+  (endpoint, editedFields, isNew, filesByFieldKey = {}, onSuccess, onError) =>
   async (dispatch, getState, { api }) => {
     try {
       const { recordData, fields } = getEditorState(getState());
@@ -245,8 +245,11 @@ export const saveEdits =
     } catch (error) {
       dispatch({
         type: EDITOR_ERROR,
-        errorMessage: error.message,
+        error,
       });
+      if (onError) {
+        onError(error);
+      }
     }
   };
 
