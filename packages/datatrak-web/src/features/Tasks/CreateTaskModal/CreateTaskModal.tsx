@@ -104,11 +104,11 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
   const defaultDueDate = generateDefaultDueDate();
   const defaultValues = {
-    surveyCode: null,
-    entityId: null,
-    dueDate: defaultDueDate,
-    repeatSchedule: null,
-    assigneeId: null,
+    survey_code: null,
+    entity_id: null,
+    due_date: defaultDueDate,
+    repeat_schedule: null,
+    assignee_id: null,
   };
   const formContext = useForm({
     mode: 'onChange',
@@ -164,18 +164,18 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
   useEffect(() => {
     if (!selectedCountry?.code) return;
-    const { surveyCode, entityId } = dirtyFields;
+    const { survey_code: surveyCode, entity_id: entityId } = dirtyFields;
     // reset surveyCode and entityId when country changes, if they are dirty
     if (surveyCode) {
-      setValue('surveyCode', null, { shouldValidate: true });
+      setValue('survey_code', null, { shouldValidate: true });
     }
     if (entityId) {
-      setValue('entityId', null, { shouldValidate: true });
+      setValue('entity_id', null, { shouldValidate: true });
     }
   }, [selectedCountry?.code]);
 
-  const surveyCode = watch('surveyCode');
-  const dueDate = watch('dueDate');
+  const surveyCode = watch('survey_code');
+  const dueDate = watch('due_date');
 
   return (
     <Modal
@@ -198,7 +198,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                 />
               </CountrySelectorWrapper>
               <Controller
-                name="surveyCode"
+                name="survey_code"
                 control={control}
                 rules={{ required: '*Required' }}
                 render={({ onChange, value }, { invalid }) => (
@@ -220,7 +220,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                 )}
               />
               <Controller
-                name="entityId"
+                name="entity_id"
                 control={control}
                 rules={{ required: '*Required' }}
                 render={({ onChange, value, ref, name }, { invalid }) => {
@@ -241,7 +241,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
               />
               <InputRow>
                 <Controller
-                  name="dueDate"
+                  name="due_date"
                   rules={{ required: '*Required' }}
                   control={control}
                   defaultValue={defaultDueDate}
@@ -263,7 +263,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                   }}
                 />
                 <Controller
-                  name="repeatSchedule"
+                  name="repeat_schedule"
                   control={control}
                   render={({ onChange, value }) => (
                     <RepeatScheduleInput value={value} onChange={onChange} dueDate={dueDate} />
@@ -273,7 +273,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
               <InputRow>
                 <Controller
-                  name="assigneeId"
+                  name="assignee_id"
                   control={control}
                   render={({ ref, value, onChange, ...field }) => (
                     <AssigneeInput

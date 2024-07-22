@@ -9,6 +9,49 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { JOIN_TYPES } from '../TupaiaDatabase';
 
+const getFriendlyFieldName = field => {
+  if (field === 'assignee_id') {
+    return 'assignee';
+  }
+  if (field === 'repeat_schedule') {
+    return 'recurring task';
+  }
+
+  // Default to replacing underscores with spaces
+  return field.replace(/_/g, ' ');
+};
+
+const formatValue = async (field, value, models) => {
+  switch (field) {
+    case 'assignee_id': {
+      if (!value) {
+        return 'Unassigned';
+      }
+      const assignee = await models.user.findById(value);
+      return assignee.full_name;
+    }
+    case 'repeat_schedule': {
+      if (!value || !value?.frequency) {
+        return "Doesn't repeat";
+      }
+
+      // TODO: Update this when we add in rrule in RN-1341, to handle date of week/month/year etc
+      return `${value.frequency.charAt(0).toUpperCase()}${value.frequency.slice(1)}`;
+    }
+    case 'due_date': {
+      if (!value) {
+        return 'No due date';
+      }
+      return format(new Date(value), 'd MMMM yy');
+    }
+    default: {
+      // Default to capitalizing the value and replacing underscores with spaces
+      const words = value.replace(/_/g, ' ');
+      return `${words.charAt(0).toUpperCase()}${words.slice(1)}`;
+    }
+  }
+};
+
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
 
@@ -56,11 +99,44 @@ export class TaskRecord extends DatabaseRecord {
     return this.otherModels.taskComment.find({ task_id: this.id, type: 'system' });
   }
 
-  async addTaskComment(commentData) {
-    return this.otherModels.taskComment.create({
-      ...commentData,
-      task_id: this.id,
-    });
+  async addSystemCommentsForUpdatedTask(updatedFields, userId) {
+    const fieldsToCreateCommentsFor = ['due_date', 'repeat_schedule', 'status', 'assignee_id'];
+    const comments = [];
+
+    const user = await this.otherModels.user.findById(userId);
+
+    for (const [field, newValue] of Object.entries(updatedFields)) {
+      if (!fieldsToCreateCommentsFor.includes(field)) continue;
+      const originalValue = this[field];
+      if (originalValue === newValue) continue;
+
+      // if the due date is changed and the task is repeating, don't add a comment, because this just means that the repeat schedule is being updated, not that the due date is being changed
+      if (field === 'due_date' && updatedFields.repeat_schedule) {
+        continue;
+      }
+
+      const friendlyFieldName = getFriendlyFieldName(field);
+      const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
+      const formattedNewValue = await formatValue(field, newValue, this.otherModels);
+
+      comments.push(
+        `Changed ${friendlyFieldName} from ${formattedOriginalValue} to ${formattedNewValue}`,
+      );
+    }
+
+    if (!comments.length) return;
+
+    await Promise.all(
+      comments.map(message =>
+        this.otherModels.taskComment.create({
+          task_id: this.id,
+          message,
+          type: 'system',
+          user_id: userId,
+          user_name: user.full_name,
+        }),
+      ),
+    );
   }
 }
 

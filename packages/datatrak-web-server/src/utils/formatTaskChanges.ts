@@ -14,19 +14,21 @@ type Output = Partial<Omit<Task, 'due_date'>> & {
 };
 
 export const formatTaskChanges = (task: Input) => {
-  const { dueDate, repeatSchedule, assigneeId, ...restOfTask } = task;
+  const { due_date: dueDate, repeat_schedule: repeatSchedule, ...restOfTask } = task;
 
-  const taskDetails: Output & {
-    due_date?: string | null;
-  } = { assignee_id: assigneeId, ...restOfTask };
+  const taskDetails: Output = restOfTask;
 
-  if (repeatSchedule) {
-    // if task is repeating, clear due date
-    taskDetails.repeat_schedule = JSON.stringify({
-      // TODO: format this correctly when recurring tasks are implemented
-      frequency: repeatSchedule,
-    });
-    taskDetails.due_date = null;
+  if (repeatSchedule !== undefined) {
+    if (repeatSchedule === null) {
+      taskDetails.repeat_schedule = null;
+    } else {
+      // if task is repeating, clear due date
+      taskDetails.repeat_schedule = {
+        // TODO: format this correctly when recurring tasks are implemented
+        frequency: repeatSchedule,
+      };
+      taskDetails.due_date = null;
+    }
   } else if (dueDate) {
     // apply status and due date only if not a repeating task
     // set due date to end of day

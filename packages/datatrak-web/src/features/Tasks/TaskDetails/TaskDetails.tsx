@@ -98,9 +98,9 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const backLink = useFromLocation();
 
   const defaultValues = {
-    dueDate: task.dueDate ?? null,
-    repeatSchedule: task.repeatSchedule?.frequency ?? null,
-    assigneeId: task.assigneeId ?? null,
+    due_date: task.dueDate ?? null,
+    repeat_schedule: task.repeatSchedule?.frequency ?? null,
+    assignee_id: task.assigneeId ?? null,
   };
   const formContext = useForm({
     mode: 'onChange',
@@ -130,10 +130,19 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const canEditFields =
     task.taskStatus !== TaskStatus.completed && task.taskStatus !== TaskStatus.cancelled;
 
-  const dueDate = watch('dueDate');
+  const dueDate = watch('due_date');
+
+  const onSubmit = data => {
+    const updatedFields = Object.keys(dirtyFields).reduce((acc, key) => {
+      acc[key] = data[key];
+      return acc;
+    }, {});
+
+    editTask(updatedFields);
+  };
 
   return (
-    <Form onSubmit={handleSubmit(editTask)}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
           <SideColumn>
@@ -142,10 +151,10 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
             </ItemWrapper>
             <ItemWrapper>
               <Controller
-                name="dueDate"
+                name="due_date"
                 control={control}
                 rules={{ required: '*Required' }}
-                defaultValue={defaultValues.dueDate}
+                defaultValue={defaultValues.due_date}
                 render={({ value, onChange, ref }, { invalid }) => (
                   <DueDatePicker
                     value={value}
@@ -164,9 +173,9 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
 
             <ItemWrapper>
               <Controller
-                name="repeatSchedule"
+                name="repeat_schedule"
                 control={control}
-                defaultValue={defaultValues.repeatSchedule}
+                defaultValue={defaultValues.repeat_schedule}
                 render={({ value, onChange }) => (
                   <RepeatScheduleInput
                     value={value}
@@ -179,9 +188,9 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
             </ItemWrapper>
             <ItemWrapper>
               <Controller
-                name="assigneeId"
+                name="assignee_id"
                 control={control}
-                defaultValue={defaultValues.assigneeId}
+                defaultValue={defaultValues.assignee_id}
                 render={({ value, onChange, ref }) => (
                   <AssigneeInput
                     value={value}
