@@ -29,7 +29,8 @@ export const formatTaskChanges = (task: Input) => {
       };
       taskDetails.due_date = null;
     }
-  } else if (dueDate) {
+  }
+  if (dueDate) {
     // apply status and due date only if not a repeating task
     // set due date to end of day
     const endOfDay = new Date(new Date(dueDate).setHours(23, 59, 59, 999));
@@ -38,6 +39,8 @@ export const formatTaskChanges = (task: Input) => {
     const withoutTimezone = stripTimezoneFromDate(endOfDay);
 
     taskDetails.due_date = withoutTimezone;
+
+    taskDetails.repeat_schedule = null;
   }
 
   return taskDetails;

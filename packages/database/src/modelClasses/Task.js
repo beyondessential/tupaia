@@ -99,11 +99,20 @@ export class TaskRecord extends DatabaseRecord {
     return this.otherModels.taskComment.find({ task_id: this.id, type: 'system' });
   }
 
-  async addSystemCommentsForUpdatedTask(updatedFields, userId) {
+  async addComment(message, userId, type) {
+    const user = await this.otherModels.user.findById(userId);
+    return this.otherModels.taskComment.create({
+      task_id: this.id,
+      message,
+      type,
+      user_id: userId,
+      user_name: user.full_name,
+    });
+  }
+
+  async addSystemCommentsOnUpdate(updatedFields, userId) {
     const fieldsToCreateCommentsFor = ['due_date', 'repeat_schedule', 'status', 'assignee_id'];
     const comments = [];
-
-    const user = await this.otherModels.user.findById(userId);
 
     for (const [field, newValue] of Object.entries(updatedFields)) {
       if (!fieldsToCreateCommentsFor.includes(field)) continue;
@@ -126,17 +135,7 @@ export class TaskRecord extends DatabaseRecord {
 
     if (!comments.length) return;
 
-    await Promise.all(
-      comments.map(message =>
-        this.otherModels.taskComment.create({
-          task_id: this.id,
-          message,
-          type: 'system',
-          user_id: userId,
-          user_name: user.full_name,
-        }),
-      ),
-    );
+    await Promise.all(comments.map(message => this.addComment(message, userId, 'system')));
   }
 }
 
