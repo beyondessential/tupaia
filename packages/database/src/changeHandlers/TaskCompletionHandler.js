@@ -79,10 +79,12 @@ export class TaskCompletionHandler extends ChangeHandler {
 
       if (!matchingSurveyResponse) continue;
 
-      await this.models.task.updateById(id, {
+      await transactingModels.task.updateById(id, {
         status: 'completed',
         survey_response_id: matchingSurveyResponse.id,
       });
+
+      await task.addComment('Completed this task', matchingSurveyResponse.user_id, 'system');
     }
   }
 }
