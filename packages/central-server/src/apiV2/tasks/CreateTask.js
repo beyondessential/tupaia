@@ -21,10 +21,16 @@ export class CreateTask extends CreateHandler {
   }
 
   async createRecord() {
-    const { models } = this;
-    const task = await models.task.create(this.newRecordData);
-    return {
-      id: task.id,
-    };
+    const { comment, ...data } = this.newRecordData;
+
+    return this.models.wrapInTransaction(async transactingModels => {
+      const task = await transactingModels.task.create(data);
+      if (comment) {
+        await task.addComment(comment, this.req.user.id);
+      }
+      return {
+        id: task.id,
+      };
+    });
   }
 }

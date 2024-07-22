@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebTaskChangeRequest, TaskCommentType, TaskStatus } from '@tupaia/types';
+import { DatatrakWebTaskChangeRequest, TaskStatus } from '@tupaia/types';
 import { formatTaskChanges } from '../utils';
 
 export type CreateTaskRequest = Request<
@@ -36,21 +36,6 @@ export class CreateTaskRoute extends Route<CreateTaskRequest> {
       taskDetails.status = TaskStatus.to_do;
     }
 
-    const task = await ctx.services.central.createResource('tasks', {}, taskDetails);
-
-    if (comment) {
-      await ctx.services.central.createResource(
-        `tasks/${task.id}/taskComments`,
-        {},
-        {
-          message: comment,
-          type: TaskCommentType.user,
-        },
-      );
-    }
-
-    return {
-      message: 'Task created successfully',
-    };
+    return ctx.services.central.createResource('tasks', {}, taskDetails);
   }
 }

@@ -11,6 +11,7 @@ type Input = Partial<DatatrakWebTaskChangeRequest.ReqBody> &
 
 type Output = Partial<Omit<Task, 'due_date'>> & {
   due_date?: string | null;
+  comment?: string;
 };
 
 export const formatTaskChanges = (task: Input) => {
@@ -36,6 +37,7 @@ export const formatTaskChanges = (task: Input) => {
     const withoutTimezone = stripTimezoneFromDate(endOfDay);
 
     taskDetails.due_date = withoutTimezone;
+    taskDetails.repeat_schedule = null;
   }
 
   return taskDetails;

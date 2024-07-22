@@ -24,25 +24,9 @@ export class EditTaskRoute extends Route<EditTaskRequest> {
     const { body, ctx, params } = this.req;
 
     const { taskId } = params;
-    const { comment, ...rest } = body;
 
-    const taskDetails = formatTaskChanges(rest);
+    const taskDetails = formatTaskChanges(body);
 
-    await ctx.services.central.updateResource(`tasks/${taskId}`, {}, taskDetails);
-
-    if (comment) {
-      await ctx.services.central.createResource(
-        `tasks/${taskId}/taskComments`,
-        {},
-        {
-          message: comment,
-          type: TaskCommentType.user,
-        },
-      );
-    }
-
-    return {
-      message: 'Task updated successfully',
-    };
+    return ctx.services.central.updateResource(`tasks/${taskId}`, {}, taskDetails);
   }
 }
