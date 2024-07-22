@@ -43,7 +43,9 @@ export class TaskRoute extends Route<TaskRequest> {
       throw new Error(`Task with id ${taskId} not found`);
     }
 
-    const comments = await ctx.services.central.fetchResources(`tasks/${taskId}/taskComments`);
+    const comments = await ctx.services.central.fetchResources(`tasks/${taskId}/taskComments`, {
+      sort: ['created_at DESC'],
+    });
 
     return {
       ...formatTaskResponse(task),
