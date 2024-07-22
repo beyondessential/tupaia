@@ -23,10 +23,8 @@ export type TaskResponse = KeysToCamelCase<
     id: Entity['id'];
     countryCode: string; // this is not undefined or null so use string explicitly here
   };
-  dueDate?: Task['due_date']; // separately define this so that the Date object doesn't get included in KeysToCamelCase
-  repeatSchedule?: {
-    frequency?: string;
-  } | null;
+  repeatSchedule: Record<string, unknown> | null;
+  dueDate?: Date | null;
 };
 
 export type ResBody = {

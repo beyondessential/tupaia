@@ -17,6 +17,7 @@ export interface ResBody extends KeysToCamelCase<SurveyResponse> {
   entityId: Entity['id'];
   surveyName: Survey['name'];
   surveyCode: Survey['code'];
+  countryCode: Country['code'];
 }
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;

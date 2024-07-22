@@ -1542,6 +1542,7 @@ export interface Task {
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
+  'survey_response_id'?: string | null;
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;
@@ -1551,6 +1552,7 @@ export interface TaskCreate {
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
+  'survey_response_id'?: string | null;
 }
 export interface TaskUpdate {
   'assignee_id'?: string | null;
@@ -1561,6 +1563,7 @@ export interface TaskUpdate {
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
   'survey_id'?: string;
+  'survey_response_id'?: string | null;
 }
 export interface TaskComment {
   'created_at': Date;
