@@ -96,12 +96,13 @@ export const SurveyQuestion = ({
 
   const defaultValue = getDefaultValue();
 
-  // display the entity error in it's own component because otherwise it will end up at the bottom of the big list of entities
-  const displayError = errors[name] && errors[name].message && !type.includes('Entity');
-  // Use a Controller so that the fields that require change handlers, values, etc work with react-hook-form, which is uncontrolled by default
+  // Display the entity error in its own component because otherwise it will end up at the bottom of the big list of entities
+  const displayError = errors[name]?.message && !type.includes('Entity');
 
   return (
     <QuestionWrapper>
+      {/* Use a Controller so that the fields that require change handlers, values, etc. work with
+          react-hook-form, which is uncontrolled by default */}
       <Controller
         name={name}
         control={control}

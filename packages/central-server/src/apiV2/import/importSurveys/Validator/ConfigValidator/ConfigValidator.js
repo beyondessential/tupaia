@@ -19,11 +19,11 @@ export class ConfigValidator extends BaseValidator {
     this.constructorArgs = constructorArgs;
   }
 
-  async validate(rowIndex) {
+  async validate(rowIndex, constructError) {
     const questionType = this.getQuestion(rowIndex).type;
     const Validator = this.getValidator(questionType);
 
-    return new Validator(...this.constructorArgs).validate(rowIndex);
+    return new Validator(...this.constructorArgs).validate(rowIndex, constructError);
   }
 
   getValidator = questionType => {
