@@ -33,7 +33,7 @@ export class TaskCompletionHandler extends ChangeHandler {
   /**
    * @private Fetches all tasks that have the same survey_id and entity_id as the survey responses, and have a created_at date that is less than or equal to the data_time of the survey response
    */
-  async fetchTaskIdsToUpdate(surveyResponses) {
+  async fetchTasksForSurveyResponses(surveyResponses) {
     const surveyIdAndEntityIdPairs = getUniqueEntries(
       surveyResponses.map(surveyResponse => ({
         surveyId: surveyResponse.survey_id,
@@ -57,23 +57,32 @@ export class TaskCompletionHandler extends ChangeHandler {
       },
     });
 
-    return tasks.map(task => task.id);
+    return tasks;
   }
 
   async handleChanges(transactingModels, changedResponses) {
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
-    const taskIdsToUpdate = await this.fetchTaskIdsToUpdate(changedResponses);
+    const tasksToUpdate = await this.fetchTasksForSurveyResponses(changedResponses);
 
     // if there are no tasks to update, we don't need to do anything
-    if (taskIdsToUpdate.length === 0) return;
+    if (tasksToUpdate.length === 0) return;
 
-    // update the tasks to be completed
-    await transactingModels.task.update(
-      {
-        id: taskIdsToUpdate,
-      },
-      { status: 'completed' },
-    );
+    for (const task of tasksToUpdate) {
+      const { survey_id: surveyId, entity_id: entityId, created_at: createdAt, id } = task;
+      const matchingSurveyResponse = changedResponses.find(
+        surveyResponse =>
+          surveyResponse.survey_id === surveyId &&
+          surveyResponse.entity_id === entityId &&
+          surveyResponse.data_time >= createdAt,
+      );
+
+      if (!matchingSurveyResponse) continue;
+
+      await this.models.task.updateById(id, {
+        status: 'completed',
+        survey_response_id: matchingSurveyResponse.id,
+      });
+    }
   }
 }

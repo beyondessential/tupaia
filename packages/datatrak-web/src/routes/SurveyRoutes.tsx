@@ -9,7 +9,6 @@ import { ROUTES } from '../constants';
 import {
   ErrorPage,
   SurveyPage,
-  SurveyResponsePage,
   SurveyReviewScreen,
   SurveyScreen,
   SurveySuccessScreen,
@@ -73,7 +72,6 @@ export const SurveyRoutes = (
     <Route index element={<SurveyStartRedirect />} />
     <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
     <Route element={<SurveyLayout />}>
-      <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
       <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
       <Route
         path={ROUTES.SURVEY_SCREEN}

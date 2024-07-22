@@ -2,13 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import React, { createContext, Dispatch, useContext, useReducer, useState } from 'react';
-import { useMatch, useParams } from 'react-router-dom';
+import { useMatch, useParams, useSearchParams } from 'react-router-dom';
 import { QuestionType } from '@tupaia/types';
 import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
+import { usePrimaryEntityLocation } from '../../../utils';
 import { getAllSurveyComponents } from '../utils';
 import {
   generateCodeForCodeGeneratorQuestions,
@@ -18,7 +18,6 @@ import {
 } from './utils';
 import { SurveyFormContextType, surveyReducer } from './reducer';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
-import { usePrimaryEntityLocation } from '../../../utils';
 
 const defaultContext = {
   startTime: new Date().toISOString(),
@@ -33,6 +32,7 @@ const defaultContext = {
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
+  countryCode: '',
   primaryEntityQuestion: null,
 } as SurveyFormContextType;
 
@@ -40,14 +40,15 @@ const SurveyFormContext = createContext(defaultContext);
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
-export const SurveyContext = ({ children }) => {
-  const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
+export const SurveyContext = ({ children, surveyCode, countryCode }) => {
+  const [urlSearchParams] = useSearchParams();
+  const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(surveyCode);
   const primaryEntity = usePrimaryEntityLocation();
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
-  const { surveyCode, ...params } = useParams<SurveyParams>();
+  const params = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
-  const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
+  const isResponseScreen = !!urlSearchParams.get('responseId');
 
   const { formData } = state;
 
@@ -114,6 +115,8 @@ export const SurveyContext = ({ children }) => {
         screenHeader,
         screenDetail,
         visibleScreens,
+        countryCode,
+        surveyCode,
         primaryEntityQuestion,
       }}
     >
@@ -125,6 +128,7 @@ export const SurveyContext = ({ children }) => {
 };
 
 export const useSurveyForm = () => {
+  const [urlSearchParams] = useSearchParams();
   const surveyFormContext = useContext(SurveyFormContext);
   const { surveyScreens, formData, screenNumber, visibleScreens } = surveyFormContext;
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
@@ -134,7 +138,7 @@ export const useSurveyForm = () => {
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
+  const isResponseScreen = !!urlSearchParams.get('responseId');
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });

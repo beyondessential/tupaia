@@ -25,6 +25,7 @@ export type SurveyFormContextType = {
   surveyStartTime?: string;
   isSuccessScreen?: boolean;
   cancelModalOpen: boolean;
+  countryCode: string;
   primaryEntityQuestion?: SurveyScreenComponent | null;
 };
 

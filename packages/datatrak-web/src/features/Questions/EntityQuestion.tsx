@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { SurveyQuestionInputProps } from '../../types';
 import { useSurveyForm } from '..';
@@ -19,8 +18,7 @@ export const EntityQuestion = ({
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
-  const { countryCode } = useParams();
-  const { isReviewScreen, isResponseScreen, formData } = useSurveyForm();
+  const { isReviewScreen, isResponseScreen, formData, countryCode } = useSurveyForm();
 
   const { surveyProjectCode } = useSurveyForm();
 
