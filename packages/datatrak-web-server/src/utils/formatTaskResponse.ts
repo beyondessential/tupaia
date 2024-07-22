@@ -4,6 +4,7 @@
  */
 
 import {
+  DatatrakWebTaskRequest,
   DatatrakWebTasksRequest,
   Entity,
   KeysToCamelCase,
@@ -13,12 +14,13 @@ import {
 } from '@tupaia/types';
 import camelcaseKeys from 'camelcase-keys';
 
-export type TaskT = Omit<Task, 'created_at'> & {
+export type TaskT = Omit<Task, 'created_at' | 'repeat_schedule'> & {
   'entity.name': Entity['name'];
   'entity.country_code': string;
   'survey.code': Survey['code'];
   'survey.name': Survey['name'];
   task_status: TaskStatus | 'overdue' | 'repeating';
+  repeat_schedule?: Record<string, unknown> | null;
 };
 
 type FormattedTask = DatatrakWebTasksRequest.TaskResponse;
@@ -32,6 +34,7 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
     survey_id: surveyId,
     'survey.name': surveyName,
     task_status: taskStatus,
+    repeat_schedule: repeatSchedule,
     ...rest
   } = task;
 
@@ -48,6 +51,7 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
       code: surveyCode,
     },
     taskStatus,
+    repeatSchedule,
   };
 
   return camelcaseKeys(formattedTask, {
