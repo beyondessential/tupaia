@@ -29,6 +29,7 @@ const FIELDS = [
   'repeat_schedule',
   'survey_id',
   'entity_id',
+  'survey_response_id',
 ];
 
 export class TaskRoute extends Route<TaskRequest> {

@@ -15,6 +15,7 @@ jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'blue',
     surveyProjectCode: 'explore',
+    countryCode: 'DL',
     formData: {
       theParentQuestionId: 'blue',
       theCodeQuestionId: 'blue',
@@ -27,14 +28,6 @@ jest.mock('react-hook-form', () => {
   return {
     ...actual,
     useFormContext: jest.fn().mockReturnValue({ errors: {} }),
-  };
-});
-
-jest.mock('react-router', () => {
-  const actual = jest.requireActual('react-router');
-  return {
-    ...actual,
-    useParams: jest.fn().mockReturnValue({ countryCode: 'DL' }),
   };
 });
 

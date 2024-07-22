@@ -53,7 +53,7 @@ exports.up = async function (db) {
       message: { type: 'text', notNull: true },
       type: { type: 'TASK_COMMENT_TYPE', notNull: true, defaultValue: 'user' },
       created_at: {
-        type: 'timestamp',
+        type: 'timestamp with time zone',
         notNull: true,
       },
     },
