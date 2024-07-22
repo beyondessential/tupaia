@@ -6,11 +6,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { generatePath, Link } from 'react-router-dom';
-import ChatIcon from '@material-ui/icons/ChatBubbleOutline';
 import { ROUTES } from '../../constants';
-import { StatusPill } from './StatusPill';
 import { displayDate } from '../../utils';
 import { ButtonLink } from '../../components';
+import { StatusPill } from './StatusPill';
 import { CommentsCount } from './CommentsCount';
 
 const TileContainer = styled.div`

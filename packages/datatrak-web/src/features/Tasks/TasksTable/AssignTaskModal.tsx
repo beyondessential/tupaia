@@ -8,7 +8,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
 import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { useEditTask } from '../../../api';
-import { Task } from '../../../types';
+import { TasksResponse } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { StatusPill } from '../StatusPill';
@@ -75,11 +75,11 @@ const Row = styled.div`
 `;
 
 interface AssignTaskModalProps {
-  task: Task;
+  task: TasksResponse;
   Button: React.ComponentType<{ onClick: () => void }>;
 }
 
-const useDisplayRepeatSchedule = (task: Task) => {
+const useDisplayRepeatSchedule = (task: TasksResponse) => {
   // TODO: When repeating tasks are implemented, make sure the repeat schedule is displayed correctly once a due date is returned with the task
   const repeatScheduleOptions = getRepeatScheduleOptions(task.dueDate);
   const { label } = repeatScheduleOptions[0];

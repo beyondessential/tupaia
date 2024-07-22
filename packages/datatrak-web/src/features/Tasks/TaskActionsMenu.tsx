@@ -10,7 +10,7 @@ import { ActionsMenu } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { useEditTask } from '../../api';
 import { SmallModal } from '../../components';
-import { Task } from '../../types';
+import { SingleTaskResponse, TasksResponse } from '../../types';
 
 const MenuButton = styled(IconButton)`
   &.MuiIconButton-root {
@@ -47,7 +47,7 @@ const CancelTaskModal = ({ isOpen, onClose, onCancelTask, isLoading }: ModalProp
   </SmallModal>
 );
 
-export const TaskActionsMenu = ({ id, taskStatus }: Task) => {
+export const TaskActionsMenu = ({ id, taskStatus }: TasksResponse | SingleTaskResponse) => {
   const [isOpen, setIsOpen] = useState(false);
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);

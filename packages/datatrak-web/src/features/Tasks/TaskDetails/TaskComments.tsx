@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Task } from '../../../types';
 import { displayDateTime } from '../../../utils';
+import { SingleTaskResponse } from '../../../types';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -34,7 +34,7 @@ const Message = styled(Typography).attrs({
   margin-block-start: 0.2rem;
 `;
 
-type Comments = Task['comments'];
+type Comments = SingleTaskResponse['comments'];
 
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
   const { createdAt, userName, message } = comment;

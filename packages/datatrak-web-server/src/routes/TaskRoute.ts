@@ -7,6 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebTaskRequest } from '@tupaia/types';
 import { TaskT, formatTaskResponse } from '../utils';
+import camelcaseKeys from 'camelcase-keys';
 
 export type TaskRequest = Request<
   DatatrakWebTaskRequest.Params,
@@ -44,9 +45,9 @@ export class TaskRoute extends Route<TaskRequest> {
 
     const comments = await ctx.services.central.fetchResources(`tasks/${taskId}/taskComments`);
 
-    return formatTaskResponse({
-      ...task,
-      comments,
-    });
+    return {
+      ...formatTaskResponse(task),
+      comments: camelcaseKeys(comments, { deep: true }),
+    };
   }
 }

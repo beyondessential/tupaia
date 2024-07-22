@@ -5,7 +5,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { parse } from 'cookie';
-import { DatatrakWebTasksRequest, Task, TaskCommentType, TaskStatus } from '@tupaia/types';
+import { DatatrakWebTasksRequest, TaskCommentType, TaskStatus } from '@tupaia/types';
 import { RECORDS } from '@tupaia/database';
 import { TaskT, formatTaskResponse } from '../utils';
 

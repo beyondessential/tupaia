@@ -13,12 +13,12 @@ import { LoadingContainer, TextField } from '@tupaia/ui-components';
 import { useEditTask } from '../../../api';
 import { Button } from '../../../components';
 import { useFromLocation } from '../../../utils';
+import { SingleTaskResponse } from '../../../types';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { ROUTES } from '../../../constants';
-import { Task } from '../../../types';
 import { TaskMetadata } from './TaskMetadata';
 import { TaskComments } from './TaskComments';
 
@@ -93,7 +93,7 @@ const Form = styled(TaskForm)`
   }
 `;
 
-export const TaskDetails = ({ task }: { task: Task }) => {
+export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const navigate = useNavigate();
   const backLink = useFromLocation();
 

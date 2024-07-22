@@ -5,21 +5,19 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { FilterableTable } from '@tupaia/ui-components';
-import { CommentIcon } from '../../../components';
 import { TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { TaskActionsMenu } from '../TaskActionsMenu';
+import { CommentsCount } from '../CommentsCount';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
-import { CommentsCount } from '../CommentsCount';
 
 const Container = styled.div`
   display: flex;
