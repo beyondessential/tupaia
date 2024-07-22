@@ -28,7 +28,10 @@ export class EditTaskRoute extends Route<EditTaskRequest> {
 
     const taskDetails = formatTaskChanges(rest);
 
-    await ctx.services.central.updateResource(`tasks/${taskId}`, {}, taskDetails);
+    // Sometimes an 'edit' will just be a comment, so we don't want to update the task details as an error will be thrown about an empty object
+    if (Object.keys(taskDetails).length > 0) {
+      await ctx.services.central.updateResource(`tasks/${taskId}`, {}, taskDetails);
+    }
 
     if (comment) {
       await ctx.services.central.createResource(

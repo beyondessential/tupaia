@@ -111,7 +111,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     handleSubmit,
     watch,
     register,
-    formState: { isValid, dirtyFields },
+    formState: { dirtyFields },
     reset,
   } = formContext;
 
@@ -153,7 +153,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
               <Controller
                 name="due_date"
                 control={control}
-                rules={{ required: '*Required' }}
                 defaultValue={defaultValues.due_date}
                 render={({ value, onChange, ref }, { invalid }) => (
                   <DueDatePicker
@@ -213,7 +212,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
               <ClearButton disabled={!isDirty} onClick={onClearEdit}>
                 Clear changes
               </ClearButton>
-              <Button type="submit" disabled={!isDirty || !isValid} variant="outlined">
+              <Button type="submit" disabled={!isDirty} variant="outlined">
                 Save changes
               </Button>
             </ButtonWrapper>
