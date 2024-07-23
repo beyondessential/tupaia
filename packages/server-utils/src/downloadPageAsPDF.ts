@@ -42,6 +42,7 @@ export const downloadPageAsPDF = async (
   pdfPageUrl: string,
   userCookie = '',
   cookieDomain: string | undefined,
+  landscape = false,
 ) => {
   let browser;
   let buffer;
@@ -55,6 +56,7 @@ export const downloadPageAsPDF = async (
     buffer = await page.pdf({
       format: 'a4',
       printBackground: true,
+      landscape,
     });
   } catch (e) {
     throw new Error(`puppeteer error: ${(e as Error).message}`);

@@ -34,7 +34,6 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   } = useResubmitSurveyResponse(surveyResponseId, surveyResubmission);
 
   const { data, isLoading: isFetching, error: fetchError } = useGetExistingData(surveyResponseId);
-  const fetchErrorMessage = fetchError?.message;
 
   const existingAndNewFields = { ...data?.surveyResponse, ...surveyResubmission };
 
@@ -109,8 +108,8 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   return (
     <>
       <ModalContentProvider
-        isLoading={isFetching || isLoading}
-        errorMessage={fetchErrorMessage || resubmitError?.message}
+        isLoading={isFetching || isResubmitting}
+        error={fetchError || resubmitError}
       >
         {!isFetching && !isSuccess && (
           <ResponseFields

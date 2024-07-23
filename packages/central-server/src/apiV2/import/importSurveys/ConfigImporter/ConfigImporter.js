@@ -12,14 +12,8 @@ import { processConditionConfig } from './processConditionConfig';
 import { processAutocompleteConfig } from './processAutocompleteConfig';
 import { processEntityConfig } from './processEntityConfig';
 
-const {
-  CODE_GENERATOR,
-  ARITHMETIC,
-  CONDITION,
-  AUTOCOMPLETE,
-  ENTITY,
-  PRIMARY_ENTITY,
-} = ANSWER_TYPES;
+const { CODE_GENERATOR, ARITHMETIC, CONDITION, AUTOCOMPLETE, ENTITY, PRIMARY_ENTITY } =
+  ANSWER_TYPES;
 
 export class ConfigImporter {
   parse = convertCellToJson;
@@ -38,10 +32,11 @@ export class ConfigImporter {
    *
    * @param {number} rowIndex
    * @param {string} componentId
+   * @param {function} constructError
    * @throws {Error}
    */
-  async add(rowIndex, componentId) {
-    await this.validator.validate(rowIndex);
+  async add(rowIndex, componentId, constructError) {
+    await this.validator.validate(rowIndex, constructError);
     this.rowIndexToComponentId[rowIndex] = componentId;
   }
 

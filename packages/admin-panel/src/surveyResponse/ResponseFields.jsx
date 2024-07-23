@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { Autocomplete } from '../autocomplete';
 import { useDebounce } from '../utilities';
 import { useEntities } from '../VizBuilderApp/api';
+import { EntityOptionLabel } from '../widgets';
 
 const InputSection = styled.div`
   margin-block-start: 1.25rem;
@@ -108,6 +109,9 @@ export const ResponseFields = ({
             return option.id === selected.id;
           }}
           getOptionLabel={option => option?.name || ''}
+          renderOption={option => {
+            return <EntityOptionLabel {...option} />;
+          }}
           isLoading={entityIsLoading}
           onChangeSelection={(event, selectedValue) => {
             if (!selectedValue) {

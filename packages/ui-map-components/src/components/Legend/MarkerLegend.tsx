@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import MuiBox from '@material-ui/core/Box';
 import { IconKey } from '@tupaia/types';
@@ -27,16 +27,22 @@ import {
 } from '../../utils';
 import { LegendEntry } from './LegendEntry';
 
-const Container = styled(MuiBox)`
+const Container = styled(MuiBox)<{
+  $isExport?: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
 
-  ${p => p.theme.breakpoints.down('sm')} {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  ${({ $isExport, theme }) =>
+    !$isExport &&
+    css`
+      ${theme.breakpoints.down('sm')} {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    `}
 `;
 
 /**
@@ -117,6 +123,7 @@ export const MarkerLegend = React.memo(
     hasIconLayer,
     hasRadiusLayer,
     hasColorLayer,
+    isExport,
   }: MarkerLegendProps) => {
     const { type, values, key: dataKey, valueMapping } = series;
     const icon = 'icon' in series ? series.icon : null;
@@ -181,7 +188,7 @@ export const MarkerLegend = React.memo(
     }
 
     return (
-      <Container>
+      <Container $isExport={isExport}>
         {keys}
         {nullKey}
       </Container>

@@ -4,9 +4,9 @@
  */
 import fs from 'fs';
 import { respondWithDownload, ValidationError } from '@tupaia/utils';
-import { RouteHandler } from '../../RouteHandler';
-import { assertAdminPanelAccess } from '../../../permissions';
-import { getExportPathForUser } from '../getExportPathForUser';
+import { getExportPathForUser } from './getExportPathForUser';
+import { RouteHandler } from '../RouteHandler';
+import { assertAdminPanelAccess } from '../../permissions';
 
 export class DownloadHandler extends RouteHandler {
   async assertUserHasAccess() {

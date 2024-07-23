@@ -1,11 +1,11 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { SmallAlert } from '../Alert';
@@ -20,8 +20,6 @@ const STATUS = {
   SUCCESS: 'success',
   ERROR: 'error',
 };
-
-const NO_FILE_MESSAGE = 'No file chosen';
 
 const Content = styled(DialogContent)`
   text-align: left;
@@ -47,7 +45,6 @@ export const ImportModal = ({
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState(NO_FILE_MESSAGE);
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -75,7 +72,6 @@ export const ImportModal = ({
     setErrorMessage(null);
     setSuccessMessage(null);
     setFile(null);
-    setFileName(NO_FILE_MESSAGE);
   };
 
   const handleDismiss = () => {
@@ -85,7 +81,6 @@ export const ImportModal = ({
     // Deselect file when dismissing an error, this avoids an error when editing selected files
     // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
     setFile(null);
-    setFileName(NO_FILE_MESSAGE);
   };
 
   const ContentContainer = showLoadingContainer
@@ -94,7 +89,7 @@ export const ImportModal = ({
           {children}
         </LoadingContainer>
       )
-    : ({ children }) => <>{children}</>;
+    : React.Fragment;
 
   const renderContent = useCallback(() => {
     switch (status) {
@@ -114,19 +109,12 @@ export const ImportModal = ({
           <>
             <p>{subtitle}</p>
             <form>
-              <FileUploadField
-                onChange={({ target }, newName) => {
-                  setFileName(newName);
-                  setFile(target.files[0]);
-                }}
-                name="file-upload"
-                fileName={fileName}
-              />
+              <FileUploadField onChange={files => setFile(files[0])} name="file-upload" />
             </form>
           </>
         );
     }
-  }, [status, successMessage, errorMessage, subtitle, fileName]);
+  }, [status, successMessage, errorMessage, subtitle]);
 
   const renderButtons = useCallback(() => {
     switch (status) {
