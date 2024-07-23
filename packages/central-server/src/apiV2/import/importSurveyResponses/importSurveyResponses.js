@@ -148,7 +148,7 @@ export async function importSurveyResponses(req, res) {
       // extract response ids and set up update batcher
       const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
       const minSurveyResponseIndex = INFO_COLUMN_HEADERS.length;
-      const surveyResponseIds = [];
+      const surveyResponse = [];
       const isGeneratedIdByColumnIndex = [];
       const existingResponseDataByColumnIndex = [];
 
@@ -168,32 +168,52 @@ export async function importSurveyResponses(req, res) {
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
         const importMode = getImportMode(columnHeader);
+        const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
+        const entityName = getInfoForColumn(sheet, columnIndex, 'Entity Name');
+        const entity = await models.entity.findOne({ code: entityCode });
+
+        if (entityCode) {
+          if (entity?.name !== entityName) {
+            throw new Error("Entity code and name doesn't match");
+          }
+        } else {
+          throw new Error('Entity code does match any existing entity');
+        }
 
         if (IMPORT_BEHAVIOURS[importMode].shouldGenerateIds) {
-          surveyResponseIds[columnIndex] = generateId();
+          surveyResponse[columnIndex] = [{ surveyResponseId: generateId(), entityId: entity?.id }];
           isGeneratedIdByColumnIndex[columnIndex] = true;
         } else if (IMPORT_BEHAVIOURS[importMode].shouldUpdateExistingResponses) {
           const { surveyResponseId } = await getExistingResponseData(columnIndex);
 
           if (surveyResponseId) {
-            surveyResponseIds[columnIndex] = surveyResponseId;
+            surveyResponse[columnIndex] = {
+              surveyResponseId: surveyResponseId,
+              entityId: entity?.id,
+            };
           } else {
             // A matching existing response was not found, generate a new id
-            surveyResponseIds[columnIndex] = generateId();
+            surveyResponse[columnIndex] = {
+              surveyResponseId: generateId(),
+              entityId: entity?.id,
+            };
             isGeneratedIdByColumnIndex[columnIndex] = true;
           }
         } else {
-          surveyResponseIds[columnIndex] = columnHeader;
+          surveyResponse[columnIndex] = {
+            surveyResponseId: columnHeader,
+            entityId: entity?.id,
+          };
         }
       }
-      updatePersistor.setupColumnsForSheet(tabName, surveyResponseIds);
+      updatePersistor.setupColumnsForSheet(tabName, surveyResponse);
 
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
         validateColumnHeader(columnHeader, columnIndex, tabName);
 
         if (isGeneratedIdByColumnIndex[columnIndex]) {
-          const surveyResponseId = surveyResponseIds[columnIndex];
+          const surveyResponseId = surveyResponse[columnIndex];
           const surveyResponseDetails = await constructNewSurveyResponseDetails(
             models,
             sheet,
@@ -212,11 +232,11 @@ export async function importSurveyResponses(req, res) {
         if (ignoredRowTypes.includes(rowType)) {
           continue;
         }
-
         // Validate every cell in rows other than the header rows
         let answerValidator;
         let answerTransformer;
         const questionId = getInfoForRow(sheet, rowIndex, 'Id');
+
         if (questionId !== 'N/A') {
           if (questionIds.includes(questionId)) {
             throw new ImportValidationError(
@@ -234,7 +254,6 @@ export async function importSurveyResponses(req, res) {
           answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
           answerTransformer = ANSWER_TRANSFORMERS[question.type];
         }
-
         const getAnswerText = async (answerValue, surveyResponseId, columnIndex, importMode) => {
           if (
             checkIsCellEmpty(answerValue) &&
@@ -246,12 +265,10 @@ export async function importSurveyResponses(req, res) {
             // Use data from an existing response to fill the empty answer
             return isDateAnswer(rowType) ? dataTime : answerTextsByQuestionId?.[questionId];
           }
-
           return isDateAnswer(rowType)
             ? getNewDataTimeIfRequired(models, surveyResponseId, answerValue)
             : answerValue;
         };
-
         for (
           let columnIndex = minSurveyResponseIndex;
           columnIndex <= maxColumnIndex;
@@ -259,11 +276,12 @@ export async function importSurveyResponses(req, res) {
         ) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
           const importMode = getImportMode(columnHeader);
-          const surveyResponseId = surveyResponseIds[columnIndex];
+          const surveyResponseId = surveyResponse[columnIndex].surveyResponseId;
           const answerValue = getCellContents(sheet, columnIndex, rowIndex);
           const transformedAnswerValue = answerTransformer
             ? await answerTransformer(models, answerValue)
             : answerValue;
+
           // If we already deleted this survey response wholesale, no need to check specific rows
           if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
             if (answerValidator) {
@@ -274,7 +292,6 @@ export async function importSurveyResponses(req, res) {
                 constructImportValidationError,
               );
             }
-
             if (questionId === 'N/A') {
               // Info row (e.g. entity name): if no content delete the survey response wholesale
               if (checkIsCellEmpty(transformedAnswerValue)) {
@@ -331,7 +348,7 @@ export async function importSurveyResponses(req, res) {
     const message =
       failures.length > 0
         ? `Not all responses were successfully processed:
-  ${failures.map(getFailureMessage).join('\n')}`
+    ${failures.map(getFailureMessage).join('\n')}`
         : null;
     respond(res, { message, failures });
   } catch (error) {
