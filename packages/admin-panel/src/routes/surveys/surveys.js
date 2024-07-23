@@ -201,7 +201,7 @@ const SURVEY_COLUMNS = [
     actionConfig: {
       generateUrl: row => {
         const { code, countryCodes } = row;
-        if (!countryCodes || countryCodes.length === 0) return null;
+        if (!countryCodes || !countryCodes.some(countryCode => !!countryCode)) return null;
         const countryCodeToUse = countryCodes.includes('DL') ? 'DL' : countryCodes[0];
         return `${REACT_APP_DATATRAK_WEB_URL}/survey/${countryCodeToUse}/${code}/1`;
       },
