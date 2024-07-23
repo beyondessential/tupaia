@@ -42,9 +42,15 @@ export class TaskCompletionHandler extends ChangeHandler {
       })),
     );
 
-    const tasks = await this.models.task.find({
-      // only fetch tasks that have a status of 'to_do'
+    return this.models.task.find({
+      // only fetch tasks that have a status of 'to_do' or null (repeating tasks have a status of null)
       status: 'to_do',
+      [QUERY_CONJUNCTIONS.OR]: {
+        status: {
+          comparator: 'IS',
+          comparisonValue: null,
+        },
+      },
       [QUERY_CONJUNCTIONS.RAW]: {
         sql: `${surveyIdAndEntityIdPairs
           .map(() => `(survey_id = ? AND entity_id = ? AND created_at <= ?)`)
@@ -56,8 +62,6 @@ export class TaskCompletionHandler extends ChangeHandler {
         ]),
       },
     });
-
-    return tasks;
   }
 
   async handleChanges(transactingModels, changedResponses) {
@@ -79,10 +83,13 @@ export class TaskCompletionHandler extends ChangeHandler {
 
       if (!matchingSurveyResponse) continue;
 
-      await transactingModels.task.updateById(id, {
-        status: 'completed',
-        survey_response_id: matchingSurveyResponse.id,
-      });
+      // only update the task status if it is not repeating
+      if (task.status !== null) {
+        await transactingModels.task.updateById(id, {
+          status: 'completed',
+          survey_response_id: matchingSurveyResponse.id,
+        });
+      }
 
       await task.addComment('Completed this task', matchingSurveyResponse.user_id, 'system');
     }
