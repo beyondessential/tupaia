@@ -10,7 +10,7 @@ export const createTaskCommentDBFilter = async (accessPolicy, models, criteria, 
   if (hasBESAdminAccess(accessPolicy)) {
     return { dbConditions: criteria, dbOptions: options };
   }
-  const { dbConditions } = await createTaskDBFilter(accessPolicy, models, criteria, options);
+  const { dbConditions } = await createTaskDBFilter(accessPolicy, models);
 
   const taskIds = await models.task.find(
     {
