@@ -34,7 +34,6 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   } = useEditSurveyResponse(surveyResponseId, editedData);
 
   const { data, isLoading: isFetching, error: fetchError } = useGetExistingData(surveyResponseId);
-  const fetchErrorMessage = fetchError?.message;
 
   const existingAndNewFields = { ...data?.surveyResponse, ...editedData };
 
@@ -108,10 +107,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
 
   return (
     <>
-      <ModalContentProvider
-        isLoading={isFetching || isLoading}
-        errorMessage={fetchErrorMessage || editError?.message}
-      >
+      <ModalContentProvider isLoading={isFetching || isLoading} error={fetchError || editError}>
         {!isFetching && !isSuccess && (
           <ResponseFields
             selectedEntity={selectedEntity}

@@ -89,6 +89,9 @@ export const processSurveyResponse = async (
           surveyResponse.qr_codes_to_create?.push(entityObj);
         }
       }
+      if (type === QuestionType.PrimaryEntity && !answer) {
+        throw new Error(`Primary Entity Question is a required field`);
+      }
       if (answer) {
         if (typeof answer !== 'string') {
           throw new Error(

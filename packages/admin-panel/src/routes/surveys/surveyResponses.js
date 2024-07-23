@@ -120,6 +120,15 @@ export const ANSWER_COLUMNS = [
   {
     Header: 'Answer',
     source: 'text',
+    type: 'tooltip',
+    accessor: row => {
+      return row['entity.code'] || row.text;
+    },
+  },
+  {
+    Header: 'EntityName',
+    show: false,
+    source: 'entity.code',
   },
 ];
 
@@ -135,7 +144,7 @@ const IMPORT_CONFIG = {
   queryParameters: [
     {
       label: 'Surveys',
-      secondaryLabel:
+      labelTooltip:
         'Please enter the surveys for the responses to be imported against. Each tab in the file should be a matching survey code. Leave blank to import all tabs.',
       parameterKey: 'surveyCodes',
       optionsEndpoint: 'surveys',

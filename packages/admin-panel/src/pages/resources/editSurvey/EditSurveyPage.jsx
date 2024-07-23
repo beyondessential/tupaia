@@ -2,20 +2,22 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
-import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
+import { Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
-import { withConnectedEditor } from '../../../editor';
+import { useValidationScroll, withConnectedEditor } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
 import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
+import { Modal } from '../../../widgets';
+import { useLinkToPreviousSearchState } from '../../../utilities';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -70,7 +72,7 @@ const SectionBlock = styled.div`
 const RowSection = styled(SectionBlock)`
   > div {
     display: flex;
-    > fieldset:last-child {
+    > div:last-child {
       margin-left: 1.2rem;
     }
   }
@@ -81,14 +83,10 @@ const StickyFooter = styled.div`
   padding: 1.25rem;
 `;
 
-const ErrorAlert = styled(Alert)`
-  display: ${({ $show }) => ($show ? 'flex' : 'none')};
-`;
-
 const EditSurveyPageComponent = withConnectedEditor(
   ({
     parent,
-    errorMessage,
+    error,
     displayProperty,
     getDisplayValue,
     fields,
@@ -99,8 +97,9 @@ const EditSurveyPageComponent = withConnectedEditor(
     onSave,
     isLoading,
     resetEditorToDefaultState,
+    validationErrors,
   }) => {
-    const errorAlertRef = useRef(null);
+    const [errorModalOpen, setErrorModalOpen] = useState(false);
     const navigate = useNavigate();
     const { '*': unusedParam, locale, ...params } = useParams();
     const { data: details } = useItemDetails(params, parent);
@@ -112,6 +111,28 @@ const EditSurveyPageComponent = withConnectedEditor(
     }, [params.id, JSON.stringify(parent)]);
 
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
+
+    // need to explicity state the path here because using '../../' doesn't apply the search state
+    const { to, newState } = useLinkToPreviousSearchState('/surveys');
+
+    const openErrorModal = () => setErrorModalOpen(true);
+
+    const navigateBack = () => {
+      navigate(to, {
+        state: newState,
+      });
+      resetEditorToDefaultState();
+    };
+    const handleSave = () => {
+      onSave(files, navigateBack, openErrorModal);
+    };
+
+    const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
+      handleSave,
+      onEditField,
+      validationErrors,
+      files,
+    );
 
     const fieldsBySource = keyBy(fields, 'source');
 
@@ -155,24 +176,9 @@ const EditSurveyPageComponent = withConnectedEditor(
           ]
         : [];
 
-    const navigateBack = () => {
-      navigate('../../');
-      resetEditorToDefaultState();
-    };
-    const handleSave = () => {
-      onSave(files, navigateBack);
-    };
-
     const initialFileName = Array.isArray(recordData?.surveyQuestions)
       ? null
       : recordData?.surveyQuestions;
-
-    // on error, scroll to the error alert
-    useEffect(() => {
-      if (errorMessage && errorAlertRef.current) {
-        errorAlertRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, [errorMessage]);
 
     return (
       <Wrapper>
@@ -187,14 +193,7 @@ const EditSurveyPageComponent = withConnectedEditor(
 
         <Form $isLoading={isLoading}>
           {isLoading && <SpinningLoader />}
-          <ErrorAlert
-            severity="error"
-            ref={errorAlertRef}
-            $show={!!errorMessage}
-            aria-hidden={!!errorMessage}
-          >
-            {errorMessage}
-          </ErrorAlert>
+
           <Section>
             <FileUploadField
               id="survey-questions"
@@ -202,16 +201,21 @@ const EditSurveyPageComponent = withConnectedEditor(
               onChange={({ fileName, file }) =>
                 handleSetFormFile('surveyQuestions', { fileName, file })
               }
-              accept=".xlsx,.xls,.csv"
-              initialFileName={initialFileName}
+              accept={{
+                'application/vnd.ms-excel': ['.xls'],
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+                'text/csv': ['.csv'],
+              }}
+              fileName={initialFileName}
               label="Survey questions"
             />
           </Section>
+
           <Section>
             <FieldsEditor
               fields={orderedFields}
               recordData={recordData}
-              onEditField={onEditField}
+              onEditField={onEditWithTouched}
             />
           </Section>
         </Form>
@@ -222,11 +226,23 @@ const EditSurveyPageComponent = withConnectedEditor(
             variant="contained"
             color="primary"
             disabled={isUnchanged || isLoading}
-            onClick={handleSave}
+            onClick={onSaveWithTouched}
           >
             Save changes
           </Button>
         </StickyFooter>
+        <Modal
+          open={errorModalOpen}
+          onClose={() => setErrorModalOpen(false)}
+          error={error}
+          title="Survey error"
+          buttons={[
+            {
+              text: 'Close',
+              onClick: () => setErrorModalOpen(false),
+            },
+          ]}
+        />
       </Wrapper>
     );
   },

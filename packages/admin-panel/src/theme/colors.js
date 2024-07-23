@@ -21,16 +21,17 @@ export const DARK_BLUE = '#328DE5';
 export const DARK_GREEN = '#00972E';
 
 export const LIGHT_BLUE = '#99D6FF';
-export const LIGHT_RED = '#FEE2E2';
+export const LIGHT_RED = '#F76853';
 export const LIGHT_ORANGE = '#FFECE1';
 
 // Greys (based on first 2 letters of hex code)
 export const GREY_72 = '#727D84';
 export const GREY_9F = '#9FA6AA';
+export const GREY_B8 = '#B8B8B8';
+export const GREY_DE = '#DEDEDE';
 export const GREY_E2 = '#E2E2E2';
 export const GREY_F1 = '#F1F1F1';
 export const GREY_FB = '#FBF9F9';
-export const GREY_DE = '#DEDEDE';
 
 // Blues
 export const BLUE_BF = '#BFD5E4';
