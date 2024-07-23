@@ -87860,7 +87860,6 @@ export const TaskResponseSchema = {
 	},
 	"required": [
 		"entity",
-		"repeatSchedule",
 		"survey",
 		"taskStatus"
 	]
