@@ -41981,7 +41981,9 @@ export const AnalyticsSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -42046,7 +42048,9 @@ export const AnalyticsCreateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -42111,7 +42115,9 @@ export const AnalyticsUpdateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -84427,7 +84433,9 @@ export const QuestionSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -84490,7 +84498,9 @@ export const QuestionCreateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -84555,7 +84565,9 @@ export const QuestionUpdateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -86422,7 +86434,9 @@ export const QuestionTypeSchema = {
 		"Photo",
 		"PrimaryEntity",
 		"Radio",
-		"SubmissionDate"
+		"SubmissionDate",
+		"Task",
+		"User"
 	],
 	"type": "string"
 } 
@@ -87117,7 +87131,9 @@ export const CamelCasedQuestionSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},

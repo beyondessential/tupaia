@@ -1736,6 +1736,8 @@ export enum QuestionType {
   'Radio' = 'Radio',
   'SubmissionDate' = 'SubmissionDate',
   'File' = 'File',
+  'Task' = 'Task',
+  'User' = 'User',
 }
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
