@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity, EntityType, Question } from '../../models';
+import { Entity, EntityType, Question, Survey, UserAccount } from '../../models';
 
 export type CodeGeneratorQuestionConfig = {
   type: 'shortid' | 'mongoid';
@@ -69,10 +69,23 @@ export type ArithmeticQuestionConfig = {
   >;
 };
 
+export type UserQuestionConfig = {
+  permissionGroup: string;
+};
+
+export type TaskQuestionConfig = {
+  entityCode: QuestionValue | Entity['code'];
+  surveyCode: QuestionValue | Survey['code'];
+  dueDate: QuestionValue | string;
+  assignee: QuestionValue | UserAccount['id'];
+};
+
 export type SurveyScreenComponentConfig = {
   codeGenerator?: CodeGeneratorQuestionConfig;
   autocomplete?: AutocompleteQuestionConfig;
   entity?: EntityQuestionConfig;
   condition?: ConditionQuestionConfig;
   arithmetic?: ArithmeticQuestionConfig;
+  user?: UserQuestionConfig;
+  task?: TaskQuestionConfig;
 };

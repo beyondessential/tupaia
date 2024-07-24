@@ -40607,6 +40607,108 @@ export const ArithmeticQuestionConfigSchema = {
 	]
 } 
 
+export const UserQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"permissionGroup": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"permissionGroup"
+	]
+} 
+
+export const TaskQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				{
+					"type": "string"
+				}
+			]
+		},
+		"surveyCode": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				{
+					"type": "string"
+				}
+			]
+		},
+		"dueDate": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				{
+					"type": "string"
+				}
+			]
+		},
+		"assignee": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				{
+					"type": "string"
+				}
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"assignee",
+		"dueDate",
+		"entityCode",
+		"surveyCode"
+	]
+} 
+
 export const SurveyScreenComponentConfigSchema = {
 	"type": "object",
 	"properties": {
@@ -41163,6 +41265,106 @@ export const SurveyScreenComponentConfigSchema = {
 			"additionalProperties": false,
 			"required": [
 				"formula"
+			]
+		},
+		"user": {
+			"type": "object",
+			"properties": {
+				"permissionGroup": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"permissionGroup"
+			]
+		},
+		"task": {
+			"type": "object",
+			"properties": {
+				"entityCode": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"surveyCode": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"dueDate": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"assignee": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"assignee",
+				"dueDate",
+				"entityCode",
+				"surveyCode"
 			]
 		}
 	},

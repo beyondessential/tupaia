@@ -96,6 +96,8 @@ export {
   EntityQuestionConfigFields,
   EntityQuestionConfigFieldValue,
   EntityQuestionConfigFieldKey,
+  TaskQuestionConfig,
+  UserQuestionConfig,
 } from './survey';
 export { LeaderboardItem } from './leaderboard';
 export {
