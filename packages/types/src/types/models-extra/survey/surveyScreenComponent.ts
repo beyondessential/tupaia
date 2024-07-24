@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity, EntityType, Question } from '../../models';
+import { Entity, EntityType, PermissionGroup, Question, Survey, UserAccount } from '../../models';
 
 export type CodeGeneratorQuestionConfig = {
   type: 'shortid' | 'mongoid';
@@ -69,10 +69,42 @@ export type ArithmeticQuestionConfig = {
   >;
 };
 
+export type UserQuestionConfig = {
+  /**
+   * @description If this is a question value, the user list will be filtered by the value of the question.  If this is a permission group name, the user list will be filtered by the permission group.
+   */
+  permissionGroup: QuestionValue | PermissionGroup['name'];
+};
+
+export type TaskQuestionConfig = {
+  /**
+   * @description If this is a boolean value, a task will be created if the value is true. If this is a question value, a task will be created if the value of the question is true.
+   */
+  shouldCreateTask: QuestionValue | boolean;
+  /**
+   * @description If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity code as the task entity.
+   */
+  entityCode: QuestionValue | Entity['code'];
+  /**
+   * @description Determines the survey that the task will be created for.
+   */
+  surveyCode: Survey['code'];
+  /**
+   * @description If this is a question value, the task will be created with the value of the question as the task due date. If this is a string, the task will be created with the string as the task due date.
+   */
+  dueDate: QuestionValue | string;
+  /**
+   * @description If this is a question value, the task will be created with the value of the question as the task assignee. If this is a string, the task will be created with the user id as the task assignee.
+   */
+  assignee: QuestionValue | UserAccount['id'];
+};
+
 export type SurveyScreenComponentConfig = {
   codeGenerator?: CodeGeneratorQuestionConfig;
   autocomplete?: AutocompleteQuestionConfig;
   entity?: EntityQuestionConfig;
   condition?: ConditionQuestionConfig;
   arithmetic?: ArithmeticQuestionConfig;
+  user?: UserQuestionConfig;
+  task?: TaskQuestionConfig;
 };
