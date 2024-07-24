@@ -40610,20 +40610,67 @@ export const ArithmeticQuestionConfigSchema = {
 export const UserQuestionConfigSchema = {
 	"type": "object",
 	"properties": {
-		"permissionGroup": {
-			"type": "string"
+		"filter": {
+			"description": "If this is a question value, the user list will be filtered by the value of the question.  If this is a permission group name, the user list will be filtered by the permission group.",
+			"type": "object",
+			"properties": {
+				"permissionGroup": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"permissionGroup"
+			]
 		}
 	},
 	"additionalProperties": false,
 	"required": [
-		"permissionGroup"
+		"filter"
 	]
 } 
 
 export const TaskQuestionConfigSchema = {
 	"type": "object",
 	"properties": {
+		"shouldCreateTask": {
+			"description": "If this is a boolean value, a task will be created if the value is true. If this is a question value, a task will be created if the value of the question is true.",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				{
+					"type": "boolean"
+				}
+			]
+		},
 		"entityCode": {
+			"description": "If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity code as the task entity.",
 			"anyOf": [
 				{
 					"type": "object",
@@ -40643,6 +40690,7 @@ export const TaskQuestionConfigSchema = {
 			]
 		},
 		"surveyCode": {
+			"description": "If this is a question value, the task will be created with the value of the question as the task survey. If this is a string, the task will be created with the survey code as the task survey.",
 			"anyOf": [
 				{
 					"type": "object",
@@ -40662,6 +40710,7 @@ export const TaskQuestionConfigSchema = {
 			]
 		},
 		"dueDate": {
+			"description": "If this is a question value, the task will be created with the value of the question as the task due date. If this is a string, the task will be created with the string as the task due date.",
 			"anyOf": [
 				{
 					"type": "object",
@@ -40681,6 +40730,7 @@ export const TaskQuestionConfigSchema = {
 			]
 		},
 		"assignee": {
+			"description": "If this is a question value, the task will be created with the value of the question as the task assignee. If this is a string, the task will be created with the user id as the task assignee.",
 			"anyOf": [
 				{
 					"type": "object",
@@ -40705,6 +40755,7 @@ export const TaskQuestionConfigSchema = {
 		"assignee",
 		"dueDate",
 		"entityCode",
+		"shouldCreateTask",
 		"surveyCode"
 	]
 } 
@@ -41270,19 +41321,66 @@ export const SurveyScreenComponentConfigSchema = {
 		"user": {
 			"type": "object",
 			"properties": {
-				"permissionGroup": {
-					"type": "string"
+				"filter": {
+					"description": "If this is a question value, the user list will be filtered by the value of the question.  If this is a permission group name, the user list will be filtered by the permission group.",
+					"type": "object",
+					"properties": {
+						"permissionGroup": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"permissionGroup"
+					]
 				}
 			},
 			"additionalProperties": false,
 			"required": [
-				"permissionGroup"
+				"filter"
 			]
 		},
 		"task": {
 			"type": "object",
 			"properties": {
+				"shouldCreateTask": {
+					"description": "If this is a boolean value, a task will be created if the value is true. If this is a question value, a task will be created if the value of the question is true.",
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "boolean"
+						}
+					]
+				},
 				"entityCode": {
+					"description": "If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity code as the task entity.",
 					"anyOf": [
 						{
 							"type": "object",
@@ -41302,6 +41400,7 @@ export const SurveyScreenComponentConfigSchema = {
 					]
 				},
 				"surveyCode": {
+					"description": "If this is a question value, the task will be created with the value of the question as the task survey. If this is a string, the task will be created with the survey code as the task survey.",
 					"anyOf": [
 						{
 							"type": "object",
@@ -41321,6 +41420,7 @@ export const SurveyScreenComponentConfigSchema = {
 					]
 				},
 				"dueDate": {
+					"description": "If this is a question value, the task will be created with the value of the question as the task due date. If this is a string, the task will be created with the string as the task due date.",
 					"anyOf": [
 						{
 							"type": "object",
@@ -41340,6 +41440,7 @@ export const SurveyScreenComponentConfigSchema = {
 					]
 				},
 				"assignee": {
+					"description": "If this is a question value, the task will be created with the value of the question as the task assignee. If this is a string, the task will be created with the user id as the task assignee.",
 					"anyOf": [
 						{
 							"type": "object",
@@ -41364,6 +41465,7 @@ export const SurveyScreenComponentConfigSchema = {
 				"assignee",
 				"dueDate",
 				"entityCode",
+				"shouldCreateTask",
 				"surveyCode"
 			]
 		}
