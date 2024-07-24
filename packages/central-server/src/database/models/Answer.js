@@ -90,6 +90,7 @@ class AnswerRecord extends DatabaseRecord {
     return !result[0].exists;
   }
 
+  // Todo: Update to run with Task question type
   async runHook() {
     const hooksByQuestionId = await this.otherModels.question.getHooksByQuestionId();
     const hookId = hooksByQuestionId[this.question_id];
