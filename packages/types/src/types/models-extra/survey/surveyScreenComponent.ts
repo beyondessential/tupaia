@@ -86,9 +86,9 @@ export type TaskQuestionConfig = {
    */
   entityCode: QuestionValue | Entity['code'];
   /**
-   * @description If this is a question value, the task will be created with the value of the question as the task survey. If this is a string, the task will be created with the survey code as the task survey.
+   * @description Determines the survey that the task will be created for.
    */
-  surveyCode: QuestionValue | Survey['code'];
+  surveyCode: Survey['code'];
   /**
    * @description If this is a question value, the task will be created with the value of the question as the task due date. If this is a string, the task will be created with the string as the task due date.
    */

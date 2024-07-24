@@ -40681,24 +40681,8 @@ export const TaskQuestionConfigSchema = {
 			]
 		},
 		"surveyCode": {
-			"description": "If this is a question value, the task will be created with the value of the question as the task survey. If this is a string, the task will be created with the survey code as the task survey.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"questionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"questionId"
-					]
-				},
-				{
-					"type": "string"
-				}
-			]
+			"description": "Determines the survey that the task will be created for.",
+			"type": "string"
 		},
 		"dueDate": {
 			"description": "If this is a question value, the task will be created with the value of the question as the task due date. If this is a string, the task will be created with the string as the task due date.",
@@ -41382,24 +41366,8 @@ export const SurveyScreenComponentConfigSchema = {
 					]
 				},
 				"surveyCode": {
-					"description": "If this is a question value, the task will be created with the value of the question as the task survey. If this is a string, the task will be created with the survey code as the task survey.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"questionId": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"questionId"
-							]
-						},
-						{
-							"type": "string"
-						}
-					]
+					"description": "Determines the survey that the task will be created for.",
+					"type": "string"
 				},
 				"dueDate": {
 					"description": "If this is a question value, the task will be created with the value of the question as the task due date. If this is a string, the task will be created with the string as the task due date.",
