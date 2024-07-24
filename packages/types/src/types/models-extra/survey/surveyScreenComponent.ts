@@ -73,9 +73,7 @@ export type UserQuestionConfig = {
   /**
    * @description If this is a question value, the user list will be filtered by the value of the question.  If this is a permission group name, the user list will be filtered by the permission group.
    */
-  filter: {
-    permissionGroup: QuestionValue | PermissionGroup['name'];
-  };
+  permissionGroup: QuestionValue | PermissionGroup['name'];
 };
 
 export type TaskQuestionConfig = {

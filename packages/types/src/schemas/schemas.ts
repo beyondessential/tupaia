@@ -40610,39 +40610,30 @@ export const ArithmeticQuestionConfigSchema = {
 export const UserQuestionConfigSchema = {
 	"type": "object",
 	"properties": {
-		"filter": {
+		"permissionGroup": {
 			"description": "If this is a question value, the user list will be filtered by the value of the question.  If this is a permission group name, the user list will be filtered by the permission group.",
-			"type": "object",
-			"properties": {
-				"permissionGroup": {
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"questionId": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"questionId"
-							]
-						},
-						{
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"questionId": {
 							"type": "string"
 						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
 					]
+				},
+				{
+					"type": "string"
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"permissionGroup"
 			]
 		}
 	},
 	"additionalProperties": false,
 	"required": [
-		"filter"
+		"permissionGroup"
 	]
 } 
 
@@ -41321,39 +41312,30 @@ export const SurveyScreenComponentConfigSchema = {
 		"user": {
 			"type": "object",
 			"properties": {
-				"filter": {
+				"permissionGroup": {
 					"description": "If this is a question value, the user list will be filtered by the value of the question.  If this is a permission group name, the user list will be filtered by the permission group.",
-					"type": "object",
-					"properties": {
-						"permissionGroup": {
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"questionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"questionId"
-									]
-								},
-								{
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
 									"type": "string"
 								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
 							]
+						},
+						{
+							"type": "string"
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"permissionGroup"
 					]
 				}
 			},
 			"additionalProperties": false,
 			"required": [
-				"filter"
+				"permissionGroup"
 			]
 		},
 		"task": {
