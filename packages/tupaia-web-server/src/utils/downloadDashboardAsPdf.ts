@@ -20,7 +20,7 @@ export const downloadDashboardAsPdf = (
     exportWithTable: false,
   },
 ) => {
-  const endpoint = `${projectCode}/${entityCode}/${dashboardName}/pdf-export`;
+  const endpoint = `${projectCode}/${entityCode}/${dashboardName}/dashboard-pdf-export`;
   const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
     selectedDashboardItems: selectedDashboardItems?.join(','),
     settings: JSON.stringify(settings),

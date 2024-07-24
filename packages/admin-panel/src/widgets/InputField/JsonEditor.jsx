@@ -38,10 +38,6 @@ export const JsonEditor = ({
   required,
   tooltip,
 }) => {
-  if (!value) {
-    return null;
-  }
-
   let editorValue = value;
 
   if (typeof value === 'string') {
@@ -64,7 +60,7 @@ export const JsonEditor = ({
         mainMenuBar={false}
         statusBar={false}
         mode="code"
-        onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
+        onChange={json => onChange(inputKey, stringify ? JSON.stringify(json ?? {}) : json)}
         value={editorValue}
         htmlElementProps={{
           className: 'jsoneditor-parent',
