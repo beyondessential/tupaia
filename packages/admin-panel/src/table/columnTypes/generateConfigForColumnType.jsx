@@ -15,6 +15,7 @@ import { BulkEditButton } from './BulkEditButton';
 import { TestDatabaseConnectionButton } from './TestDatabaseConnectionButton';
 import { QrCodeButton } from './QrCodeButton';
 import { ResubmitSurveyResponseButton } from './ResubmitSurveyResponseButton';
+import { ExternalLinkButton } from './ExternalLinkButton';
 
 const generateCustomCell = (CustomCell, actionConfig, reduxId) => props =>
   <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />;
@@ -40,6 +41,7 @@ const CUSTOM_CELL_COMPONENTS = {
   testDatabaseConnection: TestDatabaseConnectionButton,
   qrCode: QrCodeButton,
   resubmitSurveyResponse: ResubmitSurveyResponseButton,
+  externalLink: ExternalLinkButton,
 };
 
 const BUTTON_COLUMN_TYPES = [
@@ -51,6 +53,7 @@ const BUTTON_COLUMN_TYPES = [
   'qrCode',
   'testDatabaseConnection',
   'bulkEdit',
+  'externalLink',
   'sync',
 ];
 
