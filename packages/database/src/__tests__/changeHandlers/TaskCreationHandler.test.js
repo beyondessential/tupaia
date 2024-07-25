@@ -77,24 +77,13 @@ const TEST_DATA = [
         entityId,
       },
     },
-    { assignee_id: userId, survey_id: taskSurveyId },
+    { entity_id: entityId, assignee_id: userId, survey_id: taskSurveyId },
   ],
-  // [
-  //   'Does not create a task if shouldCreateTask is false',
-  //   {
-  //     config: {
-  //       shouldCreateTask: 'TEST_01',
-  //     },
-  //     answers: {
-  //       TEST_01: false,
-  //     },
-  //   },
-  // ],
   [
     'Sets task values based on configured question values',
     {
       config: {
-        surveyCode: 'TEST_TASK_SURVEY',
+        surveyCode: taskSurveyCode,
         entityId: 'TEST_00',
         shouldCreateTask: 'TEST_01',
         dueDate: 'TEST_02',
@@ -107,23 +96,41 @@ const TEST_DATA = [
         TEST_03: userId,
       },
     },
-    { due_date: '2024-06-06 00:00:00', assignee_id: userId, entity_id: entityId },
+    {
+      survey_id: taskSurveyId,
+      due_date: '2024-06-06 00:00:00',
+      assignee_id: userId,
+      entity_id: entityId,
+    },
   ],
   [
     'Sets task values based on configured string values',
     {
       config: {
-        surveyCode: 'TEST_TASK_SURVEY',
+        surveyCode: taskSurveyCode,
         entityId,
         shouldCreateTask: true,
         dueDate: '2024-06-06 00:00:00+00',
         assignee: userId,
       },
     },
-    { due_date: '2024-06-06 00:00:00', assignee_id: userId, entity_id: entityId },
+    {
+      survey_id: taskSurveyId,
+      due_date: '2024-06-06 00:00:00',
+      assignee_id: userId,
+      entity_id: entityId,
+    },
   ],
-  // ['Handles optional and missing values', {}, {}],
-  // ['Handles misconfigured question', {}, {}],
+  [
+    'Handles optional and missing values',
+    {
+      config: {
+        surveyCode: taskSurveyCode,
+        entityId,
+      },
+    },
+    { entity_id: entityId, survey_id: taskSurveyId },
+  ],
 ];
 
 describe('TaskCreationHandler', () => {
@@ -158,5 +165,14 @@ describe('TaskCreationHandler', () => {
       status: 'to_do',
       ...result,
     });
+  });
+
+  it('Does not create a task if shouldCreateTask is false', async () => {
+    const { survey } = await buildTaskCreationSurvey(models, { shouldCreateTask: 'TEST_01' });
+    const { surveyResponse } = await buildSurveyResponse(models, survey.code, { TEST_01: false });
+    await models.database.waitForAllChangeHandlers();
+    const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
+
+    expect(task).toBeNull();
   });
 });
