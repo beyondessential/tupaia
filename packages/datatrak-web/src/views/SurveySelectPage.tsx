@@ -13,6 +13,7 @@ import { Button } from '../components';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { HEADER_HEIGHT } from '../constants';
 import { CountrySelector, GroupedSurveyList, useUserCountries } from '../features';
+import { Survey } from '../types';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -83,7 +84,7 @@ const Subheader = styled(Typography).attrs({
 
 export const SurveySelectPage = () => {
   const navigate = useNavigate();
-  const [selectedSurvey, setSelectedSurvey] = useState<ListItemType | null>(null);
+  const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
   const [urlSearchParams] = useSearchParams();
   const urlProjectId = urlSearchParams.get('projectId');
   const {
@@ -99,7 +100,7 @@ export const SurveySelectPage = () => {
   const { mutateAsync: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const { isLoading } = useProjectSurveys(user.projectId, selectedCountry?.name);
+  const { isLoading, data: surveys } = useProjectSurveys(user.projectId, selectedCountry?.name);
 
   const handleSelectSurvey = () => {
     if (countryHasUpdated) {
@@ -115,7 +116,7 @@ export const SurveySelectPage = () => {
 
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
-    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey.value)) {
+    if (selectedSurvey && !surveys?.find(survey => survey.code === selectedSurvey)) {
       setSelectedSurvey(null);
     }
   }, [JSON.stringify(surveys)]);
