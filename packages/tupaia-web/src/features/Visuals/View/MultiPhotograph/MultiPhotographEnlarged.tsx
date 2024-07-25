@@ -173,25 +173,37 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
     swipeToSlide: true,
   };
 
-  const getResponsiveSettingForBreakpoint = (breakpoint, maxSlides) => {
+  const getResponsiveSettingForBreakpoint = (breakpoint, maxSlides, isMainSlider) => {
     const thumbCount = getThumbsToShow(maxSlides);
     // only show arrows and allow infinite scrolling if there are more thumbnails than can be displayed
     const isInfinite = data.length > thumbCount;
     return {
       breakpoint,
-      settings: { slidesToShow: thumbCount, infinite: isInfinite, arrows: isInfinite },
+      settings: {
+        slidesToShow: isMainSlider ? 1 : thumbCount,
+        infinite: isInfinite,
+        arrows: isMainSlider ? true : isInfinite,
+      },
     };
   };
 
-  // settings for the thumbnail slider to reduce the number of thumbnails shown on smaller screens
-  const responsiveSettings = [
-    { breakpoint: 400, maxSlides: 4 },
+  const responsiveArr = [
+    { breakpoint: 400, maxSlides: 3 },
     { breakpoint: 600, maxSlides: 6 },
     {
       breakpoint: 800,
       maxSlides: 8,
     },
-  ].map(({ breakpoint, maxSlides }) => getResponsiveSettingForBreakpoint(breakpoint, maxSlides));
+  ];
+
+  // settings for the thumbnail slider to reduce the number of thumbnails shown on smaller screens
+  const thumbnailResponsiveSettings = responsiveArr.map(({ breakpoint, maxSlides }) =>
+    getResponsiveSettingForBreakpoint(breakpoint, maxSlides, false),
+  );
+
+  const mainSliderResponsiveSettings = responsiveArr.map(({ breakpoint, maxSlides }) =>
+    getResponsiveSettingForBreakpoint(breakpoint, maxSlides, true),
+  );
 
   const hasMoreThumbnails = data.length > maxThumbnailsToDisplay;
 
@@ -203,7 +215,9 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
           asNavFor={thumbnailSlider}
           ref={sliderRef1}
           slidesToShow={1}
+          arrows
           infinite={hasMoreThumbnails}
+          responsive={mainSliderResponsiveSettings}
         >
           {data.map((photo, index) => (
             <MainSlide key={photo.value}>
@@ -224,9 +238,9 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
           ref={sliderRef2}
           slidesToShow={maxThumbnailsToDisplay}
           focusOnSelect
-          responsive={responsiveSettings}
           infinite={hasMoreThumbnails}
           arrows={hasMoreThumbnails}
+          responsive={thumbnailResponsiveSettings}
         >
           {data?.map((photo, index) => (
             <Thumbnail key={photo.value} $thumbCount={maxThumbnailsToDisplay}>
