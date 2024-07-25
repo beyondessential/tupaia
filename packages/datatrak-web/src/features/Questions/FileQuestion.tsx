@@ -64,6 +64,14 @@ export const FileQuestion = ({
     });
   };
 
+  const getInitialFiles = () => {
+    if (selectedFile?.value) {
+      return [new File([selectedFile.value as Blob], selectedFile.name)];
+    }
+    return undefined;
+  };
+
+  const initialFiles = getInitialFiles();
   return (
     <Wrapper>
       <FileUploadField
@@ -76,6 +84,7 @@ export const FileQuestion = ({
         FormHelperTextComponent={InputHelperText}
         required={required}
         disabled={isResponseScreen || isReviewScreen}
+        initialFiles={initialFiles}
       />
     </Wrapper>
   );
