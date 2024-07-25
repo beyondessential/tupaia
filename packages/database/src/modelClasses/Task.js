@@ -117,7 +117,10 @@ export class TaskRecord extends DatabaseRecord {
    * @returns {Promise<TaskCommentRecord[]>}
    */
   async userComments() {
-    return this.otherModels.taskComment.find({ task_id: this.id, type: 'user' });
+    return this.otherModels.taskComment.find({
+      task_id: this.id,
+      type: this.otherModels.taskComment.types.User,
+    });
   }
 
   /**
@@ -126,7 +129,10 @@ export class TaskRecord extends DatabaseRecord {
    */
 
   async systemComments() {
-    return this.otherModels.taskComment.find({ task_id: this.id, type: 'system' });
+    return this.otherModels.taskComment.find({
+      task_id: this.id,
+      type: this.otherModels.taskComment.types.System,
+    });
   }
   /**
    * @description Add a comment to the task. Handles linking the comment to the task and user, and setting the comment type
@@ -184,7 +190,11 @@ export class TaskRecord extends DatabaseRecord {
 
     if (!comments.length) return;
 
-    await Promise.all(comments.map(message => this.addComment(message, userId, 'system')));
+    await Promise.all(
+      comments.map(message =>
+        this.addComment(message, userId, this.otherModels.taskComment.types.System),
+      ),
+    );
   }
 }
 

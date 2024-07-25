@@ -91,7 +91,11 @@ export class TaskCompletionHandler extends ChangeHandler {
         });
       }
 
-      await task.addComment('Completed this task', matchingSurveyResponse.user_id, 'system');
+      await task.addComment(
+        'Completed this task',
+        matchingSurveyResponse.user_id,
+        transactingModels.taskComment.types.System,
+      );
     }
   }
 }

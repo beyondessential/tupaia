@@ -30,7 +30,7 @@ import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
-  const { SURVEY_RESPONSE, COMMENT, TASK, TASK_COMMENT } = RECORDS;
+  const { SURVEY_RESPONSE, COMMENT } = RECORDS;
 
   switch (combinedRecordType) {
     case `${SURVEY_RESPONSE}/${COMMENT}`:
@@ -38,11 +38,6 @@ export const constructForParent = (models, recordType, parentRecordType) => {
         survey_response_id: [constructRecordExistsWithId(models.surveyResponse)],
         user_id: [constructRecordExistsWithId(models.user)],
         text: [hasContent],
-      };
-    case `${TASK}/${TASK_COMMENT}`:
-      return {
-        message: [hasContent, isAString],
-        type: [constructIsOneOf(['user', 'system'])],
       };
     default:
       throw new ValidationError(
