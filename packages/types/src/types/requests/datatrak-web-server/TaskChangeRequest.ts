@@ -6,7 +6,9 @@
 import { Entity, Survey, UserAccount } from '../../models';
 
 export type Params = Record<string, never>;
-export type ResBody = Record<string, never>;
+export type ResBody = {
+  message: string;
+};
 export type ReqQuery = Record<string, never>;
 export type ReqBody = {
   assigneeId?: UserAccount['id'];
@@ -14,4 +16,5 @@ export type ReqBody = {
   entityId: Entity['id'];
   repeatSchedule?: string;
   surveyCode: Survey['code'];
+  comment?: string;
 };

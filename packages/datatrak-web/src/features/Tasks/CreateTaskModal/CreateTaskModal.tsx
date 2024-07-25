@@ -119,6 +119,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     control,
     setValue,
     watch,
+    register,
     formState: { isValid, dirtyFields },
   } = formContext;
 
@@ -287,8 +288,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                 />
               </InputRow>
 
-              {/** This is a placeholder for when we add in comments functionality */}
-              <CommentsInput label="Comments" />
+              <CommentsInput label="Comments" name="comment" inputRef={register} />
             </TaskForm>
           </FormProvider>
         </LoadingContainer>
