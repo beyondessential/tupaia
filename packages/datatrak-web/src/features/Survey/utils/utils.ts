@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { QuestionType } from '@tupaia/types';
-import { SurveyScreen } from '../../types';
+import { SurveyScreen } from '../../../types';
 
 const validateSurveyComponent = component => {
   if (component.type === QuestionType.PrimaryEntity && !component.config?.entity?.createNew) {
