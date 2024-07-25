@@ -39,10 +39,8 @@ const SelectedOption = styled(OptionWrapper)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 0.425rem;
-  padding-right: 0.425rem;
-  margin-left: 0.45rem;
-  margin-right: 0.45rem;
+  padding-inline: 0.425rem;
+  margin-inline: 0.45rem;
   border-radius: 3px;
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   .MuiSvgIcon-root {
@@ -50,9 +48,30 @@ const SelectedOption = styled(OptionWrapper)`
   }
 `;
 
+const Label = styled.span`
+  font-style: ${props => props.theme.typography.fontWeightBold};
+  color: ${props => props.theme.palette.text.primary};
+`;
+
+const Code = styled.span`
+  margin-inline: 0.45rem;
+  padding-left: 0.45rem;
+  border-left: 1px solid ${props => props.theme.palette.text.secondary};
+  color: ${props => props.theme.palette.text.secondary};
+  flex: 1;
+`;
+
 const DisplayOption = ({ option, state }) => {
   const { selected } = state;
-  const label = typeof option === 'string' ? option : option.label || option.value;
+  const label =
+    typeof option === 'string' ? (
+      option
+    ) : (
+      <>
+        <Label>{option.label || option.value}</Label>
+        {option.secondaryLabel ? <Code>{option.secondaryLabel}</Code> : null}
+      </>
+    );
 
   if (selected)
     return (
@@ -66,9 +85,9 @@ const DisplayOption = ({ option, state }) => {
 
 export const Autocomplete = styled(BaseAutocomplete).attrs(props => ({
   muiProps: {
-    ...(props.muiProps || {}),
     renderOption: (option, state) => <DisplayOption option={option} state={state} />,
     PaperComponent: StyledPaper,
+    ...(props.muiProps || {}),
   },
 }))`
   width: 100%;
