@@ -12590,6 +12590,7 @@ __metadata:
     react: ^16.13.1
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
+    react-leaflet: ^3.2.1
     react-query: ^3.39.3
     react-router: 6.3.0
     react-router-dom: 6.3.0

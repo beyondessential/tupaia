@@ -450,13 +450,13 @@ describe('processSurveyResponse', () => {
     });
   });
 
-  it('should not add to recent_entities when type is entity question is not filled in', async () => {
+  it('should not add to recent_entities when type is entity question and is not filled in', async () => {
     const result = await processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
           questionId: 'question1',
-          type: QuestionType.PrimaryEntity,
+          type: QuestionType.Entity,
           componentNumber: 1,
           text: 'question1',
           screenId: 'screen1',
@@ -467,6 +467,27 @@ describe('processSurveyResponse', () => {
     });
 
     expect(result.recent_entities).toEqual([]);
+  });
+
+  it('throw an error when type is primary entity question and is not filled in', async () => {
+    try {
+      const result = await processSurveyResponse(mockModels, {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.PrimaryEntity,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+            config: {},
+          },
+        ],
+        answers: {},
+      });
+    } catch (error: any) {
+      expect(error.message).toBe('Primary Entity Question is a required field');
+    }
   });
 
   it('should use the country id for new entities if parent id is not filled in', async () => {
