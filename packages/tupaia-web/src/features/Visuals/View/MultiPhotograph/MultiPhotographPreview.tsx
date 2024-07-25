@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 0.625rem;
   height: 16rem;
 `;
@@ -21,11 +22,11 @@ const Thumbnail = styled.div<{
 }>`
   height: ${({ thumbCount }) => {
     if (thumbCount === 1) return '100%';
+    if (thumbCount === 2) return '12rem';
     return '50%';
   }};
   max-height: ${({ thumbCount }) => {
-    if (thumbCount === 1) return '100%';
-    if (thumbCount === 2) return '11rem';
+    if (thumbCount <= 2) return '100%';
     return '7.5rem';
   }};
   background-image: url(${({ src }) => src});
