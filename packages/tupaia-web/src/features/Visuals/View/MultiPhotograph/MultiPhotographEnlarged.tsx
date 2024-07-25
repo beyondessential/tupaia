@@ -32,7 +32,7 @@ const Image = styled.div<{
   url?: string;
 }>`
   background-image: url(${({ url }) => url});
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   height: 100%;
@@ -90,6 +90,7 @@ const Thumbnail = styled(Slide)<{
   max-width: 100%;
   ${Image} {
     border-radius: 3px;
+    background-size: cover;
     .slick-current & {
       border: 2px solid ${({ theme }) => theme.palette.text.primary};
     }
