@@ -60,7 +60,7 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
         }
 
         if (dateOfDataQuestion && data.dataTime) {
-          formattedAnswers[dateOfDataQuestion.questionId] = data.dataTime;
+          formattedAnswers[dateOfDataQuestion.questionId] = new Date(data.dataTime);
         }
 
         setFormData(formattedAnswers);
