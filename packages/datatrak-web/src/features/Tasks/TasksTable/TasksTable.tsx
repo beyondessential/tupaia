@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { FilterableTable } from '@tupaia/ui-components';
 import { TaskStatusType } from '../../../types';
 import { useCurrentUserContext, useTasks } from '../../../api';
@@ -13,6 +14,7 @@ import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
 import { TaskActionsMenu } from '../TaskActionsMenu';
+import { CommentsCount } from '../CommentsCount';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
@@ -35,6 +37,15 @@ const ActionCellContent = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+`;
+
+const StatusCellContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  a:has(&) {
+    // This is a workaround to make the comments count display at the edge of the cell
+    padding-inline-end: 0;
+  }
 `;
 
 const useTasksTable = () => {
@@ -130,7 +141,22 @@ const useTasksTable = () => {
       filterable: true,
       accessor: 'taskStatus',
       id: 'task_status',
-      Cell: ({ value }: { value: TaskStatusType }) => <StatusPill status={value} />,
+      Cell: ({
+        value,
+        row,
+      }: {
+        value: TaskStatusType;
+        row: {
+          original: DatatrakWebTasksRequest.ResBody['tasks'][0];
+        };
+      }) => {
+        return (
+          <StatusCellContent>
+            <StatusPill status={value} />
+            <CommentsCount commentsCount={row.original.commentsCount} />
+          </StatusCellContent>
+        );
+      },
       Filter: StatusFilter,
       disableResizing: true,
       width: 180,

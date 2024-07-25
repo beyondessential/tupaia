@@ -6,11 +6,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { generatePath, Link } from 'react-router-dom';
-import ChatIcon from '@material-ui/icons/ChatBubbleOutline';
 import { ROUTES } from '../../constants';
-import { StatusPill } from './StatusPill';
 import { displayDate } from '../../utils';
 import { ButtonLink } from '../../components';
+import { StatusPill } from './StatusPill';
+import { CommentsCount } from './CommentsCount';
 
 const TileContainer = styled.div`
   display: flex;
@@ -63,28 +63,6 @@ const TileRight = styled.div`
   justify-content: center;
 `;
 
-const CommentsContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  .MuiSvgIcon-root {
-    font-size: 1rem;
-    margin-inline-end: 0.2rem;
-  }
-`;
-
-const Comments = ({ commentsCount = 0 }) => {
-  if (!commentsCount) {
-    return null;
-  }
-  return (
-    <CommentsContainer>
-      <ChatIcon />
-      {commentsCount}
-    </CommentsContainer>
-  );
-};
-
 export const TaskTile = ({ task }) => {
   const { survey, entity, taskStatus, dueDate } = task;
   const surveyLink = generatePath(ROUTES.SURVEY, {
@@ -98,7 +76,7 @@ export const TaskTile = ({ task }) => {
         <TileContent>
           <StatusPill status={taskStatus} />
           <span>{displayDate(dueDate)}</span>
-          <Comments />
+          <CommentsCount commentsCount={task.commentsCount} />
         </TileContent>
       </TileLeft>
       <TileRight>

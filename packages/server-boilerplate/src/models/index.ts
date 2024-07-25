@@ -62,3 +62,4 @@ export { SurveyModel, SurveyRecord } from './Survey';
 export { UserEntityPermissionModel, UserEntityPermissionRecord } from './UserEntityPermission';
 export { UserModel, UserRecord } from './User';
 export { TaskModel, TaskRecord } from './Task';
+export { TaskCommentModel, TaskCommentRecord } from './TaskComment';

@@ -15,6 +15,7 @@ import { ApprovalStatus } from '@tupaia/types';
 import { format } from 'date-fns';
 import { Autocomplete } from '../autocomplete';
 import { useEntities } from '../VizBuilderApp/api';
+import { EntityOptionLabel } from '../widgets';
 
 const SectionWrapper = styled.div`
   display: grid;
@@ -80,6 +81,9 @@ export const ResponseFields = ({
             return option.id === selected.id;
           }}
           getOptionLabel={option => option?.name || ''}
+          renderOption={option => {
+            return <EntityOptionLabel {...option} />;
+          }}
           isLoading={entityIsLoading}
           onChangeSelection={(event, selectedValue) => {
             if (!selectedValue) {
