@@ -2,15 +2,18 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+import keyBy from 'lodash.keyby';
 import { ChangeHandler } from './ChangeHandler';
 
-const getAnswerWrapper = (config, answers) => {
-  return code => {
-    const questionCode = config[code];
-    console.log('questionCode', questionCode);
-    const test = answers.find(answer => answer.text.questionCode === questionCode)?.text;
-    console.log('test', test);
-    return test;
+const getAnswerWrapper = (config, questions, answers) => {
+  const answersByQuestionId = keyBy(answers, 'question_id');
+  const questionsByCode = keyBy(questions, 'code');
+
+  return questionKey => {
+    const questionCode = config[questionKey];
+    const question = questionsByCode[questionCode];
+    const answer = answersByQuestionId[question?.id];
+    return answer?.text;
   };
 };
 
@@ -43,27 +46,16 @@ export class TaskCreationHandler extends ChangeHandler {
 
     for (const response of changedResponses) {
       try {
-        console.log('response', response);
-        const questions = await models.database.executeSql(
-          `
-       SELECT q.type, ssc.config FROM question q
-       JOIN survey_screen_component ssc ON ssc.question_id  = q.id
-       JOIN survey_screen ss ON ss.id = ssc.screen_id
-       WHERE ss.survey_id = ?
-     `,
-          [response.survey_id],
-        );
+        const sr = await models.surveyResponse.findById(response.id);
+        const questions = await sr.getQuestions();
+
         const taskQuestion = questions.find(question => question.type === 'Task');
         if (!taskQuestion) {
           continue;
         }
 
-        const config = JSON.parse(taskQuestion.config);
-        const answers = await models.answer.find({
-          survey_response_id: response.id,
-        });
-        console.log('answers', answers);
-        const getAnswer = getAnswerWrapper(config, answers);
+        const answers = await sr.getAnswers();
+        const getAnswer = getAnswerWrapper(taskQuestion.config, questions, answers);
 
         await models.task.create({
           assignee_id: getAnswer('assignee'),

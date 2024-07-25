@@ -3,7 +3,6 @@ import { entityAttribute } from './entityAttribute';
 import { entityCoordinates } from './entityCoordinates';
 import * as entityCreators from './entityCreate';
 import { deduplicateQuestion } from './deduplicateQuestion';
-import { taskCreate } from './taskCreate';
 import { registerHook } from './registry';
 
 function registerAllHooks() {
@@ -13,7 +12,6 @@ function registerAllHooks() {
     entityCoordinates,
     ...entityCreators,
     deduplicateQuestion,
-    taskCreate,
   }).map(([key, func]) => registerHook(key, func));
 }
 

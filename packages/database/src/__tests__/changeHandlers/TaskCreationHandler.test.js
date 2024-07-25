@@ -47,10 +47,10 @@ const SURVEY = {
 const SURVEY_RESPONSE = {
   entity_id: entityId,
   date: '2024-07-20',
-  answers: [
-    { questionCode: 'TEST_03', text: userId },
-    { questionCode: 'TEST_02', text: '2024/06/06' },
-  ],
+  answers: {
+    TEST_03: userId,
+    TEST_02: '2024/06/06',
+  },
 };
 
 describe('TaskCreationHandler', () => {
