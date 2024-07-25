@@ -62,10 +62,10 @@ export const EntitySelectorInput = ({ selectedEntityLevel }: EntitySelectorInput
             id={selectedEntityLevel}
             getOptionSelected={(option, selected) => option.value === selected.value}
             options={
-              entities?.map(({ name: entityName, id, code, type: entityType }) => ({
+              entities?.map(({ name: entityName, id, code: secondaryLabel, type: entityType }) => ({
                 label: entityName,
                 value: id,
-                code,
+                secondaryLabel,
                 type: entityType,
               })) ?? []
             }
