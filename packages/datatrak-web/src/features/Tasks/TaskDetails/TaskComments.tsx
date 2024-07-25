@@ -6,9 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { TaskCommentType } from '@tupaia/types';
 import { displayDateTime } from '../../../utils';
 import { SingleTaskResponse } from '../../../types';
-import { TaskCommentType } from '@tupaia/types';
 
 const Wrapper = styled.div`
   width: 100%;
