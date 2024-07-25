@@ -6,6 +6,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
 import { post } from '../api';
+import { successToast } from '../../utils';
 
 export const useCreateTask = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
@@ -18,6 +19,7 @@ export const useCreateTask = (onSuccess?: () => void) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries('tasks');
+        successToast('Task successfully created');
         if (onSuccess) onSuccess();
       },
     },

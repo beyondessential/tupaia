@@ -7,6 +7,10 @@ import { getUniqueEntries } from '@tupaia/utils';
 import { ChangeHandler } from './ChangeHandler';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
+function hasValidRepeatSchedule(repeatSchedule) {
+  return typeof repeatSchedule === 'object' && Object.keys(repeatSchedule).length > 0;
+}
+
 export class TaskCompletionHandler extends ChangeHandler {
   constructor(models) {
     super(models, 'task-completion-handler');
@@ -64,7 +68,7 @@ export class TaskCompletionHandler extends ChangeHandler {
     });
   }
 
-  async handleChanges(transactingModels, changedResponses) {
+  async handleChanges(_transactingModels, changedResponses) {
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
     const tasksToUpdate = await this.fetchTasksForSurveyResponses(changedResponses);
@@ -73,7 +77,14 @@ export class TaskCompletionHandler extends ChangeHandler {
     if (tasksToUpdate.length === 0) return;
 
     for (const task of tasksToUpdate) {
-      const { survey_id: surveyId, entity_id: entityId, created_at: createdAt, id } = task;
+      const {
+        survey_id: surveyId,
+        entity_id: entityId,
+        created_at: createdAt,
+        repeat_schedule: repeatSchedule,
+        assignee_id: assigneeId,
+        id,
+      } = task;
       const matchingSurveyResponse = changedResponses.find(
         surveyResponse =>
           surveyResponse.survey_id === surveyId &&
@@ -83,9 +94,20 @@ export class TaskCompletionHandler extends ChangeHandler {
 
       if (!matchingSurveyResponse) continue;
 
-      // only update the task status if it is not repeating
-      if (task.status !== null) {
-        await transactingModels.task.updateById(id, {
+      if (hasValidRepeatSchedule(repeatSchedule)) {
+        // Create a new task with the same details as the current task and mark as completed
+        // It is theoretically possible that more than one task could be created for a repeating
+        // task in a reporting period which is ok from a business point of view
+        await this.models.task.create({
+          assignee_id: assigneeId,
+          survey_id: surveyId,
+          entity_id: entityId,
+          repeat_schedule: repeatSchedule,
+          status: 'completed',
+          survey_response_id: matchingSurveyResponse.id,
+        });
+      } else {
+        await this.models.task.updateById(id, {
           status: 'completed',
           survey_response_id: matchingSurveyResponse.id,
         });
@@ -94,7 +116,7 @@ export class TaskCompletionHandler extends ChangeHandler {
       await task.addComment(
         'Completed this task',
         matchingSurveyResponse.user_id,
-        transactingModels.taskComment.types.System,
+        this.model.taskComment.types.System,
       );
     }
   }
