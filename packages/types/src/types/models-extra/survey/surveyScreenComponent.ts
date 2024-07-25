@@ -82,9 +82,9 @@ export type TaskQuestionConfig = {
    */
   shouldCreateTask: QuestionValue | boolean;
   /**
-   * @description If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity code as the task entity.
+   * @description If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity id as the task entity.
    */
-  entityCode: QuestionValue | Entity['code'];
+  entityId: QuestionValue | Entity['id'];
   /**
    * @description Determines the survey that the task will be created for.
    */
