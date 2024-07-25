@@ -6,9 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Task } from '../../../types';
 import { StatusPill } from '../StatusPill';
 import { useEntityByCode } from '../../../api';
+import { SingleTaskResponse } from '../../../types';
 
 const Container = styled.div`
   border: 1px solid ${props => props.theme.palette.divider};
@@ -60,7 +60,7 @@ const CountryWrapper = styled.div`
   justify-content: flex-end;
 `;
 
-export const TaskMetadata = ({ task }: { task?: Task }) => {
+export const TaskMetadata = ({ task }: { task?: SingleTaskResponse }) => {
   const { data: country } = useEntityByCode(task?.entity?.countryCode, {
     enabled: !!task?.entity?.countryCode,
   });

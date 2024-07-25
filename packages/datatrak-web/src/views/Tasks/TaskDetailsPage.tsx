@@ -14,7 +14,7 @@ import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
 import { ROUTES } from '../../constants';
 import { useFromLocation } from '../../utils';
-import { Task } from '../../types';
+import { SingleTaskResponse } from '../../types';
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -46,7 +46,13 @@ const ErrorModal = ({ isOpen, onClose }) => {
   );
 };
 
-const ButtonComponent = ({ task, openErrorModal }: { task?: Task; openErrorModal: () => void }) => {
+const ButtonComponent = ({
+  task,
+  openErrorModal,
+}: {
+  task?: SingleTaskResponse;
+  openErrorModal: () => void;
+}) => {
   const from = useFromLocation();
 
   if (!task) return null;

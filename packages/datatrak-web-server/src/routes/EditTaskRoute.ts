@@ -10,11 +10,11 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { formatTaskChanges } from '../utils';
-import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
+import { DatatrakWebTaskChangeRequest, TaskCommentType } from '@tupaia/types';
 
 export type EditTaskRequest = Request<
   { taskId: string },
-  Record<string, never>,
+  { message: string },
   Partial<DatatrakWebTaskChangeRequest.ReqBody>,
   Record<string, never>
 >;

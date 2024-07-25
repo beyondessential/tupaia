@@ -55,6 +55,17 @@ export class TaskRecord extends DatabaseRecord {
   async systemComments() {
     return this.otherModels.taskComment.find({ task_id: this.id, type: 'system' });
   }
+
+  async addComment(message, userId, type = 'user') {
+    const user = await this.otherModels.user.findById(userId);
+    return this.otherModels.taskComment.create({
+      message,
+      task_id: this.id,
+      user_id: userId,
+      user_name: user.full_name,
+      type,
+    });
+  }
 }
 
 export class TaskModel extends DatabaseModel {

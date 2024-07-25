@@ -3,18 +3,29 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { DatatrakWebTaskRequest, Entity, Survey, Task } from '@tupaia/types';
+import {
+  DatatrakWebTaskRequest,
+  DatatrakWebTasksRequest,
+  Entity,
+  KeysToCamelCase,
+  Survey,
+  Task,
+  TaskStatus,
+} from '@tupaia/types';
 import camelcaseKeys from 'camelcase-keys';
 
-export type TaskT = Omit<Task, 'created_at'> & {
+export type TaskT = Omit<Task, 'created_at' | 'repeat_schedule'> & {
   'entity.name': Entity['name'];
   'entity.country_code': string;
   'survey.code': Survey['code'];
   'survey.name': Survey['name'];
-  task_status: DatatrakWebTaskRequest.ResBody['taskStatus'];
+  task_status: TaskStatus | 'overdue' | 'repeating';
+  repeat_schedule?: Record<string, unknown> | null;
 };
 
-export const formatTaskResponse = (task: TaskT): DatatrakWebTaskRequest.ResBody => {
+type FormattedTask = DatatrakWebTasksRequest.TaskResponse;
+
+export const formatTaskResponse = (task: TaskT): FormattedTask => {
   const {
     entity_id: entityId,
     'entity.name': entityName,
@@ -23,12 +34,12 @@ export const formatTaskResponse = (task: TaskT): DatatrakWebTaskRequest.ResBody 
     survey_id: surveyId,
     'survey.name': surveyName,
     task_status: taskStatus,
+    repeat_schedule: repeatSchedule,
     ...rest
   } = task;
 
   const formattedTask = {
     ...rest,
-    taskStatus,
     entity: {
       id: entityId,
       name: entityName,
@@ -39,7 +50,11 @@ export const formatTaskResponse = (task: TaskT): DatatrakWebTaskRequest.ResBody 
       name: surveyName,
       code: surveyCode,
     },
+    taskStatus,
+    repeatSchedule,
   };
 
-  return camelcaseKeys(formattedTask) as DatatrakWebTaskRequest.ResBody;
+  return camelcaseKeys(formattedTask, {
+    deep: true,
+  });
 };

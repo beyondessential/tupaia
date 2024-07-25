@@ -9,7 +9,7 @@ import { Entity, Survey, Task, TaskStatus } from '../../models';
 export type Params = Record<string, never>;
 
 export type TaskResponse = KeysToCamelCase<
-  Omit<Task, 'entity_id' | 'survey_id' | 'created_at' | 'repeat_schedule' | 'due_date'>
+  Partial<Omit<Task, 'entity_id' | 'survey_id' | 'created_at' | 'repeat_schedule' | 'due_date'>>
 > & {
   assigneeName?: string;
   taskStatus: TaskStatus | 'overdue' | 'repeating';
@@ -23,12 +23,14 @@ export type TaskResponse = KeysToCamelCase<
     id: Entity['id'];
     countryCode: string; // this is not undefined or null so use string explicitly here
   };
-  repeatSchedule: Record<string, unknown> | null;
+  repeatSchedule?: Record<string, unknown> | null;
   dueDate?: Date | null;
 };
 
 export type ResBody = {
-  tasks: TaskResponse[];
+  tasks: (TaskResponse & {
+    commentsCount: number;
+  })[];
   count: number;
   numberOfPages: number;
 };
