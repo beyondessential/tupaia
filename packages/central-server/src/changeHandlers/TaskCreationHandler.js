@@ -9,11 +9,14 @@ const getAnswerWrapper = (config, questions, answers) => {
   const answersByQuestionId = keyBy(answers, 'question_id');
   const questionsByCode = keyBy(questions, 'code');
 
-  return questionKey => {
+  return (questionKey, entityId) => {
     const questionCode = config[questionKey];
 
     if (questionCode in questionsByCode) {
       const question = questionsByCode[questionCode];
+      if (question.type === 'PrimaryEntity') {
+        return entityId;
+      }
       const answer = answersByQuestionId[question?.id];
       return answer?.text;
     }
@@ -26,6 +29,7 @@ const getSurveyCode = async (models, config) => {
   const survey = await models.survey.findOne({ code: surveyCode });
   return survey.id;
 };
+
 export class TaskCreationHandler extends ChangeHandler {
   constructor(models) {
     super(models, 'task-creation-handler');
@@ -70,11 +74,10 @@ export class TaskCreationHandler extends ChangeHandler {
       }
 
       const surveyId = await getSurveyCode(models, taskQuestion.config);
-      console.log('CREATING...', response);
 
       await models.task.create({
         survey_id: surveyId,
-        entity_id: getAnswer('entityId'),
+        entity_id: getAnswer('entityId', response.entity_id),
         assignee_id: getAnswer('assignee'),
         due_date: getAnswer('dueDate'),
         status: 'to_do',
