@@ -19,7 +19,7 @@ export class CreateTaskRoute extends Route<CreateTaskRequest> {
   public async buildResponse() {
     const { models, body, ctx } = this.req;
 
-    const { surveyCode, entityId } = body;
+    const { surveyCode, entityId, comment } = body;
 
     const survey = await models.survey.findOne({ code: surveyCode });
     if (!survey) {

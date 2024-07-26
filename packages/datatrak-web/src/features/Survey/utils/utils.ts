@@ -5,20 +5,27 @@
 import { QuestionType } from '@tupaia/types';
 import { SurveyScreen } from '../../../types';
 
+const validateSurveyComponent = component => {
+  if (component.type === QuestionType.PrimaryEntity && !component.config?.entity?.createNew) {
+    component.validationCriteria = component.validationCriteria ?? {};
+    component.validationCriteria.mandatory = true;
+  }
+  return component;
+};
+
 export const READ_ONLY_QUESTION_TYPES = [
   QuestionType.Condition,
   QuestionType.Arithmetic,
   QuestionType.Instruction,
   QuestionType.CodeGenerator,
 ];
+
 export const getSurveyScreenNumber = (screens, screen) => {
   if (!screen) return null;
   const { surveyScreenComponents, id } = screen;
   const nonInstructionScreens =
-    screens?.filter(screenItem =>
-      screenItem.surveyScreenComponents.some(
-        component => component.type !== QuestionType.Instruction,
-      ),
+    screens?.filter(screen =>
+      screen.surveyScreenComponents.some(component => component.type !== QuestionType.Instruction),
     ) ?? [];
 
   const screenNumber = surveyScreenComponents.some(
@@ -31,7 +38,11 @@ export const getSurveyScreenNumber = (screens, screen) => {
 };
 
 export const getAllSurveyComponents = (surveyScreens?: SurveyScreen[]) => {
-  return surveyScreens?.map(({ surveyScreenComponents }) => surveyScreenComponents)?.flat() ?? [];
+  return (
+    surveyScreens
+      ?.flatMap(({ surveyScreenComponents }) => surveyScreenComponents)
+      .map(validateSurveyComponent) ?? []
+  );
 };
 
 export const getErrorsByScreen = (

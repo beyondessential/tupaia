@@ -11,3 +11,4 @@ export { PageBody, Footer } from '../layout';
 export { JsonEditor, JsonTreeEditor } from './JsonEditor';
 export { SecondaryNavbar } from '../layout/navigation/SecondaryNavbar';
 export { ConfirmDeleteModal } from './ConfirmDeleteModal';
+export { EntityOptionLabel } from './EntityOptionLabel';
