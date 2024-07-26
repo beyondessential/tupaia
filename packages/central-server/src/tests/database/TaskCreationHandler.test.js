@@ -1,16 +1,16 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { TaskCreationHandler } from '../../changeHandlers';
+import { expect } from 'chai';
 import {
   buildAndInsertSurvey,
   buildAndInsertSurveyResponses,
   getTestModels,
   upsertDummyRecord,
-} from '../../testUtilities';
-import { generateId } from '../../utilities';
+  generateId,
+} from '@tupaia/database';
+import { TaskCreationHandler } from '../../changeHandlers/TaskCreationHandler';
 
 const userId = generateId();
 const entityId = generateId();
@@ -138,7 +138,7 @@ describe('TaskCreationHandler', () => {
   const taskCreationHandler = new TaskCreationHandler(models);
   taskCreationHandler.setDebounceTime(50); // short debounce time so tests run more quickly
 
-  beforeAll(async () => {
+  before(async () => {
     await buildEntity(models);
     await buildAndInsertSurvey(models, { id: taskSurveyId, code: taskSurveyCode });
     await upsertDummyRecord(models.user, { id: userId });
@@ -152,18 +152,20 @@ describe('TaskCreationHandler', () => {
     taskCreationHandler.stopListeningForChanges();
   });
 
-  it.each(TEST_DATA)('%s', async (_name, { config, answers = {} }, result) => {
-    const { survey } = await buildTaskCreationSurvey(models, config);
-    const { surveyResponse } = await buildSurveyResponse(models, survey.code, answers);
-    await models.database.waitForAllChangeHandlers();
-    const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
+  TEST_DATA.forEach(([name, { config, answers = {} }, result]) => {
+    it(name, async () => {
+      const { survey } = await buildTaskCreationSurvey(models, config);
+      const { surveyResponse } = await buildSurveyResponse(models, survey.code, answers);
+      await models.database.waitForAllChangeHandlers();
+      const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
 
-    expect(task).toMatchObject({
-      repeat_schedule: null,
-      due_date: null,
-      survey_response_id: surveyResponse.id,
-      status: 'to_do',
-      ...result,
+      expect(task).to.containSubset({
+        repeat_schedule: null,
+        due_date: null,
+        survey_response_id: surveyResponse.id,
+        status: 'to_do',
+        ...result,
+      });
     });
   });
 
@@ -173,6 +175,6 @@ describe('TaskCreationHandler', () => {
     await models.database.waitForAllChangeHandlers();
     const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
 
-    expect(task).toBeNull();
+    expect(task).to.equal(null);
   });
 });

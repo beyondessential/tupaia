@@ -1,9 +1,9 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import keyBy from 'lodash.keyby';
-import { ChangeHandler } from './ChangeHandler';
+import { ChangeHandler } from '@tupaia/database';
 
 const getAnswerWrapper = (config, questions, answers) => {
   const answersByQuestionId = keyBy(answers, 'question_id');
@@ -71,7 +71,7 @@ export class TaskCreationHandler extends ChangeHandler {
 
       const surveyId = await getSurveyCode(models, taskQuestion.config);
 
-      const diditwork = await models.task.create({
+      await models.task.create({
         survey_id: surveyId,
         entity_id: getAnswer('entityId'),
         assignee_id: getAnswer('assignee'),
