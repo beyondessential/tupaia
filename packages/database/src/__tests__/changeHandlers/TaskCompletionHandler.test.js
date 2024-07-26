@@ -99,7 +99,7 @@ describe('TaskCompletionHandler', () => {
       expect(comments[0]).toMatchObject({
         message: 'Completed this task',
         user_id: userId,
-        type: 'system',
+        type: models.taskComment.types.System,
       });
     });
 

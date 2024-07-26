@@ -150,7 +150,7 @@ export class TaskRecord extends DatabaseRecord {
       message,
       type,
       user_id: userId,
-      user_name: user.full_name,
+      user_name: user?.full_name ?? null,
     });
   }
 
