@@ -12,15 +12,20 @@ const getAnswerWrapper = (config, questions, answers) => {
   return (questionKey, entityId) => {
     const questionCode = config[questionKey];
 
-    if (questionCode in questionsByCode) {
-      const question = questionsByCode[questionCode];
-      if (question.type === 'PrimaryEntity') {
-        return entityId;
-      }
-      const answer = answersByQuestionId[question?.id];
-      return answer?.text;
+    // Return the string value to be used as the field for the task
+    if (!questionCode in questionsByCode) {
+      return questionCode;
     }
-    return questionCode;
+
+    const question = questionsByCode[questionCode];
+
+    // PrimaryEntity question is a special case, where the entity_id is saved against the survey
+    // response directly
+    if (question.type === 'PrimaryEntity') {
+      return entityId;
+    }
+    const answer = answersByQuestionId[question?.id];
+    return answer?.text;
   };
 };
 

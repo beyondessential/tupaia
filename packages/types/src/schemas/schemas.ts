@@ -40660,8 +40660,8 @@ export const TaskQuestionConfigSchema = {
 				}
 			]
 		},
-		"entityCode": {
-			"description": "If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity code as the task entity.",
+		"entityId": {
+			"description": "If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity id as the task entity.",
 			"anyOf": [
 				{
 					"type": "object",
@@ -40729,7 +40729,7 @@ export const TaskQuestionConfigSchema = {
 	"required": [
 		"assignee",
 		"dueDate",
-		"entityCode",
+		"entityId",
 		"shouldCreateTask",
 		"surveyCode"
 	]
@@ -41345,8 +41345,8 @@ export const SurveyScreenComponentConfigSchema = {
 						}
 					]
 				},
-				"entityCode": {
-					"description": "If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity code as the task entity.",
+				"entityId": {
+					"description": "If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity id as the task entity.",
 					"anyOf": [
 						{
 							"type": "object",
@@ -41414,7 +41414,7 @@ export const SurveyScreenComponentConfigSchema = {
 			"required": [
 				"assignee",
 				"dueDate",
-				"entityCode",
+				"entityId",
 				"shouldCreateTask",
 				"surveyCode"
 			]
@@ -42216,29 +42216,6 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -42283,29 +42260,6 @@ export const AnalyticsCreateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -42350,29 +42304,6 @@ export const AnalyticsUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
