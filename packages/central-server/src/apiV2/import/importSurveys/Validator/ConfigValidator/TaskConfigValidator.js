@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { hasContent, ValidationError } from '@tupaia/utils';
+import { ValidationError } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 import { convertCellToJson } from '../../utilities';
 
@@ -16,62 +16,46 @@ export class TaskConfigValidator extends JsonFieldValidator {
   static fieldName = 'config';
 
   getFieldValidators(rowIndex) {
+    const pointsToPreceedingMandatoryQuestion =
+      this.constructReferencesPreceedingMandatoryQuestion(rowIndex);
+
     return {
-      entityCode: [
-        hasContent,
-        this.constructIsExistingRecordOrPointsToPreceedingMandatoryQuestion(
-          rowIndex,
-          'entityCode',
-          'entity',
-        ),
-      ],
-      surveyCode: [
-        hasContent,
-        this.constructReferencesExistingRecord('survey', 'code', 'surveyCode'),
-      ],
+      shouldCreateTask: [pointsToPreceedingMandatoryQuestion],
+      entityCode: [pointsToPreceedingMandatoryQuestion],
+      surveyCode: [this.constructReferencesExistingRecord('survey', 'code', 'surveyCode')],
+      dueDate: [pointsToPreceedingMandatoryQuestion],
+      assignee: [pointsToPreceedingMandatoryQuestion],
     };
   }
 
-  constructReferencesExistingRecord = (recordType, field, configFieldName) => {
+  constructReferencesExistingRecord = (recordType, recordField, configField) => {
     return value => {
-      const isValidRecord = this.models[recordType].findOne({ [field]: value });
+      const isValidRecord = this.models[recordType].findOne({ [recordField]: value });
       if (!isValidRecord) {
-        throw new ValidationError(`${configFieldName} should reference a valid ${recordType}`);
+        throw new ValidationError(`${configField} should reference a valid ${recordType}`);
       }
       return true;
     };
   };
 
-  constructIsExistingRecordOrPointsToPreceedingMandatoryQuestion = (
-    rowIndex,
-    fieldName,
-    recordType,
-  ) => {
+  constructReferencesPreceedingMandatoryQuestion = rowIndex => {
     return value => {
-      const questionCode = value;
-      const question = this.findOtherQuestion(questionCode, rowIndex, this.questions.length);
-
+      const question = this.findOtherQuestion(value, rowIndex, rowIndex);
       if (!question) {
-        const isValidRecord = this.models[recordType].findOne({ name: value });
-        if (isValidRecord) {
-          return true;
-        }
-        throw new ValidationError(
-          `${fieldName} should reference a valid ${recordType} or reference a preceeding question in the survey`,
-        );
+        throw new ValidationError('Referenced question does not exist');
       }
 
       if (!question.validationCriteria) {
-        throw new ValidationError(`Referenced question should be mandatory`);
+        throw new ValidationError('Referenced question should be mandatory');
       }
 
       const { validationCriteria } = question;
+
       const parsedValidationCriteria = convertCellToJson(validationCriteria);
 
       if (!parsedValidationCriteria.mandatory || parsedValidationCriteria.mandatory !== 'true') {
-        throw new ValidationError(`Referenced question should be mandatory`);
+        throw new ValidationError('Referenced question should be mandatory');
       }
-
       return true;
     };
   };
