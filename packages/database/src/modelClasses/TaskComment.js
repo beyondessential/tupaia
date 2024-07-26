@@ -15,4 +15,9 @@ export class TaskCommentModel extends DatabaseModel {
   get DatabaseRecordClass() {
     return TaskCommentRecord;
   }
+
+  types = {
+    System: 'system',
+    User: 'user',
+  };
 }
