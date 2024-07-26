@@ -22,17 +22,19 @@ export class TaskConfigValidator extends JsonFieldValidator {
     return {
       shouldCreateTask: [pointsToPreceedingMandatoryQuestion],
       entityCode: [pointsToPreceedingMandatoryQuestion],
-      surveyCode: [this.constructReferencesExistingRecord('survey', 'code', 'surveyCode')],
+      surveyCode: [this.constructReferencesExistingSurvey],
       dueDate: [pointsToPreceedingMandatoryQuestion],
       assignee: [pointsToPreceedingMandatoryQuestion],
     };
   }
 
-  constructReferencesExistingRecord = (recordType, recordField, configField) => {
-    return value => {
-      const isValidRecord = this.models[recordType].findOne({ [recordField]: value });
+  constructReferencesExistingSurvey = () => {
+    return async value => {
+      // TODO: why isn't this reaching here?
+      const isValidRecord = await this.models.survey.findOne({ code: value });
+
       if (!isValidRecord) {
-        throw new ValidationError(`${configField} should reference a valid ${recordType}`);
+        throw new ValidationError('Referenced survey does not exist');
       }
       return true;
     };

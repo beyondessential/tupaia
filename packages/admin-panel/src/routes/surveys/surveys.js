@@ -490,6 +490,62 @@ const QUESTION_COLUMNS = [
                   },
                 ],
               },
+              {
+                label: 'Task',
+                fieldName: 'task',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Should create task',
+                    fieldName: 'shouldCreateTask',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
+                    label: 'Entity code',
+                    fieldName: 'entityCode',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+
+                  {
+                    label: 'Survey code',
+                    fieldName: 'surveyCode',
+                    optionsEndpoint: 'surveys',
+                    optionLabelKey: 'name',
+                    optionValueKey: 'code',
+                    labelTooltip: 'Select the survey this task should be assigned for',
+                  },
+                  {
+                    label: 'Due date',
+                    fieldName: 'dueDate',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+
+                  {
+                    label: 'Assignee',
+                    fieldName: 'assignee',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                ],
+              },
+              {
+                label: 'User',
+                fieldName: 'user',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Permission group name',
+                    fieldName: 'permissionGroup',
+                    optionsEndpoint: 'permissionGroups',
+                    optionLabelKey: 'name',
+                    optionValueKey: 'name',
+                    labelTooltip: 'Select the permission group the user list should be filtered by',
+                  },
+                ],
+              },
             ],
           },
         },
