@@ -65,11 +65,12 @@ export class TaskCreationHandler extends ChangeHandler {
       const answers = await sr.getAnswers();
       const getAnswer = getAnswerWrapper(taskQuestion.config, questions, answers);
 
-      if (getAnswer('shouldCreateTask') === false) {
+      if (getAnswer('shouldCreateTask') === 'false') {
         continue;
       }
 
       const surveyId = await getSurveyCode(models, taskQuestion.config);
+      console.log('CREATING...', response);
 
       await models.task.create({
         survey_id: surveyId,

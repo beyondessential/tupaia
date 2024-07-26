@@ -6,11 +6,11 @@ import { expect } from 'chai';
 import {
   buildAndInsertSurvey,
   buildAndInsertSurveyResponses,
-  getTestModels,
   upsertDummyRecord,
   generateId,
 } from '@tupaia/database';
-import { TaskCreationHandler } from '../../changeHandlers/TaskCreationHandler';
+import { getModels } from '../testUtilities';
+import { TaskCreationHandler } from '../../changeHandlers';
 
 const userId = generateId();
 const entityId = generateId();
@@ -134,7 +134,7 @@ const TEST_DATA = [
 ];
 
 describe('TaskCreationHandler', () => {
-  const models = getTestModels();
+  const models = getModels();
   const taskCreationHandler = new TaskCreationHandler(models);
   taskCreationHandler.setDebounceTime(50); // short debounce time so tests run more quickly
 
