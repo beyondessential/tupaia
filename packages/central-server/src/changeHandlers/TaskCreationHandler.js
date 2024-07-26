@@ -71,39 +71,35 @@ export class TaskCreationHandler extends ChangeHandler {
   }
 
   async handleChanges(models, changedResponses) {
-    try {
-      // if there are no changed responses, we don't need to do anything
-      if (changedResponses.length === 0) return;
+    // if there are no changed responses, we don't need to do anything
+    if (changedResponses.length === 0) return;
 
-      for (const response of changedResponses) {
-        const sr = await models.surveyResponse.findById(response.id);
-        const questions = await getQuestions(models, sr.survey_id);
+    for (const response of changedResponses) {
+      const sr = await models.surveyResponse.findById(response.id);
+      const questions = await getQuestions(models, sr.survey_id);
 
-        const taskQuestion = questions.find(question => question.type === 'Task');
-        if (!taskQuestion) {
-          continue;
-        }
-
-        const answers = await sr.getAnswers();
-        const getAnswer = getAnswerWrapper(taskQuestion.config, questions, answers);
-
-        if (getAnswer('shouldCreateTask') === 'false') {
-          continue;
-        }
-
-        const surveyId = await getSurveyCode(models, taskQuestion.config);
-
-        await models.task.create({
-          survey_id: surveyId,
-          entity_id: getAnswer('entityId', response.entity_id),
-          assignee_id: getAnswer('assignee'),
-          due_date: getAnswer('dueDate'),
-          status: 'to_do',
-          survey_response_id: response.id,
-        });
+      const taskQuestion = questions.find(question => question.type === 'Task');
+      if (!taskQuestion) {
+        continue;
       }
-    } catch (error) {
-      console.error('Error in TaskCreationHandler:', error);
+
+      const answers = await sr.getAnswers();
+      const getAnswer = getAnswerWrapper(taskQuestion.config, questions, answers);
+
+      if (getAnswer('shouldCreateTask') === 'false') {
+        continue;
+      }
+
+      const surveyId = await getSurveyCode(models, taskQuestion.config);
+
+      await models.task.create({
+        survey_id: surveyId,
+        entity_id: getAnswer('entityId', response.entity_id),
+        assignee_id: getAnswer('assignee'),
+        due_date: getAnswer('dueDate'),
+        status: 'to_do',
+        survey_response_id: response.id,
+      });
     }
   }
 }
