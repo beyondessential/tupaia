@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import keyBy from 'lodash.keyby';
 import { ChangeHandler } from '@tupaia/database';
@@ -12,19 +12,18 @@ const getAnswerWrapper = (config, questions, answers) => {
   return (questionKey, entityId) => {
     const questionCode = config[questionKey];
 
-    // Return the string value to be used as the field for the task
-    if (!questionCode in questionsByCode) {
+    // Return the raw value to be used as the field for the task
+    if (!(questionCode in questionsByCode)) {
       return questionCode;
     }
 
     const question = questionsByCode[questionCode];
-
     // PrimaryEntity question is a special case, where the entity_id is saved against the survey
     // response directly
     if (question.type === 'PrimaryEntity') {
       return entityId;
     }
-    const answer = answersByQuestionId[question?.id];
+    const answer = answersByQuestionId[question.id];
     return answer?.text;
   };
 };
@@ -33,6 +32,19 @@ const getSurveyCode = async (models, config) => {
   const surveyCode = config.surveyCode;
   const survey = await models.survey.findOne({ code: surveyCode });
   return survey.id;
+};
+
+const getQuestions = (models, surveyId) => {
+  return models.database.executeSql(
+    `
+        SELECT q.*, ssc.config::json as config
+        FROM question q
+        JOIN survey_screen_component ssc ON ssc.question_id = q.id
+        JOIN survey_screen ss ON ss.id = ssc.screen_id
+        WHERE ss.survey_id = ?;
+      `,
+    [surveyId],
+  );
 };
 
 export class TaskCreationHandler extends ChangeHandler {
@@ -59,35 +71,39 @@ export class TaskCreationHandler extends ChangeHandler {
   }
 
   async handleChanges(models, changedResponses) {
-    // if there are no changed responses, we don't need to do anything
-    if (changedResponses.length === 0) return;
+    try {
+      // if there are no changed responses, we don't need to do anything
+      if (changedResponses.length === 0) return;
 
-    for (const response of changedResponses) {
-      const sr = await models.surveyResponse.findById(response.id);
-      const questions = await sr.getQuestions();
+      for (const response of changedResponses) {
+        const sr = await models.surveyResponse.findById(response.id);
+        const questions = await getQuestions(models, sr.survey_id);
 
-      const taskQuestion = questions.find(question => question.type === 'Task');
-      if (!taskQuestion) {
-        continue;
+        const taskQuestion = questions.find(question => question.type === 'Task');
+        if (!taskQuestion) {
+          continue;
+        }
+
+        const answers = await sr.getAnswers();
+        const getAnswer = getAnswerWrapper(taskQuestion.config, questions, answers);
+
+        if (getAnswer('shouldCreateTask') === 'false') {
+          continue;
+        }
+
+        const surveyId = await getSurveyCode(models, taskQuestion.config);
+
+        await models.task.create({
+          survey_id: surveyId,
+          entity_id: getAnswer('entityId', response.entity_id),
+          assignee_id: getAnswer('assignee'),
+          due_date: getAnswer('dueDate'),
+          status: 'to_do',
+          survey_response_id: response.id,
+        });
       }
-
-      const answers = await sr.getAnswers();
-      const getAnswer = getAnswerWrapper(taskQuestion.config, questions, answers);
-
-      if (getAnswer('shouldCreateTask') === 'false') {
-        continue;
-      }
-
-      const surveyId = await getSurveyCode(models, taskQuestion.config);
-
-      await models.task.create({
-        survey_id: surveyId,
-        entity_id: getAnswer('entityId', response.entity_id),
-        assignee_id: getAnswer('assignee'),
-        due_date: getAnswer('dueDate'),
-        status: 'to_do',
-        survey_response_id: response.id,
-      });
+    } catch (error) {
+      console.error('Error in TaskCreationHandler:', error);
     }
   }
 }
