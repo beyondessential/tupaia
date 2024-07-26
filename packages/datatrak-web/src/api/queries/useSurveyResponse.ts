@@ -49,7 +49,7 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
           );
           if (!question) return acc;
           if (question.type === QuestionType.File && value) {
-            return { ...acc, [key]: { name: value, value: null } };
+            return { ...acc, [key]: { name: value, value } };
           }
 
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
