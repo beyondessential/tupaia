@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import keyBy from 'lodash.keyby';
-import { ChangeHandler } from '@tupaia/database';
+import { ChangeHandler } from './ChangeHandler';
 
 const getAnswerWrapper = (config, questions, answers) => {
   const answersByQuestionId = keyBy(answers, 'question_id');
@@ -27,7 +27,6 @@ const getAnswerWrapper = (config, questions, answers) => {
     return answer?.text;
   };
 };
-
 const getSurveyCode = async (models, config) => {
   const surveyCode = config.surveyCode;
   const survey = await models.survey.findOne({ code: surveyCode });
@@ -76,7 +75,7 @@ export class TaskCreationHandler extends ChangeHandler {
 
     for (const response of changedResponses) {
       const sr = await models.surveyResponse.findById(response.id);
-      const questions = await getQuestions(models, sr.survey_id);
+      const questions = await getQuestions(models, response.survey_id);
 
       const taskQuestion = questions.find(question => question.type === 'Task');
       if (!taskQuestion) {
@@ -86,7 +85,7 @@ export class TaskCreationHandler extends ChangeHandler {
       const answers = await sr.getAnswers();
       const getAnswer = getAnswerWrapper(taskQuestion.config, questions, answers);
 
-      if (getAnswer('shouldCreateTask') === 'false') {
+      if (getAnswer('shouldCreateTask') === false) {
         continue;
       }
 

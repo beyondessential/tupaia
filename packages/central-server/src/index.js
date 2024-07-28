@@ -11,11 +11,11 @@ import {
   ModelRegistry,
   SurveyResponseOutdater,
   TaskCompletionHandler,
+  TaskCreationHandler,
   TupaiaDatabase,
   getDbMigrator,
 } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
-import { TaskCreationHandler } from './changeHandlers';
 import { MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';

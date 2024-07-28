@@ -2,23 +2,24 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { expect } from 'chai';
+
+import { TaskCreationHandler } from '../../changeHandlers';
 import {
   buildAndInsertSurvey,
   buildAndInsertSurveyResponses,
+  getTestModels,
   upsertDummyRecord,
-  generateId,
-} from '@tupaia/database';
-import { getModels } from '../testUtilities';
-import { TaskCreationHandler } from '../../changeHandlers';
+} from '../../testUtilities';
+import { generateId } from '../../utilities';
 
 const userId = generateId();
 const entityId = generateId();
+const entityCode = 'TO';
 const taskSurveyId = generateId();
 const taskSurveyCode = 'TEST_TASK_SURVEY';
 
 const buildEntity = async (models, data) => {
-  return upsertDummyRecord(models.entity, { id: entityId, ...data });
+  return upsertDummyRecord(models.entity, { id: entityId, code: entityCode, ...data });
 };
 const buildTaskCreationSurvey = async (models, config) => {
   const survey = {
@@ -57,7 +58,7 @@ const buildTaskCreationSurvey = async (models, config) => {
 const buildSurveyResponse = async (models, surveyCode, answers) => {
   const surveyResponse = {
     date: '2024-07-20',
-    entityCode: 'TO',
+    entityCode,
     surveyCode,
     answers,
   };
@@ -134,12 +135,12 @@ const TEST_DATA = [
 ];
 
 describe('TaskCreationHandler', () => {
-  const models = getModels();
+  const models = getTestModels();
   const taskCreationHandler = new TaskCreationHandler(models);
   taskCreationHandler.setDebounceTime(50); // short debounce time so tests run more quickly
 
-  before(async () => {
-    await buildEntity(models);
+  beforeAll(async () => {
+    const newEntity = await buildEntity(models);
     await buildAndInsertSurvey(models, { id: taskSurveyId, code: taskSurveyCode });
     await upsertDummyRecord(models.user, { id: userId });
   });
@@ -152,20 +153,18 @@ describe('TaskCreationHandler', () => {
     taskCreationHandler.stopListeningForChanges();
   });
 
-  TEST_DATA.forEach(([name, { config, answers = {} }, result]) => {
-    it(name, async () => {
-      const { survey } = await buildTaskCreationSurvey(models, config);
-      const { surveyResponse } = await buildSurveyResponse(models, survey.code, answers);
-      await models.database.waitForAllChangeHandlers();
-      const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
+  it.each(TEST_DATA)('%s', async (_name, { config, answers = {} }, result) => {
+    const { survey } = await buildTaskCreationSurvey(models, config);
+    const { surveyResponse } = await buildSurveyResponse(models, survey.code, answers);
+    await models.database.waitForAllChangeHandlers();
+    const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
 
-      expect(task).to.containSubset({
-        repeat_schedule: null,
-        due_date: null,
-        survey_response_id: surveyResponse.id,
-        status: 'to_do',
-        ...result,
-      });
+    expect(task).toMatchObject({
+      repeat_schedule: null,
+      due_date: null,
+      survey_response_id: surveyResponse.id,
+      status: 'to_do',
+      ...result,
     });
   });
 
@@ -175,6 +174,6 @@ describe('TaskCreationHandler', () => {
     await models.database.waitForAllChangeHandlers();
     const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
 
-    expect(task).to.equal(null);
+    expect(task).toBeNull();
   });
 });
