@@ -75,7 +75,7 @@ export const TasksSection = () => {
   } = useTasks({ projectId, filters, pageSize: 5 });
   const tasks = data.tasks;
   const showTasksDashboardLink = data.numberOfPages > 1;
-  const hasTasks = isSuccess && tasks.length > 0;
+  const hasTasks = isSuccess && tasks?.length > 0;
 
   let Contents: React.ReactNode;
   if (isLoading) {
