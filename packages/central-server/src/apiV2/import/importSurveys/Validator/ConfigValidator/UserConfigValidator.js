@@ -46,6 +46,9 @@ export class UserConfigValidator extends JsonFieldValidator {
         throw new ValidationError('Referenced survey does not exist');
       }
 
+      // BES Admin has access to all surveys
+      if (value === 'BES Admin') return true;
+
       const permissionGroup = await this.models.permissionGroup.findOne({ name: value });
 
       const permissionGroupWithAncestors = await permissionGroup.getAncestors();
