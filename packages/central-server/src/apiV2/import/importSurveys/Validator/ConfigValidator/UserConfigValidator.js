@@ -24,6 +24,9 @@ export class UserConfigValidator extends JsonFieldValidator {
     };
   }
 
+  /**
+   * Checks if the permission group specified has access to the survey specified in the task question, if it exists
+   */
   permissionGroupIsValidForTaskQuestion = () => {
     return async value => {
       const taskQuestion = this.questions.find(({ type }) => type === 'Task');
