@@ -17,7 +17,8 @@ export class UserConfigValidator extends JsonFieldValidator {
 
   getFieldValidators(rowIndex) {
     const isPermissionGroup = this.constructIsPermissionGroup(rowIndex);
-    const permissionGroupIsValidForTaskQuestion = this.permissionGroupIsValidForTaskQuestion();
+    const permissionGroupIsValidForTaskQuestion =
+      this.permissionGroupIsValidForTaskQuestion(rowIndex);
 
     return {
       permissionGroup: [hasContent, isPermissionGroup, permissionGroupIsValidForTaskQuestion],
@@ -27,9 +28,14 @@ export class UserConfigValidator extends JsonFieldValidator {
   /**
    * Checks if the permission group specified has access to the survey specified in the task question, if it exists
    */
-  permissionGroupIsValidForTaskQuestion = () => {
+  permissionGroupIsValidForTaskQuestion = rowIndex => {
     return async value => {
-      const taskQuestion = this.questions.find(({ type }) => type === 'Task');
+      const currentQuestion = this.getQuestion(rowIndex);
+      const taskQuestion = this.questions.find(({ type, config }) => {
+        if (type !== 'Task') return false;
+        const parsedConfig = convertCellToJson(config);
+        return parsedConfig.assignee === currentQuestion.code;
+      });
 
       // if there is no task question, return true because this validation is not relevant
       if (!taskQuestion) return true;
