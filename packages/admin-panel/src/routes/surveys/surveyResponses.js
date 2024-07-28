@@ -8,6 +8,7 @@ import moment from 'moment';
 import { ApprovalStatus } from '@tupaia/types';
 import { SurveyResponsesExportModal } from '../../importExport';
 import { getPluralForm } from '../../pages/resources/resourceName';
+import { BooleanSelectFilter } from '../../table/columnTypes/columnFilters';
 
 const RESOURCE_NAME = { singular: 'survey response' };
 
@@ -61,6 +62,13 @@ const approvalStatus = {
   source: 'approval_status',
 };
 
+const outdated = {
+  Header: 'Outdated',
+  source: 'outdated',
+  Filter: BooleanSelectFilter,
+  Cell: ({ value }) => (value ? 'Yes' : 'No'),
+};
+
 const entityName = {
   Header: 'Entity',
   source: 'entity.name',
@@ -81,6 +89,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   date,
   dateOfData,
   approvalStatus,
+  outdated,
   {
     Header: 'Export',
     type: 'export',
