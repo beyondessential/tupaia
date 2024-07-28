@@ -16,38 +16,52 @@ export class UserConfigValidator extends JsonFieldValidator {
   static fieldName = 'config';
 
   getFieldValidators(rowIndex) {
-    const isPermissionGroupOrPointsToMandatoryQuestion =
-      this.constructIsPermissionGroupOrPointsToPreceedingMandatoryQuestion(rowIndex);
+    const isPermissionGroup = this.constructIsPermissionGroup(rowIndex);
+    const permissionGroupIsValidForTaskQuestion = this.permissionGroupIsValidForTaskQuestion();
 
     return {
-      permissionGroup: [hasContent, isPermissionGroupOrPointsToMandatoryQuestion],
+      permissionGroup: [hasContent, isPermissionGroup, permissionGroupIsValidForTaskQuestion],
     };
   }
 
-  constructIsPermissionGroupOrPointsToPreceedingMandatoryQuestion = rowIndex => {
-    return value => {
-      const questionCode = value;
-      const question = this.findOtherQuestion(questionCode, rowIndex, this.questions.length);
+  permissionGroupIsValidForTaskQuestion = () => {
+    return async value => {
+      const taskQuestion = this.questions.find(({ type }) => type === 'Task');
 
-      if (!question) {
-        const isValidPermissionGroup = this.models.permissionGroup.findOne({ name: value });
-        if (isValidPermissionGroup) {
-          return true;
-        }
+      // if there is no task question, return true because this validation is not relevant
+      if (!taskQuestion) return true;
+
+      const { config } = taskQuestion;
+      if (!config) {
+        throw new ValidationError('Task question should have config');
+      }
+      const parsedConfig = convertCellToJson(config);
+      const { surveyCode } = parsedConfig;
+      const survey = await this.models.survey.findOne({ code: surveyCode });
+
+      if (!survey) {
+        throw new ValidationError('Referenced survey does not exist');
+      }
+
+      const permissionGroup = await this.models.permissionGroup.findOne({ name: value });
+
+      const permissionGroupWithAncestors = await permissionGroup.getAncestors();
+
+      const { permission_group_id: permissionGroupId } = survey;
+
+      if (!permissionGroupWithAncestors.some(({ id }) => id === permissionGroupId)) {
         throw new ValidationError(
-          `Permission group should be a valid permission group or reference a preceeding question in the survey`,
+          'Permission group does not have access to the referenced survey in the task question',
         );
       }
+    };
+  };
 
-      if (!question.validationCriteria) {
-        throw new ValidationError(`Referenced question should be mandatory`);
-      }
-
-      const { validationCriteria } = question;
-      const parsedValidationCriteria = convertCellToJson(validationCriteria);
-
-      if (!parsedValidationCriteria.mandatory || parsedValidationCriteria.mandatory !== 'true') {
-        throw new ValidationError(`Referenced question should be mandatory`);
+  constructIsPermissionGroup = () => {
+    return async value => {
+      const permissionGroup = await this.models.permissionGroup.findOne({ name: value });
+      if (!permissionGroup) {
+        throw new ValidationError('Referenced permission group does not exist');
       }
 
       return true;

@@ -18,11 +18,12 @@ export class TaskConfigValidator extends JsonFieldValidator {
   getFieldValidators(rowIndex) {
     const pointsToPreceedingMandatoryQuestion =
       this.constructReferencesPreceedingMandatoryQuestion(rowIndex);
+    const referencesExistingSurvey = this.constructReferencesExistingSurvey();
 
     return {
       shouldCreateTask: [pointsToPreceedingMandatoryQuestion],
       entityCode: [pointsToPreceedingMandatoryQuestion],
-      surveyCode: [this.constructReferencesExistingSurvey],
+      surveyCode: [referencesExistingSurvey],
       dueDate: [pointsToPreceedingMandatoryQuestion],
       assignee: [pointsToPreceedingMandatoryQuestion],
     };
@@ -30,7 +31,6 @@ export class TaskConfigValidator extends JsonFieldValidator {
 
   constructReferencesExistingSurvey = () => {
     return async value => {
-      // TODO: why isn't this reaching here?
       const isValidRecord = await this.models.survey.findOne({ code: value });
 
       if (!isValidRecord) {
