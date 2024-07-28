@@ -254,6 +254,11 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
         }),
       );
 
+      // If the question is a task, set it to hidden always
+      if (type === ANSWER_TYPES.TASK && !processedVisibilityCriteria.hidden) {
+        processedVisibilityCriteria.hidden = true;
+      }
+
       currentSurveyScreenComponent = await models.surveyScreenComponent.create({
         screen_id: currentScreen.id,
         question_id: question.id,
