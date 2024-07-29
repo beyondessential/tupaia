@@ -172,16 +172,20 @@ export async function importSurveyResponses(req, res) {
         const entityName = getInfoForColumn(sheet, columnIndex, 'Entity Name');
         const entity = await models.entity.findOne({ code: entityCode });
 
-        if (entityCode) {
-          if (entity?.name !== entityName) {
-            throw new Error("Entity code and name doesn't match");
+        if (entityCode && entityName) {
+          if (entity) {
+            if (entity?.name !== entityName) {
+              throw new Error(
+                `Entity code and name don't match: ${entity?.name} and ${entityName}`,
+              );
+            }
+          } else {
+            throw new Error(`Entity code does match any existing entity: ${entityCode}`);
           }
-        } else {
-          throw new Error('Entity code does match any existing entity');
         }
 
         if (IMPORT_BEHAVIOURS[importMode].shouldGenerateIds) {
-          surveyResponse[columnIndex] = [{ surveyResponseId: generateId(), entityId: entity?.id }];
+          surveyResponse[columnIndex] = { surveyResponseId: generateId(), entityId: entity?.id };
           isGeneratedIdByColumnIndex[columnIndex] = true;
         } else if (IMPORT_BEHAVIOURS[importMode].shouldUpdateExistingResponses) {
           const { surveyResponseId } = await getExistingResponseData(columnIndex);
@@ -206,6 +210,7 @@ export async function importSurveyResponses(req, res) {
           };
         }
       }
+
       updatePersistor.setupColumnsForSheet(tabName, surveyResponse);
 
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
@@ -213,7 +218,7 @@ export async function importSurveyResponses(req, res) {
         validateColumnHeader(columnHeader, columnIndex, tabName);
 
         if (isGeneratedIdByColumnIndex[columnIndex]) {
-          const surveyResponseId = surveyResponse[columnIndex];
+          const surveyResponseId = surveyResponse[columnIndex]?.surveyResponseId;
           const surveyResponseDetails = await constructNewSurveyResponseDetails(
             models,
             sheet,
@@ -226,6 +231,7 @@ export async function importSurveyResponses(req, res) {
 
       const infoValidator = new ObjectValidator(constructInfoColumnValidators(models));
       const ignoredRowTypes = [ANSWER_TYPES.INSTRUCTION, ANSWER_TYPES.PRIMARY_ENTITY];
+
       for (let rowIndex = 1; rowIndex <= maxRowIndex; rowIndex++) {
         const excelRowNumber = rowIndex + 1; // +1 to make up for header
         const rowType = getInfoForRow(sheet, rowIndex, 'Type');

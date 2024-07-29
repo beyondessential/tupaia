@@ -24,7 +24,13 @@ export const testValidation = async () => {
     await buildAndInsertSurveys(models, [VALIDATION_SURVEY]);
     await findOrCreateDummyCountryEntity(models, { code: 'DL', name: 'Demo Land' });
     await findOrCreateRecords(models, {
-      entity: ['DL_7', 'DL_9', 'DL_10', 'DL_11'].map(code => ({ code, country_code: 'DL' })),
+      entity: [
+        { code: 'DL_1', name: 'Port Douglas' },
+        { code: 'DL_7', name: 'Lake Charm' },
+        { code: 'DL_9', name: 'Thornbury' },
+        { code: 'DL_10', name: 'Traralgon' },
+        { code: 'DL_11', name: 'National Medical Warehouse' },
+      ].map(entity => ({ code: entity.code, country_code: 'DL', name: entity.name })),
     });
   });
 
