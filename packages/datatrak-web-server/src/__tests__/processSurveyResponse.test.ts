@@ -66,6 +66,7 @@ describe('processSurveyResponse', () => {
     entities_upserted: [],
     qr_codes_to_create: [],
     recent_entities: [],
+    should_create_task: false,
   };
 
   it('should process the survey response with standard question types', async () => {
