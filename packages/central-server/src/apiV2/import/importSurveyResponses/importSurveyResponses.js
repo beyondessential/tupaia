@@ -148,7 +148,7 @@ export async function importSurveyResponses(req, res) {
       // extract response ids and set up update batcher
       const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
       const minSurveyResponseIndex = INFO_COLUMN_HEADERS.length;
-      const surveyResponse = [];
+      const surveyResponses = [];
       const isGeneratedIdByColumnIndex = [];
       const existingResponseDataByColumnIndex = [];
 
@@ -185,39 +185,39 @@ export async function importSurveyResponses(req, res) {
         }
 
         if (IMPORT_BEHAVIOURS[importMode].shouldGenerateIds) {
-          surveyResponse[columnIndex] = { surveyResponseId: generateId(), entityId: entity?.id };
+          surveyResponses[columnIndex] = { surveyResponseId: generateId(), entityId: entity?.id };
           isGeneratedIdByColumnIndex[columnIndex] = true;
         } else if (IMPORT_BEHAVIOURS[importMode].shouldUpdateExistingResponses) {
           const { surveyResponseId } = await getExistingResponseData(columnIndex);
 
           if (surveyResponseId) {
-            surveyResponse[columnIndex] = {
+            surveyResponses[columnIndex] = {
               surveyResponseId: surveyResponseId,
               entityId: entity?.id,
             };
           } else {
             // A matching existing response was not found, generate a new id
-            surveyResponse[columnIndex] = {
+            surveyResponses[columnIndex] = {
               surveyResponseId: generateId(),
               entityId: entity?.id,
             };
             isGeneratedIdByColumnIndex[columnIndex] = true;
           }
         } else {
-          surveyResponse[columnIndex] = {
+          surveyResponses[columnIndex] = {
             surveyResponseId: columnHeader,
             entityId: entity?.id,
           };
         }
       }
-      updatePersistor.setupColumnsForSheet(tabName, surveyResponse);
+      updatePersistor.setupColumnsForSheet(tabName, surveyResponses);
 
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
         validateColumnHeader(columnHeader, columnIndex, tabName);
 
         if (isGeneratedIdByColumnIndex[columnIndex]) {
-          const surveyResponseId = surveyResponse[columnIndex]?.surveyResponseId;
+          const surveyResponseId = surveyResponses[columnIndex]?.surveyResponseId;
           const surveyResponseDetails = await constructNewSurveyResponseDetails(
             models,
             sheet,
@@ -283,7 +283,7 @@ export async function importSurveyResponses(req, res) {
         ) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
           const importMode = getImportMode(columnHeader);
-          const surveyResponseId = surveyResponse[columnIndex].surveyResponseId;
+          const surveyResponseId = surveyResponses[columnIndex].surveyResponseId;
           const answerValue = getCellContents(sheet, columnIndex, rowIndex);
           const transformedAnswerValue = answerTransformer
             ? await answerTransformer(models, answerValue)
