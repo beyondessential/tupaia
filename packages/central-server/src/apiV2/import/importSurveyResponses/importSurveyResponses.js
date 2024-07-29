@@ -241,7 +241,6 @@ export async function importSurveyResponses(req, res) {
         let answerValidator;
         let answerTransformer;
         const questionId = getInfoForRow(sheet, rowIndex, 'Id');
-
         if (questionId !== 'N/A') {
           if (questionIds.includes(questionId)) {
             throw new ImportValidationError(
