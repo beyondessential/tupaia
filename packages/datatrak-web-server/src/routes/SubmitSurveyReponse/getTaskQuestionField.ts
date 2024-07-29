@@ -2,11 +2,12 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { DatatrakWebSubmitSurveyResponseRequest, SurveyScreenComponentConfig } from '@tupaia/types';
+import { DatatrakWebSubmitSurveyResponseRequest, TaskQuestionConfig } from '@tupaia/types';
 type SurveyRequestT = DatatrakWebSubmitSurveyResponseRequest.ReqBody;
+type ConfigT = Omit<TaskQuestionConfig, 'surveyCode'>;
 
 export const getShouldCreateTask = (
-  config: SurveyScreenComponentConfig,
+  config: { task: ConfigT },
   questions: SurveyRequestT['questions'],
   answers: SurveyRequestT['answers'],
 ) => {
@@ -15,12 +16,12 @@ export const getShouldCreateTask = (
 };
 
 export const getTaskQuestionField = (
-  fieldName: string,
-  config: SurveyScreenComponentConfig,
+  fieldName: keyof ConfigT,
+  config: { task: ConfigT },
   questions: SurveyRequestT['questions'],
   answers: SurveyRequestT['answers'],
 ) => {
-  // @ts-ignore
+  const test = config.task[fieldName];
   const questionId = config.task[fieldName]?.questionId;
   if (!questionId) {
     return null;
