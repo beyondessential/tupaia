@@ -83,7 +83,7 @@ export const useSubmitSurveyResponse = (fromLocation: string | undefined) => {
         }
         resetForm();
         successToast("Congratulations! You've earned a coconut", Coconut);
-        if (data?.task_created) {
+        if (data?.should_create_task) {
           successToast('A new Task will be created soon');
         }
         // include the survey response data in the location state, so that we can use it to generate QR codes

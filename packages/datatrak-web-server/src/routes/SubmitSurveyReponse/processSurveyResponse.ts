@@ -12,38 +12,16 @@ import {
 } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
+import { getShouldCreateTaskAnswer } from './getShouldCreateTaskAnswer';
 
 type SurveyRequestT = DatatrakWebSubmitSurveyResponseRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
   qr_codes_to_create?: Entity[];
   recent_entities: string[];
-  task_created: boolean;
+  should_create_task: boolean;
 };
 type AnswerT = DatatrakWebSubmitSurveyResponseRequest.Answer;
 type FileUploadAnswerT = DatatrakWebSubmitSurveyResponseRequest.FileUploadAnswer;
-
-type TaskQuestionConfig = SurveyScreenComponentConfig & {
-  shouldCreateTask?: boolean | string;
-};
-
-const getShouldCreateTask = (config: TaskQuestionConfig, questions: any, answers: any) => {
-  const { shouldCreateTask } = config;
-  if (!shouldCreateTask) {
-    return false;
-  }
-
-  if (typeof shouldCreateTask === 'boolean' && shouldCreateTask) {
-    return true;
-  }
-
-  // @ts-ignore
-  const question = questions.find(question => question.code === shouldCreateTask);
-  if (!question) {
-    return false;
-  }
-  console.log('ANSWER', answers[question.id]);
-  return answers[question.id];
-};
 
 export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => {
   if (!config?.entity) {
@@ -86,8 +64,8 @@ export const processSurveyResponse = async (
     qr_codes_to_create: [],
     recent_entities: [],
     options_created: [],
-    task_created: false,
     answers: [],
+    should_create_task: false,
   };
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
@@ -128,8 +106,7 @@ export const processSurveyResponse = async (
     }
 
     if (type === QuestionType.Task) {
-      console.log('PROCESSING QUESTION', questionId, questionCode, questions, answers);
-      surveyResponse.task_created = getShouldCreateTask(config, questions, answers);
+      surveyResponse.should_create_task = getShouldCreateTaskAnswer(config, questions, answers);
       continue;
     }
 

@@ -106,11 +106,13 @@ const testData = {
       validationCriteria: {},
       visibilityCriteria: {},
       config: {
-        surveyCode: 'BCD',
-        entityId: 'TEST_00',
-        shouldCreateTask: 'TEST_01',
-        dueDate: 'TEST_02',
-        assignee: 'TEST_03',
+        task: {
+          surveyCode: 'BCD',
+          entityId: 'TEST_00',
+          shouldCreateTask: 'TEST_01',
+          dueDate: 'TEST_02',
+          assignee: 'TEST_03',
+        },
       },
       componentId: '66a6c96724db846ff80000ae',
     },
@@ -121,6 +123,7 @@ const testData = {
   answers: {
     '66a6c96324db846ff800009c': '5dfc692a61f76a44b92b7309',
     '66a6c96624db846ff80000a5': '2024-07-28T23:20:33.617Z',
+    '66a6c96624db846ff80000a1': 'Yes',
   },
 };
 
@@ -131,7 +134,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
     const { central: centralApi } = this.req.ctx.services;
     const { session, models } = this.req;
 
-    const { qr_codes_to_create, task_created, recent_entities, ...processedResponse } =
+    const { qr_codes_to_create, should_create_task, recent_entities, ...processedResponse } =
       // @ts-ignore
       await processSurveyResponse(models, surveyResponseData);
 
@@ -150,7 +153,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
 
     return {
       qrCodeEntitiesCreated: qr_codes_to_create || [],
-      task_created,
+      should_create_task,
     };
   }
 }
