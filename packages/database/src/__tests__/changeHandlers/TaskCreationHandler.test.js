@@ -27,23 +27,28 @@ const buildTaskCreationSurvey = async (models, config) => {
     code: generateId(),
     questions: [
       {
-        code: 'TEST_00',
+        id: 'TEST_ID_00',
+        code: 'TEST_CODE_00',
         type: 'PrimaryEntity',
       },
       {
-        code: 'TEST_01',
+        id: 'TEST_ID_01',
+        code: 'TEST_CODE_01',
         type: 'Binary',
       },
       {
-        code: 'TEST_02',
+        id: 'TEST_ID_02',
+        code: 'TEST_CODE_02',
         type: 'Date',
       },
       {
-        code: 'TEST_03',
+        id: 'TEST_ID_03',
+        code: 'TEST_CODE_03',
         type: 'FreeText',
       },
       {
-        code: 'TEST_04',
+        id: 'TEST_ID_04',
+        code: 'TEST_CODE_04',
         type: 'Task',
         surveyScreenComponent: {
           config,
@@ -51,6 +56,12 @@ const buildTaskCreationSurvey = async (models, config) => {
       },
     ],
   };
+
+  await Promise.all(
+    survey.questions.map(q => {
+      return upsertDummyRecord(models.question, q);
+    }),
+  );
 
   return buildAndInsertSurvey(models, survey);
 };
@@ -69,50 +80,22 @@ const buildSurveyResponse = async (models, surveyCode, answers) => {
 
 const TEST_DATA = [
   [
-    'Creates a task when shouldCreateTask is true',
-    {
-      config: {
-        shouldCreateTask: true,
-        surveyCode: taskSurveyCode,
-        assignee: userId,
-        entityId,
-      },
-    },
-    { entity_id: entityId, assignee_id: userId, survey_id: taskSurveyId },
-  ],
-  [
     'Sets task values based on configured question values',
     {
       config: {
-        surveyCode: taskSurveyCode,
-        entityId: 'TEST_00',
-        shouldCreateTask: 'TEST_01',
-        dueDate: 'TEST_02',
-        assignee: 'TEST_03',
+        task: {
+          surveyCode: taskSurveyCode,
+          entityId: { questionId: 'TEST_ID_00' },
+          shouldCreateTask: { questionId: 'TEST_ID_01' },
+          dueDate: { questionId: 'TEST_ID_02' },
+          assignee: { questionId: 'TEST_ID_03' },
+        },
       },
       answers: {
-        TEST_00: entityId,
-        TEST_01: true,
-        TEST_02: '2024/06/06 00:00:00+00',
-        TEST_03: userId,
-      },
-    },
-    {
-      survey_id: taskSurveyId,
-      due_date: '2024-06-06 00:00:00',
-      assignee_id: userId,
-      entity_id: entityId,
-    },
-  ],
-  [
-    'Sets task values based on configured string values',
-    {
-      config: {
-        surveyCode: taskSurveyCode,
-        entityId,
-        shouldCreateTask: true,
-        dueDate: '2024-06-06 00:00:00+00',
-        assignee: userId,
+        TEST_CODE_00: entityId,
+        TEST_CODE_01: true,
+        TEST_CODE_02: '2024/06/06 00:00:00+00',
+        TEST_CODE_03: userId,
       },
     },
     {
@@ -126,8 +109,10 @@ const TEST_DATA = [
     'Handles optional and missing values',
     {
       config: {
-        surveyCode: taskSurveyCode,
-        entityId,
+        task: {
+          surveyCode: taskSurveyCode,
+          entityId: { questionId: 'TEST_ID_00' },
+        },
       },
     },
     { entity_id: entityId, survey_id: taskSurveyId },
@@ -140,7 +125,7 @@ describe('TaskCreationHandler', () => {
   taskCreationHandler.setDebounceTime(50); // short debounce time so tests run more quickly
 
   beforeAll(async () => {
-    const newEntity = await buildEntity(models);
+    await buildEntity(models);
     await buildAndInsertSurvey(models, { id: taskSurveyId, code: taskSurveyCode });
     await upsertDummyRecord(models.user, { id: userId });
   });

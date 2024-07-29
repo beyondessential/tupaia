@@ -13,6 +13,8 @@ import {
 import { SurveyScreenComponent } from '../../../types';
 import { generateMongoId, generateShortId } from './generateId';
 
+// Hide Task questions from the survey. They are not displayed in the form but are
+// used to trigger new tasks in the TaskCreationHandler
 const HIDDEN_QUESTION_TYPES = [QuestionType.Task];
 
 export const getIsQuestionVisible = (

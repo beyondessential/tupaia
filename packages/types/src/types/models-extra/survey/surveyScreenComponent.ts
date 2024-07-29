@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity, EntityType, PermissionGroup, Question, Survey, UserAccount } from '../../models';
+import { Entity, EntityType, PermissionGroup, Question, Survey } from '../../models';
 
 export type CodeGeneratorQuestionConfig = {
   type: 'shortid' | 'mongoid';
@@ -78,25 +78,25 @@ export type UserQuestionConfig = {
 
 export type TaskQuestionConfig = {
   /**
-   * @description If this is a boolean value, a task will be created if the value is true. If this is a question value, a task will be created if the value of the question is true.
+   * @description  Determines if a task should be created.
    */
-  shouldCreateTask: QuestionValue | boolean;
+  shouldCreateTask: QuestionValue;
   /**
-   * @description If this is a question value, the task will be created with the value of the question as the task entity. If this is a string, the task will be created with the entity id as the task entity.
+   * @description  Determines the entity that the task will be created for.
    */
-  entityId: QuestionValue | Entity['id'];
+  entityId: QuestionValue;
   /**
    * @description Determines the survey that the task will be created for.
    */
   surveyCode: Survey['code'];
   /**
-   * @description If this is a question value, the task will be created with the value of the question as the task due date. If this is a string, the task will be created with the string as the task due date.
+   * @description  Determines the due date of the task.
    */
-  dueDate: QuestionValue | string;
+  dueDate: QuestionValue;
   /**
-   * @description If this is a question value, the task will be created with the value of the question as the task assignee. If this is a string, the task will be created with the user id as the task assignee.
+   * @description  Determines the assignee of the task.
    */
-  assignee: QuestionValue | UserAccount['id'];
+  assignee: QuestionValue;
 };
 
 export type SurveyScreenComponentConfig = {

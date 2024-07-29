@@ -5,27 +5,20 @@
 import keyBy from 'lodash.keyby';
 import { ChangeHandler } from './ChangeHandler';
 
-const getAnswerWrapper = (config, questions, answers) => {
+const getAnswerWrapper = (config, answers) => {
   const answersByQuestionId = keyBy(answers, 'question_id');
-  const questionsByCode = keyBy(questions, 'code');
 
-  return (questionKey, entityId) => {
-    const questionCode = config[questionKey];
-
-    // Return the raw value to be used as the field for the task
-    if (!(questionCode in questionsByCode)) {
-      return questionCode;
-    }
-
-    const question = questionsByCode[questionCode];
-    // PrimaryEntity question is a special case, where the entity_id is saved against the survey
-    // response directly
-    if (question.type === 'PrimaryEntity') {
-      return entityId;
-    }
-    const answer = answersByQuestionId[question.id];
+  return questionKey => {
+    const { questionId } = config[questionKey];
+    const answer = answersByQuestionId[questionId];
     return answer?.text;
   };
+};
+
+const isPrimaryEntityQuestion = (config, questions) => {
+  const primaryEntityQuestion = questions.find(question => question.type === 'PrimaryEntity');
+  const { questionId } = config['entityId'];
+  return primaryEntityQuestion.id === questionId;
 };
 const getSurveyCode = async (models, config) => {
   const surveyCode = config.surveyCode;
@@ -73,27 +66,38 @@ export class TaskCreationHandler extends ChangeHandler {
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
 
+    console.log('STARTING TASK CREATION HANDLER');
+
     for (const response of changedResponses) {
       const sr = await models.surveyResponse.findById(response.id);
       const questions = await getQuestions(models, response.survey_id);
 
       const taskQuestion = questions.find(question => question.type === 'Task');
+
       if (!taskQuestion) {
         continue;
       }
-
+      const config = taskQuestion.config.task;
       const answers = await sr.getAnswers();
-      const getAnswer = getAnswerWrapper(taskQuestion.config, questions, answers);
+      // console.log('answers', answers);
+      const getAnswer = getAnswerWrapper(config, answers);
+
+      // console.log("getAnswer('shouldCreateTask')", getAnswer('shouldCreateTask'));
 
       if (getAnswer('shouldCreateTask') === false) {
         continue;
       }
 
-      const surveyId = await getSurveyCode(models, taskQuestion.config);
+      // PrimaryEntity question is a special case, where the entity_id is saved against the survey
+      // response directly rather than the answers
+      const entityId = isPrimaryEntityQuestion(config, questions)
+        ? response.entity_id
+        : getAnswer('entityId');
+      const surveyId = await getSurveyCode(models, config);
 
       await models.task.create({
         survey_id: surveyId,
-        entity_id: getAnswer('entityId', response.entity_id),
+        entity_id: entityId,
         assignee_id: getAnswer('assignee'),
         due_date: getAnswer('dueDate'),
         status: 'to_do',
