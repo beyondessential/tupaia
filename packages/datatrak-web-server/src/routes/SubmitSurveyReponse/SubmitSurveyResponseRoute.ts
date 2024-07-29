@@ -108,10 +108,10 @@ const testData = {
       config: {
         task: {
           surveyCode: 'BCD',
-          entityId: 'TEST_00',
-          shouldCreateTask: 'TEST_01',
-          dueDate: 'TEST_02',
-          assignee: 'TEST_03',
+          entityId: { questionId: 'TEST_00' },
+          shouldCreateTask: { questionId: 'TEST_01' },
+          dueDate: { questionId: 'TEST_02' },
+          assignee: { questionId: 'TEST_03' },
         },
       },
       componentId: '66a6c96724db846ff80000ae',

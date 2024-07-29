@@ -114,6 +114,9 @@ const TEST_DATA = [
           entityId: { questionId: 'TEST_ID_00' },
         },
       },
+      answers: {
+        TEST_CODE_00: entityId,
+      },
     },
     { entity_id: entityId, survey_id: taskSurveyId },
   ],
@@ -136,6 +139,7 @@ describe('TaskCreationHandler', () => {
 
   afterEach(async () => {
     taskCreationHandler.stopListeningForChanges();
+    await models.surveyResponse.delete({ survey_id: taskSurveyId });
   });
 
   it.each(TEST_DATA)('%s', async (_name, { config, answers = {} }, result) => {

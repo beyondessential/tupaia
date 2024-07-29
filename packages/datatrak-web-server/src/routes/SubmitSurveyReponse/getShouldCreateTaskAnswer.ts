@@ -15,12 +15,7 @@ export const getShouldCreateTaskAnswer = (
     return false;
   }
 
-  if (typeof shouldCreateTask === 'boolean' && shouldCreateTask) {
-    return true;
-  }
-
-  // @ts-ignore
-  const question = questions.find(question => question.code === shouldCreateTask);
+  const question = questions.find(question => question.id === shouldCreateTask.questionId);
   if (!question) {
     return false;
   }

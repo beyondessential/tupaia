@@ -9,7 +9,10 @@ const getAnswerWrapper = (config, answers) => {
   const answersByQuestionId = keyBy(answers, 'question_id');
 
   return questionKey => {
-    const { questionId } = config[questionKey];
+    const questionId = config[questionKey]?.questionId;
+    if (!questionId) {
+      return null;
+    }
     const answer = answersByQuestionId[questionId];
     return answer?.text;
   };
@@ -20,6 +23,7 @@ const isPrimaryEntityQuestion = (config, questions) => {
   const { questionId } = config['entityId'];
   return primaryEntityQuestion.id === questionId;
 };
+
 const getSurveyCode = async (models, config) => {
   const surveyCode = config.surveyCode;
   const survey = await models.survey.findOne({ code: surveyCode });
@@ -66,23 +70,22 @@ export class TaskCreationHandler extends ChangeHandler {
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
 
-    console.log('STARTING TASK CREATION HANDLER');
-
     for (const response of changedResponses) {
       const sr = await models.surveyResponse.findById(response.id);
       const questions = await getQuestions(models, response.survey_id);
 
       const taskQuestion = questions.find(question => question.type === 'Task');
+      console.log('TASK Q', taskQuestion);
 
       if (!taskQuestion) {
         continue;
       }
       const config = taskQuestion.config.task;
+      console.log('CONFIG', config);
       const answers = await sr.getAnswers();
-      // console.log('answers', answers);
       const getAnswer = getAnswerWrapper(config, answers);
 
-      // console.log("getAnswer('shouldCreateTask')", getAnswer('shouldCreateTask'));
+      console.log("getAnswer('shouldCreateTask')", getAnswer('shouldCreateTask'));
 
       if (getAnswer('shouldCreateTask') === false) {
         continue;
