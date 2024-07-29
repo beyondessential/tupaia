@@ -12,13 +12,11 @@ import {
 } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
-import { getShouldCreateTask, getTaskQuestionField } from './getTaskQuestionField';
 
 type SurveyRequestT = DatatrakWebSubmitSurveyResponseRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
   qr_codes_to_create?: Entity[];
   recent_entities: string[];
-  should_create_task: boolean;
 };
 type AnswerT = DatatrakWebSubmitSurveyResponseRequest.Answer;
 type FileUploadAnswerT = DatatrakWebSubmitSurveyResponseRequest.FileUploadAnswer;
@@ -65,7 +63,6 @@ export const processSurveyResponse = async (
     recent_entities: [],
     options_created: [],
     answers: [],
-    should_create_task: false,
   };
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
@@ -75,7 +72,6 @@ export const processSurveyResponse = async (
     let answer = answers[questionId] as AnswerT | Entity;
     const config = question?.config as SurveyScreenComponentConfig;
 
-    // Special handling for entity questions
     if ([QuestionType.PrimaryEntity, QuestionType.Entity].includes(type)) {
       // If an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
       if (isUpsertEntityQuestion(config)) {
@@ -104,12 +100,6 @@ export const processSurveyResponse = async (
         surveyResponse.recent_entities.push(answer);
       }
     }
-
-    if (type === QuestionType.Task) {
-      surveyResponse.should_create_task = getShouldCreateTask(config, questions, answers);
-      continue;
-    }
-
     if (answer === undefined || answer === null || answer === '') {
       continue;
     }

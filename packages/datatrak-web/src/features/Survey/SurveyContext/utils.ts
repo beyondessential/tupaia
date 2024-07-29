@@ -13,19 +13,15 @@ import {
 import { SurveyScreenComponent } from '../../../types';
 import { generateMongoId, generateShortId } from './generateId';
 
-// Hide Task questions from the survey. They are not displayed in the form but are
-// used to trigger new tasks in the TaskCreationHandler
-const HIDDEN_QUESTION_TYPES = [QuestionType.Task];
-
 export const getIsQuestionVisible = (
   question: SurveyScreenComponent,
   formData: Record<string, any>,
 ) => {
   if (!question.visibilityCriteria || !Object.keys(question.visibilityCriteria).length) return true;
-  const { visibilityCriteria, type } = question;
+  const { visibilityCriteria } = question;
   const { _conjunction = 'or', hidden, ...dependantQuestions } = visibilityCriteria;
 
-  if (hidden || HIDDEN_QUESTION_TYPES.includes(type)) return false;
+  if (hidden) return false;
   const operator = _conjunction === 'or' ? 'some' : 'every';
 
   return Object.entries(dependantQuestions)[operator](([questionId, validAnswers]) => {

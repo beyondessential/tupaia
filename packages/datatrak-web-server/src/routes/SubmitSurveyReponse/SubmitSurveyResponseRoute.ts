@@ -21,7 +21,7 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
     const { central: centralApi } = this.req.ctx.services;
     const { session, models } = this.req;
 
-    const { qr_codes_to_create, should_create_task, recent_entities, ...processedResponse } =
+    const { qr_codes_to_create, recent_entities, ...processedResponse } =
       await processSurveyResponse(models, surveyResponseData);
 
     await centralApi.createSurveyResponses(
@@ -39,7 +39,6 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
 
     return {
       qrCodeEntitiesCreated: qr_codes_to_create || [],
-      should_create_task,
     };
   }
 }

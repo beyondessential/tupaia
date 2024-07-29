@@ -60,7 +60,6 @@ export enum QUESTION_TYPES {
   Arithmetic = ReadOnlyQuestion,
   Condition = ReadOnlyQuestion,
   File = FileQuestion,
-  Task = () => null,
 }
 
 /**
