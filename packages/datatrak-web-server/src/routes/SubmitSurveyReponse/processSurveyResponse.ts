@@ -12,7 +12,7 @@ import {
 } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
-import { getShouldCreateTaskAnswer } from './getShouldCreateTaskAnswer';
+import { getShouldCreateTask, getTaskQuestionField } from './getTaskQuestionField';
 
 type SurveyRequestT = DatatrakWebSubmitSurveyResponseRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
@@ -106,7 +106,7 @@ export const processSurveyResponse = async (
     }
 
     if (type === QuestionType.Task) {
-      surveyResponse.should_create_task = getShouldCreateTaskAnswer(config, questions, answers);
+      surveyResponse.should_create_task = getShouldCreateTask(config, questions, answers);
       continue;
     }
 

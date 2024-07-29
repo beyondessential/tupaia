@@ -75,17 +75,13 @@ export class TaskCreationHandler extends ChangeHandler {
       const questions = await getQuestions(models, response.survey_id);
 
       const taskQuestion = questions.find(question => question.type === 'Task');
-      console.log('TASK Q', taskQuestion);
 
       if (!taskQuestion) {
         continue;
       }
       const config = taskQuestion.config.task;
-      console.log('CONFIG', config);
       const answers = await sr.getAnswers();
       const getAnswer = getAnswerWrapper(config, answers);
-
-      console.log("getAnswer('shouldCreateTask')", getAnswer('shouldCreateTask'));
 
       if (getAnswer('shouldCreateTask') === false) {
         continue;
