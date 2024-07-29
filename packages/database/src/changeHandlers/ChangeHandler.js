@@ -132,7 +132,6 @@ export class ChangeHandler {
           await this.handleChanges(transactingModels, currentQueue);
         });
       } catch (error) {
-        console.log(error);
         winston.warn(
           [
             `Attempt #${i + 1} to handle change batch failed with error message:`,
