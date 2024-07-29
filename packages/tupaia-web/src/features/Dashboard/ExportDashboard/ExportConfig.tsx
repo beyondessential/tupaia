@@ -6,7 +6,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import downloadJs from 'downloadjs';
 import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
@@ -112,20 +111,9 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { activeDashboard } = useDashboard();
   const { exportWithLabels, exportWithTable } = useExportSettings();
 
-  const handleExportSuccess = (data: Blob) => {
-    downloadJs(data, `${exportFileName}.pdf`);
-  };
-
-  const {
-    mutate: requestPdfExport,
-    error,
-    isLoading,
-    reset,
-  } = useExportDashboard({
-    onSuccess: handleExportSuccess,
-  });
-
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
+
+  const { mutate: requestPdfExport, error, isLoading, reset } = useExportDashboard(exportFileName);
 
   const handleExport = () =>
     requestPdfExport({

@@ -19,7 +19,7 @@ const Parent = styled.div<{ $isPreview?: boolean }>`
   ${({ $isPreview }) => ($isPreview ? `aspect-ratio: ${A4_RATIO};` : '')};
 `;
 
-interface PDFExportProps {
+interface DashboardPDFExportProps {
   selectedDashboardItems?: TupaiaWebExportDashboardRequest.ReqBody['selectedDashboardItems'];
   isPreview?: boolean;
 }
@@ -27,10 +27,10 @@ interface PDFExportProps {
 /**
  * This is the view that gets hit by puppeteer when generating a PDF.
  */
-export const PDFExport = ({
+export const DashboardPDFExport = ({
   selectedDashboardItems: propsSelectedDashboardItems,
   isPreview = false,
-}: PDFExportProps) => {
+}: DashboardPDFExportProps) => {
   // Hacky way to change default background color without touching root css. Only apply when generating the pdf, not when in preview mode as it changes the display
   if (!isPreview) {
     document.body.style.backgroundColor = 'white';
