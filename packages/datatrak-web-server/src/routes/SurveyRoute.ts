@@ -123,7 +123,7 @@ export class SurveyRoute extends Route<SurveyRequest> {
       })
       // Hide Task questions from the survey. They are not displayed in the web app and are
       // just used to trigger new tasks in the TaskCreationHandler
-      .filter(({ question }: { question: Question }) => question.type !== QuestionType.Task)
+      .filter((question: Question) => question.type !== QuestionType.Task)
       .sort((a: any, b: any) => a.screenNumber - b.screenNumber);
 
     // renaming survey_questions to screens to make it make more representative of what it is, since questions is more representative of the component within the screen
