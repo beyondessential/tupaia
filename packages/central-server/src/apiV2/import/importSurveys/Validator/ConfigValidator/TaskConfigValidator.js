@@ -22,7 +22,7 @@ export class TaskConfigValidator extends JsonFieldValidator {
 
     return {
       shouldCreateTask: [pointsToPreceedingMandatoryQuestion],
-      entityCode: [pointsToPreceedingMandatoryQuestion],
+      entityId: [pointsToPreceedingMandatoryQuestion],
       surveyCode: [referencesExistingSurvey],
       dueDate: [pointsToPreceedingMandatoryQuestion],
       assignee: [pointsToPreceedingMandatoryQuestion],

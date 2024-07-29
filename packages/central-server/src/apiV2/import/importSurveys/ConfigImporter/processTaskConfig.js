@@ -5,7 +5,7 @@
 
 import { translateQuestionCodeToId } from '../../../utilities';
 
-const QUESTION_FIELDS = ['shouldCreateTask', 'entityCode', 'dueDate', 'assignee'];
+const QUESTION_FIELDS = ['shouldCreateTask', 'entityId', 'dueDate', 'assignee'];
 
 const translateValues = async (config, models) => {
   const translatedValuesWithFields = await Promise.all(

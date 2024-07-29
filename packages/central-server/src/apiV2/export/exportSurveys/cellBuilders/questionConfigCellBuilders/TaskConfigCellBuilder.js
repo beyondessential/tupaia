@@ -15,14 +15,14 @@ const fetchQuestionCode = async (questionId, models) => {
 
 const FIELD_TRANSLATION = {
   'shouldCreateTask.questionId': 'shouldCreateTask',
-  'entityCode.questionId': 'entityCode',
+  'entityId.questionId': 'entityId',
   'dueDate.questionId': 'dueDate',
   'assignee.questionId': 'assignee',
 };
 
 const VALUE_TRANSLATION = {
   shouldCreateTask: fetchQuestionCode,
-  entityCode: fetchQuestionCode,
+  entityId: fetchQuestionCode,
   dueDate: fetchQuestionCode,
   assignee: fetchQuestionCode,
 };
