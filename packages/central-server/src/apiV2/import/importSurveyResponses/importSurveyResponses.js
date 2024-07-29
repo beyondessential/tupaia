@@ -210,7 +210,6 @@ export async function importSurveyResponses(req, res) {
           };
         }
       }
-
       updatePersistor.setupColumnsForSheet(tabName, surveyResponse);
 
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
@@ -231,13 +230,13 @@ export async function importSurveyResponses(req, res) {
 
       const infoValidator = new ObjectValidator(constructInfoColumnValidators(models));
       const ignoredRowTypes = [ANSWER_TYPES.INSTRUCTION, ANSWER_TYPES.PRIMARY_ENTITY];
-
       for (let rowIndex = 1; rowIndex <= maxRowIndex; rowIndex++) {
         const excelRowNumber = rowIndex + 1; // +1 to make up for header
         const rowType = getInfoForRow(sheet, rowIndex, 'Type');
         if (ignoredRowTypes.includes(rowType)) {
           continue;
         }
+
         // Validate every cell in rows other than the header rows
         let answerValidator;
         let answerTransformer;
@@ -260,6 +259,7 @@ export async function importSurveyResponses(req, res) {
           answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
           answerTransformer = ANSWER_TRANSFORMERS[question.type];
         }
+
         const getAnswerText = async (answerValue, surveyResponseId, columnIndex, importMode) => {
           if (
             checkIsCellEmpty(answerValue) &&
@@ -271,10 +271,12 @@ export async function importSurveyResponses(req, res) {
             // Use data from an existing response to fill the empty answer
             return isDateAnswer(rowType) ? dataTime : answerTextsByQuestionId?.[questionId];
           }
+
           return isDateAnswer(rowType)
             ? getNewDataTimeIfRequired(models, surveyResponseId, answerValue)
             : answerValue;
         };
+
         for (
           let columnIndex = minSurveyResponseIndex;
           columnIndex <= maxColumnIndex;
@@ -287,7 +289,6 @@ export async function importSurveyResponses(req, res) {
           const transformedAnswerValue = answerTransformer
             ? await answerTransformer(models, answerValue)
             : answerValue;
-
           // If we already deleted this survey response wholesale, no need to check specific rows
           if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
             if (answerValidator) {
@@ -298,6 +299,7 @@ export async function importSurveyResponses(req, res) {
                 constructImportValidationError,
               );
             }
+
             if (questionId === 'N/A') {
               // Info row (e.g. entity name): if no content delete the survey response wholesale
               if (checkIsCellEmpty(transformedAnswerValue)) {
