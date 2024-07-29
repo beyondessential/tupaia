@@ -4,58 +4,12 @@
  */
 
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import throttle from 'lodash.throttle';
 import { createFilterOptions } from '@material-ui/lab';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api';
-import { MOBILE_BREAKPOINT } from '../../constants';
-import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
-
-const Autocomplete = styled(BaseAutocomplete)`
-  width: calc(100% - 3.5rem);
-  max-width: 25rem;
-
-  .MuiFormControl-root {
-    margin-bottom: 0;
-  }
-
-  .MuiFormLabel-root {
-    font-size: 0.875rem;
-    line-height: 1.2;
-    @media (min-width: ${MOBILE_BREAKPOINT}) {
-      font-size: 1rem;
-    }
-  }
-  .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
-
-  .MuiInputBase-root {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.text.primary};
-    border-radius: 0;
-    order: 2; // make the helper text appear above the input
-    &.Mui-focused {
-      border-bottom-color: ${({ theme }) => theme.palette.primary.main};
-    }
-  }
-
-  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
-  .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
-    padding: 0.6rem 0;
-    font-size: 0.875rem;
-  }
-
-  .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
-    right: 0;
-  }
-  .MuiIconButton-root {
-    color: ${({ theme }) => theme.palette.text.primary};
-  }
-`;
+import { InputHelperText, QuestionAutocomplete } from '../../components';
 
 export const AutocompleteQuestion = ({
   id,
@@ -121,7 +75,7 @@ export const AutocompleteQuestion = ({
 
   return (
     <>
-      <Autocomplete
+      <QuestionAutocomplete
         id={id}
         label={label!}
         name={name!}

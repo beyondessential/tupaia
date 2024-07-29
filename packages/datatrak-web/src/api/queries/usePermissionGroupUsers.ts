@@ -4,25 +4,25 @@
  */
 
 import { useQuery } from 'react-query';
-import { Country, DatatrakWebUsersRequest } from '@tupaia/types';
+import { Country, DatatrakWebUsersRequest, PermissionGroup } from '@tupaia/types';
 import { get } from '../api';
-import { Survey } from '../../types';
 
-export const useSurveyUsers = (
-  surveyCode?: Survey['code'],
+export const usePermissionGroupUsers = (
   countryCode?: Country['code'],
+  permissionGroupName?: PermissionGroup['name'],
   searchTerm?: string,
 ) => {
   return useQuery(
-    ['surveyUsers', surveyCode, countryCode, searchTerm],
+    ['users', permissionGroupName, countryCode, searchTerm],
     (): Promise<DatatrakWebUsersRequest.ResBody> =>
-      get(`users/${surveyCode}/${countryCode}`, {
+      get(`users/${countryCode}`, {
         params: {
           searchTerm,
+          permissionGroupName,
         },
       }),
     {
-      enabled: !!surveyCode && !!countryCode,
+      enabled: !!permissionGroupName && !!countryCode,
     },
   );
 };

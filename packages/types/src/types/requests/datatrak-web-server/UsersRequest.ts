@@ -14,4 +14,5 @@ export type ResBody = UserResponse[];
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   searchTerm?: string;
+  permissionGroupName?: string;
 }
