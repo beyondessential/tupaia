@@ -46,6 +46,13 @@ const migrations = {
   9: async (synchroniser, setProgressMessage) => {
     await resyncRecordTypes(synchroniser, setProgressMessage, ['survey_screen_component']);
   },
+  // Resync all users so that the new user entity permission structure comes through
+  10: async (synchroniser, setProgressMessage) => {
+    await resyncRecordTypes(synchroniser, setProgressMessage, ['user']);
+  },
+  11: async (synchroniser, setProgressMessage) => {
+    await resyncRecordTypes(synchroniser, setProgressMessage, ['user_entity_permission']);
+  },
 };
 
 export const getSyncMigrations = async database => {

@@ -30,6 +30,32 @@ class UserRecord extends CommonUserRecord {
 }
 
 export class UserModel extends CommonUserModel {
+  meditrakConfig = {
+    // only sync id and first and last name
+    ignorableFields: [
+      'email',
+      'gender',
+      'creation_date',
+      'employer',
+      'position',
+      'mobile_number',
+      'password_hash',
+      'password_salt',
+      'verified_email',
+      'profile_image',
+      'primary_platform',
+      'preferences',
+    ],
+    translateRecordForSync: record => {
+      return {
+        id: record.id,
+        // create full name from first and last name
+        full_name: [record.first_name, record.last_name].filter(name => !!name).join(' '),
+      };
+    },
+    minAppVersion: '1.14.142',
+  };
+
   get DatabaseRecordClass() {
     return UserRecord;
   }
