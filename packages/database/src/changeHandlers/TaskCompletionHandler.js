@@ -47,6 +47,7 @@ export class TaskCompletionHandler extends ChangeHandler {
     );
 
     return this.models.task.find({
+      // only fetch tasks that have a status of 'to_do' or null (repeating tasks have a status of null)
       status: 'to_do',
       [QUERY_CONJUNCTIONS.OR]: {
         status: {
@@ -67,7 +68,7 @@ export class TaskCompletionHandler extends ChangeHandler {
     });
   }
 
-  async handleChanges(_transactingModels, changedResponses) {
+  async handleChanges(transactingModels, changedResponses) {
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
     const tasksToUpdate = await this.fetchTasksForSurveyResponses(changedResponses);
@@ -97,7 +98,7 @@ export class TaskCompletionHandler extends ChangeHandler {
         // Create a new task with the same details as the current task and mark as completed
         // It is theoretically possible that more than one task could be created for a repeating
         // task in a reporting period which is ok from a business point of view
-        await this.models.task.create({
+        await transactingModels.task.create({
           assignee_id: assigneeId,
           survey_id: surveyId,
           entity_id: entityId,
@@ -105,13 +106,18 @@ export class TaskCompletionHandler extends ChangeHandler {
           status: 'completed',
           survey_response_id: matchingSurveyResponse.id,
         });
-        continue;
+      } else {
+        await transactingModels.task.updateById(id, {
+          status: 'completed',
+          survey_response_id: matchingSurveyResponse.id,
+        });
       }
 
-      await this.models.task.updateById(id, {
-        status: 'completed',
-        survey_response_id: matchingSurveyResponse.id,
-      });
+      await task.addComment(
+        'Completed this task',
+        matchingSurveyResponse.user_id,
+        transactingModels.taskComment.types.System,
+      );
     }
   }
 }

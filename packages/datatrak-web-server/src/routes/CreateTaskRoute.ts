@@ -19,7 +19,7 @@ export class CreateTaskRoute extends Route<CreateTaskRequest> {
   public async buildResponse() {
     const { models, body, ctx } = this.req;
 
-    const { surveyCode, entityId, comment } = body;
+    const { survey_code: surveyCode } = body;
 
     const survey = await models.survey.findOne({ code: surveyCode });
     if (!survey) {
@@ -29,13 +29,16 @@ export class CreateTaskRoute extends Route<CreateTaskRequest> {
     const taskDetails = formatTaskChanges({
       ...body,
       survey_id: survey.id,
-      entity_id: entityId,
     });
 
     if (taskDetails.due_date) {
       taskDetails.status = TaskStatus.to_do;
     }
 
-    return ctx.services.central.createResource('tasks', {}, taskDetails);
+    await ctx.services.central.createResource('tasks', {}, taskDetails);
+
+    return {
+      message: 'Task created successfully',
+    };
   }
 }
