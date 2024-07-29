@@ -99,7 +99,9 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
     initialiseFormData();
   }
 
-  const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents);
+  const displayQuestions = getDisplayQuestions(activeScreen, flattenedScreenComponents).filter(
+    question => question.type !== 'Task',
+  );
   const screenHeader = activeScreen?.[0]?.text;
   const screenDetail = activeScreen?.[0]?.detail;
 

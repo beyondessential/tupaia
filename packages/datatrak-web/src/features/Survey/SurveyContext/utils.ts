@@ -13,15 +13,17 @@ import {
 import { SurveyScreenComponent } from '../../../types';
 import { generateMongoId, generateShortId } from './generateId';
 
+const HIDDEN_QUESTION_TYPES = [QuestionType.Task];
+
 export const getIsQuestionVisible = (
   question: SurveyScreenComponent,
   formData: Record<string, any>,
 ) => {
   if (!question.visibilityCriteria || !Object.keys(question.visibilityCriteria).length) return true;
-  const { visibilityCriteria } = question;
+  const { visibilityCriteria, type } = question;
   const { _conjunction = 'or', hidden, ...dependantQuestions } = visibilityCriteria;
 
-  if (hidden) return false;
+  if (hidden || HIDDEN_QUESTION_TYPES.includes(type)) return false;
   const operator = _conjunction === 'or' ? 'some' : 'every';
 
   return Object.entries(dependantQuestions)[operator](([questionId, validAnswers]) => {

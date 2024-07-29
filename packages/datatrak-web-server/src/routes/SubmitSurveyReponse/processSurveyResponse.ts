@@ -17,9 +17,33 @@ type SurveyRequestT = DatatrakWebSubmitSurveyResponseRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
   qr_codes_to_create?: Entity[];
   recent_entities: string[];
+  task_created: boolean;
 };
 type AnswerT = DatatrakWebSubmitSurveyResponseRequest.Answer;
 type FileUploadAnswerT = DatatrakWebSubmitSurveyResponseRequest.FileUploadAnswer;
+
+type TaskQuestionConfig = SurveyScreenComponentConfig & {
+  shouldCreateTask?: boolean | string;
+};
+
+const getShouldCreateTask = (config: TaskQuestionConfig, questions: any, answers: any) => {
+  const { shouldCreateTask } = config;
+  if (!shouldCreateTask) {
+    return false;
+  }
+
+  if (typeof shouldCreateTask === 'boolean' && shouldCreateTask) {
+    return true;
+  }
+
+  // @ts-ignore
+  const question = questions.find(question => question.code === shouldCreateTask);
+  if (!question) {
+    return false;
+  }
+  console.log('ANSWER', answers[question.id]);
+  return answers[question.id];
+};
 
 export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => {
   if (!config?.entity) {
@@ -62,6 +86,7 @@ export const processSurveyResponse = async (
     qr_codes_to_create: [],
     recent_entities: [],
     options_created: [],
+    task_created: false,
     answers: [],
   };
   // Process answers and save the response in the database
@@ -72,6 +97,7 @@ export const processSurveyResponse = async (
     let answer = answers[questionId] as AnswerT | Entity;
     const config = question?.config as SurveyScreenComponentConfig;
 
+    // Special handling for entity questions
     if ([QuestionType.PrimaryEntity, QuestionType.Entity].includes(type)) {
       // If an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
       if (isUpsertEntityQuestion(config)) {
@@ -100,6 +126,13 @@ export const processSurveyResponse = async (
         surveyResponse.recent_entities.push(answer);
       }
     }
+
+    if (type === QuestionType.Task) {
+      console.log('PROCESSING QUESTION', questionId, questionCode, questions, answers);
+      surveyResponse.task_created = getShouldCreateTask(config, questions, answers);
+      continue;
+    }
+
     if (answer === undefined || answer === null || answer === '') {
       continue;
     }
