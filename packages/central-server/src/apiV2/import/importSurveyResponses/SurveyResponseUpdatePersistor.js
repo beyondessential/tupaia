@@ -151,14 +151,11 @@ export class SurveyResponseUpdatePersistor {
   }
 
   async processUpdate(transactingModels, { surveyResponseId, entityId, newDataTime, answers }) {
+    const newData = { entity_id: entityId };
     if (newDataTime) {
-      await transactingModels.surveyResponse.updateById(surveyResponseId, {
-        data_time: newDataTime,
-      });
+      newData.data_time = newDataTime;
     }
-    await transactingModels.surveyResponse.updateById(surveyResponseId, {
-      entity_id: entityId,
-    });
+    await transactingModels.surveyResponse.updateById(surveyResponseId, newData);
     await this.processUpsertAnswers(transactingModels, surveyResponseId, answers.upserts);
     await this.processDeleteAnswers(transactingModels, surveyResponseId, answers.deletes);
   }
