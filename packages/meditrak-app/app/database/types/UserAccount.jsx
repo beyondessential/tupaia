@@ -19,7 +19,11 @@ UserAccount.schema = {
 UserAccount.requiredData = ['id'];
 
 UserAccount.construct = (database, data) => {
-  const { firstName, lastName, id } = data;
+  const { firstName, lastName, id, internal } = data;
+
+  // skip internal users
+  if (internal) return null;
+
   const fullName = [firstName, lastName].filter(value => !!value).join(' ');
 
   return database.update('UserAccount', {
