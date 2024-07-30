@@ -16,26 +16,25 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-// Get the IDs of all user entity permissions that are not already in the sync queue
-const getAllUserEntityPermissionIds = async db => {
+const getAllUserIds = async db => {
   const result = await db.runSql(`
-    SELECT user_entity_permission.id FROM user_entity_permission
-    LEFT JOIN meditrak_sync_queue on meditrak_sync_queue.record_id = user_entity_permission.id
+    SELECT user_account.id FROM user_account
+    LEFT JOIN meditrak_sync_queue ON meditrak_sync_queue.record_id = user_account.id
     WHERE meditrak_sync_queue.id IS NULL
   `);
   return result.rows.map(row => row.id);
 };
 
 exports.up = async function (db) {
-  const userEntityPermissionIds = await getAllUserEntityPermissionIds(db);
+  const userIds = await getAllUserIds(db);
   const timestamp = new Date().getTime();
   await db.runSql(`
     INSERT INTO meditrak_sync_queue (id, type, record_type, record_id, change_time)
-    VALUES ${userEntityPermissionIds
+    VALUES ${userIds
       .map(
         (id, i) =>
           // the timestamp is incremented by i to ensure that each record has a unique timestamp
-          `('${generateId()}', 'update', 'user_entity_permission', '${id}', ${timestamp + i})`,
+          `('${generateId()}', 'update', 'user_account', '${id}', ${timestamp + i})`,
       )
       .join(',\n')};
   `);
