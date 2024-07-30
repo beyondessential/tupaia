@@ -26,6 +26,7 @@ export class EditTask extends EditHandler {
       if (comment) {
         await originalTask.addComment(comment, this.req.user.id);
       }
+      await originalTask.addSystemCommentsOnUpdate(this.updatedFields, this.req.user.id);
       return task;
     });
   }

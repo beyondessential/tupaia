@@ -95,6 +95,12 @@ describe('TaskCompletionHandler', () => {
         { entity_id: tonga.id, date: '2024-07-21' },
       ]);
       await assertTaskStatus(task.id, 'completed', responseIds[0]);
+      const comments = await models.taskComment.find({ task_id: task.id });
+      expect(comments[0]).toMatchObject({
+        message: 'Completed this task',
+        user_id: userId,
+        type: models.taskComment.types.System,
+      });
     });
 
     it('created response marks associated tasks as completed if created_time === data_time', async () => {
@@ -105,6 +111,18 @@ describe('TaskCompletionHandler', () => {
     it('created response does not mark associated tasks as completed if created_time > data_time', async () => {
       await createResponses([{ entity_id: tonga.id, date: '2021-07-08' }]);
       await assertTaskStatus(task.id, 'to_do', null);
+    });
+
+    it('created response does not mark associated tasks as completed if status is null, but should still create a comment', async () => {
+      await models.task.update({ id: task.id }, { status: null });
+      await createResponses([{ entity_id: tonga.id, date: '2021-07-08' }]);
+      await assertTaskStatus(task.id, null, null);
+      const comments = await models.taskComment.find({ task_id: task.id });
+      expect(comments[0]).toMatchObject({
+        message: 'Completed this task',
+        user_id: userId,
+        type: 'system',
+      });
     });
   });
 

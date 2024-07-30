@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { TaskCommentType } from '@tupaia/types';
 import { displayDateTime } from '../../../utils';
 import { SingleTaskResponse } from '../../../types';
 
@@ -29,7 +30,6 @@ const CommentContainer = styled.div`
 
 const Message = styled(Typography).attrs({
   variant: 'body2',
-  color: 'textPrimary',
 })`
   margin-block-start: 0.2rem;
 `;
@@ -37,13 +37,15 @@ const Message = styled(Typography).attrs({
 type Comments = SingleTaskResponse['comments'];
 
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
-  const { createdAt, userName, message } = comment;
+  const { createdAt, userName, message, type } = comment;
   return (
     <CommentContainer>
       <Typography variant="body2" color="textSecondary">
         {displayDateTime(createdAt)} - {userName}
       </Typography>
-      <Message>{message}</Message>
+      <Message color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'}>
+        {message}
+      </Message>
     </CommentContainer>
   );
 };
