@@ -5,21 +5,6 @@
 
 import { UserRecord as CommonUserRecord, UserModel as CommonUserModel } from '@tupaia/database';
 
-const INTERNAL_USERS = [
-  'edmofro@gmail.com', // Edwin
-  'kahlinda.mahoney@gmail.com', // Kahlinda
-  'lparish1980@gmail.com', // Lewis
-  'sus.lake@gmail.com', // Susie
-  'michaelnunan@hotmail.com', // Michael
-  'vanbeekandrew@gmail.com', // Andrew
-  'gerardckelly@gmail.com', // Gerry K
-  'geoffreyfisher@hotmail.com', // Geoff F
-  'josh@sussol.net', // mSupply API Client
-  'unicef.laos.edu@gmail.com', // Laos Schools Data Collector
-  'tamanu-server@tupaia.org', // Tamanu Server
-  'public@tupaia.org', // Public User
-];
-
 // Currently our pattern is that session tables don't have models
 // in the generic database package, this is a quick and dirty way to get
 // context for them into central-server
@@ -29,8 +14,6 @@ const SERVICES = {
   // datatrak_web: 'datatrak_web_session',
   tupaia_web: 'tupaia_web_session',
 };
-
-const INTERNAL_EMAIL_REGEX = /((\@bes\.au)|(\@tupaia\.org)|(\@beyondessential\.com\.au))/;
 
 class UserRecord extends CommonUserRecord {
   async expireSessionToken(service) {
@@ -47,34 +30,6 @@ class UserRecord extends CommonUserRecord {
 }
 
 export class UserModel extends CommonUserModel {
-  meditrakConfig = {
-    // only sync id and first and last name
-    ignorableFields: [
-      'gender',
-      'creation_date',
-      'employer',
-      'position',
-      'mobile_number',
-      'password_hash',
-      'password_salt',
-      'verified_email',
-      'profile_image',
-      'primary_platform',
-      'preferences',
-      'full_name', // ignore this because it isn't a real field, it's a derived field
-    ],
-    translateRecordForSync: record => {
-      const { email } = record;
-
-      // Don't sync internal users. These nulls will be filtered out by the sync service
-      if (INTERNAL_USERS.includes(email) || INTERNAL_EMAIL_REGEX.test(email)) {
-        return null;
-      }
-      return record;
-    },
-    minAppVersion: '1.14.142',
-  };
-
   get DatabaseRecordClass() {
     return UserRecord;
   }
