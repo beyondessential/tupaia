@@ -73,7 +73,7 @@ export type UserQuestionConfig = {
   /**
    * @description  Filters the users by permission group.
    */
-  permissionGroup: PermissionGroup['name'];
+  permissionGroup: PermissionGroup['id'];
 };
 
 export type TaskQuestionConfig = {

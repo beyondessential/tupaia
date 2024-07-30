@@ -9,20 +9,20 @@ import { get } from '../api';
 
 export const usePermissionGroupUsers = (
   countryCode?: Country['code'],
-  permissionGroupName?: PermissionGroup['name'],
+  permissionGroupId?: PermissionGroup['id'],
   searchTerm?: string,
 ) => {
   return useQuery(
-    ['users', permissionGroupName, countryCode, searchTerm],
+    ['users', permissionGroupId, countryCode, searchTerm],
     (): Promise<DatatrakWebUsersRequest.ResBody> =>
       get(`users/${countryCode}`, {
         params: {
           searchTerm,
-          permissionGroupName,
+          permissionGroupId,
         },
       }),
     {
-      enabled: !!permissionGroupName && !!countryCode,
+      enabled: !!permissionGroupId && !!countryCode,
     },
   );
 };

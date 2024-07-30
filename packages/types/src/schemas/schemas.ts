@@ -40637,8 +40637,8 @@ export const TaskQuestionConfigSchema = {
 				"questionId"
 			]
 		},
-		"entityCode": {
-			"description": "Sets the entity for the task.",
+		"entityId": {
+			"description": "Determines the entity that the task will be created for.",
 			"type": "object",
 			"properties": {
 				"questionId": {
@@ -40655,7 +40655,7 @@ export const TaskQuestionConfigSchema = {
 			"type": "string"
 		},
 		"dueDate": {
-			"description": "Sets the due date for the task.",
+			"description": "Determines the due date of the task.",
 			"type": "object",
 			"properties": {
 				"questionId": {
@@ -40668,7 +40668,7 @@ export const TaskQuestionConfigSchema = {
 			]
 		},
 		"assignee": {
-			"description": "Sets the assignee for the task.",
+			"description": "Determines the assignee of the task.",
 			"type": "object",
 			"properties": {
 				"questionId": {
@@ -40685,7 +40685,7 @@ export const TaskQuestionConfigSchema = {
 	"required": [
 		"assignee",
 		"dueDate",
-		"entityCode",
+		"entityId",
 		"shouldCreateTask",
 		"surveyCode"
 	]
@@ -41278,8 +41278,8 @@ export const SurveyScreenComponentConfigSchema = {
 						"questionId"
 					]
 				},
-				"entityCode": {
-					"description": "Sets the entity for the task.",
+				"entityId": {
+					"description": "Determines the entity that the task will be created for.",
 					"type": "object",
 					"properties": {
 						"questionId": {
@@ -41296,7 +41296,7 @@ export const SurveyScreenComponentConfigSchema = {
 					"type": "string"
 				},
 				"dueDate": {
-					"description": "Sets the due date for the task.",
+					"description": "Determines the due date of the task.",
 					"type": "object",
 					"properties": {
 						"questionId": {
@@ -41309,7 +41309,7 @@ export const SurveyScreenComponentConfigSchema = {
 					]
 				},
 				"assignee": {
-					"description": "Sets the assignee for the task.",
+					"description": "Determines the assignee of the task.",
 					"type": "object",
 					"properties": {
 						"questionId": {
@@ -41326,7 +41326,7 @@ export const SurveyScreenComponentConfigSchema = {
 			"required": [
 				"assignee",
 				"dueDate",
-				"entityCode",
+				"entityId",
 				"shouldCreateTask",
 				"surveyCode"
 			]

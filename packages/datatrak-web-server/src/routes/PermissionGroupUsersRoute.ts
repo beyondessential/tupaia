@@ -25,13 +25,17 @@ export class PermissionGroupUsersRoute extends Route<PermissionGroupUsersRequest
     const { models, params, query } = this.req;
     const { countryCode } = params;
 
-    const { searchTerm, permissionGroupName } = query;
+    const { searchTerm, permissionGroupId } = query;
+
+    if (!permissionGroupId) {
+      throw new Error('Permission group id is required');
+    }
 
     // get the permission group
-    const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
+    const permissionGroup = await models.permissionGroup.findById(permissionGroupId);
 
     if (!permissionGroup) {
-      throw new Error(`Permission group with name ${permissionGroupName} not found`);
+      throw new Error(`Permission group with id '${permissionGroupId}' not found`);
     }
 
     return getFilteredUsers(models, countryCode, permissionGroup, searchTerm);
