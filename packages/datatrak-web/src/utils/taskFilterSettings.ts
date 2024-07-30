@@ -24,5 +24,7 @@ export const setTaskFilterSetting = (cookieName: TaskFilterType, value: boolean)
 };
 
 export const removeTaskFilterSetting = (cookieName: TaskFilterType): boolean => {
-  return Cookies.remove(cookieName);
+  return Cookies.remove(cookieName, {
+    ...(!isDev && { domain: '.tupaia.org' }),
+  });
 };
