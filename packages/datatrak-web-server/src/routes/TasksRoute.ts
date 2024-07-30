@@ -140,19 +140,29 @@ export class TasksRoute extends Route<TasksRequest> {
 
     this.formatFilters();
     await this.processFilterSettings();
-    // If no sort is provided, default to sorting completed and cancelled tasks to the bottom and by due date
-    const rawSort =
-      !sort &&
-      "CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC";
 
-    const tasks = await ctx.services.central.fetchResources('tasks', {
+    const params: {
+      filter: FormattedFilters;
+      columns: string[];
+      pageSize: number;
+      page: number;
+      sort?: string[];
+      rawSort?: string;
+    } = {
       filter: this.filters,
       columns: FIELDS,
-      rawSort,
-      sort,
       pageSize,
       page,
-    });
+    };
+    if (sort) {
+      params.sort = sort;
+    } else {
+      // If no sort is provided, default to sorting completed and cancelled tasks to the bottom and by due date
+      params.rawSort =
+        "CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC";
+    }
+
+    const tasks = await ctx.services.central.fetchResources('tasks', params);
 
     const formattedTasks = (await Promise.all(
       tasks.map(async (task: TaskT) => {

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity, EntityType, PermissionGroup, Question, Survey, UserAccount } from '../../models';
+import { Entity, EntityType, PermissionGroup, Question, Survey } from '../../models';
 
 export type CodeGeneratorQuestionConfig = {
   type: 'shortid' | 'mongoid';
@@ -82,19 +82,19 @@ export type TaskQuestionConfig = {
    */
   shouldCreateTask: QuestionValue;
   /**
-   * @description  Sets the entity for the task.
+   * @description  Determines the entity that the task will be created for.
    */
-  entityCode: QuestionValue;
+  entityId: QuestionValue;
   /**
    * @description Determines the survey that the task will be created for.
    */
   surveyCode: Survey['code'];
   /**
-   * @description Sets the due date for the task.
+   * @description  Determines the due date of the task.
    */
   dueDate: QuestionValue;
   /**
-   * @description  Sets the assignee for the task.
+   * @description  Determines the assignee of the task.
    */
   assignee: QuestionValue;
 };
