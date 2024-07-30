@@ -42,7 +42,7 @@ export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction
 
 export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const [urlSearchParams] = useSearchParams();
-  const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(surveyCode);
+  const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
   const primaryEntity = usePrimaryEntityLocation();
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const params = useParams<SurveyParams>();
