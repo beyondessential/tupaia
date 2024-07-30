@@ -167,7 +167,7 @@ const useTasksTable = () => {
       accessor: task => (
         <ActionCellContent>
           <ActionButton task={task} />
-          <TaskActionsMenu {...task} />
+          <TaskActionsMenu task={task} />
         </ActionCellContent>
       ),
       id: 'actions',
