@@ -61,6 +61,7 @@ export class UserModel extends CommonUserModel {
       'profile_image',
       'primary_platform',
       'preferences',
+      'full_name', // ignore this because it isn't a real field, it's a derived field
     ],
     translateRecordForSync: record => {
       const { email } = record;
@@ -69,11 +70,7 @@ export class UserModel extends CommonUserModel {
       if (INTERNAL_USERS.includes(email) || INTERNAL_EMAIL_REGEX.test(email)) {
         return null;
       }
-      return {
-        id: record.id,
-        // create full name from first and last name
-        full_name: [record.first_name, record.last_name].filter(name => !!name).join(' '),
-      };
+      return record;
     },
     minAppVersion: '1.14.142',
   };
