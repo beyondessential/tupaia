@@ -4,12 +4,12 @@
  */
 import React, { useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
-import { Country, DatatrakWebSurveyUsersRequest } from '@tupaia/types';
+import { Country, DatatrakWebUsersRequest } from '@tupaia/types';
 import { Autocomplete } from '../../components';
 import { useSurveyUsers } from '../../api';
 import { Survey } from '../../types';
 
-type User = DatatrakWebSurveyUsersRequest.ResBody[0];
+type User = DatatrakWebUsersRequest.ResBody[0];
 
 interface AssigneeInputProps {
   value: string | null;

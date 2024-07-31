@@ -21,7 +21,7 @@ export {
   DatatrakWebEntityDescendantsRequest,
   DatatrakWebTasksRequest,
   DatatrakWebTaskRequest,
-  DatatrakWebSurveyUsersRequest,
+  DatatrakWebUsersRequest,
   DatatrakWebTaskChangeRequest,
 } from './datatrak-web-server';
 export {

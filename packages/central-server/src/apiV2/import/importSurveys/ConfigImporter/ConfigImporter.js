@@ -12,6 +12,7 @@ import { processConditionConfig } from './processConditionConfig';
 import { processAutocompleteConfig } from './processAutocompleteConfig';
 import { processEntityConfig } from './processEntityConfig';
 import { processTaskConfig } from './processTaskConfig';
+import { processUserConfig } from './processUserConfig';
 
 const { CODE_GENERATOR, ARITHMETIC, CONDITION, AUTOCOMPLETE, ENTITY, PRIMARY_ENTITY, TASK, USER } =
   ANSWER_TYPES;
@@ -91,7 +92,8 @@ export class ConfigImporter {
         return { task: taskConfig };
       }
       case USER: {
-        return { user: config };
+        const userConfig = await processUserConfig(this.models, config);
+        return { user: userConfig };
       }
 
       default:
