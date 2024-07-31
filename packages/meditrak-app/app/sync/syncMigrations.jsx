@@ -48,7 +48,7 @@ const migrations = {
   },
   // Resync all users so that the new user entity permission structure comes through
   10: async (synchroniser, setProgressMessage) => {
-    await resyncRecordTypes(synchroniser, setProgressMessage, ['user']);
+    await resyncRecordTypes(synchroniser, setProgressMessage, ['user_account']);
   },
   11: async (synchroniser, setProgressMessage) => {
     await resyncRecordTypes(synchroniser, setProgressMessage, ['user_entity_permission']);

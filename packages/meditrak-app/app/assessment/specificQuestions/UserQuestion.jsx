@@ -18,11 +18,12 @@ const UserQuestionComponent = props => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxResults, setMaxResults] = useState(OPTIONS_PER_PAGE);
 
+  const userList = users?.map(user => user.name) ?? [];
+
   const optionList =
-    users
-      ?.map(user => user.name)
-      ?.filter(option => !searchTerm || option.toLowerCase().includes(searchTerm.toLowerCase))
-      ?.slice(0, maxResults) ?? [];
+    userList
+      .filter(option => !searchTerm || option.toLowerCase().startsWith(searchTerm.toLowerCase()))
+      .slice(0, maxResults) ?? [];
 
   const getSelectedUser = () => users.find(user => user.id === selectedUserId);
 
@@ -42,6 +43,11 @@ const UserQuestionComponent = props => {
     onSelectUser(newSelectedUser?.id ?? null);
   };
 
+  const handleChangeSearchTerm = newSearchTerm => {
+    setSearchTerm(newSearchTerm);
+    setMaxResults(OPTIONS_PER_PAGE);
+  };
+
   return (
     <View>
       <Autocomplete
@@ -50,7 +56,7 @@ const UserQuestionComponent = props => {
         handleSelectOption={handleSelectOption}
         options={optionList}
         handleEndReached={handleEndReached}
-        handleChangeInput={setSearchTerm}
+        handleChangeInput={handleChangeSearchTerm}
         scrollIntoFocus={scrollIntoFocus}
         endReachedOffset={0.3}
       />
