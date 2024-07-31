@@ -4,6 +4,7 @@
  */
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import {
+  DatatrakWebResubmitSurveyResponseRequest,
   DatatrakWebSubmitSurveyResponseRequest,
   Entity,
   MeditrakSurveyResponseRequest,
@@ -13,7 +14,9 @@ import {
 import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
-type SurveyRequestT = DatatrakWebSubmitSurveyResponseRequest.ReqBody;
+type SurveyRequestT =
+  | DatatrakWebSubmitSurveyResponseRequest.ReqBody
+  | DatatrakWebResubmitSurveyResponseRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
   qr_codes_to_create?: Entity[];
   recent_entities: string[];
@@ -65,6 +68,10 @@ export const processSurveyResponse = async (
     options_created: [],
     answers: [],
   };
+  // if there is an entityId in the survey response data, add it to the survey response. This will happen in cases of resubmission
+  if ('entityId' in surveyResponseData && surveyResponseData.entityId) {
+    surveyResponse.entity_id = surveyResponseData.entityId;
+  }
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
 

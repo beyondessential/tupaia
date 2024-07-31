@@ -34,6 +34,7 @@ export const useResubmitSurveyResponse = () => {
           // keep the same dataTime and userId as the original survey response
           dataTime: surveyResponse?.dataTime ? new Date(surveyResponse?.dataTime) : new Date(),
           userId: surveyResponse?.userId,
+          entityId: surveyResponse?.entityId,
         },
       });
     },
