@@ -49,7 +49,9 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
           );
           if (!question) return acc;
           if (question.type === QuestionType.File && value) {
-            return { ...acc, [key]: { name: value, value } };
+            // If the value is a file, split the value to get the file name
+            const fileName = value.split('_').pop();
+            return { ...acc, [key]: { name: fileName, value } };
           }
 
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
