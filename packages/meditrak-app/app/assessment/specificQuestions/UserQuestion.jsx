@@ -39,7 +39,7 @@ const UserQuestionComponent = props => {
 
   const handleSelectOption = option => {
     const newSelectedUser = users.find(user => user.name === option);
-    onSelectUser(newSelectedUser.id);
+    onSelectUser(newSelectedUser?.id ?? null);
   };
 
   return (
