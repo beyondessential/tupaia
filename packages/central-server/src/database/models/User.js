@@ -5,6 +5,7 @@
 
 import { UserRecord as CommonUserRecord, UserModel as CommonUserModel } from '@tupaia/database';
 
+// Internal users who should be flagged in the meditrak app to exclude from user lists
 const INTERNAL_USERS = [
   'edmofro@gmail.com', // Edwin
   'kahlinda.mahoney@gmail.com', // Kahlinda
@@ -18,7 +19,7 @@ const INTERNAL_USERS = [
   'unicef.laos.edu@gmail.com', // Laos Schools Data Collector
 ];
 
-const INTERNAL_EMAIL_REGEX = /((@bes.au)|(@tupaia.org)|(@beyondessential.com.au))/;
+const INTERNAL_EMAIL_REGEXP = /((@bes.au)|(@tupaia.org)|(@beyondessential.com.au))/;
 
 // Currently our pattern is that session tables don't have models
 // in the generic database package, this is a quick and dirty way to get
@@ -63,7 +64,7 @@ export class UserModel extends CommonUserModel {
     ],
     translateRecordForSync: record => {
       const { email, ...restOfRecord } = record;
-      const isInternal = INTERNAL_USERS.includes(email) || INTERNAL_EMAIL_REGEX.test(email);
+      const isInternal = INTERNAL_USERS.includes(email) || INTERNAL_EMAIL_REGEXP.test(email);
 
       // Flag internal users. These will be filtered out in meditrak-app
       if (isInternal) {
