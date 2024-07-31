@@ -20,10 +20,24 @@ const UserQuestionComponent = props => {
 
   const userList = users?.map(user => user.name) ?? [];
 
-  const optionList =
-    userList
-      .filter(option => !searchTerm || option.toLowerCase().startsWith(searchTerm.toLowerCase()))
-      .slice(0, maxResults) ?? [];
+  const generateOptionList = () => {
+    if (!searchTerm) {
+      return userList.slice(0, maxResults);
+    }
+    const lowercaseSearchTerm = searchTerm.toLowerCase();
+    const usersThatStartWithSearchTerm = userList.filter(user =>
+      user.toLowerCase().startsWith(lowercaseSearchTerm),
+    );
+
+    const usersThatContainSearchTerm = userList.filter(user =>
+      user.toLowerCase().includes(lowercaseSearchTerm),
+    );
+
+    // return first the users that start with the search term, then the users that contain the search term
+    return [...usersThatStartWithSearchTerm, ...usersThatContainSearchTerm].slice(0, maxResults);
+  };
+
+  const optionList = generateOptionList();
 
   const getSelectedUser = () => users.find(user => user.id === selectedUserId);
 
