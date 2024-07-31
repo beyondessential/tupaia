@@ -162,12 +162,11 @@ export class DatabaseAccess extends SyncingDatabase {
     return this.getAncestorsOfPermissionGroup(parent, [...acc, parent.id]);
   }
 
-  getUsersByPermissionGroupAndCountry(countryCode, permissionGroupName) {
+  getUsersByPermissionGroupAndCountry(countryCode, permissionGroupId) {
     // get user entity permission entries by the country code and permission group name
     const countryEntity = this.getEntities({ code: countryCode })[0];
 
-    // TODO: change this to id when other user question ticket is merged in
-    const permissionGroup = this.findOne('PermissionGroup', permissionGroupName, 'name');
+    const permissionGroup = this.findOne('PermissionGroup', permissionGroupId, 'id');
 
     const ancestors = this.getAncestorsOfPermissionGroup(permissionGroup);
 
