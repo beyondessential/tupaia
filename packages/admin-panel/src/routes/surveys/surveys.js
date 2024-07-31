@@ -541,7 +541,7 @@ const QUESTION_COLUMNS = [
                     fieldName: 'permissionGroup',
                     optionsEndpoint: 'permissionGroups',
                     optionLabelKey: 'name',
-                    optionValueKey: 'name',
+                    optionValueKey: 'id',
                     labelTooltip: 'Select the permission group the user list should be filtered by',
                   },
                 ],

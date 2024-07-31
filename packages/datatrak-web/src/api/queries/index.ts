@@ -23,3 +23,4 @@ export { useEntities } from './useEntities';
 export { useTasks } from './useTasks';
 export { useTask } from './useTask';
 export { useSurveyUsers } from './useSurveyUsers';
+export { usePermissionGroupUsers } from './usePermissionGroupUsers';
