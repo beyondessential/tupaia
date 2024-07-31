@@ -24,7 +24,7 @@ const isPrimaryEntityQuestion = (config, questions) => {
   return primaryEntityQuestion.id === questionId;
 };
 
-const getSurveyCode = async (models, config) => {
+const getSurveyId = async (models, config) => {
   const surveyCode = config.surveyCode;
   const survey = await models.survey.findOne({ code: surveyCode });
   return survey.id;
@@ -54,7 +54,7 @@ export class TaskCreationHandler extends ChangeHandler {
 
   /**
    * @private
-   * Only get the new survey responses that are created, as we only want to mark tasks as completed when a survey response is created, not when it is updated
+   * Only get the new survey responses that are created, as we only want to create new tasks when a survey response is created, not when it is updated
    */
   getNewSurveyResponses(changeDetails) {
     const { type, new_record: newRecord, old_record: oldRecord } = changeDetails;
@@ -83,7 +83,7 @@ export class TaskCreationHandler extends ChangeHandler {
       const answers = await sr.getAnswers();
       const getAnswer = getAnswerWrapper(config, answers);
 
-      if (getAnswer('shouldCreateTask') === false) {
+      if (!config || getAnswer('shouldCreateTask') === false) {
         continue;
       }
 
@@ -92,7 +92,7 @@ export class TaskCreationHandler extends ChangeHandler {
       const entityId = isPrimaryEntityQuestion(config, questions)
         ? response.entity_id
         : getAnswer('entityId');
-      const surveyId = await getSurveyCode(models, config);
+      const surveyId = await getSurveyId(models, config);
 
       await models.task.create({
         survey_id: surveyId,
@@ -100,7 +100,6 @@ export class TaskCreationHandler extends ChangeHandler {
         assignee_id: getAnswer('assignee'),
         due_date: getAnswer('dueDate'),
         status: 'to_do',
-        survey_response_id: response.id,
       });
     }
   }

@@ -144,14 +144,22 @@ describe('TaskCreationHandler', () => {
 
   it.each(TEST_DATA)('%s', async (_name, { config, answers = {} }, result) => {
     const { survey } = await buildTaskCreationSurvey(models, config);
-    const { surveyResponse } = await buildSurveyResponse(models, survey.code, answers);
+    await buildSurveyResponse(models, survey.code, answers);
     await models.database.waitForAllChangeHandlers();
-    const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
+    const task = await models.task.find({ entity_id: entityId }, { sort: ['created_at DESC'] });
 
-    expect(task).toMatchObject({
+    const { survey_id, entity_id, status, due_date, assignee_id, repeat_schedule } = task[0];
+
+    expect({
+      survey_id,
+      entity_id,
+      assignee_id,
+      due_date,
+      status,
+      repeat_schedule,
+    }).toMatchObject({
       repeat_schedule: null,
       due_date: null,
-      survey_response_id: surveyResponse.id,
       status: 'to_do',
       ...result,
     });
@@ -159,9 +167,9 @@ describe('TaskCreationHandler', () => {
 
   it('Does not create a task if shouldCreateTask is false', async () => {
     const { survey } = await buildTaskCreationSurvey(models, { shouldCreateTask: 'TEST_01' });
-    const { surveyResponse } = await buildSurveyResponse(models, survey.code, { TEST_01: false });
+    await buildSurveyResponse(models, survey.code, { TEST_01: false });
     await models.database.waitForAllChangeHandlers();
-    const task = await models.task.findOne({ survey_response_id: surveyResponse.id });
+    const task = await models.task.findOne({ survey_id: taskSurveyId });
 
     expect(task).toBeNull();
   });
