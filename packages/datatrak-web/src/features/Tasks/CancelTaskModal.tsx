@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core';
 import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { TaskSummary } from './TaskSummary';
-import { TasksResponse } from '../../types';
+import { SingleTaskResponse } from '../../types';
 
 const Container = styled(ModalCenteredContent)`
   width: 27rem;
@@ -17,7 +17,7 @@ const Container = styled(ModalCenteredContent)`
 `;
 
 interface CancelTaskModalProps {
-  task: TasksResponse;
+  task: SingleTaskResponse;
   isOpen: boolean;
   onClose: () => void;
   onCancelTask: () => void;

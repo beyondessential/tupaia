@@ -10,7 +10,7 @@ import { ActionsMenu } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { useEditTask } from '../../api';
 import { CancelTaskModal } from './CancelTaskModal';
-import { TasksResponse } from '../../types';
+import { SingleTaskResponse } from '../../types';
 
 const MenuButton = styled(IconButton)`
   &.MuiIconButton-root {
@@ -19,7 +19,7 @@ const MenuButton = styled(IconButton)`
   }
 `;
 
-export const TaskActionsMenu = ({ task }: { task: TasksResponse }) => {
+export const TaskActionsMenu = ({ task }: { task: SingleTaskResponse }) => {
   const [isOpen, setIsOpen] = useState(false);
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
@@ -40,7 +40,6 @@ export const TaskActionsMenu = ({ task }: { task: TasksResponse }) => {
   if (task.taskStatus === TaskStatus.cancelled || task.taskStatus === TaskStatus.completed) {
     return null;
   }
-  console.log('ACTIIONS', task);
 
   return (
     <>

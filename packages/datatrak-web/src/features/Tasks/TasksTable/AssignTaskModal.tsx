@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 import { Modal, ModalCenteredContent } from '@tupaia/ui-components';
 import { useEditTask } from '../../../api';
-import { TasksResponse } from '../../../types';
+import { SingleTaskResponse } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { TaskSummary } from '../TaskSummary';
@@ -20,7 +20,7 @@ const Container = styled(ModalCenteredContent)`
 `;
 
 interface AssignTaskModalProps {
-  task: TasksResponse;
+  task: SingleTaskResponse;
   Button: React.ComponentType<{ onClick: () => void }>;
 }
 
