@@ -137,6 +137,15 @@ export const processSurveyResponse = async (
       }
       case QuestionType.File: {
         const { name, value } = answer as FileUploadAnswerT;
+        const isBase64 = value.startsWith('data:');
+        // if the file is not base64 encoded, save the file as it is, as this means it's a file that was uploaded already, and this is a resubmission
+        if (!isBase64) {
+          answersToSubmit.push({
+            ...answerObject,
+            body: value,
+          });
+          break;
+        }
         answersToSubmit.push({
           ...answerObject,
           body: {

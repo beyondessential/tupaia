@@ -42,20 +42,14 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       answer.body?.hasOwnProperty('uniqueFileName') &&
       answer.body?.hasOwnProperty('data')
     ) {
-      const s3FilePath = getS3UploadFilePath();
-      // If the file is a url to an s3 file, save the url as the answer. If it's not a url, upload the file to s3 and save the url as the answer. This is mainly for resubmitting surveys with file answers that have not been changed
-      if (answer.body.data?.includes(s3FilePath)) {
-        answerDocument.text = answer.body.data;
-      } else {
-        try {
-          const s3Client = new S3Client(new S3());
-          answerDocument.text = await s3Client.uploadFile(
-            answer.body.uniqueFileName,
-            answer.body.data,
-          );
-        } catch (error) {
-          throw new UploadError(error);
-        }
+      try {
+        const s3Client = new S3Client(new S3());
+        answerDocument.text = await s3Client.uploadFile(
+          answer.body.uniqueFileName,
+          answer.body.data,
+        );
+      } catch (error) {
+        throw new UploadError(error);
       }
     } else {
       answerDocument.text = answer.body;

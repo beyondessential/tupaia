@@ -50,7 +50,8 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
           if (!question) return acc;
           if (question.type === QuestionType.File && value) {
             // If the value is a file, split the value to get the file name
-            const fileNameParts = value.split('/files/')[1].split('_');
+            const withoutPrefix = value.split('files/');
+            const fileNameParts = withoutPrefix[withoutPrefix.length - 1].split('_');
             // remove first element of the array as it is the file id
             const fileName = fileNameParts.slice(1).join('_');
             return { ...acc, [key]: { name: fileName, value } };
