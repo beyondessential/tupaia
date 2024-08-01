@@ -544,7 +544,7 @@ describe('processSurveyResponse', () => {
       ],
       answers: {
         question1: {
-          value: 'theEncodedFile',
+          value: 'data://theEncodedFile',
           name: 'theFileName',
         },
       },
@@ -557,9 +557,41 @@ describe('processSurveyResponse', () => {
           question_id: 'question1',
           type: QuestionType.File,
           body: {
-            data: 'theEncodedFile',
+            data: 'data://theEncodedFile',
             uniqueFileName: getUniqueSurveyQuestionFileName('theFileName'),
           },
+        },
+      ],
+    });
+  });
+
+  it('should handle when question type is File and the file is not an encoded file', async () => {
+    const result = await processSurveyResponse(mockModels, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.File,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: {
+          value: 'filename.png',
+          name: 'theFileName',
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.File,
+          body: 'filename.png',
         },
       ],
     });
