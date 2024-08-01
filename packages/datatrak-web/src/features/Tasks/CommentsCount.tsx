@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { CommentIcon } from '../../components';
+import { Tooltip } from '@tupaia/ui-components';
 
 const CommentsCountWrapper = styled.div`
   color: ${({ theme }) => theme.palette.text.secondary};
@@ -26,9 +27,11 @@ const CommentCountText = styled(Typography)`
 export const CommentsCount = ({ commentsCount }: { commentsCount: number }) => {
   if (!commentsCount) return null;
   return (
-    <CommentsCountWrapper title="Number of user generated comments on this task">
-      <CommentIcon />
-      <CommentCountText>{commentsCount}</CommentCountText>
-    </CommentsCountWrapper>
+    <Tooltip title="Number of user generated comments on this task">
+      <CommentsCountWrapper>
+        <CommentIcon />
+        <CommentCountText>{commentsCount}</CommentCountText>
+      </CommentsCountWrapper>
+    </Tooltip>
   );
 };
