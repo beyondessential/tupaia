@@ -7,10 +7,9 @@ import React, { useState } from 'react';
 import { generatePath, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { KeyboardArrowLeft } from '@material-ui/icons';
 import { TaskStatus } from '@tupaia/types';
 import { Modal, ModalCenteredContent, SpinningLoader } from '@tupaia/ui-components';
-import { Button } from '../../components';
+import { ArrowLeftIcon, Button } from '../../components';
 import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
 import { ROUTES } from '../../constants';
@@ -20,11 +19,12 @@ import { SingleTaskResponse } from '../../types';
 const BackButton = styled(Button)`
   position: absolute;
   left: 0;
+  min-width: 0;
   color: ${({ theme }) => theme.palette.text.primary};
-  padding: 0.2rem;
+  padding: 0.7rem;
   border-radius: 50%;
   .MuiSvgIcon-root {
-    font-size: 2.5rem;
+    font-size: 1.3rem;
   }
 `;
 
@@ -108,7 +108,7 @@ export const TaskDetailsPage = () => {
     <>
       <TaskPageHeader title="Task details">
         <BackButton to={from || ROUTES.TASKS} variant="text" title="Back">
-          <KeyboardArrowLeft />
+          <ArrowLeftIcon />
         </BackButton>
         <ButtonWrapper>
           <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />

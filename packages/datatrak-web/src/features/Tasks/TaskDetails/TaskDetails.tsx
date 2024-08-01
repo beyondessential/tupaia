@@ -9,7 +9,7 @@ import { useForm, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
-import { LoadingContainer, TextField } from '@tupaia/ui-components';
+import { LoadingContainer } from '@tupaia/ui-components';
 import { useEditTask } from '../../../api';
 import { Button } from '../../../components';
 import { useFromLocation } from '../../../utils';
@@ -41,9 +41,16 @@ const MainColumn = styled.div`
   justify-content: space-between;
   flex: 1;
   margin-block: 1.2rem;
+  border-color: ${({ theme }) => theme.palette.divider};
+  border-style: solid;
+  border-width: 1px 0;
+  padding-block: 1.2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 44%;
+    width: 50%;
     margin-block: 0;
+    padding-inline: 1.2rem;
+    padding-block: 0;
+    border-width: 0 1px;
   }
 `;
 
@@ -52,7 +59,7 @@ const SideColumn = styled.div`
   flex-direction: column;
   justify-content: space-between;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 28%;
+    width: 25%;
   }
 `;
 
