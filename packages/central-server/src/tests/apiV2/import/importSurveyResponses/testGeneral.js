@@ -35,8 +35,7 @@ export const testGeneral = async () => {
       { code: 'DL_7', name: 'Lake Charm' },
       { code: 'DL_9', name: 'Thornbury' },
     ].map(entity => ({
-      code: entity.code,
-      name: entity.name,
+      ...entity,
       country_code: 'DL',
     }));
     await findOrCreateRecords(models, { entity: entities });

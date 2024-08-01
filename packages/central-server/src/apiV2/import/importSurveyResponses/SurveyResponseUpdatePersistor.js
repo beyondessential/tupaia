@@ -61,12 +61,12 @@ export class SurveyResponseUpdatePersistor {
   setupColumnsForSheet(sheetName, surveyResponses) {
     surveyResponses.forEach((surveyResponse, columnIndex) => {
       if (!surveyResponse) return; // array contains some empty slots representing info columns
-      this.updatesByResponseId[surveyResponse['surveyResponseId']] = {
+      this.updatesByResponseId[surveyResponse.surveyResponseId] = {
         type: UPDATE,
         sheetName,
         columnIndex,
-        surveyResponseId: surveyResponse['surveyResponseId'],
-        entityId: surveyResponse['entityId'],
+        surveyResponseId: surveyResponse.surveyResponseId,
+        entityId: surveyResponse.entityId,
         newSurveyResponse: null, // only populated if a new survey response is to be created
         newDataTime: null, // only populated if submission time is to be updated
         answers: {

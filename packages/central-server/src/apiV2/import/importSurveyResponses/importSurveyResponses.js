@@ -173,14 +173,12 @@ export async function importSurveyResponses(req, res) {
         const entity = await models.entity.findOne({ code: entityCode });
 
         if (entityCode && entityName) {
-          if (entity) {
-            if (entity?.name !== entityName) {
-              throw new Error(
-                `Entity code and name don't match: ${entity?.name} and ${entityName}`,
-              );
-            }
-          } else {
+          if (!entity) {
             throw new Error(`Entity code does match any existing entity: ${entityCode}`);
+          }
+
+          if (entity.name !== entityName) {
+            throw new Error(`Entity code and name don't match: ${entity?.name} and ${entityName}`);
           }
         }
 

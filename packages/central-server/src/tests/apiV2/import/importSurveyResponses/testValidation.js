@@ -30,7 +30,7 @@ export const testValidation = async () => {
         { code: 'DL_9', name: 'Thornbury' },
         { code: 'DL_10', name: 'Traralgon' },
         { code: 'DL_11', name: 'National Medical Warehouse' },
-      ].map(entity => ({ code: entity.code, country_code: 'DL', name: entity.name })),
+      ].map(entity => ({ ...entity, country_code: 'DL' })),
     });
   });
 
