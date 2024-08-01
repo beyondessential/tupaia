@@ -30,7 +30,7 @@ const Pill = styled.span`
 
 const ResponseStatusPill = ({ value }) => {
   const text = value ? 'Outdated' : 'Current';
-  const color = value ? GREEN : GREY;
+  const color = value ? GREY : GREEN;
   return <Pill $color={color}>{text}</Pill>;
 };
 
