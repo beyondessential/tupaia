@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { CommentIcon } from '../../components';
 import { Tooltip } from '@tupaia/ui-components';
+import { CommentIcon } from '../../components';
 
 const CommentsCountWrapper = styled.div`
   color: ${({ theme }) => theme.palette.text.secondary};

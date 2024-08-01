@@ -62,18 +62,6 @@ const ItemWrapper = styled.div`
   }
 `;
 
-const CommentsInput = styled(TextField).attrs({
-  multiline: true,
-  variant: 'outlined',
-  fullWidth: true,
-  rows: 4,
-})`
-  margin-block-end: 0;
-  .MuiOutlinedInput-inputMultiline {
-    padding-inline: 1rem;
-  }
-`;
-
 const ClearButton = styled(Button).attrs({
   variant: 'text',
 })`
@@ -88,6 +76,11 @@ const ButtonWrapper = styled.div`
 `;
 
 const Form = styled(TaskForm)`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Wrapper = styled.div`
   .loading-screen {
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
@@ -110,7 +103,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     control,
     handleSubmit,
     watch,
-    register,
     formState: { dirtyFields },
     reset,
   } = formContext;
@@ -142,83 +134,83 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Wrapper>
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
           <SideColumn>
-            <ItemWrapper>
-              <TaskMetadata task={task} />
-            </ItemWrapper>
-            <ItemWrapper>
-              <Controller
-                name="due_date"
-                control={control}
-                defaultValue={defaultValues.due_date}
-                render={({ value, onChange, ref }, { invalid }) => (
-                  <DueDatePicker
-                    value={value}
-                    onChange={onChange}
-                    inputRef={ref}
-                    label="Due date"
-                    disablePast
-                    fullWidth
-                    required
-                    invalid={invalid}
-                    disabled={!canEditFields}
-                  />
-                )}
-              />
-            </ItemWrapper>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              <ItemWrapper>
+                <TaskMetadata task={task} />
+              </ItemWrapper>
+              <ItemWrapper>
+                <Controller
+                  name="due_date"
+                  control={control}
+                  defaultValue={defaultValues.due_date}
+                  render={({ value, onChange, ref }, { invalid }) => (
+                    <DueDatePicker
+                      value={value}
+                      onChange={onChange}
+                      inputRef={ref}
+                      label="Due date"
+                      disablePast
+                      fullWidth
+                      required
+                      invalid={invalid}
+                      disabled={!canEditFields}
+                    />
+                  )}
+                />
+              </ItemWrapper>
 
-            <ItemWrapper>
-              <Controller
-                name="repeat_schedule"
-                control={control}
-                defaultValue={defaultValues.repeat_schedule}
-                render={({ value, onChange }) => (
-                  <RepeatScheduleInput
-                    value={value}
-                    onChange={onChange}
-                    disabled={!canEditFields}
-                    dueDate={dueDate}
-                  />
-                )}
-              />
-            </ItemWrapper>
-            <ItemWrapper>
-              <Controller
-                name="assignee_id"
-                control={control}
-                defaultValue={defaultValues.assignee_id}
-                render={({ value, onChange, ref }) => (
-                  <AssigneeInput
-                    value={value}
-                    onChange={onChange}
-                    inputRef={ref}
-                    countryCode={task.entity.countryCode}
-                    surveyCode={task.survey.code}
-                    disabled={!canEditFields}
-                  />
-                )}
-              />
-            </ItemWrapper>
+              <ItemWrapper>
+                <Controller
+                  name="repeat_schedule"
+                  control={control}
+                  defaultValue={defaultValues.repeat_schedule}
+                  render={({ value, onChange }) => (
+                    <RepeatScheduleInput
+                      value={value}
+                      onChange={onChange}
+                      disabled={!canEditFields}
+                      dueDate={dueDate}
+                    />
+                  )}
+                />
+              </ItemWrapper>
+              <ItemWrapper>
+                <Controller
+                  name="assignee_id"
+                  control={control}
+                  defaultValue={defaultValues.assignee_id}
+                  render={({ value, onChange, ref }) => (
+                    <AssigneeInput
+                      value={value}
+                      onChange={onChange}
+                      inputRef={ref}
+                      countryCode={task.entity.countryCode}
+                      surveyCode={task.survey.code}
+                      disabled={!canEditFields}
+                    />
+                  )}
+                />
+              </ItemWrapper>
+              <ButtonWrapper>
+                <ClearButton disabled={!isDirty} onClick={onClearEdit}>
+                  Clear changes
+                </ClearButton>
+                <Button type="submit" disabled={!isDirty} variant="outlined">
+                  Save changes
+                </Button>
+              </ButtonWrapper>
+            </Form>
           </SideColumn>
           <MainColumn>
             <TaskComments comments={task.comments} />
-            <CommentsInput label="Add comment" name="comment" inputRef={register} />
           </MainColumn>
-          <SideColumn>
-            <ButtonWrapper>
-              <ClearButton disabled={!isDirty} onClick={onClearEdit}>
-                Clear changes
-              </ClearButton>
-              <Button type="submit" disabled={!isDirty} variant="outlined">
-                Save changes
-              </Button>
-            </ButtonWrapper>
-          </SideColumn>
+          <SideColumn></SideColumn>
         </Container>
       </LoadingContainer>
-    </Form>
+    </Wrapper>
   );
 };
