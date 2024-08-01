@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
 import { ROUTES } from '../../../constants';
-import { TasksResponse } from '../../../types';
+import { SingleTaskResponse } from '../../../types';
 import { AssignTaskModal } from './AssignTaskModal';
 
 const ActionButtonComponent = styled(Button).attrs({
@@ -30,7 +30,7 @@ const ActionButtonComponent = styled(Button).attrs({
 `;
 
 interface ActionButtonProps {
-  task: TasksResponse;
+  task: SingleTaskResponse;
 }
 
 export const ActionButton = ({ task }: ActionButtonProps) => {

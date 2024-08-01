@@ -8,7 +8,11 @@ import { ChangeHandler } from './ChangeHandler';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 function hasValidRepeatSchedule(repeatSchedule) {
-  return typeof repeatSchedule === 'object' && Object.keys(repeatSchedule).length > 0;
+  return (
+    repeatSchedule !== null &&
+    typeof repeatSchedule === 'object' &&
+    Object.keys(repeatSchedule).length > 0
+  );
 }
 
 export class TaskCompletionHandler extends ChangeHandler {

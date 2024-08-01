@@ -96,7 +96,7 @@ export const TaskDetailsPage = () => {
       <TaskPageHeader title="Task details">
         <ButtonWrapper>
           <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
-          {task && <TaskActionsMenu {...task} />}
+          {task && <TaskActionsMenu task={task} />}
         </ButtonWrapper>
       </TaskPageHeader>
       {isLoading && <SpinningLoader />}

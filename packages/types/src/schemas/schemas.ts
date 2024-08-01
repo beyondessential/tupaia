@@ -40611,24 +40611,8 @@ export const UserQuestionConfigSchema = {
 	"type": "object",
 	"properties": {
 		"permissionGroup": {
-			"description": "If this is a question value, the user list will be filtered by the value of the question.  If this is a permission group name, the user list will be filtered by the permission group.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"questionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"questionId"
-					]
-				},
-				{
-					"type": "string"
-				}
-			]
+			"description": "Filters the users by permission group.",
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -41269,24 +41253,8 @@ export const SurveyScreenComponentConfigSchema = {
 			"type": "object",
 			"properties": {
 				"permissionGroup": {
-					"description": "If this is a question value, the user list will be filtered by the value of the question.  If this is a permission group name, the user list will be filtered by the permission group.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"questionId": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"questionId"
-							]
-						},
-						{
-							"type": "string"
-						}
-					]
+					"description": "Filters the users by permission group.",
+					"type": "string"
 				}
 			},
 			"additionalProperties": false,

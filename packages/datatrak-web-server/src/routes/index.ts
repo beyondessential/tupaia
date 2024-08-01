@@ -26,3 +26,7 @@ export { TaskRequest, TaskRoute } from './TaskRoute';
 export { SurveyUsersRequest, SurveyUsersRoute } from './SurveyUsersRoute';
 export { CreateTaskRequest, CreateTaskRoute } from './CreateTaskRoute';
 export { EditTaskRequest, EditTaskRoute } from './EditTaskRoute';
+export {
+  PermissionGroupUsersRequest,
+  PermissionGroupUsersRoute,
+} from './PermissionGroupUsersRoute';
