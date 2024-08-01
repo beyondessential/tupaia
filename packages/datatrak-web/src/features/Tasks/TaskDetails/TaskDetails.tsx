@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
@@ -12,13 +11,11 @@ import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
 import { useEditTask } from '../../../api';
 import { Button } from '../../../components';
-import { useFromLocation } from '../../../utils';
 import { SingleTaskResponse } from '../../../types';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
-import { ROUTES } from '../../../constants';
 import { TaskMetadata } from './TaskMetadata';
 import { TaskComments } from './TaskComments';
 
@@ -94,14 +91,12 @@ const Wrapper = styled.div`
 `;
 
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
-  const navigate = useNavigate();
-  const backLink = useFromLocation();
-
-  const defaultValues = {
+  const [defaultValues, setDefaultValues] = useState({
     due_date: task.dueDate ?? null,
     repeat_schedule: task.repeatSchedule?.frequency ?? null,
     assignee_id: task.assigneeId ?? null,
-  };
+  });
+
   const formContext = useForm({
     mode: 'onChange',
     defaultValues,
@@ -114,17 +109,26 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     reset,
   } = formContext;
 
-  const navigateBack = () => {
-    navigate(backLink || ROUTES.TASKS);
-  };
-
-  const { mutate: editTask, isLoading: isSaving } = useEditTask(task.id, navigateBack);
+  const { mutate: editTask, isLoading: isSaving } = useEditTask(task.id);
 
   const isDirty = Object.keys(dirtyFields).length > 0;
 
   const onClearEdit = () => {
     reset();
   };
+
+  // Reset form when task changes, i.e after task is saved and the task is re-fetched
+  useEffect(() => {
+    const newDefaultValues = {
+      due_date: task.dueDate ?? null,
+      repeat_schedule: task.repeatSchedule?.frequency ?? null,
+      assignee_id: task.assigneeId ?? null,
+    };
+
+    setDefaultValues(newDefaultValues);
+
+    reset(newDefaultValues);
+  }, [JSON.stringify(task)]);
 
   const canEditFields =
     task.taskStatus !== TaskStatus.completed && task.taskStatus !== TaskStatus.cancelled;
