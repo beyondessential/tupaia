@@ -80,9 +80,10 @@ export class TaskCreationHandler extends ChangeHandler {
         continue;
       }
 
+      const answers = await sr.getAnswers();
+
       for (const taskQuestion of taskQuestions) {
         const config = taskQuestion.config.task;
-        const answers = await sr.getAnswers();
         const getAnswer = getAnswerWrapper(config, answers);
 
         if (!config || getAnswer('shouldCreateTask') === false) {

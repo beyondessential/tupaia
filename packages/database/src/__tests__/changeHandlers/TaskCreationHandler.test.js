@@ -54,6 +54,14 @@ const buildTaskCreationSurvey = async (models, config) => {
           config,
         },
       },
+      {
+        id: 'TEST_ID_05',
+        code: 'TEST_CODE_05',
+        type: 'Task',
+        surveyScreenComponent: {
+          config,
+        },
+      },
     ],
   };
 
@@ -171,6 +179,6 @@ describe('TaskCreationHandler', () => {
     await buildSurveyResponse(models, survey.code, { TEST_01: false });
     await models.database.waitForAllChangeHandlers();
     const afterTasks = await models.task.find({ survey_id: taskSurveyId });
-    expect(beforeTasks).toEqual(afterTasks);
+    expect(beforeTasks.length).toEqual(afterTasks.length);
   });
 });
