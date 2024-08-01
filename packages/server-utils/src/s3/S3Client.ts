@@ -9,22 +9,6 @@ import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './const
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
 
-type Base64 = string | null | ArrayBuffer;
-
-const createEncodedFile = (fileObject: File): Promise<Base64> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      resolve(reader.result);
-    };
-
-    reader.onerror = reject;
-
-    reader.readAsDataURL(fileObject);
-  });
-};
-
 export class S3Client {
   private readonly s3: S3;
 
@@ -83,13 +67,14 @@ export class S3Client {
   private async uploadPrivateFile(
     fileName: string,
     readable: Buffer | string,
-    contentType: string | undefined,
+    contentType?: string,
+    contentEncoding?: string,
   ) {
     return this.upload(fileName, {
       Body: readable,
       ACL: 'bucket-owner-full-control',
       ContentType: contentType,
-      ContentEncoding: 'base64',
+      ContentEncoding: contentEncoding,
     });
   }
 
@@ -116,21 +101,23 @@ export class S3Client {
       throw new Error(`File ${s3FilePath} already exists on S3, overwrite is not allowed`);
     }
 
-    // If the file is a url string, ignore it
+    // If the file is a url string, ignore it because it's not a file. This shouldn't happen but it's a safety check
     if (typeof readable === 'string' && readable.includes(s3UploadFolder)) {
       return;
     }
 
     let buffer = readable;
     let contentType = undefined; // in cases where the file is directly loaded as a buffer, we don't have a content type and it will work without it
+    let contentEncoding = undefined;
 
     // If the file is a base64 string, convert it to a buffer and get the file type. If we don't do this, the file will be uploaded as a binary file and just the text value will be saved and won't be able to be opened
     if (typeof readable === 'string') {
       buffer = this.convertEncodedFileToBuffer(readable);
       contentType = this.getContentTypeFromBase64(readable);
+      contentEncoding = 'base64';
     }
 
-    return this.uploadPrivateFile(s3FilePath, buffer, contentType);
+    return this.uploadPrivateFile(s3FilePath, buffer, contentType, contentEncoding);
   }
 
   public async deleteFile(filePath: string) {
