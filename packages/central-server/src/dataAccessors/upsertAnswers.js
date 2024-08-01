@@ -44,10 +44,9 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
     ) {
       try {
         const s3Client = new S3Client(new S3());
-        answerDocument.text = await s3Client.uploadFile(
-          answer.body.uniqueFileName,
-          answer.body.data,
-        );
+        await s3Client.uploadFile(answer.body.uniqueFileName, answer.body.data);
+
+        answerDocument.text = answer.body.uniqueFileName;
       } catch (error) {
         throw new UploadError(error);
       }
