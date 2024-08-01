@@ -74,33 +74,36 @@ export class TaskCreationHandler extends ChangeHandler {
       const sr = await models.surveyResponse.findById(response.id);
       const questions = await getQuestions(models, response.survey_id);
 
-      const taskQuestion = questions.find(question => question.type === 'Task');
+      const taskQuestions = questions.filter(question => question.type === 'Task');
 
-      if (!taskQuestion) {
-        continue;
-      }
-      const config = taskQuestion.config.task;
-      const answers = await sr.getAnswers();
-      const getAnswer = getAnswerWrapper(config, answers);
-
-      if (!config || getAnswer('shouldCreateTask') === false) {
+      if (!taskQuestions) {
         continue;
       }
 
-      // PrimaryEntity question is a special case, where the entity_id is saved against the survey
-      // response directly rather than the answers
-      const entityId = isPrimaryEntityQuestion(config, questions)
-        ? response.entity_id
-        : getAnswer('entityId');
-      const surveyId = await getSurveyId(models, config);
+      for (const taskQuestion of taskQuestions) {
+        const config = taskQuestion.config.task;
+        const answers = await sr.getAnswers();
+        const getAnswer = getAnswerWrapper(config, answers);
 
-      await models.task.create({
-        survey_id: surveyId,
-        entity_id: entityId,
-        assignee_id: getAnswer('assignee'),
-        due_date: getAnswer('dueDate'),
-        status: 'to_do',
-      });
+        if (!config || getAnswer('shouldCreateTask') === false) {
+          continue;
+        }
+
+        // PrimaryEntity question is a special case, where the entity_id is saved against the survey
+        // response directly rather than the answers
+        const entityId = isPrimaryEntityQuestion(config, questions)
+          ? response.entity_id
+          : getAnswer('entityId');
+        const surveyId = await getSurveyId(models, config);
+
+        await models.task.create({
+          survey_id: surveyId,
+          entity_id: entityId,
+          assignee_id: getAnswer('assignee'),
+          due_date: getAnswer('dueDate'),
+          status: 'to_do',
+        });
+      }
     }
   }
 }

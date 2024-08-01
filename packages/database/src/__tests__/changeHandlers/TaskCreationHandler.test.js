@@ -146,9 +146,9 @@ describe('TaskCreationHandler', () => {
     const { survey } = await buildTaskCreationSurvey(models, config);
     await buildSurveyResponse(models, survey.code, answers);
     await models.database.waitForAllChangeHandlers();
-    const task = await models.task.find({ entity_id: entityId }, { sort: ['created_at DESC'] });
+    const tasks = await models.task.find({ entity_id: entityId }, { sort: ['created_at DESC'] });
 
-    const { survey_id, entity_id, status, due_date, assignee_id, repeat_schedule } = task[0];
+    const { survey_id, entity_id, status, due_date, assignee_id, repeat_schedule } = tasks[0];
 
     expect({
       survey_id,
@@ -166,11 +166,11 @@ describe('TaskCreationHandler', () => {
   });
 
   it('Does not create a task if shouldCreateTask is false', async () => {
+    const beforeTasks = await models.task.find({ survey_id: taskSurveyId });
     const { survey } = await buildTaskCreationSurvey(models, { shouldCreateTask: 'TEST_01' });
     await buildSurveyResponse(models, survey.code, { TEST_01: false });
     await models.database.waitForAllChangeHandlers();
-    const task = await models.task.findOne({ survey_id: taskSurveyId });
-
-    expect(task).toBeNull();
+    const afterTasks = await models.task.find({ survey_id: taskSurveyId });
+    expect(beforeTasks).toEqual(afterTasks);
   });
 });
