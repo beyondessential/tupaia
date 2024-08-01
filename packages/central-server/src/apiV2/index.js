@@ -145,7 +145,7 @@ import {
 } from './dashboardMailingListEntries';
 import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
 import { CreateTask, EditTask, GETTasks } from './tasks';
-import { GETTaskComments } from './taskComments';
+import { CreateTaskComment, GETTaskComments } from './taskComments';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -318,6 +318,7 @@ apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/tasks', useRouteHandler(CreateTask));
+apiV2.post('/tasks/:parentRecordId/taskComments', useRouteHandler(CreateTaskComment));
 /**
  * PUT routes
  */
