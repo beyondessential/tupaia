@@ -9,6 +9,22 @@ import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './const
 import { getUniqueFileName } from './getUniqueFileName';
 import { S3 } from './S3';
 
+type Base64 = string | null | ArrayBuffer;
+
+const createEncodedFile = (fileObject: File): Promise<Base64> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(fileObject);
+  });
+};
+
 export class S3Client {
   private readonly s3: S3;
 
@@ -55,31 +71,71 @@ export class S3Client {
     return response.Body;
   }
 
-  private async uploadPublicImage(fileName: string, buffer: Buffer, fileType: string) {
+  private async uploadPublicImage(fileName: string, buffer: Buffer, contentType: string) {
     return this.upload(fileName, {
       Body: buffer,
       ACL: 'public-read',
-      ContentType: `image/${fileType}`,
+      ContentType: contentType,
       ContentEncoding: 'base64',
     });
   }
 
-  private async uploadPrivateFile(fileName: string, readable: Buffer | string) {
+  private async uploadPrivateFile(
+    fileName: string,
+    readable: Buffer | string,
+    contentType: string | undefined,
+  ) {
     return this.upload(fileName, {
       Body: readable,
       ACL: 'bucket-owner-full-control',
+      ContentType: contentType,
+      ContentEncoding: 'base64',
     });
   }
 
+  private convertEncodedFileToBuffer(encodedFile: string) {
+    // remove the base64 prefix from the image. This handles svg and other image types
+    const encodedFileString = encodedFile.replace(new RegExp('(data:)(.*)(;base64,)'), '');
+
+    return Buffer.from(encodedFileString, 'base64');
+  }
+
+  private getContentTypeFromBase64(encodedFile: string) {
+    const fileType = encodedFile.substring('data:'.length, encodedFile.indexOf(';base64'));
+    return fileType;
+  }
+
   public async uploadFile(fileName: string, readable: Buffer | string) {
-    const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
+    const s3UploadFolder = getS3UploadFilePath();
+    const s3FilePath = `${s3UploadFolder}${fileName}`;
 
     const alreadyExists = await this.checkIfFileExists(s3FilePath);
+
+    // If the file already exists, throw an error
     if (alreadyExists) {
       throw new Error(`File ${s3FilePath} already exists on S3, overwrite is not allowed`);
     }
 
-    return this.uploadPrivateFile(s3FilePath, readable);
+    // If the file is a url string, ignore it
+    if (typeof readable === 'string' && readable.includes(s3UploadFolder)) {
+      return;
+    }
+
+    let buffer = readable;
+    let contentType = undefined;
+
+    // If the file is a base64 string, convert it to a buffer and get the file type
+    if (typeof readable === 'string') {
+      buffer = this.convertEncodedFileToBuffer(readable);
+      contentType = this.getContentTypeFromBase64(readable);
+    } else {
+      // otherwise, it's already a buffer, so just use it and get the file type from converting it to a base64 string
+      const base64EncodedString = buffer.toString('base64');
+      // get the file type
+      contentType = this.getContentTypeFromBase64(base64EncodedString);
+    }
+
+    return this.uploadPrivateFile(s3FilePath, buffer, contentType);
   }
 
   public async deleteFile(filePath: string) {
@@ -93,34 +149,35 @@ export class S3Client {
 
   public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
     const imageTypes = ['png', 'jpeg', 'jpg', 'gif', 'svg+xml'];
-    const encodedImageString = base64EncodedImage.replace(
-      new RegExp('(data:image)(.*)(;base64,)'),
-      '',
-    );
-    // remove the base64 prefix from the image. This handles svg and other image types
-    const buffer = Buffer.from(encodedImageString, 'base64');
+
+    // convert the base64 encoded image to a buffer
+    const buffer = this.convertEncodedFileToBuffer(base64EncodedImage);
+
+    const contentType = this.getContentTypeFromBase64(base64EncodedImage);
 
     // use the file type from the image if it's available, otherwise default to png
-    const fileType =
-      base64EncodedImage.includes('data:image') && base64EncodedImage.includes(';base64')
-        ? base64EncodedImage.substring('data:image/'.length, base64EncodedImage.indexOf(';base64'))
-        : 'png';
+    const fileType = contentType.split('/')[1] || 'png';
 
     // If is not an image file type, e.g. a pdf, throw an error
     if (!imageTypes.includes(fileType)) throw new Error(`File type ${fileType} is not supported`);
 
+    // remove the +xml from the file type if it's an svg+xml so we can use it as the file extension
     const fileExtension = fileType.replace('+xml', '');
 
     const filePath = getS3ImageFilePath();
+
+    // If a fileId is provided, use it as the file name, otherwise generate a unique file name
     const fileName = fileId
       ? `${filePath}${fileId}.${fileExtension}`
       : `${filePath}${getUniqueFileName()}.${fileExtension}`;
+
     // In some cases we want to allow overwriting of existing files
     if (!allowOverwrite) {
       if (await this.checkIfFileExists(fileName))
         throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
     }
-    return this.uploadPublicImage(fileName, buffer, fileType);
+
+    return this.uploadPublicImage(fileName, buffer, contentType);
   }
 
   public async downloadFile(fileName: string) {
