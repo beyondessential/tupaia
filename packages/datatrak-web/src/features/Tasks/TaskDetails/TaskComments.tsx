@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { TaskCommentType } from '@tupaia/types';
 import { TextField } from '@tupaia/ui-components';
@@ -13,6 +14,7 @@ import { displayDateTime } from '../../../utils';
 import { SingleTaskResponse } from '../../../types';
 import { TaskForm } from '../TaskForm';
 import { Button } from '../../../components';
+import { useCreateTaskComment } from '../../../api';
 
 const TaskCommentsDisplayContainer = styled.div`
   width: 100%;
@@ -22,6 +24,7 @@ const TaskCommentsDisplayContainer = styled.div`
   border-radius: 4px;
   overflow-y: auto;
   flex: 1;
+  max-height: 18rem;
 `;
 
 const CommentContainer = styled.div`
@@ -35,15 +38,13 @@ const CommentsInput = styled(TextField).attrs({
   multiline: true,
   variant: 'outlined',
   fullWidth: true,
-  rows: 4,
+  rows: 5,
 })`
-  margin-block-end: 0;
-  height: 11rem;
-  .MuiOutlinedInput-inputMultiline {
+  margin-block: 1.2rem;
+  height: 9.5rem;
+  .MuiOutlinedInput-inputMultiline.MuiInputBase-input {
     padding-inline: 1rem;
-  }
-  .MuiInputBase-root {
-    height: 100%;
+    padding-block: 1rem;
   }
 `;
 
@@ -78,13 +79,25 @@ const SingleComment = ({ comment }: { comment: Comments[0] }) => {
 };
 
 export const TaskComments = ({ comments }: { comments: Comments }) => {
+  const { taskId } = useParams();
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { isDirty },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      comment: '',
+    },
+  });
 
-  const onSubmit = data => {};
+  const { mutate: createTaskComment, isLoading: isSaving } = useCreateTaskComment(taskId, reset);
+
+  const onSubmit = data => {
+    createTaskComment(data.comment);
+  };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <TaskCommentsDisplayContainer>
@@ -93,8 +106,8 @@ export const TaskComments = ({ comments }: { comments: Comments }) => {
         ))}
       </TaskCommentsDisplayContainer>
       <CommentsInput label="Add comment" name="comment" inputRef={register} />
-      <Button type="submit" disabled={!isDirty}>
-        Add comment
+      <Button type="submit" disabled={!isDirty || isSaving}>
+        {isSaving ? 'Saving...' : 'Add comment'}
       </Button>
     </Form>
   );
