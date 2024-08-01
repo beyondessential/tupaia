@@ -12,10 +12,11 @@ import { ButtonLink } from '../../components';
 import { StatusPill } from './StatusPill';
 import { CommentsCount } from './CommentsCount';
 
-const TileContainer = styled.div`
+const TileContainer = styled(Link)`
   display: flex;
   text-align: left;
   justify-content: space-between;
+  text-decoration: none;
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.palette.divider};
   width: 100%;
@@ -28,6 +29,14 @@ const TileContainer = styled.div`
 
   .MuiButton-label {
     font-size: 0.75rem;
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.primaryHover};
+    border-color: ${({ theme }) => theme.palette.primary.main};
+  }
+  &:focus-within {
+    border-color: ${({ theme }) => theme.palette.primary.main};
   }
 `;
 
@@ -69,8 +78,16 @@ export const TaskTile = ({ task }) => {
     surveyCode: survey.code,
     countryCode: entity.countryCode,
   });
+  const taskLink = generatePath(ROUTES.TASK_DETAILS, {
+    taskId: task.id,
+  });
   return (
-    <TileContainer>
+    <TileContainer
+      to={taskLink}
+      state={{
+        from: '/',
+      }}
+    >
       <TileLeft>
         <TileTitle>{survey.name}</TileTitle>
         <TileContent>
