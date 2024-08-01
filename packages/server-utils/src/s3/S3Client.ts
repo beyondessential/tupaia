@@ -122,17 +122,12 @@ export class S3Client {
     }
 
     let buffer = readable;
-    let contentType = undefined;
+    let contentType = undefined; // in cases where the file is directly loaded as a buffer, we don't have a content type and it will work without it
 
-    // If the file is a base64 string, convert it to a buffer and get the file type
+    // If the file is a base64 string, convert it to a buffer and get the file type. If we don't do this, the file will be uploaded as a binary file and just the text value will be saved and won't be able to be opened
     if (typeof readable === 'string') {
       buffer = this.convertEncodedFileToBuffer(readable);
       contentType = this.getContentTypeFromBase64(readable);
-    } else {
-      // otherwise, it's already a buffer, so just use it and get the file type from converting it to a base64 string
-      const base64EncodedString = buffer.toString('base64');
-      // get the file type
-      contentType = this.getContentTypeFromBase64(base64EncodedString);
     }
 
     return this.uploadPrivateFile(s3FilePath, buffer, contentType);
