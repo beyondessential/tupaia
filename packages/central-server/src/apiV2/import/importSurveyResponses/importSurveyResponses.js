@@ -182,31 +182,27 @@ export async function importSurveyResponses(req, res) {
           }
         }
 
+        let surveyResponseIdValue = null;
         if (IMPORT_BEHAVIOURS[importMode].shouldGenerateIds) {
-          surveyResponses[columnIndex] = { surveyResponseId: generateId(), entityId: entity?.id };
+          surveyResponseIdValue = generateId();
           isGeneratedIdByColumnIndex[columnIndex] = true;
         } else if (IMPORT_BEHAVIOURS[importMode].shouldUpdateExistingResponses) {
           const { surveyResponseId } = await getExistingResponseData(columnIndex);
 
           if (surveyResponseId) {
-            surveyResponses[columnIndex] = {
-              surveyResponseId: surveyResponseId,
-              entityId: entity?.id,
-            };
+            surveyResponseIdValue = surveyResponseId;
           } else {
             // A matching existing response was not found, generate a new id
-            surveyResponses[columnIndex] = {
-              surveyResponseId: generateId(),
-              entityId: entity?.id,
-            };
+            surveyResponseIdValue = generateId();
             isGeneratedIdByColumnIndex[columnIndex] = true;
           }
         } else {
-          surveyResponses[columnIndex] = {
-            surveyResponseId: columnHeader,
-            entityId: entity?.id,
-          };
+          surveyResponseIdValue = columnHeader;
         }
+        surveyResponses[columnIndex] = {
+          surveyResponseId: surveyResponseIdValue,
+          entityId: entity?.id,
+        };
       }
       updatePersistor.setupColumnsForSheet(tabName, surveyResponses);
 
@@ -215,7 +211,7 @@ export async function importSurveyResponses(req, res) {
         validateColumnHeader(columnHeader, columnIndex, tabName);
 
         if (isGeneratedIdByColumnIndex[columnIndex]) {
-          const surveyResponseId = surveyResponses[columnIndex]?.surveyResponseId;
+          const { surveyResponseId } = surveyResponses[columnIndex];
           const surveyResponseDetails = await constructNewSurveyResponseDetails(
             models,
             sheet,
@@ -279,9 +275,9 @@ export async function importSurveyResponses(req, res) {
           columnIndex <= maxColumnIndex;
           columnIndex++
         ) {
+          const { surveyResponseId } = surveyResponses[columnIndex];
           const columnHeader = getColumnHeader(sheet, columnIndex);
           const importMode = getImportMode(columnHeader);
-          const surveyResponseId = surveyResponses[columnIndex].surveyResponseId;
           const answerValue = getCellContents(sheet, columnIndex, rowIndex);
           const transformedAnswerValue = answerTransformer
             ? await answerTransformer(models, answerValue)
