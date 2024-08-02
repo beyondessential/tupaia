@@ -174,11 +174,15 @@ export async function importSurveyResponses(req, res) {
 
         if (entityCode && entityName) {
           if (!entity) {
-            throw new Error(`Entity code does match any existing entity: ${entityCode}`);
+            throw new ImportValidationError(
+              `Entity code does match any existing entity: ${entityCode}`,
+            );
           }
 
           if (entity.name !== entityName) {
-            throw new Error(`Entity code and name don't match: ${entity?.name} and ${entityName}`);
+            throw new ImportValidationError(
+              `Entity code and name don't match: ${entity?.name} and ${entityName}`,
+            );
           }
         }
 

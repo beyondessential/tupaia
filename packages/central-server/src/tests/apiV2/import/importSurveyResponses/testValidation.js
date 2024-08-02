@@ -58,6 +58,16 @@ export const testValidation = async () => {
       'nonExistentQuestionId.xlsx',
       /No question with id/,
     ],
+    [
+      'entity code and name mismatch',
+      'mismatchEntityNameAndCode.xlsx',
+      /Entity code and name don\'t match: Thornbury and Lake Charm/,
+    ],
+    [
+      'invalid entity code',
+      'invalidEntity.xlsx',
+      /Entity code does match any existing entity: DL_15/,
+    ],
   ];
 
   testData.forEach(([description, file, expectedError]) => {
