@@ -3,9 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import fs from 'fs';
+import path from 'path';
 import nodemailer from 'nodemailer';
 import { getEnvVarOrDefault, getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
 import Mail from 'nodemailer/lib/mailer';
+import handlebars from 'handlebars';
 
 const TEXT_SIGN_OFF = 'Cheers,\n\nThe Tupaia Team';
 const HTML_SIGN_OFF = '<p>Cheers,<br><br>The Tupaia Team</p>';
@@ -16,6 +19,18 @@ type MailOptions = {
   html?: string;
   attachments?: Mail.Attachment[];
   signOff?: string;
+};
+
+type TemplateContext = {
+  text?: string;
+  signOff?: string;
+};
+
+const compileHtml = (context: TemplateContext) => {
+  const templatePath = path.resolve(__dirname, './templates/template.handlebars');
+  const template = fs.readFileSync(templatePath);
+  const compiledTemplate = handlebars.compile(template.toString());
+  return compiledTemplate(context);
 };
 
 export const sendEmail = async (to: string | string[], mailOptions: MailOptions = {}) => {
@@ -53,7 +68,8 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
   const sendTo = getIsProductionEnvironment() ? to : (requireEnv('DEV_EMAIL_ADDRESS') as string);
 
   const fullText = text ? `${text}\n${signOff}` : undefined;
-  const fullHtml = html ? `${html}<br>${signOff}` : undefined;
+  const fullHtml = compileHtml({ text, signOff });
+  // html ? `${html}<br>${signOff}` : undefined;
 
   return transporter.sendMail({
     from: `Tupaia <${SITE_EMAIL_ADDRESS}>`,
