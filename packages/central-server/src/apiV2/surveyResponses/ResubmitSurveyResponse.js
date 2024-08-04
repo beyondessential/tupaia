@@ -32,7 +32,7 @@ export class ResubmitSurveyResponse extends RouteHandler {
     this.newSurveyResponse = req.body;
   }
 
-  async assertUserHasAccess(transactingModels) {
+  async assertUserHasAccess() {
     // Check the user has either:
     // - BES admin access
     // - Tupaia Admin Panel access AND permission to view the surveyResponse AND permission to submit the new survey response
@@ -40,9 +40,7 @@ export class ResubmitSurveyResponse extends RouteHandler {
       assertSurveyResponsePermissions(accessPolicy, this.models, this.originalSurveyResponseId);
 
     const newSurveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, [
-        this.newSurveyResponse,
-      ]);
+      await assertCanSubmitSurveyResponses(accessPolicy, this.models, [this.newSurveyResponse]);
     };
 
     await this.assertPermissions(
@@ -69,9 +67,9 @@ export class ResubmitSurveyResponse extends RouteHandler {
     }
 
     await this.models.wrapInTransaction(async transactingModels => {
-      await upsertEntitiesAndOptions(this.models, [this.newSurveyResponse]);
+      await upsertEntitiesAndOptions(transactingModels, [this.newSurveyResponse]);
       await validateSurveyResponse(transactingModels, this.newSurveyResponse);
-      await this.assertUserHasAccess(transactingModels);
+      await this.assertUserHasAccess();
       await saveResponsesToDatabase(transactingModels, originalSurveyResponse.user_id, [
         this.newSurveyResponse,
       ]);
