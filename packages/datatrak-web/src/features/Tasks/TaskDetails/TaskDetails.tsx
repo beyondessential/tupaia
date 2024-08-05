@@ -3,22 +3,19 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
-import { LoadingContainer, TextField } from '@tupaia/ui-components';
+import { LoadingContainer } from '@tupaia/ui-components';
 import { useEditTask } from '../../../api';
 import { Button } from '../../../components';
-import { useFromLocation } from '../../../utils';
 import { SingleTaskResponse } from '../../../types';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
-import { ROUTES } from '../../../constants';
 import { TaskMetadata } from './TaskMetadata';
 import { TaskComments } from './TaskComments';
 
@@ -41,9 +38,16 @@ const MainColumn = styled.div`
   justify-content: space-between;
   flex: 1;
   margin-block: 1.2rem;
+  border-color: ${({ theme }) => theme.palette.divider};
+  border-style: solid;
+  border-width: 1px 0;
+  padding-block: 1.2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 44%;
+    width: 50%;
     margin-block: 0;
+    padding-inline: 1.2rem;
+    padding-block: 0;
+    border-width: 0 1px;
   }
 `;
 
@@ -52,25 +56,13 @@ const SideColumn = styled.div`
   flex-direction: column;
   justify-content: space-between;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 28%;
+    width: 25%;
   }
 `;
 
 const ItemWrapper = styled.div`
   &:not(:last-child) {
     margin-block-end: 1.2rem;
-  }
-`;
-
-const CommentsInput = styled(TextField).attrs({
-  multiline: true,
-  variant: 'outlined',
-  fullWidth: true,
-  rows: 4,
-})`
-  margin-block-end: 0;
-  .MuiOutlinedInput-inputMultiline {
-    padding-inline: 1rem;
   }
 `;
 
@@ -88,20 +80,23 @@ const ButtonWrapper = styled.div`
 `;
 
 const Form = styled(TaskForm)`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Wrapper = styled.div`
   .loading-screen {
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 `;
 
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
-  const navigate = useNavigate();
-  const backLink = useFromLocation();
-
-  const defaultValues = {
+  const [defaultValues, setDefaultValues] = useState({
     due_date: task.dueDate ?? null,
     repeat_schedule: task.repeatSchedule?.frequency ?? null,
     assignee_id: task.assigneeId ?? null,
-  };
+  });
+
   const formContext = useForm({
     mode: 'onChange',
     defaultValues,
@@ -110,22 +105,30 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     control,
     handleSubmit,
     watch,
-    register,
     formState: { dirtyFields },
     reset,
   } = formContext;
 
-  const navigateBack = () => {
-    navigate(backLink || ROUTES.TASKS);
-  };
-
-  const { mutate: editTask, isLoading: isSaving } = useEditTask(task.id, navigateBack);
+  const { mutate: editTask, isLoading: isSaving } = useEditTask(task.id);
 
   const isDirty = Object.keys(dirtyFields).length > 0;
 
   const onClearEdit = () => {
     reset();
   };
+
+  // Reset form when task changes, i.e after task is saved and the task is re-fetched
+  useEffect(() => {
+    const newDefaultValues = {
+      due_date: task.dueDate ?? null,
+      repeat_schedule: task.repeatSchedule?.frequency ?? null,
+      assignee_id: task.assigneeId ?? null,
+    };
+
+    setDefaultValues(newDefaultValues);
+
+    reset(newDefaultValues);
+  }, [JSON.stringify(task)]);
 
   const canEditFields =
     task.taskStatus !== TaskStatus.completed && task.taskStatus !== TaskStatus.cancelled;
@@ -142,83 +145,80 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Wrapper>
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
           <SideColumn>
-            <ItemWrapper>
-              <TaskMetadata task={task} />
-            </ItemWrapper>
-            <ItemWrapper>
-              <Controller
-                name="due_date"
-                control={control}
-                defaultValue={defaultValues.due_date}
-                render={({ value, onChange, ref }, { invalid }) => (
-                  <DueDatePicker
-                    value={value}
-                    onChange={onChange}
-                    inputRef={ref}
-                    label="Due date"
-                    disablePast
-                    fullWidth
-                    required
-                    invalid={invalid}
-                    disabled={!canEditFields}
-                  />
-                )}
-              />
-            </ItemWrapper>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              <ItemWrapper>
+                <TaskMetadata task={task} />
+              </ItemWrapper>
+              <ItemWrapper>
+                <Controller
+                  name="due_date"
+                  control={control}
+                  render={({ value, onChange, ref }, { invalid }) => (
+                    <DueDatePicker
+                      value={value}
+                      onChange={onChange}
+                      inputRef={ref}
+                      label="Due date"
+                      disablePast
+                      fullWidth
+                      required
+                      invalid={invalid}
+                      disabled={!canEditFields}
+                    />
+                  )}
+                />
+              </ItemWrapper>
 
-            <ItemWrapper>
-              <Controller
-                name="repeat_schedule"
-                control={control}
-                defaultValue={defaultValues.repeat_schedule}
-                render={({ value, onChange }) => (
-                  <RepeatScheduleInput
-                    value={value}
-                    onChange={onChange}
-                    disabled={!canEditFields}
-                    dueDate={dueDate}
-                  />
-                )}
-              />
-            </ItemWrapper>
-            <ItemWrapper>
-              <Controller
-                name="assignee_id"
-                control={control}
-                defaultValue={defaultValues.assignee_id}
-                render={({ value, onChange, ref }) => (
-                  <AssigneeInput
-                    value={value}
-                    onChange={onChange}
-                    inputRef={ref}
-                    countryCode={task.entity.countryCode}
-                    surveyCode={task.survey.code}
-                    disabled={!canEditFields}
-                  />
-                )}
-              />
-            </ItemWrapper>
+              <ItemWrapper>
+                <Controller
+                  name="repeat_schedule"
+                  control={control}
+                  render={({ value, onChange }) => (
+                    <RepeatScheduleInput
+                      value={value}
+                      onChange={onChange}
+                      disabled={!canEditFields}
+                      dueDate={dueDate}
+                    />
+                  )}
+                />
+              </ItemWrapper>
+              <ItemWrapper>
+                <Controller
+                  name="assignee_id"
+                  control={control}
+                  render={({ value, onChange, ref }) => (
+                    <AssigneeInput
+                      value={value}
+                      onChange={onChange}
+                      inputRef={ref}
+                      countryCode={task.entity.countryCode}
+                      surveyCode={task.survey.code}
+                      disabled={!canEditFields}
+                    />
+                  )}
+                />
+              </ItemWrapper>
+              <ButtonWrapper>
+                <ClearButton disabled={!isDirty} onClick={onClearEdit}>
+                  Clear changes
+                </ClearButton>
+                <Button type="submit" disabled={!isDirty} variant="outlined">
+                  Save changes
+                </Button>
+              </ButtonWrapper>
+            </Form>
           </SideColumn>
           <MainColumn>
             <TaskComments comments={task.comments} />
-            <CommentsInput label="Add comment" name="comment" inputRef={register} />
           </MainColumn>
-          <SideColumn>
-            <ButtonWrapper>
-              <ClearButton disabled={!isDirty} onClick={onClearEdit}>
-                Clear changes
-              </ClearButton>
-              <Button type="submit" disabled={!isDirty} variant="outlined">
-                Save changes
-              </Button>
-            </ButtonWrapper>
-          </SideColumn>
+          <SideColumn></SideColumn>
         </Container>
       </LoadingContainer>
-    </Form>
+    </Wrapper>
   );
 };

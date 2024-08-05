@@ -210,55 +210,6 @@ describe('Permissions checker for EditTask', async () => {
       });
     });
 
-    describe('User generated comments', async () => {
-      it('Handles adding a comment when editing a task', async () => {
-        await app.grantAccess({
-          DL: ['Donor'],
-          TO: ['Donor'],
-        });
-        await app.put(`tasks/${tasks[1].id}`, {
-          body: {
-            survey_id: surveys[1].survey.id,
-            entity_id: facilities[1].id,
-            comment: 'This is a test comment',
-          },
-        });
-        const result = await models.task.find({
-          id: tasks[1].id,
-        });
-        expect(result[0].entity_id).to.equal(facilities[1].id);
-        expect(result[0].survey_id).to.equal(surveys[1].survey.id);
-
-        const comment = await models.taskComment.findOne({
-          task_id: tasks[1].id,
-          message: 'This is a test comment',
-        });
-        expect(comment).not.to.be.null;
-      });
-
-      it('Handles adding a comment when no other edits are made', async () => {
-        await app.grantAccess({
-          DL: ['Donor'],
-          TO: ['Donor'],
-        });
-        await app.put(`tasks/${tasks[1].id}`, {
-          body: {
-            comment: 'This is a test comment',
-          },
-        });
-        const result = await models.task.find({
-          id: tasks[1].id,
-        });
-        expect(result[0].entity_id).to.equal(tasks[1].entity_id);
-
-        const comment = await models.taskComment.findOne({
-          task_id: tasks[1].id,
-          message: 'This is a test comment',
-        });
-        expect(comment).not.to.be.null;
-      });
-    });
-
     describe('System generated comments', () => {
       it('Adds a comment when the due date changes on a task', async () => {
         await app.grantAccess({
@@ -390,53 +341,6 @@ describe('Permissions checker for EditTask', async () => {
         });
         expect(comment).not.to.be.null;
       });
-    });
-
-    it('Handles adding a comment when editing a task', async () => {
-      await app.grantAccess({
-        DL: ['Donor'],
-        TO: ['Donor'],
-      });
-      await app.put(`tasks/${tasks[1].id}`, {
-        body: {
-          survey_id: surveys[1].survey.id,
-          entity_id: facilities[1].id,
-          comment: 'This is a test comment',
-        },
-      });
-      const result = await models.task.find({
-        id: tasks[1].id,
-      });
-      expect(result[0].entity_id).to.equal(facilities[1].id);
-      expect(result[0].survey_id).to.equal(surveys[1].survey.id);
-
-      const comment = await models.taskComment.findOne({
-        task_id: tasks[1].id,
-        message: 'This is a test comment',
-      });
-      expect(comment).not.to.be.undefined;
-    });
-
-    it('Handles adding a comment when no other edits are made', async () => {
-      await app.grantAccess({
-        DL: ['Donor'],
-        TO: ['Donor'],
-      });
-      await app.put(`tasks/${tasks[1].id}`, {
-        body: {
-          comment: 'This is a test comment',
-        },
-      });
-      const result = await models.task.find({
-        id: tasks[1].id,
-      });
-      expect(result[0].entity_id).to.equal(tasks[1].entity_id);
-
-      const comment = await models.taskComment.findOne({
-        task_id: tasks[1].id,
-        message: 'This is a test comment',
-      });
-      expect(comment).not.to.be.undefined;
     });
   });
 });

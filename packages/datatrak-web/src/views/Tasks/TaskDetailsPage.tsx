@@ -9,12 +9,24 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { Modal, ModalCenteredContent, SpinningLoader } from '@tupaia/ui-components';
-import { Button } from '../../components';
+import { ArrowLeftIcon, Button } from '../../components';
 import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
 import { ROUTES } from '../../constants';
 import { useFromLocation } from '../../utils';
 import { SingleTaskResponse } from '../../types';
+
+const BackButton = styled(Button)`
+  position: absolute;
+  left: 0;
+  min-width: 0;
+  color: ${({ theme }) => theme.palette.text.primary};
+  padding: 0.7rem;
+  border-radius: 50%;
+  .MuiSvgIcon-root {
+    font-size: 1.3rem;
+  }
+`;
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -90,10 +102,14 @@ export const TaskDetailsPage = () => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const { taskId } = useParams();
   const { data: task, isLoading } = useTask(taskId);
+  const from = useFromLocation();
 
   return (
     <>
       <TaskPageHeader title="Task details">
+        <BackButton to={from || ROUTES.TASKS} variant="text" title="Back">
+          <ArrowLeftIcon />
+        </BackButton>
         <ButtonWrapper>
           <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
           {task && <TaskActionsMenu task={task} />}

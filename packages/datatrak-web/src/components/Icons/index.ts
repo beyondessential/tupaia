@@ -14,3 +14,4 @@ export { ReportsIcon } from './ReportsIcon';
 export { CopyIcon } from './CopyIcon';
 export { TaskIcon } from './TaskIcon';
 export { CommentIcon } from './CommentIcon';
+export { ArrowLeftIcon } from './ArrowLeftIcon';
