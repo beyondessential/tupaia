@@ -63,6 +63,13 @@ export class CentralApi extends BaseApi {
     }
   }
 
+  public createSurveyResponse(
+    response: MeditrakSurveyResponseRequest,
+    queryParameters?: QueryParameters,
+  ): Promise<{ results: MeditrakSurveyResponseRequest[] }> {
+    return this.connection.post('surveyResponse', queryParameters, response);
+  }
+
   public async fetchResources(endpoint: string, params?: Record<string, unknown>) {
     return this.connection.get(endpoint, stringifyParams(params));
   }
