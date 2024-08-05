@@ -7,14 +7,6 @@ import { getUniqueEntries } from '@tupaia/utils';
 import { ChangeHandler } from './ChangeHandler';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
-function hasValidRepeatSchedule(repeatSchedule) {
-  return (
-    repeatSchedule !== null &&
-    typeof repeatSchedule === 'object' &&
-    Object.keys(repeatSchedule).length > 0
-  );
-}
-
 export class TaskCompletionHandler extends ChangeHandler {
   constructor(models) {
     super(models, 'task-completion-handler');
@@ -31,7 +23,7 @@ export class TaskCompletionHandler extends ChangeHandler {
   getNewSurveyResponses(changeDetails) {
     const { type, new_record: newRecord, old_record: oldRecord } = changeDetails;
 
-    // if the change is not a create, we don't need to do anything. This is because once a task is marked as complete, it will never be undone
+    // if the change is not a "create", we don't need to do anything. This is because once a task is marked as complete, it will never be undone
     if (type !== 'update' || !!oldRecord) {
       return [];
     }

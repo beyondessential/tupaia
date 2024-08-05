@@ -115,7 +115,6 @@ export class TaskRecord extends DatabaseRecord {
     const {
       survey_id: surveyId,
       entity_id: entityId,
-      created_at: createdAt,
       repeat_schedule: repeatSchedule,
       assignee_id: assigneeId,
       id,
@@ -125,7 +124,7 @@ export class TaskRecord extends DatabaseRecord {
       // Create a new task with the same details as the current task and mark as completed
       // It is theoretically possible that more than one task could be created for a repeating
       // task in a reporting period which is ok from a business point of view
-      await this.create({
+      await this.model.create({
         assignee_id: assigneeId,
         survey_id: surveyId,
         entity_id: entityId,
@@ -134,7 +133,7 @@ export class TaskRecord extends DatabaseRecord {
         survey_response_id: surveyResponseId,
       });
     } else {
-      await this.updateById(id, {
+      await this.model.updateById(id, {
         status: 'completed',
         survey_response_id: surveyResponseId,
       });
@@ -165,13 +164,13 @@ export class TaskRecord extends DatabaseRecord {
    * @description Get all system comments for the task
    * @returns {Promise<TaskCommentRecord[]>}
    */
-
   async systemComments() {
     return this.otherModels.taskComment.find({
       task_id: this.id,
       type: this.otherModels.taskComment.types.System,
     });
   }
+
   /**
    * @description Add a comment to the task. Handles linking the comment to the task and user, and setting the comment type
    *
@@ -180,7 +179,6 @@ export class TaskRecord extends DatabaseRecord {
    * @param {string} type
    *
    */
-
   async addComment(message, userId, type) {
     const user = await this.otherModels.user.findById(userId);
     return this.otherModels.taskComment.create({
@@ -198,7 +196,6 @@ export class TaskRecord extends DatabaseRecord {
    * @param {object} updatedFields
    * @param {string} userId
    */
-
   async addSystemCommentsOnUpdate(updatedFields, userId) {
     const fieldsToCreateCommentsFor = ['due_date', 'repeat_schedule', 'status', 'assignee_id'];
     const comments = [];

@@ -58,7 +58,7 @@ configureEnv();
 
   // Add listener to handle survey response changes for tasks
   const taskCompletionHandler = new TaskCompletionHandler(models);
-  taskCompletionHandler.listenForChanges();
+  // taskCompletionHandler.listenForChanges();
 
   // Add listener to handle creating tasks when submitting survey responses
   const taskCreationHandler = new TaskCreationHandler(models);

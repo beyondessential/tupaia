@@ -4,6 +4,7 @@
  */
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import {
   DatatrakWebSubmitSurveyResponseRequest as RequestT,
   MeditrakSurveyResponseRequest,
@@ -11,7 +12,6 @@ import {
 import { processSurveyResponse } from './processSurveyResponse';
 import { addRecentEntities } from '../../utils';
 import { DatatrakWebServerModelRegistry } from '../../types';
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 
 export type SubmitSurveyResponseRequest = Request<
   RequestT.Params,
@@ -59,7 +59,8 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
     const result = response?.results[0];
     const tasksToComplete = await findTasksToComplete(models, processedResponse);
 
-    if (tasksToComplete.length > 0) {
+    // If the survey response was successfully created, complete any tasks that are due
+    if (result?.surveyResponseId && tasksToComplete.length > 0) {
       for (const task of tasksToComplete) {
         await task.handleCompletion(result.surveyResponseId);
         await task.addComment(

@@ -5,7 +5,7 @@
 
 import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
 import { ProjectCountryAccessListRequest } from '@tupaia/types';
-import { QueryParameters } from '../types';
+import { QueryParameters, SurveyResponseCreatedResponse } from '../types';
 import { RequestBody } from './ApiConnection';
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
@@ -66,7 +66,7 @@ export class CentralApi extends BaseApi {
   public createSurveyResponse(
     response: MeditrakSurveyResponseRequest,
     queryParameters?: QueryParameters,
-  ): Promise<{ results: MeditrakSurveyResponseRequest[] }> {
+  ): Promise<SurveyResponseCreatedResponse> {
     return this.connection.post('surveyResponse', queryParameters, response);
   }
 
