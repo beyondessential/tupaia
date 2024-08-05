@@ -53,8 +53,15 @@ const UserQuestionComponent = props => {
   };
 
   const handleSelectOption = option => {
+    if (!option) {
+      onSelectUser(null);
+      return;
+    }
     const newSelectedUser = users.find(user => user.name === option);
-    onSelectUser(newSelectedUser?.id ?? null);
+    if (!newSelectedUser) {
+      throw new Error(`Cannot find user in database: ${option}`);
+    }
+    onSelectUser(newSelectedUser.id);
   };
 
   const handleChangeSearchTerm = newSearchTerm => {
@@ -99,6 +106,7 @@ const mapStateToProps = (
   const users = database.getUsersByPermissionGroupAndCountry(
     countryCode,
     question.config?.user?.permissionGroup,
+    true,
   );
 
   return {

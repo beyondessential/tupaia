@@ -21,7 +21,7 @@ UserEntityPermission.schema = {
   },
 };
 
-UserEntityPermission.requiredData = ['userId'];
+UserEntityPermission.requiredData = ['userId', 'entityId', 'permissionGroupId'];
 
 UserEntityPermission.construct = (database, data) => {
   return database.update('UserEntityPermission', data);

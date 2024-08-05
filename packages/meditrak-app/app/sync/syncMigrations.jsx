@@ -53,6 +53,10 @@ const migrations = {
   11: async (synchroniser, setProgressMessage) => {
     await resyncRecordTypes(synchroniser, setProgressMessage, ['user_entity_permission']);
   },
+  // Resync all permission groups in case they're coming from a version prior to db schema 26
+  12: async (synchroniser, setProgressMessage) => {
+    await resyncRecordTypes(synchroniser, setProgressMessage, ['permission_group']);
+  },
 };
 
 export const getSyncMigrations = async database => {

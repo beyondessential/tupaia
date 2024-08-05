@@ -162,7 +162,11 @@ export class DatabaseAccess extends SyncingDatabase {
     return this.getAncestorsOfPermissionGroup(parent, [...acc, parent.id]);
   }
 
-  getUsersByPermissionGroupAndCountry(countryCode, permissionGroupId) {
+  getUsersByPermissionGroupAndCountry(
+    countryCode,
+    permissionGroupId,
+    excludeInternalUsers = false,
+  ) {
     // get user entity permission entries by the country code and permission group name
     const countryEntity = this.getEntities({ code: countryCode })[0];
 
@@ -184,11 +188,16 @@ export class DatabaseAccess extends SyncingDatabase {
 
     const userIds = userEntityPermissionEntries.map(entry => entry.userId);
 
-    if (!userIds.length) {
+    if (userIds.length === 0) {
       return [];
     }
 
-    const userQuery = combineClauses(conditionsToClauses({ id: userIds }), 'OR');
+    const clauses = conditionsToClauses({ id: userIds });
+    if (excludeInternalUsers) {
+      clauses.push('internal = false');
+    }
+
+    const userQuery = combineClauses(clauses, 'AND');
 
     const users = this.objects('UserAccount').filtered(userQuery).sorted('name');
 

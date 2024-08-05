@@ -1,5 +1,6 @@
 'use strict';
 
+import { getSyncQueueChangeTime } from '@tupaia/tsutils';
 import { generateId } from '../utilities/generateId';
 
 var dbm;
@@ -27,14 +28,13 @@ const getAllUserIds = async db => {
 
 exports.up = async function (db) {
   const userIds = await getAllUserIds(db);
-  const timestamp = new Date().getTime();
   await db.runSql(`
     INSERT INTO meditrak_sync_queue (id, type, record_type, record_id, change_time)
     VALUES ${userIds
       .map(
         (id, i) =>
           // the timestamp is incremented by i to ensure that each record has a unique timestamp
-          `('${generateId()}', 'update', 'user_account', '${id}', ${timestamp + i})`,
+          `('${generateId()}', 'update', 'user_account', '${id}', ${getSyncQueueChangeTime(i)})`,
       )
       .join(',\n')};
   `);

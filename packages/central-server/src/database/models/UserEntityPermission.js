@@ -8,7 +8,7 @@ import { sendEmail } from '@tupaia/server-utils';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   meditrakConfig = {
-    minAppVersion: '1.14.142',
+    minAppVersion: '1.14.143',
   };
 
   notifiers = [onUpsertSendPermissionGrantEmail, expireAccess];

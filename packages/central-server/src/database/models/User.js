@@ -72,7 +72,7 @@ export class UserModel extends CommonUserModel {
       }
       return restOfRecord;
     },
-    minAppVersion: '1.14.142',
+    minAppVersion: '1.14.143',
   };
 
   get DatabaseRecordClass() {
