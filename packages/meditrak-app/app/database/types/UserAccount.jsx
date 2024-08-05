@@ -13,6 +13,7 @@ UserAccount.schema = {
   properties: {
     id: 'string',
     name: { type: 'string', default: 'Failed to store user details' },
+    internal: { type: 'bool', default: false },
   },
 };
 
