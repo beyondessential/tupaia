@@ -10,45 +10,46 @@ import { getEnvVarOrDefault, getIsProductionEnvironment, requireEnv } from '@tup
 import Mail from 'nodemailer/lib/mailer';
 import handlebars from 'handlebars';
 
-const TEXT_SIGN_OFF = 'Cheers,\n\nThe Tupaia Team';
-const HTML_SIGN_OFF = '<p>Cheers,<br><br>The Tupaia Team</p>';
+type CTA = {
+  text: string;
+  url: string;
+};
+type TemplateContext = {
+  signOff?: string;
+  templateName: string;
+  templateContext: Record<string, any> & {
+    cta?: CTA;
+    title: string;
+  };
+};
 
-type MailOptions = {
+type MailOptions = TemplateContext & {
   subject?: string;
-  text?: string;
-  html?: string;
   attachments?: Mail.Attachment[];
   signOff?: string;
 };
 
-type TemplateContext = {
-  text?: string;
-  signOff?: string;
-};
-
 const compileHtml = (context: TemplateContext) => {
-  const templatePath = path.resolve(__dirname, './templates/template.handlebars');
-  const template = fs.readFileSync(templatePath);
-  const compiledTemplate = handlebars.compile(template.toString());
-  return compiledTemplate(context);
+  const { templateName, templateContext } = context;
+  const templatePath = path.resolve(__dirname, './templates/template.html');
+  const mainTemplate = fs.readFileSync(templatePath);
+  const compiledTemplate = handlebars.compile(mainTemplate.toString());
+  const innerContentTemplate = fs.readFileSync(
+    path.resolve(__dirname, `./templates/${templateName}Template.html`),
+  );
+  const content = handlebars.compile(innerContentTemplate.toString())(templateContext);
+  return compiledTemplate({
+    ...templateContext,
+    content,
+  }).toString();
 };
 
-export const sendEmail = async (to: string | string[], mailOptions: MailOptions = {}) => {
-  const {
-    subject,
-    text,
-    html,
-    attachments,
-    signOff = html ? HTML_SIGN_OFF : TEXT_SIGN_OFF,
-  } = mailOptions;
+export const sendEmail = async (to: string | string[], mailOptions: MailOptions) => {
+  const { subject, templateName, templateContext, attachments, signOff } = mailOptions || {};
   const SMTP_HOST = getEnvVarOrDefault('SMTP_HOST', undefined);
   const SMTP_USER = getEnvVarOrDefault('SMTP_USER', undefined);
   const SMTP_PASSWORD = getEnvVarOrDefault('SMTP_PASSWORD', undefined);
   const SITE_EMAIL_ADDRESS = getEnvVarOrDefault('SITE_EMAIL_ADDRESS', undefined);
-
-  if (text && html) {
-    throw new Error('Only text or HTML can be sent in an email, not both');
-  }
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASSWORD || !SITE_EMAIL_ADDRESS) {
     return {};
@@ -67,9 +68,7 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
   // Make sure it doesn't send real users mail from the dev server
   const sendTo = getIsProductionEnvironment() ? to : (requireEnv('DEV_EMAIL_ADDRESS') as string);
 
-  const fullText = text ? `${text}\n${signOff}` : undefined;
-  const fullHtml = compileHtml({ text, signOff });
-  // html ? `${html}<br>${signOff}` : undefined;
+  const fullHtml = compileHtml({ templateName, templateContext, signOff });
 
   return transporter.sendMail({
     from: `Tupaia <${SITE_EMAIL_ADDRESS}>`,
@@ -77,7 +76,6 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
     to: sendTo,
     subject,
     attachments,
-    text: fullText,
     html: fullHtml,
   });
 };
