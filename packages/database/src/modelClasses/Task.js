@@ -111,7 +111,14 @@ export class TaskRecord extends DatabaseRecord {
     );
   }
 
-  async handleCompletion(surveyResponseId) {
+  /**
+   * @description Handles the completion of a task. If the task is repeating, a new task is created with the same details as the current task and marked as completed
+   * If the task is not repeating, the current task is marked as completed.
+   *
+   * @param {string} surveyResponseId
+   * @param {string | null} userId
+   */
+  async handleCompletion(surveyResponseId, userId) {
     const {
       survey_id: surveyId,
       entity_id: entityId,
@@ -120,23 +127,48 @@ export class TaskRecord extends DatabaseRecord {
       id,
     } = this;
 
+    let commentUserId = userId;
+    if (!userId) {
+      const user = await this.models.user.findPublicUser();
+      commentUserId = user.id;
+    }
+
     if (this.hasValidRepeatSchedule()) {
-      // Create a new task with the same details as the current task and mark as completed
-      // It is theoretically possible that more than one task could be created for a repeating
-      // task in a reporting period which is ok from a business point of view
-      await this.model.create({
+      // Create a new task with the same details as the current task and mark as completed.
+      const where = {
         assignee_id: assigneeId,
         survey_id: surveyId,
         entity_id: entityId,
         repeat_schedule: repeatSchedule,
         status: 'completed',
         survey_response_id: surveyResponseId,
-      });
+      };
+
+      // Check for an existing task so that multiple tasks aren't created for the same survey response
+      const existingTask = await this.model.findOne(where);
+      if (!existingTask) {
+        const newTask = await this.model.create(where);
+        await newTask.addComment(
+          'Completed this task',
+          commentUserId,
+          this.otherModels.taskComment.types.System,
+        );
+        await this.addComment(
+          `Completed task ${newTask.id}`,
+          commentUserId,
+          this.otherModels.taskComment.types.System,
+        );
+      }
     } else {
       await this.model.updateById(id, {
         status: 'completed',
         survey_response_id: surveyResponseId,
       });
+      await this.addComment(
+        'Completed this task',
+        commentUserId,
+        this.otherModels.taskComment.types.System,
+      );
     }
   }
 

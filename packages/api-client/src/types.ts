@@ -14,6 +14,6 @@ export interface AuthHandler {
 }
 
 export interface SurveyResponseCreatedResponse {
-  results: { surveyResponseId: string; answers: string[] }[];
-  count: number;
+  surveyResponseId: string;
+  answers: string[];
 }

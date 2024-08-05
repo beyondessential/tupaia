@@ -4,14 +4,10 @@
  */
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import {
-  DatatrakWebSubmitSurveyResponseRequest as RequestT,
-  MeditrakSurveyResponseRequest,
-} from '@tupaia/types';
-import { processSurveyResponse } from './processSurveyResponse';
+import { DatatrakWebSubmitSurveyResponseRequest as RequestT } from '@tupaia/types';
 import { addRecentEntities } from '../../utils';
-import { DatatrakWebServerModelRegistry } from '../../types';
+import { processSurveyResponse } from './processSurveyResponse';
+import { handleTaskCompletion } from './handleTaskCompletion';
 
 export type SubmitSurveyResponseRequest = Request<
   RequestT.Params,
@@ -19,27 +15,6 @@ export type SubmitSurveyResponseRequest = Request<
   RequestT.ReqBody,
   RequestT.ReqQuery
 >;
-const findTasksToComplete = async (
-  models: DatatrakWebServerModelRegistry,
-  surveyResponse: MeditrakSurveyResponseRequest,
-) => {
-  const { survey_id: surveyId, entity_id: entityId, data_time: dataTime } = surveyResponse;
-  return models.task.find({
-    // only fetch tasks that have a status of 'to_do' or null (repeating tasks have a status of null)
-    // @ts-ignore
-    status: 'to_do',
-    [QUERY_CONJUNCTIONS.OR]: {
-      status: {
-        comparator: 'IS',
-        comparisonValue: null,
-      },
-    },
-    [QUERY_CONJUNCTIONS.RAW]: {
-      sql: `(survey_id = ? AND entity_id = ? AND created_at <= ?)`,
-      parameters: [surveyId, entityId, dataTime],
-    },
-  });
-};
 
 export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest> {
   public async buildResponse() {
@@ -56,26 +31,18 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
       processedResponse.user_id ? undefined : { submitAsPublic: true },
     );
 
-    const result = response?.results[0];
-    const tasksToComplete = await findTasksToComplete(models, processedResponse);
-
-    // If the survey response was successfully created, complete any tasks that are due
-    if (result?.surveyResponseId && tasksToComplete.length > 0) {
-      for (const task of tasksToComplete) {
-        await task.handleCompletion(result.surveyResponseId);
-        await task.addComment(
-          'Completed this task',
-          processedResponse.user_id!,
-          models.taskComment.types.System,
-        );
-      }
-    }
-
     // If the user is logged in, add the entities they answered to their recent entities list
     if (!!session && processedResponse.user_id) {
       const { user_id: userId } = processedResponse;
       // add these after the survey response has been submitted because we want to be able to add newly created entities to the recent entities list
       await addRecentEntities(models, userId, recent_entities);
+    }
+
+    if (response?.surveyResponseId) {
+      await handleTaskCompletion(models, {
+        ...processedResponse,
+        id: response.surveyResponseId,
+      });
     }
 
     return {

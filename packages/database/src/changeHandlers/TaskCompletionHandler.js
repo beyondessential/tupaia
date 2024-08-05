@@ -64,7 +64,7 @@ export class TaskCompletionHandler extends ChangeHandler {
     });
   }
 
-  async handleChanges(transactingModels, changedResponses) {
+  async handleChanges(_transactingModels, changedResponses) {
     // if there are no changed responses, we don't need to do anything
     if (changedResponses.length === 0) return;
     const tasksToComplete = await this.fetchTasksForSurveyResponses(changedResponses);
@@ -83,12 +83,7 @@ export class TaskCompletionHandler extends ChangeHandler {
 
       if (!matchingSurveyResponse) continue;
 
-      await task.handleCompletion(matchingSurveyResponse.id);
-      await task.addComment(
-        'Completed this task',
-        matchingSurveyResponse.user_id,
-        transactingModels.taskComment.types.System,
-      );
+      await task.handleCompletion(matchingSurveyResponse.id, matchingSurveyResponse.user_id);
     }
   }
 }
