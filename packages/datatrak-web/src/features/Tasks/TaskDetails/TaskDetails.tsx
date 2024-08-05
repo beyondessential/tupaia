@@ -157,7 +157,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                 <Controller
                   name="due_date"
                   control={control}
-                  defaultValue={defaultValues.due_date}
                   render={({ value, onChange, ref }, { invalid }) => (
                     <DueDatePicker
                       value={value}
@@ -178,7 +177,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                 <Controller
                   name="repeat_schedule"
                   control={control}
-                  defaultValue={defaultValues.repeat_schedule}
                   render={({ value, onChange }) => (
                     <RepeatScheduleInput
                       value={value}
@@ -193,7 +191,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                 <Controller
                   name="assignee_id"
                   control={control}
-                  defaultValue={defaultValues.assignee_id}
                   render={({ value, onChange, ref }) => (
                     <AssigneeInput
                       value={value}
