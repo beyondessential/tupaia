@@ -10,6 +10,7 @@ import {
   QuestionType,
   SurveyScreenComponentConfig,
 } from '@tupaia/types';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
@@ -30,6 +31,28 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
   }
   return config.entity.fields && Object.keys(config.entity.fields).length > 0;
 };
+
+const findTasksToComplete(models, surveyResponse) {
+  const { surveyId, entityId, dataTime } = surveyResponse;
+  return models.task.find({
+    // only fetch tasks that have a status of 'to_do' or null (repeating tasks have a status of null)
+    status: 'to_do',
+    [QUERY_CONJUNCTIONS.OR]: {
+      status: {
+        comparator: 'IS',
+        comparisonValue: null,
+      },
+    },
+    [QUERY_CONJUNCTIONS.RAW]: {
+      sql: `(survey_id = ? AND entity_id = ? AND created_at <= ?))`,
+      parameters:[
+        surveyId,
+        entityId,
+        dataTime,
+      ],
+    },
+  });
+}
 
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
@@ -174,6 +197,22 @@ export const processSurveyResponse = async (
         break;
     }
   }
+
+  const tasksToComplete = await findTasksToComplete(models, surveyResponse);
+
+  if (tasksToComplete.length > 0) {
+    for (const task of tasksToComplete) {
+      await task.handleCompletion(surveyResponse.id);
+      await task.addComment(
+        'Completed this task',
+        surveyResponse.user_id,
+        models.taskComment.types.System,
+      );
+    }
+  }
+
+
+
 
   return {
     ...surveyResponse,

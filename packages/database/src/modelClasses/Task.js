@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { JOIN_TYPES } from '../TupaiaDatabase';
+import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 /**
  *
@@ -90,7 +90,6 @@ export class TaskRecord extends DatabaseRecord {
       fields: { name: 'survey_name', code: 'survey_code' },
     },
   ];
-
   async entity() {
     return this.otherModels.entity.findById(this.entity_id);
   }
@@ -101,6 +100,45 @@ export class TaskRecord extends DatabaseRecord {
 
   async survey() {
     return this.otherModels.survey.findById(this.survey_id);
+  }
+
+  hasValidRepeatSchedule() {
+    const repeatSchedule = this.repeat_schedule;
+    return (
+      repeatSchedule !== null &&
+      typeof repeatSchedule === 'object' &&
+      Object.keys(repeatSchedule).length > 0
+    );
+  }
+
+  async handleCompletion(surveyResponseId) {
+    const {
+      survey_id: surveyId,
+      entity_id: entityId,
+      created_at: createdAt,
+      repeat_schedule: repeatSchedule,
+      assignee_id: assigneeId,
+      id,
+    } = this;
+
+    if (this.hasValidRepeatSchedule()) {
+      // Create a new task with the same details as the current task and mark as completed
+      // It is theoretically possible that more than one task could be created for a repeating
+      // task in a reporting period which is ok from a business point of view
+      await this.create({
+        assignee_id: assigneeId,
+        survey_id: surveyId,
+        entity_id: entityId,
+        repeat_schedule: repeatSchedule,
+        status: 'completed',
+        survey_response_id: surveyResponseId,
+      });
+    } else {
+      await this.updateById(id, {
+        status: 'completed',
+        survey_response_id: surveyResponseId,
+      });
+    }
   }
 
   /**
