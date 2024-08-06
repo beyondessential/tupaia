@@ -15,21 +15,20 @@ export const useColumnFilters = (defaultFilters = []) => {
   const filters = urlFilters ? JSON.parse(urlFilters) : defaultFilters;
 
   const onChangeFilters = newFilters => {
-    // if the filters are the same, don't update the URL
-    if (JSON.stringify(newFilters) === JSON.stringify(filters)) return;
+    // Remove filters with empty values
+    const updatedFilters = newFilters.filter(filter => filter.value !== '');
 
-    if (newFilters.length === 0) {
-      // if there are filters in the URL, delete the filters key
+    // Check if the cleaned filters are the same as current filters
+    if (JSON.stringify(updatedFilters) === JSON.stringify(filters)) return;
+
+    if (updatedFilters.length === 0) {
+      // If there are no filters left, delete the filters key
       urlSearchParams.delete('filters');
-
-      setUrlSearchParams(urlSearchParams, {
-        state: location.state,
-      });
-      return;
+    } else {
+      // Update the filters key in the URL
+      urlSearchParams.set('filters', JSON.stringify(updatedFilters));
     }
 
-    // update the filters key in the URL
-    urlSearchParams.set('filters', JSON.stringify(newFilters));
     setUrlSearchParams(urlSearchParams, {
       state: location.state,
     });
