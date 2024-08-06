@@ -89,6 +89,13 @@ const SurveyResponseModalContent = ({
 
   const showLoading = isLoading || surveyLoading;
 
+  console.log('isLoading', isLoading);
+  console.log('surveyLoading', surveyLoading);
+
+  if (showLoading) {
+    return null;
+  }
+
   return (
     <>
       <ModalHeader onClose={onClose} title={error ? 'Error loading survey response' : ''}>
@@ -107,7 +114,7 @@ const SurveyResponseModalContent = ({
         {!showLoading && !error && <SurveyReviewSection />}
       </ModalContentProvider>
       <ModalFooter>
-        <Button to="/">Close</Button>
+        <Button onClick={onClose}>Close</Button>
       </ModalFooter>
     </>
   );

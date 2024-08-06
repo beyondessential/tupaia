@@ -84,7 +84,7 @@ export interface Analytics {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -98,7 +98,7 @@ export interface AnalyticsCreate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -112,7 +112,7 @@ export interface AnalyticsUpdate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -1539,6 +1539,7 @@ export interface Task {
   'due_date'?: Date | null;
   'entity_id': string;
   'id': string;
+  'initial_request_id'?: string | null;
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
@@ -1549,6 +1550,7 @@ export interface TaskCreate {
   'created_at'?: Date;
   'due_date'?: Date | null;
   'entity_id': string;
+  'initial_request_id'?: string | null;
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
@@ -1560,6 +1562,7 @@ export interface TaskUpdate {
   'due_date'?: Date | null;
   'entity_id'?: string;
   'id'?: string;
+  'initial_request_id'?: string | null;
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
   'survey_id'?: string;

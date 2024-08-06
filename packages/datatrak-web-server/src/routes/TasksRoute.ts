@@ -29,6 +29,7 @@ const FIELDS = [
   'repeat_schedule',
   'survey_id',
   'entity_id',
+  'initial_request_id',
 ];
 
 const DEFAULT_PAGE_SIZE = 20;
