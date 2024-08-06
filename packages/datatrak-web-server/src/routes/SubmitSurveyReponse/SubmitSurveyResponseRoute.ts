@@ -38,12 +38,10 @@ export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest
       await addRecentEntities(models, userId, recent_entities);
     }
 
-    if (response?.surveyResponseId) {
-      await handleTaskCompletion(models, {
-        ...processedResponse,
-        id: response.surveyResponseId,
-      });
-    }
+    await handleTaskCompletion(models, {
+      ...processedResponse,
+      id: response.surveyResponseId,
+    });
 
     return {
       qrCodeEntitiesCreated: qr_codes_to_create || [],

@@ -34,9 +34,9 @@ export const handleTaskCompletion = async (
   });
 
   // If the survey response was successfully created, complete any tasks that are due
-  if (tasksToComplete.length > 0) {
-    for (const task of tasksToComplete) {
-      await task.handleCompletion(surveyResponseId!, userId!);
-    }
+  if (tasksToComplete.length === 0) return;
+
+  for (const task of tasksToComplete) {
+    await task.handleCompletion(surveyResponseId!, userId!);
   }
 };
