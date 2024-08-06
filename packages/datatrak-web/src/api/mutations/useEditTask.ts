@@ -6,6 +6,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { Task } from '@tupaia/types';
 import { put } from '../api';
+import { successToast } from '../../utils';
 
 type PartialTask = Partial<Task>;
 
@@ -21,6 +22,7 @@ export const useEditTask = (taskId?: Task['id'], onSuccess?: () => void) => {
       onSuccess: () => {
         queryClient.invalidateQueries('tasks');
         queryClient.invalidateQueries(['tasks', taskId]);
+        successToast('Task updated successfully');
         if (onSuccess) onSuccess();
       },
     },

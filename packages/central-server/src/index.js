@@ -11,11 +11,11 @@ import {
   ModelRegistry,
   SurveyResponseOutdater,
   TaskCompletionHandler,
+  TaskCreationHandler,
   TupaiaDatabase,
   getDbMigrator,
 } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
-
 import { MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
@@ -59,6 +59,10 @@ configureEnv();
   // Add listener to handle survey response changes for tasks
   const taskCompletionHandler = new TaskCompletionHandler(models);
   taskCompletionHandler.listenForChanges();
+
+  // Add listener to handle creating tasks when submitting survey responses
+  const taskCreationHandler = new TaskCreationHandler(models);
+  taskCreationHandler.listenForChanges();
 
   /**
    * Set up actual app with routes etc.

@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { JOIN_TYPES } from '../TupaiaDatabase';
+import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 /**
  *
@@ -90,7 +90,6 @@ export class TaskRecord extends DatabaseRecord {
       fields: { name: 'survey_name', code: 'survey_code' },
     },
   ];
-
   async entity() {
     return this.otherModels.entity.findById(this.entity_id);
   }
@@ -101,6 +100,76 @@ export class TaskRecord extends DatabaseRecord {
 
   async survey() {
     return this.otherModels.survey.findById(this.survey_id);
+  }
+
+  hasValidRepeatSchedule() {
+    const repeatSchedule = this.repeat_schedule;
+    return (
+      repeatSchedule !== null &&
+      typeof repeatSchedule === 'object' &&
+      Object.keys(repeatSchedule).length > 0
+    );
+  }
+
+  /**
+   * @description Handles the completion of a task. If the task is repeating, a new task is created with the same details as the current task and marked as completed
+   * If the task is not repeating, the current task is marked as completed.
+   *
+   * @param {string} surveyResponseId
+   * @param {string | null} userId
+   */
+  async handleCompletion(surveyResponseId, userId) {
+    const {
+      survey_id: surveyId,
+      entity_id: entityId,
+      repeat_schedule: repeatSchedule,
+      assignee_id: assigneeId,
+      id,
+    } = this;
+
+    let commentUserId = userId;
+    if (!userId) {
+      const user = await this.models.user.findPublicUser();
+      commentUserId = user.id;
+    }
+
+    if (this.hasValidRepeatSchedule()) {
+      // Create a new task with the same details as the current task and mark as completed.
+      const where = {
+        assignee_id: assigneeId,
+        survey_id: surveyId,
+        entity_id: entityId,
+        repeat_schedule: repeatSchedule,
+        status: 'completed',
+        survey_response_id: surveyResponseId,
+      };
+
+      // Check for an existing task so that multiple tasks aren't created for the same survey response
+      const existingTask = await this.model.findOne(where);
+      if (!existingTask) {
+        const newTask = await this.model.create(where);
+        await newTask.addComment(
+          'Completed this task',
+          commentUserId,
+          this.otherModels.taskComment.types.System,
+        );
+        await this.addComment(
+          `Completed task ${newTask.id}`,
+          commentUserId,
+          this.otherModels.taskComment.types.System,
+        );
+      }
+    } else {
+      await this.model.updateById(id, {
+        status: 'completed',
+        survey_response_id: surveyResponseId,
+      });
+      await this.addComment(
+        'Completed this task',
+        commentUserId,
+        this.otherModels.taskComment.types.System,
+      );
+    }
   }
 
   /**
@@ -127,13 +196,13 @@ export class TaskRecord extends DatabaseRecord {
    * @description Get all system comments for the task
    * @returns {Promise<TaskCommentRecord[]>}
    */
-
   async systemComments() {
     return this.otherModels.taskComment.find({
       task_id: this.id,
       type: this.otherModels.taskComment.types.System,
     });
   }
+
   /**
    * @description Add a comment to the task. Handles linking the comment to the task and user, and setting the comment type
    *
@@ -142,7 +211,6 @@ export class TaskRecord extends DatabaseRecord {
    * @param {string} type
    *
    */
-
   async addComment(message, userId, type) {
     const user = await this.otherModels.user.findById(userId);
     return this.otherModels.taskComment.create({
@@ -160,7 +228,6 @@ export class TaskRecord extends DatabaseRecord {
    * @param {object} updatedFields
    * @param {string} userId
    */
-
   async addSystemCommentsOnUpdate(updatedFields, userId) {
     const fieldsToCreateCommentsFor = ['due_date', 'repeat_schedule', 'status', 'assignee_id'];
     const comments = [];

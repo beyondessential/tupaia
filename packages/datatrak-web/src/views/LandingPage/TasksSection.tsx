@@ -7,11 +7,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FlexSpaceBetween, TextButton, Button as UIButton } from '@tupaia/ui-components';
-import { SectionHeading } from './SectionHeading';
 import { useCurrentUserContext, useTasks } from '../../api';
 import { NoTasksSection, TaskTile } from '../../features/Tasks';
 import { ROUTES } from '../../constants';
 import { LoadingTile } from '../../components';
+import { SectionHeading } from './SectionHeading';
 
 const SectionContainer = styled.section`
   grid-area: tasks;
