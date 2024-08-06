@@ -179,7 +179,7 @@ export async function updateCountryEntities(
     );
 
     if (attributes !== undefined) {
-      await transactingModels.entity.updateEntityAttributes(code, attributes ? { attributes } : {});
+      await transactingModels.entity.updateEntityAttributes(code, attributes);
     }
     if (longitude && latitude) {
       await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });

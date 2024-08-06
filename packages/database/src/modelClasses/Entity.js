@@ -368,6 +368,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   }
 
   async updateEntityAttributes(code, attributes) {
+    attributes = attributes || {};
     return this.database.executeSql(
       `
           UPDATE "entity"
