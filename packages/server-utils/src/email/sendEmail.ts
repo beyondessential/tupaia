@@ -34,10 +34,13 @@ const compileHtml = (context: TemplateContext) => {
   const templatePath = path.resolve(__dirname, './templates/template.html');
   const mainTemplate = fs.readFileSync(templatePath);
   const compiledTemplate = handlebars.compile(mainTemplate.toString());
-  const innerContentTemplate = fs.readFileSync(
-    path.resolve(__dirname, `./templates/${templateName}.html`),
-  );
-  const content = handlebars.compile(innerContentTemplate.toString())(templateContext);
+  let content = '';
+  if (templateName) {
+    const innerContentTemplate = fs.readFileSync(
+      path.resolve(__dirname, `./templates/${templateName}.html`),
+    );
+    content = handlebars.compile(innerContentTemplate.toString())(templateContext);
+  }
   return compiledTemplate({
     ...templateContext,
     content,
