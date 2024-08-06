@@ -69,6 +69,7 @@ export const useSubmitSurveyResponse = (fromLocation: string | undefined) => {
         queryClient.invalidateQueries('rewards');
         queryClient.invalidateQueries('leaderboard');
         queryClient.invalidateQueries('entityDescendants'); // Refresh recent entities
+        queryClient.invalidateQueries('tasks');
 
         const createNewAutocompleteQuestions = surveyResponseData?.questions?.filter(
           question => question?.config?.autocomplete?.createNew,
