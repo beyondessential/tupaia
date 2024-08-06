@@ -31,13 +31,13 @@ type MailOptions = TemplateContext & {
 
 const compileHtml = (context: TemplateContext) => {
   const { templateName, templateContext } = context;
-  const templatePath = path.resolve(__dirname, './templates/template.html');
+  const templatePath = path.resolve(__dirname, './templates/wrapper.html');
   const mainTemplate = fs.readFileSync(templatePath);
   const compiledTemplate = handlebars.compile(mainTemplate.toString());
   let content = '';
   if (templateName) {
     const innerContentTemplate = fs.readFileSync(
-      path.resolve(__dirname, `./templates/${templateName}.html`),
+      path.resolve(__dirname, `./templates/content/${templateName}.html`),
     );
     content = handlebars.compile(innerContentTemplate.toString())(templateContext);
   }
