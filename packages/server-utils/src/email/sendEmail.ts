@@ -35,7 +35,7 @@ const compileHtml = (context: TemplateContext) => {
   const mainTemplate = fs.readFileSync(templatePath);
   const compiledTemplate = handlebars.compile(mainTemplate.toString());
   const innerContentTemplate = fs.readFileSync(
-    path.resolve(__dirname, `./templates/${templateName}Template.html`),
+    path.resolve(__dirname, `./templates/${templateName}.html`),
   );
   const content = handlebars.compile(innerContentTemplate.toString())(templateContext);
   return compiledTemplate({
