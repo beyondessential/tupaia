@@ -84,17 +84,8 @@ const SurveyResponseModalContent = ({
   error,
 }: SurveyResponseModalContentProps) => {
   const { surveyLoading } = useSurveyResponseWithForm(surveyResponse);
-
   const subHeading = getSubHeadingText(surveyResponse);
-
   const showLoading = isLoading || surveyLoading;
-
-  console.log('isLoading', isLoading);
-  console.log('surveyLoading', surveyLoading);
-
-  if (showLoading) {
-    return null;
-  }
 
   return (
     <>
