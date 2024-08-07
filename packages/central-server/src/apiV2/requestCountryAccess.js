@@ -27,7 +27,7 @@ const sendRequest = async (userId, models, countries, message, project) => {
     templateContext: {
       title: 'You have a new country request!',
       cta: {
-        url: `${process.env.ADMIN_PANEL_URL}/users/access-requests/${userId}`,
+        url: `${process.env.ADMIN_PANEL_FRONT_END_URL}/users/access-requests/${userId}`,
         text: 'Approve or deny request',
       },
       countries,
