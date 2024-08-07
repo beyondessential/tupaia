@@ -108,7 +108,6 @@ const InitialRequest = ({ initialRequestId }) => {
   if (isLoading) {
     return null;
   }
-  // @ts-ignore
   const { id, countryName, dataTime, surveyName, entityName } = surveyResponse;
   return (
     <Tile
