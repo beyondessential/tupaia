@@ -27,3 +27,4 @@ export { SurveyScreenComponentModel as SurveyScreenComponent } from './SurveyScr
 export { SurveyScreenModel as SurveyScreen } from './SurveyScreen';
 export { UserModel as User } from './User';
 export { UserEntityPermissionModel as UserEntityPermission } from './UserEntityPermission';
+export { TaskModel as Task } from './Task';

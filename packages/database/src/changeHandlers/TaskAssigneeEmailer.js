@@ -2,9 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { requireEnv } from '@tupaia/utils';
-import { format } from 'date-fns';
+import winston from 'winston';
+import { format, parseISO } from 'date-fns';
 import { sendEmail } from '@tupaia/server-utils';
+import { requireEnv } from '@tupaia/utils';
 import { ChangeHandler } from './ChangeHandler';
 
 export class TaskAssigneeEmailer extends ChangeHandler {
@@ -16,7 +17,7 @@ export class TaskAssigneeEmailer extends ChangeHandler {
     };
   }
 
-  async getUpdatedTasks(changeDetails) {
+  getUpdatedTasks(changeDetails) {
     const { type, new_record: newRecord, old_record: oldRecord } = changeDetails;
 
     // only interested in updates where the assignee has changed
@@ -32,7 +33,7 @@ export class TaskAssigneeEmailer extends ChangeHandler {
   }
 
   async handleChanges(models, changedTasks) {
-    console.log('TaskAssigneeEmailer: handleChanges', changedTasks);
+    const start = Date.now();
     // if there are no changed tasks, we don't need to do anything
     if (changedTasks.length === 0) return;
 
@@ -67,7 +68,7 @@ export class TaskAssigneeEmailer extends ChangeHandler {
           userName: assignee.first_name,
           entityName: entity.name,
           surveyName: survey.name,
-          dueDate: dueDate ? format(dueDate, 'd MMMM yyyy') : 'No due date',
+          dueDate: dueDate ? format(new Date(dueDate), 'do MMMM yyyy') : 'No due date',
           cta: {
             url: `${datatrakURL}/tasks/${id}`,
             text: 'View task',
@@ -75,5 +76,7 @@ export class TaskAssigneeEmailer extends ChangeHandler {
         },
       });
     }
+    const end = Date.now();
+    winston.info(`Sending assignee emails completed, took: ${end - start}ms`);
   }
 }

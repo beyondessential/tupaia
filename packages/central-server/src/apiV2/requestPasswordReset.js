@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { respond, DatabaseError, FormValidationError } from '@tupaia/utils';
+import { respond, DatabaseError, FormValidationError, requireEnv } from '@tupaia/utils';
 import { sendEmail } from '@tupaia/server-utils';
 import { allowNoPermissions } from '../permissions';
 
@@ -28,9 +28,10 @@ export const requestPasswordReset = async (req, res) => {
     user_id: user.id,
   });
 
+  const TUPAIA_FRONT_END_URL = requireEnv('TUPAIA_FRONT_END_URL');
   // allow overriding the default url for the front end, so that this route can be used from Tupaia and also datatrak
   const passwordResetUrl = `${
-    resetPasswordUrl || process.env.TUPAIA_FRONT_END_URL
+    resetPasswordUrl || TUPAIA_FRONT_END_URL
   }/reset-password?passwordResetToken={token}`;
   const resetUrl = passwordResetUrl.replace('{token}', token);
 
