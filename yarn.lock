@@ -12003,6 +12003,7 @@ __metadata:
     "@babel/node": ^7.10.5
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
+    "@tupaia/server-utils": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     date-fns: ^2.29.2
