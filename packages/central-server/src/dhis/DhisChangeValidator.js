@@ -9,8 +9,7 @@ import { ChangeValidator } from '../externalApiSync';
 export class DhisChangeValidator extends ChangeValidator {
   queryValidSurveyResponseIds = async (
     surveyResponseIds,
-    excludeEventBased = false,
-    includeOutdated = false,
+    { excludeEventBased = false, outdated = false },
   ) => {
     const nonPublicDemoLandUsers = (
       await this.models.database.executeSql(
@@ -24,10 +23,12 @@ export class DhisChangeValidator extends ChangeValidator {
         `,
       )
     ).map(r => r.user_id);
+
     const validSurveyResponseIds = [];
     const batchSize = this.models.database.maxBindingsPerQuery - nonPublicDemoLandUsers.length;
     for (let i = 0; i < surveyResponseIds.length; i += batchSize) {
       const batchOfSurveyResponseIds = surveyResponseIds.slice(i, i + batchSize);
+
       const batchOfSurveyResponses = await this.models.database.executeSql(
         `
           SELECT DISTINCT survey_response.id as id
@@ -35,7 +36,7 @@ export class DhisChangeValidator extends ChangeValidator {
           JOIN survey ON survey_response.survey_id = survey.id
           JOIN data_group ON data_group.id = survey.data_group_id
           JOIN entity ON survey_response.entity_id = entity.id
-          AND data_group.service_type = 'dhis'
+          where data_group.service_type = 'dhis'
           AND (
             entity.country_code <> 'DL'
             OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(() => '?').join(',')})
@@ -48,24 +49,36 @@ export class DhisChangeValidator extends ChangeValidator {
           AND survey_response.outdated = ?
           AND survey_response.id IN (${batchOfSurveyResponseIds.map(() => '?').join(',')});
         `,
-        [...nonPublicDemoLandUsers, includeOutdated, ...batchOfSurveyResponseIds],
+        [...nonPublicDemoLandUsers, outdated, ...batchOfSurveyResponseIds],
       );
+
       validSurveyResponseIds.push(...batchOfSurveyResponses.map(r => r.id));
     }
     return validSurveyResponseIds;
   };
 
-  getOutdatedAnswers = async surveyResponseIds => {
+  getDeletesForAssociatedAnswers = async (surveyResponseIds, allChanges) => {
+    const answerChanges = allChanges.filter(c => c.record_type === 'answer');
     // get the answers associated with the survey responses
     const associatedAnswers = await this.models.answer.find({
       survey_response_id: surveyResponseIds,
     });
 
+    const filteredAnswers = associatedAnswers.filter(a => {
+      const change = answerChanges.find(c => c.record_id === a.id);
+      if (change && change.type === 'delete') {
+        return false;
+      }
+      return true;
+    });
+
+    if (filteredAnswers.length === 0) return [];
+
     // filter out answers for questions that do not sync to dhis
-    const dhisLinkedAnswers = await this.filterDhisLinkedAnswers(associatedAnswers);
+    const dhisLinkedAnswers = await this.filterDhisLinkedAnswers(filteredAnswers);
 
     // create delete changes for the answers
-    const deleteAnswers = await Promise.all(
+    const outdatedAnswerDeletes = await Promise.all(
       dhisLinkedAnswers.map(async a => ({
         record_type: 'answer',
         record_id: a.id,
@@ -75,18 +88,40 @@ export class DhisChangeValidator extends ChangeValidator {
       })),
     );
 
-    return deleteAnswers;
+    return outdatedAnswerDeletes;
   };
 
   getOutdatedAnswersAndSurveyResponses = async changes => {
+    // get the survey response changes that are already outdated
+    const surveyResponseChangesThatAreAlreadyOutdated = changes
+      .filter(
+        c =>
+          c.record_type === 'survey_response' &&
+          c.new_record.outdated === true &&
+          c.old_record &&
+          c.old_record.outdated === true,
+      )
+      .map(c => c.record_id);
     // get the survey response ids that are being updated to 'outdated'
-    const surveyResponseUpdateIds = await this.getValidSurveyResponseUpdates(changes, false, true);
+    const surveyResponseUpdateIds = await this.getValidSurveyResponseUpdates(changes, {
+      excludeEventBased: false,
+      outdated: true,
+    });
+
+    // ignore survey response changes that are already outdated
+    const validSurveyResponseIds = surveyResponseUpdateIds.filter(
+      id => !surveyResponseChangesThatAreAlreadyOutdated.includes(id),
+    );
+
+    if (validSurveyResponseIds.length === 0) return [];
 
     // get the survey response changes that are being updated to 'outdated'
     const surveyResponseChanges = this.filterChangesWithMatchingIds(
       changes,
-      surveyResponseUpdateIds,
+      validSurveyResponseIds,
     );
+
+    if (surveyResponseChanges.length === 0) return [];
 
     const outdatedSurveyResponseDeletes = surveyResponseChanges.map(s => ({
       ...s,
@@ -95,7 +130,10 @@ export class DhisChangeValidator extends ChangeValidator {
     }));
 
     // get the answers that are associated with the survey responses that are being updated to 'outdated'
-    const deleteAnswers = await this.getOutdatedAnswers(surveyResponseUpdateIds);
+    const deleteAnswers = await this.getDeletesForAssociatedAnswers(
+      surveyResponseUpdateIds,
+      changes,
+    );
 
     return [...outdatedSurveyResponseDeletes, ...deleteAnswers];
   };
@@ -119,7 +157,10 @@ export class DhisChangeValidator extends ChangeValidator {
 
     // check which survey responses are valid
     const validSurveyResponseIds = new Set(
-      await this.queryValidSurveyResponseIds(surveyResponseIds, true, false),
+      await this.queryValidSurveyResponseIds(surveyResponseIds, {
+        excludeEventBased: true,
+        outdated: false,
+      }),
     );
 
     // filter out answers for questions that do not sync to dhis
@@ -157,15 +198,18 @@ export class DhisChangeValidator extends ChangeValidator {
 
   getValidSurveyResponseUpdates = async (
     updateChanges,
-    excludeEventBased = false,
-    includeOutdated = false,
+    { excludeEventBased = false, outdated = false },
   ) => {
     const surveyResponseIds = this.getIdsFromChangesForModel(
       updateChanges,
       this.models.surveyResponse,
     );
+
     if (surveyResponseIds.length === 0) return [];
-    return this.queryValidSurveyResponseIds(surveyResponseIds, excludeEventBased, includeOutdated);
+    return this.queryValidSurveyResponseIds(surveyResponseIds, {
+      excludeEventBased,
+      outdated,
+    });
   };
 
   getValidEntityUpdates = async updateChanges => {
