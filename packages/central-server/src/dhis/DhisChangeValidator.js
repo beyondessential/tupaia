@@ -7,10 +7,8 @@ import { getUniqueEntries } from '@tupaia/utils';
 import { ChangeValidator } from '../externalApiSync';
 
 export class DhisChangeValidator extends ChangeValidator {
-  queryValidSurveyResponseIds = async (
-    surveyResponseIds,
-    { excludeEventBased = false, outdated = false },
-  ) => {
+  queryValidSurveyResponseIds = async (surveyResponseIds, settings = {}) => {
+    const { excludeEventBased = false, outdated = false } = settings;
     const nonPublicDemoLandUsers = (
       await this.models.database.executeSql(
         `
@@ -57,7 +55,7 @@ export class DhisChangeValidator extends ChangeValidator {
     return validSurveyResponseIds;
   };
 
-  getDeletesForAssociatedAnswers = async (surveyResponseIds, allChanges) => {
+  getAssociatedAnswers = async (surveyResponseIds, allChanges) => {
     const answerChanges = allChanges.filter(c => c.record_type === 'answer');
     // get the answers associated with the survey responses
     const associatedAnswers = await this.models.answer.find({
@@ -77,9 +75,15 @@ export class DhisChangeValidator extends ChangeValidator {
     // filter out answers for questions that do not sync to dhis
     const dhisLinkedAnswers = await this.filterDhisLinkedAnswers(filteredAnswers);
 
+    return dhisLinkedAnswers;
+  };
+
+  getDeletesForAssociatedAnswers = async (surveyResponseIds, allChanges) => {
+    const answersToChange = await this.getAssociatedAnswers(surveyResponseIds, allChanges);
+
     // create delete changes for the answers
     const outdatedAnswerDeletes = await Promise.all(
-      dhisLinkedAnswers.map(async a => ({
+      answersToChange.map(async a => ({
         record_type: 'answer',
         record_id: a.id,
         type: 'delete',
@@ -152,6 +156,7 @@ export class DhisChangeValidator extends ChangeValidator {
 
   getValidAnswerUpdates = async updateChanges => {
     const answers = this.getRecordsFromChangesForModel(updateChanges, this.models.answer);
+
     if (answers.length === 0) return [];
     const surveyResponseIds = getUniqueEntries(answers.map(a => a.survey_response_id));
 
@@ -196,20 +201,14 @@ export class DhisChangeValidator extends ChangeValidator {
     return filteredAnswers;
   };
 
-  getValidSurveyResponseUpdates = async (
-    updateChanges,
-    { excludeEventBased = false, outdated = false },
-  ) => {
+  getValidSurveyResponseUpdates = async (updateChanges, settings = {}) => {
     const surveyResponseIds = this.getIdsFromChangesForModel(
       updateChanges,
       this.models.surveyResponse,
     );
 
     if (surveyResponseIds.length === 0) return [];
-    return this.queryValidSurveyResponseIds(surveyResponseIds, {
-      excludeEventBased,
-      outdated,
-    });
+    return this.queryValidSurveyResponseIds(surveyResponseIds, settings);
   };
 
   getValidEntityUpdates = async updateChanges => {
@@ -220,15 +219,47 @@ export class DhisChangeValidator extends ChangeValidator {
     return entities.filter(e => e.allowsPushingToDhis()).map(e => e.id);
   };
 
+  // get associated answers for the survey responses that are being reinstated
+  getAnswersToUpdate = async allChanges => {
+    const surveyResponseChanges = await allChanges.filter(
+      c =>
+        c.record_type === 'survey_response' &&
+        c.old_record &&
+        c.old_record.outdated === true &&
+        c.new_record.outdated === false,
+    );
+
+    const surveyResponseIdsToUpdate = surveyResponseChanges.map(c => c.record_id);
+
+    const answerChanges = await this.getAssociatedAnswers(surveyResponseIdsToUpdate, allChanges);
+    return Promise.all(
+      answerChanges.map(async a => {
+        const data = await a.getData();
+        return {
+          record_type: 'answer',
+          record_id: a.id,
+          type: 'update',
+          new_record: data,
+          old_record: data,
+        };
+      }),
+    );
+  };
+
   getValidUpdates = async changes => {
     const updateChanges = this.getUpdateChanges(changes);
     const validEntityIds = await this.getValidEntityUpdates(updateChanges);
     const validAnswerIds = await this.getValidAnswerUpdates(updateChanges);
     const validSurveyResponseIds = await this.getValidSurveyResponseUpdates(updateChanges);
-    return this.filterChangesWithMatchingIds(changes, [
-      ...validEntityIds,
-      ...validAnswerIds,
-      ...validSurveyResponseIds,
-    ]);
+    const answersToUpdate = await this.getAnswersToUpdate(changes);
+    return [
+      ...this.filterChangesWithMatchingIds(changes, [
+        ...validEntityIds,
+        ...validAnswerIds,
+        ...validSurveyResponseIds,
+        ...answersToUpdate,
+      ]),
+      ...answersToUpdate,
+    ];
   };
 }
