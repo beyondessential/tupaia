@@ -20,7 +20,6 @@ describe('Permissions checker for GETTasks', async () => {
 
   const DEFAULT_POLICY = {
     DL: ['Donor'],
-    TO: ['Donor'],
   };
 
   const PUBLIC_POLICY = {
@@ -103,6 +102,15 @@ describe('Permissions checker for GETTasks', async () => {
         id: generateId(),
         survey_id: surveys[1].survey.id,
         entity_id: facilities[1].id,
+        assignee_id: assignee.id,
+        due_date: null,
+        repeat_schedule: '{}',
+        status: null,
+      },
+      {
+        id: generateId(),
+        survey_id: surveys[1].survey.id,
+        entity_id: facilities[0].id,
         assignee_id: assignee.id,
         due_date: null,
         repeat_schedule: '{}',

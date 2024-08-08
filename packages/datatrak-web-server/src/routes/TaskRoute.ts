@@ -31,6 +31,7 @@ const FIELDS = [
   'survey_id',
   'entity_id',
   'survey_response_id',
+  'initial_request_id',
 ];
 
 export class TaskRoute extends Route<TaskRequest> {
@@ -61,11 +62,12 @@ export class TaskRoute extends Route<TaskRequest> {
 
     const entity = await models.entity.findById(task.entity_id);
 
-    const entityAncestors = project.entity_hierarchy_id
-      ? await entity.getAncestors(project.entity_hierarchy_id, {
-          generational_distance: 1,
-        })
-      : [];
+    const entityAncestors =
+      project.entity_hierarchy_id && entity.type !== 'country'
+        ? await entity.getAncestors(project.entity_hierarchy_id, {
+            generational_distance: 1,
+          })
+        : [];
 
     return {
       ...formatTaskResponse({
