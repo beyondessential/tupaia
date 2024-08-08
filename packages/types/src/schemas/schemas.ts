@@ -88022,6 +88022,9 @@ export const TaskResponseSchema = {
 				},
 				"countryCode": {
 					"type": "string"
+				},
+				"parentName": {
+					"type": "string"
 				}
 			},
 			"additionalProperties": false,
