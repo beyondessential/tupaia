@@ -31,6 +31,7 @@ const FIELDS = [
   'survey_id',
   'entity_id',
   'survey_response_id',
+  'initial_request_id',
 ];
 
 export class TaskRoute extends Route<TaskRequest> {

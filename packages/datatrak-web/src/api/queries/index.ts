@@ -7,7 +7,7 @@ export { useUser } from './useUser';
 export { useProjects } from './useProjects';
 export { useSurveys } from './useSurveys';
 export { useSurvey } from './useSurvey';
-export { useSurveyResponse, useSurveyResponseWithForm } from './useSurveyResponse';
+export { useSurveyResponse } from './useSurveyResponse';
 export { useSurveyResponses, useCurrentUserSurveyResponses } from './useSurveyResponses';
 export { useProjectEntities } from './useProjectEntities';
 export { useEntityById, useEntityByCode } from './useEntity';

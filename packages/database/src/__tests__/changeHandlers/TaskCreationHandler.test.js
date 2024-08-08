@@ -152,11 +152,19 @@ describe('TaskCreationHandler', () => {
 
   it.each(TEST_DATA)('%s', async (_name, { config, answers = {} }, result) => {
     const { survey } = await buildTaskCreationSurvey(models, config);
-    await buildSurveyResponse(models, survey.code, answers);
+    const response = await buildSurveyResponse(models, survey.code, answers);
     await models.database.waitForAllChangeHandlers();
     const tasks = await models.task.find({ entity_id: entityId }, { sort: ['created_at DESC'] });
 
-    const { survey_id, entity_id, status, due_date, assignee_id, repeat_schedule } = tasks[0];
+    const {
+      survey_id,
+      entity_id,
+      status,
+      due_date,
+      assignee_id,
+      repeat_schedule,
+      initial_request_id,
+    } = tasks[0];
 
     expect({
       survey_id,
@@ -165,10 +173,12 @@ describe('TaskCreationHandler', () => {
       due_date,
       status,
       repeat_schedule,
+      initial_request_id,
     }).toMatchObject({
       repeat_schedule: null,
       due_date: null,
       status: 'to_do',
+      initial_request_id: response.surveyResponse.id,
       ...result,
     });
   });
