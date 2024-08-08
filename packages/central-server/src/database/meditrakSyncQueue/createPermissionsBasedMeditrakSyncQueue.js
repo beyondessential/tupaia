@@ -37,7 +37,8 @@ SELECT msq.*,
 		${groupToFlatArrayOrNull('ssc_ss_s.country_ids')},
 		${groupToFlatArrayOrNull('q_ssc_ss_s.country_ids')},
 		${groupToFlatArrayOrNull('os_q_ssc_ss_s.country_ids')},
-		${groupToFlatArrayOrNull('o_os_q_ssc_ss_s.country_ids')}
+		${groupToFlatArrayOrNull('o_os_q_ssc_ss_s.country_ids')},
+		${groupToArrayOrNull('uep_e_co.id')}
 	) as country_ids,
 
 	COALESCE(
@@ -48,7 +49,8 @@ SELECT msq.*,
 		${groupToArrayOrNull('ssc_ss_s_pg."name"')},
 		${groupToArrayOrNull('q_ssc_ss_s_pg."name"')},
 		${groupToArrayOrNull('os_q_ssc_ss_s_pg."name"')},
-		${groupToArrayOrNull('o_os_q_ssc_ss_s_pg."name"')}
+		${groupToArrayOrNull('o_os_q_ssc_ss_s_pg."name"')},
+		${groupToArrayOrNull('uep_pg."name"')}
 	) as permission_groups
 FROM meditrak_sync_queue msq 
 LEFT JOIN country co ON msq.record_id = co.id
@@ -87,6 +89,10 @@ LEFT JOIN survey_screen_component o_os_q_ssc ON o_os_q_ssc.question_id = o_os_q.
 LEFT JOIN survey_screen o_os_q_ssc_ss ON o_os_q_ssc.screen_id = o_os_q_ssc_ss.id
 LEFT JOIN survey o_os_q_ssc_ss_s ON o_os_q_ssc_ss.survey_id  = o_os_q_ssc_ss_s.id 
 LEFT JOIN permission_group o_os_q_ssc_ss_s_pg ON o_os_q_ssc_ss_s.permission_group_id = o_os_q_ssc_ss_s_pg.id
+LEFT JOIN user_entity_permission uep ON msq.record_id = uep.id
+LEFT JOIN entity uep_e ON uep.entity_id = uep_e.id 
+LEFT JOIN country uep_e_co ON uep_e_co.code = uep_e.country_code  
+LEFT JOIN permission_group uep_pg ON uep.permission_group_id = uep_pg.id
 GROUP BY msq.id;
 CREATE UNIQUE INDEX permissions_based_meditrak_sync_queue_id_idx ON permissions_based_meditrak_sync_queue (id); 
 `);
