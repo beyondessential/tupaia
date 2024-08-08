@@ -34,7 +34,7 @@ export class DhisChangeValidator extends ChangeValidator {
           JOIN survey ON survey_response.survey_id = survey.id
           JOIN data_group ON data_group.id = survey.data_group_id
           JOIN entity ON survey_response.entity_id = entity.id
-          where data_group.service_type = 'dhis'
+          AND data_group.service_type = 'dhis'
           AND (
             entity.country_code <> 'DL'
             OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(() => '?').join(',')})
