@@ -42128,6 +42128,29 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate",
+				"Task",
+				"User"
+			],
 			"type": "string"
 		},
 		"value": {
@@ -42172,6 +42195,29 @@ export const AnalyticsCreateSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate",
+				"Task",
+				"User"
+			],
 			"type": "string"
 		},
 		"value": {
@@ -42216,6 +42262,29 @@ export const AnalyticsUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate",
+				"Task",
+				"User"
+			],
 			"type": "string"
 		},
 		"value": {
