@@ -6,11 +6,11 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import styled from 'styled-components';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
-import { useEditTask } from '../../../api';
-import { Button as BaseButton } from '../../../components';
+import { useEditTask, useSurveyResponse } from '../../../api';
+import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
@@ -18,6 +18,7 @@ import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
 import { TaskComments } from './TaskComments';
+import { displayDate } from '../../../utils';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
