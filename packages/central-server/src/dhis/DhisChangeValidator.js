@@ -64,7 +64,7 @@ export class DhisChangeValidator extends ChangeValidator {
 
     const filteredAnswers = associatedAnswers.filter(a => {
       const change = answerChanges.find(c => c.record_id === a.id);
-      if (change && change.type === 'delete') {
+      if (change) {
         return false;
       }
       return true;

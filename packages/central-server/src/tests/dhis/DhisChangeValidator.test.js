@@ -161,4 +161,55 @@ describe('DhisChangeValidator', async () => {
       expect(result.length).to.equal(0);
     });
   });
+
+  describe('getAnswersToUpdate', () => {
+    it('should return answers associated with any survey responses that are changing from outdated to not outdated', async () => {
+      const changes = [
+        {
+          record_id: surveyResponse.id,
+          record_type: 'survey_response',
+          type: 'update',
+          new_record: surveyResponse,
+          old_record: {
+            ...surveyResponse,
+            outdated: true,
+          },
+        },
+      ];
+      const result = await ChangeValidator.getAnswersToUpdate(changes);
+      expect(result.length).to.equal(1);
+      expect(result).to.deep.equal(
+        answers.map(answer => ({
+          record_id: answer.id,
+          record_type: 'answer',
+          type: 'update',
+          new_record: answer,
+          old_record: answer,
+        })),
+      );
+    });
+
+    it('should not include any answers already being updated in the changes list', async () => {
+      const changes = [
+        {
+          record_id: surveyResponse.id,
+          record_type: 'survey_response',
+          type: 'update',
+          new_record: surveyResponse,
+          old_record: {
+            ...surveyResponse,
+            outdated: true,
+          },
+        },
+        {
+          record_id: answers[0].id,
+          record_type: 'answer',
+          type: 'update',
+          old_record: answers[0],
+        },
+      ];
+      const result = await ChangeValidator.getAnswersToUpdate(changes);
+      expect(result.length).to.equal(0);
+    });
+  });
 });
