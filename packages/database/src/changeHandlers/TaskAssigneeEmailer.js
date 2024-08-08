@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import winston from 'winston';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { sendEmail } from '@tupaia/server-utils';
 import { requireEnv } from '@tupaia/utils';
 import { ChangeHandler } from './ChangeHandler';
@@ -46,6 +46,7 @@ export class TaskAssigneeEmailer extends ChangeHandler {
         id,
       } = task;
       const survey = await models.survey.findById(surveyId);
+
       if (!survey) {
         throw new Error(`Survey with id ${surveyId} not found`);
       }
@@ -60,7 +61,7 @@ export class TaskAssigneeEmailer extends ChangeHandler {
 
       const datatrakURL = requireEnv('DATATRAK_FRONT_END_URL');
 
-      sendEmail(assignee.email, {
+      await sendEmail(assignee.email, {
         subject: 'Tupaia DataTrak Task Assigned',
         templateName: 'taskAssigned',
         templateContext: {
