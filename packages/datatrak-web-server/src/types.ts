@@ -10,6 +10,7 @@ import {
   OneTimeLoginModel,
   OptionModel,
   PermissionGroupModel,
+  ProjectModel,
   SurveyModel,
   SurveyResponseModel,
   TaskCommentModel,
@@ -31,4 +32,5 @@ export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly permissionGroup: PermissionGroupModel;
   readonly userEntityPermission: UserEntityPermissionModel;
   readonly taskComment: TaskCommentModel;
+  readonly project: ProjectModel;
 }

@@ -28,8 +28,11 @@ const Title = styled(Typography).attrs({
 `;
 
 const Value = styled(Typography)`
-  font-weight: ${props => props.theme.typography.fontWeightMedium};
   font-size: 0.875rem;
+`;
+
+const Bold = styled.span`
+  font-weight: ${props => props.theme.typography.fontWeightMedium};
 `;
 
 const DataWrapper = styled.div`
@@ -76,14 +79,16 @@ export const TaskMetadata = ({ task }: { task?: SingleTaskResponse }) => {
         </DataWrapper>
         <CountryWrapper>
           <Pin />
-          <Value>{country?.name}</Value>
+          <Value>
+            <Bold>{country?.name}</Bold>
+          </Value>
         </CountryWrapper>
       </Row>
 
       <DataWrapper>
         <Title>Entity</Title>
         <Value>
-          {country?.name} | {entity?.name}
+          <Bold>{entity?.name}</Bold> | {entity?.parentName}
         </Value>
       </DataWrapper>
       <DataWrapper>

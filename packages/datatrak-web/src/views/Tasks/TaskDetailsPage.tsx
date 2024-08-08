@@ -69,30 +69,30 @@ const ButtonComponent = ({
 
   if (!task) return null;
 
-  const surveyUrl = task
-    ? generatePath(ROUTES.SURVEY_SCREEN, {
-        countryCode: task?.entity?.countryCode,
-        surveyCode: task?.survey?.code,
-        screenNumber: '1',
-      })
-    : '';
+  const { entity, survey, surveyResponseId, taskStatus } = task;
 
-  if (task.taskStatus === TaskStatus.cancelled) return null;
-  if (task.taskStatus === TaskStatus.completed) {
-    if (!task.surveyResponseId)
+  const surveyUrl = generatePath(ROUTES.SURVEY_SCREEN, {
+    countryCode: entity?.countryCode,
+    surveyCode: survey?.code,
+    screenNumber: '1',
+  });
+
+  if (taskStatus === TaskStatus.cancelled) return null;
+  if (taskStatus === TaskStatus.completed) {
+    if (!surveyResponseId)
       return (
         <Button onClick={openErrorModal} variant="outlined">
           View completed survey
         </Button>
       );
     return (
-      <Button to={`?responseId=${task.surveyResponseId}`} variant="outlined">
+      <Button to={`?responseId=${surveyResponseId}`} variant="outlined">
         View completed survey
       </Button>
     );
   }
   return (
-    <Button to={surveyUrl} state={{ from }}>
+    <Button to={surveyUrl} state={{ from, primaryEntity: entity.id }}>
       Complete task
     </Button>
   );

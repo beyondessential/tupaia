@@ -7,7 +7,6 @@ import { ChangeHandler } from './ChangeHandler';
 
 const getAnswerWrapper = (config, answers) => {
   const answersByQuestionId = keyBy(answers, 'question_id');
-
   return questionKey => {
     const questionId = config[questionKey]?.questionId;
     if (!questionId) {
@@ -85,8 +84,12 @@ export class TaskCreationHandler extends ChangeHandler {
       for (const taskQuestion of taskQuestions) {
         const config = taskQuestion.config.task;
         const getAnswer = getAnswerWrapper(config, answers);
-
-        if (!config || getAnswer('shouldCreateTask') === false) {
+        
+        if (
+          !config ||
+          getAnswer('shouldCreateTask') === null ||
+          getAnswer('shouldCreateTask') === 'No'
+        ) {
           continue;
         }
 

@@ -17,21 +17,24 @@ export const handleTaskCompletion = async (
     data_time: dataTime,
     user_id: userId,
   } = surveyResponse;
-  const tasksToComplete = await models.task.find({
-    // only fetch tasks that have a status of 'to_do' or null (repeating tasks have a status of null)
-    // @ts-ignore
-    status: 'to_do',
-    [QUERY_CONJUNCTIONS.OR]: {
-      status: {
-        comparator: 'IS',
-        comparisonValue: null,
+  const tasksToComplete = await models.task.find(
+    // @ts-ignore - TS doesn't like the nested query
+    {
+      [QUERY_CONJUNCTIONS.AND]: {
+        status: 'to_do',
+        [QUERY_CONJUNCTIONS.OR]: {
+          status: {
+            comparator: 'IS',
+            comparisonValue: null,
+          },
+        },
+      },
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: `(survey_id = ? AND entity_id = ? AND created_at <= ?)`,
+        parameters: [surveyId, entityId, dataTime],
       },
     },
-    [QUERY_CONJUNCTIONS.RAW]: {
-      sql: `(survey_id = ? AND entity_id = ? AND created_at <= ?)`,
-      parameters: [surveyId, entityId, dataTime],
-    },
-  });
+  );
 
   // If the survey response was successfully created, complete any tasks that are due
   if (tasksToComplete.length === 0) return;
