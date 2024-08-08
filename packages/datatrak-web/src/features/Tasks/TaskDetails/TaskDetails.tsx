@@ -6,11 +6,11 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import styled from 'styled-components';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
-import { useEditTask } from '../../../api';
-import { Button as BaseButton } from '../../../components';
+import { useEditTask, useSurveyResponse } from '../../../api';
+import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
@@ -18,6 +18,7 @@ import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
 import { TaskComments } from './TaskComments';
+import { displayDate } from '../../../utils';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -54,9 +55,12 @@ const MainColumn = styled.div`
 const SideColumn = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   ${({ theme }) => theme.breakpoints.up('md')} {
     width: 25%;
+  }
+
+  a.MuiButton-root {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 `;
 
@@ -99,6 +103,40 @@ const Wrapper = styled.div`
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 `;
+
+const SectionHeading = styled(Typography).attrs({
+  variant: 'h2',
+})`
+  font-size: 0.875rem;
+  line-height: 1.3;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+`;
+
+const InitialRequest = ({ initialRequestId }) => {
+  const { data: surveyResponse, isLoading } = useSurveyResponse(initialRequestId);
+  if (isLoading || !surveyResponse) {
+    return null;
+  }
+  const { id, countryName, dataTime, surveyName, entityName } = surveyResponse;
+  return (
+    <Tile
+      title={surveyName}
+      text={entityName}
+      to={`?responseId=${id}`}
+      tooltip={
+        <>
+          {surveyName}
+          <br />
+          {entityName}
+        </>
+      }
+      Icon={SurveyTickIcon}
+    >
+      {countryName}, {displayDate(dataTime as Date)}
+    </Tile>
+  );
+};
 
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const [defaultValues, setDefaultValues] = useState({
@@ -182,7 +220,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                   )}
                 />
               </ItemWrapper>
-
               <ItemWrapper>
                 <Controller
                   name="repeat_schedule"
@@ -228,7 +265,10 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
           <MainColumn>
             <TaskComments comments={task.comments} />
           </MainColumn>
-          <SideColumn></SideColumn>
+          <SideColumn>
+            <SectionHeading>Initial request </SectionHeading>
+            {task.initialRequestId && <InitialRequest initialRequestId={task.initialRequestId} />}
+          </SideColumn>
         </Container>
       </LoadingContainer>
     </Wrapper>
