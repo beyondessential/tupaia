@@ -88,7 +88,7 @@ export const TaskMetadata = ({ task }: { task?: SingleTaskResponse }) => {
       <DataWrapper>
         <Title>Entity</Title>
         <Value>
-          <Bold>{entity?.name}</Bold> | {entity?.parentName}
+          <Bold>{entity?.name}</Bold> {entity?.parentName && <>| {entity?.parentName}</>}
         </Value>
       </DataWrapper>
       <DataWrapper>
