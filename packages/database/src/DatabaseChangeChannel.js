@@ -29,7 +29,6 @@ export class DatabaseChangeChannel extends PGPubSub {
   }
 
   async publishRecordUpdates(recordType, records, specificHandlerKey) {
-    console.log('recordType', recordType, records);
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
       await this.publish('change', {
