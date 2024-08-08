@@ -10,7 +10,7 @@ import { Paper } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
 import { useEditTask } from '../../../api';
-import { Button } from '../../../components';
+import { Button as BaseButton } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
@@ -63,6 +63,16 @@ const SideColumn = styled.div`
 const ItemWrapper = styled.div`
   &:not(:last-child) {
     margin-block-end: 1.2rem;
+  }
+`;
+
+const Button = styled(BaseButton).attrs({
+  variant: 'outlined',
+})`
+  &:disabled {
+    color: ${({ theme }) => theme.palette.primary.main};
+    border-color: ${({ theme }) => theme.palette.primary.main};
+    opacity: 0.3;
   }
 `;
 
@@ -203,14 +213,16 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                   )}
                 />
               </ItemWrapper>
-              <ButtonWrapper>
-                <ClearButton disabled={!isDirty} onClick={onClearEdit}>
-                  Clear changes
-                </ClearButton>
-                <Button type="submit" disabled={!isDirty} variant="outlined">
-                  Save changes
-                </Button>
-              </ButtonWrapper>
+              {canEditFields && (
+                <ButtonWrapper>
+                  <ClearButton disabled={!isDirty} onClick={onClearEdit}>
+                    Clear changes
+                  </ClearButton>
+                  <Button type="submit" disabled={!isDirty} variant="outlined">
+                    Save changes
+                  </Button>
+                </ButtonWrapper>
+              )}
             </Form>
           </SideColumn>
           <MainColumn>

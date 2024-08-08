@@ -43,12 +43,13 @@ export class TaskCompletionHandler extends ChangeHandler {
     );
 
     return this.models.task.find({
-      // only fetch tasks that have a status of 'to_do' or null (repeating tasks have a status of null)
-      status: 'to_do',
-      [QUERY_CONJUNCTIONS.OR]: {
-        status: {
-          comparator: 'IS',
-          comparisonValue: null,
+      [QUERY_CONJUNCTIONS.AND]: {
+        status: 'to_do',
+        [QUERY_CONJUNCTIONS.OR]: {
+          status: {
+            comparator: 'IS',
+            comparisonValue: null,
+          },
         },
       },
       [QUERY_CONJUNCTIONS.RAW]: {

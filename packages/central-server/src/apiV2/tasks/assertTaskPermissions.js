@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import { fetchCountryCodesByPermissionGroupId, mergeFilter } from '../utilities';
+import { fetchCountryCodesByPermissionGroupId } from '../utilities';
 
 const getUserSurveys = async (models, accessPolicy, projectId) => {
   const query = {};
@@ -12,7 +13,7 @@ const getUserSurveys = async (models, accessPolicy, projectId) => {
     query.project_id = projectId;
   }
   const userSurveys = await models.survey.findByAccessPolicy(accessPolicy, query, {
-    columns: ['id'],
+    columns: ['id', 'permission_group_id', 'country_ids'],
   });
   return userSurveys;
 };
@@ -21,31 +22,12 @@ export const createTaskDBFilter = async (accessPolicy, models, criteria, options
   if (hasBESAdminAccess(accessPolicy)) {
     return { dbConditions: criteria, dbOptions: options };
   }
-  const { 'survey.project_id': projectId, ...dbConditions } = { ...criteria };
+  const dbConditions = { ...criteria };
   const dbOptions = { ...options };
 
-  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
-    accessPolicy,
-    models,
-  );
+  const taskPermissionsQuery = await models.task.createAccessPolicyQueryClause(accessPolicy);
 
-  const surveys = await getUserSurveys(models, accessPolicy, projectId);
-
-  dbConditions['entity.country_code'] = mergeFilter(
-    {
-      comparator: 'IN',
-      comparisonValue: Object.values(countryCodesByPermissionGroupId).flat(),
-    },
-    dbConditions['entity.country_code'],
-  );
-
-  dbConditions['task.survey_id'] = mergeFilter(
-    {
-      comparator: 'IN',
-      comparisonValue: surveys.map(survey => survey.id),
-    },
-    dbConditions['task.survey_id'],
-  );
+  dbConditions[QUERY_CONJUNCTIONS.RAW] = taskPermissionsQuery;
 
   return { dbConditions, dbOptions };
 };

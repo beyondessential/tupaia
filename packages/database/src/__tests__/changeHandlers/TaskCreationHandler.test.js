@@ -101,7 +101,7 @@ const TEST_DATA = [
       },
       answers: {
         TEST_CODE_00: entityId,
-        TEST_CODE_01: true,
+        TEST_CODE_01: 'Yes',
         TEST_CODE_02: '2024/06/06 00:00:00+00',
         TEST_CODE_03: userId,
       },
@@ -126,7 +126,7 @@ const TEST_DATA = [
         TEST_CODE_00: entityId,
       },
     },
-    { entity_id: entityId, survey_id: taskSurveyId },
+    { entity_id: entityId, survey_id: taskSurveyId, due_date: '2024-06-06 00:00:00' },
   ],
 ];
 
@@ -175,8 +175,16 @@ describe('TaskCreationHandler', () => {
 
   it('Does not create a task if shouldCreateTask is false', async () => {
     const beforeTasks = await models.task.find({ survey_id: taskSurveyId });
-    const { survey } = await buildTaskCreationSurvey(models, { shouldCreateTask: 'TEST_01' });
-    await buildSurveyResponse(models, survey.code, { TEST_01: false });
+    const { survey } = await buildTaskCreationSurvey(models, {
+      task: {
+        shouldCreateTask: {
+          surveyCode: taskSurveyCode,
+          questionId: 'TEST_ID_01',
+          entityId: { questionId: 'TEST_ID_00' },
+        },
+      },
+    });
+    await buildSurveyResponse(models, survey.code, { TEST_CODE_01: 'No', TEST_CODE_00: entityId });
     await models.database.waitForAllChangeHandlers();
     const afterTasks = await models.task.find({ survey_id: taskSurveyId });
     expect(beforeTasks.length).toEqual(afterTasks.length);

@@ -186,7 +186,7 @@ export const Pagination = ({
   const currentDisplayEnd = Math.min((page + 1) * pageSize, totalRecords);
 
   const getEntriesText = () => {
-    if (!totalRecords) return '1 of 0 entries';
+    if (!totalRecords) return '';
     return `${currentDisplayStart} - ${currentDisplayEnd} of ${totalRecords} entries`;
   };
 

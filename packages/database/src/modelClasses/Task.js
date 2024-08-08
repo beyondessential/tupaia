@@ -9,6 +9,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
+const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 /**
  *
  * @description Get a human-friendly name for a field. In most cases, this just replaces underscores with spaces, but there are some special cases like 'assignee_id' and 'repeat_schedule' that need to be handled differently
@@ -90,6 +91,7 @@ export class TaskRecord extends DatabaseRecord {
       fields: { name: 'survey_name', code: 'survey_code' },
     },
   ];
+
   async entity() {
     return this.otherModels.entity.findById(this.entity_id);
   }
@@ -268,6 +270,73 @@ export class TaskRecord extends DatabaseRecord {
 export class TaskModel extends DatabaseModel {
   get DatabaseRecordClass() {
     return TaskRecord;
+  }
+
+  async createAccessPolicyQueryClause(accessPolicy) {
+    const countryCodesByPermissionGroupId = await this.getCountryCodesByPermissionGroupId(
+      accessPolicy,
+    );
+
+    const params = Object.entries(countryCodesByPermissionGroupId).flat().flat(); // e.g. ['permissionGroupId', 'id1', 'id2', 'Admin', 'id3']
+
+    return {
+      sql: `
+        (
+          ${Object.entries(countryCodesByPermissionGroupId)
+            .map(([_, countryCodes]) => {
+              return `
+              (
+                survey.permission_group_id = ? AND 
+                entity.country_code IN (${countryCodes.map(() => '?').join(', ')})
+              )
+            `;
+            })
+            .join(' OR ')}
+        )
+       `,
+      parameters: params,
+    };
+  }
+
+  async getCountryCodesByPermissionGroupId(accessPolicy) {
+    const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
+    const countryCodesByPermissionGroupId = {};
+    const permissionGroupNameToId = await this.otherModels.permissionGroup.findIdByField(
+      'name',
+      allPermissionGroupsNames,
+    );
+    for (const [permissionGroupName, permissionGroupId] of Object.entries(
+      permissionGroupNameToId,
+    )) {
+      const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
+      countryCodesByPermissionGroupId[permissionGroupId] = countryCodes;
+    }
+    return countryCodesByPermissionGroupId;
+  }
+
+  /**
+   * @description Count tasks that the user has access to
+   *
+   * @param {AccessPolicy} accessPolicy
+   * @param {object} dbConditions
+   * @param {object} customQueryOptions
+   */
+  async countTasksForAccessPolicy(accessPolicy, dbConditions, customQueryOptions) {
+    // Check if the user has BES Admin access
+    const hasBESAdminAccess = accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
+    const queryClause = await this.createAccessPolicyQueryClause(accessPolicy);
+
+    // If the user has BES Admin access, return the count of all tasks that match the conditions, otherwise return the count of tasks that match the conditions and the access policy
+    const queryConditions = hasBESAdminAccess
+      ? dbConditions
+      : {
+          [QUERY_CONJUNCTIONS.RAW]: queryClause,
+          ...dbConditions,
+        };
+
+    return this.count(queryConditions, {
+      multiJoin: customQueryOptions.multiJoin,
+    });
   }
 
   customColumnSelectors = {
