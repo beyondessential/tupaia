@@ -15,12 +15,10 @@ const makeMockRequest = (overwrites: any) => {
     },
     query: {},
     models: {
-      database: {
-        count: () => null,
-      },
       task: {
         customColumnSelectors: {},
         DatabaseRecordClass: { joins: null },
+        countTasksForAccessPolicy: jest.fn().mockResolvedValue(null),
       },
     },
     ctx: {
