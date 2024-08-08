@@ -12494,10 +12494,12 @@ __metadata:
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
     "@tupaia/utils": "workspace:*"
-    "@types/nodemailer": ^6.4.13
+    "@types/nodemailer": ^6.4.15
     "@types/sha256": ^0.2.2
     cookie: ^0.5.0
+    copyfiles: ^2.4.1
     dotenv: ^16.4.5
+    handlebars: ^4.7.8
     nodemailer: ^6.9.12
     puppeteer: ^15.4.0
     sha256: ^0.2.0
@@ -13753,12 +13755,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:^6.4.13":
-  version: 6.4.13
-  resolution: "@types/nodemailer@npm:6.4.13"
+"@types/nodemailer@npm:^6.4.15":
+  version: 6.4.15
+  resolution: "@types/nodemailer@npm:6.4.15"
   dependencies:
     "@types/node": "*"
-  checksum: fd27d57d5801aaa7594d3bab748aedb1addc0c3a8ff9a21ea7675eec0e7e99cc477d05264b757b97691612fcfab37e52ded6c0725a700a90ad24fc7829dcc641
+  checksum: f6f9a2f8a669703ecc3ca6359c12345b16f6b2e5691b93c406b9af7de639c02092ec00133526e6fecd8c60d884890a7cd0f967d8e64bedab46d5c3d8be0882d7
   languageName: node
   linkType: hard
 
@@ -19407,6 +19409,24 @@ __metadata:
   dependencies:
     toggle-selection: ^1.0.6
   checksum: 3c7b1c333dc6a4b2e9905f52e4df6bbd34ff9f9c97ecd3ca55378a6bc1c191bb12a3252e6289c7b436e9188cff0360d393c0161626851d2301607860bbbdcfd5
+  languageName: node
+  linkType: hard
+
+"copyfiles@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "copyfiles@npm:2.4.1"
+  dependencies:
+    glob: ^7.0.5
+    minimatch: ^3.0.3
+    mkdirp: ^1.0.4
+    noms: 0.0.0
+    through2: ^2.0.1
+    untildify: ^4.0.0
+    yargs: ^16.1.0
+  bin:
+    copyfiles: copyfiles
+    copyup: copyfiles
+  checksum: aea69873bb99cc5f553967660cbfb70e4eeda198f572a36fb0f748b36877ff2c90fd906c58b1d540adbad8afa8ee82820172f1c18e69736f7ab52792c12745a7
   languageName: node
   linkType: hard
 
@@ -25374,6 +25394,24 @@ __metadata:
   bin:
     handlebars: bin/handlebars
   checksum: 1e79a43f5e18d15742977cb987923eab3e2a8f44f2d9d340982bcb69e1735ed049226e534d7c1074eaddaf37e4fb4f471a8adb71cddd5bc8cf3f894241df5cee
+  languageName: node
+  linkType: hard
+
+"handlebars@npm:^4.7.8":
+  version: 4.7.8
+  resolution: "handlebars@npm:4.7.8"
+  dependencies:
+    minimist: ^1.2.5
+    neo-async: ^2.6.2
+    source-map: ^0.6.1
+    uglify-js: ^3.1.4
+    wordwrap: ^1.0.0
+  dependenciesMeta:
+    uglify-js:
+      optional: true
+  bin:
+    handlebars: bin/handlebars
+  checksum: 00e68bb5c183fd7b8b63322e6234b5ac8fbb960d712cb3f25587d559c2951d9642df83c04a1172c918c41bcfc81bfbd7a7718bbce93b893e0135fc99edea93ff
   languageName: node
   linkType: hard
 
@@ -31574,7 +31612,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
+"minimatch@npm:^3.0.3, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:
@@ -32277,7 +32315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo-async@npm:^2.6.0":
+"neo-async@npm:^2.6.0, neo-async@npm:^2.6.2":
   version: 2.6.2
   resolution: "neo-async@npm:2.6.2"
   checksum: deac9f8d00eda7b2e5cd1b2549e26e10a0faa70adaa6fdadca701cc55f49ee9018e427f424bac0c790b7c7e2d3068db97f3093f1093975f2acb8f8818b936ed9
@@ -32664,6 +32702,16 @@ __metadata:
   bin:
     nodemon: bin/nodemon.js
   checksum: eb9e96994ed7ce3ceb8600b6e76a246b050e27071b659f7725a03f31e31863cb1dd045b52bca17b42dd049fb1772d2e36b2bf46b503aaf71e70255e46208f75b
+  languageName: node
+  linkType: hard
+
+"noms@npm:0.0.0":
+  version: 0.0.0
+  resolution: "noms@npm:0.0.0"
+  dependencies:
+    inherits: ^2.0.1
+    readable-stream: ~1.0.31
+  checksum: a05f056dabf764c86472b6b5aad10455f3adcb6971f366cdf36a72b559b29310a940e316bca30802f2804fdd41707941366224f4cba80c4f53071512245bf200
   languageName: node
   linkType: hard
 
@@ -37262,6 +37310,18 @@ __metadata:
     string_decoder: ^1.1.1
     util-deprecate: ^1.0.1
   checksum: bdcbe6c22e846b6af075e32cf8f4751c2576238c5043169a1c221c92ee2878458a816a4ea33f4c67623c0b6827c8a400409bfb3cf0bf3381392d0b1dfb52ac8d
+  languageName: node
+  linkType: hard
+
+"readable-stream@npm:~1.0.31":
+  version: 1.0.34
+  resolution: "readable-stream@npm:1.0.34"
+  dependencies:
+    core-util-is: ~1.0.0
+    inherits: ~2.0.1
+    isarray: 0.0.1
+    string_decoder: ~0.10.x
+  checksum: 85042c537e4f067daa1448a7e257a201070bfec3dd2706abdbd8ebc7f3418eb4d3ed4b8e5af63e2544d69f88ab09c28d5da3c0b77dc76185fddd189a59863b60
   languageName: node
   linkType: hard
 
@@ -43818,7 +43878,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:16, yargs@npm:16.2.0, yargs@npm:^16.1.1, yargs@npm:^16.2.0":
+"yargs@npm:16, yargs@npm:16.2.0, yargs@npm:^16.1.0, yargs@npm:^16.1.1, yargs@npm:^16.2.0":
   version: 16.2.0
   resolution: "yargs@npm:16.2.0"
   dependencies:

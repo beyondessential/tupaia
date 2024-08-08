@@ -33,17 +33,18 @@ export const requestPasswordReset = async (req, res) => {
     resetPasswordUrl || process.env.TUPAIA_FRONT_END_URL
   }/reset-password?passwordResetToken={token}`;
   const resetUrl = passwordResetUrl.replace('{token}', token);
-  const emailText = `Dear ${user.fullName},
 
-You are receiving this email because someone requested a password reset for
-this user account on Tupaia.org. To reset your password follow the link below.
-
-${resetUrl}
-
-If you believe this email was sent to you in error, please contact us immediately at
-admin@tupaia.org.`;
-
-  sendEmail(user.email, { subject: 'Password reset on Tupaia.org', text: emailText });
+  sendEmail(user.email, {
+    subject: 'Password reset on Tupaia.org',
+    templateName: 'passwordReset',
+    templateContext: {
+      userName: user.fullName,
+      cta: {
+        text: 'Reset your password',
+        url: resetUrl,
+      },
+    },
+  });
 
   respond(res, {
     success: true,
