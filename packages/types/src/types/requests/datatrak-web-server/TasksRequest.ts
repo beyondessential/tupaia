@@ -22,6 +22,7 @@ export type TaskResponse = KeysToCamelCase<
     name: Entity['name'];
     id: Entity['id'];
     countryCode: string; // this is not undefined or null so use string explicitly here
+    parentName?: Entity['name'];
   };
   repeatSchedule?: Record<string, unknown> | null;
   dueDate?: Date | null;
