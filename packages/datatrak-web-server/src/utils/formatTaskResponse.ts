@@ -29,8 +29,11 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
     'survey.name': surveyName,
     task_status: taskStatus,
     repeat_schedule: repeatSchedule,
+    due_date: dueDate,
     ...rest
   } = task;
+
+  const formattedDueDate = dueDate ? new Date(dueDate) : null;
 
   const formattedTask = {
     ...rest,
@@ -47,6 +50,7 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
     },
     taskStatus,
     repeatSchedule,
+    dueDate: formattedDueDate,
   };
 
   return camelcaseKeys(formattedTask, {

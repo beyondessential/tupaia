@@ -9,8 +9,7 @@ import { stripTimezoneFromDate } from '@tupaia/utils';
 type Input = Partial<DatatrakWebTaskChangeRequest.ReqBody> &
   Partial<Pick<Task, 'entity_id' | 'survey_id' | 'status'>>;
 
-type Output = Partial<Omit<Task, 'due_date'>> & {
-  due_date?: string | null;
+type Output = Partial<Task> & {
   comment?: string;
 };
 
@@ -31,10 +30,11 @@ export const formatTaskChanges = (task: Input) => {
     // set due date to end of day
     const endOfDay = new Date(new Date(dueDate).setHours(23, 59, 59, 999));
 
-    // strip timezone from date so that the returned date is always in the user's timezone
-    const withoutTimezone = stripTimezoneFromDate(endOfDay);
+    const unix = endOfDay.getTime();
 
-    taskDetails.due_date = withoutTimezone;
+    const doublePrecisionUnix = unix;
+
+    taskDetails.due_date = doublePrecisionUnix;
     taskDetails.repeat_schedule = null;
   }
 
