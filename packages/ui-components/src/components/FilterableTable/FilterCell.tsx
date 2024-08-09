@@ -109,6 +109,7 @@ export interface FilterCellProps extends Partial<HeaderDisplayCellProps> {
       column: ColumnInstance<Record<string, any>>;
       filter?: any;
       onChange: (value: any) => void;
+      value: any;
     }>;
     filterable?: boolean;
   };
@@ -132,7 +133,12 @@ export const FilterCell = ({ column, filters, onChangeFilters, ...props }: Filte
     <HeaderDisplayCell {...props} maxWidth={column.maxWidth}>
       <FilterWrapper>
         {Filter ? (
-          <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
+          <Filter
+            column={column}
+            filter={existingFilter}
+            onChange={handleUpdate}
+            value={existingFilter?.value}
+          />
         ) : (
           <DefaultFilter
             value={existingFilter?.value || ''}

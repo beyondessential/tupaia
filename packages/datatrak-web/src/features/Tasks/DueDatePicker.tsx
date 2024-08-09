@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import { isValid } from 'date-fns';
 import styled from 'styled-components';
 import { DatePicker } from '@tupaia/ui-components';
-import { stripTimezoneFromDate } from '@tupaia/utils';
 
 const Wrapper = styled.div`
   .MuiFormControl-root {
