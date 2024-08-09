@@ -64,7 +64,7 @@ export const DefaultFilter = styled(TextField).attrs(props => ({
     padding-inline-start: 0.3rem;
   }
   .MuiSvgIcon-root {
-    color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${({ theme }) => theme.palette.text.tertiary};
   }
 `;
 
