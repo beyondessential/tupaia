@@ -71,7 +71,7 @@ export const DueDatePicker = ({
     if (!newValue) return setDate('');
     if (!isValid(new Date(newValue))) return setDate('');
     const endOfDay = new Date(new Date(newValue).setHours(23, 59, 59, 999));
-    const newDate = stripTimezoneFromDate(endOfDay);
+    const newDate = endOfDay.toString();
     setDate(newDate);
   };
 
