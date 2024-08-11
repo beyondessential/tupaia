@@ -30,7 +30,7 @@ exports.up = async function (db) {
     ifNotExists: true,
   });
   return db.runSql(` 
-    CREATE INDEX task_initial_request_id_fk ON task USING btree (survey_response_id); 
+    CREATE INDEX IF NOT EXISTS task_initial_request_id_fk ON task USING btree (survey_response_id); 
   `);
 };
 

@@ -80,6 +80,7 @@ const buildSurveyResponse = async (models, surveyCode, answers) => {
     entityCode,
     surveyCode,
     answers,
+    id: generateId(),
   };
 
   const surveyResponses = await buildAndInsertSurveyResponses(models, [surveyResponse]);
@@ -118,15 +119,18 @@ const TEST_DATA = [
     {
       config: {
         task: {
+          shouldCreateTask: { questionId: 'TEST_ID_01' },
           surveyCode: taskSurveyCode,
           entityId: { questionId: 'TEST_ID_00' },
+          dueDate: { questionId: 'TEST_ID_02' },
         },
       },
       answers: {
         TEST_CODE_00: entityId,
+        TEST_CODE_01: 'Yes',
       },
     },
-    { entity_id: entityId, survey_id: taskSurveyId, due_date: '2024-06-06 00:00:00' },
+    { entity_id: entityId, survey_id: taskSurveyId, due_date: null },
   ],
 ];
 
@@ -153,6 +157,7 @@ describe('TaskCreationHandler', () => {
   it.each(TEST_DATA)('%s', async (_name, { config, answers = {} }, result) => {
     const { survey } = await buildTaskCreationSurvey(models, config);
     const response = await buildSurveyResponse(models, survey.code, answers);
+
     await models.database.waitForAllChangeHandlers();
     const tasks = await models.task.find({ entity_id: entityId }, { sort: ['created_at DESC'] });
 
