@@ -69,7 +69,11 @@ configureEnv();
   const taskAssigneeEmailer = new TaskAssigneeEmailer(models);
   taskAssigneeEmailer.listenForChanges();
 
+  /**
+   * Scheduled tasks
+   */
   new TaskOverdueChecker(models).beginPolling();
+
   /**
    * Set up actual app with routes etc.
    */
