@@ -7,6 +7,7 @@ import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurveyReponse/processSurveyResponse';
 import { DatatrakWebServerModelRegistry } from '../types';
+import { formatInTimeZone } from 'date-fns-tz';
 
 const mockFindEntityById = async (id: string) => ({
   id: 'theEntityId',
@@ -620,7 +621,11 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.Date,
-          body: '2022-01-01T00:00:00+13:00',
+          body: formatInTimeZone(
+            new Date('2022-01-01 00:00:00'),
+            'Pacific/Auckland',
+            'yyyy-MM-dd HH:mm:ssXXX',
+          ).replace(' ', 'T'),
         },
       ],
     });
@@ -649,7 +654,11 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.DateTime,
-          body: '2022-01-01T00:00:00+13:00',
+          body: formatInTimeZone(
+            new Date('2022-01-01 00:00:00'),
+            'Pacific/Auckland',
+            'yyyy-MM-dd HH:mm:ssXXX',
+          ).replace(' ', 'T'),
         },
       ],
     });
