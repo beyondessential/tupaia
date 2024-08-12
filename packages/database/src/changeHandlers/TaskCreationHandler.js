@@ -107,7 +107,7 @@ export class TaskCreationHandler extends ChangeHandler {
           survey_id: surveyId,
           entity_id: entityId,
           assignee_id: getAnswer('assignee'),
-          due_date: new Date(dueDateAnswer).getTime(),
+          due_date: dueDateAnswer ? new Date(dueDateAnswer).getTime() : null,
           status: 'to_do',
         });
       }

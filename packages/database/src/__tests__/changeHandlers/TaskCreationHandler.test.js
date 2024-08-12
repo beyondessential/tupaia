@@ -109,7 +109,7 @@ const TEST_DATA = [
     },
     {
       survey_id: taskSurveyId,
-      due_date: new Date('2024-06-06 00:00:00').getTime(),
+      due_date: new Date('2024-06-06 00:00:00+00').getTime(),
       assignee_id: userId,
       entity_id: entityId,
     },
