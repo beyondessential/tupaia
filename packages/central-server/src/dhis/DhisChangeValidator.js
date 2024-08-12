@@ -101,6 +101,7 @@ export class DhisChangeValidator extends ChangeValidator {
       .filter(
         c =>
           c.record_type === 'survey_response' &&
+          c.new_record &&
           c.new_record.outdated === true &&
           c.old_record &&
           c.old_record.outdated === true,
@@ -226,6 +227,7 @@ export class DhisChangeValidator extends ChangeValidator {
         c.record_type === 'survey_response' &&
         c.old_record &&
         c.old_record.outdated === true &&
+        c.new_record &&
         c.new_record.outdated === false,
     );
 
