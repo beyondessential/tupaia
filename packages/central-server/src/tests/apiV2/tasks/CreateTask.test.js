@@ -45,10 +45,12 @@ describe('Permissions checker for CreateTask', async () => {
     last_name: 'Pan',
   };
 
+  const dueDate = new Date('2021-12-31').getTime();
+
   const BASE_TASK = {
     assignee_id: assignee.id,
     repeat_schedule: null,
-    due_date: new Date('2021-12-31').getTime(),
+    due_date: dueDate,
     status: 'to_do',
   };
 

@@ -218,7 +218,7 @@ describe('Permissions checker for EditTask', async () => {
         });
         await app.put(`tasks/${tasks[1].id}`, {
           body: {
-            due_date: new Date('2021-11-30').toISOString(),
+            due_date: new Date('2021-11-30').getTime(),
           },
         });
 
