@@ -20,7 +20,7 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
       const s3ImagePath = getS3ImageFilePath();
 
-      if (answer.body.includes(s3ImagePath)) {
+      if (answer.body.includes('http')) {
         answerDocument.text = answer.body;
       } else if (validFileIdRegex.test(answer.body)) {
         // if this is passed a valid id in the answer body
