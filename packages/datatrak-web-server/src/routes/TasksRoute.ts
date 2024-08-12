@@ -75,14 +75,14 @@ export class TasksRoute extends Route<TasksRequest> {
       if (id === 'repeat_schedule') {
         this.filters[id] = {
           comparator: 'ilike',
-          comparisonValue: `%${value}%`,
+          comparisonValue: `${value}%`,
           castAs: 'text',
         };
         return;
       }
       this.filters[id] = {
         comparator: 'ilike',
-        comparisonValue: `%${value}%`,
+        comparisonValue: `${value}%`,
       };
     });
   }
@@ -148,10 +148,12 @@ export class TasksRoute extends Route<TasksRequest> {
 
   public async buildResponse() {
     const { ctx, query = {}, models } = this.req;
-    const { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0 } = query;
+    const { pageSize = DEFAULT_PAGE_SIZE, sort, page = 0, filters } = query;
 
     this.formatFilters();
     await this.processFilterSettings();
+
+    const nonProjectFilters = filters?.filter(({ id }) => id !== 'survey.project_id') ?? [];
 
     const params: {
       filter: FormattedFilters;
@@ -168,8 +170,8 @@ export class TasksRoute extends Route<TasksRequest> {
     };
     if (sort) {
       params.sort = sort;
-    } else {
-      // If no sort is provided, default to sorting completed and cancelled tasks to the bottom and by due date
+    } else if (!sort && nonProjectFilters.length === 0) {
+      // If no sort or search is provided, default to sorting completed and cancelled tasks to the bottom and by due date
       params.rawSort =
         "CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC";
     }

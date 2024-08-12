@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { ValidationError } from '@tupaia/utils';
+import { constructIsNotPresentOr, ValidationError } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 import { convertCellToJson } from '../../utilities';
 
@@ -20,12 +20,14 @@ export class TaskConfigValidator extends JsonFieldValidator {
       this.constructReferencesPreceedingMandatoryQuestion(rowIndex);
     const referencesExistingSurvey = this.constructReferencesExistingSurvey();
 
+    const pointsToAnotherQuestion = this.constructPointsToAnotherQuestion(rowIndex);
+
     return {
       shouldCreateTask: [pointsToPreceedingMandatoryQuestion],
       entityId: [pointsToPreceedingMandatoryQuestion],
       surveyCode: [referencesExistingSurvey],
       dueDate: [pointsToPreceedingMandatoryQuestion],
-      assignee: [pointsToPreceedingMandatoryQuestion],
+      assignee: [constructIsNotPresentOr(pointsToAnotherQuestion)],
     };
   }
 
