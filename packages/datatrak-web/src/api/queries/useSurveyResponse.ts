@@ -57,6 +57,13 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
             return { ...acc, [key]: { name: fileName, value } };
           }
 
+          if (
+            (question.type === QuestionType.Date || question.type === QuestionType.DateTime) &&
+            value
+          ) {
+            return { ...acc, [key]: new Date(value) };
+          }
+
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
         }, {});
 

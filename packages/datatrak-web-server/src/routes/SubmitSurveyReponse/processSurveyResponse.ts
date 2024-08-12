@@ -13,6 +13,7 @@ import {
 } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
+import { formatInTimeZone } from 'date-fns-tz';
 
 type SurveyRequestT =
   | DatatrakWebSubmitSurveyResponseRequest.ReqBody
@@ -126,6 +127,22 @@ export const processSurveyResponse = async (
       case QuestionType.DateOfData: {
         const date = new Date(answer as string);
         surveyResponse.data_time = date.toISOString();
+        break;
+      }
+
+      case QuestionType.Date:
+      case QuestionType.DateTime: {
+        if (answer) {
+          const date = new Date(answer as string);
+          const formattedDate = formatInTimeZone(date, timezone, 'yyyy-MM-dd HH:mm:ssXXX').replace(
+            ' ',
+            'T',
+          );
+          answersToSubmit.push({
+            ...answerObject,
+            body: formattedDate,
+          });
+        }
         break;
       }
 

@@ -50,7 +50,7 @@ describe('processSurveyResponse', () => {
     surveyId: 'theSurveyId',
     countryId: 'theCountryId',
     startTime: 'theStartTime',
-    timezone: 'theTimezone',
+    timezone: 'Pacific/Auckland',
   };
 
   const processedResponseData = {
@@ -61,7 +61,7 @@ describe('processSurveyResponse', () => {
     entity_id: 'theCountryId',
     end_time: timestamp,
     timestamp: timestamp,
-    timezone: 'theTimezone',
+    timezone: 'Pacific/Auckland',
     options_created: [],
     entities_upserted: [],
     qr_codes_to_create: [],
@@ -592,6 +592,64 @@ describe('processSurveyResponse', () => {
           question_id: 'question1',
           type: QuestionType.File,
           body: 'filename.png',
+        },
+      ],
+    });
+  });
+
+  it('should add the timezone offset when question type is Date', async () => {
+    const result = await processSurveyResponse(mockModels, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.Date,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: new Date('2022-01-01 12:00:00').toISOString(),
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.Date,
+          body: '2022-01-01T12:00:00+13:00',
+        },
+      ],
+    });
+  });
+
+  it('should add the timezone offset when question type is DateTime', async () => {
+    const result = await processSurveyResponse(mockModels, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.DateTime,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: new Date('2022-01-01 12:00:00').toISOString(),
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.DateTime,
+          body: '2022-01-01T12:00:00+13:00',
         },
       ],
     });
