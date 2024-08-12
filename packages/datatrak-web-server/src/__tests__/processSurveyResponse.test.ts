@@ -610,7 +610,7 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: new Date('2022-01-01 12:00:00').toISOString(),
+        question1: new Date('2022-01-01 00:00:00').toISOString(),
       },
     });
 
@@ -620,7 +620,7 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.Date,
-          body: '2022-01-01T12:00:00+13:00',
+          body: '2022-01-01T00:00:00+13:00',
         },
       ],
     });
@@ -639,7 +639,7 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: new Date('2022-01-01 12:00:00').toISOString(),
+        question1: new Date('2022-01-01 00:00:00').toISOString(),
       },
     });
 
@@ -649,7 +649,7 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.DateTime,
-          body: '2022-01-01T12:00:00+13:00',
+          body: '2022-01-01T00:00:00+13:00',
         },
       ],
     });
