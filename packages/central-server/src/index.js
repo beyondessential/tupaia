@@ -14,6 +14,7 @@ import {
   TaskCreationHandler,
   TupaiaDatabase,
   getDbMigrator,
+  TaskAssigneeEmailer,
 } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
 import { MeditrakSyncQueue } from './database';
@@ -23,7 +24,7 @@ import { startSyncWithMs1 } from './ms1';
 import { startSyncWithKoBo } from './kobo';
 import { startFeedScraper } from './social';
 import { createApp } from './createApp';
-
+import { TaskOverdueChecker } from './scheduledTasks';
 import winston from './log';
 import { configureEnv } from './configureEnv';
 
@@ -64,6 +65,11 @@ configureEnv();
   const taskCreationHandler = new TaskCreationHandler(models);
   taskCreationHandler.listenForChanges();
 
+  // Add listener to handle assignee changes for tasks
+  const taskAssigneeEmailer = new TaskAssigneeEmailer(models);
+  taskAssigneeEmailer.listenForChanges();
+
+  new TaskOverdueChecker(models).beginPolling();
   /**
    * Set up actual app with routes etc.
    */
