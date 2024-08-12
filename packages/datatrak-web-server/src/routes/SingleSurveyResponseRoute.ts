@@ -32,6 +32,7 @@ const DEFAULT_FIELDS = [
   'user_id',
   'country.code',
   'survey.permission_group_id',
+  'timezone',
 ];
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';

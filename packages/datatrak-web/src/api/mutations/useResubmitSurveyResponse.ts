@@ -35,6 +35,7 @@ export const useResubmitSurveyResponse = () => {
           dataTime: surveyResponse?.dataTime ? new Date(surveyResponse?.dataTime) : new Date(),
           userId: surveyResponse?.userId,
           entityId: surveyResponse?.entityId,
+          timezone: surveyResponse?.timezone,
         },
       });
     },
