@@ -99,6 +99,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },
       columns: ANSWER_COLUMNS,
+      pageSize: 'ALL',
     });
     const answers = answerList.reduce(
       (output: Record<string, string>, answer: { question_id: string; text: string }) => ({
