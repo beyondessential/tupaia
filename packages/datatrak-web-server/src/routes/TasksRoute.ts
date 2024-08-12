@@ -6,7 +6,6 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { parse } from 'cookie';
 import { DatatrakWebTasksRequest, TaskCommentType, TaskStatus } from '@tupaia/types';
-import { RECORDS } from '@tupaia/database';
 import { TaskT, formatTaskResponse } from '../utils';
 
 export type TasksRequest = Request<
@@ -29,6 +28,7 @@ const FIELDS = [
   'repeat_schedule',
   'survey_id',
   'entity_id',
+  'initial_request_id',
 ];
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -114,7 +114,7 @@ export class TasksRoute extends Route<TasksRequest> {
   }
 
   private async queryForCount() {
-    const { models } = this.req;
+    const { models, accessPolicy } = this.req;
     const filtersWithColumnSelectors = { ...this.filters };
 
     // use column selectors for custom columns being used in filters
@@ -129,7 +129,7 @@ export class TasksRoute extends Route<TasksRequest> {
       }
     }
 
-    return models.database.count(RECORDS.TASK, filtersWithColumnSelectors, {
+    return models.task.countTasksForAccessPolicy(accessPolicy, filtersWithColumnSelectors, {
       multiJoin: models.task.DatabaseRecordClass.joins,
     });
   }

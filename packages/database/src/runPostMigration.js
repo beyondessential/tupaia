@@ -30,6 +30,7 @@ const TABLES_REQUIRING_TRIGGER_CREATION = [
   'survey_screen',
   'survey_screen_component',
   'user_entity_permission',
+  'task',
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is

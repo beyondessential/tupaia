@@ -84,9 +84,7 @@ const SurveyResponseModalContent = ({
   error,
 }: SurveyResponseModalContentProps) => {
   const { surveyLoading } = useSurveyResponseWithForm(surveyResponse);
-
   const subHeading = getSubHeadingText(surveyResponse);
-
   const showLoading = isLoading || surveyLoading;
 
   return (
@@ -107,7 +105,7 @@ const SurveyResponseModalContent = ({
         {!showLoading && !error && <SurveyReviewSection />}
       </ModalContentProvider>
       <ModalFooter>
-        <Button to="/">Close</Button>
+        <Button onClick={onClose}>Close</Button>
       </ModalFooter>
     </>
   );

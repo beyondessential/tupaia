@@ -101,6 +101,7 @@ export class TaskCreationHandler extends ChangeHandler {
         const surveyId = await getSurveyId(models, config);
 
         await models.task.create({
+          initial_request_id: response.id,
           survey_id: surveyId,
           entity_id: entityId,
           assignee_id: getAnswer('assignee'),

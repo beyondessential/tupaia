@@ -85896,6 +85896,9 @@ export const TaskSchema = {
 		"id": {
 			"type": "string"
 		},
+		"initial_request_id": {
+			"type": "string"
+		},
 		"repeat_schedule": {
 			"type": "object",
 			"properties": {}
@@ -85939,6 +85942,9 @@ export const TaskCreateSchema = {
 			"format": "date-time"
 		},
 		"entity_id": {
+			"type": "string"
+		},
+		"initial_request_id": {
 			"type": "string"
 		},
 		"repeat_schedule": {
@@ -85985,6 +85991,9 @@ export const TaskUpdateSchema = {
 			"type": "string"
 		},
 		"id": {
+			"type": "string"
+		},
+		"initial_request_id": {
 			"type": "string"
 		},
 		"repeat_schedule": {
@@ -87967,6 +87976,9 @@ export const TaskResponseSchema = {
 		"assigneeId": {
 			"type": "string"
 		},
+		"initialRequestId": {
+			"type": "string"
+		},
 		"status": {
 			"enum": [
 				"cancelled",
@@ -88021,6 +88033,9 @@ export const TaskResponseSchema = {
 					"type": "string"
 				},
 				"countryCode": {
+					"type": "string"
+				},
+				"parentName": {
 					"type": "string"
 				}
 			},

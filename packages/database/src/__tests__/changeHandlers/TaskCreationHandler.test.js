@@ -80,6 +80,7 @@ const buildSurveyResponse = async (models, surveyCode, answers) => {
     entityCode,
     surveyCode,
     answers,
+    id: generateId(),
   };
 
   const surveyResponses = await buildAndInsertSurveyResponses(models, [surveyResponse]);
@@ -118,15 +119,18 @@ const TEST_DATA = [
     {
       config: {
         task: {
+          shouldCreateTask: { questionId: 'TEST_ID_01' },
           surveyCode: taskSurveyCode,
           entityId: { questionId: 'TEST_ID_00' },
+          dueDate: { questionId: 'TEST_ID_02' },
         },
       },
       answers: {
         TEST_CODE_00: entityId,
+        TEST_CODE_01: 'Yes',
       },
     },
-    { entity_id: entityId, survey_id: taskSurveyId, due_date: '2024-06-06 00:00:00' },
+    { entity_id: entityId, survey_id: taskSurveyId, due_date: null },
   ],
 ];
 
@@ -152,11 +156,20 @@ describe('TaskCreationHandler', () => {
 
   it.each(TEST_DATA)('%s', async (_name, { config, answers = {} }, result) => {
     const { survey } = await buildTaskCreationSurvey(models, config);
-    await buildSurveyResponse(models, survey.code, answers);
+    const response = await buildSurveyResponse(models, survey.code, answers);
+
     await models.database.waitForAllChangeHandlers();
     const tasks = await models.task.find({ entity_id: entityId }, { sort: ['created_at DESC'] });
 
-    const { survey_id, entity_id, status, due_date, assignee_id, repeat_schedule } = tasks[0];
+    const {
+      survey_id,
+      entity_id,
+      status,
+      due_date,
+      assignee_id,
+      repeat_schedule,
+      initial_request_id,
+    } = tasks[0];
 
     expect({
       survey_id,
@@ -165,10 +178,12 @@ describe('TaskCreationHandler', () => {
       due_date,
       status,
       repeat_schedule,
+      initial_request_id,
     }).toMatchObject({
       repeat_schedule: null,
       due_date: null,
       status: 'to_do',
+      initial_request_id: response.surveyResponse.id,
       ...result,
     });
   });
