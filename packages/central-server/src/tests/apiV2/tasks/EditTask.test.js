@@ -55,7 +55,7 @@ describe('Permissions checker for EditTask', async () => {
     last_name: 'Pan',
   };
 
-  const dueDate = new Date('2021-12-31');
+  const dueDate = new Date('2021-12-31').getTime();
 
   let tasks;
 

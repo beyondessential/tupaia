@@ -84,7 +84,7 @@ export class TaskCreationHandler extends ChangeHandler {
       for (const taskQuestion of taskQuestions) {
         const config = taskQuestion.config.task;
         const getAnswer = getAnswerWrapper(config, answers);
-        
+
         if (
           !config ||
           getAnswer('shouldCreateTask') === null ||
@@ -100,12 +100,14 @@ export class TaskCreationHandler extends ChangeHandler {
           : getAnswer('entityId');
         const surveyId = await getSurveyId(models, config);
 
+        const dueDateAnswer = getAnswer('dueDate');
+
         await models.task.create({
           initial_request_id: response.id,
           survey_id: surveyId,
           entity_id: entityId,
           assignee_id: getAnswer('assignee'),
-          due_date: getAnswer('dueDate'),
+          due_date: new Date(dueDateAnswer).getTime(),
           status: 'to_do',
         });
       }
