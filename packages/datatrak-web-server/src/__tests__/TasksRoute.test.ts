@@ -75,7 +75,7 @@ describe('TaskRoute', () => {
           },
         },
         {
-          filter: { 'survey.name': { comparator: 'ilike', comparisonValue: '%a%' } },
+          filter: { 'survey.name': { comparator: 'ilike', comparisonValue: 'a%' } },
         },
       ],
       [
