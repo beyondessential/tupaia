@@ -32,7 +32,7 @@ export const useResubmitSurveyResponse = () => {
           ...surveyResponseData,
           answers,
           // keep the same dataTime and userId as the original survey response
-          dataTime: surveyResponse?.dataTime ? new Date(surveyResponse?.dataTime) : new Date(),
+          dataTime: surveyResponse?.dataTime ? surveyResponse?.dataTime : new Date(),
           userId: surveyResponse?.userId,
           entityId: surveyResponse?.entityId,
           timezone: surveyResponse?.timezone,

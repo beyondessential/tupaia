@@ -62,7 +62,6 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
             value
           ) {
             return { ...acc, [key]: value };
-            // new Date(value) };
           }
 
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };

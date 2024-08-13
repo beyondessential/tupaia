@@ -124,10 +124,7 @@ export const processSurveyResponse = async (
       // format dates to be ISO strings
       case QuestionType.SubmissionDate:
       case QuestionType.DateOfData: {
-        const date = new Date(answer as string);
-
-        const isoDate = date.toISOString();
-        surveyResponse.data_time = isoDate;
+        surveyResponse.data_time = answer as string;
         break;
       }
 
