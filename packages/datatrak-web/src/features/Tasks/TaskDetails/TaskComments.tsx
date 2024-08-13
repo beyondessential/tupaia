@@ -62,15 +62,21 @@ const Form = styled(TaskForm)`
   align-items: flex-end;
 `;
 
+const CommentDetails = styled(Typography).attrs({
+  variant: 'body2',
+})`
+  color: ${({ theme }) => theme.palette.grey[400]};
+`;
+
 type Comments = SingleTaskResponse['comments'];
 
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
   const { createdAt, userName, message, type } = comment;
   return (
     <CommentContainer>
-      <Typography variant="body2" color="textSecondary">
+      <CommentDetails>
         {displayDateTime(createdAt)} - {userName}
-      </Typography>
+      </CommentDetails>
       <Message color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'}>
         {message}
       </Message>
