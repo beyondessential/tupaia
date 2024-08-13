@@ -12007,6 +12007,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     date-fns: ^2.29.2
+    date-fns-tz: ^2.0.1
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     dotenv: ^16.4.5
@@ -20204,6 +20205,15 @@ __metadata:
     whatwg-mimetype: ^3.0.0
     whatwg-url: ^11.0.0
   checksum: 033fc3dd0fba6d24bc9a024ddcf9923691dd24f90a3d26f6545d6a2f71ec6956f93462f2cdf2183cc46f10dc01ed3bcb36731a8208456eb1a08147e571fe2a76
+  languageName: node
+  linkType: hard
+
+"date-fns-tz@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "date-fns-tz@npm:2.0.1"
+  peerDependencies:
+    date-fns: 2.x
+  checksum: 2d2bb3d67f1ac876a7bd3bbe027aba61347d21c74f20a3f014c53d6057a7a1653ed3021c2d9271dc24411ab38f82763fec362c4f24e944465172cd80ee8c4b5f
   languageName: node
   linkType: hard
 

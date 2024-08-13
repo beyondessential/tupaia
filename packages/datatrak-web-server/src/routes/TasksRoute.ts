@@ -57,7 +57,7 @@ export class TasksRoute extends Route<TasksRequest> {
       if (value === '' || value === undefined || value === null) return;
       if (id === 'due_date') {
         // set the time to the end of the day to get the full range of the day, and apply milliseconds to ensure the range is inclusive
-        const endDateObj = setMilliseconds(new Date(value), 999);
+        const endDateObj = new Date(value);
         // subtract 23 hours, 59 minutes, 59 seconds to get the start of the day. This is because the filters always send the end of the day, and we need a range to handle the values being saved in the database as unix timestamps based on the user's timezone.
         const startDate = sub(endDateObj, { hours: 23, minutes: 59, seconds: 59 }).getTime();
         const endDate = endDateObj.getTime();

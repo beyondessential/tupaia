@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import keyBy from 'lodash.keyby';
+import { formatInTimeZone } from 'date-fns-tz';
 import { ChangeHandler } from './ChangeHandler';
 
 const getAnswerWrapper = (config, answers) => {
@@ -71,6 +72,7 @@ export class TaskCreationHandler extends ChangeHandler {
 
     for (const response of changedResponses) {
       const sr = await models.surveyResponse.findById(response.id);
+      const { timezone } = sr;
       const questions = await getQuestions(models, response.survey_id);
 
       const taskQuestions = questions.filter(question => question.type === 'Task');
@@ -102,12 +104,26 @@ export class TaskCreationHandler extends ChangeHandler {
 
         const dueDateAnswer = getAnswer('dueDate');
 
+        let dueDate = null;
+        if (dueDateAnswer) {
+          // Convert the due date to the timezone of the survey response and set the time to the last second of the day
+          const dateInTimezone = formatInTimeZone(
+            dueDateAnswer,
+            timezone,
+            "yyyy-MM-dd'T23:59:59'XXX",
+          );
+          // Convert the date to a timestamp
+          const timestamp = new Date(dateInTimezone).getTime();
+
+          dueDate = timestamp;
+        }
+
         await models.task.create({
           initial_request_id: response.id,
           survey_id: surveyId,
           entity_id: entityId,
           assignee_id: getAnswer('assignee'),
-          due_date: dueDateAnswer ? new Date(dueDateAnswer).getTime() : null,
+          due_date: dueDate,
           status: 'to_do',
         });
       }
