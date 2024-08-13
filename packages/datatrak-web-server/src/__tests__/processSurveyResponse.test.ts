@@ -155,7 +155,7 @@ describe('processSurveyResponse', () => {
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: new Date('2022-01-01').toISOString(),
+      data_time: '2022-01-01',
       answers: [],
     });
   });
@@ -179,7 +179,7 @@ describe('processSurveyResponse', () => {
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: new Date('2022-01-01').toISOString(),
+      data_time: '2022-01-01',
       answers: [],
     });
   });
