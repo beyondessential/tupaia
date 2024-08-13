@@ -2,7 +2,11 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { getUniqueSurveyQuestionFileName, formatDateInTimezone } from '@tupaia/utils';
+import {
+  getUniqueSurveyQuestionFileName,
+  formatDateInTimezone,
+  getOffsetForTimezone,
+} from '@tupaia/utils';
 import {
   DatatrakWebResubmitSurveyResponseRequest,
   DatatrakWebSubmitSurveyResponseRequest,
@@ -121,21 +125,22 @@ export const processSurveyResponse = async (
 
     // Handle special question types
     switch (type) {
-      // format dates to be ISO strings
+      // Add the timezone offset to the date string so it saves in the correct timezone
       case QuestionType.SubmissionDate:
       case QuestionType.DateOfData: {
-        surveyResponse.data_time = answer as string;
+        const timezoneOffset = getOffsetForTimezone(timezone);
+        surveyResponse.data_time = `${answer}${timezoneOffset}`;
         break;
       }
 
       case QuestionType.Date:
       case QuestionType.DateTime: {
+        // Add the timezone offset to the date string so it saves in the correct timezone
         if (answer) {
-          const date = new Date(answer as string);
-          const formattedDate = formatDateInTimezone(date, timezone, "yyyy-MM-dd'T'HH:mm:ssXXX");
+          const timezoneOffset = getOffsetForTimezone(timezone);
           answersToSubmit.push({
             ...answerObject,
-            body: formattedDate,
+            body: `${answer}${timezoneOffset}`,
           });
         }
         break;
