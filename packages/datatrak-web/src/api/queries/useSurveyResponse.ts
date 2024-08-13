@@ -61,7 +61,8 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
             (question.type === QuestionType.Date || question.type === QuestionType.DateTime) &&
             value
           ) {
-            return { ...acc, [key]: new Date(value) };
+            return { ...acc, [key]: value };
+            // new Date(value) };
           }
 
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
@@ -72,7 +73,7 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
         }
 
         if (dateOfDataQuestion && data.dataTime) {
-          formattedAnswers[dateOfDataQuestion.questionId] = new Date(data.dataTime);
+          formattedAnswers[dateOfDataQuestion.questionId] = data.dataTime;
         }
 
         setFormData(formattedAnswers);

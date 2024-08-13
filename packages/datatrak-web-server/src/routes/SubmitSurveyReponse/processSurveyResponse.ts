@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
+import { getUniqueSurveyQuestionFileName, formatDateInTimezone } from '@tupaia/utils';
 import {
   DatatrakWebResubmitSurveyResponseRequest,
   DatatrakWebSubmitSurveyResponseRequest,
@@ -13,7 +13,6 @@ import {
 } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
-import { formatInTimeZone } from 'date-fns-tz';
 
 type SurveyRequestT =
   | DatatrakWebSubmitSurveyResponseRequest.ReqBody
@@ -126,7 +125,9 @@ export const processSurveyResponse = async (
       case QuestionType.SubmissionDate:
       case QuestionType.DateOfData: {
         const date = new Date(answer as string);
-        surveyResponse.data_time = date.toISOString();
+
+        const isoDate = date.toISOString();
+        surveyResponse.data_time = isoDate;
         break;
       }
 
@@ -134,10 +135,7 @@ export const processSurveyResponse = async (
       case QuestionType.DateTime: {
         if (answer) {
           const date = new Date(answer as string);
-          const formattedDate = formatInTimeZone(date, timezone, 'yyyy-MM-dd HH:mm:ssXXX').replace(
-            ' ',
-            'T',
-          );
+          const formattedDate = formatDateInTimezone(date, timezone, "yyyy-MM-dd'T'HH:mm:ssXXX");
           answersToSubmit.push({
             ...answerObject,
             body: formattedDate,
