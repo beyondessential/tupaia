@@ -69,7 +69,8 @@ export const DueDatePicker = ({
   const updateSelectedDate = (newValue: string | null) => {
     if (!newValue) return setDate('');
     if (!isValid(new Date(newValue))) return setDate('');
-    const endOfDay = new Date(new Date(newValue).setHours(23, 59, 59));
+    // just use 0 ms so that date filters don't need to worry about milliseconds
+    const endOfDay = new Date(new Date(newValue).setHours(23, 59, 59, 0));
 
     // format the date to include timezone
     const newDate = format(endOfDay, `yyyy-MM-dd HH:mm:ss.SSSXXX`);
