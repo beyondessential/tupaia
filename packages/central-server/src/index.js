@@ -72,7 +72,9 @@ configureEnv();
   /**
    * Scheduled tasks
    */
-  new TaskOverdueChecker(models).beginPolling();
+
+  // Todo: figure out how to cancel polling
+  // new TaskOverdueChecker(models).beginPolling();
 
   /**
    * Set up actual app with routes etc.
