@@ -81,6 +81,7 @@ const buildSurveyResponse = async (models, surveyCode, answers) => {
     surveyCode,
     answers,
     id: generateId(),
+    timezone: 'Pacific/Auckland',
   };
 
   const surveyResponses = await buildAndInsertSurveyResponses(models, [surveyResponse]);
@@ -103,13 +104,15 @@ const TEST_DATA = [
       answers: {
         TEST_CODE_00: entityId,
         TEST_CODE_01: 'Yes',
-        TEST_CODE_02: '2024/06/06 00:00:00+00',
+        // answers come in iso format
+        TEST_CODE_02: new Date('2024-06-06 00:00:00+12:00').toISOString(),
         TEST_CODE_03: userId,
       },
     },
     {
       survey_id: taskSurveyId,
-      due_date: new Date('2024-06-06 00:00:00+00').getTime(),
+      // due date will be set to the last second of the day in the survey response timezone and converted to a timestamp
+      due_date: new Date('2024-06-06 23:59:59+12:00').getTime(),
       assignee_id: userId,
       entity_id: entityId,
     },

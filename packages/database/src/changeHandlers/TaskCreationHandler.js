@@ -112,6 +112,7 @@ export class TaskCreationHandler extends ChangeHandler {
             timezone,
             "yyyy-MM-dd'T23:59:59'XXX",
           );
+
           // Convert the date to a timestamp
           const timestamp = new Date(dateInTimezone).getTime();
 
