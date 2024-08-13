@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { sub } from 'date-fns';
+import { setMilliseconds, sub } from 'date-fns';
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { parse } from 'cookie';
@@ -56,14 +56,16 @@ export class TasksRoute extends Route<TasksRequest> {
     filters.forEach(({ id, value }) => {
       if (value === '' || value === undefined || value === null) return;
       if (id === 'due_date') {
-        const dateObj = new Date(value);
+        // set the time to the end of the day to get the full range of the day, and apply milliseconds to ensure the range is inclusive
+        const endDateObj = setMilliseconds(new Date(value), 999);
         // subtract 23 hours, 59 minutes, 59 seconds to get the start of the day. This is because the filters always send the end of the day, and we need a range to handle the values being saved in the database as unix timestamps based on the user's timezone.
-        const startDate = sub(dateObj, { hours: 23, minutes: 59, seconds: 59 }).getTime();
-        const endDate = dateObj.getTime();
+        const startDate = sub(endDateObj, { hours: 23, minutes: 59, seconds: 59 }).getTime();
+        const endDate = endDateObj.getTime();
         this.filters[id] = {
           comparator: 'BETWEEN',
           comparisonValue: [startDate, endDate],
         };
+
         return;
       }
 

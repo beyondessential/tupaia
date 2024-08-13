@@ -27,7 +27,6 @@ export const formatTaskChanges = (task: Input) => {
     taskDetails.due_date = null;
   } else if (dueDate) {
     // apply status and due date only if not a repeating task
-    // set due date to end of day
     const unix = new Date(dueDate).getTime();
 
     taskDetails.due_date = unix;

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React, { useEffect, useState } from 'react';
-import { isValid } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import styled from 'styled-components';
 import { DatePicker } from '@tupaia/ui-components';
 
@@ -70,7 +70,10 @@ export const DueDatePicker = ({
     if (!newValue) return setDate('');
     if (!isValid(new Date(newValue))) return setDate('');
     const endOfDay = new Date(new Date(newValue).setHours(23, 59, 59, 999));
-    const newDate = endOfDay.toString();
+
+    // format the date to include timezone
+    const newDate = format(endOfDay, `yyyy-MM-dd HH:mm:ss.SSSXXX`);
+
     setDate(newDate);
   };
 
