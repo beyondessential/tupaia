@@ -4,6 +4,7 @@
  */
 
 import { format } from 'date-fns';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -47,11 +48,19 @@ const formatValue = async (field, value, models) => {
       return assignee.full_name;
     }
     case 'repeat_schedule': {
-      if (!value || !value?.frequency) {
+      if (!value || !value.freq) {
         return "Doesn't repeat";
       }
 
-      return `${value.frequency.charAt(0).toUpperCase()}${value.frequency.slice(1)}`;
+      const frequency = Object.keys(RRULE_FREQUENCIES).find(
+        key => RRULE_FREQUENCIES[key] === value.freq,
+      );
+
+      if (!frequency) {
+        return "Doesn't repeat";
+      }
+
+      return `${frequency.charAt(0)}${frequency.slice(1).toLowerCase()}`;
     }
     case 'due_date': {
       // TODO: Currently repeating tasks don't have a due date, so we need to handle null values. In RN-1341 we will add a due date to repeating tasks overnight, so this will need to be updated then
