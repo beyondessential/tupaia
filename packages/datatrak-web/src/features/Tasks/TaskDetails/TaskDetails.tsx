@@ -12,13 +12,13 @@ import { LoadingContainer } from '@tupaia/ui-components';
 import { useEditTask, useSurveyResponse } from '../../../api';
 import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
+import { displayDate } from '../../../utils';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { TaskMetadata } from './TaskMetadata';
 import { TaskComments } from './TaskComments';
-import { displayDate } from '../../../utils';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -141,7 +141,7 @@ const InitialRequest = ({ initialRequestId }) => {
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const [defaultValues, setDefaultValues] = useState({
     due_date: task.dueDate ?? null,
-    repeat_schedule: task.repeatSchedule?.frequency ?? null,
+    repeat_frequency: task.repeatSchedule?.freq ?? null,
     assignee_id: task.assigneeId ?? null,
   });
 
@@ -169,7 +169,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   useEffect(() => {
     const newDefaultValues = {
       due_date: task.dueDate ?? null,
-      repeat_schedule: task.repeatSchedule?.frequency ?? null,
+      repeat_frequency: task.repeatSchedule?.freq ?? null,
       assignee_id: task.assigneeId ?? null,
     };
 
@@ -184,12 +184,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const dueDate = watch('due_date');
 
   const onSubmit = data => {
-    const updatedFields = Object.keys(dirtyFields).reduce((acc, key) => {
-      acc[key] = data[key];
-      return acc;
-    }, {});
-
-    editTask(updatedFields);
+    editTask(data);
   };
 
   return (
@@ -222,7 +217,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
               </ItemWrapper>
               <ItemWrapper>
                 <Controller
-                  name="repeat_schedule"
+                  name="repeat_frequency"
                   control={control}
                   render={({ value, onChange }) => (
                     <RepeatScheduleInput

@@ -5,6 +5,7 @@
 import React, { useEffect } from 'react';
 import { FormControl } from '@material-ui/core';
 import { format, lastDayOfMonth } from 'date-fns';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { Autocomplete } from '../../components';
 
 export const getRepeatScheduleOptions = dueDate => {
@@ -34,24 +35,23 @@ export const getRepeatScheduleOptions = dueDate => {
     ? 'Monthly on the last day'
     : `Monthly on the ${dateOfMonth}`;
 
-  // TODO: When saving, add some logic here when we handle recurring tasks
   return [
     noRepeat,
     {
       label: 'Daily',
-      value: 'daily',
+      value: RRULE_FREQUENCIES.DAILY,
     },
     {
       label: `Weekly on ${dayOfWeek}`,
-      value: 'weekly',
+      value: RRULE_FREQUENCIES.WEEKLY,
     },
     {
       label: monthlyOption,
-      value: 'monthly',
+      value: RRULE_FREQUENCIES.MONTHLY,
     },
     {
       label: `Yearly on ${dateOfMonth} of ${month}`,
-      value: 'yearly',
+      value: RRULE_FREQUENCIES.YEARLY,
     },
   ];
 };
@@ -88,7 +88,7 @@ export const RepeatScheduleInput = ({
   return (
     <FormControl fullWidth disabled={disabled}>
       <Autocomplete
-        id="repeatSchedule"
+        id="repeatFrequency"
         value={selectedOption}
         onChange={(_, newValue) => {
           return onChange(newValue?.value ?? null);

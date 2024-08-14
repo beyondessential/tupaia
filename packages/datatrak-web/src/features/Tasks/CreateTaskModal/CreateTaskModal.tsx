@@ -107,7 +107,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     survey_code: null,
     entity_id: null,
     due_date: defaultDueDate,
-    repeat_schedule: null,
+    repeat_frequency: null,
     assignee_id: null,
   };
   const formContext = useForm({
@@ -263,7 +263,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                   }}
                 />
                 <Controller
-                  name="repeat_schedule"
+                  name="repeat_frequency"
                   control={control}
                   render={({ onChange, value }) => (
                     <RepeatScheduleInput value={value} onChange={onChange} dueDate={dueDate} />
