@@ -13,16 +13,19 @@ export const getOffsetForTimezone = timezone => {
   // the offset is given in ms, so we need to convert it to hours
   const offset = getTimezoneOffset(timezone) / 60 / 60 / 1000;
 
-  // if offset is single digit, we need to add a 0 in front of it
+  // round to 2 decimal places
+  const offsetDec = Math.round(offset * 100) / 100;
 
-  if (offset > 0) {
-    if (offset < 10) {
-      return `+0${offset}:00`;
-    }
-    return `+${offset}:00`;
-  }
-  if (offset > -10) {
-    return `-0${Math.abs(offset)}:00`;
-  }
-  return `${offset}:00`;
+  // split the offset into hours and minutes
+  const hours = Math.abs(Math.floor(offsetDec));
+  const mins = (offsetDec % 1) * 60 || '00';
+  // add the correct prefix
+  const prefix = offset > 0 ? '+' : '-';
+  // add leading zero to hours if needed
+  const leadingZero = Math.abs(hours) < 10 ? '0' : '';
+
+  // create the offset string
+  const offsetStr = `${prefix}${leadingZero}${hours}:${mins}`;
+
+  return offsetStr;
 };
