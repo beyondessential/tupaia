@@ -4,8 +4,10 @@
  */
 import { RRule } from 'rrule';
 import {
+  FREQUENCIES,
   generateDailyRRule,
   generateMonthlyRRule,
+  generateRRule,
   generateWeeklyRRule,
   generateYearlyRRule,
 } from '../rrule';
@@ -99,5 +101,17 @@ describe('RRule', () => {
     );
     expect(rrule.all()[0]).toEqual(startDate);
     expect(rrule.all()[1]).toEqual(new Date('2022-01-30'));
+  });
+
+  it('generateRRule should return an RRule using the start date and frequency', () => {
+    const startDate = new Date('2021-01-30');
+    const rrule = generateRRule(startDate, FREQUENCIES.YEARLY);
+    expect(rrule).toEqual(
+      new RRule({
+        freq: RRule.YEARLY,
+        dtstart: startDate,
+        interval: 1,
+      }),
+    );
   });
 });

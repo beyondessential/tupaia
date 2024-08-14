@@ -5,6 +5,28 @@
 import { RRule } from 'rrule';
 import { isLastDayOfMonth } from 'date-fns';
 
+export const FREQUENCIES = {
+  DAILY: 'daily',
+  WEEKLY: 'weekly',
+  MONTHLY: 'monthly',
+  YEARLY: 'YEARLY',
+};
+
+export const generateRRule = (startDate, frequency) => {
+  switch (frequency) {
+    case FREQUENCIES.DAILY:
+      return generateDailyRRule(startDate);
+    case FREQUENCIES.WEEKLY:
+      return generateWeeklyRRule(startDate);
+    case FREQUENCIES.MONTHLY:
+      return generateMonthlyRRule(startDate);
+    case FREQUENCIES.YEARLY:
+      return generateYearlyRRule(startDate);
+    default:
+      throw new Error(`Invalid frequency: ${frequency}`);
+  }
+};
+
 /**
  *
  * @param {Date} startDate
