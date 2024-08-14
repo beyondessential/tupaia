@@ -4,7 +4,7 @@
  */
 
 import { DatatrakWebTaskChangeRequest, Task } from '@tupaia/types';
-import { stripTimezoneFromDate } from '@tupaia/utils';
+import { stripTimezoneFromDate, generateRRule } from '@tupaia/utils';
 
 type Input = Partial<DatatrakWebTaskChangeRequest.ReqBody> &
   Partial<Pick<Task, 'entity_id' | 'survey_id' | 'status'>>;
@@ -15,16 +15,15 @@ type Output = Partial<Omit<Task, 'due_date'>> & {
 };
 
 export const formatTaskChanges = (task: Input) => {
-  const { due_date: dueDate, repeat_schedule: repeatSchedule, ...restOfTask } = task;
+  const { due_date: dueDate, repeat_frequency: frequency, ...restOfTask } = task;
 
   const taskDetails: Output = restOfTask;
 
-  if (repeatSchedule) {
-    // if task is repeating, clear due date
-    taskDetails.repeat_schedule = {
-      // TODO: format this correctly when recurring tasks are implemented
-      frequency: repeatSchedule,
-    };
+  if (frequency) {
+    // if task is repeating, clear due date and generate rrule
+    const rrule = generateRRule(dueDate, frequency);
+    // set repeat_schedule to the original options object so we can use it to generate next occurences and display the schedule
+    taskDetails.repeat_schedule = rrule.origOptions;
     taskDetails.due_date = null;
   } else if (dueDate) {
     // apply status and due date only if not a repeating task

@@ -4,13 +4,15 @@
  */
 
 import { Survey, Task } from '../../models';
+import { RepeatSchedule } from '../../models-extra';
 
 export type Params = Record<string, never>;
 export type ResBody = {
   message: string;
 };
 export type ReqQuery = Record<string, never>;
-export type ReqBody = Partial<Pick<Task, 'assignee_id' | 'due_date' | 'repeat_schedule'>> & {
+export type ReqBody = Partial<Pick<Task, 'assignee_id' | 'due_date'>> & {
   survey_code: Survey['code'];
   comment?: string;
+  repeat_frequency?: RepeatSchedule['freq'];
 };
