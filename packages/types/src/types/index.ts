@@ -100,6 +100,7 @@ export {
   ProjectConfig,
   TaskQuestionConfig,
   UserQuestionConfig,
+  RepeatSchedule,
 } from './models-extra';
 export * from './requests';
 export * from './css';

@@ -13,6 +13,7 @@ import { MapOverlayConfig } from './models-extra';
 import { EntityAttributes } from './models-extra';
 import { UserAccountPreferences } from './models-extra';
 import { ProjectConfig } from './models-extra';
+import { RepeatSchedule } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -1540,7 +1541,7 @@ export interface Task {
   'entity_id': string;
   'id': string;
   'initial_request_id'?: string | null;
-  'repeat_schedule'?: {} | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
@@ -1551,7 +1552,7 @@ export interface TaskCreate {
   'due_date'?: Date | null;
   'entity_id': string;
   'initial_request_id'?: string | null;
-  'repeat_schedule'?: {} | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
@@ -1563,7 +1564,7 @@ export interface TaskUpdate {
   'entity_id'?: string;
   'id'?: string;
   'initial_request_id'?: string | null;
-  'repeat_schedule'?: {} | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id'?: string;
   'survey_response_id'?: string | null;

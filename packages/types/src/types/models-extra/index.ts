@@ -110,3 +110,4 @@ export { VizPeriodGranularity, DashboardItemType } from './common';
 export { isChartReport, isViewReport, isMatrixReport } from './report';
 export { UserAccountPreferences } from './user';
 export { ProjectConfig } from './project';
+export { RepeatSchedule } from './task';

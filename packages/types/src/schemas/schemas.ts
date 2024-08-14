@@ -41882,6 +41882,50 @@ export const ProjectConfigSchema = {
 	"additionalProperties": false
 } 
 
+export const RepeatScheduleSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd",
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"freq": {
+			"type": "number"
+		},
+		"interval": {
+			"type": "number"
+		},
+		"bymonthday": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "number"
+					}
+				},
+				{
+					"type": "number"
+				}
+			]
+		},
+		"bysetpos": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "number"
+					}
+				},
+				{
+					"type": "number"
+				}
+			]
+		},
+		"dtstart": {
+			"type": "string",
+			"format": "date-time"
+		}
+	}
+} 
+
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -85900,8 +85944,47 @@ export const TaskSchema = {
 			"type": "string"
 		},
 		"repeat_schedule": {
+			"description": "Tupaia\nCopyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd",
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
@@ -85948,8 +86031,47 @@ export const TaskCreateSchema = {
 			"type": "string"
 		},
 		"repeat_schedule": {
+			"description": "Tupaia\nCopyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd",
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
@@ -85997,8 +86119,47 @@ export const TaskUpdateSchema = {
 			"type": "string"
 		},
 		"repeat_schedule": {
+			"description": "Tupaia\nCopyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd",
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
