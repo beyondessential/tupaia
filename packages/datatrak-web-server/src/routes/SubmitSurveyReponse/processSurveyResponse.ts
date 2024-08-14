@@ -38,6 +38,11 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
   return config.entity.fields && Object.keys(config.entity.fields).length > 0;
 };
 
+const addTimezoneToDateString = (dateString: string, timezone: string) => {
+  const timezoneOffset = getOffsetForTimezone(timezone);
+  return `${dateString}${timezoneOffset}`;
+};
+
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
   models: DatatrakWebServerModelRegistry,
@@ -128,8 +133,7 @@ export const processSurveyResponse = async (
       // Add the timezone offset to the date string so it saves in the correct timezone
       case QuestionType.SubmissionDate:
       case QuestionType.DateOfData: {
-        const timezoneOffset = getOffsetForTimezone(timezone);
-        surveyResponse.data_time = `${answer}${timezoneOffset}`;
+        surveyResponse.data_time = addTimezoneToDateString(answer as string, timezone);
         break;
       }
 
@@ -137,10 +141,9 @@ export const processSurveyResponse = async (
       case QuestionType.DateTime: {
         // Add the timezone offset to the date string so it saves in the correct timezone
         if (answer) {
-          const timezoneOffset = getOffsetForTimezone(timezone);
           answersToSubmit.push({
             ...answerObject,
-            body: `${answer}${timezoneOffset}`,
+            body: addTimezoneToDateString(answer as string, timezone),
           });
         }
         break;

@@ -7,7 +7,6 @@ import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurveyReponse/processSurveyResponse';
 import { DatatrakWebServerModelRegistry } from '../types';
-import { formatInTimeZone } from 'date-fns-tz';
 
 const mockFindEntityById = async (id: string) => ({
   id: 'theEntityId',
@@ -149,13 +148,13 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: '2022-01-01',
+        question1: '2022-01-01T0:00:00',
       },
     });
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: '2022-01-01',
+      data_time: '2022-01-01T0:00:00+13:00',
       answers: [],
     });
   });
@@ -173,13 +172,13 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: '2022-01-01',
+        question1: '2022-01-01T0:00:00',
       },
     });
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: '2022-01-01',
+      data_time: '2022-01-01T0:00:00+13:00',
       answers: [],
     });
   });
@@ -611,7 +610,7 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: new Date('2022-01-01 00:00:00').toISOString(),
+        question1: '2022-01-01T00:00:00',
       },
     });
 
@@ -621,11 +620,7 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.Date,
-          body: formatInTimeZone(
-            new Date('2022-01-01 00:00:00'),
-            'Pacific/Auckland',
-            'yyyy-MM-dd HH:mm:ssXXX',
-          ).replace(' ', 'T'),
+          body: '2022-01-01T00:00:00+13:00',
         },
       ],
     });
@@ -644,7 +639,7 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: new Date('2022-01-01 00:00:00').toISOString(),
+        question1: '2022-01-01T00:00:00',
       },
     });
 
@@ -654,11 +649,7 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.DateTime,
-          body: formatInTimeZone(
-            new Date('2022-01-01 00:00:00'),
-            'Pacific/Auckland',
-            'yyyy-MM-dd HH:mm:ssXXX',
-          ).replace(' ', 'T'),
+          body: '2022-01-01T00:00:00+13:00',
         },
       ],
     });
