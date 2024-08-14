@@ -9,6 +9,7 @@ import { get } from '../api';
 import { ROUTES } from '../../constants';
 import { errorToast } from '../../utils';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 
 export const useSurveyResponse = (surveyResponseId?: string) => {
   const { setFormData, surveyScreens } = useSurveyForm();
@@ -61,7 +62,8 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
             (question.type === QuestionType.Date || question.type === QuestionType.DateTime) &&
             value
           ) {
-            return { ...acc, [key]: value };
+            // strip timezone from date so that it gets displayed the same no matter the user's timezone
+            return { ...acc, [key]: stripTimezoneFromDate(value) };
           }
 
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };

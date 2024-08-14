@@ -12,6 +12,7 @@ import {
 } from '@tupaia/types';
 import { SurveyScreenComponent } from '../../../types';
 import { generateMongoId, generateShortId } from './generateId';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 
 export const getIsQuestionVisible = (
   question: SurveyScreenComponent,
@@ -267,13 +268,35 @@ export const generateCodeForCodeGeneratorQuestions = (
   return formDataCopy;
 };
 
+/**
+ * @description Remove timezone from date answers so that the date is displayed correctly in the UI no matter the timezone. On submission these will be added back.
+ */
+const removeTimezoneFromDateAnswers = (updates, screenComponents: SurveyScreenComponent[]) => {
+  const updatedAnswers = { ...updates };
+  screenComponents?.forEach(question => {
+    const { questionId, type } = question;
+    if (type.includes('Date')) {
+      if (updates[questionId]) {
+        updatedAnswers[questionId] = stripTimezoneFromDate(updates[questionId]);
+      }
+    }
+  });
+  return updatedAnswers;
+};
+
 export const getUpdatedFormData = (
   updates: Record<string, any>,
   formData: Record<string, any>,
   screenComponents: SurveyScreenComponent[],
 ) => {
+  const updatedValues = removeTimezoneFromDateAnswers(updates, screenComponents);
+
   // reset the values of invisible questions first, in case the value of the invisible question is used in the formula of another question. Also reset the value of filtered entity questions
-  const resetQuestionData = resetInvisibleAndFilteredQuestions(formData, updates, screenComponents);
+  const resetQuestionData = resetInvisibleAndFilteredQuestions(
+    formData,
+    updatedValues,
+    screenComponents,
+  );
   return updateDependentQuestions(resetQuestionData, screenComponents);
 };
 

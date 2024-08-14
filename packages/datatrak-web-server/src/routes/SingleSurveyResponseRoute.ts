@@ -9,8 +9,7 @@ import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
-import { formatDateInTimezone, PermissionsError } from '@tupaia/utils';
-import { getOffsetForTimezone } from '@tupaia/utils/dist/timezone';
+import { PermissionsError } from '@tupaia/utils';
 
 export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.Params,
@@ -86,8 +85,6 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       user_id: userId,
       'country.code': countryCode,
       'survey.permission_group_id': surveyPermissionGroupId,
-      data_time: dataTime,
-      timezone,
       ...response
     } = surveyResponse;
 
@@ -113,11 +110,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       {},
     );
 
-    const timezoneOffset = getOffsetForTimezone(timezone);
-    // Format the data time to include the timezone offset so that the frontend knows how to display it
-    const formattedDataTime = `${dataTime.replace(' ', 'T')}${timezoneOffset}`;
-
     // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
-    return camelcaseKeys({ ...response, dataTime: formattedDataTime, timezone, userId, answers });
+    return camelcaseKeys({ ...response, userId, answers });
   }
 }
