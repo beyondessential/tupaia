@@ -2,25 +2,25 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { RRule } from 'rrule';
+import { Frequency, RRule } from 'rrule';
 import { isLastDayOfMonth } from 'date-fns';
 
-export const FREQUENCIES = {
-  DAILY: 'daily',
-  WEEKLY: 'weekly',
-  MONTHLY: 'monthly',
-  YEARLY: 'YEARLY',
+export const RRULE_FREQUENCIES = {
+  DAILY: Frequency.DAILY,
+  WEEKLY: Frequency.WEEKLY,
+  MONTHLY: Frequency.MONTHLY,
+  YEARLY: Frequency.YEARLY,
 };
 
 export const generateRRule = (startDate, frequency) => {
   switch (frequency) {
-    case FREQUENCIES.DAILY:
+    case RRULE_FREQUENCIES.DAILY:
       return generateDailyRRule(startDate);
-    case FREQUENCIES.WEEKLY:
+    case RRULE_FREQUENCIES.WEEKLY:
       return generateWeeklyRRule(startDate);
-    case FREQUENCIES.MONTHLY:
+    case RRULE_FREQUENCIES.MONTHLY:
       return generateMonthlyRRule(startDate);
-    case FREQUENCIES.YEARLY:
+    case RRULE_FREQUENCIES.YEARLY:
       return generateYearlyRRule(startDate);
     default:
       throw new Error(`Invalid frequency: ${frequency}`);

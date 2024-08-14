@@ -4,7 +4,7 @@
  */
 import { RRule } from 'rrule';
 import {
-  FREQUENCIES,
+  RRULE_FREQUENCIES,
   generateDailyRRule,
   generateMonthlyRRule,
   generateRRule,
@@ -105,7 +105,7 @@ describe('RRule', () => {
 
   it('generateRRule should return an RRule using the start date and frequency', () => {
     const startDate = new Date('2021-01-30');
-    const rrule = generateRRule(startDate, FREQUENCIES.YEARLY);
+    const rrule = generateRRule(startDate, RRULE_FREQUENCIES.YEARLY);
     expect(rrule).toEqual(
       new RRule({
         freq: RRule.YEARLY,
