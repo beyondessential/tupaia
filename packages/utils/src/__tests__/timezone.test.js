@@ -17,5 +17,7 @@ describe('getOffsetForTimezone', () => {
     expect(getOffsetForTimezone('America/New_York')).toBe('-04:00');
     expect(getOffsetForTimezone('America/Los_Angeles')).toBe('-07:00');
     expect(getOffsetForTimezone('Pacific/Honolulu')).toBe('-10:00');
+    expect(getOffsetForTimezone('Australia/Lord_Howe', new Date('2021-03-08'))).toBe('+11:00');
+    expect(getOffsetForTimezone('Australia/Lord_Howe', new Date('2021-07-08'))).toBe('+10:30');
   });
 });

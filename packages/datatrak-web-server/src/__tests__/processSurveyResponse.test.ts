@@ -148,13 +148,13 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: '2022-01-01T0:00:00',
+        question1: '2022-01-01T00:00',
       },
     });
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: '2022-01-01T0:00:00+13:00',
+      data_time: '2022-01-01T00:00+13:00',
       answers: [],
     });
   });
@@ -172,13 +172,13 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: '2022-01-01T0:00:00',
+        question1: '2022-01-01T00:00',
       },
     });
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: '2022-01-01T0:00:00+13:00',
+      data_time: '2022-01-01T00:00+13:00',
       answers: [],
     });
   });
@@ -610,7 +610,7 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: '2022-01-01T00:00:00',
+        question1: '2022-01-01T00:00',
       },
     });
 
@@ -620,7 +620,7 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.Date,
-          body: '2022-01-01T00:00:00+13:00',
+          body: '2022-01-01T00:00+13:00',
         },
       ],
     });
@@ -639,7 +639,7 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: '2022-01-01T00:00:00',
+        question1: '2022-01-01T00:00',
       },
     });
 
@@ -649,7 +649,7 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.DateTime,
-          body: '2022-01-01T00:00:00+13:00',
+          body: '2022-01-01T00:00+13:00',
         },
       ],
     });

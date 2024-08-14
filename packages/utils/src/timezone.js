@@ -9,9 +9,9 @@ export const formatDateInTimezone = (date, timezone, format = "yyyy-MM-dd'T'HH:m
   return formatInTimeZone(date, timezone, format);
 };
 
-export const getOffsetForTimezone = timezone => {
+export const getOffsetForTimezone = (timezone, date) => {
   // the offset is given in ms, so we need to convert it to hours
-  const offset = getTimezoneOffset(timezone) / 60 / 60 / 1000;
+  const offset = getTimezoneOffset(timezone, date) / 60 / 60 / 1000;
 
   // round to 2 decimal places
   const offsetDec = Math.round(offset * 100) / 100;

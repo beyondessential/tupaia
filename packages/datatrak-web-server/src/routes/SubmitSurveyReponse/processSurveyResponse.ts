@@ -39,7 +39,7 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
 };
 
 const addTimezoneToDateString = (dateString: string, timezone: string) => {
-  const timezoneOffset = getOffsetForTimezone(timezone);
+  const timezoneOffset = getOffsetForTimezone(timezone, new Date(dateString));
   return `${dateString}${timezoneOffset}`;
 };
 
