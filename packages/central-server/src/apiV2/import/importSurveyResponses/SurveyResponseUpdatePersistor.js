@@ -58,14 +58,15 @@ export class SurveyResponseUpdatePersistor {
     return Object.keys(this.updatesByResponseId).length;
   }
 
-  setupColumnsForSheet(sheetName, surveyResponseIds) {
-    surveyResponseIds.forEach((surveyResponseId, columnIndex) => {
-      if (!surveyResponseId) return; // array contains some empty slots representing info columns
-      this.updatesByResponseId[surveyResponseId] = {
+  setupColumnsForSheet(sheetName, surveyResponses) {
+    surveyResponses.forEach((surveyResponse, columnIndex) => {
+      if (!surveyResponse) return; // array contains some empty slots representing info columns
+      this.updatesByResponseId[surveyResponse.surveyResponseId] = {
         type: UPDATE,
         sheetName,
         columnIndex,
-        surveyResponseId,
+        surveyResponseId: surveyResponse.surveyResponseId,
+        entityId: surveyResponse.entityId,
         newSurveyResponse: null, // only populated if a new survey response is to be created
         newDataTime: null, // only populated if submission time is to be updated
         answers: {
@@ -149,12 +150,12 @@ export class SurveyResponseUpdatePersistor {
     return { failures };
   }
 
-  async processUpdate(transactingModels, { surveyResponseId, newDataTime, answers }) {
+  async processUpdate(transactingModels, { surveyResponseId, entityId, newDataTime, answers }) {
+    const newData = { entity_id: entityId };
     if (newDataTime) {
-      await transactingModels.surveyResponse.updateById(surveyResponseId, {
-        data_time: newDataTime,
-      });
+      newData.data_time = newDataTime;
     }
+    await transactingModels.surveyResponse.updateById(surveyResponseId, newData);
     await this.processUpsertAnswers(transactingModels, surveyResponseId, answers.upserts);
     await this.processDeleteAnswers(transactingModels, surveyResponseId, answers.deletes);
   }
@@ -204,6 +205,7 @@ export class SurveyResponseUpdatePersistor {
 
   async process() {
     const allUpdates = Object.values(this.updatesByResponseId);
+
     const creates = allUpdates.filter(({ type }) => type === CREATE);
     const { failures: createFailures } = await this.processCreates(creates);
 
