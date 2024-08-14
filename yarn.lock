@@ -12738,6 +12738,7 @@ __metadata:
     bson-objectid: ^1.2.2
     case: ^1.5.5
     countrynames: ^0.1.1
+    date-fns: ^2.29.2
     fast-memoize: ^2.5.2
     jsonwebtoken: ^8.5.1
     lodash.get: ^4.4.2
@@ -12748,6 +12749,7 @@ __metadata:
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
     prop-types: ^15.6.2
+    rrule: ^2.8.1
     sanitize-filename: ^1.6.3
     validator: ^13.11.0
     winston: ^3.3.3
@@ -38407,6 +38409,15 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: 8bb20a39c8d91130825159c3823eccf4dc2295c9a0a5c4ed851a5bf2167dbf24d9a29f23461a54c955e5506395e6cc188eafc8ab0e20399d7489fb33793b184e
+  languageName: node
+  linkType: hard
+
+"rrule@npm:^2.8.1":
+  version: 2.8.1
+  resolution: "rrule@npm:2.8.1"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 77f3750d90f7ec76f2435d4e0b5f860e20b94d8b0cedf2e94803f8050f8f7e3898153db9790cd4e3aaaf0c2db99b0a912e955fbd0200368ffd4318ec3bc0c88f
   languageName: node
   linkType: hard
 
