@@ -5,6 +5,11 @@
 import { RRule } from 'rrule';
 import { isLastDayOfMonth } from 'date-fns';
 
+/**
+ *
+ * @param {Date} startDate
+ * @returns {RRule} RRule that will repeat daily from the given start date
+ */
 export const generateDailyRRule = startDate => {
   return new RRule({
     freq: RRule.DAILY,
@@ -13,14 +18,24 @@ export const generateDailyRRule = startDate => {
   });
 };
 
-export const generateWeeklyRRule = (startDate, daysOfWeek) => {
+/**
+ *
+ * @param {Date} startDate
+ * @returns {RRule} RRule that will repeat weekly on the given days of the week from the given start date
+ */
+export const generateWeeklyRRule = startDate => {
   return new RRule({
     freq: RRule.WEEKLY,
     dtstart: startDate,
-    byweekday: daysOfWeek,
+    interval: 1,
   });
 };
 
+/**
+ *
+ * @param {Date} startDate
+ * @returns  {RRule} RRule that will repeat monthly on the same day of the month as the given start date
+ */
 export const generateMonthlyRRule = startDate => {
   const dayOfMonth = startDate.getDate();
 
@@ -56,6 +71,11 @@ export const generateMonthlyRRule = startDate => {
   });
 };
 
+/**
+ *
+ * @param {Date} startDate
+ * @returns {RRule} RRule that will repeat yearly on the same day of the year as the given start date
+ */
 export const generateYearlyRRule = startDate => {
   return new RRule({
     freq: RRule.YEARLY,
