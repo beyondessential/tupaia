@@ -5,6 +5,7 @@
 
 import '@babel/polyfill';
 import http from 'http';
+import nodeSchedule from 'node-schedule';
 import {
   AnalyticsRefresher,
   EntityHierarchyCacher,
@@ -72,9 +73,7 @@ configureEnv();
   /**
    * Scheduled tasks
    */
-
-  // Todo: figure out how to cancel polling
-  // new TaskOverdueChecker(models).beginPolling();
+  new TaskOverdueChecker(models).init();
 
   /**
    * Set up actual app with routes etc.
@@ -124,4 +123,11 @@ configureEnv();
       winston.error(error.message);
     }
   }
+
+  /**
+   * Gracefully handle shutdown of ChangeHandlers and ScheduledTasks
+   */
+  process.on('SIGINT', function () {
+    nodeSchedule.gracefulShutdown().then(() => process.exit(0));
+  });
 })();

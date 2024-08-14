@@ -1,11 +1,16 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { scheduleJob } from 'node-schedule';
 import winston from 'winston';
 
+/**
+ * Base class for scheduled tasks. Uses 'node-schedule' for scheduling based on cron tab syntax
+ * Subclasses should implement the run method and need to be initialised by instantiating the
+ * class and calling init in the central-server index.js file
+ */
 export class ScheduledTask {
   getSchedule() {
     throw new Error(`ScheduledTask::getSchedule not overridden for ${this.constructor.name}`);
@@ -15,57 +20,51 @@ export class ScheduledTask {
     throw new Error(`ScheduledTask::getName not overridden for ${this.constructor.name}`);
   }
 
-  constructor() {
+  constructor(models, lockKey) {
     winston.info(`Initialising scheduled task ${this.getName()}`);
+    this.models = models;
+    this.lockKey = lockKey;
     this.schedule = this.getSchedule();
     this.name = this.getName();
     this.job = null;
-    this.isRunning = false;
     this.start = null;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async run() {
-    throw new Error('Not implemented');
+    throw new Error('Any subclass of ScheduledTask must implement the "run" method');
   }
 
   async runTask() {
-    const name = this.getName();
     this.start = Date.now();
 
     try {
-      this.isRunning = true;
-      await this.run();
-      const durationMs = Date.now() - this.start;
-      winston.info(`ScheduledTask: ${name}: Succeeded in ${durationMs}`);
-      return true;
+      await this.models.wrapInTransaction(async transactingModels => {
+        // Acquire a database advisory lock for the transaction
+        // Ensures no other server instance can execute its change handler at the same time
+        await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+        await this.run();
+        const durationMs = Date.now() - this.start;
+        winston.info(`ScheduledTask: ${this.name}: Succeeded in ${durationMs}`);
+        return true;
+      });
     } catch (e) {
       const durationMs = Date.now() - this.start;
-      winston.error(`ScheduledTask: ${name}: Failed`, { id: runId, durationMs });
+      winston.error(`ScheduledTask: ${this.name}: Failed`, { id: runId, durationMs });
       winston.error(e.stack);
 
       return false;
     } finally {
       this.start = null;
-      this.isRunning = false;
     }
   }
 
-  beginPolling() {
+  init() {
     if (!this.job) {
       const name = this.getName();
-      winston.info(`ABC ScheduledTask: ${name}: Scheduled for ${this.schedule}`);
+      winston.info(`ScheduledTask: ${name}: Scheduled for ${this.schedule}`);
       this.job = scheduleJob(this.schedule, async () => {
         await this.runTask();
       });
-    }
-  }
-
-  cancelPolling() {
-    if (this.job) {
-      this.job.cancel();
-      this.job = null;
-      winston.info(`ScheduledTask: ${this.getName()}: Cancelled`);
     }
   }
 }
