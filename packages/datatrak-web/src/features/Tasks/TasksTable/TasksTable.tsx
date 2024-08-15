@@ -79,8 +79,10 @@ const useTasksTable = () => {
       setSearchParams(searchParams);
       return;
     }
+
     searchParams.set('filters', JSON.stringify(nonEmptyFilters));
     searchParams.set('page', '0');
+
     setSearchParams(searchParams);
   };
 

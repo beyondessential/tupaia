@@ -13,11 +13,6 @@ const PlaceholderText = styled.span`
   color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
-const PlaceholderOption = styled(MuiMenuItem)`
-  font-size: 0.75rem;
-  padding-inline: 0.8rem;
-`;
-
 const MenuItem = styled(MuiMenuItem)`
   padding-inline: 0.5rem;
   padding-block: 0.2rem;
@@ -29,6 +24,12 @@ const Select = styled(MuiSelect)`
     background: transparent;
   }
 `;
+
+const MenuItemText = styled.span`
+  font-size: 0.75rem;
+  padding: 0.3rem;
+`;
+
 type Option = {
   value: string | number;
   label?: string;
@@ -86,10 +87,12 @@ export const SelectFilter = ({
       IconComponent={KeyboardArrowDown}
     >
       {/** Include a placeholder option so that the user can clear the filter */}
-      <PlaceholderOption value="">{placeholderValue}</PlaceholderOption>
+      <MenuItem value="">
+        <MenuItemText>Show all</MenuItemText>
+      </MenuItem>
       {options.map(option => (
         <MenuItem key={option.value} value={option.value}>
-          {renderOption ? renderOption(option) : option.label}
+          {renderOption ? renderOption(option) : <MenuItemText>{option.label}</MenuItemText>}
         </MenuItem>
       ))}
     </Select>
