@@ -146,6 +146,7 @@ const useTasksTable = () => {
       filterable: true,
       disableResizing: true,
       Filter: RepeatScheduleFilter,
+      disableSortBy: true,
       width: 180,
     },
     {
