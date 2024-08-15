@@ -68,7 +68,7 @@ export const processSurveyResponse = async (
     start_time: startTime,
     entity_id: countryId,
     end_time: timestamp,
-    data_time: dataTime || timestamp,
+    data_time: dataTime ? addTimezoneToDateString(dataTime, timezone) : timestamp,
     timestamp,
     timezone,
     entities_upserted: [],
