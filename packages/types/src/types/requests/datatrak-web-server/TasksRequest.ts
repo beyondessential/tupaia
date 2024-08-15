@@ -25,7 +25,7 @@ export type TaskResponse = KeysToCamelCase<
     parentName?: Entity['name'];
   };
   repeatSchedule?: Record<string, unknown> | null;
-  dueDate?: Date | null;
+  taskDueDate?: Date | null;
 };
 
 export type ResBody = {

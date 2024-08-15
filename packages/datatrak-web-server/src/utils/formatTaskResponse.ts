@@ -14,6 +14,7 @@ export type TaskT = Omit<Task, 'created_at' | 'repeat_schedule'> & {
   'survey.name': Survey['name'];
   task_status: TaskStatus | 'overdue' | 'repeating';
   repeat_schedule?: Record<string, unknown> | null;
+  task_due_date: Date | null;
 };
 
 type FormattedTask = DatatrakWebTasksRequest.TaskResponse;
@@ -29,11 +30,9 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
     'survey.name': surveyName,
     task_status: taskStatus,
     repeat_schedule: repeatSchedule,
-    due_date: dueDate,
+    task_due_date: taskDueDate,
     ...rest
   } = task;
-
-  const formattedDueDate = dueDate ? new Date(dueDate) : null;
 
   const formattedTask = {
     ...rest,
@@ -50,7 +49,7 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
     },
     taskStatus,
     repeatSchedule,
-    dueDate: formattedDueDate,
+    taskDueDate,
   };
 
   return camelcaseKeys(formattedTask, {

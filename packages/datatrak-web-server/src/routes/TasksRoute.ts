@@ -25,7 +25,7 @@ const FIELDS = [
   'assignee_name',
   'assignee_id',
   'task_status',
-  'due_date',
+  'task_due_date',
   'repeat_schedule',
   'survey_id',
   'entity_id',

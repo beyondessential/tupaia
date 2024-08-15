@@ -4,7 +4,6 @@
  */
 
 import { DatatrakWebTaskChangeRequest, Task } from '@tupaia/types';
-import { stripTimezoneFromDate } from '@tupaia/utils';
 
 type Input = Partial<DatatrakWebTaskChangeRequest.ReqBody> &
   Partial<Pick<Task, 'entity_id' | 'survey_id' | 'status'>>;

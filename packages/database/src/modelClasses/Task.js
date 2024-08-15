@@ -340,6 +340,7 @@ export class TaskModel extends DatabaseModel {
   }
 
   customColumnSelectors = {
+    task_due_date: () => `to_timestamp(due_date/1000)`,
     task_status: () =>
       `CASE  
         WHEN status = 'cancelled' then 'cancelled'
