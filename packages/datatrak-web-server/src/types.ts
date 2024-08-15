@@ -29,8 +29,8 @@ export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly oneTimeLogin: OneTimeLoginModel;
   readonly option: OptionModel;
   readonly task: TaskModel;
-  readonly permissionGroup: PermissionGroupModel;
   readonly userEntityPermission: UserEntityPermissionModel;
   readonly taskComment: TaskCommentModel;
   readonly project: ProjectModel;
+  readonly permissionGroup: PermissionGroupModel;
 }

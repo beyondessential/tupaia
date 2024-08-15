@@ -21,6 +21,7 @@ import {
   ReportsPage,
   TasksDashboardPage,
   TaskDetailsPage,
+  NotAuthorisedPage,
 } from '../views';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
@@ -115,6 +116,7 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
           </Route>
         </Route>
+        <Route path={ROUTES.NOT_AUTHORISED} element={<NotAuthorisedPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </RouterRoutes>

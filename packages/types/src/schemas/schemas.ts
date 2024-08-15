@@ -30896,6 +30896,9 @@ export const ViewDataItemSchema = {
 						"singleValue"
 					],
 					"type": "string"
+				},
+				"label": {
+					"type": "string"
 				}
 			}
 		}
@@ -30975,6 +30978,9 @@ export const ViewReportSchema = {
 									"singleDownloadLink",
 									"singleValue"
 								],
+								"type": "string"
+							},
+							"label": {
 								"type": "string"
 							}
 						}
@@ -31230,6 +31236,9 @@ export const DashboardItemReportSchema = {
 											"singleDownloadLink",
 											"singleValue"
 										],
+										"type": "string"
+									},
+									"label": {
 										"type": "string"
 									}
 								}

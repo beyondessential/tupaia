@@ -5,7 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import ExportIcon from '@material-ui/icons/GetApp';
+import { ExportIcon } from '../icons';
 import { makeSubstitutionsInString } from '../utilities';
 import { useApiContext } from '../utilities/ApiProvider';
 import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';

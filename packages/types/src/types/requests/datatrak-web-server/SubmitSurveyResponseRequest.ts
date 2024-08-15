@@ -22,6 +22,7 @@ interface SurveyResponse {
   answers: Answers;
   startTime: string;
   timezone: string;
+  dataTime?: string;
 }
 
 export type Params = Record<string, never>;

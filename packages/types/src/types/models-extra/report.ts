@@ -65,6 +65,7 @@ export type ViewDataItem =
       value?: any;
       total?: number;
       viewType?: ViewConfig['viewType'];
+      label?: string;
     })
   | DownloadFilesVisualDataItem;
 
