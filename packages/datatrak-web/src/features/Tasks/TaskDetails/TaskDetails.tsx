@@ -184,7 +184,12 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const dueDate = watch('due_date');
 
   const onSubmit = data => {
-    editTask(data);
+    const updatedFields = Object.keys(dirtyFields).reduce((acc, key) => {
+      acc[key] = data[key];
+      return acc;
+    }, {});
+
+    editTask(updatedFields);
   };
 
   return (

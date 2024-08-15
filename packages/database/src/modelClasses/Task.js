@@ -48,7 +48,7 @@ const formatValue = async (field, value, models) => {
       return assignee.full_name;
     }
     case 'repeat_schedule': {
-      if (!value || !value.freq) {
+      if (!value || value.freq === undefined || value.freq === null) {
         return "Doesn't repeat";
       }
 
@@ -63,10 +63,6 @@ const formatValue = async (field, value, models) => {
       return `${frequency.charAt(0)}${frequency.slice(1).toLowerCase()}`;
     }
     case 'due_date': {
-      // TODO: Currently repeating tasks don't have a due date, so we need to handle null values. In RN-1341 we will add a due date to repeating tasks overnight, so this will need to be updated then
-      if (!value) {
-        return 'No due date';
-      }
       // Format the date as 'd MMMM yy' (e.g. 1 January 21). This is so that there is no ambiguity between US and other date formats
       return format(new Date(value), 'd MMMM yy');
     }
@@ -251,11 +247,9 @@ export class TaskRecord extends DatabaseRecord {
       // If the field hasn't actually changed, don't add a comment
       if (originalValue === newValue) continue;
 
-      // If the due date is changed and the task is repeating, don't add a comment, because this just means that the repeat schedule is being updated, not that the due date is being changed. This will likely change as part of RN-1341
-      // TODO: re-evaulate this when RN-1341 is implemented
-      if (field === 'due_date' && updatedFields.repeat_schedule) {
-        continue;
-      }
+      if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
+      // Don't add a comment when due date is updated for repeat schedule
+      if (field === 'due_date' && this.repeat_schedule) continue;
 
       const friendlyFieldName = getFriendlyFieldName(field);
       const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
