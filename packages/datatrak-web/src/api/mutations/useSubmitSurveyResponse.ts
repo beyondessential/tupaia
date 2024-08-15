@@ -35,7 +35,7 @@ export const useSurveyResponseData = () => {
   };
 };
 
-export const useSubmitSurveyResponse = (fromLocation: string | undefined) => {
+export const useSubmitSurveyResponse = (fromLocation?: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();

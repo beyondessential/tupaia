@@ -71,6 +71,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
               name="assignee_id"
               control={control}
               rules={{ required: 'Required' }}
+              defaultValue=""
               render={({ value, onChange, ref }, { invalid }) => (
                 <AssigneeInput
                   value={value}

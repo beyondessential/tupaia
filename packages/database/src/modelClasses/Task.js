@@ -144,6 +144,7 @@ export class TaskRecord extends DatabaseRecord {
         repeat_schedule: repeatSchedule,
         status: 'completed',
         survey_response_id: surveyResponseId,
+        parent_task_id: id,
       };
 
       // Check for an existing task so that multiple tasks aren't created for the same survey response

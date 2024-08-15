@@ -10,7 +10,7 @@ export type Params = {
   id: string;
 };
 
-export interface ResBody extends KeysToCamelCase<SurveyResponse> {
+export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'dataTime'>> {
   answers: Record<string, string>;
   countryName: Country['name'];
   entityName: Entity['name'];
@@ -18,6 +18,7 @@ export interface ResBody extends KeysToCamelCase<SurveyResponse> {
   surveyName: Survey['name'];
   surveyCode: Survey['code'];
   countryCode: Country['code'];
+  dataTime: Date;
 }
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;

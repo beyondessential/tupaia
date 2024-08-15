@@ -160,9 +160,9 @@ describe('TaskModel', () => {
       });
 
       expect(results).toHaveLength(2);
-
-      expect(results[0].id).toEqual(tasks[0].id);
-      expect(results[1].id).toEqual(tasks[2].id);
+      const ids = results.map(r => r.id);
+      expect(ids).toContain(tasks[0].id);
+      expect(ids).toContain(tasks[2].id);
     });
   });
 

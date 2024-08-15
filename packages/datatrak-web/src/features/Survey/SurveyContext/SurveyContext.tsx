@@ -75,7 +75,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const initialiseFormData = () => {
     if (!surveyCode || isResponseScreen) return;
     // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
-    let initialFormData = generateCodeForCodeGeneratorQuestions(
+    const initialFormData = generateCodeForCodeGeneratorQuestions(
       flattenedScreenComponents,
       formData,
     );
@@ -139,6 +139,10 @@ export const useSurveyForm = () => {
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
   const isResponseScreen = !!urlSearchParams.get('responseId');
+  const isResubmitScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SCREEN);
+  const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
+  const isResubmit =
+    !!useMatch(ROUTES.SURVEY_RESUBMIT) || isResubmitScreen || isResubmitReviewScreen;
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
@@ -184,5 +188,8 @@ export const useSurveyForm = () => {
     getAnswerByQuestionId,
     openCancelConfirmation,
     closeCancelConfirmation,
+    isResubmitScreen,
+    isResubmitReviewScreen,
+    isResubmit,
   };
 };

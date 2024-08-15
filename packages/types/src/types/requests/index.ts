@@ -11,6 +11,7 @@ export {
   DatatrakWebUserRequest,
   DatatrakWebSurveysRequest,
   DatatrakWebSubmitSurveyResponseRequest,
+  DatatrakWebResubmitSurveyResponseRequest,
   DatatrakWebSurveyRequest,
   DatatrakWebSurveyResponsesRequest,
   DatatrakWebRecentSurveysRequest,

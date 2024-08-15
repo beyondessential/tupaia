@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -8,9 +8,9 @@ import { IconButton } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { ActionsMenu } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import { SingleTaskResponse } from '../../types';
 import { useEditTask } from '../../api';
 import { CancelTaskModal } from './CancelTaskModal';
-import { SingleTaskResponse } from '../../types';
 
 const MenuButton = styled(IconButton)`
   &.MuiIconButton-root {

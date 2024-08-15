@@ -13,12 +13,22 @@ const PageContainer = styled(BasePageContainer)`
   flex-direction: column;
   flex: 1;
   padding-block-start: 0.75rem;
-  padding-block-end: 2rem;
-  padding-inline: 3rem;
+  padding-inline: 0.3rem;
   max-height: 100%;
   .loading-screen {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
+  }
+`;
+
+export const TasksContentWrapper = styled.div`
+  padding-inline: 2.7rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  ${({ theme }) => theme.breakpoints.down('xs')} {
+    padding-inline: 1rem;
   }
 `;
 

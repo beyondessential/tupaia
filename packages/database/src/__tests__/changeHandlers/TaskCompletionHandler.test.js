@@ -135,7 +135,7 @@ describe('TaskCompletionHandler', () => {
   });
 
   describe('Repeating tasks', () => {
-    it('updating a survey response for a repeating task creates a new completed task', async () => {
+    it('creating a survey response for a repeating task creates a new completed task', async () => {
       const samoa = await findOrCreateDummyRecord(models.entity, { code: 'WS' });
       const repeatTask = await findOrCreateDummyRecord(models.task, {
         entity_id: samoa.id,
@@ -154,11 +154,12 @@ describe('TaskCompletionHandler', () => {
       const newTask = await models.task.findOne({
         survey_response_id: responses[0],
         entity_id: samoa.id,
+        parent_task_id: repeatTask.id,
       });
       await assertTaskStatus(newTask.id, 'completed', responses[0]);
     });
 
-    it('updating a survey response for a repeating task with status do_do creates a new completed task', async () => {
+    it('creating a survey response for a repeating task with status to_do creates a new completed task', async () => {
       const fiji = await findOrCreateDummyRecord(models.entity, { code: 'FJ' });
       const repeatTask = await findOrCreateDummyRecord(models.task, {
         entity_id: fiji.id,
@@ -176,6 +177,7 @@ describe('TaskCompletionHandler', () => {
       const newTask = await models.task.findOne({
         survey_response_id: responses[0],
         entity_id: fiji.id,
+        parent_task_id: repeatTask.id,
       });
       await assertTaskStatus(newTask.id, 'completed', responses[0]);
     });
