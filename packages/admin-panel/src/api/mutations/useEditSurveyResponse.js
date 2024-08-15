@@ -6,13 +6,13 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { useApiContext } from '../../utilities/ApiProvider';
 
-export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyResponse) => {
+export const useEditSurveyResponse = (surveyResponseId, updatedSurveyResponse) => {
   const queryClient = useQueryClient();
   const api = useApiContext();
   return useMutation(
-    [`surveyResubmit`, surveyResponseId, updatedSurveyResponse],
+    [`surveyResponseEdit`, surveyResponseId, updatedSurveyResponse],
     () => {
-      return api.post(`surveyResponse/${surveyResponseId}/resubmit`, null, updatedSurveyResponse);
+      return api.put(`surveyResponses/${surveyResponseId}`, null, updatedSurveyResponse);
     },
     {
       throwOnError: true,

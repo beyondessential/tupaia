@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
 import { useGetExistingData } from './useGetExistingData';
 import { ModalContentProvider, ModalFooter } from '../widgets';
-import { useResubmitSurveyResponse } from '../api/mutations/useResubmitSurveyResponse';
+import { useEditSurveyResponse } from '../api/mutations/useEditSurveyResponse';
 import { ResponseFields } from './ResponseFields';
 
 const ButtonGroup = styled.div`
@@ -19,23 +19,23 @@ const ButtonGroup = styled.div`
 `;
 
 export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
-  const [surveyResubmission, setSurveyResubmission] = useState({});
-  const isUnchanged = Object.keys(surveyResubmission).length === 0;
+  const [editedData, setEditedData] = useState({});
+  const isUnchanged = Object.keys(editedData).length === 0;
 
   const [selectedEntity, setSelectedEntity] = useState({});
 
   const {
-    mutateAsync: resubmitResponse,
+    mutateAsync: editResponse,
     isLoading,
     isError,
-    error: resubmitError,
+    error: editError,
     reset, // reset the mutation state so we can dismiss the error
     isSuccess,
-  } = useResubmitSurveyResponse(surveyResponseId, surveyResubmission);
+  } = useEditSurveyResponse(surveyResponseId, editedData);
 
   const { data, isLoading: isFetching, error: fetchError } = useGetExistingData(surveyResponseId);
 
-  const existingAndNewFields = { ...data?.surveyResponse, ...surveyResubmission };
+  const existingAndNewFields = { ...data?.surveyResponse, ...editedData };
 
   useEffect(() => {
     if (!data) {
@@ -46,7 +46,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   }, [data]);
 
   const resubmitSurveyResponse = async () => {
-    await resubmitResponse();
+    await editResponse();
     onAfterMutate();
   };
 
@@ -61,7 +61,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   const resubmitResponseAndRedirect = async () => {
     // If the response has been changed, resubmit it before redirecting
     if (!isUnchanged) {
-      await resubmitResponse();
+      await editResponse();
       onAfterMutate();
     }
     const { country_code: updatedCountryCode } = selectedEntity;
@@ -107,17 +107,14 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
 
   return (
     <>
-      <ModalContentProvider
-        isLoading={isFetching || isResubmitting}
-        error={fetchError || resubmitError}
-      >
+      <ModalContentProvider isLoading={isFetching || isLoading} error={fetchError || editError}>
         {!isFetching && !isSuccess && (
           <ResponseFields
             selectedEntity={selectedEntity}
             surveyName={data?.survey.name}
             fields={existingAndNewFields}
             onChange={(field, updatedField) =>
-              setSurveyResubmission({ ...surveyResubmission, [field]: updatedField })
+              setEditedData({ ...editedData, [field]: updatedField })
             }
             setSelectedEntity={setSelectedEntity}
           />

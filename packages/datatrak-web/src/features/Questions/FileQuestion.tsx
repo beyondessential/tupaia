@@ -26,6 +26,22 @@ const Wrapper = styled.div`
   }
 `;
 
+type Base64 = string | null | ArrayBuffer;
+
+const createEncodedFile = (fileObject: File): Promise<Base64> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(fileObject);
+  });
+};
+
 export const FileQuestion = ({
   label,
   required,
@@ -40,12 +56,22 @@ export const FileQuestion = ({
       return;
     }
     const file = files[0];
+    const encodedFile = await createEncodedFile(file);
+    // convert to an object with an encoded file so that it can be handled in the backend and uploaded to s3
     onChange({
       name: file.name,
-      value: file,
+      value: encodedFile,
     });
   };
 
+  const getInitialFiles = () => {
+    if (selectedFile?.value) {
+      return [new File([selectedFile.value as Blob], selectedFile.name)];
+    }
+    return undefined;
+  };
+
+  const initialFiles = getInitialFiles();
   return (
     <Wrapper>
       <FileUploadField
@@ -58,6 +84,7 @@ export const FileQuestion = ({
         FormHelperTextComponent={InputHelperText}
         required={required}
         disabled={isResponseScreen || isReviewScreen}
+        initialFiles={initialFiles}
       />
     </Wrapper>
   );

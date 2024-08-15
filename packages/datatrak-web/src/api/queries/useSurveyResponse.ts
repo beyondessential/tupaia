@@ -9,6 +9,7 @@ import { get } from '../api';
 import { ROUTES } from '../../constants';
 import { errorToast } from '../../utils';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 
 export const useSurveyResponse = (surveyResponseId?: string) => {
   const { setFormData, surveyScreens } = useSurveyForm();
@@ -49,7 +50,20 @@ export const useSurveyResponse = (surveyResponseId?: string) => {
           );
           if (!question) return acc;
           if (question.type === QuestionType.File && value) {
-            return { ...acc, [key]: { name: value, value: null } };
+            // If the value is a file, split the value to get the file name
+            const withoutPrefix = value.split('files/');
+            const fileNameParts = withoutPrefix[withoutPrefix.length - 1].split('_');
+            // remove first element of the array as it is the file id
+            const fileName = fileNameParts.slice(1).join('_');
+            return { ...acc, [key]: { name: fileName, value } };
+          }
+
+          if (
+            (question.type === QuestionType.Date || question.type === QuestionType.DateTime) &&
+            value
+          ) {
+            // strip timezone from date so that it gets displayed the same no matter the user's timezone
+            return { ...acc, [key]: stripTimezoneFromDate(value) };
           }
 
           return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };

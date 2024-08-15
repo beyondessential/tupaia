@@ -32,6 +32,7 @@ const DEFAULT_FIELDS = [
   'user_id',
   'country.code',
   'survey.permission_group_id',
+  'timezone',
 ];
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
@@ -99,6 +100,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },
       columns: ANSWER_COLUMNS,
+      pageSize: 'ALL',
     });
     const answers = answerList.reduce(
       (output: Record<string, string>, answer: { question_id: string; text: string }) => ({
@@ -109,6 +111,6 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
     );
 
     // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
-    return camelcaseKeys({ ...response, answers });
+    return camelcaseKeys({ ...response, userId, answers });
   }
 }

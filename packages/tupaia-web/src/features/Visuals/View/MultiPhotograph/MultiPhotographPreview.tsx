@@ -5,30 +5,43 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
-
-const MAX_THUMBNAILS = 3;
+import { Typography } from '@material-ui/core';
 
 const Wrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
   height: 16rem;
 `;
 
 const Thumbnail = styled.div<{
   thumbCount: number;
-  src: string;
+  src?: string;
 }>`
-  max-height: 100%;
+  height: ${({ thumbCount }) => {
+    if (thumbCount === 1) return '100%';
+    if (thumbCount === 2) return '12rem';
+    return '50%';
+  }};
+  max-height: ${({ thumbCount }) => {
+    if (thumbCount <= 2) return '100%';
+    return '7.5rem';
+  }};
   background-image: url(${({ src }) => src});
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   width: ${({ thumbCount }) => {
     if (thumbCount === 1) return '100%';
-    if (thumbCount === 2) return '50%';
-    return '25%';
+    return 'min(48%, 11rem)';
   }};
-  &:nth-child(2) {
-    width: 50%;
-  }
+  border-radius: 3px;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Image = styled.img`
@@ -46,6 +59,11 @@ const Image = styled.img`
   &:nth-child(2n) {
     margin-left: 1%;
   }
+`;
+
+const MoreImagesText = styled(Typography)`
+  font-size: 1.125rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
 interface MultiPhotographPreviewProps {
@@ -74,17 +92,26 @@ export const MultiPhotographPreview = ({
     );
   }
 
-  const thumbnails = data.slice(0, MAX_THUMBNAILS).map(({ value }) => value);
+  const maxThumbnailsToDisplay = 3;
+  const thumbnails = data.slice(0, maxThumbnailsToDisplay).map(({ value }) => value);
+
+  const remainingThumbnails = data.length - maxThumbnailsToDisplay;
+
   return (
     <Wrapper>
       {thumbnails.map((thumbnail, i) => (
         <Thumbnail
           src={thumbnail}
-          key={thumbnail}
+          key={`${thumbnail}-${i}`}
           aria-label={`Thumbnail ${i + 1} for visualisation ${config?.name}`}
           thumbCount={thumbnails.length}
         />
       ))}
+      {remainingThumbnails > 0 && (
+        <Thumbnail thumbCount={thumbnails.length}>
+          <MoreImagesText>+ {remainingThumbnails}</MoreImagesText>
+        </Thumbnail>
+      )}
     </Wrapper>
   );
 };

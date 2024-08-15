@@ -18,9 +18,13 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
     };
     if (answer.type === QuestionType.Photo) {
       const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
-      if (validFileIdRegex.test(answer.body)) {
+      const s3ImagePath = getS3ImageFilePath();
+
+      if (answer.body.includes('http')) {
+        answerDocument.text = answer.body;
+      } else if (validFileIdRegex.test(answer.body)) {
         // if this is passed a valid id in the answer body
-        answerDocument.text = `${S3_BUCKET_PATH}${getS3ImageFilePath()}${answer.body}.png`;
+        answerDocument.text = `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.png`;
       } else {
         // included for backwards compatibility passing base64 strings for images, and for datatrak-web to upload images in answers
         try {
@@ -38,10 +42,9 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
     ) {
       try {
         const s3Client = new S3Client(new S3());
-        answerDocument.text = await s3Client.uploadFile(
-          answer.body.uniqueFileName,
-          answer.body.data,
-        );
+        await s3Client.uploadFile(answer.body.uniqueFileName, answer.body.data);
+
+        answerDocument.text = answer.body.uniqueFileName;
       } catch (error) {
         throw new UploadError(error);
       }

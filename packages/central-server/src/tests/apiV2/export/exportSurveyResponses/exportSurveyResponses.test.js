@@ -116,6 +116,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         {
           surveyCode: survey2.code,
           entityCode: kiribatiCountry.code,
+          outdated: true,
           data_time: new Date(),
           answers: {
             question_7_test: 'question_7_test answer',
@@ -160,6 +161,16 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           const exportData = xlsx.utils.aoa_to_sheet.getCall(i).args[0];
           expectAccessibleExportDataHeaderRow(exportData);
         }
+      });
+
+      it('ignores outdated survey responses', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.get(
+          `export/surveyResponses?surveyCodes=${survey2.code}&countryCode=${kiribatiCountry.code}`,
+        );
+
+        // Should not fetch outdated survey response so there should be no export data
+        expect(xlsx.utils.aoa_to_sheet).not.to.have.been.called;
       });
     });
 

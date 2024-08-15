@@ -16,13 +16,13 @@ const ButtonGroup = styled.div`
 const DEV_ADMIN_PANEL_URL = 'https://dev-admin.tupaia.org';
 
 export const SurveyResubmitSuccessScreen = () => {
-  const getAdminPanelUrl = () => {
+  const getBaseAdminPanelUrl = () => {
     const { origin } = window.location;
     if (origin.includes('localhost')) return DEV_ADMIN_PANEL_URL;
     return origin.replace('datatrak', 'admin');
   };
 
-  const adminPanelUrl = getAdminPanelUrl();
+  const adminPanelUrl = `${getBaseAdminPanelUrl()}/surveys/survey-responses`;
   return (
     <SurveySuccess
       text="You have successfully resubmitted the survey. To return to the admin panel click the button below"

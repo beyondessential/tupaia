@@ -63,6 +63,18 @@ export class CentralApi extends BaseApi {
     }
   }
 
+  public async resubmitSurveyResponse(
+    originalResponseId: string,
+    newResponse: MeditrakSurveyResponseRequest,
+    queryParameters?: QueryParameters,
+  ): Promise<void> {
+    return this.connection.post(
+      `surveyResponses/${originalResponseId}/resubmit`,
+      queryParameters,
+      newResponse,
+    );
+  }
+
   public async fetchResources(endpoint: string, params?: Record<string, unknown>) {
     return this.connection.get(endpoint, stringifyParams(params));
   }
