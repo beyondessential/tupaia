@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { setMilliseconds, sub } from 'date-fns';
+import { sub } from 'date-fns';
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { parse } from 'cookie';
