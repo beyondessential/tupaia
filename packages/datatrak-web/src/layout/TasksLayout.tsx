@@ -13,16 +13,11 @@ const PageContainer = styled(BasePageContainer)`
   flex-direction: column;
   flex: 1;
   padding-block-start: 0.75rem;
-
-  padding-inline: 0.5rem;
+  padding-inline: 0.3rem;
   max-height: 100%;
   .loading-screen {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
-  }
-
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline: 1rem;
   }
 `;
 
@@ -32,7 +27,7 @@ export const TasksContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline: 0;
+    padding-inline: 1rem;
   }
 `;
 
