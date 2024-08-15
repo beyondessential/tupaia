@@ -5,6 +5,7 @@
 import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import { useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
 import { getAllSurveyComponents } from '../utils';
@@ -42,7 +43,20 @@ export const useSurveyResponseWithForm = (
       const question = flattenedScreenComponents.find(component => component.questionId === key);
       if (!question) return acc;
       if (question.type === QuestionType.File && value) {
-        return { ...acc, [key]: { name: value, value: null } };
+        // If the value is a file, split the value to get the file name
+        const withoutPrefix = value.split('files/');
+        const fileNameParts = withoutPrefix[withoutPrefix.length - 1].split('_');
+        // remove first element of the array as it is the file id
+        const fileName = fileNameParts.slice(1).join('_');
+        return { ...acc, [key]: { name: fileName, value } };
+      }
+
+      if (
+        (question.type === QuestionType.Date || question.type === QuestionType.DateTime) &&
+        value
+      ) {
+        // strip timezone from date so that it gets displayed the same no matter the user's timezone
+        return { ...acc, [key]: stripTimezoneFromDate(value) };
       }
 
       return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };

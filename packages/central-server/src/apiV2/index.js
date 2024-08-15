@@ -73,6 +73,7 @@ import {
   GETSurveyResponses,
   SubmitSurveyResponses,
   ResubmitSurveyResponse,
+  EditSurveyResponse,
 } from './surveyResponses';
 import {
   DeleteSurveyScreenComponents,
@@ -288,7 +289,7 @@ apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
 apiV2.post('/surveyResponse', useRouteHandler(SubmitSurveyResponses)); // used by mSupply to directly submit data
 apiV2.post('/surveyResponses', useRouteHandler(SubmitSurveyResponses));
 apiV2.post(
-  '/surveyResponse/:recordId/resubmit',
+  '/surveyResponses/:recordId/resubmit',
   multipartJson(false),
   useRouteHandler(ResubmitSurveyResponse),
 );
@@ -357,6 +358,7 @@ apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/supersetInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/tasks/:recordId', useRouteHandler(EditTask));
+apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponse));
 
 /**
  * DELETE routes

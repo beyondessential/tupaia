@@ -86,6 +86,13 @@ export class MockCentralApi implements CentralApiInterface {
   ): Promise<SurveyResponseCreatedResponse> {
     throw new Error('Method not implemented.');
   }
+
+  public resubmitSurveyResponse(
+    originalResponseId: string,
+    newResponse: MeditrakSurveyResponseRequest,
+  ): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
   public async fetchResources(endpoint: string, params?: Params): Promise<any> {
     const resourceData = this.mockData[endpoint];
     if (!resourceData) return [];

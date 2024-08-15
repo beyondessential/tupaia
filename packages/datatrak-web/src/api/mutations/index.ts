@@ -11,6 +11,7 @@ export { useEditTask } from './useEditTask';
 export { useResendVerificationEmail } from './useResendVerificationEmail';
 export { useRequestProjectAccess } from './useRequestProjectAccess';
 export { useSubmitSurveyResponse } from './useSubmitSurveyResponse';
+export { useResubmitSurveyResponse } from './useResubmitSurveyResponse';
 export { useRequestResetPassword } from './useRequestResetPassword';
 export * from './useResetPassword';
 export { useRequestDeleteAccount } from './useRequestDeleteAccount';
