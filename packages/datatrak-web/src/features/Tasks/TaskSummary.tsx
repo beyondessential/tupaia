@@ -97,7 +97,7 @@ export const TaskSummary = ({ task }: { task: SingleTaskResponse }) => {
           </ItemWrapper>
           <ItemWrapper>
             <Title>Due date</Title>
-            <Value>{displayDate(task.dueDate)}</Value>
+            <Value>{displayDate(task.taskDueDate)}</Value>
           </ItemWrapper>
         </Column>
       </Row>

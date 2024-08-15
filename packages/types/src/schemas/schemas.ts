@@ -88308,7 +88308,7 @@ export const TaskResponseSchema = {
 			"type": "object",
 			"additionalProperties": false
 		},
-		"dueDate": {
+		"taskDueDate": {
 			"type": "string",
 			"format": "date-time"
 		}
