@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { isNotNullish } from '@tupaia/tsutils';
 import { DatatrakWebTaskChangeRequest, Task } from '@tupaia/types';
 import { stripTimezoneFromDate, generateRRule } from '@tupaia/utils';
 
@@ -25,7 +26,7 @@ export const formatTaskChanges = (task: Input, originalTask?: Task) => {
 
   const taskDetails: Output = restOfTask;
 
-  if (frequency !== undefined) {
+  if (isNotNullish(frequency)) {
     const dueDateToUse = dueDate || originalTask?.due_date;
     if (!dueDateToUse) {
       throw new Error('Must have a due date');

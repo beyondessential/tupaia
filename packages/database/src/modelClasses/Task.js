@@ -156,30 +156,30 @@ export class TaskRecord extends DatabaseRecord {
 
       // Check for an existing task so that multiple tasks aren't created for the same survey response
       const existingTask = await this.model.findOne(where);
-      if (!existingTask) {
-        const newTask = await this.model.create(where);
-        await newTask.addComment(
-          'Completed this task',
-          commentUserId,
-          this.otherModels.taskComment.types.System,
-        );
-        await this.addComment(
-          `Completed task ${newTask.id}`,
-          commentUserId,
-          this.otherModels.taskComment.types.System,
-        );
-      }
-    } else {
-      await this.model.updateById(id, {
-        status: 'completed',
-        survey_response_id: surveyResponseId,
-      });
+
+      if (existingTask) return;
+      const newTask = await this.model.create(where);
+      await newTask.addComment(
+        'Completed this task',
+        commentUserId,
+        this.otherModels.taskComment.types.System,
+      );
       await this.addComment(
         'Completed this task',
         commentUserId,
         this.otherModels.taskComment.types.System,
       );
+      return;
     }
+    await this.model.updateById(id, {
+      status: 'completed',
+      survey_response_id: surveyResponseId,
+    });
+    await this.addComment(
+      'Completed this task',
+      commentUserId,
+      this.otherModels.taskComment.types.System,
+    );
   }
 
   /**
