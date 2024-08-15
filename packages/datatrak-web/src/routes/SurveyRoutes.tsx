@@ -16,7 +16,7 @@ import {
 } from '../views';
 import { SurveyLayout, useSurveyForm } from '../features';
 import { useCurrentUserContext, useSurvey } from '../api';
-import { SurveyResponseRoute } from './SurveyResponseRoute';
+import { SurveyResubmitRoute } from './SurveyResponseRoute';
 
 // Redirect to the start of the survey if no screen number is provided
 const SurveyStartRedirect = ({ baseRoute = ROUTES.SURVEY_SCREEN }) => {
@@ -97,8 +97,7 @@ export const SurveyRoutes = (
           </SurveyPageRedirect>
         }
       />
-      <Route element={<SurveyResponseRoute />}>
-        <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
+      <Route element={<SurveyResubmitRoute />}>
         <Route path={ROUTES.SURVEY_RESUBMIT} element={<SurveyResubmitRedirect />} />
         <Route
           path={ROUTES.SURVEY_RESUBMIT_SCREEN}

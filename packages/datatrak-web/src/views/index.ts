@@ -12,7 +12,6 @@ export { VerifyEmailResendPage } from './VerifyEmailResendPage';
 export { VerifyEmailPage } from './VerifyEmailPage';
 export { ErrorPage } from './ErrorPage';
 export { ProjectSelectPage } from './ProjectSelectPage';
-export { SurveyResponsePage } from './SurveyResponsePage';
 export {
   SurveySuccessScreen,
   SurveyReviewScreen,
