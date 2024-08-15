@@ -87,8 +87,8 @@ const Grid = styled.div`
 `;
 
 export const LandingPage = () => {
-  // Todo: Remove this once the feature is complete
-  const showTasks = process.env.REACT_APP_TUPAIA_TASKS;
+  // Todo: Remove this feature flag once the feature is complete
+  const showTasks = process.env.REACT_APP_TUPAIA_TASKS !== 'false';
 
   return (
     <PageContainer>

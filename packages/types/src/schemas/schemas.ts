@@ -85943,6 +85943,9 @@ export const TaskSchema = {
 		"initial_request_id": {
 			"type": "string"
 		},
+		"parent_task_id": {
+			"type": "string"
+		},
 		"repeat_schedule": {
 			"description": "Tupaia\nCopyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd",
 			"additionalProperties": false,
@@ -86028,6 +86031,9 @@ export const TaskCreateSchema = {
 			"type": "string"
 		},
 		"initial_request_id": {
+			"type": "string"
+		},
+		"parent_task_id": {
 			"type": "string"
 		},
 		"repeat_schedule": {
@@ -86116,6 +86122,9 @@ export const TaskUpdateSchema = {
 			"type": "string"
 		},
 		"initial_request_id": {
+			"type": "string"
+		},
+		"parent_task_id": {
 			"type": "string"
 		},
 		"repeat_schedule": {
@@ -88138,6 +88147,9 @@ export const TaskResponseSchema = {
 			"type": "string"
 		},
 		"initialRequestId": {
+			"type": "string"
+		},
+		"parentTaskId": {
 			"type": "string"
 		},
 		"status": {
