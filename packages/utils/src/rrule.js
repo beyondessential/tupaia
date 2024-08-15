@@ -105,3 +105,8 @@ export const generateYearlyRRule = startDate => {
     interval: 1,
   });
 };
+
+export const getNextOccurrence = (rrule, startDate = new Date()) => {
+  const nextOccurrence = rrule.after(startDate, true);
+  return nextOccurrence;
+};
