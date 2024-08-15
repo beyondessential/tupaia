@@ -19,6 +19,7 @@ import { CommentsCount } from '../CommentsCount';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
+import { RepeatScheduleFilter } from './RepeatScheduleFilter';
 
 const Container = styled.div`
   display: flex;
@@ -70,7 +71,9 @@ const useTasksTable = () => {
   };
 
   const updateFilters = newFilters => {
-    const nonEmptyFilters = newFilters.filter(({ value }) => !!value);
+    const nonEmptyFilters = newFilters.filter(
+      ({ value }) => value !== null && value !== undefined && value !== '',
+    );
     if (nonEmptyFilters.length === 0) {
       searchParams.delete('filters');
       setSearchParams(searchParams);
@@ -140,6 +143,7 @@ const useTasksTable = () => {
       id: 'repeat_schedule',
       filterable: true,
       disableResizing: true,
+      Filter: RepeatScheduleFilter,
       width: 180,
     },
     {
