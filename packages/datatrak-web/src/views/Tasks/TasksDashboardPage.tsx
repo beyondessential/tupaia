@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
+import { TasksContentWrapper } from '../../layout';
 
 const ButtonContainer = styled.div`
   padding-block-end: 0.5rem;
@@ -38,15 +39,17 @@ export const TasksDashboardPage = () => {
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
     <>
-      <TaskPageHeader title="Tasks">
+      <TaskPageHeader title="Tasks" backTo="/">
         <ButtonContainer>
           <CreateButton onClick={toggleCreateModal}>
             <AddIcon /> Create task
           </CreateButton>
         </ButtonContainer>
       </TaskPageHeader>
-      <TasksTable />
-      {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
+      <TasksContentWrapper>
+        <TasksTable />
+        {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
+      </TasksContentWrapper>
     </>
   );
 };
