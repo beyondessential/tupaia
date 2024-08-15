@@ -10,8 +10,12 @@ import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 
 const ButtonContainer = styled.div`
-  margin-inline-start: auto;
   padding-block-end: 0.5rem;
+  margin-block-start: 1rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    margin-inline-start: auto;
+    margin-block-start: 0;
+  }
 `;
 
 const CreateButton = styled(Button).attrs({

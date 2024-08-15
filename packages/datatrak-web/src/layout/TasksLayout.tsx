@@ -20,6 +20,10 @@ const PageContainer = styled(BasePageContainer)`
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
   }
+
+  ${({ theme }) => theme.breakpoints.down('xs')} {
+    padding-inline: 1rem;
+  }
 `;
 
 export const TasksLayout = () => {
