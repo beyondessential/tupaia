@@ -10,6 +10,7 @@ import {
   findOrCreateDummyRecord,
   generateId,
 } from '@tupaia/database';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 
@@ -104,7 +105,9 @@ describe('Permissions checker for GETTasks', async () => {
         entity_id: facilities[1].id,
         assignee_id: assignee.id,
         due_date: null,
-        repeat_schedule: '{}',
+        repeat_schedule: {
+          freq: RRULE_FREQUENCIES.DAILY,
+        },
         status: null,
       },
       {
@@ -113,7 +116,9 @@ describe('Permissions checker for GETTasks', async () => {
         entity_id: facilities[0].id,
         assignee_id: assignee.id,
         due_date: null,
-        repeat_schedule: '{}',
+        repeat_schedule: {
+          freq: RRULE_FREQUENCIES.DAILY,
+        },
         status: null,
       },
     ];

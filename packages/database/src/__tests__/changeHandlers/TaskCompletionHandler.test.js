@@ -141,9 +141,11 @@ describe('TaskCompletionHandler', () => {
         entity_id: samoa.id,
         survey_id: SURVEY.id,
         created_at: '2024-07-08',
+        due_date: '2024-07-25',
         status: null,
         repeat_schedule: {
-          frequency: 'daily',
+          freq: 1,
+          dtstart: '2024-07-08',
         },
       });
 
@@ -155,6 +157,11 @@ describe('TaskCompletionHandler', () => {
         survey_response_id: responses[0],
         entity_id: samoa.id,
         parent_task_id: repeatTask.id,
+        due_date: '2024-07-25',
+        repeat_schedule: {
+          freq: 1,
+          dtstart: '2024-07-08',
+        },
       });
       await assertTaskStatus(newTask.id, 'completed', responses[0]);
     });
@@ -167,7 +174,8 @@ describe('TaskCompletionHandler', () => {
         created_at: '2024-07-08',
         status: 'to_do',
         repeat_schedule: {
-          frequency: 'daily',
+          freq: 1,
+          dtstart: '2024-07-08',
         },
       });
 
@@ -178,6 +186,11 @@ describe('TaskCompletionHandler', () => {
         survey_response_id: responses[0],
         entity_id: fiji.id,
         parent_task_id: repeatTask.id,
+        due_date: '2024-07-25',
+        repeat_schedule: {
+          freq: 1,
+          dtstart: '2024-07-08',
+        },
       });
       await assertTaskStatus(newTask.id, 'completed', responses[0]);
     });

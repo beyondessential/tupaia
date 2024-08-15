@@ -12,6 +12,7 @@ import {
 } from '@tupaia/database';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 
 const rollbackRecordChange = async (models, records) => {
   await Promise.all(records.map(record => models.task.delete({ id: record.id })));
@@ -240,7 +241,7 @@ describe('Permissions checker for EditTask', async () => {
             // this is currently null when setting a task to repeat
             due_date: null,
             repeat_schedule: {
-              frequency: 'daily',
+              freq: RRULE_FREQUENCIES.DAILY,
             },
           },
         });
@@ -269,7 +270,7 @@ describe('Permissions checker for EditTask', async () => {
         await app.put(`tasks/${tasks[1].id}`, {
           body: {
             repeat_schedule: {
-              frequency: 'daily',
+              frequency: RRULE_FREQUENCIES.DAILY,
             },
           },
         });
