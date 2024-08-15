@@ -131,6 +131,7 @@ export class TaskRecord extends DatabaseRecord {
       entity_id: entityId,
       repeat_schedule: repeatSchedule,
       assignee_id: assigneeId,
+      due_date: dueDate,
       id,
     } = this;
 
@@ -149,6 +150,7 @@ export class TaskRecord extends DatabaseRecord {
         repeat_schedule: repeatSchedule,
         status: 'completed',
         survey_response_id: surveyResponseId,
+        due_date: dueDate,
       };
 
       // Check for an existing task so that multiple tasks aren't created for the same survey response
