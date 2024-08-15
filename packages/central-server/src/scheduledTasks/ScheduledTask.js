@@ -48,12 +48,14 @@ export class ScheduledTask {
     }
 
     if (!schedule) {
-      throw new Error(`ScheduledTask ${this.name} has no schedule`);
+      throw new Error(`ScheduledTask ${name} has no schedule`);
     }
 
-    winston.info(`Initialising scheduled task ${this.name}`);
+    this.name = name;
+    this.schedule = schedule;
     this.models = models;
     this.lockKey = name;
+    winston.info(`Initialising scheduled task ${this.name}`);
   }
 
   async run() {
