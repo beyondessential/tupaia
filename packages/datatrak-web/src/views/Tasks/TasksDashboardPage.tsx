@@ -8,10 +8,15 @@ import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
+import { TasksContentWrapper } from '../../layout';
 
 const ButtonContainer = styled.div`
-  margin-inline-start: auto;
   padding-block-end: 0.5rem;
+  margin-block-start: 1rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    margin-inline-start: auto;
+    margin-block-start: 0;
+  }
 `;
 
 const CreateButton = styled(Button).attrs({
@@ -29,20 +34,26 @@ const AddIcon = styled(Add)`
   margin-inline-end: 0.2rem;
 `;
 
+const ContentWrapper = styled(TasksContentWrapper)`
+  overflow: hidden;
+`;
+
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
     <>
-      <TaskPageHeader title="Tasks">
+      <TaskPageHeader title="Tasks" backTo="/">
         <ButtonContainer>
           <CreateButton onClick={toggleCreateModal}>
             <AddIcon /> Create task
           </CreateButton>
         </ButtonContainer>
       </TaskPageHeader>
-      <TasksTable />
-      {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
+      <ContentWrapper>
+        <TasksTable />
+        {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
+      </ContentWrapper>
     </>
   );
 };

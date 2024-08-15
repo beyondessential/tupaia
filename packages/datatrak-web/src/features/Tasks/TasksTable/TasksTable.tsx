@@ -74,6 +74,7 @@ const useTasksTable = () => {
     const nonEmptyFilters = newFilters.filter(
       ({ value }) => value !== null && value !== undefined && value !== '',
     );
+    if (JSON.stringify(nonEmptyFilters) === JSON.stringify(filters)) return;
     if (nonEmptyFilters.length === 0) {
       searchParams.delete('filters');
       setSearchParams(searchParams);

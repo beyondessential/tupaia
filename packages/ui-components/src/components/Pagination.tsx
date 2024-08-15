@@ -21,16 +21,33 @@ const Wrapper = styled.div`
   .MuiInputBase-input {
     font-size: 0.75rem;
   }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding-inline: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
 `;
 
 const ActionsWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  :first-child {
-    padding-inline-start: 1rem;
+  flex-wrap: wrap;
+  row-gap: 0.5rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    :first-child {
+      padding-inline-start: 1rem;
+    }
   }
 `;
+
+const RowWrapper = styled(ActionsWrapper)`
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+  }
+`;
+
 const Button = styled(IconButton)`
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   padding: 0.4rem;
@@ -195,7 +212,7 @@ export const Pagination = ({
   return (
     <Wrapper className="pagination-wrapper">
       <ActionsWrapper>{showEntriesCount && <Text>{entriesText}</Text>}</ActionsWrapper>
-      <ActionsWrapper>
+      <RowWrapper>
         {applyRowsPerPage && (
           <RowsSelectComponent
             pageSize={pageSize}
@@ -204,7 +221,7 @@ export const Pagination = ({
           />
         )}
         <PageSelectComponent onChangePage={onChangePage} page={page} pageCount={pageCount} />
-      </ActionsWrapper>
+      </RowWrapper>
     </Wrapper>
   );
 };
