@@ -1540,6 +1540,7 @@ export interface Task {
   'entity_id': string;
   'id': string;
   'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
   'parent_task_id'?: string | null;
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
@@ -1552,6 +1553,7 @@ export interface TaskCreate {
   'due_date'?: Date | null;
   'entity_id': string;
   'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
   'parent_task_id'?: string | null;
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
@@ -1565,6 +1567,7 @@ export interface TaskUpdate {
   'entity_id'?: string;
   'id'?: string;
   'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
   'parent_task_id'?: string | null;
   'repeat_schedule'?: {} | null;
   'status'?: TaskStatus | null;
