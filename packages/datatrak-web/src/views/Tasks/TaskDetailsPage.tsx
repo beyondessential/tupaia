@@ -17,6 +17,10 @@ import { useFromLocation } from '../../utils';
 import { SingleTaskResponse } from '../../types';
 import { TasksContentWrapper } from '../../layout';
 
+const ContentWrapper = styled(TasksContentWrapper)`
+  padding-block-end: 2rem;
+`;
+
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -104,11 +108,11 @@ export const TaskDetailsPage = () => {
           {task && <TaskActionsMenu task={task} />}
         </ButtonWrapper>
       </TaskPageHeader>
-      <TasksContentWrapper>
+      <ContentWrapper>
         {isLoading && <SpinningLoader />}
         {task && <TaskDetails task={task} />}
         <ErrorModal isOpen={errorModalOpen} onClose={() => setErrorModalOpen(false)} />
-      </TasksContentWrapper>
+      </ContentWrapper>
     </>
   );
 };

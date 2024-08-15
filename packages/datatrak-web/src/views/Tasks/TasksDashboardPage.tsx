@@ -34,6 +34,10 @@ const AddIcon = styled(Add)`
   margin-inline-end: 0.2rem;
 `;
 
+const ContentWrapper = styled(TasksContentWrapper)`
+  overflow: hidden;
+`;
+
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
@@ -46,10 +50,10 @@ export const TasksDashboardPage = () => {
           </CreateButton>
         </ButtonContainer>
       </TaskPageHeader>
-      <TasksContentWrapper>
+      <ContentWrapper>
         <TasksTable />
         {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}
-      </TasksContentWrapper>
+      </ContentWrapper>
     </>
   );
 };
