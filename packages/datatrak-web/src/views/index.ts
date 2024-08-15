@@ -13,9 +13,15 @@ export { VerifyEmailPage } from './VerifyEmailPage';
 export { ErrorPage } from './ErrorPage';
 export { ProjectSelectPage } from './ProjectSelectPage';
 export { SurveyResponsePage } from './SurveyResponsePage';
-export { SurveySuccessScreen, SurveyReviewScreen, SurveyScreen } from '../features';
+export {
+  SurveySuccessScreen,
+  SurveyReviewScreen,
+  SurveyScreen,
+  SurveyResubmitSuccessScreen,
+} from '../features';
 export { RequestProjectAccessPage } from './RequestProjectAccessPage';
 export { ForgotPasswordPage } from './ForgotPasswordPage';
 export { ResetPasswordPage } from './ResetPasswordPage';
 export { AccountSettingsPage } from './AccountSettingsPage';
 export { ReportsPage } from './ReportsPage';
+export { NotAuthorisedPage } from './NotAuthorisedPage';

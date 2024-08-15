@@ -12,6 +12,7 @@ import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
+import { useSurveyForm } from '../Survey';
 
 const Autocomplete = styled(BaseAutocomplete)`
   width: calc(100% - 3.5rem);
@@ -67,6 +68,7 @@ export const AutocompleteQuestion = ({
   config = {},
   controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
+  const { isResubmit } = useSurveyForm();
   const [searchValue, setSearchValue] = useState('');
   const { autocomplete = {} } = config!;
   const { attributes, createNew } = autocomplete;
@@ -76,6 +78,9 @@ export const AutocompleteQuestion = ({
     searchValue,
   );
 
+  // TODO: renable this as part of RN-1274
+  const canCreateNew = createNew && !isResubmit;
+
   const getOptionSelected = (option: Option, selectedOption?: string | null) => {
     const value = typeof option === 'string' ? option : option?.value;
     return value === selectedOption;
@@ -84,7 +89,7 @@ export const AutocompleteQuestion = ({
   const getOptions = () => {
     const options = data || [];
     // If we can't create a new option, or there is no input value, or the input value is already in the options, or the value is already added, return the options as they are
-    if (!createNew || !searchValue || options.find(option => option.value === searchValue))
+    if (!canCreateNew || !searchValue || options.find(option => option.value === searchValue))
       return options;
     // if we have selected a newly created option, add it to the list of options
     if (selectedValue?.value === searchValue)
