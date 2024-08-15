@@ -106,7 +106,8 @@ export const generateYearlyRRule = startDate => {
   });
 };
 
-export const getNextOccurrence = (rrule, startDate = new Date()) => {
+export const getNextOccurrence = (rruleOptions, startDate = new Date()) => {
+  const rrule = new RRule(rruleOptions);
   const nextOccurrence = rrule.after(startDate, true);
   return nextOccurrence;
 };

@@ -117,8 +117,15 @@ describe('RRule', () => {
   });
 
   it('getNextOccurrence should return the next occurrence for a specific rrule', () => {
-    const startDate = new Date('2021-01-30');
-    const rrule = generateRRule(startDate, RRULE_FREQUENCIES.YEARLY);
-    expect(getNextOccurrence(rrule, new Date('2022-01-19'))).toEqual(new Date('2022-01-30'));
+    expect(
+      getNextOccurrence(
+        {
+          freq: RRule.YEARLY,
+          dtstart: new Date('2021-01-30'),
+          interval: 1,
+        },
+        new Date('2022-01-19'),
+      ),
+    ).toEqual(new Date('2022-01-30'));
   });
 });
