@@ -8,22 +8,16 @@ import winston from 'winston';
 import { ScheduledTask } from './ScheduledTask';
 
 export class TaskOverdueChecker extends ScheduledTask {
-  getSchedule() {
-    return '0 * * * *'; // every hour
-  }
-
-  getName() {
-    return 'TaskOverdueChecker';
-  }
-
   constructor(models) {
-    super(models, 'task-overdue-checker');
+    // run TaskOverdueChecker every hour
+    super(models, 'TaskOverdueChecker', '0 * * * *');
   }
 
   async run() {
     const { task, user } = this.models;
     const overdueTasks = await task.find({
       task_status: 'overdue',
+      overdue_email_sent: null,
     });
 
     winston.info(`Found ${overdueTasks.length} overdue task(s)`);
@@ -41,7 +35,11 @@ export class TaskOverdueChecker extends ScheduledTask {
           dueDate: format(new Date(task.due_date), 'do MMMM yyyy'),
         },
       });
+
       winston.info(`Email sent to ${assignee.email} with status: ${result.response}`);
+
+      task.overdue_email_sent = new Date();
+      await task.save();
     }
   }
 }

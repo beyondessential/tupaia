@@ -125,7 +125,7 @@ configureEnv();
   }
 
   /**
-   * Gracefully handle shutdown of ChangeHandlers and ScheduledTasks
+   * Gracefully handle shutdown of ScheduledTasks
    */
   process.on('SIGINT', function () {
     nodeSchedule.gracefulShutdown().then(() => process.exit(0));

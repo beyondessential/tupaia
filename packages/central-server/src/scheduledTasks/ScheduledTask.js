@@ -12,22 +12,48 @@ import winston from 'winston';
  * class and calling init in the central-server index.js file
  */
 export class ScheduledTask {
-  getSchedule() {
-    throw new Error(`ScheduledTask::getSchedule not overridden for ${this.constructor.name}`);
-  }
+  /**
+   * Cron tab config for scheduling the task
+   */
+  schedule = null;
 
-  getName() {
-    throw new Error(`ScheduledTask::getName not overridden for ${this.constructor.name}`);
-  }
+  /**
+   * Name of the task for logging
+   */
+  name = null;
 
-  constructor(models, lockKey) {
-    winston.info(`Initialising scheduled task ${this.getName()}`);
+  /**
+   * Holds the scheduled job object for the task
+   */
+  job = null;
+
+  /**
+   * Keeps track of start time for logging
+   */
+  start = null;
+
+  /**
+   * Lock key for database advisory lock
+   */
+  lockKey = null;
+
+  /**
+   * Model registry for database access
+   */
+  models = null;
+
+  constructor(models, name, schedule) {
+    if (!name) {
+      throw new Error(`ScheduledTask has no name`);
+    }
+
+    if (!schedule) {
+      throw new Error(`ScheduledTask ${this.name} has no schedule`);
+    }
+
+    winston.info(`Initialising scheduled task ${this.name}`);
     this.models = models;
-    this.lockKey = lockKey;
-    this.schedule = this.getSchedule();
-    this.name = this.getName();
-    this.job = null;
-    this.start = null;
+    this.lockKey = name;
   }
 
   async run() {
@@ -49,9 +75,8 @@ export class ScheduledTask {
       });
     } catch (e) {
       const durationMs = Date.now() - this.start;
-      winston.error(`ScheduledTask: ${this.name}: Failed`, { id: runId, durationMs });
+      winston.error(`ScheduledTask: ${this.name}: Failed`, { durationMs });
       winston.error(e.stack);
-
       return false;
     } finally {
       this.start = null;
@@ -60,8 +85,7 @@ export class ScheduledTask {
 
   init() {
     if (!this.job) {
-      const name = this.getName();
-      winston.info(`ScheduledTask: ${name}: Scheduled for ${this.schedule}`);
+      winston.info(`ScheduledTask: ${this.name}: Scheduled for ${this.schedule}`);
       this.job = scheduleJob(this.schedule, async () => {
         await this.runTask();
       });
