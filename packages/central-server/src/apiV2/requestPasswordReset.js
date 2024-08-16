@@ -39,7 +39,7 @@ export const requestPasswordReset = async (req, res) => {
     subject: 'Password reset on Tupaia.org',
     templateName: 'passwordReset',
     templateContext: {
-      userName: user.fullName,
+      userName: user.first_name,
       cta: {
         text: 'Reset your password',
         url: resetUrl,

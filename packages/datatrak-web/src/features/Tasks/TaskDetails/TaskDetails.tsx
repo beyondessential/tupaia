@@ -140,7 +140,7 @@ const InitialRequest = ({ initialRequestId }) => {
 
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const [defaultValues, setDefaultValues] = useState({
-    due_date: task.dueDate ?? null,
+    due_date: task.taskDueDate ?? null,
     repeat_frequency: task.repeatSchedule?.freq ?? null,
     assignee_id: task.assigneeId ?? null,
   });
@@ -168,7 +168,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   // Reset form when task changes, i.e after task is saved and the task is re-fetched
   useEffect(() => {
     const newDefaultValues = {
-      due_date: task.dueDate ?? null,
+      due_date: task.taskDueDate ?? null,
       repeat_frequency: task.repeatSchedule?.freq ?? null,
       assignee_id: task.assigneeId ?? null,
     };

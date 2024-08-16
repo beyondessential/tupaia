@@ -5,13 +5,12 @@
 
 import { isNotNullish } from '@tupaia/tsutils';
 import { DatatrakWebTaskChangeRequest, Task } from '@tupaia/types';
-import { stripTimezoneFromDate, generateRRule } from '@tupaia/utils';
+import { generateRRule } from '@tupaia/utils';
 
 type Input = Partial<DatatrakWebTaskChangeRequest.ReqBody> &
   Partial<Pick<Task, 'entity_id' | 'survey_id' | 'status'>>;
 
-type Output = Partial<Omit<Task, 'due_date'>> & {
-  due_date?: string | null;
+type Output = Partial<Task> & {
   comment?: string;
 };
 
@@ -40,9 +39,11 @@ export const formatTaskChanges = (task: Input, originalTask?: Task) => {
 
   if (dueDate) {
     const endOfDay = convertDateToEndOfDay(dueDate);
-    // strip timezone from date so that the returned date is always in the user's timezone
-    const withoutTimezone = stripTimezoneFromDate(endOfDay);
-    taskDetails.due_date = withoutTimezone;
+    // apply status and due date only if not a repeating task
+    const unix = new Date(endOfDay).getTime();
+
+    taskDetails.due_date = unix;
+    taskDetails.repeat_schedule = null;
   }
 
   return taskDetails;

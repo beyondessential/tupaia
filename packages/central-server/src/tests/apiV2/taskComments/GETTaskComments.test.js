@@ -62,7 +62,7 @@ describe('Permissions checker for GETTaskComments', async () => {
     };
     await findOrCreateDummyRecord(models.user, user);
 
-    const dueDate = new Date('2021-12-31');
+    const dueDate = new Date('2021-12-31').getTime();
 
     const task = {
       id: generateId(),

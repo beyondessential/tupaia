@@ -70,6 +70,8 @@ const COMPARATORS = {
  */
 const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 
+const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
@@ -561,9 +563,8 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
         }
       }
 
-      // Special case to handle CASE statements, otherwise they get interpreted as column names
-      const CASE_PATTERN = /^CASE/;
-      if (CASE_PATTERN.test(selector)) {
+      // Special case to handle raw input statements, otherwise they get interpreted as column names
+      if (RAW_INPUT_PATTERN.test(selector)) {
         return { [alias]: connection.raw(selector) };
       }
 
@@ -741,9 +742,9 @@ function getColSelector(connection, inputColStr) {
 
     return connection.raw(`COALESCE(${identifiers})`, bindings);
   }
-  const casePattern = /^CASE/;
 
-  if (casePattern.test(inputColStr)) {
+  // Special handling of raw input statements
+  if (RAW_INPUT_PATTERN.test(inputColStr)) {
     return connection.raw(inputColStr);
   }
 

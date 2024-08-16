@@ -1537,7 +1537,7 @@ export interface SyncGroupLogUpdate {
 export interface Task {
   'assignee_id'?: string | null;
   'created_at': Date;
-  'due_date'?: Date | null;
+  'due_date'?: number | null;
   'entity_id': string;
   'id': string;
   'initial_request_id'?: string | null;
@@ -1551,7 +1551,7 @@ export interface Task {
 export interface TaskCreate {
   'assignee_id'?: string | null;
   'created_at'?: Date;
-  'due_date'?: Date | null;
+  'due_date'?: number | null;
   'entity_id': string;
   'initial_request_id'?: string | null;
   'overdue_email_sent'?: Date | null;
@@ -1564,7 +1564,7 @@ export interface TaskCreate {
 export interface TaskUpdate {
   'assignee_id'?: string | null;
   'created_at'?: Date;
-  'due_date'?: Date | null;
+  'due_date'?: number | null;
   'entity_id'?: string;
   'id'?: string;
   'initial_request_id'?: string | null;

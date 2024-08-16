@@ -346,6 +346,7 @@ export class TaskModel extends DatabaseModel {
   }
 
   customColumnSelectors = {
+    task_due_date: () => `to_timestamp(due_date/1000)`,
     task_status: () =>
       `CASE  
         WHEN status = 'cancelled' then 'cancelled'
@@ -354,7 +355,7 @@ export class TaskModel extends DatabaseModel {
             CASE 
                 WHEN repeat_schedule IS NOT NULL THEN 'repeating'
                 WHEN due_date IS NULL THEN 'to_do'
-                WHEN due_date < '${format(new Date(), 'yyyy-MM-dd')}' THEN 'overdue'
+                WHEN due_date < ${new Date().getTime()} THEN 'overdue'
                 ELSE 'to_do'
             END
         ELSE 'to_do' 

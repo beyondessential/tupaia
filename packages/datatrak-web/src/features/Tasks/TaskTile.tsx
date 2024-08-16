@@ -73,7 +73,7 @@ const TileRight = styled.div`
 `;
 
 export const TaskTile = ({ task }) => {
-  const { survey, entity, taskStatus, dueDate } = task;
+  const { survey, entity, taskStatus, taskDueDate } = task;
   const surveyLink = generatePath(ROUTES.SURVEY, {
     surveyCode: survey.code,
     countryCode: entity.countryCode,
@@ -92,7 +92,7 @@ export const TaskTile = ({ task }) => {
         <TileTitle>{survey.name}</TileTitle>
         <TileContent>
           <StatusPill status={taskStatus} />
-          <span>{displayDate(dueDate)}</span>
+          <span>{displayDate(taskDueDate)}</span>
           <CommentsCount commentsCount={task.commentsCount} />
         </TileContent>
       </TileLeft>

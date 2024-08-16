@@ -13,6 +13,8 @@ export type TaskT = Omit<Task, 'created_at'> & {
   'survey.code': Survey['code'];
   'survey.name': Survey['name'];
   task_status: TaskStatus | 'overdue' | 'repeating';
+  repeat_schedule?: Record<string, unknown> | null;
+  task_due_date: Date | null;
 };
 
 type FormattedTask = DatatrakWebTasksRequest.TaskResponse;

@@ -100,27 +100,29 @@ describe('TaskModel', () => {
 
     await Promise.all(SURVEYS.map(survey => upsertDummyRecord(models.survey, survey)));
 
+    const dueDate = new Date('2020-01-01 00:00:00+00').getTime();
+
     const TASKS = [
       {
         id: generateId(),
         survey_id: SURVEYS[0].id,
         status: 'to_do',
         entity_id: facilities[0].id,
-        due_date: new Date('2020-01-01'),
+        due_date: dueDate,
       },
       {
         id: generateId(),
         survey_id: SURVEYS[1].id,
         status: 'to_do',
         entity_id: facilities[1].id,
-        due_date: new Date('2020-01-01'),
+        due_date: dueDate,
       },
       {
         id: generateId(),
         survey_id: SURVEYS[0].id,
         status: 'to_do',
         entity_id: facilities[1].id,
-        due_date: new Date('2020-01-01'),
+        due_date: dueDate,
       },
     ];
 

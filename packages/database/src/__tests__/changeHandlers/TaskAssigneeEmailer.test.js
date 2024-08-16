@@ -36,7 +36,7 @@ const TASK = {
   status: 'to_do',
   repeat_schedule: null,
   assignee_id: null,
-  due_date: new Date('2021-01-01 00:00:00'),
+  due_date: new Date('2021-01-01 00:00:00').getTime(),
   id: generateId(),
 };
 

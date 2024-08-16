@@ -56,7 +56,7 @@ describe('Permissions checker for EditTask', async () => {
     last_name: 'Pan',
   };
 
-  const dueDate = new Date('2021-12-31');
+  const dueDate = new Date('2021-12-31').getTime();
 
   let tasks;
 
@@ -219,7 +219,7 @@ describe('Permissions checker for EditTask', async () => {
         });
         await app.put(`tasks/${tasks[1].id}`, {
           body: {
-            due_date: new Date('2021-11-30').toISOString(),
+            due_date: new Date('2021-11-30').getTime(),
           },
         });
 
