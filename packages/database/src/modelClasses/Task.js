@@ -249,7 +249,7 @@ export class TaskRecord extends DatabaseRecord {
       const originalValue = this[field];
       // If the field hasn't actually changed, don't add a comment
       if (originalValue === newValue) continue;
-
+      // Don't add a comment when repeat schedule is updated and the frequency is the same
       if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
       // Don't add a comment when due date is updated for repeat schedule
       if (field === 'due_date' && this.repeat_schedule) continue;

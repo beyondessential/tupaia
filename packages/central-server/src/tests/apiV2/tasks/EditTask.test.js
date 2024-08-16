@@ -10,9 +10,9 @@ import {
   findOrCreateDummyRecord,
   generateId,
 } from '@tupaia/database';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
-import { RRULE_FREQUENCIES } from '@tupaia/utils';
 
 const rollbackRecordChange = async (models, records) => {
   await Promise.all(records.map(record => models.task.delete({ id: record.id })));
@@ -101,6 +101,7 @@ describe('Permissions checker for EditTask', async () => {
         survey_id: surveys[0].survey.id,
         entity_id: facilities[0].id,
         due_date: dueDate,
+        repeat_schedule: null,
         status: 'to_do',
       },
       {
@@ -109,6 +110,7 @@ describe('Permissions checker for EditTask', async () => {
         entity_id: facilities[1].id,
         assignee_id: assignee.id,
         due_date: dueDate,
+        repeat_schedule: null,
         status: 'to_do',
       },
     ];
@@ -213,20 +215,21 @@ describe('Permissions checker for EditTask', async () => {
 
     describe('System generated comments', () => {
       it('Adds a comment when the due date changes on a task', async () => {
+        const newDate = new Date('2025-11-30').getTime();
         await app.grantAccess({
           DL: ['Donor'],
           TO: ['Donor'],
         });
         await app.put(`tasks/${tasks[1].id}`, {
           body: {
-            due_date: new Date('2021-11-30').getTime(),
+            due_date: newDate,
           },
         });
 
         const comment = await models.taskComment.findOne({
           task_id: tasks[1].id,
           type: models.taskComment.types.System,
-          message: 'Changed due date from 31 December 21 to 30 November 21',
+          message: 'Changed due date from 31 December 21 to 30 November 25',
         });
         expect(comment).not.to.be.null;
       });
@@ -270,7 +273,7 @@ describe('Permissions checker for EditTask', async () => {
         await app.put(`tasks/${tasks[1].id}`, {
           body: {
             repeat_schedule: {
-              frequency: RRULE_FREQUENCIES.DAILY,
+              freq: RRULE_FREQUENCIES.DAILY,
             },
           },
         });

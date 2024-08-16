@@ -141,7 +141,7 @@ describe('TaskCompletionHandler', () => {
         entity_id: samoa.id,
         survey_id: SURVEY.id,
         created_at: '2024-07-08',
-        due_date: '2024-07-25',
+        due_date: new Date('2024-07-25').getTime(),
         status: null,
         repeat_schedule: {
           freq: 1,
@@ -157,7 +157,7 @@ describe('TaskCompletionHandler', () => {
         survey_response_id: responses[0],
         entity_id: samoa.id,
         parent_task_id: repeatTask.id,
-        due_date: '2024-07-25',
+        due_date: new Date('2024-07-25').getTime(),
         repeat_schedule: {
           freq: 1,
           dtstart: '2024-07-08',
@@ -173,6 +173,7 @@ describe('TaskCompletionHandler', () => {
         survey_id: SURVEY.id,
         created_at: '2024-07-08',
         status: 'to_do',
+        due_date: new Date('2024-07-08').getTime(),
         repeat_schedule: {
           freq: 1,
           dtstart: '2024-07-08',
@@ -186,7 +187,7 @@ describe('TaskCompletionHandler', () => {
         survey_response_id: responses[0],
         entity_id: fiji.id,
         parent_task_id: repeatTask.id,
-        due_date: '2024-07-25',
+        due_date: new Date('2024-07-08').getTime(),
         repeat_schedule: {
           freq: 1,
           dtstart: '2024-07-08',
