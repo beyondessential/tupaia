@@ -17,7 +17,7 @@ export class RepeatingTaskDueDateHandler extends ScheduledTask {
     // find all repeating tasks that have passed their current due date
     const repeatingTasks = await task.find({
       task_status: 'repeating',
-      due_date: { comparator: '<', comparisonValue: new Date() },
+      due_date: { comparator: '<', comparisonValue: new Date().getTime() },
     });
 
     winston.info(`Found ${repeatingTasks.length} repeating task(s)`);
