@@ -87,7 +87,7 @@ describe('Permissions checker for GETTasks', async () => {
     };
     await findOrCreateDummyRecord(models.user, assignee);
 
-    const dueDate = new Date('2021-12-31');
+    const dueDate = new Date('2021-12-31').getTime();
 
     tasks = [
       {

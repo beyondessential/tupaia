@@ -131,7 +131,8 @@ const useTasksTable = () => {
     },
     {
       Header: 'Due Date',
-      accessor: row => displayDate(row.dueDate),
+      accessor: row => displayDate(row.taskDueDate),
+      // use the due_date field to sort (unix timestamp) and the taskDueDate field to display (date string)
       id: 'due_date',
       filterable: true,
       Filter: DueDatePicker,

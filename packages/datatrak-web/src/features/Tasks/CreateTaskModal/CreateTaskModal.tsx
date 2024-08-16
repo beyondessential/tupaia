@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { LoadingContainer, Modal, TextField } from '@tupaia/ui-components';
 import { ButtonProps } from '@material-ui/core';
-import { stripTimezoneFromDate } from '@tupaia/utils';
 import { useNavigate } from 'react-router';
 import { ROUTES } from '../../../constants';
 import { useCreateTask, useEditUser, useUser } from '../../../api';
@@ -98,8 +97,8 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
   const generateDefaultDueDate = () => {
     const now = new Date();
-    now.setHours(23, 59, 59, 999);
-    return stripTimezoneFromDate(now);
+    now.setHours(23, 59, 59);
+    return new Date(now);
   };
 
   const defaultDueDate = generateDefaultDueDate();

@@ -64,7 +64,7 @@ const Row = styled.div`
 
 const getDisplayRepeatSchedule = (task: SingleTaskResponse) => {
   // TODO: When repeating tasks are implemented, make sure the repeat schedule is displayed correctly once a due date is returned with the task
-  const repeatScheduleOptions = getRepeatScheduleOptions(task.dueDate);
+  const repeatScheduleOptions = getRepeatScheduleOptions(task.taskDueDate);
   const { label } = repeatScheduleOptions[0];
   if (!task.repeatSchedule?.frequency) {
     return label;
@@ -97,7 +97,7 @@ export const TaskSummary = ({ task }: { task: SingleTaskResponse }) => {
           </ItemWrapper>
           <ItemWrapper>
             <Title>Due date</Title>
-            <Value>{displayDate(task.dueDate)}</Value>
+            <Value>{displayDate(task.taskDueDate)}</Value>
           </ItemWrapper>
         </Column>
       </Row>

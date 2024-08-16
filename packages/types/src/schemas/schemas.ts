@@ -85896,8 +85896,7 @@ export const TaskSchema = {
 			"format": "date-time"
 		},
 		"due_date": {
-			"type": "string",
-			"format": "date-time"
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
@@ -85954,8 +85953,7 @@ export const TaskCreateSchema = {
 			"format": "date-time"
 		},
 		"due_date": {
-			"type": "string",
-			"format": "date-time"
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
@@ -86007,8 +86005,7 @@ export const TaskUpdateSchema = {
 			"format": "date-time"
 		},
 		"due_date": {
-			"type": "string",
-			"format": "date-time"
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
@@ -88311,7 +88308,7 @@ export const TaskResponseSchema = {
 			"type": "object",
 			"additionalProperties": false
 		},
-		"dueDate": {
+		"taskDueDate": {
 			"type": "string",
 			"format": "date-time"
 		}

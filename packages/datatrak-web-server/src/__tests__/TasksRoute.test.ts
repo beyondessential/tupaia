@@ -164,6 +164,33 @@ describe('TaskRoute', () => {
           },
         },
       ],
+      [
+        'Due date filter is between start and end of day',
+        {
+          headers: {
+            cookie: 'show_completed_tasks=true;show_cancelled_tasks=true;all_assignees_tasks=true',
+          },
+          query: {
+            filters: [
+              {
+                id: 'due_date',
+                value: '2021-01-01 23:59:59.000+12:00',
+              },
+            ],
+          },
+        },
+        {
+          filter: {
+            due_date: {
+              comparator: 'BETWEEN',
+              comparisonValue: [
+                new Date('2021-01-01T00:00:00.000+12:00').getTime(),
+                new Date('2021-01-01T23:59:59.000+12:00').getTime(),
+              ],
+            },
+          },
+        },
+      ],
     ];
 
     // @ts-ignore

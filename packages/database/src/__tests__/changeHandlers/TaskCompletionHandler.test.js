@@ -72,7 +72,7 @@ describe('TaskCompletionHandler', () => {
       survey_id: SURVEY.id,
       created_at: '2024-07-08',
       status: 'to_do',
-      due_date: '2024-07-25',
+      due_date: new Date('2024-07-20').getTime(),
       survey_response_id: null,
     });
     await upsertDummyRecord(models.user, { id: userId });
