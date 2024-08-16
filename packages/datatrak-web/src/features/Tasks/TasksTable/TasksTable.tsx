@@ -13,8 +13,8 @@ import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
+import { getDisplayRepeatSchedule } from '../utils';
 import { TaskActionsMenu } from '../TaskActionsMenu';
-import { getRepeatScheduleOptions } from '../RepeatScheduleInput';
 import { CommentsCount } from '../CommentsCount';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
@@ -102,20 +102,6 @@ const useTasksTable = () => {
 
   const location = useLocation();
 
-  const getRepeatScheduleDisplay = row => {
-    const { repeatSchedule } = row;
-    if (!repeatSchedule) return 'Doesn’t repeat';
-
-    // get the repeat schedule options based on the initial start date
-    const options = getRepeatScheduleOptions(repeatSchedule.dtstart);
-    // find the selected option
-    const selectedOption = options.find(o => o.value === repeatSchedule.freq);
-    // if there isn't one, return `Doesn't repeat`
-    if (!selectedOption) return 'Doesn’t repeat';
-    // return the label
-    return selectedOption.label;
-  };
-
   const COLUMNS = [
     {
       // only the survey name can be resized
@@ -142,7 +128,7 @@ const useTasksTable = () => {
     },
     {
       Header: 'Repeating task',
-      accessor: row => getRepeatScheduleDisplay(row),
+      accessor: row => getDisplayRepeatSchedule(row),
       id: 'repeat_schedule',
       filterable: true,
       disableResizing: true,
