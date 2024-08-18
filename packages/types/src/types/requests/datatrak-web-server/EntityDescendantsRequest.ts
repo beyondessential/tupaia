@@ -28,4 +28,5 @@ export type ReqQuery = {
     type?: string;
   };
   searchString?: string;
+  pageSize?: number;
 };
