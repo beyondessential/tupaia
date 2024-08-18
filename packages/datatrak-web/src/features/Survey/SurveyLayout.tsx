@@ -89,7 +89,7 @@ export const SurveyLayout = () => {
   } = useSurveyForm();
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurveyResponse, isLoading: isSubmittingSurveyResponse } =
-    useSubmitSurveyResponse();
+    useSubmitSurveyResponse(from);
   const { mutate: resubmitSurveyResponse, isLoading: isResubmittingSurveyResponse } =
     useResubmitSurveyResponse();
   const { back, next } = useSurveyRouting(numberOfScreens);
@@ -123,6 +123,7 @@ export const SurveyLayout = () => {
     if (!surveyScreenToSnapTo) return;
     // we have to serialize the errors for the location state as per https://github.com/remix-run/react-router/issues/8792. We can't just set the errors manually in the form because when we navigate to the screen, the form errors will reset
     const stringifiedErrors = JSON.stringify(screenErrors);
+
     navigate(
       generatePath(ROUTES.SURVEY_SCREEN, {
         ...params,
