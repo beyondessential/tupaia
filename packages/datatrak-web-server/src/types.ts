@@ -9,6 +9,7 @@ import {
   FeedItemModel,
   OneTimeLoginModel,
   OptionModel,
+  PermissionGroupModel,
   SurveyModel,
   SurveyResponseModel,
   UserModel,
@@ -23,4 +24,5 @@ export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly surveyResponse: SurveyResponseModel;
   readonly oneTimeLogin: OneTimeLoginModel;
   readonly option: OptionModel;
+  readonly permissionGroup: PermissionGroupModel;
 }
