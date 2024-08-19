@@ -59,11 +59,19 @@ export const FileQuestion = ({
     const encodedFile = await createEncodedFile(file);
     // convert to an object with an encoded file so that it can be handled in the backend and uploaded to s3
     onChange({
-      name: file?.name,
+      name: file.name,
       value: encodedFile,
     });
   };
 
+  const getInitialFiles = () => {
+    if (selectedFile?.value) {
+      return [new File([selectedFile.value as Blob], selectedFile.name)];
+    }
+    return undefined;
+  };
+
+  const initialFiles = getInitialFiles();
   return (
     <Wrapper>
       <FileUploadField
@@ -76,6 +84,7 @@ export const FileQuestion = ({
         FormHelperTextComponent={InputHelperText}
         required={required}
         disabled={isResponseScreen || isReviewScreen}
+        initialFiles={initialFiles}
       />
     </Wrapper>
   );

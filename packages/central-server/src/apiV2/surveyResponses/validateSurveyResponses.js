@@ -34,7 +34,7 @@ const createSurveyResponseValidator = models =>
     end_time: [constructIsEmptyOr(takesDateForm)],
   });
 
-const validateResponse = async (models, body) => {
+export const validateSurveyResponse = async (models, body) => {
   if (!body) {
     throw new ValidationError('Survey responses must not be null');
   }
@@ -94,7 +94,7 @@ export const validateSurveyResponses = async (models, responses) => {
   const validations = await Promise.all(
     responses.map(async (r, i) => {
       try {
-        await validateResponse(models, r);
+        await validateSurveyResponse(models, r);
         return null;
       } catch (e) {
         return { row: i, error: e.message };
