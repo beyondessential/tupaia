@@ -4,7 +4,7 @@
  */
 import fs from 'fs';
 import { respondWithDownload, ValidationError } from '@tupaia/utils';
-import { getExportPathForUser } from './getExportPathForUser';
+import { getExportPathForUser } from '@tupaia/server-utils';
 import { RouteHandler } from '../RouteHandler';
 import { allowNoPermissions } from '../../permissions';
 

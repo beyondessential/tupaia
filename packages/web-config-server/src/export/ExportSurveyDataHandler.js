@@ -6,6 +6,7 @@
 import xlsx from 'xlsx';
 import fs from 'fs';
 import { getExportDatesString, respondWithDownload } from '@tupaia/utils';
+import { getExportPathForUser } from '@tupaia/server-utils';
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { USER_SESSION_CONFIG } from '/authSession';
 import { RouteHandler } from '/apiV1/RouteHandler';
@@ -13,7 +14,6 @@ import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
 import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForExcel';
 
 const EXPORT_FILE_TITLE = 'survey_response_export';
-const EXPORT_DIRECTORY = 'exports';
 
 export class ExportSurveyDataHandler extends RouteHandler {
   static PermissionsChecker = ExportSurveyResponsesPermissionsChecker;
@@ -108,13 +108,15 @@ export class ExportSurveyDataHandler extends RouteHandler {
       Sheets: sheets,
     };
 
-    if (!(await fs.existsSync(EXPORT_DIRECTORY))) {
-      await fs.mkdirSync(EXPORT_DIRECTORY);
+    const exportDirectory = getExportPathForUser(this.req.user.id);
+
+    if (!(await fs.existsSync(exportDirectory))) {
+      await fs.mkdirSync(exportDirectory);
     }
 
-    const filePath = `${EXPORT_DIRECTORY}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
+    const filePath = `${exportDirectory}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
 
     xlsx.writeFile(workbook, filePath);
-    respondWithDownload(this.res, filePath, true);
+    respondWithDownload(this.res, filePath);
   }
 }

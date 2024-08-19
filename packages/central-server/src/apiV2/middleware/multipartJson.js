@@ -4,7 +4,7 @@
  */
 
 import multer from 'multer';
-import { getTempDirectory } from '../../utilities';
+import { getTempDirectory } from '@tupaia/server-utils';
 
 /**
  * Parses a multipartJson request where:
@@ -19,29 +19,31 @@ import { getTempDirectory } from '../../utilities';
  *
  * @param {boolean} [addFilesToBody] If true, will add each File to the body by the given form part name, e.g. myfile: File
  */
-export const multipartJson = (addFilesToBody = true) => async (req, res, next) => {
-  if (req.headers['content-type'].startsWith('multipart/form-data')) {
-    const parserMiddleware = multer({
-      storage: multer.diskStorage({
-        destination: getTempDirectory('uploads'),
-        filename: (req, file, callback) => {
-          callback(null, `${Date.now()}_${file.originalname}`);
-        },
-      }),
-    }).any();
+export const multipartJson =
+  (addFilesToBody = true) =>
+  async (req, res, next) => {
+    if (req.headers['content-type'].startsWith('multipart/form-data')) {
+      const parserMiddleware = multer({
+        storage: multer.diskStorage({
+          destination: getTempDirectory('uploads'),
+          filename: (req, file, callback) => {
+            callback(null, `${Date.now()}_${file.originalname}`);
+          },
+        }),
+      }).any();
 
-    parserMiddleware(req, res, () => {
-      req.body = JSON.parse(req?.body?.payload || '{}');
+      parserMiddleware(req, res, () => {
+        req.body = JSON.parse(req?.body?.payload || '{}');
 
-      if (req.files && addFilesToBody) {
-        for (const file of req.files) {
-          req.body[file.fieldname] = file;
+        if (req.files && addFilesToBody) {
+          for (const file of req.files) {
+            req.body[file.fieldname] = file;
+          }
         }
-      }
 
+        next();
+      });
+    } else {
       next();
-    });
-  } else {
-    next();
-  }
-};
+    }
+  };
