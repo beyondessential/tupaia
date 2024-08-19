@@ -100,7 +100,7 @@ export const SurveySelectPage = () => {
   const { mutateAsync: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const { isLoading, data: surveys } = useProjectSurveys(user.projectId, selectedCountry?.name);
+  const { isLoading, data: surveys } = useProjectSurveys(user.projectId, selectedCountry?.code);
 
   const handleSelectSurvey = () => {
     if (countryHasUpdated) {

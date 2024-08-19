@@ -94,6 +94,9 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
       parameters: countryId,
     };
   } else {
+    const permissionGroupsForCountry = Object.keys(countryIdsByPermissionGroupId).filter(
+      permissionGroupId => countryIdsByPermissionGroupId[permissionGroupId].includes(countryId),
+    );
     dbConditions[RAW] = {
       sql: `
       (
@@ -102,16 +105,9 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
           <@
           survey.country_ids
         )
-        AND
-        (
-          survey.country_ids
-          &&
-          ARRAY(
-            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-          )
-        )
+        AND survey.permission_group_id IN (${permissionGroupsForCountry.map(() => '?').join(',')})
       )`,
-      parameters: [countryId, JSON.stringify(countryIdsByPermissionGroupId)],
+      parameters: [countryId, ...permissionGroupsForCountry],
     };
   }
   return dbConditions;
