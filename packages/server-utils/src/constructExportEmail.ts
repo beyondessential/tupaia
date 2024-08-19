@@ -39,6 +39,9 @@ ${error}`,
 
   const platformKey = platform || 'adminPanel';
 
+  /**
+   * We don't yet have single sign-on across all platforms, so we need to know which platform the user is on so the correct session is used, from where they requested the export. We also can't use central-server api url for this directly because there needs to be an auth header in the request.
+   */
   const PLATFORM_SETTINGS = {
     tupaia: {
       url: requireEnv('TUPAIA_WEB_SERVER_API_URL'),
