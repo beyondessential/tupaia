@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
 import { SurveyQuestionInputProps } from '../../types';
 import { usePermissionGroupUsers } from '../../api';
@@ -37,6 +37,12 @@ export const UserQuestion = ({
 
   const selectedValue = options.find(option => option.value === value);
 
+  useEffect(() => {
+    if (selectedValue && !searchValue) {
+      setSearchValue(selectedValue.label);
+    }
+  }, [selectedValue?.value]);
+
   return (
     <>
       <QuestionAutocomplete
@@ -49,6 +55,7 @@ export const UserQuestion = ({
         value={selectedValue}
         onChange={(_e, newSelectedOption) => onChange(newSelectedOption?.value ?? null)}
         onInputChange={throttle((_, newValue) => {
+          if (newValue === searchValue) return;
           setSearchValue(newValue);
         }, 200)}
         inputValue={searchValue}

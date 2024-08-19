@@ -42,14 +42,18 @@ export class UserConfigValidator extends JsonFieldValidator {
 
       const { config } = taskQuestion;
       if (!config) {
-        throw new ValidationError('Task question should have config');
+        throw new ValidationError(
+          "Can't validate permissionGroup: Task question should have config with survey code",
+        );
       }
       const parsedConfig = convertCellToJson(config);
       const { surveyCode } = parsedConfig;
       const survey = await this.models.survey.findOne({ code: surveyCode });
 
       if (!survey) {
-        throw new ValidationError('Referenced survey does not exist');
+        throw new ValidationError(
+          "Can't validate permissionGroup: Referenced survey in task question config does not exist",
+        );
       }
 
       // BES Admin has access to all surveys
