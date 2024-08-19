@@ -50,7 +50,7 @@
     "react-router-dom-v6": "npm:react-router-dom@6.3.0",
     "react-table": "^7.7.0",
     "styled-components": "^5.0.1",
-    "xlsx": "^0.17.0"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
