@@ -11773,7 +11773,6 @@ __metadata:
     parse-link-header: ^2.0.0
     prop-types: ^15.6.0
     qrcode: ^1.5.3
-    query-string: ^5.1.1
     react: ^16.13.1
     react-autobind: ^1.0.6
     react-beautiful-dnd: ^13.1.0
@@ -11781,18 +11780,13 @@ __metadata:
     react-datepicker: ^1.6.0
     react-dom: ^16.13.1
     react-hook-form: ^6.8.3
-    react-icons: ^2.2.7
     react-password-strength-bar: ^0.3.2
     react-query: ^3.19.0
     react-redux: ^5.0.6
     react-router: 6.3.0
     react-router-dom: 6.3.0
-    react-select: ^1.2.1
     react-table: ^7.8.0
-    reactstrap: ^5.0.0
     redux: ^3.7.2
-    redux-auth-wrapper: ^2.0.1
-    redux-persist: 6.0.0
     redux-thunk: ^2.2.0
     styled-components: ^5.1.0
     uuid: ^3.2.1
@@ -12240,7 +12234,6 @@ __metadata:
     moment: ^2.24.0
     npm-run-all: ^4.1.5
     prop-types: ^15.7.2
-    query-string: ^5.1.1
     react: ^16.13.1
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
@@ -18451,7 +18444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2.3, classnames@npm:^2.2.4, classnames@npm:^2.2.5":
+"classnames@npm:^2.2.5":
   version: 2.2.6
   resolution: "classnames@npm:2.2.6"
   checksum: 09a4fda780158aa8399079898eabeeca0c48c28641d9e4de140db7412e5e346843039ded1af0152f755afc2cc246ff8c3d6f227bf0dcb004e070b7fa14ec54cc
@@ -30109,24 +30102,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.isempty@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "lodash.isempty@npm:4.4.0"
-  checksum: a8118f23f7ed72a1dbd176bf27f297d1e71aa1926288449cb8f7cef99ba1bc7527eab52fe7899ab080fa1dc150aba6e4a6367bf49fa4e0b78da1ecc095f8d8c5
-  languageName: node
-  linkType: hard
-
 "lodash.isequal@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.isequal@npm:4.5.0"
   checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
-  languageName: node
-  linkType: hard
-
-"lodash.isfunction@npm:^3.0.9":
-  version: 3.0.9
-  resolution: "lodash.isfunction@npm:3.0.9"
-  checksum: 99e54c34b1e8a9ba75c034deb39cedbd2aca7af685815e67a2a8ec4f73ec9748cda6ebee5a07d7de4b938e90d421fd280e9c385cc190f903ac217ac8aff30314
   languageName: node
   linkType: hard
 
@@ -30148,13 +30127,6 @@ __metadata:
   version: 3.0.3
   resolution: "lodash.isnumber@npm:3.0.3"
   checksum: 913784275b565346255e6ae6a6e30b760a0da70abc29f3e1f409081585875105138cda4a429ff02577e1bc0a7ae2a90e0a3079a37f3a04c3d6c5aaa532f4cab2
-  languageName: node
-  linkType: hard
-
-"lodash.isobject@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "lodash.isobject@npm:3.0.2"
-  checksum: 6c1667cbc4494d0a13a3617a4b23278d6d02dac520311f2bbb43f16f2cf71d2e6eb9dec8057315b77459df4890c756a256a087d3f4baa44a79ab5d6c968b060e
   languageName: node
   linkType: hard
 
@@ -30331,13 +30303,6 @@ __metadata:
   version: 4.1.1
   resolution: "lodash.throttle@npm:4.1.1"
   checksum: 129c0a28cee48b348aef146f638ef8a8b197944d4e9ec26c1890c19d9bf5a5690fe11b655c77a4551268819b32d27f4206343e30c78961f60b561b8608c8c805
-  languageName: node
-  linkType: hard
-
-"lodash.tonumber@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "lodash.tonumber@npm:4.0.3"
-  checksum: d8156cf76eb1c5960ec1c20bc16a647a7fe4d1289365d2dc05f7e3dd1915e2f0767d9ad3a1ac2419903a0309701f051fcb6a923a928d15afa6e17a3e32d6ea3a
   languageName: node
   linkType: hard
 
@@ -34755,7 +34720,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"popper.js@npm:^1.12.9, popper.js@npm:^1.14.4":
+"popper.js@npm:^1.14.4":
   version: 1.16.0
   resolution: "popper.js@npm:1.16.0"
   checksum: 61f935323c531584112e06099fbcf89d3408f72a0aece693e9fd9879a33bc0c51a4f6dc3d95dee9d3babf8dc65d9d4a62e028f077f1bc03c1e3368debc115985
@@ -35298,7 +35263,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0, prop-types@npm:^15.5.0, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.0, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -35620,7 +35585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"query-string@npm:^5.0.1, query-string@npm:^5.1.1":
+"query-string@npm:^5.0.1":
   version: 5.1.1
   resolution: "query-string@npm:5.1.1"
   dependencies:
@@ -36168,40 +36133,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-icon-base@npm:2.1.0":
-  version: 2.1.0
-  resolution: "react-icon-base@npm:2.1.0"
-  peerDependencies:
-    prop-types: "*"
-    react: "*"
-    react-dom: "*"
-  checksum: 62b6bfe48649974d3ce2d9d1d1ebadc3523ae85181a2ecde858667c216abe1b3e95b68a0bf800335c6b9aa7804081d0fcbdb6647be04c00e1e5f537846788b00
-  languageName: node
-  linkType: hard
-
-"react-icons@npm:^2.2.7":
-  version: 2.2.7
-  resolution: "react-icons@npm:2.2.7"
-  dependencies:
-    react-icon-base: 2.1.0
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.0 || ^16.0.0
-    react-dom: ^0.14.0 || ^15.0.0 || ^16.0.0
-  checksum: 74e692fdd3d3e2be7cc7a549e7d9ac00eadf21d0b6825681d55c497d5c8683d39bcb56633037c428672140c8f024f062ee34b6f51cab74467ac4d5ce0e4fd98b
-  languageName: node
-  linkType: hard
-
-"react-input-autosize@npm:^2.1.2":
-  version: 2.2.2
-  resolution: "react-input-autosize@npm:2.2.2"
-  dependencies:
-    prop-types: ^15.5.8
-  peerDependencies:
-    react: ^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0
-  checksum: 5164cbbff5091618f889a2a68368ef95460423dd3addd32d7db7cbde2f880816552ed750839baa278b28c210d77b9e3fbae48faf62ba90f3838abef1cfde58e6
-  languageName: node
-  linkType: hard
-
 "react-inspector@npm:^5.1.0":
   version: 5.1.1
   resolution: "react-inspector@npm:5.1.1"
@@ -36715,19 +36646,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-popper@npm:^0.8.3":
-  version: 0.8.3
-  resolution: "react-popper@npm:0.8.3"
-  dependencies:
-    popper.js: ^1.12.9
-    prop-types: ^15.6.0
-  peerDependencies:
-    react: 0.14.x || ^15.0.0 || ^16.0.0
-    react-dom: 0.14.x || ^15.0.0 || ^16.0.0
-  checksum: 5ebd9fc51f97af7d8cc02980dffb117f187dc8424a9ad70f12e92edc776a76e77f463090918f6756f5d5adcad1794c4a39fab500e1542aff3a15e1aee465b2bb
-  languageName: node
-  linkType: hard
-
 "react-popper@npm:^1.0.2":
   version: 1.3.7
   resolution: "react-popper@npm:1.3.7"
@@ -36961,20 +36879,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-select@npm:^1.2.1":
-  version: 1.3.0
-  resolution: "react-select@npm:1.3.0"
-  dependencies:
-    classnames: ^2.2.4
-    prop-types: ^15.5.8
-    react-input-autosize: ^2.1.2
-  peerDependencies:
-    react: ^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0
-    react-dom: ^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0
-  checksum: 0e52fa7ba2cb9bff6a7a7c0fe5ff9be1813d48dd3480c1811f785fa54a9c15e94e3d1f7a57f6f9e74604a2662cbbb143fa7dd74a8af297464edca243f93ac1b0
-  languageName: node
-  linkType: hard
-
 "react-shallow-renderer@npm:^16.15.0":
   version: 16.15.0
   resolution: "react-shallow-renderer@npm:16.15.0"
@@ -37096,7 +37000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-transition-group@npm:^2.2.1, react-transition-group@npm:^2.5.0":
+"react-transition-group@npm:^2.5.0":
   version: 2.9.0
   resolution: "react-transition-group@npm:2.9.0"
   dependencies:
@@ -37143,24 +37047,6 @@ __metadata:
     object-assign: ^4.1.1
     prop-types: ^15.6.2
   checksum: 4508f4207caca6bef55736284cbf2ce18d2edfee4c1457fc0bb2086b34ed5bcf9b44acdb71e27574e73a5b5d4d093720b5b4ec0bf92bb89394ee3a0a7c42c2d4
-  languageName: node
-  linkType: hard
-
-"reactstrap@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "reactstrap@npm:5.0.0"
-  dependencies:
-    classnames: ^2.2.3
-    lodash.isfunction: ^3.0.9
-    lodash.isobject: ^3.0.2
-    lodash.tonumber: ^4.0.3
-    prop-types: ^15.5.8
-    react-popper: ^0.8.3
-    react-transition-group: ^2.2.1
-  peerDependencies:
-    react: ^16.0.0
-    react-dom: ^16.0.0
-  checksum: 15a6c0142cbf46ad1a125940609962debe518fa5925fa55bcc58fc7491c9a58bebbc94fc2e4593424643f4c7551017befa19e2f6b2c368b410591723d6eb65b6
   languageName: node
   linkType: hard
 
@@ -37467,19 +37353,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-auth-wrapper@npm:^2.0.1":
-  version: 2.1.0
-  resolution: "redux-auth-wrapper@npm:2.1.0"
-  dependencies:
-    hoist-non-react-statics: ^3.3.0
-    invariant: ^2.2.4
-    lodash.isempty: ^4.4.0
-    prop-types: ^15.5.0
-    query-string: ^5.1.1
-  checksum: 5596e24fcc2574bc25e5ba2c22d68913c6f456f3ddfdbcb15ef41b72c52ae5d79d86349e701adc74c21a0395f55b113a4c27babcb1db5b11e6af7d1cd52aa7aa
-  languageName: node
-  linkType: hard
-
 "redux-persist-error-handler@npm:^0.1.1":
   version: 0.1.1
   resolution: "redux-persist-error-handler@npm:0.1.1"
@@ -37491,7 +37364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-persist@npm:6.0.0, redux-persist@npm:^6.0.0":
+"redux-persist@npm:^6.0.0":
   version: 6.0.0
   resolution: "redux-persist@npm:6.0.0"
   peerDependencies:
