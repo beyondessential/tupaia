@@ -72,14 +72,14 @@ export const TasksSection = () => {
     data = { tasks: [], numberOfPages: 0 },
     isLoading,
     isSuccess,
-  } = useTasks({ projectId, filters, pageSize: 5 });
+  } = useTasks({ projectId, filters, pageSize: 15 });
   const tasks = data.tasks;
   const showTasksDashboardLink = data.numberOfPages > 1;
   const hasTasks = isSuccess && tasks?.length > 0;
 
   let Contents: React.ReactNode;
   if (isLoading) {
-    Contents = <LoadingTile count={5} />;
+    Contents = <LoadingTile count={4} />;
   } else if (hasTasks) {
     Contents = (
       <>

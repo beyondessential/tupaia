@@ -176,6 +176,8 @@ export class TasksRoute extends Route<TasksRequest> {
       // If no sort or search is provided, default to sorting completed and cancelled tasks to the bottom and by due date
       params.rawSort =
         "CASE status WHEN 'completed' THEN 1 WHEN 'cancelled' THEN 2 ELSE 0 END ASC, due_date ASC";
+    } else {
+      params.rawSort = 'due_date ASC';
     }
 
     const tasks = await ctx.services.central.fetchResources('tasks', params);
