@@ -30,7 +30,16 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
         hierarchy,
         hierarchy,
         {
-          fields: ['name', 'code', 'parent_code'],
+          fields: [
+            'grandparent_name',
+            'grandparent_code',
+            'parent_name',
+            'parent_code',
+            'name',
+            'code',
+            'type',
+            'attributes',
+          ],
         },
         false,
         false,
