@@ -97,8 +97,15 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
     const permissionGroupsForCountry = Object.keys(countryIdsByPermissionGroupId).filter(
       permissionGroupId => countryIdsByPermissionGroupId[permissionGroupId].includes(countryId),
     );
-    dbConditions[RAW] = {
-      sql: `
+
+    if (permissionGroupsForCountry.length === 0) {
+      dbConditions.id = {
+        comparator: '=',
+        comparisonValue: null,
+      }; // Return no results because we don't have access to any permission groups for this country
+    } else
+      dbConditions[RAW] = {
+        sql: `
       (
         (
           ARRAY[?]
@@ -107,8 +114,8 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
         )
         AND survey.permission_group_id IN (${permissionGroupsForCountry.map(() => '?').join(',')})
       )`,
-      parameters: [countryId, ...permissionGroupsForCountry],
-    };
+        parameters: [countryId, ...permissionGroupsForCountry],
+      };
   }
   return dbConditions;
 };
