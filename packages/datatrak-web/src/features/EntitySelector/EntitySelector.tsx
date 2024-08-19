@@ -36,6 +36,7 @@ const useSearchResults = (searchValue, filter, projectCode, disableSearch = fals
       fields: ['id', 'parent_name', 'code', 'name', 'type'],
       filter,
       searchString: debouncedSearch,
+      pageSize: 100,
     },
     !disableSearch,
   );
