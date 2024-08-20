@@ -22,6 +22,7 @@ const FIELDS = [
   'survey.code',
   'entity.country_code',
   'entity.name',
+  'entity.code',
   'assignee_name',
   'assignee_id',
   'task_status',

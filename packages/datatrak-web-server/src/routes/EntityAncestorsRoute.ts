@@ -15,7 +15,7 @@ export type EntityAncestorsRequest = Request<
   TupaiaWebEntitiesRequest.ReqQuery
 >;
 
-const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
+const DEFAULT_FIELDS = ['id', 'parent_code', 'code', 'name', 'type'];
 
 export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
   public async buildResponse() {
@@ -27,8 +27,8 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
       rootEntityCode,
       {
         fields: DEFAULT_FIELDS,
-        ...query,
       },
+      true,
     );
 
     return camelcaseKeys(entities, { deep: true });

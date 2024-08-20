@@ -57,6 +57,7 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
   });
   // Link needs to include page number because if the redirect happens, the "from" state is lost
   const surveyLink = `${path}/1`;
+  console.log('entity', entity);
 
   return (
     <ActionButtonComponent
@@ -65,7 +66,7 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
       variant="contained"
       state={{
         from: location.pathname,
-        primaryEntity: entity.id,
+        primaryEntityCode: entity.code,
       }}
     >
       Complete task

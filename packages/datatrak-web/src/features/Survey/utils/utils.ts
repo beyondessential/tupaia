@@ -2,8 +2,9 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { QuestionType } from '@tupaia/types';
-import { SurveyScreen } from '../../../types';
+import { ArithmeticQuestionConfig, QuestionType } from '@tupaia/types';
+import { SurveyScreen, SurveyScreenComponent } from '../../../types';
+import { EntityQuestionConfig } from '@tupaia/types/src';
 
 const validateSurveyComponent = component => {
   if (component.type === QuestionType.PrimaryEntity && !component.config?.entity?.createNew) {
@@ -66,4 +67,36 @@ export const getErrorsByScreen = (
       };
     }, {}) ?? {}
   );
+};
+
+const hasEntityQuestionConfig = (
+  ssc: SurveyScreenComponent,
+): ssc is SurveyScreenComponent & {
+  config: { entity: EntityQuestionConfig };
+} =>
+  (ssc.type === QuestionType.Entity || ssc.type === QuestionType.PrimaryEntity) &&
+  ssc.config?.entity !== undefined;
+
+export const getParentQuestionId = question => {
+  return (
+    hasEntityQuestionConfig(question?.config) &&
+    question.config.entity?.filter?.parentId?.questionId
+  );
+};
+
+export const getPrimaryQuestionAncestorAnswers = (question, questionsById, ancestorsByType) => {
+  const filterType = question?.config?.entity?.filter?.type[0];
+  const ancestor = ancestorsByType[filterType];
+  const record = {
+    [question.id]: ancestor.id,
+  };
+  const parentQuestionId = getParentQuestionId(question);
+  if (!parentQuestionId) {
+    return record;
+  }
+  const parentQuestion = questionsById[parentQuestionId];
+  return {
+    ...record,
+    ...getPrimaryQuestionAncestorAnswers(parentQuestion, questionsById, ancestorsByType),
+  };
 };

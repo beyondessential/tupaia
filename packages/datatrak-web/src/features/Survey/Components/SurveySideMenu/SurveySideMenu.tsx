@@ -98,7 +98,7 @@ const Header = styled.div`
 
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
-  const primaryEntity = usePrimaryEntityLocation();
+  const primaryEntityCode = usePrimaryEntityLocation();
   const from = useFromLocation();
   const isMobile = useIsMobile();
   const {
@@ -149,7 +149,7 @@ export const SurveySideMenu = () => {
                 <SurveyMenuItem
                   state={{
                     ...(from && { from }),
-                    ...(primaryEntity && { primaryEntity }),
+                    ...(primaryEntityCode && { primaryEntityCode }),
                   }}
                   to={getScreenPath(num)}
                   $active={screenNumber === num}

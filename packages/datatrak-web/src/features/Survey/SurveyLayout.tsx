@@ -74,7 +74,7 @@ const LoadingContainer = styled.div`
 export const SurveyLayout = () => {
   const navigate = useNavigate();
   const from = useFromLocation();
-  const primaryEntity = usePrimaryEntityLocation();
+  const primaryEntityCode = usePrimaryEntityLocation();
   const params = useParams<SurveyParams>();
   const {
     updateFormData,
@@ -88,9 +88,10 @@ export const SurveyLayout = () => {
     visibleScreens,
     isResubmitReviewScreen,
   } = useSurveyForm();
+
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurveyResponse, isLoading: isSubmittingSurveyResponse } =
-    useSubmitSurveyResponse(from);
+    useSubmitSurveyResponse({ from, primaryEntityCode });
   const { mutate: resubmitSurveyResponse, isLoading: isResubmittingSurveyResponse } =
     useResubmitSurveyResponse();
   const { back, next } = useSurveyRouting(numberOfScreens);
@@ -100,7 +101,7 @@ export const SurveyLayout = () => {
     navigate(path, {
       state: {
         ...(from && { from }),
-        ...(primaryEntity && { primaryEntity }),
+        ...(primaryEntityCode && { primaryEntityCode }),
       },
     });
   };
@@ -136,7 +137,7 @@ export const SurveyLayout = () => {
       {
         state: {
           ...(from && { from }),
-          ...(primaryEntity && { primaryEntity }),
+          ...(primaryEntityCode && { primaryEntityCode }),
           errors: stringifiedErrors,
         },
       },

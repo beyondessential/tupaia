@@ -89,7 +89,7 @@ const ButtonComponent = ({
     );
   }
   return (
-    <Button to={surveyUrl} state={{ from, primaryEntity: entity.id }}>
+    <Button to={surveyUrl} state={{ from, primaryEntityCode: entity.code }}>
       Complete task
     </Button>
   );

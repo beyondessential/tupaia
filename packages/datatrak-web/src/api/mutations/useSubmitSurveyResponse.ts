@@ -12,6 +12,7 @@ import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
 import { gaEvent, successToast } from '../../utils';
+import { usePrimaryEntityQuestionAutoFill } from '../../features/Survey/utils/usePrimaryEntityQuestionAutoFill.ts';
 
 type Answer = string | number | boolean | null | undefined;
 
@@ -35,15 +36,21 @@ export const useSurveyResponseData = () => {
   };
 };
 
-export const useSubmitSurveyResponse = (fromLocation?: string | undefined) => {
+interface LocationStateProps {
+  from?: string | undefined;
+  primaryEntityCode?: string | undefined;
+}
+
+export const useSubmitSurveyResponse = ({ from, primaryEntityCode }: LocationStateProps) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
-
   const surveyResponseData = useSurveyResponseData();
+  const entityQuestionAutoFill = usePrimaryEntityQuestionAutoFill(primaryEntityCode);
+  console.log('entityQuestionAutoFill', entityQuestionAutoFill);
 
   return useMutation<any, Error, AnswersT, unknown>(
     async (answers: AnswersT) => {
@@ -52,7 +59,7 @@ export const useSubmitSurveyResponse = (fromLocation?: string | undefined) => {
       }
 
       return post('submitSurveyResponse', {
-        data: { ...surveyResponseData, answers },
+        data: { ...surveyResponseData, answers: { ...answers, ...entityQuestionAutoFill } },
       });
     },
     {
@@ -87,7 +94,7 @@ export const useSubmitSurveyResponse = (fromLocation?: string | undefined) => {
         // include the survey response data in the location state, so that we can use it to generate QR codes
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
           state: {
-            ...(fromLocation && { from: fromLocation }),
+            ...(from && { from }),
             surveyResponse: JSON.stringify(data),
           },
         });
