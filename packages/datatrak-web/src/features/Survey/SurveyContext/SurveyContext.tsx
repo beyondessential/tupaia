@@ -2,14 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { createContext, Dispatch, useContext, useReducer, useState } from 'react';
+import React, { createContext, Dispatch, useContext, useReducer, useState, useMemo } from 'react';
 import { useMatch, useParams, useSearchParams } from 'react-router-dom';
 import { QuestionType } from '@tupaia/types';
 import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
 import { usePrimaryEntityLocation } from '../../../utils';
-import { getAllSurveyComponents, getParentQuestionId } from '../utils';
+import { getAllSurveyComponents, getPrimaryEntityParentQuestionIds } from '../utils';
 import {
   generateCodeForCodeGeneratorQuestions,
   getDisplayQuestions,
@@ -40,15 +40,6 @@ const SurveyFormContext = createContext(defaultContext);
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
-const getPrimaryEntityParentQuestionIds = (primaryEntityQuestion, questions) => {
-  const parentQuestionId = getParentQuestionId(primaryEntityQuestion);
-  if (!parentQuestionId) {
-    return [];
-  }
-  const parentQuestion = questions.find(question => question.id === parentQuestionId);
-  return [parentQuestionId, ...getPrimaryEntityParentQuestionIds(parentQuestion, questions)];
-};
-
 export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const [urlSearchParams] = useSearchParams();
   const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
@@ -66,9 +57,11 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const primaryEntityQuestion = flattenedScreenComponents.find(
     question => question.type === QuestionType.PrimaryEntity,
   );
-  const primaryEntityParentQuestionIds = getPrimaryEntityParentQuestionIds(
-    primaryEntityQuestion,
-    flattenedScreenComponents,
+
+  // Get the list of parent question ids for the primary entity question
+  const primaryEntityParentQuestionIds = useMemo(
+    () => getPrimaryEntityParentQuestionIds(primaryEntityQuestion, flattenedScreenComponents),
+    [primaryEntityQuestion, flattenedScreenComponents],
   );
 
   // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
@@ -77,6 +70,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
       return {
         ...screen,
         surveyScreenComponents: screen.surveyScreenComponents.filter(question => {
+          // If a primary entity code is pre-set for the survey, hide the primary entity question and its ancestor questions
           if (primaryEntityCode) {
             if (
               question.type === QuestionType.PrimaryEntity ||

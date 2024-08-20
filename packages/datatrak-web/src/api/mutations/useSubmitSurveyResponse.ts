@@ -50,7 +50,6 @@ export const useSubmitSurveyResponse = ({ from, primaryEntityCode }: LocationSta
   const { data: survey } = useSurvey(params.surveyCode);
   const surveyResponseData = useSurveyResponseData();
   const entityQuestionAutoFill = usePrimaryEntityQuestionAutoFill(primaryEntityCode);
-  console.log('entityQuestionAutoFill', entityQuestionAutoFill);
 
   return useMutation<any, Error, AnswersT, unknown>(
     async (answers: AnswersT) => {

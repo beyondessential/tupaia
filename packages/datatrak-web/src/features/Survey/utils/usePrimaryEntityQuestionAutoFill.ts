@@ -6,8 +6,12 @@ import keyBy from 'lodash.keyby';
 import { useCurrentUserContext, useEntityAncestors } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
 import { getAllSurveyComponents, getPrimaryQuestionAncestorAnswers } from './utils';
+import { Entity } from '@tupaia/types';
 
-export const usePrimaryEntityQuestionAutoFill = primaryEntityCode => {
+/**
+ * Gets the answers for the primary entity question and its ancestors if the primary entity is pre-set for a survey
+ */
+export const usePrimaryEntityQuestionAutoFill = (primaryEntityCode?: Entity['code']) => {
   const user = useCurrentUserContext();
   const { primaryEntityQuestion, surveyScreens } = useSurveyForm();
   const { data: ancestors } = useEntityAncestors(user.project?.code, primaryEntityCode);

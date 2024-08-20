@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { ArithmeticQuestionConfig, QuestionType } from '@tupaia/types';
+import { QuestionType } from '@tupaia/types';
 import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 import { EntityQuestionConfig } from '@tupaia/types/src';
 
@@ -77,12 +77,8 @@ const hasEntityQuestionConfig = (
   (ssc.type === QuestionType.Entity || ssc.type === QuestionType.PrimaryEntity) &&
   ssc.config?.entity !== undefined;
 
-export const getParentQuestionId = question => {
-  return (
-    hasEntityQuestionConfig(question?.config) &&
-    question.config.entity?.filter?.parentId?.questionId
-  );
-};
+export const getParentQuestionId = (question: SurveyScreenComponent) =>
+  hasEntityQuestionConfig(question) && question.config.entity?.filter?.parentId?.questionId;
 
 export const getPrimaryQuestionAncestorAnswers = (question, questionsById, ancestorsByType) => {
   const filterType = question?.config?.entity?.filter?.type[0];
@@ -99,4 +95,13 @@ export const getPrimaryQuestionAncestorAnswers = (question, questionsById, ances
     ...record,
     ...getPrimaryQuestionAncestorAnswers(parentQuestion, questionsById, ancestorsByType),
   };
+};
+
+export const getPrimaryEntityParentQuestionIds = (primaryEntityQuestion, questions) => {
+  const parentQuestionId = getParentQuestionId(primaryEntityQuestion);
+  if (!parentQuestionId) {
+    return [];
+  }
+  const parentQuestion = questions.find(question => question.id === parentQuestionId);
+  return [parentQuestionId, ...getPrimaryEntityParentQuestionIds(parentQuestion, questions)];
 };
