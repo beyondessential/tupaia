@@ -4,16 +4,19 @@
  */
 
 import winston from 'winston';
-
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
-import { respond, reduceToDictionary } from '@tupaia/utils';
+import { respond, reduceToDictionary, getCountryCode } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
+import { COUNTRIES_BY_TIMEZONE } from '../utilities';
+import { sendEmail } from '@tupaia/server-utils';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
   REFRESH_TOKEN: 'refresh_token',
   ONE_TIME_LOGIN: 'one_time_login',
 };
+
+const SUPPORT_EMAIL = 'support@tupaia.org';
 
 // Get the permission group ids for each country the user has access to
 // This is to support legacy meditrak app versions 1.7.81 (oldest supported) and 1.7.85 (only other
@@ -98,6 +101,40 @@ const checkApiClientAuthentication = async req => {
   }
 };
 
+const checkUserLocationAccess = async (req, user) => {
+  const { body, models } = req;
+  const { timezone } = body;
+  if (!timezone) return;
+  const countryName = COUNTRIES_BY_TIMEZONE[timezone];
+  if (!countryName) return;
+
+  const countryCode = getCountryCode(countryName);
+
+  const existingEntry = await models.userCountryAccessAttempt.findOne({
+    user_id: user.id,
+    country_code: countryCode,
+  });
+  if (existingEntry) return;
+
+  const hasUserEntry =
+    (await models.userCountryAccessAttempt.count({
+      user_id: user.id,
+    })) > 0;
+
+  await models.userCountryAccessAttempt.create({
+    user_id: user.id,
+    country_code: countryCode,
+  });
+  if (!hasUserEntry) {
+    return;
+  }
+
+  sendEmail(SUPPORT_EMAIL, {
+    subject: 'User attempted to login from a new country',
+    text: `Hi Support\nUser ${user.first_name} ${user.last_name} (${user.id} - ${user.email}) attempted to access Tupaia from a new country: ${countryName}`,
+  });
+};
+
 /**
  * Handler for a POST to the /auth endpoint
  * By default, or if URL parameters include grantType=password, will check the email address and
@@ -125,6 +162,8 @@ export async function authenticate(req, res) {
     apiClientUser,
     permissionGroups: permissionGroupsByCountryId,
   });
+
+  await checkUserLocationAccess(req, user);
 
   respond(res, authorizationObject);
 }

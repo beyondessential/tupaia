@@ -60,6 +60,7 @@ import { DhisInstanceModel } from './DhisInstance';
 import { DataElementDataServiceModel } from './DataElementDataService';
 import { SupersetInstanceModel } from './SupersetInstance';
 import { TaskModel } from './Task';
+import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -120,6 +121,7 @@ export const modelClasses = {
   UserEntityPermission: UserEntityPermissionModel,
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
   UserSession: UserSessionModel,
+  UserCountryAccessAttempt: UserCountryAccessAttemptModel,
 };
 
 // export any models and types that are extended in other packages

@@ -39,13 +39,13 @@ exports.up = async function (db) {
     'user_country_access_attempt',
     'user_country_access_attempt_user_id_idx',
     ['user_id'],
-    true,
+    false,
   );
   return db.addIndex(
     'user_country_access_attempt',
     'user_country_access_attempt_country_code_idx',
     ['country_code'],
-    true,
+    false,
   );
 };
 
