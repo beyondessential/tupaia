@@ -46,8 +46,7 @@
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
     "styled-components": "^5.1.0",
-    "vite-plugin-ejs": "^1.6.4",
-    "vite-plugin-env-compatible": "^1.1.1"
+    "vite-plugin-ejs": "^1.6.4"
   },
   "devDependencies": {
     "@mui/types": "^7.2.4",

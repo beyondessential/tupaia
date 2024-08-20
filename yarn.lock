@@ -12552,7 +12552,6 @@ __metadata:
     styled-components: ^5.1.0
     vite: ^4.5.3
     vite-plugin-ejs: ^1.6.4
-    vite-plugin-env-compatible: ^1.1.1
     vite-plugin-html: ^3.2.0
   languageName: unknown
   linkType: soft
@@ -42191,13 +42190,6 @@ __metadata:
   dependencies:
     ejs: ^3.1.8
   checksum: e256d408a2e9d5bfe703bbe679c9eb962ca7c819e0ac1fa8bd79bccf7b7eec322eeb812acdd9dcff1121a7d58948245bbef5ac65134b86e2400b92c2d536fe4f
-  languageName: node
-  linkType: hard
-
-"vite-plugin-env-compatible@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "vite-plugin-env-compatible@npm:1.1.1"
-  checksum: 5e7737844250c9184e9f94696ad59d46eb93178e5333d257e7d6e5d868efbbdb482c84830bf07fda3f26bc1455e7eec7c6a35a46d9e29c71f101a351e974cc10
   languageName: node
   linkType: hard
 
