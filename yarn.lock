@@ -7564,15 +7564,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:1.3.8":
-  version: 1.3.8
-  resolution: "@hookform/resolvers@npm:1.3.8"
-  peerDependencies:
-    react-hook-form: ">=6.6.0"
-  checksum: bf200a923273af954b4652c426c976a4b0a9b2b1d6976791a8c7fdcfa0784df3fbf5e6253bcf9f86f4ac17afe2e523df499f7d03e319dcae6bf2e136c6580a08
-  languageName: node
-  linkType: hard
-
 "@humanwhocodes/config-array@npm:^0.11.13":
   version: 0.11.13
   resolution: "@humanwhocodes/config-array@npm:0.11.13"
@@ -12024,7 +12015,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/datatrak-web@workspace:packages/datatrak-web"
   dependencies:
-    "@hookform/resolvers": 1.3.8
     "@material-ui/core": ^4.9.11
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
