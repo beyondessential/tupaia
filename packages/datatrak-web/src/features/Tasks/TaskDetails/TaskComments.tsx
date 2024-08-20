@@ -50,8 +50,14 @@ const CommentsInput = styled(TextField).attrs({
 
 const Message = styled(Typography).attrs({
   variant: 'body2',
-})`
+})<{
+  $type: TaskCommentType;
+}>`
   margin-block-start: 0.2rem;
+  font-weight: ${({ theme, $type }) =>
+    $type === TaskCommentType.system
+      ? theme.typography.fontWeightRegular
+      : theme.typography.fontWeightMedium};
 `;
 
 const Form = styled(TaskForm)`
@@ -77,7 +83,7 @@ const SingleComment = ({ comment }: { comment: Comments[0] }) => {
       <CommentDetails>
         {displayDateTime(createdAt)} - {userName}
       </CommentDetails>
-      <Message color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'}>
+      <Message color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'} $type={type}>
         {message}
       </Message>
     </CommentContainer>
