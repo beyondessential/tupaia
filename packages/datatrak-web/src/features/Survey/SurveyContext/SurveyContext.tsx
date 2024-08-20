@@ -40,6 +40,30 @@ const SurveyFormContext = createContext(defaultContext);
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
+const getParentQuestionId = question => {
+  return question?.config?.entity?.filter?.parentId?.questionId;
+};
+
+const getIsVisible = (question, primaryEntityParentQuestionIds) => {
+  if (question.type === QuestionType.PrimaryEntity) {
+    return false;
+  }
+  return !primaryEntityParentQuestionIds.includes(question.id);
+};
+
+const getPrimaryEntityParentQuestionIds = (primaryEntityQuestion, questions) => {
+  const parentQuestionId = getParentQuestionId(primaryEntityQuestion);
+  if (!parentQuestionId) {
+    return [];
+  }
+  const parentQuestion = questions.find(question => question.id === parentQuestionId);
+  return [parentQuestionId, ...getPrimaryEntityParentQuestionIds(parentQuestion, questions)];
+};
+
+const getPrimaryEntityDefaultFormData = (primaryEntity, parentQuestionIds) => {
+  // Get ancestors for entity and populate parentQuestionIds with them
+};
+
 export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const [urlSearchParams] = useSearchParams();
   const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
@@ -54,39 +78,47 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
 
   const surveyScreens = survey?.screens || [];
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
+  const primaryEntityQuestion = flattenedScreenComponents.find(
+    question => question.type === QuestionType.PrimaryEntity,
+  );
+  const primaryEntityParentQuestionIds = getPrimaryEntityParentQuestionIds(
+    primaryEntityQuestion,
+    flattenedScreenComponents,
+  );
 
   // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
   const visibleScreens = surveyScreens
     .map(screen => {
       return {
         ...screen,
-        surveyScreenComponents: screen.surveyScreenComponents.filter(question =>
-          getIsQuestionVisible(question, formData),
-        ),
+        surveyScreenComponents: screen.surveyScreenComponents.filter(question => {
+          if (primaryEntity) {
+            return getIsVisible(question, primaryEntityParentQuestionIds);
+          }
+          return getIsQuestionVisible(question, formData);
+        }),
       };
     })
     .filter(screen => screen.surveyScreenComponents.length > 0);
 
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
-  const primaryEntityQuestion = flattenedScreenComponents.find(
-    question => question.type === QuestionType.PrimaryEntity,
-  );
 
   const initialiseFormData = () => {
     if (!surveyCode || isResponseScreen) return;
     // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
-    const initialFormData = generateCodeForCodeGeneratorQuestions(
+    let initialFormData = generateCodeForCodeGeneratorQuestions(
       flattenedScreenComponents,
       formData,
     );
 
     // If there is a primary entity set for the survey, and there is no parent filter set the primary entity
-    if (
-      primaryEntity &&
-      primaryEntityQuestion &&
-      !primaryEntityQuestion?.config?.entity?.filter?.parentId
-    ) {
-      initialFormData[primaryEntityQuestion.id as string] = primaryEntity;
+    if (primaryEntity) {
+      // initialFormData[primaryEntityQuestion.id as string] = primaryEntity;
+      const newData = getPrimaryEntityDefaultFormData(
+        primaryEntity,
+        primaryEntityParentQuestionIds,
+      );
+      initialFormData = { ...initialFormData, ...newData };
     }
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
     // update the start time when a survey is started, so that it can be passed on when submitting the survey
