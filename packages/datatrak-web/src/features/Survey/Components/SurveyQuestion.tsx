@@ -105,39 +105,36 @@ export const SurveyQuestion = ({
     <QuestionWrapper>
       {/* Use a Controller so that the fields that require change handlers, values, etc. work with
           react-hook-form, which is uncontrolled by default */}
-      <h3>{type}</h3>
       <Controller
         name={name}
         control={control}
         defaultValue={defaultValue}
-        render={({ onChange, ref, ...renderProps }, { invalid }) => {
-          return (
-            <FieldComponent
-              {...props}
-              controllerProps={{
-                ...renderProps,
-                invalid,
-                ref,
-                onChange: (newValue: unknown, rawValue: unknown = newValue) => {
-                  // If the question dictates the visibility of any other questions, we need to update the formData when the value changes,
-                  // so the visibility of other questions can be updated in real time. This doesn't happen that often, so it shouldn't have too much of a performance impact,
-                  // and we are only updating the formData for the question that is changing, not the entire formData object.
-                  if (updateFormDataOnChange) {
-                    updateFormData({
-                      [name]: rawValue,
-                    });
-                  }
-                  onChange(newValue);
-                },
-              }}
-              required={required}
-              min={min}
-              max={max}
-              name={name}
-              type={type}
-            />
-          );
-        }}
+        render={({ onChange, ref, ...renderProps }, { invalid }) => (
+          <FieldComponent
+            {...props}
+            controllerProps={{
+              ...renderProps,
+              invalid,
+              ref,
+              onChange: (newValue: unknown, rawValue: unknown = newValue) => {
+                // If the question dictates the visibility of any other questions, we need to update the formData when the value changes,
+                // so the visibility of other questions can be updated in real time. This doesn't happen that often, so it shouldn't have too much of a performance impact,
+                // and we are only updating the formData for the question that is changing, not the entire formData object.
+                if (updateFormDataOnChange) {
+                  updateFormData({
+                    [name]: rawValue,
+                  });
+                }
+                onChange(newValue);
+              },
+            }}
+            required={required}
+            min={min}
+            max={max}
+            name={name}
+            type={type}
+          />
+        )}
       />
       {displayError && <FormHelperText error>*{errors[name].message}</FormHelperText>}
     </QuestionWrapper>

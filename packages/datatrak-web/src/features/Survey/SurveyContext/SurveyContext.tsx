@@ -101,10 +101,6 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
       formData,
     );
 
-    // If there is a primary entity set for the survey, and there is no parent filter set the primary entity
-    if (primaryEntityCode) {
-      // initialFormData[primaryEntityQuestion.id as string] = primaryEntity;
-    }
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
     // update the start time when a survey is started, so that it can be passed on when submitting the survey
 
