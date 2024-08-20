@@ -11871,6 +11871,7 @@ __metadata:
     chai-subset: ^1.6.0
     compare-versions: ^6.1.0
     cors: ^2.8.5
+    countries-and-timezones: ^3.6.0
     countrynames: ^0.1.1
     cross-env: ^7.0.2
     deep-equal-in-any-order: ^1.0.21
@@ -19545,6 +19546,13 @@ __metadata:
     path-type: ^4.0.0
     yaml: ^1.10.0
   checksum: 4be63e7117955fd88333d7460e4c466a90f556df6ef34efd59034d2463484e339666c41f02b523d574a797ec61f4a91918c5b89a316db2ea2f834e0d2d09465b
+  languageName: node
+  linkType: hard
+
+"countries-and-timezones@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "countries-and-timezones@npm:3.6.0"
+  checksum: 00bf46b91d6104666c4113e31f598ab4e8ecfc2e850d9ab97b9ceadc95d6c5a7abd92cbfe5eca65d5d120c54dcdebc92e68ef3eb792c7539625a8e2dd92c8298
   languageName: node
   linkType: hard
 

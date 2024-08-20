@@ -4,11 +4,11 @@
  */
 
 import winston from 'winston';
+import { getCountryForTimezone } from 'countries-and-timezones';
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
-import { respond, reduceToDictionary, getCountryCode } from '@tupaia/utils';
-import { allowNoPermissions } from '../permissions';
-import { COUNTRIES_BY_TIMEZONE } from '../utilities';
 import { sendEmail } from '@tupaia/server-utils';
+import { respond, reduceToDictionary } from '@tupaia/utils';
+import { allowNoPermissions } from '../permissions';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -102,36 +102,42 @@ const checkApiClientAuthentication = async req => {
 };
 
 const checkUserLocationAccess = async (req, user) => {
+  if (!user) return;
   const { body, models } = req;
   const { timezone } = body;
-  if (!timezone) return;
-  const countryName = COUNTRIES_BY_TIMEZONE[timezone];
-  if (!countryName) return;
 
-  const countryCode = getCountryCode(countryName);
+  // The easiest way to get the country code is to use the timezone and get the most likely country using this timezone. This doesn't infringe on the user's privacy as the timezone is a very broad location. It also doesn't require the user to provide their location, which is a barrier to entry for some users.
+  const country = getCountryForTimezone(timezone);
+  if (!country) return;
+  // the ID is the ISO country code.
+  const { id, name } = country;
 
   const existingEntry = await models.userCountryAccessAttempt.findOne({
     user_id: user.id,
-    country_code: countryCode,
+    country_code: id,
   });
+
+  // If there is already an entry for this user and country, return
   if (existingEntry) return;
 
-  const hasUserEntry =
-    (await models.userCountryAccessAttempt.count({
-      user_id: user.id,
-    })) > 0;
+  const userEntryCount = await models.userCountryAccessAttempt.count({
+    user_id: user.id,
+  });
+
+  const hasAnyEntries = userEntryCount > 0;
 
   await models.userCountryAccessAttempt.create({
     user_id: user.id,
-    country_code: countryCode,
+    country_code: id,
   });
-  if (!hasUserEntry) {
-    return;
-  }
 
+  // Don't send an email if this is the first time the user has attempted to login
+  if (!hasAnyEntries) return;
+
+  // Send an email to support if the user has attempted to login from a new country
   sendEmail(SUPPORT_EMAIL, {
     subject: 'User attempted to login from a new country',
-    text: `Hi Support\nUser ${user.first_name} ${user.last_name} (${user.id} - ${user.email}) attempted to access Tupaia from a new country: ${countryName}`,
+    text: `Hi Support\nUser ${user.first_name} ${user.last_name} (${user.id} - ${user.email}) attempted to access Tupaia from a new country: ${name}`,
   });
 };
 
