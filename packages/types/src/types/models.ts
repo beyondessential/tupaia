@@ -1632,6 +1632,20 @@ export interface UserAccountUpdate {
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
 }
+export interface UserCountryAccessAttempt {
+  'country_code': string;
+  'id': string;
+  'user_id': string;
+}
+export interface UserCountryAccessAttemptCreate {
+  'country_code': string;
+  'user_id': string;
+}
+export interface UserCountryAccessAttemptUpdate {
+  'country_code'?: string;
+  'id'?: string;
+  'user_id'?: string;
+}
 export interface UserEntityPermission {
   'entity_id': string;
   'id': string;
