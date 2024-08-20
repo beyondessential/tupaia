@@ -12321,10 +12321,6 @@ __metadata:
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    api-error-handler: ^1.0.0
-    body-parser: ^1.18.3
-    client-sessions: ^0.8.0
-    cors: ^2.8.5
     express: ^4.19.2
     lodash.groupby: ^4.6.0
     winston: ^3.3.3
@@ -12370,7 +12366,6 @@ __metadata:
     reselect: ^4.0.0
     styled-components: ^5.1.0
     vite: ^4.5.3
-    whatwg-fetch: ^3.0.0
   languageName: unknown
   linkType: soft
 
