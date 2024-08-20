@@ -64,6 +64,7 @@ export const RECORDS = {
   SYNC_GROUP_LOG: 'sync_group_log',
   TASK: 'task',
   USER_ACCOUNT: 'user_account',
+  USER_COUNTRY_ACCESS_ATTEMPT: 'user_country_access_attempt',
   USER_ENTITY_PERMISSION: 'user_entity_permission',
   USER_FAVOURITE_DASHBOARD_ITEM: 'user_favourite_dashboard_item',
   USER_SESSION: 'userSession',
