@@ -6,17 +6,15 @@
 import winston from 'winston';
 import { getCountryForTimezone } from 'countries-and-timezones';
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
-import { sendEmail } from '@tupaia/server-utils';
 import { respond, reduceToDictionary } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
+import { createSupportTicket } from '../utilities';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
   REFRESH_TOKEN: 'refresh_token',
   ONE_TIME_LOGIN: 'one_time_login',
 };
-
-const SUPPORT_EMAIL = 'support@tupaia.org';
 
 // Get the permission group ids for each country the user has access to
 // This is to support legacy meditrak app versions 1.7.81 (oldest supported) and 1.7.85 (only other
@@ -134,11 +132,11 @@ const checkUserLocationAccess = async (req, user) => {
   // Don't send an email if this is the first time the user has attempted to login
   if (!hasAnyEntries) return;
 
-  // Send an email to support if the user has attempted to login from a new country
-  sendEmail(SUPPORT_EMAIL, {
-    subject: 'User attempted to login from a new country',
-    text: `Hi Support\nUser ${user.first_name} ${user.last_name} (${user.id} - ${user.email}) attempted to access Tupaia from a new country: ${name}`,
-  });
+  // create a support ticket if the user has attempted to login from a new country
+  await createSupportTicket(
+    'User attempted to login from a new country',
+    `User ${user.first_name} ${user.last_name} (${user.id} - ${user.email}) attempted to access Tupaia from a new country: ${name}`,
+  );
 };
 
 /**
