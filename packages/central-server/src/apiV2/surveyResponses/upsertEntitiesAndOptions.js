@@ -6,7 +6,6 @@
 import { DatabaseError } from '@tupaia/utils';
 
 const upsertEntities = async (models, entitiesUpserted, surveyId) => {
-  console.log('entitiesUpserted', entitiesUpserted);
   const survey = await models.survey.findById(surveyId);
   const dataGroup = await survey.dataGroup();
 

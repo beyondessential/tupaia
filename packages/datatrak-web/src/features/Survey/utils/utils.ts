@@ -2,9 +2,8 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { QuestionType } from '@tupaia/types';
+import { EntityQuestionConfig, QuestionType } from '@tupaia/types';
 import { SurveyScreen, SurveyScreenComponent } from '../../../types';
-import { EntityQuestionConfig } from '@tupaia/types/src';
 
 const validateSurveyComponent = component => {
   if (component.type === QuestionType.PrimaryEntity && !component.config?.entity?.createNew) {
@@ -69,39 +68,27 @@ export const getErrorsByScreen = (
   );
 };
 
-const hasEntityQuestionConfig = (
-  ssc: SurveyScreenComponent,
-): ssc is SurveyScreenComponent & {
+type EntityQuestionType = SurveyScreenComponent & {
   config: { entity: EntityQuestionConfig };
-} =>
+};
+
+const hasEntityQuestionConfig = (ssc: SurveyScreenComponent): ssc is EntityQuestionType =>
   (ssc.type === QuestionType.Entity || ssc.type === QuestionType.PrimaryEntity) &&
   ssc.config?.entity !== undefined;
 
 export const getParentQuestionId = (question: SurveyScreenComponent) =>
   hasEntityQuestionConfig(question) && question.config.entity?.filter?.parentId?.questionId;
 
-export const getPrimaryQuestionAncestorAnswers = (question, questionsById, ancestorsByType) => {
-  const filterType = question?.config?.entity?.filter?.type[0];
-  const ancestor = ancestorsByType[filterType];
-  const record = {
-    [question.id]: ancestor.id,
-  };
-  const parentQuestionId = getParentQuestionId(question);
-  if (!parentQuestionId) {
-    return record;
-  }
-  const parentQuestion = questionsById[parentQuestionId];
-  return {
-    ...record,
-    ...getPrimaryQuestionAncestorAnswers(parentQuestion, questionsById, ancestorsByType),
-  };
-};
+// Get the parent question ids recursively for the primary entity question
+export const getPrimaryEntityParentQuestionIds = (
+  entityQuestion: SurveyScreenComponent,
+  questions: SurveyScreenComponent[],
+) => {
+  const parentQuestionId = getParentQuestionId(entityQuestion);
+  const parentQuestion =
+    parentQuestionId && questions.find(question => question.id === parentQuestionId);
 
-export const getPrimaryEntityParentQuestionIds = (primaryEntityQuestion, questions) => {
-  const parentQuestionId = getParentQuestionId(primaryEntityQuestion);
-  if (!parentQuestionId) {
-    return [];
-  }
-  const parentQuestion = questions.find(question => question.id === parentQuestionId);
-  return [parentQuestionId, ...getPrimaryEntityParentQuestionIds(parentQuestion, questions)];
+  return parentQuestion
+    ? [parentQuestionId, ...getPrimaryEntityParentQuestionIds(parentQuestion, questions)]
+    : [];
 };

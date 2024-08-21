@@ -90,7 +90,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const initialiseFormData = () => {
     if (!surveyCode || isResponseScreen) return;
     // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
-    let initialFormData = generateCodeForCodeGeneratorQuestions(
+    const initialFormData = generateCodeForCodeGeneratorQuestions(
       flattenedScreenComponents,
       formData,
     );
