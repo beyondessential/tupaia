@@ -4,8 +4,7 @@
  */
 import keyBy from 'lodash.keyby';
 import { useCurrentUserContext, useEntityAncestors } from '../../../api';
-import { useSurveyForm } from '../SurveyContext';
-import { getAllSurveyComponents, getParentQuestionId } from './utils';
+import { getParentQuestionId } from './utils';
 import { SurveyScreenComponent, Entity } from '../../../types';
 
 // Get the parent question ancestors recursively for the primary entity question
@@ -32,16 +31,17 @@ const getEntityQuestionAncestorAnswers = (
 /**
  * Gets the answers for the primary entity question and its ancestors if the primary entity is pre-set for a survey
  */
-export const usePrimaryEntityQuestionAutoFill = (primaryEntityCode?: Entity['code']) => {
+export const usePrimaryEntityQuestionAutoFill = (
+  primaryEntityQuestion: SurveyScreenComponent,
+  questions: SurveyScreenComponent[],
+  primaryEntityCode?: Entity['code'],
+) => {
   const user = useCurrentUserContext();
-  const { primaryEntityQuestion, surveyScreens } = useSurveyForm();
   const { data: ancestors } = useEntityAncestors(user.project?.code, primaryEntityCode);
 
   if (!ancestors) {
     return {};
   }
-
-  const questions = getAllSurveyComponents(surveyScreens);
 
   return getEntityQuestionAncestorAnswers(
     primaryEntityQuestion as SurveyScreenComponent,

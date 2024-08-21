@@ -18,12 +18,15 @@ import {
 } from './utils';
 import { SurveyFormContextType, surveyReducer } from './reducer';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
+import { usePrimaryEntityQuestionAutoFill } from '../utils/usePrimaryEntityQuestionAutoFill';
 
 const defaultContext = {
   startTime: new Date().toISOString(),
   formData: {},
   activeScreen: [],
   isLast: false,
+  isReviewScreen: false,
+  isResponseScreen: false,
   numberOfScreens: 0,
   screenNumber: 1,
   screenHeader: '',
@@ -49,14 +52,24 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
   const isResponseScreen = !!urlSearchParams.get('responseId');
+  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
 
-  const { formData } = state;
+  let { formData } = state;
 
   const surveyScreens = survey?.screens || [];
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const primaryEntityQuestion = flattenedScreenComponents.find(
     question => question.type === QuestionType.PrimaryEntity,
   );
+  const autoFillAnswers = usePrimaryEntityQuestionAutoFill(
+    primaryEntityQuestion,
+    flattenedScreenComponents,
+    primaryEntityCode,
+  );
+
+  if (primaryEntityCode) {
+    formData = { ...formData, ...autoFillAnswers };
+  }
 
   // Get the list of parent question ids for the primary entity question
   const primaryEntityParentQuestionIds = useMemo(
@@ -71,7 +84,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
         ...screen,
         surveyScreenComponents: screen.surveyScreenComponents.filter(question => {
           // If a primary entity code is pre-set for the survey, hide the primary entity question and its ancestor questions
-          if (primaryEntityCode) {
+          if (primaryEntityCode && !isReviewScreen) {
             if (
               question.type === QuestionType.PrimaryEntity ||
               primaryEntityParentQuestionIds.includes(question.id)
@@ -122,6 +135,8 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
         surveyProjectCode: survey?.project?.code,
         activeScreen,
         screenNumber,
+        isReviewScreen,
+        isResponseScreen,
         displayQuestions,
         surveyScreens,
         screenHeader,
@@ -140,7 +155,6 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
 };
 
 export const useSurveyForm = () => {
-  const [urlSearchParams] = useSearchParams();
   const surveyFormContext = useContext(SurveyFormContext);
   const { surveyScreens, formData, screenNumber, visibleScreens } = surveyFormContext;
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
@@ -149,8 +163,6 @@ export const useSurveyForm = () => {
   const numberOfScreens = visibleScreens?.length || 0;
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const isResponseScreen = !!urlSearchParams.get('responseId');
   const isResubmitScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SCREEN);
   const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
   const isResubmit =
@@ -190,8 +202,6 @@ export const useSurveyForm = () => {
     ...surveyFormContext,
     isLast,
     isSuccessScreen,
-    isReviewScreen,
-    isResponseScreen,
     numberOfScreens,
     toggleSideMenu,
     updateFormData,

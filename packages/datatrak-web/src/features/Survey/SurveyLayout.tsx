@@ -91,7 +91,7 @@ export const SurveyLayout = () => {
 
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurveyResponse, isLoading: isSubmittingSurveyResponse } =
-    useSubmitSurveyResponse({ from, primaryEntityCode });
+    useSubmitSurveyResponse({ from });
   const { mutate: resubmitSurveyResponse, isLoading: isResubmittingSurveyResponse } =
     useResubmitSurveyResponse();
   const { back, next } = useSurveyRouting(numberOfScreens);
@@ -146,7 +146,7 @@ export const SurveyLayout = () => {
 
   const onSubmit = data => {
     const submitAction = isResubmitReviewScreen ? resubmitSurveyResponse : submitSurveyResponse;
-    if (isReviewScreen || isResubmitReviewScreen) return submitAction(data);
+    if (isReviewScreen || isResubmitReviewScreen) return submitAction({ ...formData, ...data });
     return navigateNext(data);
   };
 

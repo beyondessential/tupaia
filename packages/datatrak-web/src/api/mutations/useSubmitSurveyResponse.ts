@@ -12,7 +12,6 @@ import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
 import { gaEvent, successToast } from '../../utils';
-import { usePrimaryEntityQuestionAutoFill } from '../../features/Survey/utils/usePrimaryEntityQuestionAutoFill.ts';
 
 type Answer = string | number | boolean | null | undefined;
 
@@ -38,10 +37,9 @@ export const useSurveyResponseData = () => {
 
 interface LocationStateProps {
   from?: string | undefined;
-  primaryEntityCode?: string | undefined;
 }
 
-export const useSubmitSurveyResponse = ({ from, primaryEntityCode }: LocationStateProps) => {
+export const useSubmitSurveyResponse = ({ from }: LocationStateProps) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
@@ -49,7 +47,6 @@ export const useSubmitSurveyResponse = ({ from, primaryEntityCode }: LocationSta
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
   const surveyResponseData = useSurveyResponseData();
-  const entityQuestionAutoFill = usePrimaryEntityQuestionAutoFill(primaryEntityCode);
 
   return useMutation<any, Error, AnswersT, unknown>(
     async (answers: AnswersT) => {
@@ -58,7 +55,7 @@ export const useSubmitSurveyResponse = ({ from, primaryEntityCode }: LocationSta
       }
 
       return post('submitSurveyResponse', {
-        data: { ...surveyResponseData, answers: { ...answers, ...entityQuestionAutoFill } },
+        data: { ...surveyResponseData, answers },
       });
     },
     {

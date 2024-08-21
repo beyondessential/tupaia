@@ -73,8 +73,8 @@ type EntityQuestionType = SurveyScreenComponent & {
 };
 
 const hasEntityQuestionConfig = (ssc: SurveyScreenComponent): ssc is EntityQuestionType =>
-  (ssc.type === QuestionType.Entity || ssc.type === QuestionType.PrimaryEntity) &&
-  ssc.config?.entity !== undefined;
+  (ssc?.type === QuestionType.Entity || ssc?.type === QuestionType.PrimaryEntity) &&
+  ssc?.config?.entity !== undefined;
 
 export const getParentQuestionId = (question: SurveyScreenComponent) =>
   hasEntityQuestionConfig(question) && question.config.entity?.filter?.parentId?.questionId;
