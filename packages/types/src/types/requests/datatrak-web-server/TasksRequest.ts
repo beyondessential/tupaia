@@ -8,10 +8,15 @@ import { Entity, Survey, Task, TaskStatus } from '../../models';
 
 export type Params = Record<string, never>;
 
+type Assignee = {
+  id?: string | null;
+  name?: string | null;
+};
+
 export type TaskResponse = KeysToCamelCase<
   Partial<Omit<Task, 'entity_id' | 'survey_id' | 'created_at' | 'repeat_schedule' | 'due_date'>>
 > & {
-  assigneeName?: string;
+  assignee?: Assignee;
   taskStatus: TaskStatus | 'overdue' | 'repeating';
   survey: {
     name: Survey['name'];

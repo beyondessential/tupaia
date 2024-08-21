@@ -13,7 +13,7 @@ type Output = Partial<Task> & {
 };
 
 export const formatTaskChanges = (task: Input) => {
-  const { due_date: dueDate, repeat_schedule: repeatSchedule, ...restOfTask } = task;
+  const { due_date: dueDate, repeat_schedule: repeatSchedule, assignee, ...restOfTask } = task;
 
   const taskDetails: Output = restOfTask;
 
@@ -30,6 +30,10 @@ export const formatTaskChanges = (task: Input) => {
 
     taskDetails.due_date = unix;
     taskDetails.repeat_schedule = null;
+  }
+
+  if (assignee !== undefined) {
+    taskDetails.assignee_id = assignee?.value ?? null;
   }
 
   return taskDetails;

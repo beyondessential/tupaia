@@ -68,7 +68,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
           <TaskSummary task={task} />
           <TaskForm onSubmit={handleSubmit(editTask)}>
             <Controller
-              name="assignee_id"
+              name="assignee"
               control={control}
               rules={{ required: 'Required' }}
               defaultValue=""

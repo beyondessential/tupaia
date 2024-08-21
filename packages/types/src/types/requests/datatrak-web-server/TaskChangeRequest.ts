@@ -10,7 +10,11 @@ export type ResBody = {
   message: string;
 };
 export type ReqQuery = Record<string, never>;
-export type ReqBody = Partial<Pick<Task, 'assignee_id' | 'due_date' | 'repeat_schedule'>> & {
+export type ReqBody = Partial<Pick<Task, 'due_date' | 'repeat_schedule'>> & {
   survey_code: Survey['code'];
   comment?: string;
+  assignee?: {
+    value: string;
+    label: string;
+  } | null;
 };

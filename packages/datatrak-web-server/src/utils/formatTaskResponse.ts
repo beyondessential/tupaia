@@ -15,6 +15,7 @@ export type TaskT = Omit<Task, 'created_at' | 'repeat_schedule'> & {
   task_status: TaskStatus | 'overdue' | 'repeating';
   repeat_schedule?: Record<string, unknown> | null;
   task_due_date: Date | null;
+  assignee_name?: string | null;
 };
 
 type FormattedTask = DatatrakWebTasksRequest.TaskResponse;
@@ -30,11 +31,17 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
     'survey.name': surveyName,
     task_status: taskStatus,
     repeat_schedule: repeatSchedule,
+    assignee_id: assigneeId,
+    assignee_name: assigneeName,
     ...rest
   } = task;
 
   const formattedTask = {
     ...rest,
+    assignee: {
+      id: assigneeId,
+      name: assigneeName,
+    },
     entity: {
       id: entityId,
       name: entityName,
