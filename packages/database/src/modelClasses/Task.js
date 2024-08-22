@@ -370,7 +370,7 @@ export class TaskModel extends DatabaseModel {
       // Don't add a comment when repeat schedule is updated and the frequency is the same
       if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
       // Don't add a comment when due date is updated for repeat schedule
-      if (field === 'due_date' && this.repeat_schedule) continue;
+      if (field === 'due_date' && updatedFields.repeat_schedule) continue;
 
       const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
       const formattedNewValue = await formatValue(field, newValue, this.otherModels);

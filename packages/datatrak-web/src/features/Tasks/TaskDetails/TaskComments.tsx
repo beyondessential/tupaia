@@ -9,7 +9,12 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
-import { TaskCommentType, SystemCommentSubType, TaskCommentTemplateVariables } from '@tupaia/types';
+import {
+  TaskCommentType,
+  SystemCommentSubType,
+  TaskCommentTemplateVariables,
+  TaskComment,
+} from '@tupaia/types';
 import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TextField } from '@tupaia/ui-components';
 import { displayDateTime } from '../../../utils';
@@ -143,10 +148,13 @@ const generateSystemComment = templateVariables => {
 
 const SystemComment = ({
   templateVariables,
+  message,
 }: {
   templateVariables: TaskCommentTemplateVariables;
+  message?: TaskComment['message'];
 }) => {
-  const messageText = generateSystemComment(templateVariables);
+  // Handle the case where the message is provided, for backwards compatibility
+  const messageText = message ?? generateSystemComment(templateVariables);
   return <Message color="textSecondary">{messageText}</Message>;
 };
 
@@ -155,17 +163,18 @@ const UserComment = ({ message }: { message: Comments[0]['message'] }) => {
 };
 
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
-  const { createdAt, type, userName } = comment;
+  const { createdAt, type, userName, message, templateVariables } = comment;
 
   return (
     <CommentContainer>
       <CommentDetails>
         {displayDateTime(createdAt)} - {userName}
       </CommentDetails>
+
       {type === TaskCommentType.system ? (
-        <SystemComment templateVariables={comment.templateVariables} />
+        <SystemComment templateVariables={templateVariables} message={message} />
       ) : (
-        <UserComment message={comment.message} />
+        <UserComment message={message} />
       )}
     </CommentContainer>
   );
