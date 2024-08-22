@@ -122,27 +122,15 @@ export class TaskRecord extends DatabaseRecord {
 
       if (existingTask) return;
       const newTask = await this.model.create(where);
-      await newTask.addComment(
-        'Completed this task',
-        commentUserId,
-        this.otherModels.taskComment.types.System,
-      );
-      await this.addComment(
-        'Completed this task',
-        commentUserId,
-        this.otherModels.taskComment.types.System,
-      );
+      await newTask.addCompletedComment(commentUserId);
+      await this.addCompletedComment(commentUserId);
       return;
     }
     await this.model.updateById(id, {
       status: 'completed',
       survey_response_id: surveyResponseId,
     });
-    await this.addComment(
-      'Completed this task',
-      commentUserId,
-      this.otherModels.taskComment.types.System,
-    );
+    await this.addCompletedComment(commentUserId);
   }
 
   /**

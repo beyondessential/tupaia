@@ -97,7 +97,7 @@ const formatValue = (field, value) => {
       return value ?? 'Unassigned';
     }
     case 'repeat_schedule': {
-      if (!value) {
+      if (value === null || value === undefined) {
         return "Doesn't repeat";
       }
 
