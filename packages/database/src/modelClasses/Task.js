@@ -3,31 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { format } from 'date-fns';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
-/**
- *
- * @description Get a human-friendly name for a field. In most cases, this just replaces underscores with spaces, but there are some special cases like 'assignee_id' and 'repeat_schedule' that need to be handled differently
- *
- * @param {string} field
- * @returns {string}
- */
-const getFriendlyFieldName = field => {
-  if (field === 'assignee_id') {
-    return 'assignee';
-  }
-  if (field === 'repeat_schedule') {
-    return 'recurring task';
-  }
-
-  // Default to replacing underscores with spaces
-  return field.replace(/_/g, ' ');
-};
 
 /**
  * @description Format the value of a field for display in a comment. This is used to make the comment more human-readable, and handles special cases like formatting dates and assignee names
@@ -38,35 +19,16 @@ const getFriendlyFieldName = field => {
  * @returns {Promise<string>}
  */
 const formatValue = async (field, value, models) => {
-  switch (field) {
-    case 'assignee_id': {
-      if (!value) {
-        return 'Unassigned';
-      }
-      const assignee = await models.user.findById(value);
-      return assignee.full_name;
-    }
-    case 'repeat_schedule': {
-      if (!value || !value?.frequency) {
-        return "Doesn't repeat";
-      }
-
-      return `${value.frequency.charAt(0).toUpperCase()}${value.frequency.slice(1)}`;
-    }
-    case 'due_date': {
-      // TODO: Currently repeating tasks don't have a due date, so we need to handle null values. In RN-1341 we will add a due date to repeating tasks overnight, so this will need to be updated then
-      if (!value) {
-        return 'No due date';
-      }
-      // Format the date as 'd MMMM yy' (e.g. 1 January 21). This is so that there is no ambiguity between US and other date formats
-      return format(new Date(value), 'd MMMM yy');
-    }
-    default: {
-      // Default to capitalizing the value's first character, and replacing underscores with spaces
-      const words = value.replace(/_/g, ' ');
-      return `${words.charAt(0).toUpperCase()}${words.slice(1)}`;
-    }
+  if (value === null || value === undefined) return null;
+  if (field === 'assignee_id') {
+    const assignee = await models.user.findById(value);
+    return assignee.full_name;
   }
+
+  if (field === 'repeat_schedule') {
+    return value?.frequency ?? null;
+  }
+  return value;
 };
 
 export class TaskRecord extends DatabaseRecord {
@@ -149,29 +111,19 @@ export class TaskRecord extends DatabaseRecord {
 
       // Check for an existing task so that multiple tasks aren't created for the same survey response
       const existingTask = await this.model.findOne(where);
+
       if (!existingTask) {
         const newTask = await this.model.create(where);
-        await newTask.addComment(
-          'Completed this task',
-          commentUserId,
-          this.otherModels.taskComment.types.System,
-        );
-        await this.addComment(
-          `Completed task ${newTask.id}`,
-          commentUserId,
-          this.otherModels.taskComment.types.System,
-        );
+
+        await newTask.addCompletedComment(commentUserId);
+        await this.addCompletedComment(commentUserId);
       }
     } else {
       await this.model.updateById(id, {
-        status: 'completed',
+        status: 'complete',
         survey_response_id: surveyResponseId,
       });
-      await this.addComment(
-        'Completed this task',
-        commentUserId,
-        this.otherModels.taskComment.types.System,
-      );
+      await this.addCompletedComment(commentUserId);
     }
   }
 
@@ -214,14 +166,15 @@ export class TaskRecord extends DatabaseRecord {
    * @param {string} type
    *
    */
-  async addComment(message, userId, type) {
+  async addComment({ message, userId, type, templateVariables }) {
     const user = await this.otherModels.user.findById(userId);
     return this.otherModels.taskComment.create({
       task_id: this.id,
-      message,
       type,
       user_id: userId,
       user_name: user?.full_name ?? null,
+      message,
+      template_variables: templateVariables,
     });
   }
 
@@ -249,21 +202,97 @@ export class TaskRecord extends DatabaseRecord {
         continue;
       }
 
-      const friendlyFieldName = getFriendlyFieldName(field);
       const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
       const formattedNewValue = await formatValue(field, newValue, this.otherModels);
 
-      comments.push(
-        `Changed ${friendlyFieldName} from ${formattedOriginalValue} to ${formattedNewValue}`,
-      );
+      comments.push({
+        field,
+        originalValue: formattedOriginalValue,
+        newValue: formattedNewValue,
+      });
     }
 
     if (!comments.length) return;
 
     await Promise.all(
-      comments.map(message =>
-        this.addComment(message, userId, this.otherModels.taskComment.types.System),
-      ),
+      comments.map(templateVariables => this.addUpdatedComment(templateVariables, userId)),
+    );
+  }
+
+  /**
+   *
+   * @param {string} message
+   * @param {string} userId
+   *
+   * @description Add a user comment to the task
+   */
+  async addUserComment(message, userId) {
+    return this.addComment({
+      message,
+      userId,
+      type: this.otherModels.taskComment.types.User,
+    });
+  }
+
+  /**
+   *
+   * @param {object} templateVariables
+   * @param {string} userId
+   *
+   * @description Add a system comment to the task
+   */
+  async addSystemComment(templateVariables, userId) {
+    return this.addComment({
+      userId,
+      type: this.otherModels.taskComment.types.System,
+      templateVariables,
+    });
+  }
+
+  /**
+   *
+   * @param {string} userId
+   * @param {object} templateVariables
+   *
+   * @description Add a comment when a task is updated
+   */
+  async addUpdatedComment(userId, templateVariables) {
+    return this.addSystemComment(
+      {
+        type: this.otherModels.taskComment.systemCommentTypes.Update,
+        ...templateVariables,
+      },
+      userId,
+    );
+  }
+
+  /**
+   *
+   * @param {string} userId
+   *
+   * @description Add a comment when a task is created
+   */
+  async addCreatedComment(userId) {
+    return this.addSystemComment(
+      {
+        type: this.otherModels.taskComment.systemCommentTypes.Create,
+      },
+      userId,
+    );
+  }
+
+  /**
+   *
+   * @param {string} userId
+   *
+   * @description Add a comment when a task is completed
+   */
+  async addCompletedComment(userId) {
+    return this.addSystemComment(
+      {
+        type: this.otherModels.taskComment.systemCommentTypes.Complete,
+      },
+      userId,
     );
   }
 }
