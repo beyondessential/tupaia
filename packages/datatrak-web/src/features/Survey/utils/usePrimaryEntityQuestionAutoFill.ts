@@ -20,7 +20,6 @@ export const getEntityQuestionAncestorAnswers = (
   const parentQuestion = parentQuestionId ? questionsById[parentQuestionId] : null;
 
   const record = { [question.id as string]: answer.id };
-  console.log('parentQuestion', parentQuestion);
   if (!parentQuestion) return record;
 
   return {
