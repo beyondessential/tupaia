@@ -75,11 +75,7 @@ export class TasksRoute extends Route<TasksRequest> {
       }
 
       if (id === 'repeat_schedule') {
-        this.filters[id] = {
-          comparator: 'ilike',
-          comparisonValue: `${value}%`,
-          castAs: 'text',
-        };
+        this.filters[`repeat_schedule->freq`] = value;
         return;
       }
       this.filters[id] = {

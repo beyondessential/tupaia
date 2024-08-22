@@ -21,11 +21,12 @@ export type EditTaskRequest = Request<
 
 export class EditTaskRoute extends Route<EditTaskRequest> {
   public async buildResponse() {
-    const { body, ctx, params } = this.req;
+    const { body, ctx, params, models } = this.req;
 
     const { taskId } = params;
+    const originalTask = await models.task.findById(taskId);
 
-    const taskDetails = formatTaskChanges(body);
+    const taskDetails = formatTaskChanges(body, originalTask);
 
     return ctx.services.central.updateResource(`tasks/${taskId}`, {}, taskDetails);
   }
