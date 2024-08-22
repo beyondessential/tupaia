@@ -41891,7 +41891,7 @@ export const ProjectConfigSchema = {
 	"additionalProperties": false
 } 
 
-export const SystemCommentTypeSchema = {
+export const SystemCommentSubTypeSchema = {
 	"description": "Tupaia\nCopyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd",
 	"enum": [
 		"complete",

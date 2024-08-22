@@ -100,7 +100,8 @@ export {
   ProjectConfig,
   TaskQuestionConfig,
   UserQuestionConfig,
-  SystemCommentType,
+  SystemCommentSubType,
+  TaskCommentTemplateVariables,
 } from './models-extra';
 export * from './requests';
 export * from './css';

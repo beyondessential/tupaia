@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
-import { TaskCommentType } from '@tupaia/types';
+import { TaskCommentType, SystemCommentSubType, TaskCommentTemplateVariables } from '@tupaia/types';
 import { TextField } from '@tupaia/ui-components';
 import { displayDateTime } from '../../../utils';
 import { SingleTaskResponse } from '../../../types';
@@ -51,14 +51,14 @@ const CommentsInput = styled(TextField).attrs({
 
 const Message = styled(Typography).attrs({
   variant: 'body2',
-})<{
-  $type: TaskCommentType;
-}>`
+})`
   margin-block-start: 0.2rem;
-  font-weight: ${({ theme, $type }) =>
-    $type === TaskCommentType.system
-      ? theme.typography.fontWeightRegular
-      : theme.typography.fontWeightMedium};
+`;
+
+const UserMessage = styled(Message).attrs({
+  color: 'textPrimary',
+})`
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
 const Form = styled(TaskForm)`
@@ -114,35 +114,48 @@ const formatValue = (field, value) => {
 };
 
 const generateSystemComment = templateVariables => {
-  const { type, taskId } = templateVariables;
-  if (type === 'complete') {
-    if (taskId) {
-      return `Completed task ${taskId}`;
-    }
+  const { type } = templateVariables;
+  if (type === SystemCommentSubType.complete) {
     return 'Completed this task';
   }
-  if (type === 'create') {
-    return `Created this task`;
+  if (type === SystemCommentSubType.create) {
+    return 'Created this task';
   }
 
   const { originalValue, newValue, field } = templateVariables;
   const friendlyFieldName = getFriendlyFieldName(field);
   const formattedOriginalValue = formatValue(field, originalValue);
   const formattedNewValue = formatValue(field, newValue);
+  // generate a comment for the change
   return `Changed ${friendlyFieldName} from ${formattedOriginalValue} to ${formattedNewValue}`;
 };
 
+const SystemComment = ({
+  templateVariables,
+}: {
+  templateVariables: TaskCommentTemplateVariables;
+}) => {
+  const messageText = generateSystemComment(templateVariables);
+  return <Message color="textSecondary">{messageText}</Message>;
+};
+
+const UserComment = ({ message }: { message: Comments[0]['message'] }) => {
+  return <UserMessage>{message}</UserMessage>;
+};
+
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
-  const { createdAt, templateVariables, type, userName, message } = comment;
-  const messageText = message ?? generateSystemComment(templateVariables);
+  const { createdAt, type, userName } = comment;
+
   return (
     <CommentContainer>
       <CommentDetails>
         {displayDateTime(createdAt)} - {userName}
       </CommentDetails>
-      <Message color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'} $type={type}>
-        {messageText}
-      </Message>
+      {type === TaskCommentType.system ? (
+        <SystemComment templateVariables={comment.templateVariables} />
+      ) : (
+        <UserComment message={comment.message} />
+      )}
     </CommentContainer>
   );
 };

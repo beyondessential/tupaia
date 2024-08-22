@@ -5,25 +5,25 @@ import { Task } from '../models';
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-export enum SystemCommentType {
+export enum SystemCommentSubType {
   update = 'update',
   create = 'create',
   complete = 'complete',
 }
 
 export type TaskUpdateCommentTemplateVariables = {
-  type: SystemCommentType.update;
+  type: SystemCommentSubType.update;
   originalValue?: string | number;
   newValue?: string | number;
   field?: string;
 };
 
 export type TaskCreateCommentTemplateVariables = {
-  type: SystemCommentType.create;
+  type: SystemCommentSubType.create;
 };
 
 export type TaskCompletedCommentTemplateVariables = {
-  type: SystemCommentType.complete;
+  type: SystemCommentSubType.complete;
   taskId?: Task['id'];
 };
 
