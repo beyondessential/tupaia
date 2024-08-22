@@ -26,7 +26,7 @@ const formatValue = async (field, value, models) => {
   }
 
   if (field === 'repeat_schedule') {
-    return value?.frequency ?? null;
+    return value?.freq ?? null;
   }
   return value;
 };

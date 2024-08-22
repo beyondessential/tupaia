@@ -10,12 +10,14 @@ import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { TaskCommentType, SystemCommentSubType, TaskCommentTemplateVariables } from '@tupaia/types';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TextField } from '@tupaia/ui-components';
 import { displayDateTime } from '../../../utils';
 import { SingleTaskResponse } from '../../../types';
 import { TaskForm } from '../TaskForm';
 import { Button } from '../../../components';
 import { useCreateTaskComment } from '../../../api';
+import { capsToSentenceCase } from '../utils';
 
 const TaskCommentsDisplayContainer = styled.div`
   width: 100%;
@@ -99,7 +101,16 @@ const formatValue = (field, value) => {
         return "Doesn't repeat";
       }
 
-      return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+      const frequency = Object.keys(RRULE_FREQUENCIES).find(
+        key => RRULE_FREQUENCIES[key] === value,
+      );
+
+      if (!frequency) {
+        return "Doesn't repeat";
+      }
+
+      // format the frequency to be more human-readable
+      return capsToSentenceCase(frequency);
     }
     case 'due_date': {
       return value ? format(new Date(value), 'do MMMM yy') : 'No due date';

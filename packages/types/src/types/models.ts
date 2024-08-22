@@ -14,6 +14,7 @@ import { EntityAttributes } from './models-extra';
 import { UserAccountPreferences } from './models-extra';
 import { ProjectConfig } from './models-extra';
 import { TaskCommentTemplateVariables } from './models-extra';
+import { RepeatSchedule } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -1543,7 +1544,7 @@ export interface Task {
   'initial_request_id'?: string | null;
   'overdue_email_sent'?: Date | null;
   'parent_task_id'?: string | null;
-  'repeat_schedule'?: {} | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
@@ -1556,7 +1557,7 @@ export interface TaskCreate {
   'initial_request_id'?: string | null;
   'overdue_email_sent'?: Date | null;
   'parent_task_id'?: string | null;
-  'repeat_schedule'?: {} | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
@@ -1570,7 +1571,7 @@ export interface TaskUpdate {
   'initial_request_id'?: string | null;
   'overdue_email_sent'?: Date | null;
   'parent_task_id'?: string | null;
-  'repeat_schedule'?: {} | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id'?: string;
   'survey_response_id'?: string | null;
