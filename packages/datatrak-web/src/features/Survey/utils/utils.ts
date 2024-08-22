@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { EntityQuestionConfig, QuestionType } from '@tupaia/types';
+import { QuestionType } from '@tupaia/types';
 import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 
 const validateSurveyComponent = component => {
@@ -68,16 +68,9 @@ export const getErrorsByScreen = (
   );
 };
 
-type EntityQuestionType = SurveyScreenComponent & {
-  config: { entity: EntityQuestionConfig };
+export const getParentQuestionId = (question: SurveyScreenComponent) => {
+  return question?.config?.entity?.filter?.parentId?.questionId;
 };
-
-const hasEntityQuestionConfig = (ssc: SurveyScreenComponent): ssc is EntityQuestionType =>
-  (ssc?.type === QuestionType.Entity || ssc?.type === QuestionType.PrimaryEntity) &&
-  ssc?.config?.entity !== undefined;
-
-export const getParentQuestionId = (question: SurveyScreenComponent) =>
-  hasEntityQuestionConfig(question) && question.config.entity?.filter?.parentId?.questionId;
 
 // Get the parent question ids recursively for the primary entity question
 export const getPrimaryEntityParentQuestionIds = (

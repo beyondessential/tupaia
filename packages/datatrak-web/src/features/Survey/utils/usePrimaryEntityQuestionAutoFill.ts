@@ -8,18 +8,19 @@ import { getParentQuestionId } from './utils';
 import { SurveyScreenComponent, Entity } from '../../../types';
 
 // Get the parent question ancestors recursively for the primary entity question
-const getEntityQuestionAncestorAnswers = (
+export const getEntityQuestionAncestorAnswers = (
   question: SurveyScreenComponent,
   questionsById: Record<string, SurveyScreenComponent>,
   ancestorsByType: Record<string, Entity>,
 ): Record<string, string> => {
-  const ancestor = ancestorsByType[question?.config?.entity?.filter?.type?.[0] ?? ''];
-  if (!ancestor) return {};
+  const answer = ancestorsByType[question?.config?.entity?.filter?.type?.[0] ?? ''];
+  if (!answer) return {};
 
   const parentQuestionId = getParentQuestionId(question);
   const parentQuestion = parentQuestionId ? questionsById[parentQuestionId] : null;
 
-  const record = { [question.id as string]: ancestor.id };
+  const record = { [question.id as string]: answer.id };
+  console.log('parentQuestion', parentQuestion);
   if (!parentQuestion) return record;
 
   return {
