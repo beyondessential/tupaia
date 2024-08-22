@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { format } from 'date-fns';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
@@ -76,15 +77,71 @@ const CommentDetails = styled(Typography).attrs({
 
 type Comments = SingleTaskResponse['comments'];
 
+const getFriendlyFieldName = field => {
+  if (field === 'assignee_id') {
+    return 'assignee';
+  }
+  if (field === 'repeat_schedule') {
+    return 'recurring task';
+  }
+
+  // Default to replacing underscores with spaces
+  return field.replace(/_/g, ' ');
+};
+
+const formatValue = (field, value) => {
+  switch (field) {
+    case 'assignee_id': {
+      return value ?? 'Unassigned';
+    }
+    case 'repeat_schedule': {
+      if (!value) {
+        return "Doesn't repeat";
+      }
+
+      return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+    }
+    case 'due_date': {
+      return value ? format(new Date(value), 'do MMMM yy') : 'No due date';
+    }
+    default: {
+      if (!value) return 'No value';
+      // Default to capitalizing the value's first character, and replacing underscores with spaces
+      const words = value.replace(/_/g, ' ');
+      return `${words.charAt(0).toUpperCase()}${words.slice(1)}`;
+    }
+  }
+};
+
+const generateSystemComment = templateVariables => {
+  const { type, taskId } = templateVariables;
+  if (type === 'complete') {
+    if (taskId) {
+      return `Completed task ${taskId}`;
+    }
+    return 'Completed this task';
+  }
+  if (type === 'create') {
+    return `Created this task`;
+  }
+
+  const { originalValue, newValue, field } = templateVariables;
+  const friendlyFieldName = getFriendlyFieldName(field);
+  const formattedOriginalValue = formatValue(field, originalValue);
+  const formattedNewValue = formatValue(field, newValue);
+  return `Changed ${friendlyFieldName} from ${formattedOriginalValue} to ${formattedNewValue}`;
+};
+
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
-  const { createdAt, userName, message, type } = comment;
+  const { createdAt, templateVariables, type, userName, message } = comment;
+  const messageText = message ?? generateSystemComment(templateVariables);
   return (
     <CommentContainer>
       <CommentDetails>
         {displayDateTime(createdAt)} - {userName}
       </CommentDetails>
       <Message color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'} $type={type}>
-        {message}
+        {messageText}
       </Message>
     </CommentContainer>
   );

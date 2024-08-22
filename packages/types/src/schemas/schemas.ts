@@ -41891,6 +41891,150 @@ export const ProjectConfigSchema = {
 	"additionalProperties": false
 } 
 
+export const SystemCommentTypeSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd",
+	"enum": [
+		"complete",
+		"create",
+		"update"
+	],
+	"type": "string"
+} 
+
+export const TaskUpdateCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"update"
+			]
+		},
+		"originalValue": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"newValue": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"field": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCreateCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"create"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCompletedCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"complete"
+			]
+		},
+		"taskId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCommentTemplateVariablesSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"update"
+					]
+				},
+				"originalValue": {
+					"type": [
+						"string",
+						"number"
+					]
+				},
+				"newValue": {
+					"type": [
+						"string",
+						"number"
+					]
+				},
+				"field": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"create"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"complete"
+					]
+				},
+				"taskId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		}
+	]
+} 
+
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -86061,6 +86205,73 @@ export const TaskCommentSchema = {
 		"task_id": {
 			"type": "string"
 		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
 		"type": {
 			"enum": [
 				"system",
@@ -86079,8 +86290,8 @@ export const TaskCommentSchema = {
 	"required": [
 		"created_at",
 		"id",
-		"message",
 		"task_id",
+		"template_variables",
 		"type",
 		"user_name"
 	]
@@ -86099,6 +86310,73 @@ export const TaskCommentCreateSchema = {
 		"task_id": {
 			"type": "string"
 		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
 		"type": {
 			"enum": [
 				"system",
@@ -86115,7 +86393,6 @@ export const TaskCommentCreateSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"message",
 		"task_id",
 		"user_name"
 	]
@@ -86136,6 +86413,73 @@ export const TaskCommentUpdateSchema = {
 		},
 		"task_id": {
 			"type": "string"
+		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
 		},
 		"type": {
 			"enum": [

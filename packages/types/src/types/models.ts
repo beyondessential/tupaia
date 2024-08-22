@@ -13,6 +13,7 @@ import { MapOverlayConfig } from './models-extra';
 import { EntityAttributes } from './models-extra';
 import { UserAccountPreferences } from './models-extra';
 import { ProjectConfig } from './models-extra';
+import { TaskCommentTemplateVariables } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -1577,16 +1578,18 @@ export interface TaskUpdate {
 export interface TaskComment {
   'created_at': Date;
   'id': string;
-  'message': string;
+  'message'?: string | null;
   'task_id': string;
+  'template_variables': TaskCommentTemplateVariables;
   'type': TaskCommentType;
   'user_id'?: string | null;
   'user_name': string;
 }
 export interface TaskCommentCreate {
   'created_at'?: Date;
-  'message': string;
+  'message'?: string | null;
   'task_id': string;
+  'template_variables'?: TaskCommentTemplateVariables;
   'type'?: TaskCommentType;
   'user_id'?: string | null;
   'user_name': string;
@@ -1594,8 +1597,9 @@ export interface TaskCommentCreate {
 export interface TaskCommentUpdate {
   'created_at'?: Date;
   'id'?: string;
-  'message'?: string;
+  'message'?: string | null;
   'task_id'?: string;
+  'template_variables'?: TaskCommentTemplateVariables;
   'type'?: TaskCommentType;
   'user_id'?: string | null;
   'user_name'?: string;

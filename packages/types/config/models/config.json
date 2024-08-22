@@ -23,7 +23,8 @@
     "public.entity.attributes": "EntityAttributes",
     "public.user_account.preferences": "UserAccountPreferences",
     "public.dashboard_relation.entity_types": "EntityType[]",
-    "public.project.config": "ProjectConfig"
+    "public.project.config": "ProjectConfig",
+    "public.task_comment.template_variables": "TaskCommentTemplateVariables"
   },
   "typeMap": {
     "string": ["geography"],
@@ -37,7 +38,8 @@
       "MapOverlayConfig": "./models-extra",
       "EntityAttributes": "./models-extra",
       "UserAccountPreferences": "./models-extra",
-      "ProjectConfig": "./models-extra"
+      "ProjectConfig": "./models-extra",
+      "TaskCommentTemplateVariables": "./models-extra"
     }
   }
 }

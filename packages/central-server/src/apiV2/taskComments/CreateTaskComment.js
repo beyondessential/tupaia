@@ -23,8 +23,13 @@ export class CreateTaskComment extends CreateHandler {
   async createRecord() {
     return this.models.wrapInTransaction(async transactingModels => {
       const task = await transactingModels.task.findById(this.parentRecordId);
-      const { message, type } = this.newRecordData;
-      const newComment = await task.addComment(message, this.req.user.id, type);
+      const { message, type, templateVariables } = this.newRecordData;
+      const newComment = await task.addComment({
+        message,
+        userId: this.req.user.id,
+        type,
+        templateVariables,
+      });
       return { id: newComment.id };
     });
   }
