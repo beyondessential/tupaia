@@ -24,7 +24,8 @@
     "public.user_account.preferences": "UserAccountPreferences",
     "public.dashboard_relation.entity_types": "EntityType[]",
     "public.project.config": "ProjectConfig",
-    "public.task_comment.template_variables": "TaskCommentTemplateVariables"
+    "public.task_comment.template_variables": "TaskCommentTemplateVariables",
+    "public.task.repeat_schedule": "RepeatSchedule"
   },
   "typeMap": {
     "string": ["geography"],
@@ -39,7 +40,8 @@
       "EntityAttributes": "./models-extra",
       "UserAccountPreferences": "./models-extra",
       "ProjectConfig": "./models-extra",
-      "TaskCommentTemplateVariables": "./models-extra"
+      "TaskCommentTemplateVariables": "./models-extra",
+      "RepeatSchedule": "./models-extra"
     }
   }
 }

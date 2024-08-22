@@ -12,7 +12,7 @@ import { LoadingContainer } from '@tupaia/ui-components';
 import { useEditTask, useSurveyResponse } from '../../../api';
 import { displayDate } from '../../../utils';
 import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
-import { SingleTaskResponse } from '../../../types';
+import { SingleTaskResponse } from '../../../types'; 
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
@@ -142,7 +142,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const generateDefaultValues = (task: SingleTaskResponse) => {
     return {
       due_date: task.taskDueDate ?? null,
-      repeat_schedule: task.repeatSchedule?.frequency ?? null,
+      repeat_frequency: task.repeatSchedule?.freq ?? null,
       assignee: task.assignee?.id ? task.assignee : null,
     };
   };
@@ -221,7 +221,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
               </ItemWrapper>
               <ItemWrapper>
                 <Controller
-                  name="repeat_schedule"
+                  name="repeat_frequency"
                   control={control}
                   render={({ value, onChange }) => (
                     <RepeatScheduleInput

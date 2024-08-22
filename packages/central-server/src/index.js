@@ -25,7 +25,7 @@ import { startSyncWithMs1 } from './ms1';
 import { startSyncWithKoBo } from './kobo';
 import { startFeedScraper } from './social';
 import { createApp } from './createApp';
-import { TaskOverdueChecker } from './scheduledTasks';
+import { TaskOverdueChecker, RepeatingTaskDueDateHandler } from './scheduledTasks';
 import winston from './log';
 import { configureEnv } from './configureEnv';
 
@@ -74,6 +74,7 @@ configureEnv();
    * Scheduled tasks
    */
   new TaskOverdueChecker(models).init();
+  new RepeatingTaskDueDateHandler(models).init();
 
   /**
    * Set up actual app with routes etc.

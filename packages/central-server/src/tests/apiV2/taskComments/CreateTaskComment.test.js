@@ -12,6 +12,7 @@ import {
 } from '@tupaia/database';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 
 describe('Permissions checker for CreateTaskComment', async () => {
   const BES_ADMIN_POLICY = {
@@ -101,7 +102,9 @@ describe('Permissions checker for CreateTaskComment', async () => {
         entity_id: facilities[1].id,
         assignee_id: assignee.id,
         due_date: null,
-        repeat_schedule: '{}',
+        repeat_schedule: {
+          freq: RRULE_FREQUENCIES.DAILY,
+        },
         status: null,
       },
     ];

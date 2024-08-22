@@ -106,6 +106,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     survey_code: null,
     entity_id: null,
     due_date: defaultDueDate,
+    repeat_frequency: null,
     repeat_schedule: null,
     assignee: null,
   };
@@ -262,7 +263,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                   }}
                 />
                 <Controller
-                  name="repeat_schedule"
+                  name="repeat_frequency"
                   control={control}
                   render={({ onChange, value }) => (
                     <RepeatScheduleInput value={value} onChange={onChange} dueDate={dueDate} />

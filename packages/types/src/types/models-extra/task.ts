@@ -1,9 +1,9 @@
-import { Task } from '../models';
-
 /**
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
+import { Task } from '../models';
 
 export enum SystemCommentSubType {
   update = 'update',
@@ -31,3 +31,11 @@ export type TaskCommentTemplateVariables =
   | TaskUpdateCommentTemplateVariables
   | TaskCreateCommentTemplateVariables
   | TaskCompletedCommentTemplateVariables;
+
+export type RepeatSchedule = Record<string, unknown> & {
+  freq?: number;
+  interval?: number;
+  bymonthday?: number | number[] | null;
+  bysetpos?: number | number[] | null;
+  dtstart?: Date | null;
+};

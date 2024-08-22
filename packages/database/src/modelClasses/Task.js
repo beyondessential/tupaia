@@ -94,6 +94,7 @@ export class TaskRecord extends DatabaseRecord {
       entity_id: entityId,
       repeat_schedule: repeatSchedule,
       assignee_id: assigneeId,
+      due_date: dueDate,
       id,
     } = this;
 
@@ -112,25 +113,36 @@ export class TaskRecord extends DatabaseRecord {
         repeat_schedule: repeatSchedule,
         status: this.statusTypes.Completed,
         survey_response_id: surveyResponseId,
+        due_date: dueDate,
         parent_task_id: id,
       };
 
       // Check for an existing task so that multiple tasks aren't created for the same survey response
       const existingTask = await this.model.findOne(where);
 
-      if (!existingTask) {
-        const newTask = await this.model.create(where);
-
-        await newTask.addCompletedComment(commentUserId);
-        await this.addCompletedComment(commentUserId);
-      }
-    } else {
-      await this.model.updateById(id, {
-        status: this.statusTypes.Completed,
-        survey_response_id: surveyResponseId,
-      });
-      await this.addCompletedComment(commentUserId);
+      if (existingTask) return;
+      const newTask = await this.model.create(where);
+      await newTask.addComment(
+        'Completed this task',
+        commentUserId,
+        this.otherModels.taskComment.types.System,
+      );
+      await this.addComment(
+        'Completed this task',
+        commentUserId,
+        this.otherModels.taskComment.types.System,
+      );
+      return;
     }
+    await this.model.updateById(id, {
+      status: 'completed',
+      survey_response_id: surveyResponseId,
+    });
+    await this.addComment(
+      'Completed this task',
+      commentUserId,
+      this.otherModels.taskComment.types.System,
+    );
   }
 
   /**
@@ -365,13 +377,12 @@ export class TaskModel extends DatabaseModel {
       if (!fieldsToCreateCommentsFor.includes(field)) continue;
       const originalValue = originalTask[field];
       // If the field hasn't actually changed, don't add a comment
+      // If the field hasn't actually changed, don't add a comment
       if (originalValue === newValue) continue;
-
-      // If the due date is changed and the task is repeating, don't add a comment, because this just means that the repeat schedule is being updated, not that the due date is being changed. This will likely change as part of RN-1341
-      // TODO: re-evaulate this when RN-1341 is implemented
-      if (field === 'due_date' && updatedFields.repeat_schedule) {
-        continue;
-      }
+      // Don't add a comment when repeat schedule is updated and the frequency is the same
+      if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
+      // Don't add a comment when due date is updated for repeat schedule
+      if (field === 'due_date' && this.repeat_schedule) continue;
 
       const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
       const formattedNewValue = await formatValue(field, newValue, this.otherModels);

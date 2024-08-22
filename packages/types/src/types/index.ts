@@ -102,6 +102,7 @@ export {
   UserQuestionConfig,
   SystemCommentSubType,
   TaskCommentTemplateVariables,
+  RepeatSchedule,
 } from './models-extra';
 export * from './requests';
 export * from './css';

@@ -450,50 +450,8 @@ export const constructForSingle = (models, recordType) => {
         entity_id: [constructRecordExistsWithId(models.entity)],
         survey_id: [constructRecordExistsWithId(models.survey)],
         assignee_id: [constructIsEmptyOr(constructRecordExistsWithId(models.user))],
-        due_date: [
-          (value, { repeat_schedule: repeatSchedule }) => {
-            if (repeatSchedule) {
-              if (value) {
-                throw new Error('Recurring tasks must not have a due date');
-              }
-              return true;
-            }
-            if (!value) throw new Error('Due date is required for non-recurring tasks');
-            return true;
-          },
-        ],
-        repeat_schedule: [
-          (value, { due_date: dueDate }) => {
-            // If the task has a due date, the repeat schedule is empty
-            if (dueDate) {
-              if (value) {
-                throw new Error('Non-recurring tasks must not have a repeat schedule');
-              }
-              return true;
-            }
-
-            if (!value) {
-              throw new Error('Repeat schedule is required for recurring tasks');
-            }
-            return true;
-          },
-        ],
-        status: [
-          (value, { repeat_schedule: repeatSchedule }) => {
-            // If the task is recurring, the status is empty
-            if (repeatSchedule) {
-              if (value) {
-                throw new Error('Recurring tasks cannot have a status');
-              }
-              return true;
-            }
-
-            if (!value) {
-              throw new Error('Status is required for non-recurring tasks');
-            }
-            return true;
-          },
-        ],
+        due_date: [hasContent],
+        status: [hasContent],
       };
 
     default:
