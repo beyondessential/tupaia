@@ -34,6 +34,12 @@ const formatValue = async (field, value, models) => {
 export class TaskRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.TASK;
 
+  statusTypes = {
+    ToDo: 'to_do',
+    Completed: 'completed',
+    Cancelled: 'cancelled',
+  };
+
   static joins = [
     {
       joinWith: RECORDS.ENTITY,
@@ -104,7 +110,7 @@ export class TaskRecord extends DatabaseRecord {
         survey_id: surveyId,
         entity_id: entityId,
         repeat_schedule: repeatSchedule,
-        status: 'completed',
+        status: this.statusTypes.Completed,
         survey_response_id: surveyResponseId,
         parent_task_id: id,
       };
@@ -120,7 +126,7 @@ export class TaskRecord extends DatabaseRecord {
       }
     } else {
       await this.model.updateById(id, {
-        status: 'complete',
+        status: this.statusTypes.Completed,
         survey_response_id: surveyResponseId,
       });
       await this.addCompletedComment(commentUserId);
