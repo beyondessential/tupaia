@@ -8,6 +8,7 @@ import camelcaseKeys from 'camelcase-keys';
 
 export type TaskT = Omit<Task, 'created_at'> & {
   'entity.name': Entity['name'];
+  'entity.code': Entity['code'];
   'entity.parent_name': Entity['name'];
   'entity.country_code': Country['code'];
   'survey.code': Survey['code'];
@@ -24,6 +25,7 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
   const {
     entity_id: entityId,
     'entity.name': entityName,
+    'entity.code': entityCode,
     'entity.parent_name': entityParentName,
     'entity.country_code': entityCountryCode,
     'survey.code': surveyCode,
@@ -45,6 +47,7 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
     entity: {
       id: entityId,
       name: entityName,
+      code: entityCode,
       countryCode: entityCountryCode,
       parentName: entityParentName,
     },

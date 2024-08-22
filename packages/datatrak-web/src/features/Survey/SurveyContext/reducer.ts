@@ -19,7 +19,8 @@ export type SurveyFormContextType = {
   screenDetail?: string | null;
   displayQuestions: SurveyScreenComponent[];
   sideMenuOpen?: boolean;
-  isReviewScreen?: boolean;
+  isReviewScreen: boolean;
+  isResponseScreen: boolean;
   surveyScreens?: SurveyScreen[];
   visibleScreens?: SurveyScreen[];
   surveyStartTime?: string;
