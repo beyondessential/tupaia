@@ -88290,6 +88290,9 @@ export const TaskResponseSchema = {
 				"id": {
 					"type": "string"
 				},
+				"code": {
+					"type": "string"
+				},
 				"countryCode": {
 					"type": "string"
 				},
@@ -88299,6 +88302,7 @@ export const TaskResponseSchema = {
 			},
 			"additionalProperties": false,
 			"required": [
+				"code",
 				"countryCode",
 				"id",
 				"name"
