@@ -107,50 +107,64 @@ const checkApiClientAuthentication = async req => {
  * and if valid, returns a new JWT token that can be used for accessing the API
  * Override grants to do recursive authentication, for example when creating a new user.
  */
-
-const maxConsecutiveFailsByUsernameAndIP = 10;
-
-const getUsernameIPkey = (username, ip) => `${username}_${ip}`;
+const maxConsecutiveFailsByUsername = 5;
 
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
-  const knexInstance = req.database;
 
-  const limiterConsecutiveFailsByUsernameAndIP = new RateLimiterPostgres({
+  const username = req.body.emailAddress;
+  const knexInstance = req.database.connection;
+
+  const limiterConsecutiveFailsByUsername = new RateLimiterPostgres({
+    tableCreated: true,
+    tableName: 'login_attempts',
     storeClient: knexInstance,
     storeType: `knex`,
-    keyPrefix: 'login_fail_consecutive_username_and_ip',
-    points: maxConsecutiveFailsByUsernameAndIP,
-    duration: 60 * 60 * 24 * 90, // Store number for 90 days since first fail
-    blockDuration: 60 * 60, // Block for 1 hour
+    keyPrefix: 'login_fail_consecutive_username',
+    points: maxConsecutiveFailsByUsername,
+    duration: 60 * 60 * 3, // Store number for three hours since first fail
+    blockDuration: 60 * 15, // Block for 15 minutes
   });
 
-  const ipAddr = req.ip;
-  const usernameIPkey = getUsernameIPkey(req.body.email, ipAddr);
+  const rlResUsername = await limiterConsecutiveFailsByUsername.get(username);
 
-  console.log('usernameIPkey', usernameIPkey);
+  console.log('consumedPoints', rlResUsername?.consumedPoints);
 
-  const [resUsernameAndIP] = await Promise.all([
-    limiterConsecutiveFailsByUsernameAndIP.get(usernameIPkey),
-  ]);
+  if (rlResUsername?.consumedPoints > maxConsecutiveFailsByUsername) {
+    const retrySecs = Math.round(rlResUsername.msBeforeNext / 1000) || 1;
+    res.set('Retry-After', String(retrySecs));
+    return respond(res, { message: 'Too Many Requests' }, 429);
+  }
+  /** ==============================
+   * Check if the user is authorised
+   * ============================== */
+  try {
+    const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
+    const { user: apiClientUser } = await checkApiClientAuthentication(req);
+    const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
+      req.models,
+      accessPolicy,
+    );
 
-  console.log('resUsernameAndIP', resUsernameAndIP);
-  console.log('consumedPoints', resUsernameAndIP.consumedPoints);
+    const authorizationObject = await getAuthorizationObject({
+      refreshToken,
+      user,
+      accessPolicy,
+      apiClientUser,
+      permissionGroups: permissionGroupsByCountryId,
+    });
 
-  const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
-  const { user: apiClientUser } = await checkApiClientAuthentication(req);
+    if (rlResUsername !== null && rlResUsername.consumedPoints > 0) {
+      // Reset on successful authorisation
+      await limiterConsecutiveFailsByUsername.delete(username);
+    }
 
-  const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
-    req.models,
-    accessPolicy,
-  );
-  const authorizationObject = await getAuthorizationObject({
-    refreshToken,
-    user,
-    accessPolicy,
-    apiClientUser,
-    permissionGroups: permissionGroupsByCountryId,
-  });
+    respond(res, authorizationObject, 200);
 
-  respond(res, authorizationObject);
+    console.log('authorizationObject', authorizationObject);
+  } catch (error) {
+    await limiterConsecutiveFailsByUsername.consume(username);
+    console.log('authorizationObject ERROR', error);
+    throw error;
+  }
 }
