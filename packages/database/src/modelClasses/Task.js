@@ -215,7 +215,7 @@ export class TaskRecord extends DatabaseRecord {
     if (!comments.length) return;
 
     await Promise.all(
-      comments.map(templateVariables => this.addUpdatedComment(templateVariables, userId)),
+      comments.map(templateVariables => this.addUpdatedComment(userId, templateVariables)),
     );
   }
 
@@ -367,6 +367,20 @@ export class TaskModel extends DatabaseModel {
     return this.count(queryConditions, {
       multiJoin: customQueryOptions.multiJoin,
     });
+  }
+
+  /**
+   *
+   * @param {object} fields
+   * @param {string} [createdBy]
+   * @returns Task
+   */
+  async create(fields, createdBy) {
+    const task = await super.create(fields);
+    if (createdBy) {
+      await task.addCreatedComment(createdBy);
+    }
+    return task;
   }
 
   customColumnSelectors = {
