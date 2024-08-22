@@ -39,6 +39,11 @@ export const formatTaskChanges = (task: Input, originalTask?: Task) => {
     taskDetails.repeat_schedule = rrule.origOptions;
   }
 
+  // if frequency is explicitly set to null, set repeat_schedule to null
+  if (frequency === null) {
+    taskDetails.repeat_schedule = null;
+  }
+
   // if there is a due date, convert it to unix
   if (dueDate) {
     const endOfDay = convertDateToEndOfDay(dueDate);
