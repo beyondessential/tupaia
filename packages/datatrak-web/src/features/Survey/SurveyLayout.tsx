@@ -91,7 +91,7 @@ export const SurveyLayout = () => {
 
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurveyResponse, isLoading: isSubmittingSurveyResponse } =
-    useSubmitSurveyResponse({ from });
+    useSubmitSurveyResponse(from);
   const { mutate: resubmitSurveyResponse, isLoading: isResubmittingSurveyResponse } =
     useResubmitSurveyResponse();
   const { back, next } = useSurveyRouting(numberOfScreens);

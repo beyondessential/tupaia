@@ -35,11 +35,7 @@ export const useSurveyResponseData = () => {
   };
 };
 
-interface LocationStateProps {
-  from?: string | undefined;
-}
-
-export const useSubmitSurveyResponse = ({ from }: LocationStateProps) => {
+export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
