@@ -7,6 +7,7 @@ import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { Country, EntityType } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../types';
 import { PermissionGroupRecord } from '@tupaia/server-boilerplate';
+import { API_CLIENT_PERMISSIONS } from '../constants';
 
 const USERS_EXCLUDED_FROM_LIST = [
   'edmofro@gmail.com', // Edwin
@@ -38,16 +39,7 @@ export const getFilteredUsers = async (
     type: EntityType.country,
   });
 
-  // get the user entity permissions for the permission group and its ancestors
-  const userEntityPermissions = await models.userEntityPermission.find({
-    permission_group_id: permissionGroupWithAncestors.map(p => p.id),
-    entity_id: entity.id,
-  });
-
-  const userIds = userEntityPermissions.map(uep => uep.user_id);
-
   const usersFilter = {
-    id: userIds,
     email: { comparator: 'not in', comparisonValue: USERS_EXCLUDED_FROM_LIST },
     [QUERY_CONJUNCTIONS.RAW]: {
       // exclude E2E users and any internal users
@@ -57,6 +49,22 @@ export const getFilteredUsers = async (
 
   if (searchTerm) {
     usersFilter.full_name = { comparator: 'ilike', comparisonValue: `${searchTerm}%` };
+  }
+
+  // if the permission group is a public permission group that every user has access to because of the api client permissions, then everyone has access to the survey, so return all non-internal users
+  if (
+    !API_CLIENT_PERMISSIONS.find(
+      ({ entityCode, permissionGroupName }) =>
+        entityCode === countryCode && permissionGroupName === permissionGroup.name,
+    )
+  ) {
+    // get the user entity permissions for the permission group and its ancestors
+    const userEntityPermissions = await models.userEntityPermission.find({
+      permission_group_id: permissionGroupWithAncestors.map(p => p.id),
+      entity_id: entity.id,
+    });
+
+    usersFilter.id = userEntityPermissions.map(uep => uep.user_id);
   }
 
   const users = await models.user.find(usersFilter, {

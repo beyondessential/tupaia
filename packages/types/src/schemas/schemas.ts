@@ -88154,6 +88154,19 @@ export const EntityResponseSchema = {
 	]
 } 
 
+export const AssigneeSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const TaskResponseSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -88409,8 +88422,17 @@ export const TaskResponseSchema = {
 		"surveyResponseId": {
 			"type": "string"
 		},
-		"assigneeName": {
-			"type": "string"
+		"assignee": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"taskStatus": {
 			"enum": [

@@ -107,7 +107,8 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     entity_id: null,
     due_date: defaultDueDate,
     repeat_frequency: null,
-    assignee_id: null,
+    repeat_schedule: null,
+    assignee: null,
   };
   const formContext = useForm({
     mode: 'onChange',
@@ -272,7 +273,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
               <InputRow>
                 <Controller
-                  name="assignee_id"
+                  name="assignee"
                   control={control}
                   render={({ ref, value, onChange, ...field }) => (
                     <AssigneeInput

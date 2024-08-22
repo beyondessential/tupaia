@@ -59,6 +59,11 @@ const Loader = styled(SpinningLoader)`
   max-width: 100%;
 `;
 
+const Content = styled.div`
+  width: 62rem;
+  max-width: 100%;
+`;
+
 const getSubHeadingText = surveyResponse => {
   if (!surveyResponse) {
     return null;
@@ -101,8 +106,10 @@ const SurveyResponseModalContent = ({
         )}
       </ModalHeader>
       <ModalContentProvider error={error as Error}>
-        {showLoading && <Loader />}
-        {!showLoading && !error && <SurveyReviewSection />}
+        <Content>
+          {showLoading && <Loader />}
+          {!showLoading && !error && <SurveyReviewSection />}
+        </Content>
       </ModalContentProvider>
       <ModalFooter>
         <Button onClick={onClose}>Close</Button>

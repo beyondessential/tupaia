@@ -80,7 +80,12 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
       formData,
     );
 
-    if (primaryEntity && primaryEntityQuestion) {
+    // If there is a primary entity set for the survey, and there is no parent filter set the primary entity
+    if (
+      primaryEntity &&
+      primaryEntityQuestion &&
+      !primaryEntityQuestion?.config?.entity?.filter?.parentId
+    ) {
       initialFormData[primaryEntityQuestion.id as string] = primaryEntity;
     }
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });

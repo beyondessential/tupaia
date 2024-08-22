@@ -10,6 +10,7 @@ import { Paper, Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
 import { useEditTask, useSurveyResponse } from '../../../api';
+import { displayDate } from '../../../utils';
 import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { displayDate } from '../../../utils';
@@ -139,11 +140,14 @@ const InitialRequest = ({ initialRequestId }) => {
 };
 
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
-  const [defaultValues, setDefaultValues] = useState({
-    due_date: task.taskDueDate ?? null,
-    repeat_frequency: task.repeatSchedule?.freq ?? null,
-    assignee_id: task.assigneeId ?? null,
-  });
+  const generateDefaultValues = (task: SingleTaskResponse) => {
+    return {
+      due_date: task.taskDueDate ?? null,
+      repeat_frequency: task.repeatSchedule?.freq ?? null,
+      assignee: task.assignee?.id ? task.assignee : null,
+    };
+  };
+  const [defaultValues, setDefaultValues] = useState(generateDefaultValues(task));
 
   const formContext = useForm({
     mode: 'onChange',
@@ -167,11 +171,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
 
   // Reset form when task changes, i.e after task is saved and the task is re-fetched
   useEffect(() => {
-    const newDefaultValues = {
-      due_date: task.taskDueDate ?? null,
-      repeat_frequency: task.repeatSchedule?.freq ?? null,
-      assignee_id: task.assigneeId ?? null,
-    };
+    const newDefaultValues = generateDefaultValues(task);
 
     setDefaultValues(newDefaultValues);
 
@@ -236,7 +236,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
               </ItemWrapper>
               <ItemWrapper>
                 <Controller
-                  name="assignee_id"
+                  name="assignee"
                   control={control}
                   render={({ value, onChange, ref }) => (
                     <AssigneeInput

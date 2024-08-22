@@ -75,7 +75,9 @@ export const TaskMetadata = ({ task }: { task?: SingleTaskResponse }) => {
       <Row>
         <DataWrapper>
           <Title>Survey</Title>
-          <Value>{survey?.name}</Value>
+          <Value>
+            <Bold>{survey?.name}</Bold>
+          </Value>
         </DataWrapper>
         <CountryWrapper>
           <Pin />

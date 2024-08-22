@@ -12,8 +12,8 @@ import { Survey } from '../../types';
 type User = DatatrakWebUsersRequest.ResBody[0];
 
 interface AssigneeInputProps {
-  value: string | null;
-  onChange: (value: User['id'] | null) => void;
+  value: User | null;
+  onChange: (value: User | null) => void;
   inputRef?: React.Ref<any>;
   countryCode?: Country['code'];
   surveyCode?: Survey['code'];
@@ -24,7 +24,7 @@ interface AssigneeInputProps {
 }
 
 export const AssigneeInput = ({
-  value,
+  value: selectedValue,
   onChange,
   inputRef,
   countryCode,
@@ -38,7 +38,7 @@ export const AssigneeInput = ({
   const { data: users = [], isLoading } = useSurveyUsers(surveyCode, countryCode, searchValue);
 
   const onChangeAssignee = (_e, newSelection: User | null) => {
-    onChange(newSelection?.id ?? null);
+    onChange(newSelection ?? null);
   };
 
   const options =
@@ -48,31 +48,29 @@ export const AssigneeInput = ({
       label: user.name,
     })) ?? [];
 
-  const selection = options.find(option => option.id === value) ?? null;
-
-  // If we programmatically set the value of the input, we need to update the search value
+  //If we programmatically set the value of the input, we need to update the search value
   useEffect(() => {
     // if the selection is the same as the search value, do not update the search value
-    if (selection?.label === searchValue || isLoading) return;
+    if (selectedValue?.name === searchValue || isLoading) return;
 
-    setSearchValue(selection?.label ?? '');
-  }, [JSON.stringify(selection)]);
+    setSearchValue(selectedValue?.name ?? '');
+  }, [JSON.stringify(selectedValue)]);
 
   return (
     <Autocomplete
       label="Assignee"
       options={options}
-      value={selection}
+      value={selectedValue}
       onChange={onChangeAssignee}
       inputRef={inputRef}
       name="assignee"
       onInputChange={throttle((e, newValue) => {
         if (!e) return;
         setSearchValue(newValue);
-      }, 200)}
-      inputValue={selection?.label ?? searchValue}
+      }, 100)}
+      inputValue={selectedValue?.name ?? searchValue}
       getOptionLabel={option => option.label}
-      getOptionSelected={option => option.id === value}
+      getOptionSelected={(option, selected) => option.id === selected?.id}
       placeholder="Search..."
       loading={isLoading}
       required={required}

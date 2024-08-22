@@ -47,7 +47,7 @@ export const GroupedSurveyList = ({
   error,
 }: GroupedSurveyListProps) => {
   const user = useCurrentUserContext();
-  const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.name);
+  const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.code);
   const groupedSurveys =
     surveys
       ?.reduce((acc: ListItemType[], survey: Survey) => {

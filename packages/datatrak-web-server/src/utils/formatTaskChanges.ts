@@ -21,7 +21,7 @@ const convertDateToEndOfDay = (date: Date | number) => {
 };
 
 export const formatTaskChanges = (task: Input, originalTask?: Task) => {
-  const { due_date: dueDate, repeat_frequency: frequency, ...restOfTask } = task;
+  const { due_date: dueDate, repeat_frequency: frequency, assignee, ...restOfTask } = task;
 
   const taskDetails: Output = restOfTask;
 
@@ -45,6 +45,10 @@ export const formatTaskChanges = (task: Input, originalTask?: Task) => {
     const unix = new Date(endOfDay).getTime();
 
     taskDetails.due_date = unix;
+  }
+
+  if (assignee !== undefined) {
+    taskDetails.assignee_id = assignee?.value ?? null;
   }
 
   return taskDetails;

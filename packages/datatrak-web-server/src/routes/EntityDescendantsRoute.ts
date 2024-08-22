@@ -63,6 +63,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },
       searchString,
       fields = DEFAULT_FIELDS,
+      pageSize,
     } = query;
 
     if (isLoggedIn) {
@@ -108,6 +109,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       {
         fields,
         filter,
+        pageSize,
       },
       false,
       !isLoggedIn,
