@@ -179,47 +179,6 @@ export class TaskRecord extends DatabaseRecord {
   }
 
   /**
-   * @description Add system comments when a task is updated. This is used to automatically add comments when certain fields are updated, e.g. due date, assignee, etc.
-   *
-   * @param {object} updatedFields
-   * @param {string} userId
-   */
-  async addSystemCommentsOnUpdate(updatedFields, userId) {
-    const fieldsToCreateCommentsFor = ['due_date', 'repeat_schedule', 'status', 'assignee_id'];
-    const comments = [];
-
-    // Loop through the updated fields and add a comment for each one that has changed
-    for (const [field, newValue] of Object.entries(updatedFields)) {
-      // Only create comments for certain fields
-      if (!fieldsToCreateCommentsFor.includes(field)) continue;
-      const originalValue = this[field];
-      // If the field hasn't actually changed, don't add a comment
-      if (originalValue === newValue) continue;
-
-      // If the due date is changed and the task is repeating, don't add a comment, because this just means that the repeat schedule is being updated, not that the due date is being changed. This will likely change as part of RN-1341
-      // TODO: re-evaulate this when RN-1341 is implemented
-      if (field === 'due_date' && updatedFields.repeat_schedule) {
-        continue;
-      }
-
-      const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
-      const formattedNewValue = await formatValue(field, newValue, this.otherModels);
-
-      comments.push({
-        field,
-        originalValue: formattedOriginalValue,
-        newValue: formattedNewValue,
-      });
-    }
-
-    if (!comments.length) return;
-
-    await Promise.all(
-      comments.map(templateVariables => this.addUpdatedComment(userId, templateVariables)),
-    );
-  }
-
-  /**
    *
    * @param {string} message
    * @param {string} userId
@@ -381,6 +340,64 @@ export class TaskModel extends DatabaseModel {
       await task.addCreatedComment(createdBy);
     }
     return task;
+  }
+
+  /**
+   * @description Add system comments for task updates. This is used to automatically add comments when certain fields are updated, e.g. due date, assignee, etc.
+   *
+   * @param {object} originalTask
+   * @param {object} updatedFields
+   * @param {string} userId
+   */
+  async addSystemCommentsOnUpdate(originalTask, updatedFields, userId) {
+    const fieldsToCreateCommentsFor = ['due_date', 'repeat_schedule', 'status', 'assignee_id'];
+    const comments = [];
+
+    // Loop through the updated fields and add a comment for each one that has changed
+    for (const [field, newValue] of Object.entries(updatedFields)) {
+      // Only create comments for certain fields
+      if (!fieldsToCreateCommentsFor.includes(field)) continue;
+      const originalValue = originalTask[field];
+      // If the field hasn't actually changed, don't add a comment
+      if (originalValue === newValue) continue;
+
+      // If the due date is changed and the task is repeating, don't add a comment, because this just means that the repeat schedule is being updated, not that the due date is being changed. This will likely change as part of RN-1341
+      // TODO: re-evaulate this when RN-1341 is implemented
+      if (field === 'due_date' && updatedFields.repeat_schedule) {
+        continue;
+      }
+
+      const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);
+      const formattedNewValue = await formatValue(field, newValue, this.otherModels);
+
+      comments.push({
+        field,
+        originalValue: formattedOriginalValue,
+        newValue: formattedNewValue,
+      });
+    }
+
+    if (!comments.length) return;
+
+    await Promise.all(
+      comments.map(templateVariables => originalTask.addUpdatedComment(userId, templateVariables)),
+    );
+  }
+
+  /**
+   *
+   * @param {string} id
+   * @param {object} updatedFields
+   * @param {string} [updatedBy]
+   * @returns Task
+   */
+  async updateById(id, updatedFields, updatedBy) {
+    const originalTask = await this.findById(id);
+    const updatedTaskResult = await super.updateById(id, updatedFields);
+    if (updatedBy) {
+      await this.addSystemCommentsOnUpdate(originalTask, updatedFields, updatedBy);
+    }
+    return updatedTaskResult;
   }
 
   customColumnSelectors = {

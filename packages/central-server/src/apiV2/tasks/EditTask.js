@@ -15,12 +15,6 @@ export class EditTask extends EditHandler {
   }
 
   async editRecord() {
-    return this.models.wrapInTransaction(async transactingModels => {
-      const originalTask = await transactingModels.task.findById(this.recordId);
-      const task = await transactingModels.task.updateById(this.recordId, this.updatedFields);
-
-      await originalTask.addSystemCommentsOnUpdate(this.updatedFields, this.req.user.id);
-      return task;
-    });
+    return this.models.task.updateById(this.recordId, this.updatedFields, this.req.user.id);
   }
 }
