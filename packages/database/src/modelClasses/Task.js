@@ -60,6 +60,7 @@ const formatValue = async (field, value, models) => {
         return "Doesn't repeat";
       }
 
+      // Convert the frequency to a more human-friendly format, e.g. 'DAILY' -> 'Daily'
       return `${frequency.charAt(0)}${frequency.slice(1).toLowerCase()}`;
     }
     case 'due_date': {

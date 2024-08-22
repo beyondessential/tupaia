@@ -17,6 +17,7 @@ export const RepeatScheduleFilter = ({ onChange, filter }: RepeatScheduleFilterP
   // if there is a selected status filter and it is not 'repeating', no options should show
   const options = Object.entries(RRULE_FREQUENCIES).map(([key, value]) => ({
     value,
+    //converts the key to a more readable format
     label: `${key.charAt(0)}${key.slice(1).toLowerCase()}`,
   }));
 
