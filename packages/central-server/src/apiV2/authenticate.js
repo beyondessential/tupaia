@@ -2,11 +2,10 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-
 import winston from 'winston';
-
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
+import { RateLimiterPostgres } from 'rate-limiter-flexible';
 import { allowNoPermissions } from '../permissions';
 
 const GRANT_TYPES = {
@@ -108,8 +107,35 @@ const checkApiClientAuthentication = async req => {
  * and if valid, returns a new JWT token that can be used for accessing the API
  * Override grants to do recursive authentication, for example when creating a new user.
  */
+
+const maxConsecutiveFailsByUsernameAndIP = 10;
+
+const getUsernameIPkey = (username, ip) => `${username}_${ip}`;
+
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
+  const knexInstance = req.database;
+
+  const limiterConsecutiveFailsByUsernameAndIP = new RateLimiterPostgres({
+    storeClient: knexInstance,
+    storeType: `knex`,
+    keyPrefix: 'login_fail_consecutive_username_and_ip',
+    points: maxConsecutiveFailsByUsernameAndIP,
+    duration: 60 * 60 * 24 * 90, // Store number for 90 days since first fail
+    blockDuration: 60 * 60, // Block for 1 hour
+  });
+
+  const ipAddr = req.ip;
+  const usernameIPkey = getUsernameIPkey(req.body.email, ipAddr);
+
+  console.log('usernameIPkey', usernameIPkey);
+
+  const [resUsernameAndIP] = await Promise.all([
+    limiterConsecutiveFailsByUsernameAndIP.get(usernameIPkey),
+  ]);
+
+  console.log('resUsernameAndIP', resUsernameAndIP);
+  console.log('consumedPoints', resUsernameAndIP.consumedPoints);
 
   const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
   const { user: apiClientUser } = await checkApiClientAuthentication(req);
