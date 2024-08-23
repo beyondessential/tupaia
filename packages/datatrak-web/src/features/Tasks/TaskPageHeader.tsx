@@ -22,13 +22,12 @@ const BackButton = styled(Button)`
 const Wrapper = styled.div`
   padding-block: 0.7rem;
   display: flex;
-  align-items: center;
+  align-items: self-start;
   padding-inline-end: 2.7rem;
-
   ${({ theme }) => theme.breakpoints.down('xs')} {
     flex-direction: column;
     align-items: flex-start;
-    padding-inline-end: 0;
+    padding-inline-end: 1rem;
   }
 `;
 
@@ -63,7 +62,8 @@ const ContentWrapper = styled.div`
   justify-content: flex-end;
   width: 100%;
   ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline-start: 2.5rem;
+    padding-inline-start: 1rem;
+    flex-direction: column;
   }
 `;
 

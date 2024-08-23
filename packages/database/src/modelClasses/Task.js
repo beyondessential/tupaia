@@ -88,7 +88,13 @@ export class TaskRecord extends DatabaseRecord {
     {
       joinWith: RECORDS.SURVEY,
       joinCondition: ['survey_id', `${RECORDS.SURVEY}.id`],
-      fields: { name: 'survey_name', code: 'survey_code' },
+      fields: { name: 'survey_name', code: 'survey_code', project_id: 'project_id' },
+    },
+    {
+      joinWith: RECORDS.SURVEY_RESPONSE,
+      joinType: JOIN_TYPES.LEFT,
+      joinCondition: ['survey_response_id', `${RECORDS.SURVEY_RESPONSE}.id`],
+      fields: { data_time: 'data_time', timezone: 'timezone' },
     },
   ];
 

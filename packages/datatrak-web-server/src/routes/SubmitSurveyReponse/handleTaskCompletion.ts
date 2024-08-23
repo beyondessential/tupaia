@@ -30,7 +30,7 @@ export const handleTaskCompletion = async (
         },
       },
       [QUERY_CONJUNCTIONS.RAW]: {
-        sql: `(survey_id = ? AND entity_id = ? AND created_at <= ?)`,
+        sql: `(task.survey_id = ? AND task.entity_id = ? AND task.created_at <= ?)`,
         parameters: [surveyId, entityId, dataTime],
       },
     },

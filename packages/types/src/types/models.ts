@@ -1546,6 +1546,9 @@ export interface Task {
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
+  'project_id'?: string | null;
+  'data_time'?: Date | null;
+  'timezone'?: string | null;
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;

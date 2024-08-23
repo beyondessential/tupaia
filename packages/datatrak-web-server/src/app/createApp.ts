@@ -51,6 +51,8 @@ import {
   SurveysRoute,
   SurveyUsersRequest,
   SurveyUsersRoute,
+  TaskMetricsRequest,
+  TaskMetricsRoute,
   TaskRequest,
   TaskRoute,
   TasksRequest,
@@ -89,6 +91,7 @@ export async function createApp() {
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
+    .get<TaskMetricsRequest>('taskMetrics/:projectId', handleWith(TaskMetricsRoute))
     .get<TasksRequest>('tasks', handleWith(TasksRoute))
     .get<TaskRequest>('tasks/:taskId', handleWith(TaskRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))

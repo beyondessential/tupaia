@@ -20,6 +20,7 @@ export {
   DatatrakWebActivityFeedRequest,
   DatatrakWebGenerateLoginTokenRequest,
   DatatrakWebEntityDescendantsRequest,
+  DatatrakWebTaskMetricsRequest,
   DatatrakWebTasksRequest,
   DatatrakWebTaskRequest,
   DatatrakWebUsersRequest,

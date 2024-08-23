@@ -75,7 +75,9 @@ export type QueryOptions = {
   sort?: string[];
   rawSort?: string;
   joinWith?: string;
+  columns?: string[];
   joinCondition?: [string, string];
+  multiJoin?: { joinWith?: string; joinCondition?: [string, string] }[];
 };
 
 type BaseModelOverrides<Fields = unknown, RecordT = unknown> = {
