@@ -128,12 +128,11 @@ export async function authenticate(req, res) {
 
   const rlResUsername = await limiterConsecutiveFailsByUsername.get(username);
 
-  console.log('consumedPoints', rlResUsername?.consumedPoints);
-
   if (rlResUsername?.consumedPoints > maxConsecutiveFailsByUsername) {
     const retrySecs = Math.round(rlResUsername.msBeforeNext / 1000) || 1;
-    res.set('Retry-After', String(retrySecs));
-    return respond(res, { message: 'Too Many Requests' }, 429);
+    const retryMins = Math.round(retrySecs / 60) || 1;
+    res.set('Retry-After', retrySecs);
+    return respond(res, { error: `Too Many Requests. Retry in ${retryMins} min(s)` }, 429);
   }
   /** ==============================
    * Check if the user is authorised
@@ -160,11 +159,19 @@ export async function authenticate(req, res) {
     }
 
     respond(res, authorizationObject, 200);
-
-    console.log('authorizationObject', authorizationObject);
-  } catch (error) {
-    await limiterConsecutiveFailsByUsername.consume(username);
-    console.log('authorizationObject ERROR', error);
-    throw error;
+  } catch (authError) {
+    try {
+      await limiterConsecutiveFailsByUsername.consume(username);
+    } catch (rlRejected) {
+      if (rlRejected instanceof Error) {
+        throw rlRejected;
+      } else {
+        const retrySecs = Math.round(rlRejected.msBeforeNext / 1000) || 1;
+        const retryMins = Math.round(retrySecs / 60) || 1;
+        res.set('Retry-After', retrySecs);
+        return respond(res, { error: `Too Many Requests. Retry in ${retryMins} min(s)` }, 429);
+      }
+    }
+    throw authError;
   }
 }

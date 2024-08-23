@@ -9,7 +9,7 @@
 
 # @name login
 POST {{baseUrl}}/auth HTTP/2.0
-Authorization: Basic meditrak_client:{{meditrak-app-secret}}
+Authorization: Basic meditrak_client {{meditrak-app-secret}}
 content-type: {{contentType}}
 
 {
