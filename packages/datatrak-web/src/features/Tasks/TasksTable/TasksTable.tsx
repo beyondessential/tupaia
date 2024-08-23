@@ -50,7 +50,7 @@ const StatusCellContent = styled.div`
   }
 `;
 
-const useTasksTable = () => {
+export const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 

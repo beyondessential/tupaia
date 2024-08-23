@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { getTaskFilterSetting, setTaskFilterSetting } from '../../../utils';
 import { TaskFilterType } from '../../../types';
+import { useTasksTable } from './TasksTable';
 
 const Container = styled.div`
   display: flex;
@@ -45,10 +46,13 @@ const FormControlLabel = styled(MuiFormControlLabel)`
 
 const FilterCheckbox = ({ name, label }) => {
   const queryClient = useQueryClient();
+  const { onChangePage } = useTasksTable();
 
   const onChange = (event: React.ChangeEvent<{ name: string; checked: boolean }>) => {
     const { name, checked: value } = event.target;
     setTaskFilterSetting(name as TaskFilterType, value);
+    // reset the page to 0 when the filter changes
+    onChangePage(0);
     // Clear the cache so that the task data is re-fetched
     queryClient.invalidateQueries('tasks');
   };
