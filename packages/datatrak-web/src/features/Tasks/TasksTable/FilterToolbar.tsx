@@ -49,8 +49,8 @@ const FilterCheckbox = ({ name, label }) => {
   const { onChangePage } = useTasksTable();
 
   const onChange = (event: React.ChangeEvent<{ name: string; checked: boolean }>) => {
-    const { name, checked: value } = event.target;
-    setTaskFilterSetting(name as TaskFilterType, value);
+    const { name: taskFilterName, checked: value } = event.target;
+    setTaskFilterSetting(taskFilterName as TaskFilterType, value);
     // reset the page to 0 when the filter changes
     onChangePage(0);
     // Clear the cache so that the task data is re-fetched
