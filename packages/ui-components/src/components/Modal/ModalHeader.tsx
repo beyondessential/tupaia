@@ -37,7 +37,7 @@ export const ModalHeader = ({ title, onClose, children }: ModalHeaderProps) => (
   <Header>
     {title && <Title variant="h2">{title}</Title>}
     {children}
-    <CloseButton onClick={onClose}>
+    <CloseButton onClick={onClose} aria-label="Close modal">
       <Close />
     </CloseButton>
   </Header>

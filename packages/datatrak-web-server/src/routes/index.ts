@@ -10,6 +10,7 @@ export { SurveyResponsesRequest, SurveyResponsesRoute } from './SurveyResponsesR
 export { ProjectsRequest, ProjectsRoute } from './ProjectsRoute';
 export { SingleEntityRequest, SingleEntityRoute } from './SingleEntityRoute';
 export { EntityDescendantsRequest, EntityDescendantsRoute } from './EntityDescendantsRoute';
+export { EntityAncestorsRequest, EntityAncestorsRoute } from './EntityAncestorsRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 export {
   SubmitSurveyResponseRequest,

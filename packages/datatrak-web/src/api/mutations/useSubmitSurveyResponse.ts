@@ -35,14 +35,13 @@ export const useSurveyResponseData = () => {
   };
 };
 
-export const useSubmitSurveyResponse = (fromLocation?: string | undefined) => {
+export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
-
   const surveyResponseData = useSurveyResponseData();
 
   return useMutation<any, Error, AnswersT, unknown>(
@@ -87,7 +86,7 @@ export const useSubmitSurveyResponse = (fromLocation?: string | undefined) => {
         // include the survey response data in the location state, so that we can use it to generate QR codes
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
           state: {
-            ...(fromLocation && { from: fromLocation }),
+            ...(from && { from }),
             surveyResponse: JSON.stringify(data),
           },
         });

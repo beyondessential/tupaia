@@ -13,11 +13,13 @@ import { useCurrentUserContext, useTasks } from '../../../api';
 import { displayDate } from '../../../utils';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusPill } from '../StatusPill';
+import { getDisplayRepeatSchedule } from '../utils';
 import { TaskActionsMenu } from '../TaskActionsMenu';
 import { CommentsCount } from '../CommentsCount';
 import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
+import { RepeatScheduleFilter } from './RepeatScheduleFilter';
 
 const Container = styled.div`
   display: flex;
@@ -48,7 +50,7 @@ const StatusCellContent = styled.div`
   }
 `;
 
-const useTasksTable = () => {
+export const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -69,15 +71,19 @@ const useTasksTable = () => {
   };
 
   const updateFilters = newFilters => {
-    const nonEmptyFilters = newFilters.filter(({ value }) => !!value);
+    const nonEmptyFilters = newFilters.filter(
+      ({ value }) => value !== null && value !== undefined && value !== '',
+    );
     if (JSON.stringify(nonEmptyFilters) === JSON.stringify(filters)) return;
     if (nonEmptyFilters.length === 0) {
       searchParams.delete('filters');
       setSearchParams(searchParams);
       return;
     }
+
     searchParams.set('filters', JSON.stringify(nonEmptyFilters));
     searchParams.set('page', '0');
+
     setSearchParams(searchParams);
   };
 
@@ -122,11 +128,12 @@ const useTasksTable = () => {
     },
     {
       Header: 'Repeating task',
-      // TODO: Update this display once RN-1341 is done. Also handle sorting on this column in this issue.
-      accessor: row => (row.repeatSchedule ? JSON.stringify(row.repeatSchedule) : 'Doesn’t repeat'),
+      accessor: row => getDisplayRepeatSchedule(row),
       id: 'repeat_schedule',
       filterable: true,
       disableResizing: true,
+      Filter: RepeatScheduleFilter,
+      disableSortBy: true,
       width: 180,
     },
     {

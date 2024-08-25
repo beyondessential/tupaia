@@ -2,14 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { createContext, Dispatch, useContext, useReducer, useState } from 'react';
+import React, { createContext, Dispatch, useContext, useReducer, useState, useMemo } from 'react';
 import { useMatch, useParams, useSearchParams } from 'react-router-dom';
 import { QuestionType } from '@tupaia/types';
 import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
 import { usePrimaryEntityLocation } from '../../../utils';
-import { getAllSurveyComponents } from '../utils';
+import { getAllSurveyComponents, getPrimaryEntityParentQuestionIds } from '../utils';
 import {
   generateCodeForCodeGeneratorQuestions,
   getDisplayQuestions,
@@ -18,12 +18,15 @@ import {
 } from './utils';
 import { SurveyFormContextType, surveyReducer } from './reducer';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
+import { usePrimaryEntityQuestionAutoFill } from '../utils/usePrimaryEntityQuestionAutoFill';
 
 const defaultContext = {
   startTime: new Date().toISOString(),
   formData: {},
   activeScreen: [],
   isLast: false,
+  isReviewScreen: false,
+  isResponseScreen: false,
   numberOfScreens: 0,
   screenNumber: 1,
   screenHeader: '',
@@ -43,34 +46,59 @@ export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction
 export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const [urlSearchParams] = useSearchParams();
   const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
-  const primaryEntity = usePrimaryEntityLocation();
+  const primaryEntityCode = usePrimaryEntityLocation();
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const params = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
   const isResponseScreen = !!urlSearchParams.get('responseId');
+  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
 
-  const { formData } = state;
+  let { formData } = state;
 
   const surveyScreens = survey?.screens || [];
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
+  const primaryEntityQuestion = flattenedScreenComponents.find(
+    question => question.type === QuestionType.PrimaryEntity,
+  );
+  const autoFillAnswers = usePrimaryEntityQuestionAutoFill(
+    primaryEntityQuestion,
+    flattenedScreenComponents,
+    primaryEntityCode,
+  );
+
+  if (primaryEntityCode) {
+    formData = { ...formData, ...autoFillAnswers };
+  }
+
+  // Get the list of parent question ids for the primary entity question
+  const primaryEntityParentQuestionIds = useMemo(
+    () => getPrimaryEntityParentQuestionIds(primaryEntityQuestion, flattenedScreenComponents),
+    [primaryEntityQuestion, flattenedScreenComponents],
+  );
 
   // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
   const visibleScreens = surveyScreens
     .map(screen => {
       return {
         ...screen,
-        surveyScreenComponents: screen.surveyScreenComponents.filter(question =>
-          getIsQuestionVisible(question, formData),
-        ),
+        surveyScreenComponents: screen.surveyScreenComponents.filter(question => {
+          // If a primary entity code is pre-set for the survey, hide the primary entity question and its ancestor questions
+          if (primaryEntityCode && !isReviewScreen) {
+            if (
+              question.type === QuestionType.PrimaryEntity ||
+              primaryEntityParentQuestionIds.includes(question.id)
+            ) {
+              return false;
+            }
+          }
+          return getIsQuestionVisible(question, formData);
+        }),
       };
     })
     .filter(screen => screen.surveyScreenComponents.length > 0);
 
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
-  const primaryEntityQuestion = flattenedScreenComponents.find(
-    question => question.type === QuestionType.PrimaryEntity,
-  );
 
   const initialiseFormData = () => {
     if (!surveyCode || isResponseScreen) return;
@@ -80,14 +108,6 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
       formData,
     );
 
-    // If there is a primary entity set for the survey, and there is no parent filter set the primary entity
-    if (
-      primaryEntity &&
-      primaryEntityQuestion &&
-      !primaryEntityQuestion?.config?.entity?.filter?.parentId
-    ) {
-      initialFormData[primaryEntityQuestion.id as string] = primaryEntity;
-    }
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
     // update the start time when a survey is started, so that it can be passed on when submitting the survey
 
@@ -115,6 +135,8 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
         surveyProjectCode: survey?.project?.code,
         activeScreen,
         screenNumber,
+        isReviewScreen,
+        isResponseScreen,
         displayQuestions,
         surveyScreens,
         screenHeader,
@@ -133,7 +155,6 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
 };
 
 export const useSurveyForm = () => {
-  const [urlSearchParams] = useSearchParams();
   const surveyFormContext = useContext(SurveyFormContext);
   const { surveyScreens, formData, screenNumber, visibleScreens } = surveyFormContext;
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
@@ -142,8 +163,6 @@ export const useSurveyForm = () => {
   const numberOfScreens = visibleScreens?.length || 0;
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const isResponseScreen = !!urlSearchParams.get('responseId');
   const isResubmitScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SCREEN);
   const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
   const isResubmit =
@@ -183,8 +202,6 @@ export const useSurveyForm = () => {
     ...surveyFormContext,
     isLast,
     isSuccessScreen,
-    isReviewScreen,
-    isResponseScreen,
     numberOfScreens,
     toggleSideMenu,
     updateFormData,

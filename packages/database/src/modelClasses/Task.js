@@ -4,6 +4,7 @@
  */
 
 import { format } from 'date-fns';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -47,17 +48,22 @@ const formatValue = async (field, value, models) => {
       return assignee.full_name;
     }
     case 'repeat_schedule': {
-      if (!value || !value?.frequency) {
+      if (!value || value.freq === undefined || value.freq === null) {
         return "Doesn't repeat";
       }
 
-      return `${value.frequency.charAt(0).toUpperCase()}${value.frequency.slice(1)}`;
+      const frequency = Object.keys(RRULE_FREQUENCIES).find(
+        key => RRULE_FREQUENCIES[key] === value.freq,
+      );
+
+      if (!frequency) {
+        return "Doesn't repeat";
+      }
+
+      // Convert the frequency to a more human-friendly format, e.g. 'DAILY' -> 'Daily'
+      return `${frequency.charAt(0)}${frequency.slice(1).toLowerCase()}`;
     }
     case 'due_date': {
-      // TODO: Currently repeating tasks don't have a due date, so we need to handle null values. In RN-1341 we will add a due date to repeating tasks overnight, so this will need to be updated then
-      if (!value) {
-        return 'No due date';
-      }
       // Format the date as 'd MMMM yy' (e.g. 1 January 21). This is so that there is no ambiguity between US and other date formats
       return format(new Date(value), 'd MMMM yy');
     }
@@ -132,6 +138,7 @@ export class TaskRecord extends DatabaseRecord {
       entity_id: entityId,
       repeat_schedule: repeatSchedule,
       assignee_id: assigneeId,
+      due_date: dueDate,
       id,
     } = this;
 
@@ -150,35 +157,36 @@ export class TaskRecord extends DatabaseRecord {
         repeat_schedule: repeatSchedule,
         status: 'completed',
         survey_response_id: surveyResponseId,
+        due_date: dueDate,
         parent_task_id: id,
       };
 
       // Check for an existing task so that multiple tasks aren't created for the same survey response
       const existingTask = await this.model.findOne(where);
-      if (!existingTask) {
-        const newTask = await this.model.create(where);
-        await newTask.addComment(
-          'Completed this task',
-          commentUserId,
-          this.otherModels.taskComment.types.System,
-        );
-        await this.addComment(
-          `Completed task ${newTask.id}`,
-          commentUserId,
-          this.otherModels.taskComment.types.System,
-        );
-      }
-    } else {
-      await this.model.updateById(id, {
-        status: 'completed',
-        survey_response_id: surveyResponseId,
-      });
+
+      if (existingTask) return;
+      const newTask = await this.model.create(where);
+      await newTask.addComment(
+        'Completed this task',
+        commentUserId,
+        this.otherModels.taskComment.types.System,
+      );
       await this.addComment(
         'Completed this task',
         commentUserId,
         this.otherModels.taskComment.types.System,
       );
+      return;
     }
+    await this.model.updateById(id, {
+      status: 'completed',
+      survey_response_id: surveyResponseId,
+    });
+    await this.addComment(
+      'Completed this task',
+      commentUserId,
+      this.otherModels.taskComment.types.System,
+    );
   }
 
   /**
@@ -248,12 +256,10 @@ export class TaskRecord extends DatabaseRecord {
       const originalValue = this[field];
       // If the field hasn't actually changed, don't add a comment
       if (originalValue === newValue) continue;
-
-      // If the due date is changed and the task is repeating, don't add a comment, because this just means that the repeat schedule is being updated, not that the due date is being changed. This will likely change as part of RN-1341
-      // TODO: re-evaulate this when RN-1341 is implemented
-      if (field === 'due_date' && updatedFields.repeat_schedule) {
-        continue;
-      }
+      // Don't add a comment when repeat schedule is updated and the frequency is the same
+      if (field === 'repeat_schedule' && originalValue?.freq === newValue?.freq) continue;
+      // Don't add a comment when due date is updated for repeat schedule
+      if (field === 'due_date' && this.repeat_schedule) continue;
 
       const friendlyFieldName = getFriendlyFieldName(field);
       const formattedOriginalValue = await formatValue(field, originalValue, this.otherModels);

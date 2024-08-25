@@ -25,6 +25,8 @@ import {
   EntitiesRoute,
   EntityDescendantsRequest,
   EntityDescendantsRoute,
+  EntityAncestorsRequest,
+  EntityAncestorsRoute,
   GenerateLoginTokenRequest,
   GenerateLoginTokenRoute,
   LeaderboardRequest,
@@ -82,6 +84,10 @@ export async function createApp() {
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:entityCode', handleWith(SingleEntityRoute))
     .get<EntityDescendantsRequest>('entityDescendants', handleWith(EntityDescendantsRoute))
+    .get<EntityAncestorsRequest>(
+      'entityAncestors/:projectCode/:rootEntityCode',
+      handleWith(EntityAncestorsRoute),
+    )
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyResponsesRequest>('surveyResponses', handleWith(SurveyResponsesRoute))

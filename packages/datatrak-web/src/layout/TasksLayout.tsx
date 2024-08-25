@@ -28,7 +28,7 @@ export const TasksContentWrapper = styled.div`
   flex-direction: column;
 
   ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline: 1rem;
+    padding-inline: 0.6rem;
   }
 `;
 

@@ -22,6 +22,7 @@ const FIELDS = [
   'survey.code',
   'entity.country_code',
   'entity.name',
+  'entity.code',
   'assignee_name',
   'assignee_id',
   'task_status',
@@ -75,11 +76,7 @@ export class TasksRoute extends Route<TasksRequest> {
       }
 
       if (id === 'repeat_schedule') {
-        this.filters[id] = {
-          comparator: 'ilike',
-          comparisonValue: `${value}%`,
-          castAs: 'text',
-        };
+        this.filters[`repeat_schedule->freq`] = value;
         return;
       }
       this.filters[id] = {

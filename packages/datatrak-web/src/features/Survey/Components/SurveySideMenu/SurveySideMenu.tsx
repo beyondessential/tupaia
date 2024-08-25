@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { To, Link as RouterLink } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
-import { useFromLocation, useIsMobile } from '../../../../utils';
+import { useFromLocation, useIsMobile, usePrimaryEntityLocation } from '../../../../utils';
 import { getSurveyScreenNumber } from '../../utils';
 import { useSurveyRouting } from '../../useSurveyRouting';
 import { SideMenuButton } from './SideMenuButton';
@@ -98,6 +98,7 @@ const Header = styled.div`
 
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
+  const primaryEntityCode = usePrimaryEntityLocation();
   const from = useFromLocation();
   const isMobile = useIsMobile();
   const {
@@ -146,7 +147,10 @@ export const SurveySideMenu = () => {
             return (
               <li key={screen.id}>
                 <SurveyMenuItem
-                  state={{ ...(from && { from }) }}
+                  state={{
+                    ...(from && { from }),
+                    ...(primaryEntityCode && { primaryEntityCode }),
+                  }}
                   to={getScreenPath(num)}
                   $active={screenNumber === num}
                   onClick={onChangeScreen}

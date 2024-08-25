@@ -6,8 +6,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SingleTaskResponse } from '../../types';
-import { getRepeatScheduleOptions } from './RepeatScheduleInput';
 import { displayDate } from '../../utils';
+import { getDisplayRepeatSchedule } from './utils';
 import { StatusPill } from './StatusPill';
 
 const MetaDataContainer = styled.div`
@@ -61,19 +61,6 @@ const Row = styled.div`
   display: flex;
   margin-block-end: 1.2rem;
 `;
-
-const getDisplayRepeatSchedule = (task: SingleTaskResponse) => {
-  // TODO: When repeating tasks are implemented, make sure the repeat schedule is displayed correctly once a due date is returned with the task
-  const repeatScheduleOptions = getRepeatScheduleOptions(task.taskDueDate);
-  const { label } = repeatScheduleOptions[0];
-  if (!task.repeatSchedule?.frequency) {
-    return label;
-  }
-  const { frequency } = task.repeatSchedule;
-  const selectedOption = repeatScheduleOptions.find(option => option.value === frequency);
-  if (selectedOption) return selectedOption.label;
-  return label;
-};
 
 export const TaskSummary = ({ task }: { task: SingleTaskResponse }) => {
   const displayRepeatSchedule = getDisplayRepeatSchedule(task);
