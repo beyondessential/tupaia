@@ -4,7 +4,7 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { DatatrakWebTaskChangeRequest, Task } from '@tupaia/types';
+import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
 import { post } from '../api';
 import { successToast } from '../../utils';
 import { useCurrentUserContext } from '../CurrentUserContext';
