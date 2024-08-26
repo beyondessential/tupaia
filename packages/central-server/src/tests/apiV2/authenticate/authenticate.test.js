@@ -1,14 +1,17 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { expect } from 'chai';
-
-import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
+import {
+  constructAccessToken,
+  encryptPassword,
+  hashAndSaltPassword,
+  getTokenClaims,
+} from '@tupaia/auth';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { createBasicHeader } from '@tupaia/utils';
-
+import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
 import { resetTestData, TestableApp } from '../../testUtilities';
 import { configureEnv } from '../../../configureEnv';
 
@@ -123,39 +126,69 @@ describe('Authenticate', function () {
     expect(response.status).to.equal(401);
   });
 
-  it.only('limit consecutive fails by username', async () => {
+  it('limit consecutive fails by username', async () => {
     const makeRequest = () => {
-      let response;
-      try {
-        response = app.post('auth?grantType=password', {
-          headers: {
-            authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
-          },
-          body: {
-            emailAddress: userAccount.email,
-            password: 'woops',
-            deviceName: 'test_device',
-          },
-        });
-      } catch (error) {
-        console.log('ERROR', error);
-      }
-      return response;
+      return app.post('auth?grantType=password', {
+        headers: {
+          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+        },
+        body: {
+          emailAddress: userAccount.email,
+          password: 'woops',
+          deviceName: 'test_device',
+        },
+      });
     };
 
-    const times = 5;
+    const times = 6;
 
-    for (let i = 0; i < times; i++) {
+    for (let i = 1; i < times; i++) {
       const request = await makeRequest();
-      expect(request.status).to.equal(401);
-    }
 
-    // 6th request should be rate limited
-    const request6 = await makeRequest();
-    expect(request6.body).to.be.an('object').that.has.property('error');
-    expect(request6.body.error).to.include('Too Many Requests');
-    expect(request6.status).to.equal(429);
-    expect(request6.headers).to.be.an('object').that.has.property('retry-after');
-    expect(request6.headers['retry-after']).to.equal('900');
+      if (i < times) {
+        expect(request.status).to.equal(401);
+      } else {
+        // 6th request should be rate limited
+        expect(request.body).to.be.an('object').that.has.property('error');
+        expect(request.body.error).to.include('Too Many Requests');
+        expect(request.status).to.equal(429);
+        expect(request.headers).to.be.an('object').that.has.property('retry-after');
+        expect(request.headers['retry-after']).to.equal('900');
+      }
+    }
+  });
+
+  it('limit fails by ip address ', async () => {
+    const makeRequest = emailAddress => {
+      return app.post('auth?grantType=password', {
+        headers: {
+          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+        },
+        body: {
+          emailAddress,
+          password: 'woops',
+          deviceName: 'test_device',
+        },
+      });
+    };
+
+    // Normally the limit is 100, but on test environments the limit is 10.
+    const times = 11;
+
+    for (let i = 1; i < times; i++) {
+      const request = await makeRequest(`${i}${userAccount.email}`);
+
+      if (i < times) {
+        expect(request.status).to.equal(401);
+      } else {
+        // 11th request should be rate limited
+        const request101 = await makeRequest();
+        expect(request101.body).to.be.an('object').that.has.property('error');
+        expect(request101.body.error).to.include('Too Many Requests');
+        expect(request101.status).to.equal(429);
+        expect(request101.headers).to.be.an('object').that.has.property('retry-after');
+        expect(request101.headers['retry-after']).to.equal('86400');
+      }
+    }
   });
 });

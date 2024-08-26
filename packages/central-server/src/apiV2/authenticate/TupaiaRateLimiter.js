@@ -7,13 +7,24 @@ import { RateLimiterPostgres } from 'rate-limiter-flexible';
 import { respond } from '@tupaia/utils';
 
 const MAX_CONSECUTIVE_FAILS_BY_USERNAME = 5;
-const MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY = 100;
+
+// Limit the number of wrong attempts per day per IP to 10 for the unit tests
+const MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY = process.env.NODE_ENV === 'test' ? 100 : 10;
+
 /**
- * Singleton instance of RateLimiterPostgres
+ * Singleton instances of RateLimiterPostgres
  */
 let maxConsecutiveFailsRateLimiter = null;
 let slowBruteForceRateLimiter = null;
 
+/**
+ * Rate limiter for login attempts
+ * Uses rate-limiter-flexible to limit the number of login attempts with two different strategies:
+ * 1. Limit the number of consecutive failed attempts by username
+ * 2. Limit the number of wrong attempts per day per IP
+ *
+ * Note: The rate limiter uses a Postgres database to store the login attempts in the login_attempts table
+ */
 export class TupaiaRateLimiter {
   constructor(knexInstance) {
     if (!maxConsecutiveFailsRateLimiter) {
@@ -21,7 +32,7 @@ export class TupaiaRateLimiter {
         tableCreated: true,
         tableName: 'login_attempts',
         storeClient: knexInstance,
-        storeType: `knex`,
+        storeType: 'knex',
         keyPrefix: 'login_fail_consecutive_username',
         points: MAX_CONSECUTIVE_FAILS_BY_USERNAME,
         duration: 60 * 60 * 24 * 90, // Store number for 90 days since first fail
@@ -34,7 +45,7 @@ export class TupaiaRateLimiter {
         tableCreated: true,
         tableName: 'login_attempts',
         storeClient: knexInstance,
-        storeType: `knex`,
+        storeType: 'knex',
         keyPrefix: 'login_fail_ip_per_day',
         points: MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY,
         duration: 60 * 60 * 24,
@@ -46,15 +57,27 @@ export class TupaiaRateLimiter {
     this.slowBruteForceRateLimiter = slowBruteForceRateLimiter;
   }
 
+  /**
+   * Generate a key for the maxConsecutiveFailsRateLimiter based on the username and ip
+   * @returns {string}
+   */
   getUsernameIPkey(req) {
     const { ip, body } = req;
     return `${body.emailAddress}_${ip}`;
   }
 
+  /**
+   * Generate a key for the slowBruteForceRateLimiter based on the ip
+   * @returns {string}
+   */
   getIPkey(req) {
     return req.ip;
   }
 
+  /**
+   * Check if the user is rate limited
+   * @returns {Promise<boolean>}
+   */
   async checkIsRateLimited(req) {
     const maxConsecutiveFailsResponder = await this.maxConsecutiveFailsRateLimiter.get(
       this.getUsernameIPkey(req),
@@ -70,7 +93,7 @@ export class TupaiaRateLimiter {
 
     if (
       slowBruteForceResponder !== null &&
-      slowBruteForceResponder.consumedPoints >= MAX_CONSECUTIVE_FAILS_BY_USERNAME
+      slowBruteForceResponder.consumedPoints >= MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY
     ) {
       return true;
     }
@@ -78,6 +101,10 @@ export class TupaiaRateLimiter {
     return false;
   }
 
+  /**
+   * Get the time until the user can retry.
+   * @returns {Promise<number>}  Returns a number in milliseconds
+   */
   async getRetryAfter(req) {
     try {
       await this.maxConsecutiveFailsRateLimiter.consume(this.getUsernameIPkey(req));
@@ -86,19 +113,27 @@ export class TupaiaRateLimiter {
       return rlRejected.msBeforeNext;
     }
   }
+
   async addMaxConsecutiveFailedAttempt(req) {
     try {
+      // Add a failed attempt to the rate limiter. Gets stored in the login_attempts table
       await this.maxConsecutiveFailsRateLimiter.consume(this.getUsernameIPkey(req));
     } catch (rlRejected) {
-      // Swallow new error, log the original
+      // node-rate-limiter is designed to reject the promise when saving failed attempts
+      // We swallow the error here and let the original error bubble up
     }
   }
 
+  /**
+   * Add a failed attempt to the rate limiter login_attempts table
+   */
   async addSlowBruteForceFailedAttempt(req) {
     try {
+      // Add a failed attempt to the rate limiter. Gets stored in the login_attempts table
       await this.slowBruteForceRateLimiter.consume(this.getIPkey(req));
     } catch (rlRejected) {
-      // Swallow new error, log the original
+      // node-rate-limiter is designed to reject the promise when saving failed attempts
+      // We swallow the error here and let the original error bubble up
     }
   }
 
