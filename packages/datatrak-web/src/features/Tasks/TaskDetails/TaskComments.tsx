@@ -159,6 +159,7 @@ const SystemComment = ({
 };
 
 const UserComment = ({ message }: { message: Comments[0]['message'] }) => {
+  if (!message) return null;
   return (
     <>
       {message.split('\n').map(line => (
