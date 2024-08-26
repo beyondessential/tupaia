@@ -156,6 +156,6 @@ describe('Authenticate', function () {
     expect(request6.body.error).to.include('Too Many Requests');
     expect(request6.status).to.equal(429);
     expect(request6.headers).to.be.an('object').that.has.property('retry-after');
-    // expect(request6.headers['retry-after']).to.equal('900');
+    expect(request6.headers['retry-after']).to.equal('900');
   });
 });

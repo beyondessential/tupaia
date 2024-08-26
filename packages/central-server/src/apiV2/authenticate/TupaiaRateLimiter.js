@@ -79,14 +79,12 @@ export class TupaiaRateLimiter {
   }
 
   async getRetryAfter(req) {
-    const maxConsecutiveFailsResponder = await this.maxConsecutiveFailsRateLimiter.get(
-      this.getUsernameIPkey(req),
-    );
-    const slowBruteForceResponder = await this.slowBruteForceRateLimiter.get(this.getIPkey(req));
-    return Math.max(
-      maxConsecutiveFailsResponder.msBeforeNext || 0,
-      slowBruteForceResponder.msBeforeNext || 0,
-    );
+    try {
+      await this.maxConsecutiveFailsRateLimiter.consume(this.getUsernameIPkey(req));
+      await this.slowBruteForceRateLimiter.consume(this.getIPkey(req));
+    } catch (rlRejected) {
+      return rlRejected.msBeforeNext;
+    }
   }
   async addMaxConsecutiveFailedAttempt(req) {
     try {
