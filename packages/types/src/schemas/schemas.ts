@@ -71566,6 +71566,61 @@ export const LesmisSessionUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const LoginAttemptsSchema = {
+	"type": "object",
+	"properties": {
+		"expire": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"points": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"key",
+		"points"
+	]
+} 
+
+export const LoginAttemptsCreateSchema = {
+	"type": "object",
+	"properties": {
+		"expire": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"points": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"key"
+	]
+} 
+
+export const LoginAttemptsUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"expire": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"points": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const MapOverlaySchema = {
 	"type": "object",
 	"properties": {
