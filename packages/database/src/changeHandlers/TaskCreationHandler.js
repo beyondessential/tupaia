@@ -20,12 +20,12 @@ const getAnswerWrapper = (config, answers) => {
 
 const isPrimaryEntityQuestion = (config, questions) => {
   const primaryEntityQuestion = questions.find(question => question.type === 'PrimaryEntity');
-  const { questionId } = config['entityId'];
+  const { questionId } = config.entityId;
   return primaryEntityQuestion.id === questionId;
 };
 
 const getSurveyId = async (models, config) => {
-  const surveyCode = config.surveyCode;
+  const { surveyCode } = config;
   const survey = await models.survey.findOne({ code: surveyCode });
   return survey.id;
 };
