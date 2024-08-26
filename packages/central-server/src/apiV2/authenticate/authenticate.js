@@ -118,9 +118,7 @@ export async function authenticate(req, res) {
     return rateLimiter.respondToRateLimitedUser(req, res);
   }
 
-  /** ==============================
-   * Check if the user is authorised
-   * ============================== */
+  // Check if the user is authorised
   try {
     const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
     const { user: apiClientUser } = await checkApiClientAuthentication(req);
@@ -141,7 +139,9 @@ export async function authenticate(req, res) {
     await rateLimiter.resetFailedAttempts(req);
     respond(res, authorizationObject, 200);
   } catch (authError) {
-    await rateLimiter.addFailedAttempt(req);
+    // Record failed login attempt to rate limiter
+    await rateLimiter.addMaxConsecutiveFailedAttempt(req);
+    await rateLimiter.addSlowBruteForceFailedAttempt(req);
     throw authError;
   }
 }
