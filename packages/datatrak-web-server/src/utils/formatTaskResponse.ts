@@ -5,11 +5,11 @@
 
 import { Country, DatatrakWebTasksRequest, Entity, Survey, Task, TaskStatus } from '@tupaia/types';
 import camelcaseKeys from 'camelcase-keys';
+import { DatatrakWebServerModelRegistry } from '../types';
 
 export type TaskT = Omit<Task, 'created_at'> & {
   'entity.name': Entity['name'];
   'entity.code': Entity['code'];
-  'entity.parent_name': Entity['name'];
   'entity.country_code': Country['code'];
   'survey.code': Survey['code'];
   'survey.name': Survey['name'];
@@ -21,12 +21,14 @@ export type TaskT = Omit<Task, 'created_at'> & {
 
 type FormattedTask = DatatrakWebTasksRequest.TaskResponse;
 
-export const formatTaskResponse = (task: TaskT): FormattedTask => {
+export const formatTaskResponse = async (
+  models: DatatrakWebServerModelRegistry,
+  task: TaskT,
+): Promise<FormattedTask> => {
   const {
     entity_id: entityId,
     'entity.name': entityName,
     'entity.code': entityCode,
-    'entity.parent_name': entityParentName,
     'entity.country_code': entityCountryCode,
     'survey.code': surveyCode,
     survey_id: surveyId,
@@ -37,6 +39,21 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
     assignee_name: assigneeName,
     ...rest
   } = task;
+
+  const entity = await models.entity.findById(task.entity_id);
+
+  const { survey_id } = task;
+
+  const { project_id } = await models.survey.findById(survey_id);
+
+  const project = await models.project.findById(project_id);
+
+  const entityAncestors =
+    project.entity_hierarchy_id && entity.type !== 'country'
+      ? await entity.getAncestors(project.entity_hierarchy_id, {
+          generational_distance: 1,
+        })
+      : [];
 
   const formattedTask = {
     ...rest,
@@ -49,7 +66,7 @@ export const formatTaskResponse = (task: TaskT): FormattedTask => {
       name: entityName,
       code: entityCode,
       countryCode: entityCountryCode,
-      parentName: entityParentName,
+      parentName: entityAncestors[0]?.name,
     },
     survey: {
       id: surveyId,
