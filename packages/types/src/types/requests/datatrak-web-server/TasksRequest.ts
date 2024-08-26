@@ -26,6 +26,7 @@ export type TaskResponse = KeysToCamelCase<
   entity: {
     name: Entity['name'];
     id: Entity['id'];
+    code: Entity['code'];
     countryCode: string; // this is not undefined or null so use string explicitly here
     parentName?: Entity['name'];
   };

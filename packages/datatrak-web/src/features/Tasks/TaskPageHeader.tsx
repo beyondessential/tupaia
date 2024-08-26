@@ -63,7 +63,8 @@ const ContentWrapper = styled.div`
   justify-content: flex-end;
   width: 100%;
   ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline-start: 2.5rem;
+    padding-inline-start: 1.5rem;
+    padding-inline-end: 0.6rem;
   }
 `;
 

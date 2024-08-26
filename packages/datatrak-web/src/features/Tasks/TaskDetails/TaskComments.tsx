@@ -159,7 +159,13 @@ const SystemComment = ({
 };
 
 const UserComment = ({ message }: { message: Comments[0]['message'] }) => {
-  return <UserMessage>{message}</UserMessage>;
+  return (
+    <>
+      {message.split('\n').map(line => (
+        <UserMessage key={line}>{line}</UserMessage>
+      ))}
+    </>
+  );
 };
 
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {

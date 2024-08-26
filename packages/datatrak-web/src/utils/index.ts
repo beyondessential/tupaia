@@ -5,7 +5,6 @@
 
 export { errorToast, successToast } from './toast';
 export { useIsMobileMediaQuery as useIsMobile } from './useIsMobileMediaQuery';
-export { useFromLocation } from './useFromLocation';
 export * from './date';
 export * from './detectDevice';
 export { gaEvent } from './ga';
@@ -14,4 +13,4 @@ export {
   getTaskFilterSetting,
   removeTaskFilterSetting,
 } from './taskFilterSettings';
-export { usePrimaryEntityLocation } from './usePrimaryEntityLocation';
+export { useFromLocation, usePrimaryEntityLocation } from './useLocationState';

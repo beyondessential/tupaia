@@ -22,16 +22,25 @@ export class TaskOverdueChecker extends ScheduledTask {
 
     winston.info(`Found ${overdueTasks.length} overdue task(s)`);
 
-    for (const task of overdueTasks) {
+    for (const overdueTask of overdueTasks) {
+      if (!task.assignee_id) {
+        winston.info(`Task ${overdueTask.id} has no assignee`);
+        continue;
+      }
       const assignee = await user.findById(task.assignee_id);
+
+      if (!assignee) {
+        winston.error(`Assignee with id ${task.assignee_id} not found`);
+        continue;
+      }
 
       const result = await sendEmail(assignee.email, {
         subject: 'Task overdue on Tupaia.org',
         templateName: 'overdueTask',
         templateContext: {
           userName: assignee.first_name,
-          surveyName: task.survey_name,
-          entityName: task.entity_name,
+          surveyName: overdueTask.survey_name,
+          entityName: overdueTask.entity_name,
           dueDate: format(new Date(task.due_date), 'do MMMM yyyy'),
         },
       });

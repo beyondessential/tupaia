@@ -72,7 +72,7 @@ export const DueDatePicker = ({
     const endOfDay = new Date(new Date(newValue).setHours(23, 59, 59, 999));
 
     // format the date to include timezone
-    const newDate = format(endOfDay, `yyyy-MM-dd HH:mm:ss.SSSXXX`);
+    const newDate = format(endOfDay, `yyyy-MM-dd'T'HH:mm:ss.SSSXXX`);
 
     setDate(newDate);
   };

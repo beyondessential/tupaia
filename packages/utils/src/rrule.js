@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { Frequency, RRule } from 'rrule';
-import { isLastDayOfMonth } from 'date-fns';
+import { getDaysInMonth } from 'date-fns';
 
 export const RRULE_FREQUENCIES = {
   DAILY: Frequency.DAILY,
@@ -29,52 +29,55 @@ export const generateRRule = (startDate, frequency) => {
 
 /**
  *
- * @param {Date} startDate
+ * @param {string | Date} startDate - The date to start the rule from
  * @returns {RRule} RRule that will repeat daily from the given start date
  */
 export const generateDailyRRule = startDate => {
   return new RRule({
     freq: RRule.DAILY,
-    dtstart: startDate,
+    dtstart: new Date(startDate),
     interval: 1,
   });
 };
 
 /**
  *
- * @param {Date} startDate
+ * @param {string | Date} startDate - The date to start the rule from
  * @returns {RRule} RRule that will repeat weekly on the given days of the week from the given start date
  */
 export const generateWeeklyRRule = startDate => {
   return new RRule({
     freq: RRule.WEEKLY,
-    dtstart: startDate,
+    dtstart: new Date(startDate),
     interval: 1,
   });
 };
 
 /**
  *
- * @param {Date} startDate
+ * @param {string | Date} startDate - The date to start the rule from
  * @returns  {RRule} RRule that will repeat monthly on the same day of the month as the given start date
  */
 export const generateMonthlyRRule = startDate => {
-  const dayOfMonth = startDate.getDate();
+  const utcDate = new Date(startDate);
 
-  if (dayOfMonth <= 28) {
+  const dayOfMonth = utcDate.getDate();
+  const numDaysInMonth = getDaysInMonth(utcDate);
+
+  if (dayOfMonth < 28) {
     return new RRule({
       freq: RRule.MONTHLY,
-      dtstart: startDate,
+      dtstart: utcDate,
       interval: 1,
       bymonthday: [dayOfMonth],
     });
   }
 
   // If the day of the month is the last day of the month, return a rule that will be applied to the last day of the month every month
-  if (isLastDayOfMonth(startDate)) {
+  if (dayOfMonth === numDaysInMonth) {
     return new RRule({
       freq: RRule.MONTHLY,
-      dtstart: startDate,
+      dtstart: utcDate,
       interval: 1,
       bymonthday: [-1],
     });
@@ -85,7 +88,7 @@ export const generateMonthlyRRule = startDate => {
 
   return new RRule({
     freq: RRule.MONTHLY,
-    dtstart: startDate,
+    dtstart: utcDate,
     interval: 1,
     bymonthday,
     // This will get the last available date from the bymonthday array. For example, if the dayOfMonth is 30, the bymonthday array will be [28, 29, 30] and the bysetpos will be -1, which will get the 30th day of the month if it exists, otherwise the 28th or 29th (for February)
@@ -95,13 +98,13 @@ export const generateMonthlyRRule = startDate => {
 
 /**
  *
- * @param {Date} startDate
+ * @param {string | Date} startDate - The date to start the rule from
  * @returns {RRule} RRule that will repeat yearly on the same day of the year as the given start date
  */
 export const generateYearlyRRule = startDate => {
   return new RRule({
     freq: RRule.YEARLY,
-    dtstart: startDate,
+    dtstart: new Date(startDate),
     interval: 1,
   });
 };

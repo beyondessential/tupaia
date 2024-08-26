@@ -22,6 +22,7 @@ const FIELDS = [
   'survey.code',
   'entity.country_code',
   'entity.name',
+  'entity.code',
   'assignee_name',
   'assignee_id',
   'task_status',
@@ -180,7 +181,7 @@ export class TasksRoute extends Route<TasksRequest> {
 
     const formattedTasks = (await Promise.all(
       tasks.map(async (task: TaskT) => {
-        const formattedTask = formatTaskResponse(task);
+        const formattedTask = await formatTaskResponse(models, task);
         // Get comment count for each task
         const commentsCount = await models.taskComment.count({
           task_id: task.id,

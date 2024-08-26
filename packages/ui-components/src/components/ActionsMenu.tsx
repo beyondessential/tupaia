@@ -63,7 +63,7 @@ export const ActionsMenu = ({
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   return (
     <>
-      <IconButton aria-label="open" onClick={event => setAnchorEl(event.currentTarget)}>
+      <IconButton aria-label="Open menu" onClick={event => setAnchorEl(event.currentTarget)}>
         <StyledMenuIcon />
       </IconButton>
       <StyledMenu

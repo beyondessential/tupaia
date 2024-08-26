@@ -43,23 +43,33 @@ const Column = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 50%;
   &:first-child {
-    width: 58%;
     padding-inline-end: 1rem;
   }
   &:last-child {
-    width: 42%;
     border-left: 1px solid ${({ theme }) => theme.palette.divider};
     padding-inline-start: 1rem;
   }
-  ${ItemWrapper} {
-    height: 2.5rem;
-  }
+`;
+
+const EntityName = styled(Typography)`
+  font-size: 0.875rem;
+`;
+
+const Bold = styled.span`
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
 const Row = styled.div`
   display: flex;
-  margin-block-end: 1.2rem;
+  padding-block-end: 1.2rem;
+  &:first-child {
+    padding-block-end: 0;
+    ${Column} {
+      padding-block-end: 1.2rem;
+    }
+  }
 `;
 
 export const TaskSummary = ({ task }: { task: SingleTaskResponse }) => {
@@ -72,16 +82,24 @@ export const TaskSummary = ({ task }: { task: SingleTaskResponse }) => {
             <Title>Survey</Title>
             <Value>{task.survey.name}</Value>
           </ItemWrapper>
+        </Column>
+        <Column>
+          <ItemWrapper>
+            <Title>Entity</Title>
+            <EntityName>
+              <Bold>{task.entity.name}</Bold> | {task.entity.parentName}
+            </EntityName>
+          </ItemWrapper>
+        </Column>
+      </Row>
+      <Row>
+        <Column>
           <ItemWrapper>
             <Title>Repeating task</Title>
             <Value>{displayRepeatSchedule}</Value>
           </ItemWrapper>
         </Column>
         <Column>
-          <ItemWrapper>
-            <Title>Entity</Title>
-            <Value>{task.entity.name}</Value>
-          </ItemWrapper>
           <ItemWrapper>
             <Title>Due date</Title>
             <Value>{displayDate(task.taskDueDate)}</Value>
