@@ -1,12 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import winston from 'winston';
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
-import { RateLimiterPostgres } from 'rate-limiter-flexible';
-import { allowNoPermissions } from '../permissions';
+import { allowNoPermissions } from '../../permissions';
+import { TupaiaRateLimiter } from './TupaiaRateLimiter';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -107,33 +107,17 @@ const checkApiClientAuthentication = async req => {
  * and if valid, returns a new JWT token that can be used for accessing the API
  * Override grants to do recursive authentication, for example when creating a new user.
  */
-const maxConsecutiveFailsByUsername = 5;
 
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
-
-  const username = req.body.emailAddress;
   const knexInstance = req.database.connection;
 
-  const limiterConsecutiveFailsByUsername = new RateLimiterPostgres({
-    tableCreated: true,
-    tableName: 'login_attempts',
-    storeClient: knexInstance,
-    storeType: `knex`,
-    keyPrefix: 'login_fail_consecutive_username',
-    points: maxConsecutiveFailsByUsername,
-    duration: 60 * 60 * 3, // Store number for three hours since first fail
-    blockDuration: 60 * 15, // Block for 15 minutes
-  });
+  const rateLimiter = new TupaiaRateLimiter(knexInstance);
 
-  const rlResUsername = await limiterConsecutiveFailsByUsername.get(username);
-
-  if (rlResUsername?.consumedPoints > maxConsecutiveFailsByUsername) {
-    const retrySecs = Math.round(rlResUsername.msBeforeNext / 1000) || 1;
-    const retryMins = Math.round(retrySecs / 60) || 1;
-    res.set('Retry-After', retrySecs);
-    return respond(res, { error: `Too Many Requests. Retry in ${retryMins} min(s)` }, 429);
+  if (await rateLimiter.checkIsRateLimited(req)) {
+    return rateLimiter.respondToRateLimitedUser(req, res);
   }
+
   /** ==============================
    * Check if the user is authorised
    * ============================== */
@@ -153,25 +137,11 @@ export async function authenticate(req, res) {
       permissionGroups: permissionGroupsByCountryId,
     });
 
-    if (rlResUsername !== null && rlResUsername.consumedPoints > 0) {
-      // Reset on successful authorisation
-      await limiterConsecutiveFailsByUsername.delete(username);
-    }
-
+    // Reset on successful authorisation
+    await rateLimiter.resetFailedAttempts(req);
     respond(res, authorizationObject, 200);
   } catch (authError) {
-    try {
-      await limiterConsecutiveFailsByUsername.consume(username);
-    } catch (rlRejected) {
-      if (rlRejected instanceof Error) {
-        throw rlRejected;
-      } else {
-        const retrySecs = Math.round(rlRejected.msBeforeNext / 1000) || 1;
-        const retryMins = Math.round(retrySecs / 60) || 1;
-        res.set('Retry-After', retrySecs);
-        return respond(res, { error: `Too Many Requests. Retry in ${retryMins} min(s)` }, 429);
-      }
-    }
+    await rateLimiter.addFailedAttempt(req);
     throw authError;
   }
 }

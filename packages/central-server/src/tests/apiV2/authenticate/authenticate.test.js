@@ -125,32 +125,30 @@ describe('Authenticate', function () {
 
   it.only('limit consecutive fails by username', async () => {
     const makeRequest = () => {
-      return app.post('auth?grantType=password', {
-        headers: {
-          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
-        },
-        body: {
-          emailAddress: userAccount.email,
-          password: 'woops',
-          deviceName: 'test_device',
-        },
-      });
+      let response;
+      try {
+        response = app.post('auth?grantType=password', {
+          headers: {
+            authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+          },
+          body: {
+            emailAddress: userAccount.email,
+            password: 'woops',
+            deviceName: 'test_device',
+          },
+        });
+      } catch (error) {
+        console.log('ERROR', error);
+      }
+      return response;
     };
 
-    const request1 = await makeRequest();
-    expect(request1.status).to.equal(401);
+    const times = 5;
 
-    const request2 = await makeRequest();
-    expect(request2.status).to.equal(401);
-
-    const request3 = await makeRequest();
-    expect(request3.status).to.equal(401);
-
-    const request4 = await makeRequest();
-    expect(request4.status).to.equal(401);
-
-    const request5 = await makeRequest();
-    expect(request5.status).to.equal(401);
+    for (let i = 0; i < times; i++) {
+      const request = await makeRequest();
+      expect(request.status).to.equal(401);
+    }
 
     // 6th request should be rate limited
     const request6 = await makeRequest();
@@ -158,6 +156,6 @@ describe('Authenticate', function () {
     expect(request6.body.error).to.include('Too Many Requests');
     expect(request6.status).to.equal(429);
     expect(request6.headers).to.be.an('object').that.has.property('retry-after');
-    expect(request6.headers['retry-after']).to.equal(900);
+    expect(request6.headers['retry-after']).to.equal('900');
   });
 });

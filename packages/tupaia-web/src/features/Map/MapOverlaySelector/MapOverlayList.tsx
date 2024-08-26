@@ -122,7 +122,7 @@ const MapOverlayAccordion = ({
       <AccordionContent>
         {/* Map through the children, and if there are more nested children, render another
         accordion. Otherwise, render radio input for the overlay */}
-        {mapOverlayGroup.children.map(mapOverlay =>
+        {mapOverlayGroup.children?.map(mapOverlay =>
           'children' in mapOverlay ? (
             <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
           ) : (
