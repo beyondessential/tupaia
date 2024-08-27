@@ -229,7 +229,7 @@ describe('Permissions checker for EditTask', async () => {
         const comment = await models.taskComment.findOne({
           task_id: tasks[1].id,
           type: models.taskComment.types.System,
-          message: 'Changed due date from 31 December 21 to 30 November 25',
+          'template_variables->>field': 'due_date',
         });
         expect(comment).not.to.be.null;
       });
@@ -241,8 +241,6 @@ describe('Permissions checker for EditTask', async () => {
         });
         await app.put(`tasks/${tasks[1].id}`, {
           body: {
-            // this is currently null when setting a task to repeat
-            due_date: null,
             repeat_schedule: {
               freq: RRULE_FREQUENCIES.DAILY,
             },
@@ -252,16 +250,50 @@ describe('Permissions checker for EditTask', async () => {
         const repeatComment = await models.taskComment.findOne({
           task_id: tasks[1].id,
           type: models.taskComment.types.System,
-          message: "Changed recurring task from Doesn't repeat to Daily",
+          'template_variables->>field': 'repeat_schedule',
+        });
+
+        expect(repeatComment).not.to.be.null;
+      });
+
+      it('Does not add a comment when the due date changes but the repeat frequency stays the same', async () => {
+        await app.grantAccess({
+          DL: ['Donor'],
+          TO: ['Donor'],
+        });
+
+        const repeatingTask = await findOrCreateDummyRecord(models.task, {
+          ...tasks[1],
+          id: generateId(),
+          due_date: new Date('2025-11-30').getTime(),
+          repeat_schedule: {
+            freq: RRULE_FREQUENCIES.DAILY,
+            dtstart: new Date('2025-11-30'),
+          },
+        });
+        await app.put(`tasks/${repeatingTask.id}`, {
+          body: {
+            due_date: new Date('2025-12-30').getTime(),
+            repeat_schedule: {
+              freq: RRULE_FREQUENCIES.DAILY,
+              dtstart: new Date('2025-12-30'),
+            },
+          },
+        });
+
+        const repeatComment = await models.taskComment.findOne({
+          task_id: repeatingTask.id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'repeat_schedule',
         });
 
         const dueDateComment = await models.taskComment.findOne({
-          task_id: tasks[1].id,
+          task_id: repeatingTask.id,
           type: models.taskComment.types.System,
-          message: 'Changed due date from 31 December 21 to null',
+          'template_variables->>field': 'due_date',
         });
-        expect(repeatComment).not.to.be.null;
-        // should not add a comment about the due date changing in this case
+
+        expect(repeatComment).to.be.null;
         expect(dueDateComment).to.be.null;
       });
 
@@ -287,7 +319,7 @@ describe('Permissions checker for EditTask', async () => {
         const comment = await models.taskComment.findOne({
           task_id: tasks[1].id,
           type: models.taskComment.types.System,
-          message: "Changed recurring task from Daily to Doesn't repeat",
+          'template_variables->>field': 'repeat_schedule',
         });
         expect(comment).not.to.be.null;
       });
@@ -306,7 +338,7 @@ describe('Permissions checker for EditTask', async () => {
         const comment = await models.taskComment.findOne({
           task_id: tasks[1].id,
           type: models.taskComment.types.System,
-          message: 'Changed status from To do to Completed',
+          'template_variables->>field': 'status',
         });
         expect(comment).not.to.be.null;
       });
@@ -325,7 +357,7 @@ describe('Permissions checker for EditTask', async () => {
         const comment = await models.taskComment.findOne({
           task_id: tasks[1].id,
           type: models.taskComment.types.System,
-          message: 'Changed assignee from Peter Pan to Unassigned',
+          'template_variables->>field': 'assignee_id',
         });
         expect(comment).not.to.be.null;
       });
@@ -341,7 +373,7 @@ describe('Permissions checker for EditTask', async () => {
         const comment = await models.taskComment.findOne({
           task_id: tasks[0].id,
           type: models.taskComment.types.System,
-          message: 'Changed assignee from Unassigned to Peter Pan',
+          'template_variables->>field': 'assignee_id',
         });
         expect(comment).not.to.be.null;
       });

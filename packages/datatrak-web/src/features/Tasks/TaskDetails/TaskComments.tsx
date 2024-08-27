@@ -4,17 +4,25 @@
  */
 
 import React from 'react';
+import { format } from 'date-fns';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
-import { TaskCommentType } from '@tupaia/types';
+import {
+  TaskCommentType,
+  SystemCommentSubType,
+  TaskCommentTemplateVariables,
+  TaskComment,
+} from '@tupaia/types';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TextField } from '@tupaia/ui-components';
 import { displayDateTime } from '../../../utils';
 import { SingleTaskResponse } from '../../../types';
 import { TaskForm } from '../TaskForm';
 import { Button } from '../../../components';
 import { useCreateTaskComment } from '../../../api';
+import { capsToSentenceCase } from '../utils';
 
 const TaskCommentsDisplayContainer = styled.div`
   width: 100%;
@@ -50,14 +58,14 @@ const CommentsInput = styled(TextField).attrs({
 
 const Message = styled(Typography).attrs({
   variant: 'body2',
-})<{
-  $type: TaskCommentType;
-}>`
+})`
   margin-block-start: 0.2rem;
-  font-weight: ${({ theme, $type }) =>
-    $type === TaskCommentType.system
-      ? theme.typography.fontWeightRegular
-      : theme.typography.fontWeightMedium};
+`;
+
+const UserMessage = styled(Message).attrs({
+  color: 'textPrimary',
+})`
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
 const Form = styled(TaskForm)`
@@ -76,22 +84,105 @@ const CommentDetails = styled(Typography).attrs({
 
 type Comments = SingleTaskResponse['comments'];
 
+const getFriendlyFieldName = field => {
+  if (field === 'assignee_id') {
+    return 'assignee';
+  }
+  if (field === 'repeat_schedule') {
+    return 'recurring task';
+  }
+
+  // Default to replacing underscores with spaces
+  return field.replace(/_/g, ' ');
+};
+
+const formatValue = (field, value) => {
+  switch (field) {
+    case 'assignee_id': {
+      return value ?? 'Unassigned';
+    }
+    case 'repeat_schedule': {
+      if (value === null || value === undefined) {
+        return "Doesn't repeat";
+      }
+
+      const frequency = Object.keys(RRULE_FREQUENCIES).find(
+        key => RRULE_FREQUENCIES[key] === value,
+      );
+
+      if (!frequency) {
+        return "Doesn't repeat";
+      }
+
+      // format the frequency to be more human-readable
+      return capsToSentenceCase(frequency);
+    }
+    case 'due_date': {
+      return value ? format(new Date(value), 'do MMMM yy') : 'No due date';
+    }
+    default: {
+      if (!value) return 'No value';
+      // Default to capitalizing the value's first character, and replacing underscores with spaces
+      const words = value.replace(/_/g, ' ');
+      return `${words.charAt(0).toUpperCase()}${words.slice(1)}`;
+    }
+  }
+};
+
+const generateSystemComment = templateVariables => {
+  const { type } = templateVariables;
+  if (type === SystemCommentSubType.complete) {
+    return 'Completed this task';
+  }
+  if (type === SystemCommentSubType.create) {
+    return 'Created this task';
+  }
+
+  const { originalValue, newValue, field } = templateVariables;
+  const friendlyFieldName = getFriendlyFieldName(field);
+  const formattedOriginalValue = formatValue(field, originalValue);
+  const formattedNewValue = formatValue(field, newValue);
+  // generate a comment for the change
+  return `Changed ${friendlyFieldName} from ${formattedOriginalValue} to ${formattedNewValue}`;
+};
+
+const SystemComment = ({
+  templateVariables,
+  message,
+}: {
+  templateVariables: TaskCommentTemplateVariables;
+  message?: TaskComment['message'];
+}) => {
+  // Handle the case where the message is provided, for backwards compatibility
+  const messageText = message ?? generateSystemComment(templateVariables);
+  return <Message color="textSecondary">{messageText}</Message>;
+};
+
+const UserComment = ({ message }: { message: Comments[0]['message'] }) => {
+  if (!message) return null;
+  return (
+    <>
+      {message.split('\n').map(line => (
+        <UserMessage key={line}>{line}</UserMessage>
+      ))}
+    </>
+  );
+};
+
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
-  const { createdAt, userName, message, type } = comment;
+  const { createdAt, type, userName, message, templateVariables } = comment;
+
   return (
     <CommentContainer>
       <CommentDetails>
         {displayDateTime(createdAt)} - {userName}
       </CommentDetails>
-      {message.split('\n').map(line => (
-        <Message
-          key={line}
-          color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'}
-          $type={type}
-        >
-          {line}
-        </Message>
-      ))}
+
+      {type === TaskCommentType.system ? (
+        <SystemComment templateVariables={templateVariables} message={message} />
+      ) : (
+        <UserComment message={message} />
+      )}
     </CommentContainer>
   );
 };

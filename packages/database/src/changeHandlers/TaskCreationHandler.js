@@ -72,7 +72,7 @@ export class TaskCreationHandler extends ChangeHandler {
 
     for (const response of changedResponses) {
       const sr = await models.surveyResponse.findById(response.id);
-      const { timezone } = sr;
+      const { timezone, user_id: userId } = sr;
       const questions = await getQuestions(models, response.survey_id);
 
       const taskQuestions = questions.filter(question => question.type === 'Task');
@@ -119,14 +119,17 @@ export class TaskCreationHandler extends ChangeHandler {
           dueDate = timestamp;
         }
 
-        await models.task.create({
-          initial_request_id: response.id,
-          survey_id: surveyId,
-          entity_id: entityId,
-          assignee_id: getAnswer('assignee'),
-          due_date: dueDate,
-          status: 'to_do',
-        });
+        await models.task.create(
+          {
+            initial_request_id: response.id,
+            survey_id: surveyId,
+            entity_id: entityId,
+            assignee_id: getAnswer('assignee'),
+            due_date: dueDate,
+            status: 'to_do',
+          },
+          userId,
+        );
       }
     }
   }

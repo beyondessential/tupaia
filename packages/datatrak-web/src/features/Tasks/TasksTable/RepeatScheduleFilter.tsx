@@ -7,6 +7,7 @@ import React from 'react';
 import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TaskFilterType } from '../../../types';
 import { SelectFilter } from './SelectFilter';
+import { capsToSentenceCase } from '../utils';
 
 interface RepeatScheduleFilterProps {
   onChange: (value: string) => void;
@@ -18,7 +19,7 @@ export const RepeatScheduleFilter = ({ onChange, filter }: RepeatScheduleFilterP
   const options = Object.entries(RRULE_FREQUENCIES).map(([key, value]) => ({
     value,
     //converts the key to a more readable format
-    label: `${key.charAt(0)}${key.slice(1).toLowerCase()}`,
+    label: capsToSentenceCase(key),
   }));
 
   return (
