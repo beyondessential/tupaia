@@ -11737,7 +11737,7 @@ __metadata:
     lodash: ^4.17.4
     multer: ^1.4.3
     winston: ^3.3.3
-    xlsx: ^0.10.9
+    xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
 
@@ -11836,7 +11836,7 @@ __metadata:
     "@tupaia/database": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    jsonwebtoken: ^7.4.3
+    jsonwebtoken: ^9.0.0
     npm-run-all: ^4.1.5
     rand-token: ^1.0.1
     randomatic: ^3.1.1
@@ -11903,7 +11903,7 @@ __metadata:
     supertest: ^3.1.0
     urlencode: ^1.1.0
     winston: ^3.3.3
-    xlsx: ^0.10.9
+    xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
 
@@ -12041,6 +12041,8 @@ __metadata:
     "@types/lodash.keyby": ^4.6.0
     "@types/lodash.sortby": ^4.6.0
     camelcase-keys: ^6.2.2
+    date-fns: ^2.29.2
+    date-fns-tz: ^2.0.1
     express: ^4.19.2
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -12689,7 +12691,7 @@ __metadata:
     react-router-dom-v6: "npm:react-router-dom@6.3.0"
     react-table: ^7.7.0
     styled-components: ^5.0.1
-    xlsx: ^0.17.0
+    xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
 
@@ -12731,8 +12733,10 @@ __metadata:
     bson-objectid: ^1.2.2
     case: ^1.5.5
     countrynames: ^0.1.1
+    date-fns: ^2.29.2
+    date-fns-tz: ^2.0.1
     fast-memoize: ^2.5.2
-    jsonwebtoken: ^8.5.1
+    jsonwebtoken: ^9.0.0
     lodash.get: ^4.4.2
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
@@ -12744,7 +12748,7 @@ __metadata:
     sanitize-filename: ^1.6.3
     validator: ^13.11.0
     winston: ^3.3.3
-    xlsx: ^0.10.9
+    xlsx: ^0.18.5
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
@@ -12824,7 +12828,7 @@ __metadata:
     request: ^2.81.0
     urlencode: ^1.1.0
     winston: ^3.3.3
-    xlsx: ^0.17.0
+    xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
 
@@ -15047,27 +15051,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"adler-32@npm:~1.1.0":
-  version: 1.1.0
-  resolution: "adler-32@npm:1.1.0"
-  dependencies:
-    exit-on-epipe: ~1.0.1
-    printj: ~1.1.0
-  bin:
-    adler32: ./bin/adler32.njs
-  checksum: 462a2e7eda93e723737e0efc209ca4a6fc6b66bde90322d6917257de2dc14adb8192eb628315da6d3acac2eade737bc873844d4e075852dde9ca8c066053aff7
-  languageName: node
-  linkType: hard
-
-"adler-32@npm:~1.2.0":
-  version: 1.2.0
-  resolution: "adler-32@npm:1.2.0"
-  dependencies:
-    exit-on-epipe: ~1.0.1
-    printj: ~1.1.0
-  bin:
-    adler32: ./bin/adler32.njs
-  checksum: aa611316fa224349b3eb1b7fcccc05195c38e425ff2b678fde67c0440b27074c42ad97b03efb7478f045b094f0dcb51a8711a2d5571d8940e1c5c52593af7bf6
+"adler-32@npm:~1.3.0":
+  version: 1.3.1
+  resolution: "adler-32@npm:1.3.1"
+  checksum: c7f6b02df64a4392fcf1591862344f56733716a558e97a8b06a553dadeeaec792054512389000f42f371b13d2be5370e056e18db3b573944b595c4cb7742c5c6
   languageName: node
   linkType: hard
 
@@ -18076,26 +18063,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cfb@npm:^1.1.4":
-  version: 1.2.0
-  resolution: "cfb@npm:1.2.0"
+"cfb@npm:~1.2.1":
+  version: 1.2.2
+  resolution: "cfb@npm:1.2.2"
   dependencies:
-    adler-32: ~1.2.0
+    adler-32: ~1.3.0
     crc-32: ~1.2.0
-    printj: ~1.1.2
-  checksum: 3c1bb1a7459bdff5a76c4fd39b1845c515634be1ca23a32c5eecd42dfd4f9e96bd162920a9664a9d87bc7082a00fe65d1a755404041def37af5699e7ec776f72
-  languageName: node
-  linkType: hard
-
-"cfb@npm:~0.12.0":
-  version: 0.12.1
-  resolution: "cfb@npm:0.12.1"
-  dependencies:
-    commander: ~2.11.0
-    printj: ~1.1.0
-  bin:
-    cfb: ./bin/cfb.njs
-  checksum: 013ea895a491368da853a20fe13d6547b2b1f748dc5242591e14e57d5cb84e5f1d91733330613d8c6246f317a4d4228abb4b7f4c8510121485b851fd73a062ab
+  checksum: cfb63a7d630a7fa415c1b25655dca66666584f29c95fb0ee90866ada1a28090857827f2ba70a9a50df28bdce05728ae58d495bce417249f305ef7b3c85840024
   languageName: node
   linkType: hard
 
@@ -18697,28 +18671,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codepage@npm:~1.10.1":
-  version: 1.10.2
-  resolution: "codepage@npm:1.10.2"
-  dependencies:
-    commander: ~2.11.0
-    exit-on-epipe: ~1.0.1
-    voc: ~1.0.0
-  bin:
-    codepage: ./bin/codepage.njs
-  checksum: b5ca26ef954df1c31110b7a0f2c2d5a6ac236766de4176fcbd64113c374a44a11f0d7294d70ce507d75a8abd896803c8e166b01e94588b8f74501759f14d30ff
-  languageName: node
-  linkType: hard
-
-"codepage@npm:~1.14.0":
-  version: 1.14.0
-  resolution: "codepage@npm:1.14.0"
-  dependencies:
-    commander: ~2.14.1
-    exit-on-epipe: ~1.0.1
-  bin:
-    codepage: ./bin/codepage.njs
-  checksum: ea06cbb7b646029d4e252b143b09048f1dee466d80be9e68cc4da05981f982a02f1199db0ea27d5e05a026bfa77b91e3ae8e0d3ed9665bd77ba54911bf2b82b7
+"codepage@npm:~1.15.0":
+  version: 1.15.0
+  resolution: "codepage@npm:1.15.0"
+  checksum: 86bdfd8f8fd4d78ace6ddab02a1621cbb4a833686fe886984b4155d99cd0287581d69495774b816ab2f571c4dc851c1595e1dbb8d69bd6dbb5a631ebf317fab0
   languageName: node
   linkType: hard
 
@@ -18979,31 +18935,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:~2.11.0":
-  version: 2.11.0
-  resolution: "commander@npm:2.11.0"
-  checksum: 0d0c622d129a801699b9bbf6fa518108c7e221e51ae12457119aec52f1142ab759b6cd3348ee253604e934639e200c8f0e1cf8342a2ba4b28b3565a7322ead14
-  languageName: node
-  linkType: hard
-
 "commander@npm:~2.13.0":
   version: 2.13.0
   resolution: "commander@npm:2.13.0"
   checksum: b23e2de09428e3852e881c3e265c70438ca038c834744479b72dde0bbc570f45c7f1ea2feea27fbe26382d2cbf6fb7b1963d7dee2c08b3f4adc95dbc45d977f5
-  languageName: node
-  linkType: hard
-
-"commander@npm:~2.14.1":
-  version: 2.14.1
-  resolution: "commander@npm:2.14.1"
-  checksum: 26bd49febeac8efabb7488fb5a4a2480b04bc4c4eef3c50da93eead72959f7a5232d003deda5b9761937205721274e80108f6d1d2b45ae7a8387cfb92031084e
-  languageName: node
-  linkType: hard
-
-"commander@npm:~2.17.1":
-  version: 2.17.1
-  resolution: "commander@npm:2.17.1"
-  checksum: 22e7ed5b422079a13a496e5eb8f73f36c15b5809d46f738e168e20f9ad485c12951bdc2cb366a36eb5f4927dae4f17b355b8adb96a5b9093f5fa4c439e8b9419
   languageName: node
   linkType: hard
 
@@ -19580,18 +19515,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crc-32@npm:~1.1.0":
-  version: 1.1.1
-  resolution: "crc-32@npm:1.1.1"
-  dependencies:
-    exit-on-epipe: ~1.0.1
-    printj: ~1.1.0
-  bin:
-    crc32: ./bin/crc32.njs
-  checksum: 71acc63cc2955f1de1492f494549dfb76d1ded194cc393f93d33fc86ef9d3d805c8ac9001dc4d246d06786306a1453025388b7faf9b2f2fdfc43ffd37131d43a
-  languageName: node
-  linkType: hard
-
 "crc-32@npm:~1.2.0":
   version: 1.2.0
   resolution: "crc-32@npm:1.2.0"
@@ -19601,6 +19524,15 @@ __metadata:
   bin:
     crc32: ./bin/crc32.njs
   checksum: 7bcde8bea262f6629ac3c70e20bdfa3d058dc77091705ce8620513f76f19b41fc273ddd65a716eef9b4e33fbb61ff7f9b266653d214319aef27e4223789c6b9e
+  languageName: node
+  linkType: hard
+
+"crc-32@npm:~1.2.1":
+  version: 1.2.2
+  resolution: "crc-32@npm:1.2.2"
+  bin:
+    crc32: bin/crc32.njs
+  checksum: ad2d0ad0cbd465b75dcaeeff0600f8195b686816ab5f3ba4c6e052a07f728c3e70df2e3ca9fd3d4484dc4ba70586e161ca5a2334ec8bf5a41bf022a6103ff243
   languageName: node
   linkType: hard
 
@@ -20182,6 +20114,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-fns-tz@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "date-fns-tz@npm:2.0.1"
+  peerDependencies:
+    date-fns: 2.x
+  checksum: 2d2bb3d67f1ac876a7bd3bbe027aba61347d21c74f20a3f014c53d6057a7a1653ed3021c2d9271dc24411ab38f82763fec362c4f24e944465172cd80ee8c4b5f
+  languageName: node
+  linkType: hard
+
 "date-fns@npm:^1.27.2, date-fns@npm:^1.3.0":
   version: 1.30.1
   resolution: "date-fns@npm:1.30.1"
@@ -20429,8 +20370,8 @@ __metadata:
 
 "decode-uri-component@npm:^0.2.0":
   version: 0.2.0
-  resolution: "decode-uri-component@npm:0.2.0"
-  checksum: f3749344ab9305ffcfe4bfe300e2dbb61fc6359e2b736812100a3b1b6db0a5668cba31a05e4b45d4d63dbf1a18dfa354cd3ca5bb3ededddabb8cd293f4404f94
+  resolution: "decode-uri-component@npm:0.2.2"
+  checksum: 95476a7d28f267292ce745eac3524a9079058bbb35767b76e3ee87d42e34cd0275d2eb19d9d08c3e167f97556e8a2872747f5e65cbebcac8b0c98d83e285f139
   languageName: node
   linkType: hard
 
@@ -23732,13 +23673,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fflate@npm:^0.3.8":
-  version: 0.3.11
-  resolution: "fflate@npm:0.3.11"
-  checksum: 1eca8d3e86fda9f82c8acd16a970dd20bfeb4bd31c7808351ef413bc2673911d2aedc2fed6e8a4b68f5f2598b07f0579fdf6f085f5a8105b49cde8a8f3528def
-  languageName: node
-  linkType: hard
-
 "figgy-pudding@npm:^3.5.1":
   version: 3.5.1
   resolution: "figgy-pudding@npm:3.5.1"
@@ -25829,13 +25763,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoek@npm:2.x.x":
-  version: 2.16.3
-  resolution: "hoek@npm:2.16.3"
-  checksum: b38036f28f63fa44796a9ff2d495c04c609c1e4aa535a7017f870c8eba8e68db13b9be93f89ae14f22a6688a0f42cb048bf8971f3126350e1fbd980938aa8c9e
-  languageName: node
-  linkType: hard
-
 "hoek@npm:4.x.x":
   version: 4.2.1
   resolution: "hoek@npm:4.2.1"
@@ -27557,13 +27484,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isemail@npm:1.x.x":
-  version: 1.2.0
-  resolution: "isemail@npm:1.2.0"
-  checksum: 34c26861929e367c7240df8751c229c7ce9575c8eaa2b34b929ca40b808c438807b96fe2e47c527af407a7bb91206bc9d63db995de5b3881d0e929f9f5d07a80
-  languageName: node
-  linkType: hard
-
 "isemail@npm:3.x.x":
   version: 3.2.0
   resolution: "isemail@npm:3.2.0"
@@ -28637,18 +28557,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^6.10.1":
-  version: 6.10.1
-  resolution: "joi@npm:6.10.1"
-  dependencies:
-    hoek: 2.x.x
-    isemail: 1.x.x
-    moment: 2.x.x
-    topo: 1.x.x
-  checksum: 39b1e9a7e381b80d0fcaf230c46c096632620ae5e27e681dc10c57ca3b71b7c502eaecb0f2ed837cefd6aeca6de03ee3edb3295e0f2ff19e493d568be0143bd3
-  languageName: node
-  linkType: hard
-
 "js-beautify@npm:1.10.3":
   version: 1.10.3
   resolution: "js-beautify@npm:1.10.3"
@@ -29078,22 +28986,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^7.4.3":
-  version: 7.4.3
-  resolution: "jsonwebtoken@npm:7.4.3"
-  dependencies:
-    joi: ^6.10.1
-    jws: ^3.1.4
-    lodash.once: ^4.0.0
-    ms: ^2.0.0
-    xtend: ^4.0.1
-  checksum: 0e237b5af7056c00e0ac778f1d54576d936be473bd300cedcc5f746c4e953f12b83c1d12197698fa4b68df7eafb4e68090d3dda72b726bf368007daf55b57480
-  languageName: node
-  linkType: hard
-
-"jsonwebtoken@npm:^8.5.1":
-  version: 8.5.1
-  resolution: "jsonwebtoken@npm:8.5.1"
+"jsonwebtoken@npm:^9.0.0":
+  version: 9.0.2
+  resolution: "jsonwebtoken@npm:9.0.2"
   dependencies:
     jws: ^3.2.2
     lodash.includes: ^4.3.0
@@ -29104,8 +28999,8 @@ __metadata:
     lodash.isstring: ^4.0.1
     lodash.once: ^4.0.0
     ms: ^2.1.1
-    semver: ^5.6.0
-  checksum: 93c9e3f23c59b758ac88ba15f4e4753b3749dfce7a6f7c40fb86663128a1e282db085eec852d4e0cbca4cefdcd3a8275ee255dbd08fcad0df26ad9f6e4cc853a
+    semver: ^7.5.4
+  checksum: fc739a6a8b33f1974f9772dca7f8493ca8df4cc31c5a09dcfdb7cff77447dcf22f4236fb2774ef3fe50df0abeb8e1c6f4c41eba82f500a804ab101e2fbc9d61a
   languageName: node
   linkType: hard
 
@@ -29264,7 +29159,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jws@npm:^3.1.4, jws@npm:^3.2.2":
+"jws@npm:^3.2.2":
   version: 3.2.2
   resolution: "jws@npm:3.2.2"
   dependencies:
@@ -31912,17 +31807,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:2.x.x, moment@npm:^2.24.0":
-  version: 2.24.0
-  resolution: "moment@npm:2.24.0"
-  checksum: 9cd93a251a2b33cb1b532eade0e496a2a7547faa6cfe37a283ee7bf69e202cd7c8ab0673d66883b5b29aed051353176dc0e6684f04073a75b0a155c500be1580
-  languageName: node
-  linkType: hard
-
 "moment@npm:^2.18.1, moment@npm:^2.29.4":
   version: 2.29.4
   resolution: "moment@npm:2.29.4"
   checksum: 0ec3f9c2bcba38dc2451b1daed5daded747f17610b92427bebe1d08d48d8b7bdd8d9197500b072d14e326dd0ccf3e326b9e3d07c5895d3d49e39b6803b76e80e
+  languageName: node
+  linkType: hard
+
+"moment@npm:^2.24.0":
+  version: 2.24.0
+  resolution: "moment@npm:2.24.0"
+  checksum: 9cd93a251a2b33cb1b532eade0e496a2a7547faa6cfe37a283ee7bf69e202cd7c8ab0673d66883b5b29aed051353176dc0e6684f04073a75b0a155c500be1580
   languageName: node
   linkType: hard
 
@@ -35093,7 +34988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"printj@npm:~1.1.0, printj@npm:~1.1.2":
+"printj@npm:~1.1.0":
   version: 1.1.2
   resolution: "printj@npm:1.1.2"
   bin:
@@ -39661,17 +39556,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssf@npm:~0.10.0":
-  version: 0.10.2
-  resolution: "ssf@npm:0.10.2"
-  dependencies:
-    frac: ~1.1.2
-  bin:
-    ssf: ./bin/ssf.njs
-  checksum: 06272773018c75b42836ba668495d0ed1aee9e5daff3f34866909d6a9094115e9f20ec501aaad823874342ca4b303460d22f0a4bdcaf6605b2f9880688f588f8
-  languageName: node
-  linkType: hard
-
 "ssf@npm:~0.11.2":
   version: 0.11.2
   resolution: "ssf@npm:0.11.2"
@@ -41108,15 +40992,6 @@ __metadata:
   version: 1.0.1
   resolution: "toidentifier@npm:1.0.1"
   checksum: 952c29e2a85d7123239b5cfdd889a0dde47ab0497f0913d70588f19c53f7e0b5327c95f4651e413c74b785147f9637b17410ac8c846d5d4a20a5a33eb6dc3a45
-  languageName: node
-  linkType: hard
-
-"topo@npm:1.x.x":
-  version: 1.1.0
-  resolution: "topo@npm:1.1.0"
-  dependencies:
-    hoek: 2.x.x
-  checksum: 1d91224edc40842058dfc69e727f61da87a01199f8492810165b2d92b091f4598c6f92e7d72bd03b0b3e71e2d1e429d09b33970506dd5ad61eb9261dc8ade2d4
   languageName: node
   linkType: hard
 
@@ -42867,15 +42742,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"voc@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "voc@npm:1.0.0"
-  bin:
-    voc: ./voc.njs
-  checksum: b81e68662852ef4af6a8c933d5ae38a3c1b91ddf54159ad843d0617989921f374dc9f7c0f7b14ac96e3d16fbff8e20fc1c9621235a15d25d6e2d873e82c84a50
-  languageName: node
-  linkType: hard
-
 "w3c-xmlserializer@npm:^4.0.0":
   version: 4.0.0
   resolution: "w3c-xmlserializer@npm:4.0.0"
@@ -43630,40 +43496,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xlsx@npm:^0.10.9":
-  version: 0.10.9
-  resolution: "xlsx@npm:0.10.9"
+"xlsx@npm:^0.18.5":
+  version: 0.18.5
+  resolution: "xlsx@npm:0.18.5"
   dependencies:
-    adler-32: ~1.1.0
-    cfb: ~0.12.0
-    codepage: ~1.10.1
-    commander: ~2.11.0
-    crc-32: ~1.1.0
-    exit-on-epipe: ~1.0.1
-    ssf: ~0.10.0
-  bin:
-    xlsx: ./bin/xlsx.njs
-  checksum: bf811abefecfa6f7a9f9cfb616b5864b6eeb7fefa1f30a6c6d0e4cb226808a3c043d474ccbfde621e8891d25e7a3da37b601f8e0225df883643d2f48956e3db8
-  languageName: node
-  linkType: hard
-
-"xlsx@npm:^0.17.0":
-  version: 0.17.0
-  resolution: "xlsx@npm:0.17.0"
-  dependencies:
-    adler-32: ~1.2.0
-    cfb: ^1.1.4
-    codepage: ~1.14.0
-    commander: ~2.17.1
-    crc-32: ~1.2.0
-    exit-on-epipe: ~1.0.1
-    fflate: ^0.3.8
+    adler-32: ~1.3.0
+    cfb: ~1.2.1
+    codepage: ~1.15.0
+    crc-32: ~1.2.1
     ssf: ~0.11.2
     wmf: ~1.0.1
     word: ~0.3.0
   bin:
     xlsx: bin/xlsx.njs
-  checksum: 64e44eba53b64b989667b11655b88ef59a695aa07cce2415f9edff64ef6a48d936ed33208d98db3654e31769d79c42fd50e96d983d55e0850cb54a591b28960e
+  checksum: c5774d3c6abdf2db24f33a7b786e305255dac0e41a4e6bf6167c3f8517bfb5bfcb98e8207c39d5105f8304aa7416758da0400a993fb79aaf8e2ea4cfa8801f2e
   languageName: node
   linkType: hard
 

@@ -2,21 +2,45 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
+import React from 'react';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import moment from 'moment';
-import { ApprovalStatus } from '@tupaia/types';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { SurveyResponsesExportModal } from '../../importExport';
 import { getPluralForm } from '../../pages/resources/resourceName';
+import { OutdatedFilter } from '../../table/columnTypes/columnFilters';
 
 const RESOURCE_NAME = { singular: 'survey response' };
 
-// Don't include not_required as an editable option because it can lead to
-// mis-matches between surveys and survey responses
-export const APPROVAL_STATUS_TYPES = Object.values(ApprovalStatus).map(type => ({
-  label: type,
-  value: type,
-}));
+const GREEN = '#47CA80';
+const GREY = '#898989';
+
+const Pill = styled.span`
+  background-color: ${({ $color }) => {
+    return `${$color}33`; // slightly transparent
+  }};
+  border-radius: 1.5rem;
+  padding: 0.3rem 0.9rem;
+  color: ${({ $color }) => $color};
+  .cell-content:has(&) > div {
+    overflow: visible;
+  }
+`;
+
+const ResponseStatusPill = ({ value }) => {
+  const text = value ? 'Outdated' : 'Current';
+  const color = value ? GREY : GREEN;
+  return <Pill $color={color}>{text}</Pill>;
+};
+
+ResponseStatusPill.propTypes = {
+  value: PropTypes.bool,
+};
+
+ResponseStatusPill.defaultProps = {
+  value: false,
+};
 
 const surveyName = {
   Header: 'Survey',
@@ -56,9 +80,13 @@ const dateOfData = {
   },
 };
 
-const approvalStatus = {
-  Header: 'Approval status',
-  source: 'approval_status',
+const responseStatus = {
+  Header: 'Response status',
+  source: 'outdated',
+  Filter: OutdatedFilter,
+  width: 180,
+  // eslint-disable-next-line react/prop-types
+  Cell: ({ value }) => <ResponseStatusPill value={value} />,
 };
 
 const entityName = {
@@ -80,7 +108,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   assessorName,
   date,
   dateOfData,
-  approvalStatus,
+  responseStatus,
   {
     Header: 'Export',
     type: 'export',

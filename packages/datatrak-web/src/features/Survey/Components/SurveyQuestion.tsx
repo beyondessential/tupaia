@@ -73,7 +73,7 @@ export const SurveyQuestion = ({
   ...props
 }: SurveyQuestionFieldProps) => {
   const { control, errors } = useFormContext();
-  const { updateFormData, formData } = useSurveyForm();
+  const { updateFormData, formData, isResubmit } = useSurveyForm();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
@@ -90,7 +90,7 @@ export const SurveyQuestion = ({
   const getDefaultValue = () => {
     if (formData[name] !== undefined) return formData[name];
     // This is so that the default value gets carried through to the component, and dates that have a visible value of 'today' have that value recognised when validating
-    if (type?.includes('Date')) return new Date();
+    if (type?.includes('Date')) return isResubmit ? null : new Date();
     return undefined;
   };
 

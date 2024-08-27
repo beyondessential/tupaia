@@ -143,7 +143,8 @@ export class S3Client {
     // If is not an image file type, e.g. a pdf, throw an error
     if (!imageTypes.includes(fileType)) throw new Error(`File type ${fileType} is not supported`);
 
-    // remove the +xml from the file type if it's an svg+xml so we can use it as the file extension
+    if (fileType === 'jpeg') fileType = 'jpg';
+
     const fileExtension = fileType.replace('+xml', '');
 
     const filePath = getS3ImageFilePath();

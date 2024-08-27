@@ -45,6 +45,8 @@ import {
   EntitiesRequest,
   GenerateLoginTokenRoute,
   GenerateLoginTokenRequest,
+  ResubmitSurveyResponseRequest,
+  ResubmitSurveyResponseRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 
@@ -64,6 +66,10 @@ export async function createApp() {
     .post<SubmitSurveyResponseRequest>(
       'submitSurveyResponse',
       handleWith(SubmitSurveyResponseRoute),
+    )
+    .post<ResubmitSurveyResponseRequest>(
+      'resubmitSurveyResponse/:originalSurveyResponseId',
+      handleWith(ResubmitSurveyResponseRoute),
     )
     .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))

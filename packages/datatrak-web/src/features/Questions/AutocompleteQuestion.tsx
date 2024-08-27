@@ -76,6 +76,8 @@ export const AutocompleteQuestion = ({
     searchValue,
   );
 
+  const canCreateNew = !!createNew;
+
   const getOptionSelected = (option: Option, selectedOption?: string | null) => {
     const value = typeof option === 'string' ? option : option?.value;
     return value === selectedOption;
@@ -84,7 +86,7 @@ export const AutocompleteQuestion = ({
   const getOptions = () => {
     const options = data || [];
     // If we can't create a new option, or there is no input value, or the input value is already in the options, or the value is already added, return the options as they are
-    if (!createNew || !searchValue || options.find(option => option.value === searchValue))
+    if (!canCreateNew || !searchValue || options.find(option => option.value === searchValue))
       return options;
     // if we have selected a newly created option, add it to the list of options
     if (selectedValue?.value === searchValue)

@@ -90,6 +90,9 @@ export class EntityConfigValidator extends JsonFieldValidator {
         pointsToPrecedingEntityQuestion(...params),
     );
 
+    const pointsToMandatoryCodeGeneratorQuestion =
+      this.constructPointsToMandatoryCodeGeneratorQuestion(rowIndex);
+
     const pointsToAnotherMandatoryQuestion = this.constructPointsToMandatoryQuestion(rowIndex);
 
     return {
@@ -100,7 +103,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
       'attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
       'fields.code': [
         hasContentOnlyIfCanCreateNew,
-        constructIsNotPresentOr(pointsToAnotherMandatoryQuestion),
+        constructIsNotPresentOr(pointsToMandatoryCodeGeneratorQuestion),
       ],
       'fields.name': [
         hasContentIfCanCreateNew,
@@ -123,6 +126,23 @@ export class EntityConfigValidator extends JsonFieldValidator {
     };
   }
 
+  constructPointsToMandatoryCodeGeneratorQuestion(rowIndex) {
+    return value => {
+      const questionCode = value;
+      const question = this.findOtherQuestion(questionCode, rowIndex, this.questions.length);
+
+      if (!question) {
+        throw new ValidationError(`Should reference another code generator question in the survey`);
+      }
+
+      if (question.type !== 'CodeGenerator') {
+        throw new ValidationError(`Referenced question should be a code generator question`);
+      }
+
+      return true;
+    };
+  }
+
   constructPointsToMandatoryQuestion(rowIndex) {
     return value => {
       const questionCode = value;
@@ -141,7 +161,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
 
       if (!parsedValidationCriteria.mandatory || parsedValidationCriteria.mandatory !== 'true') {
         throw new ValidationError(`Referenced question should be mandatory`);
-       } 
+      }
 
       return true;
     };
