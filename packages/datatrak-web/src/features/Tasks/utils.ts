@@ -66,3 +66,7 @@ export const getDisplayRepeatSchedule = (task: SingleTaskResponse) => {
   if (selectedOption) return selectedOption.label;
   return label;
 };
+
+export const capsToSentenceCase = (str: string) => {
+  return `${str.charAt(0)}${str.slice(1).toLowerCase()}`;
+};

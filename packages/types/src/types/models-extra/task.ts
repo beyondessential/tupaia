@@ -3,6 +3,35 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { Task } from '../models';
+
+export enum SystemCommentSubType {
+  update = 'update',
+  create = 'create',
+  complete = 'complete',
+}
+
+export type TaskUpdateCommentTemplateVariables = {
+  type: SystemCommentSubType.update;
+  originalValue?: string | number;
+  newValue?: string | number;
+  field?: string;
+};
+
+export type TaskCreateCommentTemplateVariables = {
+  type: SystemCommentSubType.create;
+};
+
+export type TaskCompletedCommentTemplateVariables = {
+  type: SystemCommentSubType.complete;
+  taskId?: Task['id'];
+};
+
+export type TaskCommentTemplateVariables =
+  | TaskUpdateCommentTemplateVariables
+  | TaskCreateCommentTemplateVariables
+  | TaskCompletedCommentTemplateVariables;
+
 export type RepeatSchedule = Record<string, unknown> & {
   freq?: number;
   interval?: number;

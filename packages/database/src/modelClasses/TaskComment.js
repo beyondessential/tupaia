@@ -20,4 +20,10 @@ export class TaskCommentModel extends DatabaseModel {
     System: 'system',
     User: 'user',
   };
+
+  systemCommentTypes = {
+    Create: 'create',
+    Update: 'update',
+    Complete: 'complete',
+  };
 }

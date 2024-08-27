@@ -69,9 +69,8 @@ const getSubHeadingText = surveyResponse => {
     return null;
   }
   const date = displayDate(surveyResponse.dataTime);
-  const country = surveyResponse.countryName;
-  const entity = surveyResponse.entityName;
-  const location = country === entity ? country : `${entity} | ${country}`;
+  const { entityName, entityParentName } = surveyResponse;
+  const location = `${entityName} | ${entityParentName}`;
   return `${location} ${date}`;
 };
 interface SurveyResponseModalContentProps {
