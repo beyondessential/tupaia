@@ -42,7 +42,7 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
       { joinWith: RECORDS.SURVEY, joinCondition: ['survey.id', 'task.survey_id'] },
     );
 
-    const onTimeCompletionTasks = await models.task.find(
+    const completedTasks = await models.task.find(
       // @ts-ignore
       {
         [QUERY_CONJUNCTIONS.RAW]: {
@@ -55,23 +55,22 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
       },
     );
 
-    const onTimeCompletionRate =
-      (onTimeCompletionTasks.length /
-        onTimeCompletionTasks.filter(record => {
-          if (!record.due_date || !record.data_time) {
-            return false;
-          }
-          const { data_time: dataTime, timezone: timezone } = record;
-          const offset = getOffsetForTimezone(timezone, new Date(dataTime));
-          const formattedDate = `${dataTime.toString().replace(' ', 'T')}${offset}`;
-          return new Date(formattedDate).getTime() <= record.due_date;
-        }).length) *
-        100 || 0;
+    const onTimeCompletedTasks = completedTasks.filter(record => {
+      if (!record.due_date || !record.data_time) {
+        return false;
+      }
+      const { data_time: dataTime, timezone } = record;
+      const offset = getOffsetForTimezone(timezone, new Date(dataTime));
+      const formattedDate = `${dataTime.toString().replace(' ', 'T')}${offset}`;
+      return new Date(formattedDate).getTime() <= record.due_date;
+    });
+
+    const onTimeCompletionRate = (completedTasks.length / onTimeCompletedTasks.length) * 100 || 0;
 
     return {
-      unassignedTasks: unassignedTasks,
-      overdueTasks: overdueTasks,
-      onTimeCompletionRate: onTimeCompletionRate,
+      unassignedTasks,
+      overdueTasks,
+      onTimeCompletionRate,
     };
   }
 }

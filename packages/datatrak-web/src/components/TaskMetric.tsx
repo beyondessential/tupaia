@@ -16,14 +16,12 @@ const MetricWrapper = styled.div`
 `;
 
 const MetricNumber = styled.div`
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.75;
-  padding: 0.5em 1.75em;
+  padding: 0.5em 1.75rem;
   border-right: 1px solid ${({ theme }) => theme.palette.divider};
-  box-shadow: none;
   min-width: 3rem;
-  padding-inline-end: 0.9rem;
-  padding-inline-start: 0.9rem;
+  padding-inline: 0.9rem;
   align-content: center;
   text-align: center;
   font-weight: 500;
@@ -32,8 +30,7 @@ const MetricNumber = styled.div`
 const MetricText = styled.div`
   line-height: 1.75;
   letter-spacing: 0;
-  padding: 0.5em 1.75em;
-  box-shadow: none;
+  padding: 0.5rem 1.75rem;
   padding-inline-end: 1.2rem;
   padding-inline-start: 0.9rem;
   font-weight: 500;
