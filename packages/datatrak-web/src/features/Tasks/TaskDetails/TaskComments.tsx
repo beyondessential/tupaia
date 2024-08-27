@@ -170,12 +170,12 @@ const UserComment = ({ message }: { message: Comments[0]['message'] }) => {
 };
 
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
-  const { createdAt, type, userName, message, templateVariables } = comment;
+  const { createdAt, type, userName, message, templateVariables, userId } = comment;
 
   return (
     <CommentContainer>
       <CommentDetails>
-        {displayDateTime(createdAt)} - {userName}
+        {displayDateTime(createdAt)} - {userName} {!userId ? '(user deleted)' : ''}
       </CommentDetails>
 
       {type === TaskCommentType.system ? (
