@@ -39,7 +39,7 @@ export const UserQuestion = ({
   //If we programmatically set the value of the input, we need to update the search value
   useEffect(() => {
     // if the selection is the same as the search value, do not update the search value
-    if (value?.name === searchValue || isLoading) return;
+    if (value?.name === searchValue) return;
 
     setSearchValue(value?.name ?? '');
   }, [JSON.stringify(value)]);
