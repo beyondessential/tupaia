@@ -7,8 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { getOffsetForTimezone } from '@tupaia/utils';
 import { DatatrakWebTaskMetricsRequest, TaskStatus } from '@tupaia/types';
-import { JOIN_TYPES, QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
-import { assertNewExpression } from '@babel/types';
+import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 
 export type TaskMetricsRequest = Request<
   DatatrakWebTaskMetricsRequest.Params,
@@ -21,33 +20,36 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
   public async buildResponse() {
     const { params, models } = this.req;
     const { projectId } = params;
+    const baseQuery = { 'survey.project_id': projectId };
+    const baseJoin = { joinWith: RECORDS.SURVEY, joinCondition: ['survey.id', 'task.survey_id'] };
 
     const unassignedTasks = await models.task.count(
       {
+        ...baseQuery,
         [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `(survey.project_id = ? AND assignee_id IS NULL)`,
-          parameters: [projectId],
+          sql: `assignee_id IS NULL`,
         },
       },
-      { joinWith: RECORDS.SURVEY, joinCondition: ['survey.id', 'task.survey_id'] },
+      baseJoin,
     );
 
     const overdueTasks = await models.task.count(
       {
+        ...baseQuery,
         [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `(survey.project_id = ? AND due_date <= ?)`,
-          parameters: [projectId, new Date().getTime()],
+          sql: `due_date <= ?`,
+          parameters: [new Date().getTime()],
         },
       },
-      { joinWith: RECORDS.SURVEY, joinCondition: ['survey.id', 'task.survey_id'] },
+      baseJoin,
     );
 
     const completedTasks = await models.task.find(
       // @ts-ignore
       {
+        ...baseQuery,
         [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `(survey.project_id = ? AND status = 'completed' AND repeat_schedule IS NULL)`,
-          parameters: [projectId],
+          sql: `(status = 'completed' AND repeat_schedule IS NULL)`,
         },
       },
       {

@@ -6,10 +6,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
-import { Button, TaskMetric } from '../../components';
-import { useCurrentUserContext, useTaskMetrics } from '../../api';
+import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { TasksContentWrapper } from '../../layout';
+import { TaskMetrics } from '../../components/TaskMetrics';
 
 const ButtonContainer = styled.div`
   padding-block-end: 0.5rem;
@@ -21,19 +21,6 @@ const ButtonContainer = styled.div`
   }
   ${({ theme }) => theme.breakpoints.down('xs')} {
     align-self: self-end;
-  }
-`;
-
-const MetricsContainer = styled.div`
-  margin-block-end: 0;
-  gap: 0.5rem;
-  @media (min-width: 600px) {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    width: inherit;
   }
 `;
 
@@ -59,24 +46,10 @@ const ContentWrapper = styled(TasksContentWrapper)`
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
-  const { projectId } = useCurrentUserContext();
-  const { data: metrics, isLoading } = useTaskMetrics(projectId);
   return (
     <>
       <TaskPageHeader title="Tasks" backTo="/">
-        <MetricsContainer>
-          <TaskMetric
-            text="Unassigned tasks"
-            number={metrics?.unassignedTasks}
-            isLoading={isLoading}
-          />
-          <TaskMetric text="Overdue tasks" number={metrics?.overdueTasks} isLoading={isLoading} />
-          <TaskMetric
-            text="On-time completion rate"
-            number={`${metrics?.onTimeCompletionRate}%`}
-            isLoading={isLoading}
-          />
-        </MetricsContainer>
+        <TaskMetrics />
         <ButtonContainer>
           <CreateButton onClick={toggleCreateModal}>
             <AddIcon /> Create task
