@@ -6,7 +6,7 @@ import { useCurrentUserContext, useTaskMetrics } from '../../api';
 const TaskMetricsContainer = styled.div`
   margin-block-end: 0;
   gap: 0.5rem;
-  @media (min-width: 600px) {
+  ${({ theme }) => theme.breakpoints.up('xs')} {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;

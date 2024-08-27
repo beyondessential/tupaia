@@ -27,7 +27,7 @@ const Wrapper = styled.div`
   ${({ theme }) => theme.breakpoints.down('xs')} {
     flex-direction: column;
     align-items: flex-start;
-    padding-inline-end: 1rem;
+    padding-inline-end: 0;
   }
 `;
 
