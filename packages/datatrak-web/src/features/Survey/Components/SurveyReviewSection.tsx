@@ -47,28 +47,22 @@ export const SurveyReviewSection = () => {
   }
 
   // split the questions into sections by screen so it's easier to read the long form
-  const questionSections = visibleScreens.map(screen => {
-    const { surveyScreenComponents } = screen;
-    const heading = surveyScreenComponents[0].text;
-    const firstQuestionIsInstruction = surveyScreenComponents[0].type === QuestionType.Instruction;
+  const questions = visibleScreens
+    .map(screen => {
+      const { surveyScreenComponents } = screen;
+      const firstQuestionIsInstruction =
+        surveyScreenComponents[0].type === QuestionType.Instruction;
 
-    // if the first question is an instruction, don't display it, because it will be displayed as the heading
-    const questionsToDisplay = firstQuestionIsInstruction
-      ? surveyScreenComponents.slice(1)
-      : surveyScreenComponents;
-    return {
-      heading,
-      questions: questionsToDisplay,
-    };
-  });
+      // if the first question is an instruction, don't display it, because it will be displayed as the heading
+      const questionsToDisplay = firstQuestionIsInstruction
+        ? surveyScreenComponents.slice(1)
+        : surveyScreenComponents;
+      return questionsToDisplay;
+    })
+    .flat();
   return (
     <Fieldset>
-      {questionSections.map(({ heading, questions }, index) => (
-        <Section key={index}>
-          <SectionHeader>{heading}</SectionHeader>
-          <SurveyQuestionGroup questions={questions} />
-        </Section>
-      ))}
+      <SurveyQuestionGroup questions={questions} />
     </Fieldset>
   );
 };
