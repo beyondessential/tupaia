@@ -197,6 +197,14 @@ export async function exportResponsesToFile(
       }
       return entity.code;
     }
+
+    if (answer.type === ANSWER_TYPES.USER) {
+      const user = await models.user.findById(answer.text);
+      if (!user) {
+        return `Could not find user with id ${answer.text}`;
+      }
+      return `${user.first_name} ${user.last_name} (${user.id})`;
+    }
     return answer.text;
   };
 
