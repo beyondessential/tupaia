@@ -88039,6 +88039,23 @@ export const FileUploadAnswerSchema = {
 	]
 } 
 
+export const UserAnswerSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name"
+	]
+} 
+
 export const AnswersSchema = {
 	"type": "object",
 	"additionalProperties": false
