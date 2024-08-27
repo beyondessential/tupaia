@@ -101,6 +101,10 @@ describe('User Question', () => {
     const displayOption = await screen.findByRole('option', { name: users[0].name });
     userEvent.click(displayOption);
 
-    expect(onChange).toHaveBeenCalledWith(users[0].id);
+    expect(onChange).toHaveBeenCalledWith({
+      ...users[0],
+      label: users[0].name,
+      value: users[0].id,
+    });
   });
 });
