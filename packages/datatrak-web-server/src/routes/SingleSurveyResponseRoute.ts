@@ -10,6 +10,7 @@ import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 import { PermissionsError } from '@tupaia/utils';
+import { getParentEntityName } from '../utils';
 
 export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.Params,
@@ -33,6 +34,7 @@ const DEFAULT_FIELDS = [
   'country.code',
   'survey.permission_group_id',
   'timezone',
+  'survey.project_id',
 ];
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
@@ -85,6 +87,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       user_id: userId,
       'country.code': countryCode,
       'survey.permission_group_id': surveyPermissionGroupId,
+      'survey.project_id': projectId,
       ...response
     } = surveyResponse;
 
@@ -96,6 +99,8 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       }
       assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
     }
+
+    const entityParentName = await getParentEntityName(models, projectId, response['entity.id']);
 
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },
@@ -111,6 +116,6 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
     );
 
     // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
-    return camelcaseKeys({ ...response, countryCode, userId, answers });
+    return camelcaseKeys({ ...response, countryCode, entityParentName, userId, answers });
   }
 }

@@ -6,6 +6,7 @@
 import { Country, DatatrakWebTasksRequest, Entity, Survey, Task, TaskStatus } from '@tupaia/types';
 import camelcaseKeys from 'camelcase-keys';
 import { DatatrakWebServerModelRegistry } from '../types';
+import { getParentEntityName } from './getParentEntityName';
 
 export type TaskT = Omit<Task, 'created_at'> & {
   'entity.name': Entity['name'];
@@ -40,20 +41,11 @@ export const formatTaskResponse = async (
     ...rest
   } = task;
 
-  const entity = await models.entity.findById(task.entity_id);
-
   const { survey_id } = task;
 
   const { project_id } = await models.survey.findById(survey_id);
 
-  const project = await models.project.findById(project_id);
-
-  const entityAncestors =
-    project.entity_hierarchy_id && entity.type !== 'country'
-      ? await entity.getAncestors(project.entity_hierarchy_id, {
-          generational_distance: 1,
-        })
-      : [];
+  const parentName = await getParentEntityName(models, project_id, entityId);
 
   const formattedTask = {
     ...rest,
@@ -66,7 +58,7 @@ export const formatTaskResponse = async (
       name: entityName,
       code: entityCode,
       countryCode: entityCountryCode,
-      parentName: entityAncestors[0]?.name,
+      parentName,
     },
     survey: {
       id: surveyId,
