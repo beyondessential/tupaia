@@ -40,8 +40,7 @@ exports.up = async function (db) {
           )})`,
       )
       .join(',\n')};
-
-    REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;
+ 
   `);
 };
 
