@@ -161,16 +161,20 @@ describe('fieldsAndFilters', () => {
   describe('hierarchy dependant fields', () => {
     it('parent_code depends on hierarchy used', async () => {
       const { body: rbEntity } = await app.get('hierarchy/redblue/BLUE', {
-        query: { fields: 'code,parent_code' },
+        query: { fields: 'code,parent_code,grandparent_code' },
       });
 
-      expect(rbEntity).toEqual({ code: 'BLUE', parent_code: 'PALLET' });
+      expect(rbEntity).toEqual({ code: 'BLUE', parent_code: 'PALLET', grandparent_code: 'KANTO' });
 
       const { body: gsEntity } = await app.get('hierarchy/goldsilver/BLUE', {
-        query: { fields: 'code,parent_code' },
+        query: { fields: 'code,parent_code,grandparent_code' },
       });
 
-      expect(gsEntity).toEqual({ code: 'BLUE', parent_code: 'VIRIDIAN' });
+      expect(gsEntity).toEqual({
+        code: 'BLUE',
+        parent_code: 'VIRIDIAN',
+        grandparent_code: 'KANTO',
+      });
     });
 
     it('child_codes depends on hierarchy used', async () => {
