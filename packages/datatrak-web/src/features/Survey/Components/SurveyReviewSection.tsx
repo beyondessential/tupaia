@@ -6,27 +6,8 @@
 import React from 'react';
 import { QuestionType } from '@tupaia/types';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
 import { useSurveyForm } from '../SurveyContext';
 import { SurveyQuestionGroup } from './SurveyQuestionGroup';
-
-const Section = styled.section`
-  padding: 1rem 0;
-  &:first-child {
-    padding-top: 0;
-  }
-`;
-
-const SectionHeader = styled(Typography).attrs({
-  variant: 'h3',
-})`
-  font-size: 1rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  margin-bottom: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 1.125rem;
-  }
-`;
 
 const Fieldset = styled.fieldset.attrs({
   disabled: true,
