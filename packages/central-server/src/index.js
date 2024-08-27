@@ -16,6 +16,7 @@ import {
   TupaiaDatabase,
   getDbMigrator,
   TaskAssigneeEmailer,
+  TaskUpdateHandler,
 } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
 import { MeditrakSyncQueue } from './database';
@@ -69,6 +70,10 @@ configureEnv();
   // Add listener to handle assignee changes for tasks
   const taskAssigneeEmailer = new TaskAssigneeEmailer(models);
   taskAssigneeEmailer.listenForChanges();
+
+  // Add listener to handle survey response entity changes for tasks
+  const taskUpdateHandler = new TaskUpdateHandler(models);
+  taskUpdateHandler.listenForChanges();
 
   /**
    * Scheduled tasks

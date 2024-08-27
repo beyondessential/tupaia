@@ -38,10 +38,10 @@ export const UserQuestion = ({
   const selectedValue = options.find(option => option.value === value);
 
   useEffect(() => {
-    if (selectedValue && !searchValue) {
+    if (value && selectedValue?.value && selectedValue.label !== searchValue) {
       setSearchValue(selectedValue.label);
     }
-  }, [selectedValue?.value]);
+  }, [value]);
 
   return (
     <>
@@ -54,8 +54,8 @@ export const UserQuestion = ({
         options={options}
         value={selectedValue}
         onChange={(_e, newSelectedOption) => onChange(newSelectedOption?.value ?? null)}
-        onInputChange={throttle((_, newValue) => {
-          if (newValue === searchValue) return;
+        onInputChange={throttle((e, newValue) => {
+          if (newValue === searchValue || !e) return;
           setSearchValue(newValue);
         }, 200)}
         inputValue={searchValue}

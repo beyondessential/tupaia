@@ -83,9 +83,15 @@ const SingleComment = ({ comment }: { comment: Comments[0] }) => {
       <CommentDetails>
         {displayDateTime(createdAt)} - {userName}
       </CommentDetails>
-      <Message color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'} $type={type}>
-        {message}
-      </Message>
+      {message.split('\n').map(line => (
+        <Message
+          key={line}
+          color={type === TaskCommentType.user ? 'textPrimary' : 'textSecondary'}
+          $type={type}
+        >
+          {line}
+        </Message>
+      ))}
     </CommentContainer>
   );
 };
