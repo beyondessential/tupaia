@@ -36,9 +36,9 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
     const overdueTasks = await models.task.count(
       {
         ...baseQuery,
-        [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `due_date <= ?`,
-          parameters: [new Date().getTime()],
+        due_date: {
+          comparator: '<=',
+          comparisonValue: new Date().getTime(),
         },
       },
       baseJoin,
@@ -48,8 +48,9 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
       // @ts-ignore
       {
         ...baseQuery,
+        status: TaskStatus.completed,
         [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `(status = 'completed' AND repeat_schedule IS NULL)`,
+          sql: `repeat_schedule IS NULL`,
         },
       },
       {
