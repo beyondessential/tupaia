@@ -18,7 +18,7 @@ export class TaskConfigValidator extends JsonFieldValidator {
   getFieldValidators(rowIndex) {
     const referencesExistingSurvey = this.constructReferencesExistingSurvey();
 
-    const pointsToAnotherQuestion = this.constructPointsToAnotherQuestion(rowIndex);
+    const pointsToAnotherQuestion = this.constructReferencesPreceedingQuestion(rowIndex, ['User']);
 
     return {
       shouldCreateTask: [this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Binary'])],
@@ -42,6 +42,22 @@ export class TaskConfigValidator extends JsonFieldValidator {
 
       if (!isValidRecord) {
         throw new ValidationError('Referenced survey does not exist');
+      }
+      return true;
+    };
+  };
+
+  constructReferencesPreceedingQuestion = (rowIndex, acceptedQuestionTypes) => {
+    return value => {
+      const question = this.findOtherQuestion(value, rowIndex, rowIndex);
+      if (!question) {
+        throw new ValidationError('Referenced question does not exist');
+      }
+
+      if (!acceptedQuestionTypes.includes(question.type)) {
+        throw new ValidationError(
+          `Referenced question should be of type ${acceptedQuestionTypes.join(' or ')}`,
+        );
       }
       return true;
     };
