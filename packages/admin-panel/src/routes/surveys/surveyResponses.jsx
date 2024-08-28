@@ -150,13 +150,20 @@ export const ANSWER_COLUMNS = [
     source: 'text',
     type: 'tooltip',
     accessor: row => {
-      return row['entity.code'] || row.text;
+      if (row['entity.code']) return row['entity.code'];
+      if (row['user.full_name']) return `${row['user.full_name']} (${row.text})`;
+      return row.text;
     },
   },
   {
     Header: 'EntityName',
     show: false,
     source: 'entity.code',
+  },
+  {
+    Header: 'UserName',
+    show: false,
+    source: 'user.full_name',
   },
 ];
 
