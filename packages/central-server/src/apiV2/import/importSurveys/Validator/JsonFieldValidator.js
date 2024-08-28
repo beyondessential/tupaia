@@ -1,4 +1,4 @@
-import { isNotPresent, MultiValidationError, ObjectValidator } from '@tupaia/utils';
+import { isNotPresent, ObjectValidator } from '@tupaia/utils';
 import { convertCellToJson } from '../utilities';
 import { BaseValidator } from './BaseValidator';
 
@@ -14,29 +14,11 @@ export class JsonFieldValidator extends BaseValidator {
 
     const fieldValidators = this.getFieldValidators(rowIndex);
     const otherFieldValidators = this.getOtherFieldValidators();
-    const errors = [];
 
-    // Validate fields one at a time so that we can collect all errors and return them all at once
-    for (const [fieldKey, currentFieldValidators] of Object.entries(fieldValidators)) {
-      try {
-        await new ObjectValidator(
-          { [fieldKey]: currentFieldValidators },
-          otherFieldValidators,
-        ).validate({ [fieldKey]: config[fieldKey] }, constructError);
-      } catch (error) {
-        errors.push(error);
-      }
-    }
-
-    if (errors.length > 0) {
-      throw new MultiValidationError(
-        `Errors in ${this.getFieldName()} field`,
-        errors.map(({ message, extraFields }) => ({
-          message,
-          extraFields,
-        })),
-      );
-    }
+    await new ObjectValidator(fieldValidators, otherFieldValidators).validate(
+      config,
+      constructError,
+    );
 
     return true;
   }
