@@ -33,6 +33,9 @@ export class TaskConfigValidator extends JsonFieldValidator {
 
   constructReferencesExistingSurvey = () => {
     return async value => {
+      if (!value) {
+        throw new ValidationError('Survey code is required');
+      }
       const isValidRecord = await this.models.survey.findOne({ code: value });
 
       if (!isValidRecord) {
