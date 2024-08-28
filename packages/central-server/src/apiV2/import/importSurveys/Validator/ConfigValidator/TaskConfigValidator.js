@@ -21,9 +21,7 @@ export class TaskConfigValidator extends JsonFieldValidator {
     const pointsToAnotherQuestion = this.constructPointsToAnotherQuestion(rowIndex);
 
     return {
-      shouldCreateTask: [
-        this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Binary', 'Radio']),
-      ],
+      shouldCreateTask: [this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Binary'])],
       entityId: [
         this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Entity', 'PrimaryEntity']),
       ],
