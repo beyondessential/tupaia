@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { QuestionType } from '@tupaia/types';
 import styled from 'styled-components';
 import { useSurveyForm } from '../SurveyContext';
 import { SurveyQuestionGroup } from './SurveyQuestionGroup';
