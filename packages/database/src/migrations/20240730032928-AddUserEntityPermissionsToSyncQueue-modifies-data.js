@@ -40,6 +40,7 @@ exports.up = async function (db) {
           )})`,
       )
       .join(',\n')};
+ 
   `);
 };
 

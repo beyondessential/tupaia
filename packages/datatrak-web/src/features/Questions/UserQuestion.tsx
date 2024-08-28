@@ -31,17 +31,18 @@ export const UserQuestion = ({
 
   const options =
     users?.map(user => ({
+      ...user,
       label: user.name,
       value: user.id,
     })) ?? [];
 
-  const selectedValue = options.find(option => option.value === value);
-
+  //If we programmatically set the value of the input, we need to update the search value
   useEffect(() => {
-    if (value && selectedValue?.value && selectedValue.label !== searchValue) {
-      setSearchValue(selectedValue.label);
-    }
-  }, [value]);
+    // if the selection is the same as the search value, do not update the search value
+    if (value?.name === searchValue) return;
+
+    setSearchValue(value?.name ?? '');
+  }, [JSON.stringify(value)]);
 
   return (
     <>
@@ -52,10 +53,10 @@ export const UserQuestion = ({
         helperText={detailLabel ?? ''}
         required={required}
         options={options}
-        value={selectedValue}
-        onChange={(_e, newSelectedOption) => onChange(newSelectedOption?.value ?? null)}
+        value={value}
+        onChange={(_e, newSelectedOption) => onChange(newSelectedOption ?? null)}
         onInputChange={throttle((e, newValue) => {
-          if (newValue === searchValue || !e) return;
+          if (newValue === searchValue || !e || !e.target) return;
           setSearchValue(newValue);
         }, 200)}
         inputValue={searchValue}
@@ -63,7 +64,7 @@ export const UserQuestion = ({
         error={isError || invalid}
         getOptionLabel={option => option.label}
         loading={isLoading || !isFetched}
-        getOptionSelected={option => option.value === value}
+        getOptionSelected={(option, selected) => option.value === selected?.value}
       />
       {error && <InputHelperText error>{(error as Error).message}</InputHelperText>}
     </>

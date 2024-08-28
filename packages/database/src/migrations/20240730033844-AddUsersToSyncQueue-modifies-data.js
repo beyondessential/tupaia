@@ -41,6 +41,7 @@ exports.up = async function (db) {
           `('${generateId()}', 'update', 'user_account', '${id}', ${getSyncQueueChangeTime(i)})`,
       )
       .join(',\n')};
+ 
   `);
 };
 
