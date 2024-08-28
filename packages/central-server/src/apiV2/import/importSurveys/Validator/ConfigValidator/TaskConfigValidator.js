@@ -16,17 +16,21 @@ export class TaskConfigValidator extends JsonFieldValidator {
   static fieldName = 'config';
 
   getFieldValidators(rowIndex) {
-    const pointsToPreceedingMandatoryQuestion =
-      this.constructReferencesPreceedingMandatoryQuestion(rowIndex);
     const referencesExistingSurvey = this.constructReferencesExistingSurvey();
 
     const pointsToAnotherQuestion = this.constructPointsToAnotherQuestion(rowIndex);
 
     return {
-      shouldCreateTask: [pointsToPreceedingMandatoryQuestion],
-      entityId: [pointsToPreceedingMandatoryQuestion],
+      shouldCreateTask: [
+        this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Binary', 'Radio']),
+      ],
+      entityId: [
+        this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Entity', 'PrimaryEntity']),
+      ],
       surveyCode: [referencesExistingSurvey],
-      dueDate: [pointsToPreceedingMandatoryQuestion],
+      dueDate: [
+        this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Date', 'DateTime']),
+      ],
       assignee: [constructIsNotPresentOr(pointsToAnotherQuestion)],
     };
   }
@@ -45,11 +49,17 @@ export class TaskConfigValidator extends JsonFieldValidator {
     };
   };
 
-  constructReferencesPreceedingMandatoryQuestion = rowIndex => {
+  constructReferencesPreceedingMandatoryQuestion = (rowIndex, acceptedQuestionTypes) => {
     return value => {
       const question = this.findOtherQuestion(value, rowIndex, rowIndex);
       if (!question) {
         throw new ValidationError('Referenced question does not exist');
+      }
+
+      if (!acceptedQuestionTypes.includes(question.type)) {
+        throw new ValidationError(
+          `Referenced question should be of type ${acceptedQuestionTypes.join(' or ')}`,
+        );
       }
 
       if (!question.validationCriteria) {
