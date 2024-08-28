@@ -161,20 +161,16 @@ describe('fieldsAndFilters', () => {
   describe('hierarchy dependant fields', () => {
     it('parent_code depends on hierarchy used', async () => {
       const { body: rbEntity } = await app.get('hierarchy/redblue/BLUE', {
-        query: { fields: 'code,parent_code,grandparent_code' },
+        query: { fields: 'code,parent_code' },
       });
 
-      expect(rbEntity).toEqual({ code: 'BLUE', parent_code: 'PALLET', grandparent_code: 'KANTO' });
+      expect(rbEntity).toEqual({ code: 'BLUE', parent_code: 'PALLET' });
 
       const { body: gsEntity } = await app.get('hierarchy/goldsilver/BLUE', {
-        query: { fields: 'code,parent_code,grandparent_code' },
+        query: { fields: 'code,parent_code' },
       });
 
-      expect(gsEntity).toEqual({
-        code: 'BLUE',
-        parent_code: 'VIRIDIAN',
-        grandparent_code: 'KANTO',
-      });
+      expect(gsEntity).toEqual({ code: 'BLUE', parent_code: 'VIRIDIAN' });
     });
 
     it('child_codes depends on hierarchy used', async () => {
@@ -189,6 +185,20 @@ describe('fieldsAndFilters', () => {
       });
 
       expect(gsEntity).toEqual({ code: 'LAVENDER', child_codes: ['LAVENDER_RADIO_TOWER'] });
+    });
+
+    it('grand_parent_code depends on hierarchy used', async () => {
+      const { body: rbEntity } = await app.get('hierarchy/redblue/LAVENDER', {
+        query: { fields: 'code,grandparent_code' },
+      });
+
+      expect(rbEntity).toEqual({ code: 'LAVENDER', grandparent_code: 'redblue' });
+
+      const { body: gsEntity } = await app.get('hierarchy/goldsilver/LAVENDER', {
+        query: { fields: 'code,grandparent_code' },
+      });
+
+      expect(gsEntity).toEqual({ code: 'LAVENDER', grandparent_code: 'goldsilver' });
     });
   });
 
