@@ -291,16 +291,9 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   }
 
   if (errors.length > 0) {
-    const flatErrors = errors.reduce((acc, error) => {
-      if (error.extraFields.errors) {
-        return [...acc, ...error.extraFields.errors];
-      }
-      return [...acc, error];
-    }, []);
-
     throw new MultiValidationError(
       'Errors occurred while importing questions',
-      flatErrors.map(({ message, extraFields }) => ({
+      errors.map(({ message, extraFields }) => ({
         message,
         extraFields,
       })),
