@@ -41,6 +41,11 @@ const ViewMoreButton = styled(TextButton)`
     color: #4e3838;
   }
 
+  //  Hide the button on mobile until tasks mobile project is done
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
+
   &:hover {
     text-decoration: underline;
     background-color: initial;
@@ -102,7 +107,7 @@ export const TasksSection = () => {
       <FlexSpaceBetween>
         <SectionHeading>My tasks</SectionHeading>
         {hasTasks && (
-          <ViewMoreButton component={Link} to={ROUTES.TASKS}>
+          <ViewMoreButton component={Link} to={ROUTES.TASKS} display={{ xs: 'none', sm: 'block' }}>
             View more...
           </ViewMoreButton>
         )}
