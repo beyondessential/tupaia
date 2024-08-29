@@ -27,6 +27,7 @@ export { LeaderboardRequest, LeaderboardRoute } from './LeaderboardRoute';
 export { ActivityFeedRequest, ActivityFeedRoute } from './ActivityFeedRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { GenerateLoginTokenRequest, GenerateLoginTokenRoute } from './GenerateLoginTokenRoute';
+export { TaskMetricsRequest, TaskMetricsRoute } from './TaskMetricsRoute';
 export { TasksRequest, TasksRoute } from './TasksRoute';
 export { TaskRequest, TaskRoute } from './TaskRoute';
 export { SurveyUsersRequest, SurveyUsersRoute } from './SurveyUsersRoute';

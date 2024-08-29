@@ -41,7 +41,6 @@ export class TaskCompletionHandler extends ChangeHandler {
         dataTime: surveyResponse.data_time,
       })),
     );
-
     return this.models.task.find({
       [QUERY_CONJUNCTIONS.AND]: {
         status: 'to_do',
@@ -54,7 +53,7 @@ export class TaskCompletionHandler extends ChangeHandler {
       },
       [QUERY_CONJUNCTIONS.RAW]: {
         sql: `${surveyIdAndEntityIdPairs
-          .map(() => `(survey_id = ? AND entity_id = ? AND created_at <= ?)`)
+          .map(() => `(task.survey_id = ? AND task.entity_id = ? AND created_at <= ?)`)
           .join(' OR ')}`,
         parameters: surveyIdAndEntityIdPairs.flatMap(({ surveyId, entityId, dataTime }) => [
           surveyId,

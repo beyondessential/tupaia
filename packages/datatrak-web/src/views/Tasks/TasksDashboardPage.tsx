@@ -9,6 +9,7 @@ import { Add } from '@material-ui/icons';
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { TasksContentWrapper } from '../../layout';
+import { TaskMetrics } from '../../components/TaskMetrics';
 
 const ButtonContainer = styled.div`
   padding-block-end: 0.5rem;
@@ -16,6 +17,10 @@ const ButtonContainer = styled.div`
   ${({ theme }) => theme.breakpoints.up('sm')} {
     margin-inline-start: auto;
     margin-block-start: 0;
+    padding-block-end: 0;
+  }
+  ${({ theme }) => theme.breakpoints.down('xs')} {
+    align-self: self-end;
   }
 `;
 
@@ -44,6 +49,7 @@ export const TasksDashboardPage = () => {
   return (
     <>
       <TaskPageHeader title="Tasks" backTo="/">
+        <TaskMetrics />
         <ButtonContainer>
           <CreateButton onClick={toggleCreateModal}>
             <AddIcon /> Create task
