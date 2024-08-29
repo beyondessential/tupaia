@@ -18,19 +18,38 @@ const UserQuestionComponent = props => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxResults, setMaxResults] = useState(OPTIONS_PER_PAGE);
 
-  const userList = users?.map(user => user.name) ?? [];
+  const sortList = list => list.sort((a, b) => a.localeCompare(b));
+
+  const userList = sortList(users?.map(user => user.name) ?? []);
+
+  const generateSearchRegexp = () => {
+    if (!searchTerm) {
+      return null;
+    }
+    // handle apostrophe AND single quote characters
+    if (searchTerm.includes("'")) {
+      return `(${searchTerm.replace("'", "\\'")})|(${searchTerm.replace("'", '\\‘')})`;
+    }
+
+    if (searchTerm.includes('’')) {
+      return `(${searchTerm.replace('’', '\\’')})|(${searchTerm.replace('’', "\\'")})`;
+    }
+
+    return searchTerm;
+  };
 
   const generateOptionList = () => {
     if (!searchTerm) {
       return userList.slice(0, maxResults);
     }
-    const lowercaseSearchTerm = searchTerm.toLowerCase();
-    const usersThatStartWithSearchTerm = userList.filter(user =>
-      user.toLowerCase().startsWith(lowercaseSearchTerm),
-    );
+    const searchRegexp = generateSearchRegexp();
+    const startsWithSearchTerm = new RegExp(`^${searchRegexp}`, 'gi');
+    const containsSearchTerm = new RegExp(searchRegexp, 'gi');
 
-    const usersThatContainSearchTerm = userList.filter(user =>
-      user.toLowerCase().includes(lowercaseSearchTerm),
+    const usersThatStartWithSearchTerm = userList.filter(user => startsWithSearchTerm.test(user));
+
+    const usersThatContainSearchTerm = userList.filter(
+      user => containsSearchTerm.test(user) && !usersThatStartWithSearchTerm.includes(user),
     );
 
     // return first the users that start with the search term, then the users that contain the search term

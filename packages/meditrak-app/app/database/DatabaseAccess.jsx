@@ -186,7 +186,7 @@ export class DatabaseAccess extends SyncingDatabase {
       ),
     );
 
-    const userIds = userEntityPermissionEntries.map(entry => entry.userId);
+    const userIds = [...new Set(userEntityPermissionEntries.map(entry => entry.userId))];
 
     if (userIds.length === 0) {
       return [];
@@ -199,7 +199,7 @@ export class DatabaseAccess extends SyncingDatabase {
 
     const userQuery = combineClauses(clauses, 'AND');
 
-    const users = this.objects('UserAccount').filtered(userQuery).sorted('name');
+    const users = this.objects('UserAccount').filtered(userQuery);
 
     return users;
   }
