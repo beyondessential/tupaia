@@ -38,7 +38,7 @@ export class TaskCompletionHandler extends ChangeHandler {
       surveyResponses.map(surveyResponse => ({
         surveyId: surveyResponse.survey_id,
         entityId: surveyResponse.entity_id,
-        dataTime: surveyResponse.data_time,
+        endTime: surveyResponse.end_time,
       })),
     );
     return this.models.task.find({
@@ -55,10 +55,10 @@ export class TaskCompletionHandler extends ChangeHandler {
         sql: `${surveyIdAndEntityIdPairs
           .map(() => `(task.survey_id = ? AND task.entity_id = ? AND created_at <= ?)`)
           .join(' OR ')}`,
-        parameters: surveyIdAndEntityIdPairs.flatMap(({ surveyId, entityId, dataTime }) => [
+        parameters: surveyIdAndEntityIdPairs.flatMap(({ surveyId, entityId, endTime }) => [
           surveyId,
           entityId,
-          dataTime,
+          endTime,
         ]),
       },
     });
@@ -78,7 +78,8 @@ export class TaskCompletionHandler extends ChangeHandler {
         surveyResponse =>
           surveyResponse.survey_id === surveyId &&
           surveyResponse.entity_id === entityId &&
-          surveyResponse.data_time >= createdAt,
+          // Use the end time for the comparison so that backdated survey responses (which set data_time) will still trigger task completion
+          surveyResponse.end_time >= createdAt,
       );
 
       if (!matchingSurveyResponse) continue;

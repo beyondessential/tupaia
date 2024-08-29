@@ -41,7 +41,7 @@ describe('TaskCompletionHandler', () => {
         return {
           start_time: datetime,
           end_time: datetime,
-          data_time: datetime,
+          data_time: '2024-12-21 09:00:00',
           user_id: userId,
           survey_id: SURVEY.id,
           id: generateId(),
@@ -89,7 +89,7 @@ describe('TaskCompletionHandler', () => {
   });
 
   describe('creating a survey response', () => {
-    it('created response marks associated tasks as completed if created_time < data_time, and links survey response IDs to the task', async () => {
+    it('created response marks associated tasks as completed if created_time < end_time, and links survey response IDs to the task', async () => {
       const responseIds = await createResponses([
         { entity_id: tonga.id, date: '2024-07-20' },
         { entity_id: tonga.id, date: '2024-07-21' },
@@ -103,12 +103,12 @@ describe('TaskCompletionHandler', () => {
       expect(comments).toHaveLength(1);
     });
 
-    it('created response marks associated tasks as completed if created_time === data_time', async () => {
+    it('created response marks associated tasks as completed if created_time === end_time', async () => {
       const responseIds = await createResponses([{ entity_id: tonga.id, date: '2024-07-08' }]);
       await assertTaskStatus(task.id, 'completed', responseIds[0]);
     });
 
-    it('created response does not mark associated tasks as completed if created_time > data_time', async () => {
+    it('created response does not mark associated tasks as completed if created_time > end_time', async () => {
       await createResponses([{ entity_id: tonga.id, date: '2021-07-08' }]);
       await assertTaskStatus(task.id, 'to_do', null);
     });
@@ -117,7 +117,7 @@ describe('TaskCompletionHandler', () => {
   describe('updating a survey response', () => {
     it('updating a survey response does not mark a task as completed', async () => {
       await createResponses([{ entity_id: tonga.id, date: '2021-07-20' }]);
-      await models.surveyResponse.update({ entity_id: tonga.id }, { data_time: '2024-07-25' });
+      await models.surveyResponse.update({ entity_id: tonga.id }, { end_time: '2024-07-25' });
       await assertTaskStatus(task.id, 'to_do', null);
     });
   });
