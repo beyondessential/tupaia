@@ -169,6 +169,10 @@ const SURVEY_FIELDS = {
       name: 'surveyQuestions',
       labelTooltip:
         'Import a questions spreadsheet to update the questions and screens of this survey.',
+      accept: {
+        'application/vnd.ms-excel': ['.xls'],
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      },
     },
   },
 };
