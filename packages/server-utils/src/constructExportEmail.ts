@@ -17,25 +17,13 @@ type ResponseBody = {
 
 type Req = {
   query: {
-    platform?: 'tupaia' | 'adminPanel' | 'datatrak';
+    platform?: 'tupaia' | 'adminPanel' | 'datatrak' | 'lesmisAdminPanel';
   };
 };
 
 export const constructExportEmail = async (responseBody: ResponseBody, req: Req) => {
   const { error, filePath } = responseBody;
   const { platform } = req.query;
-  const subject = 'Your export from Tupaia';
-  if (error) {
-    return {
-      subject,
-      message: `Unfortunately, your export failed.
-${error}`,
-    };
-  }
-
-  if (!filePath) {
-    throw new Error('No filePath in export response body');
-  }
 
   const platformKey = platform || 'adminPanel';
 
@@ -49,11 +37,15 @@ ${error}`,
     },
     adminPanel: {
       url: requireEnv('ADMIN_PANEL_SERVER_API_URL'),
-      friendlyName: 'the Admin Panel',
+      friendlyName: 'the Tupaia Admin Panel',
     },
     datatrak: {
       url: requireEnv('DATATRAK_WEB_SERVER_API_URL'),
       friendlyName: 'DataTrak',
+    },
+    lesmisAdminPanel: {
+      url: requireEnv('ADMIN_PANEL_SERVER_API_URL'),
+      friendlyName: 'the Lesmis Admin Panel',
     },
   };
 
@@ -62,6 +54,19 @@ ${error}`,
   }
 
   const { friendlyName, url } = PLATFORM_SETTINGS[platformKey];
+
+  const subject = `Your export from ${friendlyName}`;
+  if (error) {
+    return {
+      subject,
+      message: `Unfortunately, your export failed.
+${error}`,
+    };
+  }
+
+  if (!filePath) {
+    throw new Error('No filePath in export response body');
+  }
 
   const downloadLink = createDownloadLink(filePath, url);
   return {

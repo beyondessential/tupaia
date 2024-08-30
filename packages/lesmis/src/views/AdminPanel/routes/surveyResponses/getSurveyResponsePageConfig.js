@@ -106,6 +106,9 @@ export const getSurveyResponsePageConfig = (translate, path, adminUrl) => {
     cancelButtonText: translate('admin.cancel'),
     isExportingMessage:
       'Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.',
+    extraQueryParameters: {
+      platform: 'lesmisAdminPanel',
+    },
   };
 
   return {
