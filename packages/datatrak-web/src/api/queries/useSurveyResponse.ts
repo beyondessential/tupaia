@@ -16,6 +16,9 @@ export const useSurveyResponse = (
       get(`surveyResponse/${surveyResponseId}`),
     {
       enabled: !!surveyResponseId && options?.enabled !== false,
+      meta: {
+        applyCustomErrorHandling: true,
+      },
       ...options,
     },
   );

@@ -5,12 +5,12 @@
 import React, { ReactNode } from 'react';
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
 import { SnackbarProvider } from 'notistack';
 import { theme } from './theme';
 import { Toast } from './components';
-import { errorToast } from './utils';
 import { CurrentUserContextProvider } from './api';
 import { REDIRECT_ERROR_PARAM } from './constants';
 
@@ -21,7 +21,7 @@ const handleError = (error: any, query: any) => {
   }
 
   if (!query?.meta || !query?.meta?.applyCustomErrorHandling) {
-    errorToast(error.message);
+    // errorToast(error.message);
   }
 };
 
@@ -56,6 +56,7 @@ export const AppProviders = ({ children, queryClient = defaultQueryClient }: App
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
           <CssBaseline />
           <SnackbarProvider
             Components={{
