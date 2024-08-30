@@ -132,6 +132,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
     <SurveyFormContext.Provider
       value={{
         ...state,
+        formData,
         surveyProjectCode: survey?.project?.code,
         activeScreen,
         screenNumber,

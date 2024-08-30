@@ -70,7 +70,7 @@ const getSubHeadingText = surveyResponse => {
   }
   const date = displayDate(surveyResponse.dataTime);
   const { entityName, entityParentName } = surveyResponse;
-  const location = `${entityName} | ${entityParentName}`;
+  const location = [entityName, entityParentName].filter(Boolean).join(' | ');
   return `${location} ${date}`;
 };
 interface SurveyResponseModalContentProps {

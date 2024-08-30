@@ -14,7 +14,10 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   height: 100%;
-  text-align: center;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 const Image = styled.img.attrs({
@@ -43,7 +46,8 @@ const Button = styled(UIButton)`
     font-size: 0.75rem;
   }
 `;
-export const NoTasksSection = () => (
+
+const Desktop = () => (
   <Container>
     <Image />
     <Text>
@@ -54,4 +58,37 @@ export const NoTasksSection = () => (
       View all tasks
     </Button>
   </Container>
+);
+
+const MobileContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    flex: 1;
+    text-align: left;
+    margin-inline-end: 1rem;
+    margin-block-end: 0;
+  }
+
+  a.MuiButtonBase-root {
+    display: inline-block;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    display: none;
+  }
+`;
+const Mobile = () => (
+  <MobileContainer>
+    <Text>You have no tasks to complete.</Text>
+  </MobileContainer>
+);
+
+export const NoTasksSection = () => (
+  <>
+    <Desktop />
+    <Mobile />
+  </>
 );

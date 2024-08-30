@@ -16,23 +16,28 @@ export class TaskConfigValidator extends JsonFieldValidator {
   static fieldName = 'config';
 
   getFieldValidators(rowIndex) {
-    const pointsToPreceedingMandatoryQuestion =
-      this.constructReferencesPreceedingMandatoryQuestion(rowIndex);
     const referencesExistingSurvey = this.constructReferencesExistingSurvey();
 
-    const pointsToAnotherQuestion = this.constructPointsToAnotherQuestion(rowIndex);
+    const pointsToAnotherQuestion = this.constructReferencesPreceedingQuestion(rowIndex, ['User']);
 
     return {
-      shouldCreateTask: [pointsToPreceedingMandatoryQuestion],
-      entityId: [pointsToPreceedingMandatoryQuestion],
+      shouldCreateTask: [this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Binary'])],
+      entityId: [
+        this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Entity', 'PrimaryEntity']),
+      ],
       surveyCode: [referencesExistingSurvey],
-      dueDate: [pointsToPreceedingMandatoryQuestion],
+      dueDate: [
+        this.constructReferencesPreceedingMandatoryQuestion(rowIndex, ['Date', 'DateTime']),
+      ],
       assignee: [constructIsNotPresentOr(pointsToAnotherQuestion)],
     };
   }
 
   constructReferencesExistingSurvey = () => {
     return async value => {
+      if (!value) {
+        throw new ValidationError('Survey code is required');
+      }
       const isValidRecord = await this.models.survey.findOne({ code: value });
 
       if (!isValidRecord) {
@@ -42,11 +47,33 @@ export class TaskConfigValidator extends JsonFieldValidator {
     };
   };
 
-  constructReferencesPreceedingMandatoryQuestion = rowIndex => {
+  constructReferencesPreceedingQuestion = (rowIndex, acceptedQuestionTypes) => {
     return value => {
       const question = this.findOtherQuestion(value, rowIndex, rowIndex);
       if (!question) {
         throw new ValidationError('Referenced question does not exist');
+      }
+
+      if (!acceptedQuestionTypes.includes(question.type)) {
+        throw new ValidationError(
+          `Referenced question should be of type ${acceptedQuestionTypes.join(' or ')}`,
+        );
+      }
+      return true;
+    };
+  };
+
+  constructReferencesPreceedingMandatoryQuestion = (rowIndex, acceptedQuestionTypes) => {
+    return value => {
+      const question = this.findOtherQuestion(value, rowIndex, rowIndex);
+      if (!question) {
+        throw new ValidationError('Referenced question does not exist');
+      }
+
+      if (!acceptedQuestionTypes.includes(question.type)) {
+        throw new ValidationError(
+          `Referenced question should be of type ${acceptedQuestionTypes.join(' or ')}`,
+        );
       }
 
       if (!question.validationCriteria) {

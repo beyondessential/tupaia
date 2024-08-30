@@ -128,6 +128,7 @@ export const DueDatePicker = ({
         error={invalid}
         helperText={helperText}
         disabled={disabled}
+        format="P"
       />
     </Wrapper>
   );

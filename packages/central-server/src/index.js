@@ -19,7 +19,7 @@ import {
   TaskUpdateHandler,
 } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
-import { MeditrakSyncQueue } from './database';
+import { createPermissionsBasedMeditrakSyncQueue, MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
@@ -125,6 +125,12 @@ configureEnv();
       const dbMigrator = getDbMigrator();
       await dbMigrator.up();
       winston.info('Database migrations complete');
+
+      if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
+        winston.info('Creating permissions based meditrak sync queue');
+        // don't await this as it's not critical, and will hold up the process if it fails
+        createPermissionsBasedMeditrakSyncQueue(models);
+      }
     } catch (error) {
       winston.error(error.message);
     }

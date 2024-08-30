@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { QuestionType } from '@tupaia/types';
 import styled from 'styled-components';
+import { getAllSurveyComponents } from '../utils';
 import { useSurveyForm } from '../SurveyContext';
 import { SurveyQuestionGroup } from './SurveyQuestionGroup';
 
@@ -26,21 +26,7 @@ export const SurveyReviewSection = () => {
   if (!visibleScreens || !visibleScreens.length) {
     return null;
   }
-
-  // split the questions into sections by screen so it's easier to read the long form
-  const questions = visibleScreens
-    .map(screen => {
-      const { surveyScreenComponents } = screen;
-      const firstQuestionIsInstruction =
-        surveyScreenComponents[0].type === QuestionType.Instruction;
-
-      // if the first question is an instruction, don't display it, because it will be displayed as the heading
-      const questionsToDisplay = firstQuestionIsInstruction
-        ? surveyScreenComponents.slice(1)
-        : surveyScreenComponents;
-      return questionsToDisplay;
-    })
-    .flat();
+  const questions = getAllSurveyComponents(visibleScreens);
   return (
     <Fieldset>
       <SurveyQuestionGroup questions={questions} />

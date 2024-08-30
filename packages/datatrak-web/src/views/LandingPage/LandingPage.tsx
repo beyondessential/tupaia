@@ -40,7 +40,7 @@ const Grid = styled.div`
   flex-direction: column;
   margin-top: 1rem;
   min-height: 0; // This is needed to stop the grid overflowing the flex container
-  max-width: 38rem;
+  max-width: 100%;
   margin-inline: auto;
 
   .MuiButtonBase-root {
@@ -50,6 +50,10 @@ const Grid = styled.div`
   > section {
     margin-bottom: 1rem;
     overflow: hidden;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    max-width: 38rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {

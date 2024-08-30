@@ -59,13 +59,23 @@ export class UserConfigValidator extends JsonFieldValidator {
       // BES Admin has access to all surveys
       if (value === 'BES Admin') return true;
 
-      const permissionGroup = await this.models.permissionGroup.findOne({ name: value });
-
-      const permissionGroupWithAncestors = await permissionGroup.getAncestors();
-
+      // Check if the permission group has access to the survey
       const { permission_group_id: permissionGroupId } = survey;
 
-      if (!permissionGroupWithAncestors.some(({ id }) => id === permissionGroupId)) {
+      const surveyPermissionGroup = await this.models.permissionGroup.findOne({
+        id: permissionGroupId,
+      });
+
+      // Get the ancestors of the permission group
+      const surveyPermissionGroupAncestors = await surveyPermissionGroup.getAncestors();
+
+      const allowedPermissionGroups = [
+        surveyPermissionGroup.name,
+        ...surveyPermissionGroupAncestors.map(({ name }) => name),
+      ];
+
+      // Check if the permission group is in the allowed permission groups, if not throw an error
+      if (!allowedPermissionGroups.some(name => name === value)) {
         throw new ValidationError(
           'Permission group does not have access to the referenced survey in the task question',
         );
