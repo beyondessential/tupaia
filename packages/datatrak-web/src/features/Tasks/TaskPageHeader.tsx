@@ -61,6 +61,7 @@ const ContentWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   width: 100%;
+  flex: 1;
   ${({ theme }) => theme.breakpoints.down('xs')} {
     padding-inline-start: 1rem;
     flex-direction: column;
