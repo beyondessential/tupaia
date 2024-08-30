@@ -5,6 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { getAllSurveyComponents } from '../utils';
 import { useSurveyForm } from '../SurveyContext';
 import { SurveyQuestionGroup } from './SurveyQuestionGroup';
 
@@ -25,9 +26,7 @@ export const SurveyReviewSection = () => {
   if (!visibleScreens || !visibleScreens.length) {
     return null;
   }
-
-  // split the questions into sections by screen so it's easier to read the long form
-  const questions = visibleScreens.map(screen => screen.surveyScreenComponents).flat();
+  const questions = getAllSurveyComponents(visibleScreens);
   return (
     <Fieldset>
       <SurveyQuestionGroup questions={questions} />
