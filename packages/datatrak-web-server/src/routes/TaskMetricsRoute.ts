@@ -26,8 +26,13 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
     const unassignedTasks = await models.task.count(
       {
         ...baseQuery,
-        [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `assignee_id IS NULL`,
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
+        assignee_id: {
+          comparator: 'IS',
+          comparisonValue: null,
         },
       },
       baseJoin,
@@ -36,6 +41,10 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
     const overdueTasks = await models.task.count(
       {
         ...baseQuery,
+        status: {
+          comparator: 'NOT IN',
+          comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
+        },
         due_date: {
           comparator: '<=',
           comparisonValue: new Date().getTime(),
@@ -49,8 +58,9 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
       {
         ...baseQuery,
         status: TaskStatus.completed,
-        [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `repeat_schedule IS NULL`,
+        repeat_schedule: {
+          comparator: 'IS',
+          comparisonValue: null,
         },
       },
       {
@@ -68,7 +78,7 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
       return new Date(formattedDate).getTime() <= record.due_date;
     });
 
-    const onTimeCompletionRate = (completedTasks.length / onTimeCompletedTasks.length) * 100 || 0;
+    const onTimeCompletionRate = (onTimeCompletedTasks.length / completedTasks.length) * 100 || 0;
 
     return {
       unassignedTasks,

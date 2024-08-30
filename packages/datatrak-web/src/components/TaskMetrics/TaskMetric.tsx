@@ -4,10 +4,11 @@ import styled from 'styled-components';
 
 const MetricWrapper = styled.div`
   display: flex;
-  border: 1px solid;
+  border: 1px solid #3f5539;
   border-radius: 3px;
   margin-inline: 0.5rem;
   margin-block-end: auto;
+  min-width: 28%;
   ${({ theme }) => theme.breakpoints.down('xs')} {
     width: inherit;
     margin-block-start: 0.5rem;
@@ -37,7 +38,7 @@ const MetricText = styled.p`
   font-weight: 500;
   margin: 0;
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    min-width: 12rem;
+    min-width: 16rem;
   }
 `;
 
