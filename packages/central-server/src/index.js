@@ -123,7 +123,7 @@ configureEnv();
       await database.waitForChangeChannel();
       winston.info('Successfully connected to pubsub service');
       const dbMigrator = getDbMigrator();
-      await dbMigrator.run();
+      await dbMigrator.up();
       winston.info('Database migrations complete');
 
       winston.info('Creating permissions based meditrak sync queue');
