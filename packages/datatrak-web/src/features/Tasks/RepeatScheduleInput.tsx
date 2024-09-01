@@ -8,11 +8,11 @@ import { Autocomplete } from '../../components';
 import { getRepeatScheduleOptions } from './utils';
 
 interface RepeatScheduleInputProps {
-  value: string;
+  value: string | null;
   onChange: (
     value: React.ChangeEvent<{
       name?: string | undefined;
-      value: unknown;
+      value: string | null;
     }> | null,
   ) => void;
   disabled?: boolean;
@@ -20,7 +20,7 @@ interface RepeatScheduleInputProps {
 }
 
 export const RepeatScheduleInput = ({
-  value = '',
+  value = null,
   onChange,
   disabled,
   dueDate,

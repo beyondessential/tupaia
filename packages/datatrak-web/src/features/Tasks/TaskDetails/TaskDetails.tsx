@@ -12,7 +12,7 @@ import { LoadingContainer } from '@tupaia/ui-components';
 import { useEditTask, useSurveyResponse } from '../../../api';
 import { displayDate } from '../../../utils';
 import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
-import { SingleTaskResponse } from '../../../types'; 
+import { SingleTaskResponse } from '../../../types';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
@@ -114,7 +114,9 @@ const SectionHeading = styled(Typography).attrs({
 `;
 
 const InitialRequest = ({ initialRequestId }) => {
-  const { data: surveyResponse, isLoading } = useSurveyResponse(initialRequestId);
+  const { data: surveyResponse, isLoading } = useSurveyResponse(initialRequestId, {
+    meta: { applyCustomErrorHandling: true },
+  });
   if (isLoading || !surveyResponse) {
     return null;
   }

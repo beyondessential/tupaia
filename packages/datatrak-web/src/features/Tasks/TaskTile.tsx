@@ -62,6 +62,7 @@ const TileContent = styled.div`
   align-items: center;
 
   > span {
+    text-wrap: nowrap;
     margin-inline-end: 0.6rem;
   }
 `;

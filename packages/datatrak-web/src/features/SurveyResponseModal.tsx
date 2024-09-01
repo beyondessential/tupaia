@@ -123,7 +123,12 @@ export const SurveyResponseModal = () => {
 
   const surveyResponseId = urlSearchParams.get('responseId');
 
-  const { data: surveyResponse, isLoading, error, isFetched } = useSurveyResponse(surveyResponseId);
+  const {
+    data: surveyResponse,
+    isLoading,
+    error,
+    isFetched,
+  } = useSurveyResponse(surveyResponseId, { meta: { applyCustomErrorHandling: true } });
 
   const isLoadingSurveyResponse = isLoading || !isFetched;
 
