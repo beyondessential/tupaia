@@ -126,11 +126,9 @@ configureEnv();
       await dbMigrator.up();
       winston.info('Database migrations complete');
 
-      if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
-        winston.info('Creating permissions based meditrak sync queue');
-        // don't await this as it's not critical, and will hold up the process if it fails
-        createPermissionsBasedMeditrakSyncQueue(models);
-      }
+      winston.info('Creating permissions based meditrak sync queue');
+      // don't await this as it's not critical, and will hold up the process if it fails
+      createPermissionsBasedMeditrakSyncQueue(models);
     } catch (error) {
       winston.error(error.message);
     }
