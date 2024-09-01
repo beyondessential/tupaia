@@ -31,8 +31,6 @@ export const formatTaskChanges = (task: Input, originalTask?: Task) => {
       throw new Error('Must have a due date');
     }
 
-    const dueDateObj = new Date(dueDateToUse);
-
     // if frequency is explicitly set, use that, otherwise use the original task's frequency. This is for when editing a repeating task's due date, because we will want to update the 'dtstart' of the rrule
     const frequencyToUse = frequency ?? originalTask?.repeat_schedule?.freq;
     // if task is repeating, generate rrule
