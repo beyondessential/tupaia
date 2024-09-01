@@ -10,7 +10,7 @@ import { SingleTaskResponse } from '../../types';
 export const getRepeatScheduleOptions = dueDate => {
   const noRepeat = {
     label: "Doesn't repeat",
-    value: '',
+    value: null,
   };
 
   if (!dueDate) {

@@ -20,7 +20,7 @@ interface RepeatScheduleInputProps {
 }
 
 export const RepeatScheduleInput = ({
-  value = '',
+  value = null,
   onChange,
   disabled,
   dueDate,
