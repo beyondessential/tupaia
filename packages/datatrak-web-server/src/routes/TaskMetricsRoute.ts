@@ -78,7 +78,8 @@ export class TaskMetricsRoute extends Route<TaskMetricsRequest> {
       return new Date(formattedDate).getTime() <= record.due_date;
     });
 
-    const onTimeCompletionRate = (onTimeCompletedTasks.length / completedTasks.length) * 100 || 0;
+    const onTimeCompletionRate =
+      Math.round((onTimeCompletedTasks.length / completedTasks.length) * 100) || 0;
 
     return {
       unassignedTasks,
