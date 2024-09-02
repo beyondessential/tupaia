@@ -29,14 +29,12 @@ const cliCallback = async (migrator, internals, originalError, migrationError) =
 };
 
 const appCallback = async (migrator, internals, callback, error) => {
-  console.log('Running post-migration tasks...');
   if (error) {
     throw error;
   }
 
   const { driver } = migrator;
   await runPostMigration(driver);
-  console.log('Post-migration tasks complete');
 };
 
 export const getDbMigrator = (forCli = false) =>

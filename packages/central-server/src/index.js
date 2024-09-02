@@ -122,9 +122,13 @@ configureEnv();
     try {
       await database.waitForChangeChannel();
       winston.info('Successfully connected to pubsub service');
-      const dbMigrator = getDbMigrator();
-      await dbMigrator.up();
-      winston.info('Database migrations complete');
+      try {
+        const dbMigrator = getDbMigrator();
+        await dbMigrator.up();
+        winston.info('Database migrations complete');
+      } catch (error) {
+        winston.error('Error running database migrations', error);
+      }
 
       winston.info('Creating permissions based meditrak sync queue');
       // don't await this as it's not critical, and will hold up the process if it fails
