@@ -39,7 +39,7 @@ export async function changePassword(req, res, next) {
     if (!isTokenValid) {
       throw new FormValidationError('One time login is invalid');
     }
-  } else if (!user.checkPassword(oldPassword)) {
+  } else if (!(await user.checkPassword(oldPassword))) {
     throw new FormValidationError('Incorrect current password', ['oldPassword']);
   }
 
@@ -53,8 +53,9 @@ export async function changePassword(req, res, next) {
     throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
   }
 
+  const passwordAndSalt = await hashAndSaltPassword(passwordParam);
   await models.user.updateById(userId, {
-    ...hashAndSaltPassword(passwordParam),
+    ...passwordAndSalt,
   });
 
   respond(res, { message: 'Password successfully updated' });

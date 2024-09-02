@@ -13,6 +13,7 @@ const models = getTestModels() as TestModelRegistry;
 export const setupTestUser = async () => {
   const { VERIFIED } = models.user.emailVerifiedStatuses;
   const { email, firstName, lastName, password } = CAT_USER;
+  const passwordAndSalt = await hashAndSaltPassword(password);
 
   return findOrCreateDummyRecord(
     models.user,
@@ -22,7 +23,7 @@ export const setupTestUser = async () => {
     {
       first_name: firstName,
       last_name: lastName,
-      ...hashAndSaltPassword(password),
+      ...passwordAndSalt,
       verified_email: VERIFIED,
     },
   );

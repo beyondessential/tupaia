@@ -20,8 +20,8 @@ export class UserRecord extends DatabaseRecord {
   }
 
   // Checks if the provided non-encrypted password corresponds to this user
-  checkPassword(password) {
-    return encryptPassword(password, this.password_salt) === this.password_hash;
+  async checkPassword(password) {
+    return await encryptPassword(password, this.password_salt) === this.password_hash;
   }
 
   checkIsEmailUnverified() {

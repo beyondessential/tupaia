@@ -36,7 +36,7 @@ const EMAILS = {
 };
 
 export const sendEmailVerification = async user => {
-  const token = encryptPassword(user.email + user.password_hash, user.password_salt);
+  const token = await encryptPassword(user.email + user.password_hash, user.password_salt);
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
   const { subject, body, signOff } = EMAILS[platform];
   const TUPAIA_FRONT_END_URL = requireEnv('TUPAIA_FRONT_END_URL');
@@ -57,5 +57,14 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
     verified_email: searchCondition,
   });
 
-  return users.find(x => encryptPassword(x.email + x.password_hash, x.password_salt) === token);
+  for (const user of users) {
+    const encryptedValue = await encryptPassword(
+      `${user.email}${user.password_hash}`,
+      user.password_salt,
+    );
+    if (encryptedValue === token) {
+      return user;
+    }
+  }
+  return null;
 };

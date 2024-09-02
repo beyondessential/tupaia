@@ -21,7 +21,7 @@ const upsertUserAccount = async ({
   password: string;
   salt: string;
 }): Promise<string> => {
-  const passwordHash = encryptPassword(password, salt);
+  const passwordHash = await encryptPassword(password, salt);
   const firstName = email;
   const lastName = 'API Client';
 
@@ -66,7 +66,7 @@ const upsertApiClient = async ({
   password: string;
   salt: string;
 }) => {
-  const secretKeyHash = encryptPassword(password, salt);
+  const secretKeyHash = await encryptPassword(password, salt);
 
   const existingApiClient = await models.apiClient.findOne({
     username: username,

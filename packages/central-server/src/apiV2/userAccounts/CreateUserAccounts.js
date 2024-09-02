@@ -46,7 +46,7 @@ export class CreateUserAccounts extends CreateHandler {
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
-          secret_key_hash: encryptPassword(secretKey, process.env.API_CLIENT_SALT),
+          secret_key_hash: await encryptPassword(secretKey, process.env.API_CLIENT_SALT),
         });
       }
 
@@ -103,13 +103,15 @@ export class CreateUserAccounts extends CreateHandler {
       ...restOfUser
     },
   ) {
+    const passwordAndSalt = await hashAndSaltPassword(password);
+
     return transactingModels.user.create({
       first_name: firstName,
       last_name: lastName,
       email: emailAddress,
       mobile_number: contactNumber,
       primary_platform: primaryPlatform,
-      ...hashAndSaltPassword(password),
+      ...passwordAndSalt,
       verified_email: verifiedEmail,
       ...restOfUser,
     });

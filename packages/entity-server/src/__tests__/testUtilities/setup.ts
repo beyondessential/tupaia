@@ -45,6 +45,8 @@ export const setupTestData = async () => {
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 
+  const passwordAndSalt = await hashAndSaltPassword(userAccountPassword);
+
   await findOrCreateDummyRecord(
     models.user,
     {
@@ -53,7 +55,7 @@ export const setupTestData = async () => {
     {
       first_name: 'Ash',
       last_name: 'Ketchum',
-      ...hashAndSaltPassword(userAccountPassword),
+      ...passwordAndSalt,
       verified_email: VERIFIED,
     },
   );

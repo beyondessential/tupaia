@@ -39,12 +39,14 @@ export const createUser = async (
         throw new Error(`No such country: ${countryName}`);
       }
 
+      const passwordAndSalt = await hashAndSaltPassword(password);
+
       const user = await transactingModels.user.create({
         first_name: firstName,
         last_name: lastName,
         email: emailAddress,
         mobile_number: contactNumber,
-        ...hashAndSaltPassword(password),
+        ...passwordAndSalt,
         verified_email: verifiedEmail,
         ...restOfUser,
       });

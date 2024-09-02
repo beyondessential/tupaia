@@ -49,11 +49,12 @@ export class EditUserAccounts extends EditHandler {
       ...restOfUpdatedFields
     } = this.updatedFields;
     let updatedFields = restOfUpdatedFields;
+    const passwordAndSalt = await hashAndSaltPassword(password);
 
     if (password) {
       updatedFields = {
         ...updatedFields,
-        ...hashAndSaltPassword(password),
+        ...passwordAndSalt,
       };
     }
 

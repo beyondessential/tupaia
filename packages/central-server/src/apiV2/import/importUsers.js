@@ -53,9 +53,11 @@ export async function importUsers(req, res) {
           }
           emails.push(userObject.email);
           const { password, permission_group: permissionGroupName, ...restOfUser } = userObject;
+          const passwordAndSalt = await hashAndSaltPassword(password);
+
           const userToUpsert = {
             ...restOfUser,
-            ...hashAndSaltPassword(password),
+            ...passwordAndSalt,
           };
           const user = await transactingModels.user.updateOrCreate(
             { email: userObject.email },

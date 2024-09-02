@@ -5,8 +5,8 @@
 
 export { Authenticator } from './Authenticator';
 export { AccessPolicyBuilder } from './AccessPolicyBuilder';
-// export { encryptPassword, verifyPassword, hashAndSaltPassword } from './argon2';
-export * from './utils';
+export { encryptPassword, verifyPassword, hashAndSaltPassword } from './argon2';
+// export * from './utils';
 export { getJwtToken, extractRefreshTokenFromReq, generateSecretKey } from './security';
 export {
   getTokenClaimsFromBearerAuth,

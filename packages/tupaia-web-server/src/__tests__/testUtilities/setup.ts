@@ -48,6 +48,7 @@ export const setupTestData = async () => {
   hierarchyCacher.stopListeningForChanges();
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
+  const userAccountPasswordAndSalt = await hashAndSaltPassword(userAccountPassword);
 
   await findOrCreateDummyRecord(
     models.user,
@@ -57,13 +58,15 @@ export const setupTestData = async () => {
     {
       first_name: 'Ash',
       last_name: 'Ketchum',
-      ...hashAndSaltPassword(userAccountPassword),
+      ...userAccountPasswordAndSalt,
       verified_email: VERIFIED,
     },
   );
 
   const apiClientEmail = requireEnv('API_CLIENT_NAME');
   const apiClientPassword = requireEnv('API_CLIENT_PASSWORD');
+  const apiClientPasswordAndSalt = await hashAndSaltPassword(apiClientPassword);
+
   const apiClient = await findOrCreateDummyRecord(
     models.user,
     {
@@ -72,7 +75,7 @@ export const setupTestData = async () => {
     {
       first_name: 'API',
       last_name: 'Client',
-      ...hashAndSaltPassword(apiClientPassword),
+      ...apiClientPasswordAndSalt,
       verified_email: VERIFIED,
     },
   );

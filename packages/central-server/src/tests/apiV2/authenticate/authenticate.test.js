@@ -39,11 +39,13 @@ describe('Authenticate', function () {
     });
 
     // Create test users
+    const passwordAndSalt = await hashAndSaltPassword(userAccountPassword);
+
     userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Ash',
       last_name: 'Ketchum',
       email: 'ash-ketchum@pokemon.org',
-      ...hashAndSaltPassword(userAccountPassword),
+      ...passwordAndSalt,
       verified_email: VERIFIED,
     });
 

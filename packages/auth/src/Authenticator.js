@@ -1,6 +1,6 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
@@ -8,7 +8,7 @@ import compareVersions from 'semver-compare';
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { encryptPassword } from './utils';
+import { verifyPassword } from './argon2';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
@@ -47,12 +47,16 @@ export class Authenticator {
    * @param {{ username: string, secretKey: string }} apiClientCredentials
    */
   async authenticateApiClient({ username, secretKey }) {
-    const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
     const apiClient = await this.models.apiClient.findOne({
       username,
-      secret_key_hash: secretKeyHash,
     });
-    if (!apiClient) {
+    const verified = await verifyPassword(
+      secretKey,
+      process.env.API_CLIENT_SALT,
+      apiClient.secret_key_hash,
+    );
+    console.log('verified', verified);
+    if (!verified) {
       throw new UnauthenticatedError('Could not authenticate Api Client');
     }
     const user = await apiClient.getUser();
