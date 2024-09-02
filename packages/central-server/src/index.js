@@ -128,7 +128,7 @@ configureEnv();
 
       winston.info('Creating permissions based meditrak sync queue');
       // don't await this as it's not critical, and will hold up the process if it fails
-      createPermissionsBasedMeditrakSyncQueue(models);
+      createPermissionsBasedMeditrakSyncQueue(database);
     } catch (error) {
       winston.error(error.message);
     }
