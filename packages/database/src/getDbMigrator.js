@@ -51,6 +51,7 @@ export const getDbMigrator = (forCli = false) =>
           ...getConnectionConfig(),
         },
       },
+      throwUncatched: true,
     },
     forCli ? cliCallback : appCallback,
   );
