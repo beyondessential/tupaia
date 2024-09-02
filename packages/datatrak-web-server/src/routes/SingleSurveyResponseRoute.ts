@@ -41,7 +41,6 @@ type AnswerT = string | number | boolean | null | undefined | { name: string; id
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
-// If the user is not a BES admin or does not have access to the admin panel, they should not be able to view the survey response
 const assertCanViewSurveyResponse = (
   accessPolicy: AccessPolicy,
   countryCode: string,
@@ -52,14 +51,9 @@ const assertCanViewSurveyResponse = (
     return true;
   }
 
-  const hasAdminPanelAccess = accessPolicy.allowsSome(
-    undefined,
-    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  );
-
+  // The user must have access to the country with the survey permission group
   const hasAccessToCountry = accessPolicy.allows(countryCode, surveyPermissionGroupName);
-  // The user must have access to the admin panel AND the country with the survey permission group
-  if (!hasAdminPanelAccess && !hasAccessToCountry) {
+  if (!hasAccessToCountry) {
     throw new PermissionsError('You do not have access to view this survey response');
   }
 
