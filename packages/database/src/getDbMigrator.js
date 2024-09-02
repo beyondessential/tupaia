@@ -35,6 +35,10 @@ const appCallback = async (migrator, internals, callback, error) => {
 
   const { driver } = migrator;
   await runPostMigration(driver);
+
+  if (callback) {
+    callback();
+  }
 };
 
 export const getDbMigrator = (forCli = false) =>
