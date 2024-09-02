@@ -15,10 +15,15 @@ export class RepeatingTaskDueDateHandler extends ScheduledTask {
   async run() {
     const { task } = this.models;
     // find all repeating tasks that have passed their current due date
-    const repeatingTasks = await task.find({
-      task_status: 'repeating',
-      due_date: { comparator: '<', comparisonValue: new Date().getTime() },
-    });
+    const repeatingTasks = await task.find(
+      {
+        task_status: 'repeating',
+        due_date: { comparator: '<', comparisonValue: new Date().getTime() },
+      },
+      {
+        columns: ['task.id', 'repeat_schedule'],
+      },
+    );
 
     winston.info(`Found ${repeatingTasks.length} repeating task(s)`);
 
@@ -31,8 +36,7 @@ export class RepeatingTaskDueDateHandler extends ScheduledTask {
         dtstart: new Date(repeatSchedule.dtstart), // convert string to date because rrule.js expects a Date object
       });
 
-      repeatingTask.due_date = nextDueDate;
-      await repeatingTask.save();
+      await task.updateById(repeatingTask.id, { due_date: new Date(nextDueDate).getTime() });
 
       winston.info(`Updated due date for task ${repeatingTask.id} to ${nextDueDate}`);
     }
