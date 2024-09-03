@@ -3,10 +3,11 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { verify } from '@node-rs/argon2';
-import { verifyPassword, sha256EncryptPassword, hashAndSaltPassword } from '@tupaia/auth';
+import { verifyPassword, sha256EncryptPassword } from '@tupaia/auth';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { encryptPassword } from '@tupaia/auth/src';
 
 export class UserRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ACCOUNT;
@@ -35,8 +36,8 @@ export class UserRecord extends DatabaseRecord {
     const isVerifiedSha256 = await verify(hash, `${hashedUserInput}${salt}`);
     if (isVerifiedSha256) {
       // Move password to argon2
-      const passwordAndSalt = await hashAndSaltPassword(password);
-      await this.model.updateById(this.id, passwordAndSalt);
+      const encryptedPassword = await encryptPassword(password, salt);
+      await this.model.updateById(this.id, { password_hash: encryptedPassword });
       return true;
     }
 

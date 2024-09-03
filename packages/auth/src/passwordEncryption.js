@@ -24,7 +24,6 @@ export function encryptPassword(password, salt) {
  * @returns {Promise<boolean>}
  */
 export async function verifyPassword(password, salt, hash) {
-  console.log('Verifying password...');
   return verify(hash, `${password}${salt}`);
 }
 
