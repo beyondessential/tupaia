@@ -4,7 +4,7 @@
  */
 import { randomBytes } from 'crypto';
 import { hash, verify } from '@node-rs/argon2';
-import { encryptPassword as sha256Encrypt } from './utils';
+import sha256 from 'sha256';
 
 /**
  * Helper function to encrypt passwords using argon2
@@ -24,21 +24,8 @@ export function encryptPassword(password, salt) {
  * @returns {Promise<boolean>}
  */
 export async function verifyPassword(password, salt, hash) {
-  // Try to verify password using argon2 directly
-  const isVerified = await verify(hash, `${password}${salt}`);
-  if (isVerified) {
-    return true;
-  }
-
-  // Try to verify password using sha256 plus argon2
-  const hashedUserInput = sha256Encrypt(password, salt);
-
-  const isVerifiedSha256 = verify(hash, `${hashedUserInput}${salt}`);
-  if (isVerifiedSha256) {
-    // Move password to argon2
-    console.log('Password was verified using sha256 plus argon2', password);
-  }
-  return true;
+  console.log('Verifying password...');
+  return verify(hash, `${password}${salt}`);
 }
 
 /**
@@ -50,4 +37,14 @@ export async function hashAndSaltPassword(password) {
   const salt = randomBytes(16).toString('base64'); // Generate a random salt
   const encryptedPassword = await encryptPassword(password, salt);
   return { password_hash: encryptedPassword, password_salt: salt };
+}
+
+/**
+ * Helper function to encrypt passwords using sha256
+ * @param password {string}
+ * @param salt {string}
+ * @returns {string}
+ */
+export function sha256EncryptPassword(password, salt) {
+  return sha256(`${password}${salt}`);
 }

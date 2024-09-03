@@ -8,7 +8,7 @@ import compareVersions from 'semver-compare';
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { verifyPassword } from './argon2';
+import { verifyPassword } from './passwordEncryption';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;

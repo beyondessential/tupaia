@@ -2,7 +2,8 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { verifyPassword } from '@tupaia/auth';
+import { verify } from '@node-rs/argon2';
+import { verifyPassword, sha256EncryptPassword, hashAndSaltPassword } from '@tupaia/auth';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -20,7 +21,26 @@ export class UserRecord extends DatabaseRecord {
 
   // Checks if the provided non-encrypted password corresponds to this user
   async checkPassword(password) {
-    return verifyPassword(password, this.password_salt, this.password_hash);
+    const salt = this.password_salt;
+    const hash = this.password_hash;
+
+    // Try to verify password using argon2 directly
+    const isVerified = await verifyPassword(password, this.password_salt, this.password_hash);
+    if (isVerified) {
+      return true;
+    }
+
+    // Try to verify password using sha256 plus argon2
+    const hashedUserInput = sha256EncryptPassword(password, salt);
+    const isVerifiedSha256 = await verify(hash, `${hashedUserInput}${salt}`);
+    if (isVerifiedSha256) {
+      // Move password to argon2
+      const passwordAndSalt = await hashAndSaltPassword(password);
+      await this.model.updateById(this.id, passwordAndSalt);
+      return true;
+    }
+
+    return false;
   }
 
   checkIsEmailUnverified() {
