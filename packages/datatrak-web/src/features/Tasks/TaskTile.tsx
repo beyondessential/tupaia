@@ -75,10 +75,12 @@ const TileRight = styled.div`
 
 export const TaskTile = ({ task }) => {
   const { survey, entity, taskStatus, taskDueDate } = task;
-  const surveyLink = generatePath(ROUTES.SURVEY, {
+  const path = generatePath(ROUTES.SURVEY, {
     surveyCode: survey.code,
     countryCode: entity.countryCode,
   });
+  // Link needs to include page number because if the redirect happens, the "from" state is lost
+  const surveyLink = `${path}/1`;
   const taskLink = generatePath(ROUTES.TASK_DETAILS, {
     taskId: task.id,
   });
