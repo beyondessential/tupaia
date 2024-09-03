@@ -15,7 +15,6 @@ import { useResetPassword } from '../api/mutations';
 
 const Wrapper = styled.div`
   overflow: auto;
-  min-height: calc(100vh - 27rem);
 `;
 
 const Container = styled.section`
