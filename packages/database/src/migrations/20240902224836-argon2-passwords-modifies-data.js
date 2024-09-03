@@ -1,27 +1,55 @@
 'use strict';
 
+import { hash } from '@node-rs/argon2';
+
 var dbm;
 var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
-  return null;
+exports.up = async function (db) {
+  await db.runSql(`
+    ALTER TABLE user_account
+    RENAME COLUMN password_hash TO password_hash_old;
+    
+    ALTER TABLE user_account
+    ADD COLUMN password_hash TEXT;
+  `);
+  console.log('ALTERED TABLE');
+
+  const users = await db.runSql('SELECT id, password_hash_old, password_salt FROM user_account');
+
+  console.log('UPDATING PASSWORDS');
+  let count = 0;
+  for (let user of users.rows) {
+    const { id, password_hash_old, password_salt } = user;
+    const hashedValue = await hash(`${password_hash_old}${password_salt}`);
+    await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [hashedValue, id]);
+    count++;
+    console.log('Updated ', count, ' passwords');
+  }
+  console.log('DONE');
 };
 
-exports.down = function(db) {
-  return null;
+exports.down = function (db) {
+  return db.runSql(`
+    ALTER TABLE user_account
+    DROP COLUMN password_hash;
+    
+    ALTER TABLE user_account
+    RENAME COLUMN password_hash_old TO password_hash;
+  `);
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

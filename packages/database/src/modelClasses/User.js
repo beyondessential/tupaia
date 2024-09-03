@@ -1,9 +1,8 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { encryptPassword } from '@tupaia/auth';
-
+import { verifyPassword } from '@tupaia/auth';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -21,7 +20,7 @@ export class UserRecord extends DatabaseRecord {
 
   // Checks if the provided non-encrypted password corresponds to this user
   async checkPassword(password) {
-    return await encryptPassword(password, this.password_salt) === this.password_hash;
+    return verifyPassword(password, this.password_salt, this.password_hash);
   }
 
   checkIsEmailUnverified() {

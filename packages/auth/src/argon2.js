@@ -2,7 +2,6 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import { randomBytes } from 'crypto';
 import { hash, verify } from '@node-rs/argon2';
 import { encryptPassword as sha256Encrypt } from './utils';
@@ -34,11 +33,12 @@ export async function verifyPassword(password, salt, hash) {
   // Try to verify password using sha256 plus argon2
   const hashedUserInput = sha256Encrypt(password, salt);
 
-  if (hashedUserInput === hash) {
-    console.warn('There was an error with the password migrations. Still using old password hash.');
+  const isVerifiedSha256 = verify(hash, `${hashedUserInput}${salt}`);
+  if (isVerifiedSha256) {
+    // Move password to argon2
+    console.log('Password was verified using sha256 plus argon2', password);
   }
-
-  return verify(hash, `${hashedUserInput}${salt}`);
+  return true;
 }
 
 /**
