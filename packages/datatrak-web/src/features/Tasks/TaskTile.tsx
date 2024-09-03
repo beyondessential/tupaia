@@ -31,6 +31,20 @@ const TileContainer = styled(Link)`
     font-size: 0.75rem;
   }
 
+  @media screen and (max-width: 30rem) {
+    .MuiButtonBase-root {
+      padding-inline: 0.8rem;
+    }
+  }
+
+  @media screen and (max-width: 24rem) {
+    flex-direction: column;
+    .MuiButtonBase-root {
+      margin-block-end: 0.4rem;
+      margin-block-start: 0.8rem;
+    }
+  }
+
   &:hover {
     background-color: ${({ theme }) => theme.palette.primaryHover};
     border-color: ${({ theme }) => theme.palette.primary.main};
