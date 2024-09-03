@@ -253,7 +253,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                         onChange={onChange}
                         inputRef={ref}
                         label="Due date"
-                        disablePast={import.meta.env.REACT_APP_ALLOW_PAST_DUE_DATES !== 'true'}
+                        disablePast={process.env.REACT_APP_ALLOW_PAST_DUE_DATES !== 'true'}
                         fullWidth
                         required
                         invalid={invalid}
