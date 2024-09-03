@@ -6,11 +6,12 @@ import '@babel/polyfill';
 import { configureEnv } from '../src/configureEnv';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import winston from '../src/log';
-import { TaskOverdueChecker } from '../src/scheduledTasks';
+import { RepeatingTaskDueDateHandler, TaskOverdueChecker } from '../src/scheduledTasks';
 import * as modelClasses from '../src/database/models';
 
 const SCHEDULED_TASK_MODULES = {
   TaskOverdueChecker,
+  RepeatingTaskDueDateHandler,
 };
 
 configureEnv();
