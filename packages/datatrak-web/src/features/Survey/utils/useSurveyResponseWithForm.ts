@@ -16,7 +16,7 @@ import { getAllSurveyComponents } from '../utils';
 export const useSurveyResponseWithForm = (
   surveyResponse?: DatatrakWebSingleSurveyResponseRequest.ResBody,
 ) => {
-  const { setFormData, surveyScreens, surveyCode } = useSurveyForm();
+  const { setFormData, surveyScreens, surveyCode, formData } = useSurveyForm();
 
   const { isLoading, isFetched } = useSurvey(surveyCode);
   const surveyLoading = isLoading || !isFetched;
@@ -26,7 +26,7 @@ export const useSurveyResponseWithForm = (
 
   // Populate the form with the survey response data - this is not in in the onSuccess hook because it doesn't get called if the response has previously been fetched and is in the cache
   useEffect(() => {
-    if (!surveyResponse || surveyLoading) return;
+    if (!surveyResponse?.id || surveyLoading) return;
     const primaryEntityQuestion = flattenedScreenComponents.find(
       component => component.type === QuestionType.PrimaryEntity,
     );
@@ -71,10 +71,16 @@ export const useSurveyResponseWithForm = (
       formattedAnswers[dateOfDataQuestion.questionId] = surveyResponse.dataTime;
     }
 
-    setFormData(formattedAnswers);
+    // combine this so that formData always takes precedence
+    const newData = {
+      ...formattedAnswers,
+      ...formData,
+    };
+
+    setFormData(newData);
     // Reset the form context with the new answers, to trigger re-render of the form
-    formContext.reset(formattedAnswers);
-  }, [JSON.stringify(surveyResponse), surveyLoading]);
+    formContext.reset(newData);
+  }, [surveyResponse?.id, surveyLoading]);
 
   return { surveyLoading };
 };
