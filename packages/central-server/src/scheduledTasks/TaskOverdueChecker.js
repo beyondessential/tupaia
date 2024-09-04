@@ -23,14 +23,14 @@ export class TaskOverdueChecker extends ScheduledTask {
     winston.info(`Found ${overdueTasks.length} overdue task(s)`);
 
     for (const overdueTask of overdueTasks) {
-      if (!task.assignee_id) {
+      if (!overdueTask.assignee_id) {
         winston.info(`Task ${overdueTask.id} has no assignee`);
         continue;
       }
-      const assignee = await user.findById(task.assignee_id);
+      const assignee = await user.findById(overdueTask.assignee_id);
 
       if (!assignee) {
-        winston.error(`Assignee with id ${task.assignee_id} not found`);
+        winston.error(`Assignee with id ${overdueTask.assignee_id} not found`);
         continue;
       }
 
@@ -41,14 +41,12 @@ export class TaskOverdueChecker extends ScheduledTask {
           userName: assignee.first_name,
           surveyName: overdueTask.survey_name,
           entityName: overdueTask.entity_name,
-          dueDate: format(new Date(task.due_date), 'do MMMM yyyy'),
+          dueDate: format(new Date(overdueTask.due_date), 'do MMMM yyyy'),
         },
       });
 
       winston.info(`Email sent to ${assignee.email} with status: ${result.response}`);
-
-      task.overdue_email_sent = new Date();
-      await task.save();
+      task.updateById(overdueTask.id, { overdue_email_sent: new Date() });
     }
   }
 }
