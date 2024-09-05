@@ -17,11 +17,11 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "start-storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "start-storybook": "yarn package:storybook:start",
+    "build-storybook": "yarn package:storybook:build"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.8",

@@ -7,13 +7,12 @@ import ReactHookFormDecorator from './ReactHookFormDecorator';
 const preview: Preview = {
   parameters: {
     backgrounds: {
-      default: 'Dark',
+      default: 'Light',
       values: [
         { name: 'Dark', value: '#262834' },
         { name: 'Light', value: '#ffffff' },
       ],
     },
-
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {

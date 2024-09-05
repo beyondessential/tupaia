@@ -3,9 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import Container, { ContainerProps } from '@material-ui/core/Container';
+import PropTypes from 'prop-types';
+import Container from '@material-ui/core/Container';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { LightTab, LightTabs } from './Tabs';
 
@@ -21,16 +22,16 @@ const ToolbarWrapper = styled.div`
   }
 `;
 
-interface BaseToolbarProps {
-  maxWidth?: ContainerProps['maxWidth'];
-  children?: ReactNode;
-}
-
-export const BaseToolbar = ({ children, maxWidth = false }: BaseToolbarProps) => (
+export const BaseToolbar = ({ children, maxWidth = false }) => (
   <ToolbarWrapper>
-    <Container maxWidth={maxWidth}>{children!}</Container>
+    <Container maxWidth={maxWidth}>{children}</Container>
   </ToolbarWrapper>
 );
+
+BaseToolbar.propTypes = {
+  maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl', false]),
+  children: PropTypes.node,
+};
 
 const ToolbarTab = styled(LightTab)`
   font-size: 1.125rem;
@@ -48,21 +49,7 @@ const ToolbarTab = styled(LightTab)`
  * a component for navigating to router links
  */
 
-interface Link {
-  label: string;
-  to: string;
-  exact?: boolean;
-  icon?: ReactNode;
-  id?: string;
-}
-
-interface TabsToolbarProps {
-  links: Link[];
-  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false | undefined;
-  baseRoute: string;
-}
-
-export const TabsToolbar = ({ links: linkInput, maxWidth, baseRoute }: TabsToolbarProps) => {
+export const TabsToolbar = ({ links: linkInput, maxWidth, baseRoute }) => {
   const location = useLocation();
   const links = linkInput.map(link => ({
     ...link,
@@ -84,4 +71,18 @@ export const TabsToolbar = ({ links: linkInput, maxWidth, baseRoute }: TabsToolb
       )}
     </BaseToolbar>
   );
+};
+
+TabsToolbar.propTypes = {
+  links: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      to: PropTypes.string.isRequired,
+      exact: PropTypes.bool,
+      icon: PropTypes.node,
+      id: PropTypes.string,
+    }),
+  ).isRequired,
+  maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl', false]),
+  baseRoute: PropTypes.string.isRequired,
 };

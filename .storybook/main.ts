@@ -1,9 +1,18 @@
+import fs from 'fs';
 import path, { join, dirname } from 'path';
 import type { StorybookConfig } from '@storybook/react-vite';
 
 const getStoriesDir = () => {
   const currentDir = process.cwd();
   return join(currentDir, 'stories/**/*.stories.@(js|jsx|ts|tsx)');
+};
+
+const getStaticDir = () => {
+  const currentDir = process.cwd();
+  const publicPath = join(currentDir, 'public');
+
+  if (!fs.existsSync(publicPath)) return [];
+  return [publicPath];
 };
 
 const config: StorybookConfig = {
@@ -19,7 +28,7 @@ const config: StorybookConfig = {
   core: {
     builder: '@storybook/builder-vite',
   },
-  staticDirs: [join(process.cwd(), 'public')],
+  staticDirs: getStaticDir(),
   viteFinal: async (config, { configType }) => {
     // Merge custom configuration into the default config
     const { mergeConfig, loadEnv } = await import('vite');

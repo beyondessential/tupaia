@@ -6,7 +6,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { ReactRouterV5Decorator } from '../helpers';
 import { ProfileButton, ProfileButtonItem } from '../src/components';
 
 const Container = styled(MuiBox)`
@@ -20,10 +19,10 @@ export default {
   title: 'ProfileButton',
   component: ProfileButton,
   decorators: [
-    story => (
-      <ReactRouterV5Decorator>
-        <Container>{story()}</Container>
-      </ReactRouterV5Decorator>
+    Story => (
+      <Container>
+        <Story />
+      </Container>
     ),
   ],
 };

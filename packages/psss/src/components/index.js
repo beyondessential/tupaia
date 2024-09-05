@@ -17,3 +17,5 @@ export * from './FetchLoader';
 export * from './Modal';
 export * from './AffectedSitesTab';
 export * from './ComingSoon';
+export * from './Toolbar';
+export * from './Tabs';
