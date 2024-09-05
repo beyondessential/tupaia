@@ -3,11 +3,10 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { verify } from '@node-rs/argon2';
-import { verifyPassword, sha256EncryptPassword } from '@tupaia/auth';
+import { encryptPassword, verifyPassword, sha256EncryptPassword } from '@tupaia/auth';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { encryptPassword } from '@tupaia/auth/src';
 
 export class UserRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.USER_ACCOUNT;
