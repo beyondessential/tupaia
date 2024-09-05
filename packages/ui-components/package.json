@@ -17,7 +17,8 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "storybook": "start-storybook -s public -p 6006",
+    "start-storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
@@ -55,8 +56,10 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
-    "@storybook/addon-essentials": "6.3.9",
-    "@storybook/react": "^6.3.9",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/builder-vite": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-vite": "^8.2.9",
     "@testing-library/jest-dom": "^6.2.0",
     "@types/downloadjs": "^1.4.3",
     "@types/jest": "^29.5.1",
@@ -66,10 +69,11 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-table": "^7.7.14",
     "@types/styled-components": "^5.0.0",
-    "babel-loader": "8.1.0",
+    "eslint-plugin-storybook": "^0.8.0",
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
-    "react-docgen-typescript-plugin": "^1.0.5",
-    "react-password-strength-bar": "^0.3.3"
+    "react-docgen-typescript-plugin": "^1.0.8",
+    "react-password-strength-bar": "^0.3.3",
+    "storybook": "^8.2.9"
   }
 }

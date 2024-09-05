@@ -9297,7 +9297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/blocks@npm:8.2.9, @storybook/blocks@npm:^8.2.9":
+"@storybook/blocks@npm:8.2.9":
   version: 8.2.9
   resolution: "@storybook/blocks@npm:8.2.9"
   dependencies:
@@ -10626,7 +10626,6 @@ __metadata:
     "@material-ui/core": ^4.9.8
     "@material-ui/styles": ^4.9.10
     "@storybook/addon-essentials": ^8.2.9
-    "@storybook/blocks": ^8.2.9
     "@storybook/builder-vite": ^8.2.9
     "@storybook/react": ^8.2.9
     "@storybook/react-vite": ^8.2.9
@@ -10663,7 +10662,6 @@ __metadata:
     "@mui/types": ^7.2.4
     "@mui/x-data-grid": ^4.0.0
     "@storybook/addon-essentials": ^8.2.9
-    "@storybook/blocks": ^8.2.9
     "@storybook/builder-vite": ^8.2.9
     "@storybook/react": ^8.2.9
     "@storybook/react-vite": ^8.2.9
@@ -10716,7 +10714,6 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@storybook/addon-essentials": ^8.2.9
-    "@storybook/blocks": ^8.2.9
     "@storybook/builder-vite": ^8.2.9
     "@storybook/react": ^8.2.9
     "@storybook/react-vite": ^8.2.9

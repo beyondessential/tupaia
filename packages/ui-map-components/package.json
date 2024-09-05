@@ -17,7 +17,8 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "storybook": "start-storybook -s public -p 6006",
+    "start-storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
@@ -40,11 +41,16 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
-    "@storybook/react": "^6.3.9",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/builder-vite": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-vite": "^8.2.9",
     "@types/jest": "^29.5.1",
     "@types/leaflet": "^1.7.1",
     "@types/react-dom": "^16.9.18",
     "@types/styled-components": "^5.1.26",
-    "react-docgen-typescript-plugin": "^1.0.5"
+    "eslint-plugin-storybook": "^0.8.0",
+    "react-docgen-typescript-plugin": "^1.0.8",
+    "storybook": "^8.2.9"
   }
 }
