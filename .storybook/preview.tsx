@@ -13,7 +13,7 @@ const preview: Preview = {
         { name: 'Light', value: '#ffffff' },
       ],
     },
-    theme: 'dark',
+
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {

@@ -9,6 +9,9 @@ import { CheckboxList } from '../../src/components/CheckboxList';
 const meta: Meta<typeof CheckboxList> = {
   title: 'components/CheckboxList',
   component: CheckboxList,
+  parameters: {
+    theme: 'dark',
+  },
   decorators: [
     Story => (
       <div style={{ margin: '1rem', maxWidth: '20rem' }}>

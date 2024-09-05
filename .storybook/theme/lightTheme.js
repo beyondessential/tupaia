@@ -9,6 +9,7 @@ import * as COLORS from './colors';
 
 const themeName = 'Tupaia-Storybook';
 const palette = {
+  type: 'light',
   primary: {
     main: COLORS.BLUE,
     light: COLORS.LIGHT_BLUE,
