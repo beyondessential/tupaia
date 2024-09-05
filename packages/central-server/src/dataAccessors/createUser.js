@@ -63,7 +63,7 @@ export const createUser = async (
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
-          secret_key_hash: encryptPassword(secretKey, process.env.API_CLIENT_SALT),
+          secret_key_hash: await encryptPassword(secretKey, process.env.API_CLIENT_SALT),
         });
       }
 

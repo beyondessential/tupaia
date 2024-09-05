@@ -55,7 +55,6 @@ export class Authenticator {
       process.env.API_CLIENT_SALT,
       apiClient.secret_key_hash,
     );
-    console.log('verified', verified);
     if (!verified) {
       throw new UnauthenticatedError('Could not authenticate Api Client');
     }

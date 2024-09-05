@@ -91,7 +91,6 @@ const checkApiClientAuthentication = async req => {
   }
 
   try {
-    console.log('authenticating api client', username, secretKey);
     return await authenticator.authenticateApiClient({ username, secretKey });
   } catch (error) {
     winston.warn('Invalid Api Client Basic Auth header provided');

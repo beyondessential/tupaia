@@ -90,7 +90,7 @@ export async function addBaselineTestData() {
     },
     {
       user_account_id: apiUser.userId,
-      secret_key_hash: encryptPassword(TEST_API_USER_PASSWORD, process.env.API_CLIENT_SALT),
+      secret_key_hash: await encryptPassword(TEST_API_USER_PASSWORD, process.env.API_CLIENT_SALT),
     },
   );
 }

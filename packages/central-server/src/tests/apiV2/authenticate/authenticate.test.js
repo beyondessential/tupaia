@@ -58,7 +58,7 @@ describe('Authenticate', function () {
     await findOrCreateDummyRecord(models.apiClient, {
       username: apiClientUserAccount.email,
       user_account_id: apiClientUserAccount.id,
-      secret_key_hash: encryptPassword(apiClientSecret, process.env.API_CLIENT_SALT),
+      secret_key_hash: await encryptPassword(apiClientSecret, process.env.API_CLIENT_SALT),
     });
 
     // Public Demo Land Permission

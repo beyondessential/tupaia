@@ -24,20 +24,15 @@ exports.up = async function (db) {
     ALTER TABLE user_account
     ADD COLUMN password_hash TEXT;
   `);
-  console.log('ALTERED TABLE');
-
   const users = await db.runSql('SELECT id, password_hash_old, password_salt FROM user_account');
 
-  console.log('UPDATING PASSWORDS');
   let count = 0;
   for (let user of users.rows) {
     const { id, password_hash_old, password_salt } = user;
     const hashedValue = await hash(`${password_hash_old}${password_salt}`);
     await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [hashedValue, id]);
     count++;
-    console.log('Updated ', count, ' passwords');
   }
-  console.log('DONE');
 };
 
 exports.down = function (db) {
