@@ -9,8 +9,7 @@ import {
   CartesianChartPresentationOptions,
   ChartData,
   ChartReport,
-  ChartType,
-  DashboardItemReport,
+  ChartType, 
   ViewDataItem,
   VizPeriodGranularity,
 } from '@tupaia/types';

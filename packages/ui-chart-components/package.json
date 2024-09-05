@@ -17,10 +17,11 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "storybook": "start-storybook -s public -p 6006",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "storybook-start": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.8",
@@ -38,8 +39,16 @@
   },
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
-    "@storybook/react": "^6.3.9",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/blocks": "^8.2.9",
+    "@storybook/builder-vite": "^8.2.9",
+    "@storybook/react": "^8.2.9",
+    "@storybook/react-vite": "^8.2.9",
     "@types/lodash.get": "^4.4.7",
-    "@types/recharts": "^1.8.24"
+    "@types/react": "16.8.6",
+    "@types/recharts": "^1.8.24",
+    "eslint-plugin-storybook": "^0.8.0",
+    "react-docgen-typescript-plugin": "^1.0.8",
+    "storybook": "^8.2.9"
   }
 }
