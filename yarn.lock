@@ -10662,6 +10662,11 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@mui/x-data-grid": ^4.0.0
+    "@storybook/addon-essentials": ^8.2.9
+    "@storybook/blocks": ^8.2.9
+    "@storybook/builder-vite": ^8.2.9
+    "@storybook/react": ^8.2.9
+    "@storybook/react-vite": ^8.2.9
     "@testing-library/jest-dom": ^6.2.0
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -10674,9 +10679,9 @@ __metadata:
     "@types/react-table": ^7.7.14
     "@types/styled-components": ^5.0.0
     ace-builds: ^1.10.1
-    babel-loader: 8.1.0
     date-fns: ^2.12.0
     downloadjs: ^1.4.7
+    eslint-plugin-storybook: ^0.8.0
     faker: ^4.1.0
     fast-glob: ^3.2.5
     js-sql-parser: ^1.4.1
@@ -10688,6 +10693,7 @@ __metadata:
     qrcode: ^1.5.3
     react: ^16.13.1
     react-ace: ^10.1.0
+    react-docgen-typescript-plugin: ^1.0.8
     react-dom: ^16.13.1
     react-dropzone: ^14.2.3
     react-hook-form: ^6.15.1
@@ -10695,6 +10701,7 @@ __metadata:
     react-router-dom: ^5.1.2
     react-router-dom-v6: "npm:react-router-dom@6.3.0"
     react-table: ^7.7.0
+    storybook: ^8.2.9
     styled-components: ^5.0.1
     xlsx: ^0.18.5
   languageName: unknown
@@ -11313,7 +11320,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/json-schema@npm:^7.0.3, @types/json-schema@npm:^7.0.4":
+"@types/json-schema@npm:^7.0.3":
   version: 7.0.4
   resolution: "@types/json-schema@npm:7.0.4"
   checksum: e8f7f8cccfba50bc921f630a4eef7a740a26d6a7daf9a954f6690ddae162de932f563cbdb754b082bee8f9620407082fda606cab03d57f00f637e7c68666e04f
@@ -12632,15 +12639,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv-keywords@npm:^3.4.1":
-  version: 3.4.1
-  resolution: "ajv-keywords@npm:3.4.1"
-  peerDependencies:
-    ajv: ^6.9.1
-  checksum: 0ecb945d00934ccf6f1da9e82db4d5ef68988f4fff5bc07a30629eb15c2a6b7a85eff5cececfc9fdc3ca34a9d75dee1c8596991e59cc46f5105b765d17d9c7cd
-  languageName: node
-  linkType: hard
-
 "ajv@npm:^6.10.0, ajv@npm:^6.12.2":
   version: 6.12.2
   resolution: "ajv@npm:6.12.2"
@@ -13639,22 +13637,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.8.0
   checksum: ee6f8e0495afee07cac5e4ee167be705c711a8cc8a737e05a587a131fdae2b3c8f9aa55dfd4d9c03009ac2d27f2de63d8ba96d3e8460da4d00e8af19ef9a83f7
-  languageName: node
-  linkType: hard
-
-"babel-loader@npm:8.1.0":
-  version: 8.1.0
-  resolution: "babel-loader@npm:8.1.0"
-  dependencies:
-    find-cache-dir: ^2.1.0
-    loader-utils: ^1.4.0
-    mkdirp: ^0.5.3
-    pify: ^4.0.1
-    schema-utils: ^2.6.5
-  peerDependencies:
-    "@babel/core": ^7.0.0
-    webpack: ">=2"
-  checksum: fdbcae91cc43366206320a1cbe40d358a64ba2dfaa561fbd690efe0db6256c9d27ab7600f7c84041fbc4c2a6f0279175b1f8d1fa5ed17ec30bbd734da84a1bc0
   languageName: node
   linkType: hard
 
@@ -19910,7 +19892,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-cache-dir@npm:^2.0.0, find-cache-dir@npm:^2.1.0":
+"find-cache-dir@npm:^2.0.0":
   version: 2.1.0
   resolution: "find-cache-dir@npm:2.1.0"
   dependencies:
@@ -24695,17 +24677,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "loader-utils@npm:1.4.0"
-  dependencies:
-    big.js: ^5.2.2
-    emojis-list: ^3.0.0
-    json5: ^1.0.1
-  checksum: d150b15e7a42ac47d935c8b484b79e44ff6ab4c75df7cc4cb9093350cf014ec0b17bdb60c5d6f91a37b8b218bd63b973e263c65944f58ca2573e402b9a27e717
-  languageName: node
-  linkType: hard
-
 "localforage@npm:^1.5.0":
   version: 1.7.3
   resolution: "localforage@npm:1.7.3"
@@ -26572,7 +26543,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.3, mkdirp@npm:^0.5.4, mkdirp@npm:^0.5.5":
+"mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.4, mkdirp@npm:^0.5.5":
   version: 0.5.5
   resolution: "mkdirp@npm:0.5.5"
   dependencies:
@@ -32311,17 +32282,6 @@ __metadata:
   dependencies:
     loose-envify: ^1.1.0
   checksum: 3e82d1f419e240ef6219d794ff29c7ee415fbdc19e038f680a10c067108e06284f1847450a210b29bbaf97b9d8a97ced5f624c31c681248ac84c80d56ad5a2c4
-  languageName: node
-  linkType: hard
-
-"schema-utils@npm:^2.6.5":
-  version: 2.7.0
-  resolution: "schema-utils@npm:2.7.0"
-  dependencies:
-    "@types/json-schema": ^7.0.4
-    ajv: ^6.12.2
-    ajv-keywords: ^3.4.1
-  checksum: 8889325b0ee1ae6a8f5d6aaa855c71e136ebbb7fd731b01a9d3ec8225dcb245f644c47c50104db4c741983b528cdff8558570021257d4d397ec6aaecd9172a8e
   languageName: node
   linkType: hard
 

@@ -6,11 +6,11 @@
 import React from 'react';
 import { Alarm } from '@material-ui/icons';
 import { TabsToolbar, Clipboard, WarningCloud } from '../src/components';
-import { RouterProvider } from '../helpers/RouterProvider';
+import { ReactRouterV5Decorator } from '../helpers';
 
 export default {
   title: 'Toolbar',
-  decorators: [story => <RouterProvider>{story()}</RouterProvider>],
+  decorators: [story => <ReactRouterV5Decorator>{story()}</ReactRouterV5Decorator>],
 };
 /**
  * links are slightly adjusted to work with storybook.

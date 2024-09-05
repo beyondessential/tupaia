@@ -6,4 +6,6 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-export const RouterProvider = ({ children }) => <Router>{children}</Router>;
+export const ReactRouterV5Decorator = ({ children }: { children: React.ReactNode }) => (
+  <Router>{children}</Router>
+);

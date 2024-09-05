@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { action } from '@storybook/addon-actions';
-import { BrowserRouter, useLocation } from 'react-router-dom';
+import { BrowserRouter, useLocation } from 'react-router-dom-v6';
 
 const LocationChangeAction = ({ children }) => {
   const location = useLocation();
@@ -12,7 +12,7 @@ const LocationChangeAction = ({ children }) => {
   return <>{children}</>;
 };
 
-const ReactRouterDecorator = (Story, context) => {
+export const ReactRouterDecorator = (Story, context) => {
   return (
     <BrowserRouter>
       <LocationChangeAction>
@@ -21,5 +21,3 @@ const ReactRouterDecorator = (Story, context) => {
     </BrowserRouter>
   );
 };
-
-export default ReactRouterDecorator;

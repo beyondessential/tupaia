@@ -10,7 +10,7 @@ const StorybookFormProvider = ({ children }) => {
   );
 };
 
-const ReactHookFormDecorator = (Story, context) => (
+export const ReactHookFormDecorator = (Story, context) => (
   <StorybookFormProvider>
     <Story {...context} />
   </StorybookFormProvider>
