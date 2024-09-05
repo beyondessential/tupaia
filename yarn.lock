@@ -14207,7 +14207,6 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
-    "@storybook/react": ^6.3.9
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -14219,7 +14218,6 @@ __metadata:
     moment: ^2.24.0
     prop-types: ^15.7.2
     react: ^16.13.1
-    react-docgen-typescript-plugin: ^1.0.5
     react-dom: ^16.13.1
     react-leaflet: ^3.2.1
     react-table: ^7.7.0
