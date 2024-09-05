@@ -40,9 +40,9 @@ const config: StorybookConfig = {
         'process.env': env,
       },
       server: {
-        warmup: {
-          // warmup all .env files - this is a workaround for .env files triggering reload and causing [this error](https://github.com/vitejs/vite/issues/13735)
-          clientFiles: ['**/.env*'],
+        watch: {
+          // Ignore the .env files because for some reason vite is detecting changes in them and restarting the server multiple times
+          ignored: '**/.env*',
         },
       },
       resolve: {
