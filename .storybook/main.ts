@@ -39,6 +39,12 @@ const config: StorybookConfig = {
       define: {
         'process.env': env,
       },
+      server: {
+        warmup: {
+          // warmup all .env files - this is a workaround for .env files triggering reload and causing [this error](https://github.com/vitejs/vite/issues/13735)
+          clientFiles: ['**/.env*'],
+        },
+      },
       resolve: {
         preserveSymlinks: true, // use the yarn workspace symlinks
         alias: {

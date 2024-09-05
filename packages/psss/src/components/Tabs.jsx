@@ -1,10 +1,10 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState, useCallback } from 'react';
-import MuiTabs, { TabsProps } from '@material-ui/core/Tabs';
+import MuiTabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
 
@@ -17,10 +17,10 @@ export const StyledTabs = styled(MuiTabs)`
   }
 `;
 
-export const Tabs = (props: TabsProps) => {
+export const Tabs = props => {
   const [value, setValue] = useState(0);
   const handleChange = useCallback(
-    (event: React.ChangeEvent<{}>, newValue: number) => {
+    (event, newValue) => {
       setValue(newValue);
     },
     [setValue],
