@@ -25,7 +25,6 @@
     "test": "yarn package:test"
   },
   "dependencies": {
-    "@tupaia/auth": "workspace:*",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/api-client": "workspace:*",
     "@tupaia/database": "workspace:*",
