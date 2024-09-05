@@ -10708,6 +10708,11 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
+    "@storybook/addon-essentials": ^8.2.9
+    "@storybook/blocks": ^8.2.9
+    "@storybook/builder-vite": ^8.2.9
+    "@storybook/react": ^8.2.9
+    "@storybook/react-vite": ^8.2.9
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -10715,14 +10720,16 @@ __metadata:
     "@types/leaflet": ^1.7.1
     "@types/react-dom": ^16.9.18
     "@types/styled-components": ^5.1.26
+    eslint-plugin-storybook: ^0.8.0
     leaflet: ^1.7.1
     moment: ^2.24.0
     prop-types: ^15.7.2
     react: ^16.13.1
-    react-docgen-typescript-plugin: ^1.0.5
+    react-docgen-typescript-plugin: ^1.0.8
     react-dom: ^16.13.1
     react-leaflet: ^3.2.1
     react-table: ^7.7.0
+    storybook: ^8.2.9
     styled-components: ^5.0.1
   languageName: unknown
   linkType: soft
@@ -16952,13 +16959,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dedent@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "dedent@npm:0.7.0"
-  checksum: 87de191050d9a40dd70cad01159a0bcf05ecb59750951242070b6abf9569088684880d00ba92a955b4058804f16eeaf91d604f283929b4f614d181cd7ae633d2
-  languageName: node
-  linkType: hard
-
 "dedent@npm:^1.0.0":
   version: 1.5.1
   resolution: "dedent@npm:1.5.1"
@@ -17921,17 +17921,6 @@ __metadata:
   dependencies:
     once: ^1.4.0
   checksum: 530a5a5a1e517e962854a31693dbb5c0b2fc40b46dad2a56a2deec656ca040631124f4795823acc68238147805f8b021abbe221f4afed5ef3c8e8efc2024908b
-  languageName: node
-  linkType: hard
-
-"endent@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "endent@npm:2.0.1"
-  dependencies:
-    dedent: ^0.7.0
-    fast-json-parse: ^1.0.3
-    objectorarray: ^1.0.4
-  checksum: 21a290c8e23d2760d0cda200888964623d3ecba6f7c2fd1fa068477cf2e6168d67c0313d91190e23e3163ab329c8491f5f102802088926abf8afa74e8c652b1a
   languageName: node
   linkType: hard
 
@@ -19671,13 +19660,6 @@ __metadata:
     merge2: ^1.3.0
     micromatch: ^4.0.4
   checksum: 900e4979f4dbc3313840078419245621259f349950411ca2fa445a2f9a1a6d98c3b5e7e0660c5ccd563aa61abe133a21765c6c0dec8e57da1ba71d8000b05ec1
-  languageName: node
-  linkType: hard
-
-"fast-json-parse@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "fast-json-parse@npm:1.0.3"
-  checksum: c19117c56ec18a9aa133c8ebf450c99d1037117e47a3cb9aff91b60580ba48d0fd8484b696c26749a1b9cb4914084177b3fa9ebef72063a74dee7d9ead987603
   languageName: node
   linkType: hard
 
@@ -27847,13 +27829,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"objectorarray@npm:^1.0.4":
-  version: 1.0.4
-  resolution: "objectorarray@npm:1.0.4"
-  checksum: f6b1dca119c1eb84ae7870de13066b2171512c826869d3655a13369b91ab7e035a44cc218a0bb09c893455031665f9c13bc0efadec5060c0356cf52311751465
-  languageName: node
-  linkType: hard
-
 "oblivious-set@npm:1.0.0":
   version: 1.0.0
   resolution: "oblivious-set@npm:1.0.0"
@@ -29988,24 +29963,6 @@ __metadata:
     shell-quote: ^1.6.1
     ws: ^7
   checksum: d8e4b32ffcfe1ada5c9f7decffd04afc4707a3d6261953a92b8aed1c8abe15cd57d6eb4ce711f842180a2f5c60d2947209e3c1202f7ea29303ee150c55da59e0
-  languageName: node
-  linkType: hard
-
-"react-docgen-typescript-plugin@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "react-docgen-typescript-plugin@npm:1.0.5"
-  dependencies:
-    debug: ^4.1.1
-    endent: ^2.0.1
-    find-cache-dir: ^3.3.1
-    flat-cache: ^3.0.4
-    micromatch: ^4.0.2
-    react-docgen-typescript: ^2.2.2
-    tslib: ^2.0.0
-  peerDependencies:
-    typescript: ">= 4.x"
-    webpack: ">= 4"
-  checksum: 0f83d33c7b6dc82fef34ee820c94485c374d853774c5c26b04754ba3674fe4db2c7fc210b30fa0ca77c5033633553c12742aab6305a7f16cd263c70fedf27589
   languageName: node
   linkType: hard
 
@@ -34752,13 +34709,6 @@ __metadata:
   version: 1.13.0
   resolution: "tslib@npm:1.13.0"
   checksum: 50e9327361f94f328c0715582a7f725f69838ab3c2559d143643c5367262fe14552768ba8cfc65bc7dc924a619aea599b3a28b6653458cdca77bbebaf9bc8df4
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "tslib@npm:2.0.1"
-  checksum: 507f32fc24a614c5097d414b622373b6cbb99e305413517e7fd49bef1e63570c0dd15b417ae68152088c3496218e82a5d8c7cd6b48c7a32dcee1a3f7191fff74
   languageName: node
   linkType: hard
 

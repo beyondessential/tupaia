@@ -20,7 +20,7 @@
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch",
-    "storybook-start": "storybook dev -p 6006",
+    "start-storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "dependencies": {
