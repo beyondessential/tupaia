@@ -13,6 +13,9 @@ const meta: Meta<typeof Modal> = {
   component: Modal,
   parameters: {
     theme: 'dark',
+    backgrounds: {
+      default: 'dark',
+    },
   },
 };
 

@@ -14,6 +14,9 @@ const meta: Meta<typeof DateRangePicker> = {
   component: DateRangePicker,
   parameters: {
     theme: 'dark',
+    backgrounds: {
+      default: 'dark',
+    },
   },
   decorators: [
     Story => (

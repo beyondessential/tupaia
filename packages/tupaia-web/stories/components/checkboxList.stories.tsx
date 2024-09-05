@@ -11,6 +11,9 @@ const meta: Meta<typeof CheckboxList> = {
   component: CheckboxList,
   parameters: {
     theme: 'dark',
+    backgrounds: {
+      default: 'dark',
+    },
   },
   decorators: [
     Story => (

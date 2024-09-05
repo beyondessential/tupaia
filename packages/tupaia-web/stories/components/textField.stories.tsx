@@ -12,6 +12,9 @@ const meta: Meta<typeof TextField> = {
   component: TextField,
   parameters: {
     theme: 'dark',
+    backgrounds: {
+      default: 'dark',
+    },
   },
   decorators: [
     Story => {
