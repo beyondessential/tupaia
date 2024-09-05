@@ -56,24 +56,18 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
-    "@storybook/addon-essentials": "^8.2.9",
-    "@storybook/builder-vite": "^8.2.9",
-    "@storybook/react": "^8.2.9",
-    "@storybook/react-vite": "^8.2.9",
     "@testing-library/jest-dom": "^6.2.0",
     "@types/downloadjs": "^1.4.3",
     "@types/jest": "^29.5.1",
     "@types/lodash.throttle": "^4.1.7",
+    "@types/markdown-to-jsx": "^6.4.1",
     "@types/qrcode": "^1.5.1",
     "@types/react-dom": "^16.9.18",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-table": "^7.7.14",
     "@types/styled-components": "^5.0.0",
-    "eslint-plugin-storybook": "^0.8.0",
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
-    "react-docgen-typescript-plugin": "^1.0.8",
-    "react-password-strength-bar": "^0.3.3",
-    "storybook": "^8.2.9"
+    "react-password-strength-bar": "^0.3.3"
   }
 }

@@ -16,9 +16,9 @@
     "preview": "vite preview",
     "start-dev": "npm run --prefix ../../ package:start:vite --port=8088",
     "start-stack": "yarn package:start-stack tupaia-web",
-    "storybook": "storybook dev -p 6006",
     "test": "yarn package:test --env=jsdom",
-    "build-storybook": "storybook build"
+    "start-storybook": "yarn package:storybook:start",
+    "build-storybook": "yarn package:storybook:build"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.2.0",
@@ -51,14 +51,6 @@
   },
   "devDependencies": {
     "@mui/types": "^7.2.4",
-    "@storybook/addon-essentials": "^7.0.18",
-    "@storybook/addon-interactions": "^7.0.18",
-    "@storybook/addon-links": "^7.0.18",
-    "@storybook/blocks": "^7.0.18",
-    "@storybook/builder-vite": "^7.0.18",
-    "@storybook/react": "^7.0.18",
-    "@storybook/react-vite": "^7.0.18",
-    "@storybook/testing-library": "^0.0.14-next.2",
     "@types/dom-to-image": "^2.6.4",
     "@types/downloadjs": "^1.4.3",
     "@types/leaflet": "^1.7.1",
@@ -68,7 +60,6 @@
     "@vitejs/plugin-react": "^4.0.0",
     "msw": "^2.0.9",
     "npm-run-all": "^4.1.5",
-    "storybook": "^7.0.18",
     "vite": "^4.5.3",
     "vite-plugin-html": "^3.2.0"
   },

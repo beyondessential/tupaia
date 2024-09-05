@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
-import { AppProviders } from '../src/AppProviders';
+import { AppProviders } from './AppProviders';
 import ReactRouterDecorator from './ReactRouterDecorator';
 import ReactHookFormDecorator from './ReactHookFormDecorator';
 
@@ -13,6 +13,7 @@ const preview: Preview = {
         { name: 'Light', value: '#ffffff' },
       ],
     },
+    theme: 'dark',
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {
@@ -24,9 +25,9 @@ const preview: Preview = {
   decorators: [
     ReactRouterDecorator,
     ReactHookFormDecorator,
-    Story => {
+    (Story, { parameters }) => {
       return (
-        <AppProviders>
+        <AppProviders params={parameters}>
           <Story />
         </AppProviders>
       );

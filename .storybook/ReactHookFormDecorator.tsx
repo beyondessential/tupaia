@@ -1,5 +1,4 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import { ReactNode } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Args } from '@storybook/react';
