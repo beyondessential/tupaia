@@ -9834,7 +9834,7 @@ __metadata:
     "@types/node-fetch": ^2.6.11
     lodash.isequal: ^4.5.0
     lodash.pick: ^4.4.0
-    node-fetch: ^1.7.3
+    node-fetch: ^2.6.7
     qs: ^6.12.0
   languageName: unknown
   linkType: soft
@@ -10151,7 +10151,7 @@ __metadata:
     markdown-to-jsx: ^6.4.1
     moment: ^2.24.0
     moment-timezone: ^0.5.45
-    node-fetch: ^1.7.3
+    node-fetch: ^2.6.7
     npm-run-all: ^4.1.5
     regenerator-runtime: ^0.13.9
   languageName: unknown
@@ -10520,7 +10520,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/needle": ^2.5.3
     https-proxy-agent: ^5.0.1
-    node-fetch: ^1.7.3
+    node-fetch: ^2.6.7
     winston: ^3.3.3
   languageName: unknown
   linkType: soft
@@ -10740,7 +10740,7 @@ __metadata:
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
     moment-timezone: ^0.5.45
-    node-fetch: ^1.7.3
+    node-fetch: ^2.6.7
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
     prop-types: ^15.6.2
@@ -17879,15 +17879,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"encoding@npm:^0.1.11":
-  version: 0.1.12
-  resolution: "encoding@npm:0.1.12"
-  dependencies:
-    iconv-lite: ~0.4.13
-  checksum: 96df688a93821e866bea19dd689863b1f9e07ef1c15321dde1fbcb8008ed7c785c48b248c4def01367780d2637c459b8ffa988de9647afe4200b003b1ac369ef
-  languageName: node
-  linkType: hard
-
 "encoding@npm:^0.1.13":
   version: 0.1.13
   resolution: "encoding@npm:0.1.13"
@@ -21653,7 +21644,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24, iconv-lite@npm:^0.4.4, iconv-lite@npm:~0.4.11, iconv-lite@npm:~0.4.13":
+"iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24, iconv-lite@npm:^0.4.4, iconv-lite@npm:~0.4.11":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
   dependencies:
@@ -22632,7 +22623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-stream@npm:^1.0.1, is-stream@npm:^1.1.0":
+"is-stream@npm:^1.1.0":
   version: 1.1.0
   resolution: "is-stream@npm:1.1.0"
   checksum: 063c6bec9d5647aa6d42108d4c59723d2bd4ae42135a2d4db6eadbd49b7ea05b750fd69d279e5c7c45cf9da753ad2c00d8978be354d65aa9f6bb434969c6a2ae
@@ -27046,16 +27037,6 @@ __metadata:
     encoding:
       optional: true
   checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
-  languageName: node
-  linkType: hard
-
-"node-fetch@npm:^1.7.3":
-  version: 1.7.3
-  resolution: "node-fetch@npm:1.7.3"
-  dependencies:
-    encoding: ^0.1.11
-    is-stream: ^1.0.1
-  checksum: 3bb0528c05d541316ebe52770d71ee25a6dce334df4231fd55df41a644143e07f068637488c18a5b0c43f05041dbd3346752f9e19b50df50569a802484544d5b
   languageName: node
   linkType: hard
 
