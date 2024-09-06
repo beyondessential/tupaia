@@ -16,7 +16,7 @@ import {
   CondensedTableBody,
 } from '../../src/components';
 import { useTableData } from '../../helpers/useTableData';
-import * as COLORS from '../story-utils/theme/colors';
+import * as COLORS from '.../helpers/theme/colors';
 
 export default {
   title: 'Tables/ExpandableTable',
