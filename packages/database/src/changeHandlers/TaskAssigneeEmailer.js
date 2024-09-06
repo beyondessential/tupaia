@@ -71,7 +71,6 @@ export class TaskAssigneeEmailer extends ChangeHandler {
           userName: assignee.first_name,
           entityName: entity.name,
           surveyName: survey.name,
-          dueDate: dueDate ? format(new Date(dueDate), 'do MMMM yyyy') : 'No due date',
           cta: {
             url: `${datatrakURL}/tasks/${id}`,
             text: 'View task',
