@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import * as COLORS from '../story-utils/theme/colors';
+import * as COLORS from '.../helpers/theme/colors';
 import { Table, LoadingContainer } from '../../src/components';
 import { useTableData } from '../../helpers/useTableData';
 

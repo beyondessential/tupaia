@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import * as COLORS from '../story-utils/theme/colors';
+import * as COLORS from '.../helpers/theme/colors';
 import { DataGrid } from '../../src/components';
 
 export default {

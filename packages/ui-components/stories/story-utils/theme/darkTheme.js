@@ -6,8 +6,6 @@
 
 import { createMuiTheme } from '@material-ui/core';
 
-const DARKENED_BLUE = '#262834';
-
 export const darkTheme = createMuiTheme({
   palette: {
     type: 'dark',
@@ -23,6 +21,9 @@ export const darkTheme = createMuiTheme({
     },
     text: {
       secondary: '#9ba0a6',
+    },
+    form: {
+      border: '#d9d9d9',
     },
   },
 });

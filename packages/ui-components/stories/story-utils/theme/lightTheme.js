@@ -9,6 +9,7 @@ import * as COLORS from './colors';
 
 const themeName = 'Tupaia-Storybook';
 const palette = {
+  type: 'light',
   primary: {
     main: COLORS.BLUE,
     light: COLORS.LIGHT_BLUE,
@@ -44,8 +45,11 @@ const palette = {
     600: COLORS.GREY_72,
   },
   background: {
-    default: 'transparent', // use background addon to switch colors
+    default: COLORS.WHITE,
     paper: COLORS.WHITE,
+  },
+  form: {
+    border: COLORS.GREY_DE,
   },
 };
 const typography = {
