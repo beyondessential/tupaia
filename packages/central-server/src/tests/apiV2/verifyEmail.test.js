@@ -43,7 +43,7 @@ describe('Verify Email', () => {
 
   const verifyEmail = async userId => {
     const user = await models.user.findById(userId);
-    const token = await encryptPassword(user.email + user.password_hash, user.password_salt);
+    const token = await encryptPassword(`${user.email}${user.password_hash}`, user.password_salt);
 
     return app.post('auth/verifyEmail', {
       headers,

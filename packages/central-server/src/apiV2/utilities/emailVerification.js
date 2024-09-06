@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { encryptPassword } from '@tupaia/auth';
+import { encryptPassword, verifyPassword } from '@tupaia/auth';
 import { sendEmail } from '@tupaia/server-utils';
 import { requireEnv } from '@tupaia/utils';
 
@@ -36,7 +36,7 @@ const EMAILS = {
 };
 
 export const sendEmailVerification = async user => {
-  const token = await encryptPassword(user.email + user.password_hash, user.password_salt);
+  const token = await encryptPassword(`${user.email}${user.password_hash}`, user.password_salt);
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
   const { subject, body, signOff } = EMAILS[platform];
   const TUPAIA_FRONT_END_URL = requireEnv('TUPAIA_FRONT_END_URL');
@@ -58,11 +58,13 @@ export const verifyEmailHelper = async (models, searchCondition, token) => {
   });
 
   for (const user of users) {
-    const encryptedValue = await encryptPassword(
+    const verified = await verifyPassword(
       `${user.email}${user.password_hash}`,
       user.password_salt,
+      token,
     );
-    if (encryptedValue === token) {
+
+    if (verified) {
       return user;
     }
   }
