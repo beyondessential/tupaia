@@ -3,7 +3,6 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { sendEmail } from '@tupaia/server-utils';
-import { format } from 'date-fns';
 import winston from 'winston';
 import { ScheduledTask } from './ScheduledTask';
 
@@ -41,7 +40,6 @@ export class TaskOverdueChecker extends ScheduledTask {
           userName: assignee.first_name,
           surveyName: overdueTask.survey_name,
           entityName: overdueTask.entity_name,
-          dueDate: format(new Date(overdueTask.due_date), 'do MMMM yyyy'),
         },
       });
 
