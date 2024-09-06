@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { sendEmail } from '@tupaia/server-utils';
+import { requireEnv } from '@tupaia/utils';
 import winston from 'winston';
 import { ScheduledTask } from './ScheduledTask';
 
@@ -32,6 +33,7 @@ export class TaskOverdueChecker extends ScheduledTask {
         winston.error(`Assignee with id ${overdueTask.assignee_id} not found`);
         continue;
       }
+      const datatrakURL = requireEnv('DATATRAK_FRONT_END_URL');
 
       const result = await sendEmail(assignee.email, {
         subject: 'Task overdue on Tupaia.org',
@@ -40,6 +42,10 @@ export class TaskOverdueChecker extends ScheduledTask {
           userName: assignee.first_name,
           surveyName: overdueTask.survey_name,
           entityName: overdueTask.entity_name,
+          cta: {
+            url: `${datatrakURL}/tasks/${overdueTask.id}`,
+            text: 'View task',
+          },
         },
       });
 
