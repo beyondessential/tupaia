@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useIsFetching } from 'react-query';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -76,6 +77,8 @@ export const SurveyLayout = () => {
   const from = useFromLocation();
   const primaryEntityCode = usePrimaryEntityLocation();
   const params = useParams<SurveyParams>();
+  const isFetchingEntities = useIsFetching({ queryKey: ['entityAncestors'] });
+
   const {
     updateFormData,
     formData,
@@ -152,7 +155,7 @@ export const SurveyLayout = () => {
 
   const handleClickSubmit = handleSubmit(onSubmit, onError);
 
-  const showLoader = isSubmittingSurveyResponse || isResubmittingSurveyResponse;
+  const showLoader = isSubmittingSurveyResponse || isResubmittingSurveyResponse || isFetchingEntities;
 
   return (
     <>

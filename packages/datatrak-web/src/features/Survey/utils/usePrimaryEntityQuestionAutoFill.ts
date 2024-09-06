@@ -37,15 +37,18 @@ export const usePrimaryEntityQuestionAutoFill = (
   primaryEntityCode?: Entity['code'],
 ) => {
   const user = useCurrentUserContext();
-  const { data: ancestors } = useEntityAncestors(user.project?.code, primaryEntityCode);
+  const { data = {}, ...query } = useEntityAncestors(user.project?.code, primaryEntityCode);
 
-  if (!ancestors) {
-    return {};
-  }
+  const ancestors = data
+    ? getEntityQuestionAncestorAnswers(
+        primaryEntityQuestion as SurveyScreenComponent,
+        keyBy(questions, 'id'),
+        keyBy(data, 'type'),
+      )
+    : {};
 
-  return getEntityQuestionAncestorAnswers(
-    primaryEntityQuestion as SurveyScreenComponent,
-    keyBy(questions, 'id'),
-    keyBy(ancestors, 'type'),
-  );
+  return {
+    ...query,
+    data: ancestors,
+  };
 };
