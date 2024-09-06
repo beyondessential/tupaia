@@ -61,7 +61,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const primaryEntityQuestion = flattenedScreenComponents.find(
     question => question.type === QuestionType.PrimaryEntity,
   );
-  const autoFillAnswers = usePrimaryEntityQuestionAutoFill(
+  const { data: autoFillAnswers } = usePrimaryEntityQuestionAutoFill(
     primaryEntityQuestion,
     flattenedScreenComponents,
     primaryEntityCode,
