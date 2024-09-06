@@ -131,7 +131,8 @@ export const RequestProjectAccessModal = () => {
         pathname: generatePath(ROUTE_STRUCTURE, {
           projectCode: requestingProject?.code,
           entityCode: requestingProject?.homeEntityCode,
-          dashboardName: requestingProject?.dashboardGroupName as string | undefined,
+          //TODO: Fix this
+          dashboardCode: requestingProject?.dashboardGroupName as string | undefined,
         }),
       };
     }

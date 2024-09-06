@@ -56,16 +56,17 @@ const StyledPaper = styled(Paper)`
 interface DashboardMenuItemProps {
   dashboardName: Dashboard['name'];
   onClose: () => void;
+  code: Dashboard['code'];
 }
 
-const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) => {
+const DashboardMenuItem = ({ dashboardName, code, onClose }: DashboardMenuItemProps) => {
   const location = useLocation();
-  const { projectCode, entityCode, dashboardName: selectedDashboardName } = useParams();
+  const { projectCode, entityCode, dashboardCode: selectedDashboardCode } = useParams();
 
-  const encodedDashboardName = encodeURIComponent(dashboardName);
+  const encodedDashboardCode = encodeURIComponent(code);
   const link = {
     ...location,
-    pathname: `/${projectCode}/${entityCode}/${encodedDashboardName}`,
+    pathname: `/${projectCode}/${entityCode}/${encodedDashboardCode}`,
   };
 
   return (
@@ -73,7 +74,7 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
       to={link}
       onClick={onClose}
       component={Link}
-      selected={dashboardName === selectedDashboardName}
+      selected={code === selectedDashboardCode}
     >
       {dashboardName}
     </MenuItem>
@@ -116,7 +117,7 @@ export const DashboardMenu = () => {
         PaperProps={{ component: StyledPaper }}
       >
         {dashboards.map(({ name, code }) => (
-          <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
+          <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} code={code} />
         ))}
       </StyledMenu>
     </>

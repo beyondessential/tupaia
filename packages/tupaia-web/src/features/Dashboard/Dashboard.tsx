@@ -34,7 +34,9 @@ const Panel = styled.div<{
 }>`
   position: relative;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  transition: width 0.3s ease, max-width 0.3s ease;
+  transition:
+    width 0.3s ease,
+    max-width 0.3s ease;
   width: 100%;
   overflow: visible;
   min-height: 100%;
@@ -124,7 +126,7 @@ export const Dashboard = () => {
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
   // we don't want useEntityLink to take care of this because useEntityLink gets called for all child entities on the map, meaning lots of extra queries when we don't need them. Instead the redirect will be taken care of in the useEffect below, as needed
-  const defaultDashboardName = getDefaultDashboard(
+  const defaultDashboardCode = getDefaultDashboard(
     project,
     dashboards,
     isLoadingDashboards,
@@ -137,22 +139,22 @@ export const Dashboard = () => {
   };
 
   // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
-  const dashboardNotFound =
-    isFetched &&
-    !isError &&
-    !isLoadingDashboards &&
-    !isLoadingProject &&
-    project?.code === projectCode &&
-    !activeDashboard;
+  // const dashboardNotFound =
+  //   isFetched &&
+  //   !isError &&
+  //   !isLoadingDashboards &&
+  //   !isLoadingProject &&
+  //   project?.code === projectCode &&
+  //   !activeDashboard;
 
-  useEffect(() => {
-    if (dashboardNotFound) {
-      navigate({
-        ...location,
-        pathname: `/${projectCode}/${entityCode}/${defaultDashboardName}`,
-      });
-    }
-  }, [dashboardNotFound, defaultDashboardName]);
+  // useEffect(() => {
+  //   if (dashboardNotFound) {
+  //     navigate({
+  //       ...location,
+  //       pathname: `/${projectCode}/${entityCode}/${defaultDashboardCode}`,
+  //     });
+  //   }
+  // }, [dashboardNotFound, defaultDashboardCode]);
 
   // Filter out drill down items from the dashboard items
   const visibleDashboards =

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes as RouterRoutes, useLocation, useParams } from 'react-router-dom';
 import {
   DashboardPDFExport,
   LandingPage,
@@ -13,10 +13,10 @@ import {
 } from './views';
 import { Dashboard } from './features';
 import { MODAL_ROUTES, DEFAULT_URL, ROUTE_STRUCTURE, MAP_OVERLAY_EXPORT_ROUTE } from './constants';
-import { useUser } from './api/queries';
+import { useDashboards, useProject, useProjects, useUser } from './api/queries';
 import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
-import { gaEvent, useEntityLink } from './utils';
+import { gaEvent, getDefaultDashboard, useEntityLink } from './utils';
 
 const HomeRedirect = () => {
   const { isLoggedIn } = useUser();
@@ -52,6 +52,48 @@ const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {
   );
 };
 
+const DashboardNameToCodeRedirect = () => {
+  const { dashboardCode, projectCode, entityCode } = useParams();
+  const location = useLocation();
+
+  // if the code is not a valid code but is a valid name, redirect to the correct code
+  const {
+    data: dashboards = [],
+    isLoading: isLoadingDashboards,
+    isError,
+  } = useDashboards(projectCode, entityCode);
+
+  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+
+  // if the project or dashboards are still loading, show the dashboard as this will handle loading state
+  if (isLoadingDashboards || isLoadingProject) {
+    return <Dashboard />;
+  }
+
+  const uriDecodedDashboardCode = decodeURIComponent(dashboardCode!);
+
+  // if the dashboard code is valid, render the dashboard with the code
+  if (dashboards.find(d => d.code === uriDecodedDashboardCode)) {
+    return <Dashboard />;
+  }
+
+  const dashboardByName = dashboards.find(d => d.name === uriDecodedDashboardCode);
+
+  // if the dashboard name is valid, redirect to the correct code
+  if (dashboardByName) {
+    const to = {
+      ...location,
+      pathname: `/${projectCode}/${entityCode}/${dashboardByName.code}`,
+    };
+    return <Navigate to={to} replace />;
+  }
+
+  const defaultDashboard = getDefaultDashboard(project, dashboards, false, isError);
+
+  // if the dashboard name is not valid, redirect to the default dashboard
+  return <Navigate to={`/${projectCode}/${entityCode}/${defaultDashboard}`} replace />;
+};
+
 /**
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
@@ -70,7 +112,7 @@ export const Routes = () => {
   return (
     <RouterRoutes>
       <Route
-        path="/:projectCode/:entityCode/:dashboardName/dashboard-pdf-export"
+        path="/:projectCode/:entityCode/:dashboardCode/dashboard-pdf-export"
         element={<DashboardPDFExport />}
       />
       <Route path={MAP_OVERLAY_EXPORT_ROUTE} element={<MapOverlayPDFExport />} />
@@ -92,7 +134,7 @@ export const Routes = () => {
           <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
 
           {/* The Dashboard has to be rendered below the Map, otherwise the map will re-mount on route changes */}
-          <Route path={ROUTE_STRUCTURE} element={<Dashboard />} />
+          <Route path={ROUTE_STRUCTURE} element={<DashboardNameToCodeRedirect />} />
         </Route>
       </Route>
     </RouterRoutes>

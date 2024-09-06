@@ -41,12 +41,15 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       },
       columns: ['id'],
     })) as Pick<Project, 'id'>[];
+
     const projectEntity = (await this.req.ctx.services.entity.getEntity(projectCode, projectCode, {
       fields: ['name'],
     })) as Pick<Entity, 'name'>;
+
     const entity = (await this.req.ctx.services.entity.getEntity(projectCode, entityCode, {
       fields: ['id', 'name', 'country_code'],
     })) as Pick<Entity, 'id' | 'name' | 'country_code'>;
+
     const [dashboard] = (await this.req.ctx.services.central.fetchResources('dashboards', {
       filter: { code: dashboardCode },
       columns: ['id', 'name'],
@@ -102,7 +105,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     const buffer = await downloadDashboardAsPdf(
       projectCode,
       entityCode,
-      dashboard.name,
+      dashboardCode,
       baseUrl,
       cookie,
       cookieDomain,

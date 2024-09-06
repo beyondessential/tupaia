@@ -35,6 +35,6 @@ export const DEFAULT_PERIOD_PARAM_STRING = 'DEFAULT_PERIOD';
 
 export const DEFAULT_MAP_OVERLAY_ID = '126'; // 'Operational Facilities'
 
-export const ROUTE_STRUCTURE = '/:projectCode/:entityCode/:dashboardName';
+export const ROUTE_STRUCTURE = '/:projectCode/:entityCode/:dashboardCode';
 
 export const MAP_OVERLAY_EXPORT_ROUTE = '/:projectCode/:entityCode/map-overlay-pdf-export';
