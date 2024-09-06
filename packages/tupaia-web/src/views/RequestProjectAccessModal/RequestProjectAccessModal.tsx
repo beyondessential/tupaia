@@ -16,13 +16,14 @@ import { Alert, SpinningLoader } from '@tupaia/ui-components';
 import { CountryAccessListItem } from '../../types';
 import { DEFAULT_URL, MODAL_ROUTES, ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../../constants';
 import { LoadingScreen, Modal } from '../../components';
-import { gaEvent, removeUrlSearchParams } from '../../utils';
+import { gaEvent, getDefaultDashboard, removeUrlSearchParams } from '../../utils';
 import {
   useProjectCountryAccessList,
   useLandingPage,
   useProject,
   useUser,
   useEntity,
+  useDashboards,
 } from '../../api/queries';
 import { ModalHeader } from './ModalHeader';
 import { ProjectHero } from './ProjectHero';
@@ -56,6 +57,19 @@ export const RequestProjectAccessModal = () => {
   const requestingProjectCode = altProjectCode || params?.projectCode;
 
   const { data: requestingProject, isLoading } = useProject(requestingProjectCode!);
+
+  const {
+    data: dashboards = [],
+    isLoading: isLoadingDashboards,
+    isError: isDashboardError,
+  } = useDashboards(requestingProjectCode!, requestingProject?.homeEntityCode);
+
+  const defaultDashboard = getDefaultDashboard(
+    requestingProject,
+    dashboards,
+    isLoadingDashboards,
+    isDashboardError,
+  );
   // the project loaded behind the modal, based on the url project code
   const { data: backgroundProject } = useProject(params?.projectCode);
 
@@ -131,8 +145,7 @@ export const RequestProjectAccessModal = () => {
         pathname: generatePath(ROUTE_STRUCTURE, {
           projectCode: requestingProject?.code,
           entityCode: requestingProject?.homeEntityCode,
-          //TODO: Fix this
-          dashboardCode: requestingProject?.dashboardGroupName as string | undefined,
+          dashboardCode: defaultDashboard,
         }),
       };
     }
