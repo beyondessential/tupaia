@@ -26,13 +26,16 @@ exports.up = async function (db) {
   `);
   const users = await db.runSql('SELECT id, password_hash_old, password_salt FROM user_account');
 
-  let count = 0;
-  for (let user of users.rows) {
-    const { id, password_hash_old, password_salt } = user;
-    const hashedValue = await hash(`${password_hash_old}${password_salt}`);
-    await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [hashedValue, id]);
-    count++;
-  }
+  await Promise.all(
+    users.rows.map(async user => {
+      const { id, password_hash_old, password_salt } = user;
+      const hashedValue = await hash(`${password_hash_old}${password_salt}`);
+      await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [
+        hashedValue,
+        id,
+      ]);
+    }),
+  );
 };
 
 exports.down = function (db) {
