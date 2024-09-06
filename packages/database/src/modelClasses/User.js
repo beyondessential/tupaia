@@ -19,7 +19,13 @@ export class UserRecord extends DatabaseRecord {
     return userFullName;
   }
 
-  // Checks if the provided non-encrypted password corresponds to this user
+  /**
+   * Attempts to verify the password using argon2, if that fails, it tries to verify the password
+   * using sha256 plus argon2. If the password is verified using sha256, the password is moved to
+   * argon2.
+   * @param password {string}
+   * @returns {Promise<boolean>}
+   */
   async checkPassword(password) {
     const salt = this.password_salt;
     const hash = this.password_hash;

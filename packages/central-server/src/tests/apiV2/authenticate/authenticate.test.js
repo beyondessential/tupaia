@@ -5,7 +5,13 @@
 
 import { expect } from 'chai';
 
-import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
+import {
+  encryptPassword,
+  hashAndSaltPassword,
+  getTokenClaims,
+  sha256EncryptPassword,
+  verifyPassword,
+} from '@tupaia/auth';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import { createBasicHeader } from '@tupaia/utils';
 
@@ -104,5 +110,75 @@ describe('Authenticate', function () {
     const { userId, apiClientUserId } = getTokenClaims(accessToken);
     expect(userId).to.equal(userAccount.id);
     expect(apiClientUserId).to.equal(apiClientUserAccount.id);
+  });
+
+  it('Should authenticate user who has been migrated to argon2 password hashing', async () => {
+    const email = 'peeka@pokemon.org';
+    const password = 'oldPassword123!';
+    const salt = 'xyz123^';
+    const sha256Hash = await sha256EncryptPassword(password, salt);
+    const argon2Hash = await encryptPassword(sha256Hash, salt);
+    const migratedUser = await findOrCreateDummyRecord(models.user, {
+      first_name: 'Peeka',
+      last_name: 'Chu',
+      email: email,
+      password_hash: argon2Hash,
+      password_salt: salt,
+      verified_email: VERIFIED,
+    });
+
+    const authResponse = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: email,
+        password: password,
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(authResponse.status).to.equal(200);
+    const { accessToken, refreshToken, user: userDetails } = authResponse.body;
+    expect(accessToken).to.be.a('string');
+    expect(refreshToken).to.be.a('string');
+    expect(userDetails.id).to.equal(migratedUser.id);
+    expect(userDetails.email).to.equal(migratedUser.email);
+  });
+
+  it("Should migrate user's password to argon2 after successful login", async () => {
+    const email = 'peeka@pokemon.org';
+    const password = 'oldPassword123!';
+    const salt = 'xyz123^';
+    const sha256Hash = await sha256EncryptPassword(password, salt);
+    const argon2Hash = await encryptPassword(sha256Hash, salt);
+    const migratedUser = await findOrCreateDummyRecord(models.user, {
+      first_name: 'Peeka',
+      last_name: 'Chu',
+      email: email,
+      password_hash: argon2Hash,
+      password_salt: salt,
+      verified_email: VERIFIED,
+    });
+
+    const isVerifiedBefore = await verifyPassword(password, salt, migratedUser.password_hash);
+    expect(isVerifiedBefore).to.be.false;
+
+    const authResponse = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: email,
+        password: password,
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(authResponse.status).to.equal(200);
+
+    const userDetails = await models.user.findById(migratedUser.id);
+    const isVerifiedAfter = await verifyPassword(password, salt, userDetails.password_hash);
+    expect(isVerifiedAfter).to.be.true;
   });
 });
