@@ -17,6 +17,8 @@
   "include": [
     "src/**/*",
     "jest.config.ts",
-    "helpers/**/*"
+    "helpers/**/*",
+    "stories/**/*",
+    ".storybook"
   ]
 }

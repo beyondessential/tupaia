@@ -11,6 +11,12 @@ import { AuthModalBody, AuthModalButton, Modal } from '../../src/components';
 const meta: Meta<typeof Modal> = {
   title: 'components/Modal',
   component: Modal,
+  parameters: {
+    backgrounds: {
+      default: 'dark',
+    },
+    theme: 'dark',
+  },
 };
 
 export default meta;
