@@ -35,15 +35,15 @@ export const useLogin = () => {
       },
       onSuccess: async ({ user }) => {
         await queryClient.invalidateQueries();
+        await queryClient.removeQueries();
+
         if (from) {
-          navigate(from, {
-            state: null,
-          });
+          console.log('Navigating to from:', from);
+          navigate(from, { state: null });
         } else {
           const path = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
-          navigate(path, {
-            state: from,
-          });
+          console.log('Navigating to path:', path);
+          navigate(path, { state: from });
         }
       },
       meta: {
