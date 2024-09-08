@@ -20,9 +20,10 @@ exports.up = async function (db) {
   await db.runSql(`
     ALTER TABLE user_account
     RENAME COLUMN password_hash TO password_hash_old;
-    
+    ALTER TABLE user_account ALTER COLUMN password_hash_old DROP NOT NULL;
+
     ALTER TABLE user_account
-    ADD COLUMN password_hash TEXT;
+    ADD COLUMN password_hash TEXT NOT NULL;
   `);
   const users = await db.runSql('SELECT id, password_hash_old, password_salt FROM user_account');
 
