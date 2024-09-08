@@ -25,7 +25,7 @@ export enum MODAL_ROUTES {
 }
 
 export const DEFAULT_PROJECT_ENTITY = '/explore/explore';
-export const DEFAULT_URL = `${DEFAULT_PROJECT_ENTITY}/General`;
+export const DEFAULT_URL = `${DEFAULT_PROJECT_ENTITY}/explore_General`;
 
 export enum TABS {
   MAP = 'map',

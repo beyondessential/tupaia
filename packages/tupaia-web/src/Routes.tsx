@@ -13,7 +13,7 @@ import {
 } from './views';
 import { Dashboard } from './features';
 import { MODAL_ROUTES, DEFAULT_URL, ROUTE_STRUCTURE, MAP_OVERLAY_EXPORT_ROUTE } from './constants';
-import { useDashboards, useProject, useProjects, useUser } from './api/queries';
+import { useDashboards, useProject, useUser } from './api/queries';
 import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
 import { gaEvent, getDefaultDashboard, useEntityLink } from './utils';
