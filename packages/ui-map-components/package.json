@@ -17,10 +17,11 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
-    "storybook": "start-storybook -s public -p 6006",
     "test": "yarn package:test --env=jsdom",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "start-storybook": "yarn package:storybook:start",
+    "build-storybook": "yarn package:storybook:build"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.8",
@@ -40,11 +41,9 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
-    "@storybook/react": "^6.3.9",
     "@types/jest": "^29.5.1",
     "@types/leaflet": "^1.7.1",
     "@types/react-dom": "^16.9.18",
-    "@types/styled-components": "^5.1.26",
-    "react-docgen-typescript-plugin": "^1.0.5"
+    "@types/styled-components": "^5.1.26"
   }
 }

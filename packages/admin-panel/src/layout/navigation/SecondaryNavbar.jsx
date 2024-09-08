@@ -72,6 +72,7 @@ const RouteLink = styled(Link)`
     css`
       color: ${theme.palette.text.primary};
       border-bottom: 4px solid ${theme.palette.primary.main};
+      font-weight: ${theme.typography.fontWeightMedium};
     `}
 `;
 
@@ -215,7 +216,6 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
           matchPath(`${link.target}${nestedView.path}`, location.pathname),
         )
       : false;
-
     return !!matchResult || !!nestedViewMatch;
   };
 
