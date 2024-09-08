@@ -112,11 +112,7 @@ export const Dashboard = () => {
   const { data: project } = useProject(projectCode);
 
   const { activeDashboard } = useDashboard();
-  const {
-    data: dashboards,
-    isLoading: isLoadingDashboards,
-    isError,
-  } = useDashboards(projectCode, entityCode);
+  const { isLoading: isLoadingDashboards } = useDashboards(projectCode, entityCode);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: entity } = useEntity(projectCode, entityCode);
