@@ -52,7 +52,7 @@ const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {
   );
 };
 
-const DashboardNameToCodeRedirect = () => {
+const DashboardRoute = () => {
   const { dashboardCode, projectCode, entityCode } = useParams();
   const location = useLocation();
 
@@ -134,7 +134,7 @@ export const Routes = () => {
           <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
 
           {/* The Dashboard has to be rendered below the Map, otherwise the map will re-mount on route changes */}
-          <Route path={ROUTE_STRUCTURE} element={<DashboardNameToCodeRedirect />} />
+          <Route path={ROUTE_STRUCTURE} element={<DashboardRoute />} />
         </Route>
       </Route>
     </RouterRoutes>
