@@ -38,11 +38,9 @@ export const useLogin = () => {
         await queryClient.removeQueries();
 
         if (from) {
-          console.log('Navigating to from:', from);
           navigate(from, { state: null });
         } else {
           const path = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
-          console.log('Navigating to path:', path);
           navigate(path, { state: from });
         }
       },
