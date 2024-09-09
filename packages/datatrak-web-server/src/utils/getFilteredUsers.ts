@@ -4,7 +4,7 @@
  */
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { Country, EntityType } from '@tupaia/types';
+import { Country, EntityTypeEnum } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../types';
 import { PermissionGroupRecord } from '@tupaia/server-boilerplate';
 import { API_CLIENT_PERMISSIONS } from '../constants';
@@ -36,7 +36,7 @@ export const getFilteredUsers = async (
   const permissionGroupWithAncestors = await permissionGroup.getAncestors();
   const entity = await models.entity.findOne({
     country_code: countryCode,
-    type: EntityType.country,
+    type: EntityTypeEnum.country,
   });
 
   const usersFilter = {
