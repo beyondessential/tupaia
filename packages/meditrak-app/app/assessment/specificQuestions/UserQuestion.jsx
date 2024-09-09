@@ -13,6 +13,37 @@ import { Autocomplete } from '../../widgets/Autocomplete/Autocomplete';
 
 const OPTIONS_PER_PAGE = 10;
 
+const generateSearchRegexp = searchTerm => {
+  if (!searchTerm) {
+    return null;
+  }
+  // if includes an apostrophe, search all variations of the apostrophe
+  if (searchTerm.includes("'")) {
+    return `((${searchTerm.replace("'", "\\'")})|(${searchTerm.replace(
+      "'",
+      '\\‘',
+    )})|(${searchTerm.replace("'", '\\‘')}))`;
+  }
+
+  // if includes a left single quote, search all variations of the left single quote
+  if (searchTerm.includes('‘')) {
+    return `((${searchTerm.replace('‘', '\\’')})|(${searchTerm.replace(
+      '‘',
+      "\\'",
+    )})|(${searchTerm.replace('‘', '\\‘')})))`;
+  }
+
+  // if includes a right single quote, search all variations of the right single quote
+  if (searchTerm.includes('’')) {
+    return `((${searchTerm.replace('’', "\\'")})|(${searchTerm.replace(
+      '’',
+      '\\‘',
+    )})|(${searchTerm.replace('’', '\\‘')})))`;
+  }
+
+  return searchTerm;
+};
+
 const UserQuestionComponent = props => {
   const { selectedUserId, users, onSelectUser, scrollIntoFocus } = props;
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,28 +53,12 @@ const UserQuestionComponent = props => {
 
   const userList = sortList(users?.map(user => user.name) ?? []);
 
-  const generateSearchRegexp = () => {
-    if (!searchTerm) {
-      return null;
-    }
-    // handle apostrophe AND single quote characters
-    if (searchTerm.includes("'")) {
-      return `(${searchTerm.replace("'", "\\'")})|(${searchTerm.replace("'", '\\‘')})`;
-    }
-
-    if (searchTerm.includes('’')) {
-      return `(${searchTerm.replace('’', '\\’')})|(${searchTerm.replace('’', "\\'")})`;
-    }
-
-    return searchTerm;
-  };
-
   const generateOptionList = () => {
     if (!searchTerm) {
       return userList.slice(0, maxResults);
     }
-    const searchRegexp = generateSearchRegexp();
-    const startsWithSearchTerm = new RegExp(`^${searchRegexp}`, 'gi');
+    const searchRegexp = generateSearchRegexp(searchTerm);
+    const startsWithSearchTerm = new RegExp(`^${searchRegexp}`, 'i');
     const containsSearchTerm = new RegExp(searchRegexp, 'gi');
 
     const usersThatStartWithSearchTerm = userList.filter(user => startsWithSearchTerm.test(user));
