@@ -23,7 +23,7 @@ exports.up = async function (db) {
     ALTER TABLE user_account ALTER COLUMN password_hash_old DROP NOT NULL;
 
     ALTER TABLE user_account
-    ADD COLUMN password_hash TEXT NOT NULL;
+    ADD COLUMN password_hash TEXT;
   `);
   const users = await db.runSql('SELECT id, password_hash_old, password_salt FROM user_account');
 
@@ -37,6 +37,10 @@ exports.up = async function (db) {
       ]);
     }),
   );
+
+  await db.runSql(`
+    ALTER TABLE user_account ALTER COLUMN password_hash SET NOT NULL;
+  `);
 };
 
 exports.down = function (db) {

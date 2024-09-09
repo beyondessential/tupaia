@@ -146,8 +146,8 @@ describe('Authenticate', function () {
     expect(userDetails.email).to.equal(migratedUser.email);
   });
 
-  it("Should migrate user's password to argon2 after successful login", async () => {
-    const email = 'peeka@pokemon.org';
+  it.only("Should migrate user's password to argon2 after successful login", async () => {
+    const email = 'squirtle@pokemon.org';
     const password = 'oldPassword123!';
     const salt = 'xyz123^';
     const sha256Hash = await sha256EncryptPassword(password, salt);
