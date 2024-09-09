@@ -41895,6 +41895,7 @@ export const SystemCommentSubTypeSchema = {
 	"enum": [
 		"complete",
 		"create",
+		"overdue",
 		"update"
 	],
 	"type": "string"
