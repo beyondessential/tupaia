@@ -30,12 +30,7 @@ const VIS_CRITERIA_CONJUNCTION = '_conjunction';
 
 const objectsAreEqual = (a, b) => {
   if (!!a === !!b) return true;
-  return Object.entries(a).every(([key, value]) => {
-    if (Array.isArray(value)) {
-      return value.every((v, i) => v === b[key][i]);
-    }
-    return value === b[key];
-  });
+  return JSON.stringify(a) === JSON.stringify(b);
 };
 
 const validateQuestionExistence = rows => {
@@ -109,7 +104,9 @@ const updateOrCreateSurveyScreenComponent = async (
     const changes = {};
     if (
       !objectsAreEqual(
-        JSON.parse(existingScreenComponent.visibility_criteria),
+        existingScreenComponent.visibility_criteria
+          ? JSON.parse(existingScreenComponent.visibility_criteria)
+          : {},
         processedVisibilityCriteria,
       )
     ) {
@@ -118,7 +115,9 @@ const updateOrCreateSurveyScreenComponent = async (
 
     if (
       !objectsAreEqual(
-        JSON.parse(existingScreenComponent.validation_criteria),
+        existingScreenComponent.validation_criteria
+          ? JSON.parse(existingScreenComponent.validation_criteria)
+          : {},
         validationCriteriaObject,
       )
     ) {
