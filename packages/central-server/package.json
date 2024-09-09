@@ -72,7 +72,7 @@
     "string-similarity": "^1.2.2",
     "urlencode": "^1.1.0",
     "winston": "^3.3.3",
-    "xlsx": "^0.10.9"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/node": "^7.10.5",

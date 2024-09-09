@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { EntityType } from '../entityType';
 import { Entity, EntityType, PermissionGroup, Question, Survey } from '../../models';
 
 export type CodeGeneratorQuestionConfig = {

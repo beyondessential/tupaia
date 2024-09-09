@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  *
  */
 /*
@@ -15,6 +15,7 @@ import { UserAccountPreferences } from './models-extra';
 import { ProjectConfig } from './models-extra';
 import { TaskCommentTemplateVariables } from './models-extra';
 import { RepeatSchedule } from './models-extra';
+import { EntityType } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -1795,7 +1796,7 @@ export enum PeriodGranularity {
   'weekly' = 'weekly',
   'daily' = 'daily',
 }
-export enum EntityType {
+export enum EntityTypeEnum {
   'world' = 'world',
   'project' = 'project',
   'country' = 'country',

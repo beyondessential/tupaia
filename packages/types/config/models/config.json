@@ -39,6 +39,7 @@
       "MapOverlayConfig": "./models-extra",
       "EntityAttributes": "./models-extra",
       "UserAccountPreferences": "./models-extra",
+      "EntityType": "./models-extra",
       "ProjectConfig": "./models-extra",
       "TaskCommentTemplateVariables": "./models-extra",
       "RepeatSchedule": "./models-extra"
