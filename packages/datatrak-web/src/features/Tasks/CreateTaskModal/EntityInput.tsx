@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Country, EntityType, QuestionType } from '@tupaia/types';
+import { Country, EntityTypeEnum, QuestionType } from '@tupaia/types';
 import { EntitySelector } from '../../EntitySelector';
 import { useCurrentUserContext, useSurvey } from '../../../api';
 import { getAllSurveyComponents } from '../../Survey';
@@ -41,7 +41,7 @@ export const EntityInput = ({
     return {
       entity: {
         filter: {
-          type: EntityType.country,
+          type: EntityTypeEnum.country,
         },
       },
     };
