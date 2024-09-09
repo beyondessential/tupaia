@@ -176,7 +176,6 @@ export class TaskRecord extends DatabaseRecord {
    * @param {string} message
    * @param {string} userId
    * @param {string} type
-   *
    */
   async addComment({ message, userId, type, templateVariables }) {
     const user = await this.otherModels.user.findById(userId);
@@ -262,6 +261,21 @@ export class TaskRecord extends DatabaseRecord {
     return this.addSystemComment(
       {
         type: this.otherModels.taskComment.systemCommentTypes.Complete,
+      },
+      userId,
+    );
+  }
+
+  /**
+   *
+   * @param {string} userId
+   *
+   * @description Add a comment when a task overdue email is sent
+   */
+  async addOverdueComment(userId) {
+    return this.addSystemComment(
+      {
+        type: this.otherModels.taskComment.systemCommentTypes.Overdue,
       },
       userId,
     );

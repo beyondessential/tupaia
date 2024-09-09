@@ -137,6 +137,9 @@ const generateSystemComment = templateVariables => {
   if (type === SystemCommentSubType.create) {
     return 'Created this task';
   }
+  if (type === SystemCommentSubType.overdue) {
+    return 'Overdue reminder email sent';
+  }
 
   const { originalValue, newValue, field } = templateVariables;
   const friendlyFieldName = getFriendlyFieldName(field);

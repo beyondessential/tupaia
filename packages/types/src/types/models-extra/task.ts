@@ -8,6 +8,7 @@ import { Task } from '../models';
 export enum SystemCommentSubType {
   update = 'update',
   create = 'create',
+  overdue = 'overdue',
   complete = 'complete',
 }
 

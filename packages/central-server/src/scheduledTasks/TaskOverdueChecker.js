@@ -14,7 +14,7 @@ export class TaskOverdueChecker extends ScheduledTask {
   }
 
   async run() {
-    const { task, user } = this.models;
+    const { task, user, taskComment } = this.models;
     const overdueTasks = await task.find({
       task_status: 'overdue',
       overdue_email_sent: null,
@@ -50,7 +50,8 @@ export class TaskOverdueChecker extends ScheduledTask {
       });
 
       winston.info(`Email sent to ${assignee.email} with status: ${result.response}`);
-      task.updateById(overdueTask.id, { overdue_email_sent: new Date() });
+      await task.updateById(overdueTask.id, { overdue_email_sent: new Date() });
+      await overdueTask.addOverdueComment(assignee.id);
     }
   }
 }
