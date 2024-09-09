@@ -25,6 +25,13 @@ const apiClientSecret = 'api';
 let userAccount;
 let apiClientUserAccount;
 
+function expectRateLimitError(request) {
+  expect(request.body).to.be.an('object').that.has.property('error');
+  expect(request.body.error).to.include('Too Many Requests');
+  expect(request.status).to.equal(429);
+  expect(request.headers).to.be.an('object').that.has.property('retry-after');
+}
+
 describe('Authenticate', function () {
   before(async () => {
     await resetTestData();
@@ -80,6 +87,19 @@ describe('Authenticate', function () {
       entity_id: laosEntity.id,
       permission_group_id: publicPermissionGroup.id,
     });
+  });
+
+  beforeEach(async () => {
+    const db = models.database;
+    const [row] = await db.executeSql(`SELECT current_database();`);
+    const { current_database } = row;
+    if (current_database !== 'tupaia_test') {
+      throw new Error(
+        `Safety check failed: clearTestData can only be run against a database named tupaia_test, found ${current_database}.`,
+      );
+    }
+
+    await db.executeSql(`DELETE FROM login_attempts;`);
   });
 
   it('should return user details with apiClient and access policy', async function () {
@@ -148,10 +168,7 @@ describe('Authenticate', function () {
         expect(request.status).to.equal(401);
       } else {
         // request should be rate limited
-        expect(request.body).to.be.an('object').that.has.property('error');
-        expect(request.body.error).to.include('Too Many Requests');
-        expect(request.status).to.equal(429);
-        expect(request.headers).to.be.an('object').that.has.property('retry-after');
+        expectRateLimitError(request);
         expect(request.headers['retry-after']).to.equal('900');
       }
     }
@@ -160,7 +177,7 @@ describe('Authenticate', function () {
   });
 
   it('limit fails by ip address ', async () => {
-    const times = 2;
+    const times = 3;
     const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
 
     const makeRequest = emailAddress => {
@@ -183,12 +200,73 @@ describe('Authenticate', function () {
         expect(request.status).to.equal(401);
       } else {
         // request should be rate limited
-        const request101 = await makeRequest();
-        expect(request101.body).to.be.an('object').that.has.property('error');
-        expect(request101.body.error).to.include('Too Many Requests');
-        expect(request101.status).to.equal(429);
-        expect(request101.headers).to.be.an('object').that.has.property('retry-after');
-        expect(request101.headers['retry-after']).to.equal('86400');
+        expectRateLimitError(request);
+        expect(request.headers['retry-after']).to.equal('86400');
+      }
+    }
+
+    stub.restore();
+  });
+
+  it.only('limit refresh token fails ', async () => {
+    const times = 3;
+    const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+    // Make sure that it doesn't rate limit based on email address
+    const stub2 = sinon
+      .stub(ConsecutiveFailsRateLimiter.prototype, 'getMaxAttempts')
+      .returns(times - 1);
+
+    const makeRequest = () => {
+      return app.post('auth?grantType=refresh_token', {
+        headers: {
+          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+        },
+        body: {
+          refreshToken: 'abc123',
+        },
+      });
+    };
+
+    for (let i = 0; i <= times; i++) {
+      const request = await makeRequest();
+
+      if (i < times) {
+        expect(request.status).to.equal(401);
+      } else {
+        // request should be rate limited
+        expectRateLimitError(request);
+        expect(request.headers['retry-after']).to.equal('86400');
+      }
+    }
+
+    stub.restore();
+    stub2.restore();
+  });
+
+  it.only('limit one time login fails ', async () => {
+    const times = 3;
+    const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+
+    const makeRequest = () => {
+      return app.post('auth?grantType=one_time_login', {
+        headers: {
+          authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+        },
+        body: {
+          token: 'abc123',
+        },
+      });
+    };
+
+    for (let i = 0; i <= times; i++) {
+      const request = await makeRequest();
+
+      if (i < times) {
+        expect(request.status).to.equal(401);
+      } else {
+        // request should be rate limited
+        expectRateLimitError(request);
+        expect(request.headers['retry-after']).to.equal('86400');
       }
     }
 
