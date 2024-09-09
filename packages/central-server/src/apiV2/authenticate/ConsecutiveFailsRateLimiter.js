@@ -4,7 +4,6 @@
  */
 
 import { RateLimiterPostgres } from 'rate-limiter-flexible';
-import { respond } from '@tupaia/utils';
 
 const MAX_CONSECUTIVE_FAILS_BY_USERNAME = 10;
 

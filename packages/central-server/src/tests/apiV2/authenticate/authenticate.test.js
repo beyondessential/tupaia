@@ -208,7 +208,7 @@ describe('Authenticate', function () {
     stub.restore();
   });
 
-  it.only('limit refresh token fails ', async () => {
+  it('limit refresh token fails ', async () => {
     const times = 3;
     const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
     // Make sure that it doesn't rate limit based on email address
@@ -243,7 +243,7 @@ describe('Authenticate', function () {
     stub2.restore();
   });
 
-  it.only('limit one time login fails ', async () => {
+  it('limit one time login fails ', async () => {
     const times = 3;
     const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
 

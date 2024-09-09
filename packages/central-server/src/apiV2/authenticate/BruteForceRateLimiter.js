@@ -4,7 +4,6 @@
  */
 
 import { RateLimiterPostgres } from 'rate-limiter-flexible';
-import { respond } from '@tupaia/utils';
 
 // Limit the number of wrong attempts per day per IP to 10 for the unit tests
 const MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY = 100;
