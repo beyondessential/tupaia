@@ -4,7 +4,7 @@
  */
 
 import { EntityType } from '../entityType';
-import { Entity, EntityType, PermissionGroup, Question, Survey } from '../../models';
+import { Entity, PermissionGroup, Question, Survey } from '../../models';
 
 export type CodeGeneratorQuestionConfig = {
   type: 'shortid' | 'mongoid';

@@ -12,10 +12,10 @@ import { DashboardItemConfig } from './models-extra';
 import { MapOverlayConfig } from './models-extra';
 import { EntityAttributes } from './models-extra';
 import { UserAccountPreferences } from './models-extra';
+import { EntityType } from './models-extra';
 import { ProjectConfig } from './models-extra';
 import { TaskCommentTemplateVariables } from './models-extra';
 import { RepeatSchedule } from './models-extra';
-import { EntityType } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
