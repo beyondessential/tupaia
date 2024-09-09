@@ -98,8 +98,7 @@ const checkApiClientAuthentication = async req => {
   }
 };
 
-async function respondToRateLimitedUser(req, res) {
-  const msBeforeNext = await this.getRetryAfter(req);
+async function respondToRateLimitedUser(msBeforeNext, res) {
   const retrySecs = Math.round(msBeforeNext / 1000) || 1;
   const retryMins = Math.round(retrySecs / 60) || 1;
   res.set('Retry-After', retrySecs);
@@ -123,11 +122,14 @@ export async function authenticate(req, res) {
   const consecutiveFailsRateLimiter = new ConsecutiveFailsRateLimiter(req.database);
   const bruteForceRateLimiter = new BruteForceRateLimiter(req.database);
 
-  if (
-    (await consecutiveFailsRateLimiter.checkIsRateLimited(req)) ||
-    (await bruteForceRateLimiter.checkIsRateLimited(req))
-  ) {
-    return respondToRateLimitedUser(req, res);
+  if (await bruteForceRateLimiter.checkIsRateLimited(req)) {
+    const msBeforeNext = await bruteForceRateLimiter.getRetryAfter(req);
+    return respondToRateLimitedUser(msBeforeNext, res);
+  }
+
+  if (await consecutiveFailsRateLimiter.checkIsRateLimited(req)) {
+    const msBeforeNext = await consecutiveFailsRateLimiter.getRetryAfter(req);
+    return respondToRateLimitedUser(msBeforeNext, res);
   }
 
   // Check if the user is authorised
@@ -152,11 +154,14 @@ export async function authenticate(req, res) {
     await bruteForceRateLimiter.resetFailedAttempts(req);
     respond(res, authorizationObject, 200);
   } catch (authError) {
-    // Record failed login attempt to rate limiter
-    await bruteForceRateLimiter.addFailedAttempt(req);
-    if (grantType === GRANT_TYPES.PASSWORD) {
-      await consecutiveFailsRateLimiter.addFailedAttempt(req);
+    if (authError.statusCode === 401) {
+      // Record failed login attempt to rate limiter
+      await bruteForceRateLimiter.addFailedAttempt(req);
+      if (grantType === GRANT_TYPES.PASSWORD) {
+        await consecutiveFailsRateLimiter.addFailedAttempt(req);
+      }
     }
+
     throw authError;
   }
 }

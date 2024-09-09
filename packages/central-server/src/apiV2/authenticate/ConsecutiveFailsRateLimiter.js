@@ -6,7 +6,7 @@
 import { RateLimiterPostgres } from 'rate-limiter-flexible';
 import { respond } from '@tupaia/utils';
 
-const MAX_CONSECUTIVE_FAILS_BY_USERNAME = 5;
+const MAX_CONSECUTIVE_FAILS_BY_USERNAME = 10;
 
 /**
  * Singleton instances of RateLimiterPostgres
@@ -25,13 +25,21 @@ export class ConsecutiveFailsRateLimiter {
         storeClient: database.connection,
         storeType: 'knex',
         keyPrefix: 'login_fail_consecutive_username',
-        points: MAX_CONSECUTIVE_FAILS_BY_USERNAME,
+        points: this.getMaxAttempts(),
         duration: 60 * 60 * 24 * 90, // Store number for 90 days since first fail
         blockDuration: 60 * 15, // Block for 15 minutes
       });
     }
 
     this.postgresRateLimiter = postgresRateLimiter;
+  }
+
+  /**
+   * Get the maximum number of consecutive failed attempts allowed. Useful for testing.
+   * @returns {number}
+   */
+  getMaxAttempts() {
+    return MAX_CONSECUTIVE_FAILS_BY_USERNAME;
   }
 
   /**
@@ -53,7 +61,7 @@ export class ConsecutiveFailsRateLimiter {
     );
     return (
       maxConsecutiveFailsResponder !== null &&
-      maxConsecutiveFailsResponder.consumedPoints >= MAX_CONSECUTIVE_FAILS_BY_USERNAME
+      maxConsecutiveFailsResponder.consumedPoints >= this.getMaxAttempts()
     );
   }
 

@@ -4,16 +4,14 @@
  */
 
 import { expect } from 'chai';
-import {
-  constructAccessToken,
-  encryptPassword,
-  hashAndSaltPassword,
-  getTokenClaims,
-} from '@tupaia/auth';
+import sinon from 'sinon';
+import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
+import { createBasicHeader } from '@tupaia/utils';
 import { resetTestData, TestableApp } from '../../testUtilities';
 import { configureEnv } from '../../../configureEnv';
+import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/ConsecutiveFailsRateLimiter';
+import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRateLimiter';
 
 configureEnv();
 
@@ -127,6 +125,9 @@ describe('Authenticate', function () {
   });
 
   it('limit consecutive fails by username', async () => {
+    const times = 4;
+    const stub = sinon.stub(ConsecutiveFailsRateLimiter.prototype, 'getMaxAttempts').returns(times);
+
     const makeRequest = () => {
       return app.post('auth?grantType=password', {
         headers: {
@@ -140,15 +141,13 @@ describe('Authenticate', function () {
       });
     };
 
-    const times = 6;
-
-    for (let i = 1; i < times; i++) {
+    for (let i = 0; i <= times; i++) {
       const request = await makeRequest();
 
       if (i < times) {
         expect(request.status).to.equal(401);
       } else {
-        // 6th request should be rate limited
+        // request should be rate limited
         expect(request.body).to.be.an('object').that.has.property('error');
         expect(request.body.error).to.include('Too Many Requests');
         expect(request.status).to.equal(429);
@@ -156,9 +155,14 @@ describe('Authenticate', function () {
         expect(request.headers['retry-after']).to.equal('900');
       }
     }
+
+    stub.restore();
   });
 
   it('limit fails by ip address ', async () => {
+    const times = 2;
+    const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+
     const makeRequest = emailAddress => {
       return app.post('auth?grantType=password', {
         headers: {
@@ -172,16 +176,13 @@ describe('Authenticate', function () {
       });
     };
 
-    // Normally the limit is 100, but on test environments the limit is 10.
-    const times = 11;
-
-    for (let i = 1; i < times; i++) {
+    for (let i = 0; i <= times; i++) {
       const request = await makeRequest(`${i}${userAccount.email}`);
 
       if (i < times) {
         expect(request.status).to.equal(401);
       } else {
-        // 11th request should be rate limited
+        // request should be rate limited
         const request101 = await makeRequest();
         expect(request101.body).to.be.an('object').that.has.property('error');
         expect(request101.body.error).to.include('Too Many Requests');
@@ -190,5 +191,7 @@ describe('Authenticate', function () {
         expect(request101.headers['retry-after']).to.equal('86400');
       }
     }
+
+    stub.restore();
   });
 });

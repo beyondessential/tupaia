@@ -7,7 +7,7 @@ import { RateLimiterPostgres } from 'rate-limiter-flexible';
 import { respond } from '@tupaia/utils';
 
 // Limit the number of wrong attempts per day per IP to 10 for the unit tests
-const MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY = process.env.NODE_ENV === 'test' ? 100 : 10;
+const MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY = 100;
 
 /**
  * Singleton instances of RateLimiterPostgres
@@ -26,13 +26,21 @@ export class BruteForceRateLimiter {
         storeClient: database.connection,
         storeType: 'knex',
         keyPrefix: 'login_fail_ip_per_day',
-        points: MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY,
+        points: this.getMaxAttempts(),
         duration: 60 * 60 * 24,
         blockDuration: 60 * 60 * 24, // Block for 1 day, if 100 wrong attempts per day
       });
     }
 
     this.postgresRateLimiter = postgresRateLimiter;
+  }
+
+  /**
+   * Get the maximum number of failed attempts allowed per day. Useful for testing.
+   * @returns {number}
+   */
+  getMaxAttempts() {
+    return MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY;
   }
 
   /**
@@ -51,7 +59,7 @@ export class BruteForceRateLimiter {
     const slowBruteForceResponder = await this.postgresRateLimiter.get(this.getIPkey(req));
     return (
       slowBruteForceResponder !== null &&
-      slowBruteForceResponder.consumedPoints >= MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY
+      slowBruteForceResponder.consumedPoints >= this.getMaxAttempts()
     );
   }
 
