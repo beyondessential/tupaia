@@ -6,7 +6,8 @@ import winston from 'winston';
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
 import { allowNoPermissions } from '../../permissions';
-import { TupaiaRateLimiter } from './TupaiaRateLimiter';
+import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
+import { BruteForceRateLimiter } from './BruteForceRateLimiter';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -97,6 +98,14 @@ const checkApiClientAuthentication = async req => {
   }
 };
 
+async function respondToRateLimitedUser(req, res) {
+  const msBeforeNext = await this.getRetryAfter(req);
+  const retrySecs = Math.round(msBeforeNext / 1000) || 1;
+  const retryMins = Math.round(retrySecs / 60) || 1;
+  res.set('Retry-After', retrySecs);
+  return respond(res, { error: `Too Many Requests. Retry in ${retryMins} min(s)` }, 429);
+}
+
 /**
  * Handler for a POST to the /auth endpoint
  * By default, or if URL parameters include grantType=password, will check the email address and
@@ -110,12 +119,15 @@ const checkApiClientAuthentication = async req => {
 
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
-  const knexInstance = req.database.connection;
+  const { grantType } = req.query;
+  const consecutiveFailsRateLimiter = new ConsecutiveFailsRateLimiter(req.database);
+  const bruteForceRateLimiter = new BruteForceRateLimiter(req.database);
 
-  const rateLimiter = new TupaiaRateLimiter(knexInstance);
-
-  if (await rateLimiter.checkIsRateLimited(req)) {
-    return rateLimiter.respondToRateLimitedUser(req, res);
+  if (
+    (await consecutiveFailsRateLimiter.checkIsRateLimited(req)) ||
+    (await bruteForceRateLimiter.checkIsRateLimited(req))
+  ) {
+    return respondToRateLimitedUser(req, res);
   }
 
   // Check if the user is authorised
@@ -136,12 +148,15 @@ export async function authenticate(req, res) {
     });
 
     // Reset on successful authorisation
-    await rateLimiter.resetFailedAttempts(req);
+    await consecutiveFailsRateLimiter.resetFailedAttempts(req);
+    await bruteForceRateLimiter.resetFailedAttempts(req);
     respond(res, authorizationObject, 200);
   } catch (authError) {
     // Record failed login attempt to rate limiter
-    await rateLimiter.addMaxConsecutiveFailedAttempt(req);
-    await rateLimiter.addSlowBruteForceFailedAttempt(req);
+    await bruteForceRateLimiter.addFailedAttempt(req);
+    if (grantType === GRANT_TYPES.PASSWORD) {
+      await consecutiveFailsRateLimiter.addFailedAttempt(req);
+    }
     throw authError;
   }
 }
