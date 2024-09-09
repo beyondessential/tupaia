@@ -23,9 +23,20 @@ import {
   SURVEY_METADATA,
 } from './processSurveyMetadata';
 import { caseAndSpaceInsensitiveEquals, convertCellToJson } from './utilities';
+import { RECORDS } from '@tupaia/database';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
+
+const objectsAreEqual = (a, b) => {
+  if (!!a === !!b) return true;
+  return Object.entries(a).every(([key, value]) => {
+    if (Array.isArray(value)) {
+      return value.every((v, i) => v === b[key][i]);
+    }
+    return value === b[key];
+  });
+};
 
 const validateQuestionExistence = rows => {
   const isQuestionRow = ({ type }) => QUESTION_TYPE_LIST.includes(type);
@@ -33,6 +44,111 @@ const validateQuestionExistence = rows => {
     throw new ImportValidationError('No questions listed in import file');
   }
   return true;
+};
+
+/**
+ *
+ * @param {object} models
+ * @param {string} screenId
+ * @param {string} questionId
+ * @param {number} componentNumber
+ * @param {object} questionObject
+ *
+ * @returns {Promise<void>}
+ *
+ * @description Checks if the screen component already exists, if it does, it updates the changed values, otherwise it creates a new one
+ */
+const updateOrCreateSurveyScreenComponent = async (
+  models,
+  screenId,
+  questionId,
+  componentNumber,
+  questionObject,
+) => {
+  const existingScreenComponent = await models.surveyScreenComponent.findOne({
+    screen_id: screenId,
+    question_id: questionId,
+    component_number: componentNumber,
+  });
+  const {
+    questionLabel = null,
+    detailLabel = null,
+    visibilityCriteria = null,
+    validationCriteria = null,
+  } = questionObject;
+
+  const validationCriteriaObject = convertCellToJson(
+    validationCriteria,
+    processValidationCriteriaValue,
+  );
+  // Create a new survey screen component to display this question
+  const visibilityCriteriaObject = convertCellToJson(visibilityCriteria, splitStringOnComma);
+
+  const processedVisibilityCriteria = {};
+
+  await Promise.all(
+    Object.entries(visibilityCriteriaObject).map(async ([questionCode, answers]) => {
+      if (questionCode === VIS_CRITERIA_CONJUNCTION) {
+        // This is the special _conjunction key, extract the 'and' or the 'or' from answers,
+        // i.e. { conjunction: ['and'] } -> { conjunction: 'and' }
+        const [conjunctionType] = answers;
+        processedVisibilityCriteria[VIS_CRITERIA_CONJUNCTION] = conjunctionType;
+      } else if (questionCode === 'hidden') {
+        processedVisibilityCriteria.hidden = answers[0] === 'true';
+      } else {
+        const { id: questionId } = await models.question.findOne({
+          code: questionCode,
+        });
+        processedVisibilityCriteria[questionId] = answers;
+      }
+    }),
+  );
+
+  // If the screen component already exists, update only the changed values, otherwise create a new one
+  if (existingScreenComponent) {
+    const changes = {};
+    if (
+      !objectsAreEqual(
+        JSON.parse(existingScreenComponent.visibility_criteria),
+        processedVisibilityCriteria,
+      )
+    ) {
+      changes.visibility_criteria = JSON.stringify(processedVisibilityCriteria);
+    }
+
+    if (
+      !objectsAreEqual(
+        JSON.parse(existingScreenComponent.validation_criteria),
+        validationCriteriaObject,
+      )
+    ) {
+      changes.validation_criteria = JSON.stringify(validationCriteriaObject);
+    }
+
+    if (questionLabel !== existingScreenComponent.question_label) {
+      changes.question_label = questionLabel;
+    }
+
+    if (detailLabel !== existingScreenComponent.detail_label) {
+      changes.detail_label = detailLabel;
+    }
+
+    if (Object.keys(changes).length > 0) {
+      await models.surveyScreenComponent.update({ id: existingScreenComponent.id }, changes);
+    }
+    return existingScreenComponent;
+  }
+  const newSurveyScreenComponent = await models.surveyScreenComponent.create({
+    screen_id: screenId,
+    question_id: questionId,
+    component_number: componentNumber,
+    visibility_criteria: JSON.stringify(processedVisibilityCriteria),
+    validation_criteria: JSON.stringify(validationCriteriaObject),
+    question_label: questionLabel,
+    detail_label: detailLabel,
+  });
+
+  return newSurveyScreenComponent;
 };
 
 const updateOrCreateDataElementInGroup = async (
@@ -100,10 +216,15 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   await dataGroup.deleteSurveyDateElement();
   await dataGroup.upsertSurveyDateElement();
 
-  // Delete all existing survey screens and components that were attached to this survey
-  await deleteScreensForSurvey(models, survey.id);
   const rows = xlsx.utils.sheet_to_json(sheet);
   validateQuestionExistence(rows);
+
+  const questions = await survey.questions();
+
+  // If the questions have changed order or had questions added/removed, delete all screens from the survey and re-create them
+  if (rows.map(({ code }) => code).join(',') !== questions.map(({ code }) => code).join(',')) {
+    await deleteScreensForSurvey(models, survey.id);
+  }
 
   // Add all questions to the survey, creating screens, components and questions as required
   let currentScreen;
@@ -172,15 +293,11 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
         type,
         name,
         text,
-        questionLabel,
         detail,
-        detailLabel,
         options,
         optionLabels,
         optionColors,
         newScreen,
-        visibilityCriteria,
-        validationCriteria,
         optionSet,
         hook,
       } = questionObject;
@@ -222,52 +339,30 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
       if (!currentScreen || shouldStartNewScreen) {
         // Spreadsheet indicates this question starts a new screen
         // Create a new survey screen
-        currentScreen = await models.surveyScreen.create({
+        const params = {
           survey_id: survey.id,
           screen_number: currentScreen ? currentScreen.screen_number + 1 : 1, // Next screen
-        });
+        };
+        const existingScreen = await models.surveyScreen.findOne(params);
+        if (existingScreen) {
+          currentScreen = existingScreen;
+        } else {
+          currentScreen = await models.surveyScreen.create(params);
+        }
         // Clear existing survey screen component
         currentSurveyScreenComponent = undefined;
       }
 
-      // Create a new survey screen component to display this question
-      const visibilityCriteriaObject = await convertCellToJson(
-        visibilityCriteria,
-        splitStringOnComma,
+      const componentNumber = currentSurveyScreenComponent
+        ? currentSurveyScreenComponent.component_number + 1
+        : 1;
+      currentSurveyScreenComponent = await updateOrCreateSurveyScreenComponent(
+        models,
+        currentScreen.id,
+        question.id,
+        componentNumber,
+        questionObject,
       );
-      const processedVisibilityCriteria = {};
-      await Promise.all(
-        Object.entries(visibilityCriteriaObject).map(async ([questionCode, answers]) => {
-          if (questionCode === VIS_CRITERIA_CONJUNCTION) {
-            // This is the special _conjunction key, extract the 'and' or the 'or' from answers,
-            // i.e. { conjunction: ['and'] } -> { conjunction: 'and' }
-            const [conjunctionType] = answers;
-            processedVisibilityCriteria[VIS_CRITERIA_CONJUNCTION] = conjunctionType;
-          } else if (questionCode === 'hidden') {
-            processedVisibilityCriteria.hidden = answers[0] === 'true';
-          } else {
-            const { id: questionId } = await models.question.findOne({
-              code: questionCode,
-            });
-            processedVisibilityCriteria[questionId] = answers;
-          }
-        }),
-      );
-
-      currentSurveyScreenComponent = await models.surveyScreenComponent.create({
-        screen_id: currentScreen.id,
-        question_id: question.id,
-        component_number: currentSurveyScreenComponent
-          ? currentSurveyScreenComponent.component_number + 1
-          : 1,
-        visibility_criteria: JSON.stringify(processedVisibilityCriteria),
-        validation_criteria: JSON.stringify(
-          convertCellToJson(validationCriteria, processValidationCriteriaValue),
-        ),
-        question_label: questionLabel,
-        detail_label: detailLabel,
-      });
-
       const componentId = currentSurveyScreenComponent.id;
       await configImporter.add(rowIndex, componentId, constructImportValidationError);
     } catch (e) {
