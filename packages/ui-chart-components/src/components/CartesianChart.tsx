@@ -74,9 +74,9 @@ const getRealDataKeys = (chartConfig: CartesianChartConfig['chartConfig'] | {}) 
 const getLegendAlignment = (
   legendPosition: LegendPosition,
   isExporting: boolean,
-): Pick<LegendProps, 'align' | 'verticalAlign' | 'layout'> => {
+): Pick<LegendProps, 'align' | 'verticalAlign'> => {
   if (isExporting) {
-    return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
+    return { verticalAlign: 'top', align: 'right' };
   }
   if (legendPosition === 'bottom') {
     return { verticalAlign: 'bottom', align: 'center' };
@@ -218,7 +218,7 @@ export const CartesianChart = ({
   const aspect = !isEnlarged && !isMobileSize && !isExporting ? 1.6 : undefined;
   const height = getHeight(isExporting, isEnlarged, hasLegend, isMobileSize);
 
-  const { verticalAlign, align, layout } = getLegendAlignment(legendPosition, isExporting);
+  const { verticalAlign, align } = getLegendAlignment(legendPosition, isExporting);
 
   const presentationOptions = 'presentationOptions' in config ? config.presentationOptions : {};
 
@@ -252,7 +252,6 @@ export const CartesianChart = ({
           <Legend
             verticalAlign={verticalAlign}
             align={align}
-            layout={layout}
             content={getCartesianLegend({
               chartConfig,
               getIsActiveKey,
