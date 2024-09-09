@@ -134,7 +134,7 @@ export const useMapOverlayTableData = ({
     hiddenValues: hiddenValues ? hiddenValues : {},
   });
 
-  const loadingData = isLoading || isFetching || (!isFetched && fetchStatus != 'idle');
+  const loadingData = isLoading || isFetching || (!isFetched && fetchStatus !== 'idle');
 
   const isLoadingDifferentMeasureLevel =
     (!isPreviousData || data?.measureLevel !== selectedOverlay?.measureLevel) && loadingData;
