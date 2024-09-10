@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { gaEvent, useFromLocation } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import { post } from '../api';
@@ -37,15 +37,13 @@ export const useLogin = () => {
       },
       onSuccess: async ({ user }) => {
         await queryClient.invalidateQueries();
+        await queryClient.removeQueries();
+
         if (from) {
-          navigate(from, {
-            state: null,
-          });
+          navigate(from, { state: null });
         } else {
           const path = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
-          navigate(path, {
-            state: from,
-          });
+          navigate(path, { state: from });
         }
       },
       meta: {

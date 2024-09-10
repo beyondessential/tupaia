@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { useIsFetching } from 'react-query';
+import { useIsFetching } from '@tanstack/react-query';
 import { Select } from '@tupaia/ui-components';
 import MuiBox from '@material-ui/core/Box';
 import { VitalsView } from './VitalsView';

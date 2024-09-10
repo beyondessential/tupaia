@@ -60,14 +60,14 @@ const SURVEY = {
 const EXPECTED_ANSWERS_PER_LAB_RESULT = [
   [
     { question_id: QUESTION_IDS.Well, text: 'A01' },
-    { question_id: QUESTION_IDS.Cq, text: '35.11' },
-    { question_id: QUESTION_IDS.Sq, text: '9.25123' },
+    { question_id: QUESTION_IDS.Cq, text: '35.1104612227568' },
+    { question_id: QUESTION_IDS.Sq, text: '9.25123231038543' },
     { question_id: QUESTION_IDS.Positive, text: 'Yes' },
   ],
   [
     { question_id: QUESTION_IDS.Well, text: 'A02' },
-    { question_id: QUESTION_IDS.Cq, text: '31.43' },
-    { question_id: QUESTION_IDS.Sq, text: '93.13989' },
+    { question_id: QUESTION_IDS.Cq, text: '31.4282224241949' },
+    { question_id: QUESTION_IDS.Sq, text: '93.1398874006731' },
     { question_id: QUESTION_IDS.Positive, text: 'No' },
   ],
 ];
