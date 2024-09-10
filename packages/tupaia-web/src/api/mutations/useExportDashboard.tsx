@@ -2,10 +2,11 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { API_URL, post } from '../api';
 import { DashboardName, EntityCode, ProjectCode } from '../../types';
+import { downloadPDF } from '../../utils';
 
 type ExportDashboardBody = {
   projectCode?: ProjectCode;
@@ -16,7 +17,7 @@ type ExportDashboardBody = {
 };
 
 // Requests a dashboard PDF export from the server, and returns the response
-export const useExportDashboard = ({ onSuccess }: { onSuccess?: (data: Blob) => void }) => {
+export const useExportDashboard = (fileName: string) => {
   return useMutation<any, Error, ExportDashboardBody, unknown>(
     ({
       projectCode,
@@ -41,7 +42,9 @@ export const useExportDashboard = ({ onSuccess }: { onSuccess?: (data: Blob) => 
       });
     },
     {
-      onSuccess,
+      onSuccess: data => {
+        downloadPDF(data, fileName);
+      },
     },
   );
 };

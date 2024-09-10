@@ -45,7 +45,10 @@ export class WorkBookParser {
 
   async parseSheet(sheetName, sheet) {
     const rows = this.getRowsInSheet(sheet);
-    return Promise.all(rows.map(row => this.parseRow(row, sheetName)));
+    return Promise.all(rows.map(row => this.parseRow(row, sheetName))).then(parsedRows =>
+      // filter out empty rows. On occasion, xlsx sheet_to_json will interpret a cell without a header as called '__EMPTY_X` where X is the column number, and we want to filter these out
+      parsedRows.filter(row => Object.keys(row).length > 0),
+    );
   }
 
   async parseRow(row, sheetName) {

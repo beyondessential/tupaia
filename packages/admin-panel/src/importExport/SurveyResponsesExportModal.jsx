@@ -9,6 +9,7 @@ import { DateTimePicker, RadioGroup } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { ReduxAutocomplete } from '../autocomplete';
 import { ExportModal } from './ExportModal';
+import { EntityOptionLabel } from '../widgets';
 
 const MODES = {
   COUNTRY: { value: 'country', formInput: 'countryCode' },
@@ -92,6 +93,8 @@ export const SurveyResponsesExportModal = () => {
           endpoint="entities"
           optionLabelKey="name"
           optionValueKey="id"
+          renderOption={option => <EntityOptionLabel {...option} />}
+          optionFields={['id', 'code', 'name']}
           allowMultipleValues
         />
       )}

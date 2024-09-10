@@ -15,7 +15,7 @@ import { DEFAULT_PERIOD_PARAM_STRING } from '../constants';
 type SelectableMapOverlay = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
 
 // converts the date range to a URL period string
-const convertDateRangeToUrlPeriodString = (
+export const convertDateRangeToUrlPeriodString = (
   {
     startDate,
     endDate,

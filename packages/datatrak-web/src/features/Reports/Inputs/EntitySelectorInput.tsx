@@ -65,6 +65,7 @@ export const EntitySelectorInput = ({ selectedEntityLevel }: EntitySelectorInput
               entities?.map(({ name: entityName, id, code, type: entityType }) => ({
                 label: entityName,
                 value: id,
+                secondaryLabel: code,
                 code,
                 type: entityType,
               })) ?? []

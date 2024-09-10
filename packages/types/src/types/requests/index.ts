@@ -11,6 +11,7 @@ export {
   DatatrakWebUserRequest,
   DatatrakWebSurveysRequest,
   DatatrakWebSubmitSurveyResponseRequest,
+  DatatrakWebResubmitSurveyResponseRequest,
   DatatrakWebSurveyRequest,
   DatatrakWebSurveyResponsesRequest,
   DatatrakWebRecentSurveysRequest,
@@ -38,6 +39,7 @@ export {
   TupaiaWebSubscribeDashboardRequest,
   TupaiaWebUnsubscribeDashboardRequest,
   TupaiaWebUnsubscribeDashboardMailingListRequest,
+  TupaiaWebExportMapOverlayRequest,
   TupaiaWebExportSurveyDataRequest,
 } from './tupaia-web-server';
 export { ProjectResponse, WebServerEntityRequest, WebServerProjectRequest } from './web-server';

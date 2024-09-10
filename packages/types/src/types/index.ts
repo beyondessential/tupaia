@@ -99,6 +99,7 @@ export {
   EntityQuestionConfigFieldKey,
   ProjectConfig,
   DateOffsetSpec,
+  EntityType,
 } from './models-extra';
 export * from './requests';
 export * from './css';

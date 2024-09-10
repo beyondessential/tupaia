@@ -6,6 +6,8 @@ import { SurveyEditFields } from '../../surveys/SurveyEditFields';
 import { QUESTION_FIELDS as BASE_QUESTION_FIELDS } from './questions';
 import { EditSurveyPage } from '../../pages/resources';
 
+const { REACT_APP_DATATRAK_WEB_URL } = import.meta.env;
+
 const RESOURCE_NAME = { singular: 'survey' };
 
 const PERIOD_GRANULARITIES = [
@@ -176,12 +178,35 @@ const SURVEY_COLUMNS = [
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {
+    Header: 'Project ID',
+    source: 'project.id',
+    show: false,
+  },
+  {
+    Header: 'countries',
+    source: 'countryCodes',
+    show: false,
+  },
+  {
     Header: 'Permission group',
     source: 'permission_group.name',
   },
   {
     Header: 'Survey group',
     source: 'survey_group.name',
+  },
+  {
+    Header: 'View',
+    type: 'externalLink',
+    actionConfig: {
+      generateUrl: row => {
+        const { code, countryCodes } = row;
+        if (!countryCodes || !countryCodes.some(countryCode => !!countryCode)) return null;
+        const countryCodeToUse = countryCodes.includes('DL') ? 'DL' : countryCodes[0];
+        return `${REACT_APP_DATATRAK_WEB_URL}/survey/${countryCodeToUse}/${code}/1`;
+      },
+      title: 'View in DataTrak',
+    },
   },
   {
     Header: 'Export',
@@ -221,6 +246,7 @@ const CREATE_CONFIG = {
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
     fields: [
+      SURVEY_FIELDS.surveyQuestions,
       SURVEY_FIELDS.project,
       SURVEY_FIELDS.name,
       SURVEY_FIELDS.code,
@@ -232,7 +258,6 @@ const CREATE_CONFIG = {
       SURVEY_FIELDS.requires_approval,
       SURVEY_FIELDS['data_group.service_type'],
       SURVEY_FIELDS['data_group.config'],
-      SURVEY_FIELDS.surveyQuestions,
     ],
     // Custom component needed because on create we suggest the code
     FieldsComponent: SurveyEditFields,
