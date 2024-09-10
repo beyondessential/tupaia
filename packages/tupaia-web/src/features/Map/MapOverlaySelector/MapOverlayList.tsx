@@ -16,7 +16,7 @@ import {
   Radio,
   RadioGroup,
 } from '@material-ui/core';
-import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
+import { EntityType, TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import { useEntity, useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
