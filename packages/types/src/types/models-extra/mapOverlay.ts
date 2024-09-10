@@ -5,7 +5,7 @@
 
 import { PascalCase } from '../../utils';
 import { CssColor } from '../css';
-import { EntityType } from '../models';
+import { EntityType } from './entityType';
 import { DateOffsetSpec, DefaultTimePeriod, ReferenceProps, VizPeriodGranularity } from './common';
 
 /**
@@ -123,7 +123,7 @@ enum DisplayedValueType {
   FACILITY_TYPE_NAME = 'facilityTypeName',
 }
 
-type EntityLevel = PascalCase<keyof typeof EntityType>;
+type EntityLevel = PascalCase<EntityType>;
 
 enum MeasureValueType {
   BOOLEAN = 'boolean',

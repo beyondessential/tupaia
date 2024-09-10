@@ -12,12 +12,15 @@ import { PageHeader } from '../widgets';
 import { useUser } from '../api/queries';
 import { useUpdateProfile } from '../api/mutations';
 
+const Wrapper = styled.div`
+  overflow: auto;
+`;
+
 const Container = styled.section`
   padding-top: 1rem;
   padding-bottom: 1rem;
-  max-width: 460px;
+  max-width: 26rem;
   margin: 2.5rem auto;
-  min-height: calc(100vh - 445px);
 `;
 
 const Divider = styled(MuiDivider)`
@@ -74,7 +77,7 @@ export const ProfilePage = React.memo(() => {
   const userInitial = (firstName || lastName).charAt(0);
 
   return (
-    <>
+    <Wrapper>
       <Container>
         <PageHeader title={user.name} />
         <form onSubmit={onSubmit} noValidate>
@@ -140,6 +143,6 @@ export const ProfilePage = React.memo(() => {
           </StyledButton>
         </form>
       </Container>
-    </>
+    </Wrapper>
   );
 });
