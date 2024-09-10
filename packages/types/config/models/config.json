@@ -37,7 +37,8 @@
       "MapOverlayConfig": "./models-extra",
       "EntityAttributes": "./models-extra",
       "UserAccountPreferences": "./models-extra",
-      "ProjectConfig": "./models-extra"
+      "ProjectConfig": "./models-extra",
+      "EntityType": "./models-extra"
     }
   }
 }

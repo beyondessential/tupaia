@@ -143,9 +143,6 @@ const overrides = {
     asterisk: {
       color: palette.error.main,
     },
-    asterisk: {
-      color: palette.error.main,
-    },
   },
   MuiInputBase: {
     input: {
@@ -161,6 +158,10 @@ const overrides = {
         fontSize: '0.875rem',
         fontWeight: 500,
         color: palette.text.primary,
+
+        '&.Mui-focused': {
+          color: palette.text.primary,
+        },
       },
     },
   },
@@ -206,11 +207,11 @@ const overrides = {
   },
   MuiSvgIcon: {
     root: {
-      'label &': {
+      '&.tooltip': {
         color: palette.text.secondary,
-        '&.checkbox': {
-          fill: 'transparent',
-        },
+      },
+      '&.checkbox': {
+        fill: 'transparent',
       },
     },
   },
