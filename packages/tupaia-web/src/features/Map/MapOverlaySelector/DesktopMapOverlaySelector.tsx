@@ -276,7 +276,7 @@ export const DesktopMapOverlaySelector = ({
       {mapModalOpen && <MapTableModal onClose={toggleMapTableModal} />}
       <Wrapper>
         <Header>
-          <Heading>Map Overlays</Heading>
+          <Heading>Map Overlays {entity ? `(${entity.type})` : ''}</Heading>
           {selectedOverlay && (
             <div>
               {isLoggedIn && (

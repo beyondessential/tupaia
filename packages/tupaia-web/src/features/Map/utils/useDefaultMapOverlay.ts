@@ -27,7 +27,8 @@ export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: Ent
   const selectedMapOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const selectedMapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
 
-  const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay!];
+  const isValidMapOverlayId =
+    !!mapOverlaysByCode[selectedMapOverlay!] && !mapOverlaysByCode[selectedMapOverlay!].disabled;
   const overlayCodes = mapOverlaysByCode ? Object.keys(mapOverlaysByCode) : [];
 
   const getDefaultOverlayCode = () => {
@@ -36,18 +37,26 @@ export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: Ent
       const { defaultMeasure } = project;
 
       // if the defaultMeasure exists, use this
-      if (mapOverlaysByCode[defaultMeasure as string]) {
+      if (
+        defaultMeasure &&
+        mapOverlaysByCode[defaultMeasure] &&
+        !mapOverlaysByCode[defaultMeasure].disabled
+      ) {
         return defaultMeasure;
       }
 
       // if the generic default overlay exists, use this
-      if (mapOverlaysByCode[DEFAULT_MAP_OVERLAY_ID]) {
+      if (
+        mapOverlaysByCode[DEFAULT_MAP_OVERLAY_ID] &&
+        !mapOverlaysByCode[DEFAULT_MAP_OVERLAY_ID].disabled
+      ) {
         return DEFAULT_MAP_OVERLAY_ID;
       }
 
       // otherwise use the first overlay in the list
       if (allMapOverlays.length > 0) {
-        return allMapOverlays[0].code;
+        const firstNonDisabledOverlay = allMapOverlays.find(overlay => !overlay.disabled);
+        return firstNonDisabledOverlay?.code;
       }
     }
   };
