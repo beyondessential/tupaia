@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { Coconut } from '../../components';
@@ -64,11 +64,11 @@ export const useSubmitSurveyResponse = () => {
         gaEvent('submit_survey_by_user', user.id!);
       },
       onSuccess: data => {
-        queryClient.invalidateQueries('surveyResponses');
-        queryClient.invalidateQueries('recentSurveys');
-        queryClient.invalidateQueries('rewards');
-        queryClient.invalidateQueries('leaderboard');
-        queryClient.invalidateQueries('entityDescendants'); // Refresh recent entities
+        queryClient.invalidateQueries(['surveyResponses']);
+        queryClient.invalidateQueries(['recentSurveys']);
+        queryClient.invalidateQueries(['rewards']);
+        queryClient.invalidateQueries(['leaderboard']);
+        queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities
 
         const createNewAutocompleteQuestions = surveyResponseData?.questions?.filter(
           question => question?.config?.autocomplete?.createNew,
