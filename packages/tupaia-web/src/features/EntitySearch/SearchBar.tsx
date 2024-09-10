@@ -8,8 +8,9 @@ import styled from 'styled-components';
 import { TextField, TextFieldProps } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { Close, Search } from '@material-ui/icons';
+import { IconButton, Button } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
-import { IconButton } from '@tupaia/ui-components';
+import { QRScanIcon } from './QRScanIcon';
 
 const SearchInput = styled(TextField).attrs({
   variant: 'outlined',
@@ -61,14 +62,9 @@ const SearchInput = styled(TextField).attrs({
 `;
 
 const MobileCloseButton = styled(IconButton)`
-  display: none;
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: block;
-    position: absolute;
-    top: 0.1rem;
-    right: 0.1rem;
-    z-index: 1;
-  }
+  top: 0.1rem;
+  right: 0.1rem;
+  z-index: 1;
 `;
 
 const Container = styled.div<{
@@ -86,6 +82,8 @@ const Container = styled.div<{
     height: ${TOP_BAR_HEIGHT_MOBILE};
     // Place on top of the hamburger menu on mobile
     z-index: 1;
+    display: flex;
+    background: ${({ theme }) => theme.palette.background.paper};
   }
 `;
 
@@ -94,6 +92,25 @@ const MobileOpenButton = styled(IconButton)`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: block;
   }
+`;
+const MobileWrapper = styled.div`
+  display: none;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: flex;
+  }
+`;
+
+const QrScanButton = styled(Button).attrs({
+  startIcon: <QRScanIcon />,
+  variant: 'text',
+})`
+  background: ${({ theme }) => theme.palette.background.paper};
+  text-transform: none;
+  font-size: 0.875rem;
+  font-weight: 400;
+  padding-inline: 0.5rem;
+  white-space: nowrap;
+  height: 100%;
 `;
 
 interface SearchBarProps {
@@ -140,9 +157,12 @@ export const SearchBar = ({ value = '', onChange, onFocusChange, onClose }: Sear
           onFocus={() => onFocusChange(true)}
           inputRef={inputRef}
         />
-        <MobileCloseButton onClick={handleClickClose} color="default">
-          <Close />
-        </MobileCloseButton>
+        <MobileWrapper>
+          <QrScanButton>Scan ID</QrScanButton>
+          <MobileCloseButton onClick={handleClickClose} color="default">
+            <Close />
+          </MobileCloseButton>
+        </MobileWrapper>
       </Container>
     </>
   );
