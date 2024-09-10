@@ -87,6 +87,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       },
     );
 
+    // get the types of the ancestors, excluding the current entity
     const ancestorTypes = ancestors
       .filter(ancestor => ancestor.code !== entityCode)
       .map(ancestor => ancestor.type.toLowerCase().replace('_', ''));
@@ -156,6 +157,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           if (relation.child_type === MAP_OVERLAY_CHILD_TYPE) {
             const overlay = overlaysById[relation.child_id];
 
+            // If the measure level is found in the ancestor types, that means the currently selected entity is a descendant of the measure level entity, so there will be no data to display. In this case, the overlay should be disabled.
             const isDisabled = overlay.config.measureLevel
               ? ancestorTypes.includes(overlay.config.measureLevel.toLowerCase())
               : false;

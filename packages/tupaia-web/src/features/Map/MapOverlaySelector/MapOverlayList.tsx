@@ -20,6 +20,7 @@ import { EntityType, TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import { useEntity, useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
+import { getFriendlyEntityType } from '../../../utils';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -235,7 +236,7 @@ export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?
 
   if (isLoadingMapOverlays) return null;
 
-  const friendlyEntityType = entity?.type?.toLowerCase().replace('_', '-');
+  const friendlyEntityType = getFriendlyEntityType(entity?.type);
   return (
     <RadioGroupContainer
       aria-label="Map overlays"
