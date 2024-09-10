@@ -25,5 +25,6 @@ export class TaskCommentModel extends DatabaseModel {
     Create: 'create',
     Update: 'update',
     Complete: 'complete',
+    Overdue: 'overdue',
   };
 }
