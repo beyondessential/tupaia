@@ -9550,10 +9550,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/match-sorter-utils@npm:^8.7.0":
+  version: 8.19.4
+  resolution: "@tanstack/match-sorter-utils@npm:8.19.4"
+  dependencies:
+    remove-accents: 0.5.0
+  checksum: 7ec302d75be1f65a3e91dd30b567e47e56c13577937276ef3a3ac7c8560a0b9f6dcaca44dd877189375ce9e7401d250895265adb0741ec867eda4e47d0f07dc0
+  languageName: node
+  linkType: hard
+
 "@tanstack/query-core@npm:4.36.1":
   version: 4.36.1
   resolution: "@tanstack/query-core@npm:4.36.1"
   checksum: 47672094da20d89402d9fe03bb7b0462be73a76ff9ca715169738bc600a719d064d106d083a8eedae22a2c22de22f87d5eb5d31ef447aba771d9190f2117ed10
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-devtools@npm:4.36.1":
+  version: 4.36.1
+  resolution: "@tanstack/react-query-devtools@npm:4.36.1"
+  dependencies:
+    "@tanstack/match-sorter-utils": ^8.7.0
+    superjson: ^1.10.0
+    use-sync-external-store: ^1.2.0
+  peerDependencies:
+    "@tanstack/react-query": ^4.36.1
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: d4f7da4121a933be0d0406fb75f682b193a33e7d4ba9a4d54ff19e04db823d00513fbe86230c43d34aae55f6d0d1f8be17315f19d515b298b6bb0dabd0c5d261
   languageName: node
   linkType: hard
 
@@ -9786,6 +9810,8 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.47
     "@material-ui/styles": ^4.9.10
+    "@tanstack/react-query": 4.36.1
+    "@tanstack/react-query-devtools": 4.36.1
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-chart-components": "workspace:*"
@@ -9820,7 +9846,6 @@ __metadata:
     react-hook-form: ^6.8.3
     react-icons: ^2.2.7
     react-password-strength-bar: ^0.3.2
-    react-query: ^3.19.0
     react-redux: ^5.0.6
     react-router: 6.3.0
     react-router-dom: 6.3.0
@@ -10099,6 +10124,7 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
+    "@tanstack/react-query": 4.36.1
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
     "@testing-library/user-event": ^13.5.0
@@ -10125,7 +10151,6 @@ __metadata:
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
     react-leaflet: ^3.2.1
-    react-query: ^3.39.3
     react-router: 6.3.0
     react-router-dom: 6.3.0
     styled-components: ^5.1.0
@@ -10263,6 +10288,8 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/styles": ^4.9.10
+    "@tanstack/react-query": 4.36.1
+    "@tanstack/react-query-devtools": 4.36.1
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/admin-panel": "workspace:*"
     "@tupaia/ui-chart-components": "workspace:*"
@@ -10285,7 +10312,6 @@ __metadata:
     react-hook-form: ^6.15.1
     react-leaflet: ^3.2.1
     react-password-strength-bar: ^0.3.3
-    react-query: ^3.19.0
     react-redux: ^5.0.6
     react-router: 6.3.0
     react-router-dom: 6.3.0
@@ -10421,6 +10447,8 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
+    "@tanstack/react-query": 4.36.1
+    "@tanstack/react-query-devtools": 4.36.1
     "@tupaia/auth": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
@@ -10442,7 +10470,6 @@ __metadata:
     react-dom: ^16.13.1
     react-hook-form: ^6.0.0
     react-password-strength-bar: ^0.3.3
-    react-query: ^3.19.0
     react-redux: ^7.1.0
     react-router-dom: ^5.1.2
     redux: ^4.0.2
@@ -10601,7 +10628,6 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
-    "@tanstack/react-query": 4.36.1
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-chart-components": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
@@ -10625,6 +10651,7 @@ __metadata:
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
     react-leaflet: ^3.2.1
+    react-query: ^3.39.3
     react-router: 6.3.0
     react-router-dom: 6.3.0
     react-slick: ^0.30.2
@@ -16038,6 +16065,15 @@ __metadata:
     depd: ~1.1.2
     keygrip: ~1.0.3
   checksum: 537f1a82c76c1487b23f5d97ddff748ef8e25ee625d2e7eb79bbfa6e35d6dd5bf758f17088f333c69b7f5568539f98aa0b6270f21e27fe31797344e2008f3efb
+  languageName: node
+  linkType: hard
+
+"copy-anything@npm:^3.0.2":
+  version: 3.0.5
+  resolution: "copy-anything@npm:3.0.5"
+  dependencies:
+    is-what: ^4.1.8
+  checksum: d39f6601c16b7cbd81cdb1c1f40f2bf0f2ca0297601cf7bfbb4ef1d85374a6a89c559502329f5bada36604464df17623e111fe19a9bb0c3f6b1c92fe2cbe972f
   languageName: node
   linkType: hard
 
@@ -22764,6 +22800,13 @@ __metadata:
     call-bind: ^1.0.2
     get-intrinsic: ^1.1.1
   checksum: 5d8698d1fa599a0635d7ca85be9c26d547b317ed8fd83fc75f03efbe75d50001b5eececb1e9971de85fcde84f69ae6f8346bc92d20d55d46201d328e4c74a367
+  languageName: node
+  linkType: hard
+
+"is-what@npm:^4.1.8":
+  version: 4.1.16
+  resolution: "is-what@npm:4.1.16"
+  checksum: baf99e4b9f06003ceb3b2eea4a1e17179524ee3a6310dc44903eb675cfe3c0a17819ab057bb1ae6ba7ca4939ae4bdfcc6a0c4210a8457aff1756abd3607b713c
   languageName: node
   linkType: hard
 
@@ -31638,6 +31681,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"remove-accents@npm:0.5.0":
+  version: 0.5.0
+  resolution: "remove-accents@npm:0.5.0"
+  checksum: 7045b37015acb03df406d21f9cbe93c3fcf2034189f5d2e33b1dace9c7d6bdcd839929905ced21a5d76c58553557e1a42651930728702312a5774179d5b9147b
+  languageName: node
+  linkType: hard
+
 "remove-trailing-separator@npm:^1.0.1":
   version: 1.1.0
   resolution: "remove-trailing-separator@npm:1.1.0"
@@ -33892,6 +33942,15 @@ __metadata:
     qs: ^6.5.1
     readable-stream: ^2.3.5
   checksum: b13d0303259d76c9180bd40d97d9f0713760f5ced1aef089bdb2fcdf69cfaef89004cd6e986416d59bd9a2f0f9933d72521b5171fa26f89b781a2c3460c516fe
+  languageName: node
+  linkType: hard
+
+"superjson@npm:^1.10.0":
+  version: 1.13.3
+  resolution: "superjson@npm:1.13.3"
+  dependencies:
+    copy-anything: ^3.0.2
+  checksum: f5aeb010f24163cb871a4bc402d9164112201c059afc247a75b03131c274aea6eec9cf08be9e4a9465fe4961689009a011584528531d52f7cc91c077e07e5c75
   languageName: node
   linkType: hard
 

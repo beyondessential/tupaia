@@ -4,7 +4,7 @@
  *
  */
 import React, { useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { generatePath, useNavigate, useLocation } from 'react-router-dom';

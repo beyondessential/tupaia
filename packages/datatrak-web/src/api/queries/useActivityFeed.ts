@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { DatatrakWebActivityFeedRequest, Project } from '@tupaia/types';
 import { get } from '../api';
 import { useCurrentUserContext } from '..';
