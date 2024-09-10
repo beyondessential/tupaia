@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { AxiosRequestConfig } from 'axios';
-import { useQuery, QueryObserverOptions } from 'react-query';
+import { useQuery, QueryObserverOptions } from '@tanstack/react-query';
 import { get } from '../api';
 import { Entity } from '../../types';
 
