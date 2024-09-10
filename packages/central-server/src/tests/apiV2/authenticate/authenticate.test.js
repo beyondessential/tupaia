@@ -89,19 +89,6 @@ describe('Authenticate', function () {
     });
   });
 
-  beforeEach(async () => {
-    const db = models.database;
-    const [row] = await db.executeSql(`SELECT current_database();`);
-    const { current_database } = row;
-    if (current_database !== 'tupaia_test') {
-      throw new Error(
-        `Safety check failed: clearTestData can only be run against a database named tupaia_test, found ${current_database}.`,
-      );
-    }
-
-    await db.executeSql(`DELETE FROM login_attempts;`);
-  });
-
   it('should return user details with apiClient and access policy', async function () {
     const authResponse = await app.post('auth?grantType=password', {
       headers: {
@@ -154,7 +141,7 @@ describe('Authenticate', function () {
           authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
         },
         body: {
-          emailAddress: userAccount.email,
+          emailAddress: 'test@bes.au',
           password: 'woops',
           deviceName: 'test_device',
         },

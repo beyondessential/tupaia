@@ -5,7 +5,7 @@
 
 import { RateLimiterPostgres } from 'rate-limiter-flexible';
 
-// Limit the number of wrong attempts per day per IP to 10 for the unit tests
+// Limit the number of wrong attempts per day per IP to 100 for the unit tests
 const MAX_WRONG_ATTEMPTS_BY_IP_PER_DAY = 100;
 
 /**
@@ -30,7 +30,8 @@ export class BruteForceRateLimiter {
         blockDuration: 60 * 60 * 24, // Block for 1 day, if 100 wrong attempts per day
       });
     }
-
+    // Reset the points with getMaxAttempts for test mocking
+    postgresRateLimiter.points = this.getMaxAttempts();
     this.postgresRateLimiter = postgresRateLimiter;
   }
 

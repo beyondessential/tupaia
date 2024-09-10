@@ -29,7 +29,8 @@ export class ConsecutiveFailsRateLimiter {
         blockDuration: 60 * 15, // Block for 15 minutes
       });
     }
-
+    // Reset the points with getMaxAttempts for test mocking
+    postgresRateLimiter.points = this.getMaxAttempts();
     this.postgresRateLimiter = postgresRateLimiter;
   }
 
