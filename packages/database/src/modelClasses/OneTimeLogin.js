@@ -35,7 +35,6 @@ export class OneTimeLoginModel extends DatabaseModel {
 
   async findValidOneTimeLoginOrFail(token, shouldAllowUsed = false, shouldAllowExpired = false) {
     const oneTimeLogin = await this.findOne({ token });
-    console.log('oneTimeLogin', oneTimeLogin);
     if (!oneTimeLogin) {
       throw new UnauthenticatedError('No one time login found');
     }
