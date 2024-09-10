@@ -67,13 +67,14 @@ export const getFilteredUsers = async (
     usersFilter.id = userEntityPermissions.map(uep => uep.user_id);
   }
 
-  const users = await models.user.find(usersFilter, {
-    sort: ['full_name ASC'],
-    limit: DEFAULT_PAGE_SIZE,
-  });
+  const users = await models.user.find(usersFilter);
 
-  return users.map(user => ({
-    id: user.id,
-    name: user.full_name,
-  }));
+  // manually sort the users by full name, so that names beginning with special characters are first to match Meditrak
+  return users
+    .sort((a, b) => a.full_name.toLowerCase().localeCompare(b.full_name.toLowerCase()))
+    .map(user => ({
+      id: user.id,
+      name: user.full_name,
+    }))
+    .slice(0, DEFAULT_PAGE_SIZE);
 };
