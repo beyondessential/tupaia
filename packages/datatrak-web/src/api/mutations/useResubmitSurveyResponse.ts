@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { post } from '../api';
 import { useSurveyResponse } from '../queries';
