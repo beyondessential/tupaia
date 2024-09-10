@@ -10,6 +10,12 @@ import { Form, TextField } from '../../src/components';
 const meta: Meta<typeof TextField> = {
   title: 'components/TextField',
   component: TextField,
+  parameters: {
+    backgrounds: {
+      default: 'dark',
+    },
+    theme: 'dark',
+  },
   decorators: [
     Story => {
       const formContext = useForm();

@@ -4,7 +4,7 @@
  */
 
 import { createContext } from 'react';
-import { UseQueryResult } from 'react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 import { DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
 import { DashboardItem } from '../../types';
 

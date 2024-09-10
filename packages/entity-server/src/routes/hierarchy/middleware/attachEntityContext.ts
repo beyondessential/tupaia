@@ -5,7 +5,7 @@
 import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
 import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
-import { EntityType } from '@tupaia/types';
+import { EntityTypeEnum } from '@tupaia/types';
 import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 import { extractFilterFromQuery } from './filter';
@@ -30,7 +30,7 @@ const validateEntitiesAndBuildContext = async (
   const { hierarchyName } = req.params;
   // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
   const rootEntity = await req.models.entity.findOne({
-    type: EntityType.project,
+    type: EntityTypeEnum.project,
     code: hierarchyName,
   });
   if (!rootEntity) {
@@ -161,7 +161,7 @@ export const attachEntityFilterContext = async (
   next: NextFunction,
 ) => {
   const rootEntity = await req.models.entity.findOne({
-    type: EntityType.project,
+    type: EntityTypeEnum.project,
     code: req.params.hierarchyName,
   });
 

@@ -7,7 +7,7 @@ const baseConfig = require('../../jest.config-ts.json');
 module.exports = {
   ...baseConfig,
   rootDir: '.',
-  moduleDirectories: ['node_modules', 'helpers'],
+  moduleDirectories: ['node_modules'],
   collectCoverageFrom: ['**/src/components/**/**'],
   testMatch: ['<rootDir>/src/__tests__/**/**.test.**'],
   // handle static assets @see https://jestjs.io/docs/webpack#handling-static-assets
@@ -18,8 +18,8 @@ module.exports = {
   },
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
-    '^.+\\.js$': 'babel-jest',
-    "^.+\\.jsx?$": "../../jestTransformer.js"
+    '^.+\\.js$': ['babel-jest', { configFile: './babel.test.js' }],
+    '^.+\\.jsx?$': '../../jestTransformer.js',
   },
   testTimeout: 30 * 1000, // 30 seconds. Needed for CI as some test take a while if CPU has high load
 };

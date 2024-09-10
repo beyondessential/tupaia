@@ -4,7 +4,7 @@
  *
  */
 import moment, { Moment } from 'moment';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { formatDateForApi, getBrowserTimeZone } from '@tupaia/utils';
 import { TupaiaWebReportRequest } from '@tupaia/types';
 import { get } from '../api';
