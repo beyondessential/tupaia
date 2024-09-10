@@ -171,12 +171,6 @@ export const ProjectsModal = () => {
   const location = useLocation();
   const { data: countries, isLoading } = useCountries();
 
-  const projectsToShow =
-    data?.projects.filter(({ names }) => {
-      if (!selectedCountry) return true;
-      return names.includes(selectedCountry.value);
-    }) ?? [];
-
   return (
     <Modal isOpen onClose={closeModal}>
       <Wrapper>
@@ -223,7 +217,8 @@ export const ProjectsModal = () => {
           ) : (
             <ProjectsGrid>
               <ProjectCardList
-                projects={projectsToShow}
+                selectedCountry={selectedCountry?.value}
+                projects={data?.projects ?? []}
                 actions={{
                   [PROJECT_ACCESS_TYPES.ALLOWED]: ({
                     project: { code, homeEntityCode, dashboardGroupName },
