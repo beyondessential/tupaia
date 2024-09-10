@@ -69,9 +69,7 @@ SELECT msq.*,
 		-- Option Set
 		${groupToArrayOrNull('os_q_ssc_ss_s_pg."name"')},
 		-- Option
-		${groupToArrayOrNull('o_os_q_ssc_ss_s_pg."name"')},
-		-- User Entity Permission
-		${groupToArrayOrNull('uep_pg."name"')}
+		${groupToArrayOrNull('o_os_q_ssc_ss_s_pg."name"')}
 	) as permission_groups
 FROM meditrak_sync_queue msq 
 
@@ -138,8 +136,7 @@ LEFT JOIN permission_group o_os_q_ssc_ss_s_pg ON o_os_q_ssc_ss_s.permission_grou
 -- User Entity Permission
 LEFT JOIN user_entity_permission uep ON msq.record_id = uep.id
 LEFT JOIN entity uep_e ON uep.entity_id = uep_e.id 
-LEFT JOIN country uep_e_co ON uep_e_co.code = uep_e.country_code  
-LEFT JOIN permission_group uep_pg ON uep.permission_group_id = uep_pg.id
+LEFT JOIN country uep_e_co ON uep_e_co.code = uep_e.country_code
 
 GROUP BY msq.id;
 CREATE UNIQUE INDEX permissions_based_meditrak_sync_queue_id_idx ON permissions_based_meditrak_sync_queue (id); 

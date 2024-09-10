@@ -155,7 +155,8 @@ export const SurveyLayout = () => {
 
   const handleClickSubmit = handleSubmit(onSubmit, onError);
 
-  const showLoader = isSubmittingSurveyResponse || isResubmittingSurveyResponse || isFetchingEntities;
+  const showLoader =
+    isSubmittingSurveyResponse || isResubmittingSurveyResponse || !!isFetchingEntities;
 
   return (
     <>
