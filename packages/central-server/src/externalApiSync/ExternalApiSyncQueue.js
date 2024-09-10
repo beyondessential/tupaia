@@ -165,11 +165,11 @@ export class ExternalApiSyncQueue {
   }
 
   registerBadRequest(change) {
-    // Update also causes change_time to be reset to current time
-    // so it will slot in at the back of its new priority group
+    // If the bad request count is over the limit, mark it as a dead letter
     if (change.bad_request_count > BAD_REQUEST_LIMIT) {
       return this.syncQueueModel.updateById(change.id, { is_dead_letter: true });
-    } // Cap the priority
+    }
+    // Otherwise, increment the bad request count
     return this.syncQueueModel.updateById(change.id, {
       bad_request_count: change.bad_request_count + 1,
     });

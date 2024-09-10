@@ -4,7 +4,7 @@
  */
 
 import { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMapOverlays, useProject } from '../../../api/queries';
 import {

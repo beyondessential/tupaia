@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useIsFetching } from 'react-query';
+import { useIsFetching } from '@tanstack/react-query';
 import { comparePeriods } from '@tupaia/utils';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
