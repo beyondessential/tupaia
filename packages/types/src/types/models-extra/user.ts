@@ -2,8 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
-import { Country, Entity, EntityType, Project } from '../models';
+import { Country, Entity, Project } from '../models';
+import { EntityType } from './entityType';
 
 type RecentEntitiesForCountry = Partial<Record<EntityType, Entity['id'][]>>;
 
