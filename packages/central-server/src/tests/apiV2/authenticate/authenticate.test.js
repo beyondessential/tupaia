@@ -14,6 +14,7 @@ import { ConsecutiveFailsRateLimiter } from '../../../apiV2/authenticate/Consecu
 import { BruteForceRateLimiter } from '../../../apiV2/authenticate/BruteForceRateLimiter';
 
 configureEnv();
+const sandbox = sinon.createSandbox();
 
 const app = new TestableApp();
 const { models } = app;
@@ -89,6 +90,20 @@ describe('Authenticate', function () {
     });
   });
 
+  afterEach(async () => {
+    // completely restore all fakes created through the sandbox
+    sandbox.restore();
+    const db = models.database;
+    const [row] = await db.executeSql(`SELECT current_database();`);
+    const { current_database } = row;
+    if (current_database !== 'tupaia_test') {
+      throw new Error(
+        `Safety check failed: clearTestData can only be run against a database named tupaia_test, found ${current_database}.`,
+      );
+    }
+    await db.executeSql(`DELETE FROM login_attempts;`);
+  });
+
   it('should return user details with apiClient and access policy', async function () {
     const authResponse = await app.post('auth?grantType=password', {
       headers: {
@@ -133,7 +148,7 @@ describe('Authenticate', function () {
 
   it('limit consecutive fails by username', async () => {
     const times = 4;
-    const stub = sinon.stub(ConsecutiveFailsRateLimiter.prototype, 'getMaxAttempts').returns(times);
+    sandbox.stub(ConsecutiveFailsRateLimiter.prototype, 'getMaxAttempts').returns(times);
 
     const makeRequest = () => {
       return app.post('auth?grantType=password', {
@@ -159,13 +174,11 @@ describe('Authenticate', function () {
         expect(request.headers['retry-after']).to.equal('900');
       }
     }
-
-    stub.restore();
   });
 
   it('limit fails by ip address ', async () => {
     const times = 3;
-    const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+    sandbox.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
 
     const makeRequest = emailAddress => {
       return app.post('auth?grantType=password', {
@@ -191,17 +204,13 @@ describe('Authenticate', function () {
         expect(request.headers['retry-after']).to.equal('86400');
       }
     }
-
-    stub.restore();
   });
 
   it('limit refresh token fails ', async () => {
     const times = 3;
-    const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+    sandbox.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
     // Make sure that it doesn't rate limit based on email address
-    const stub2 = sinon
-      .stub(ConsecutiveFailsRateLimiter.prototype, 'getMaxAttempts')
-      .returns(times - 1);
+    sandbox.stub(ConsecutiveFailsRateLimiter.prototype, 'getMaxAttempts').returns(times - 1);
 
     const makeRequest = () => {
       return app.post('auth?grantType=refresh_token', {
@@ -225,14 +234,11 @@ describe('Authenticate', function () {
         expect(request.headers['retry-after']).to.equal('86400');
       }
     }
-
-    stub.restore();
-    stub2.restore();
   });
 
   it('limit one time login fails ', async () => {
     const times = 3;
-    const stub = sinon.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
+    sandbox.stub(BruteForceRateLimiter.prototype, 'getMaxAttempts').returns(times);
 
     const makeRequest = () => {
       return app.post('auth?grantType=one_time_login', {
@@ -256,7 +262,5 @@ describe('Authenticate', function () {
         expect(request.headers['retry-after']).to.equal('86400');
       }
     }
-
-    stub.restore();
   });
 });
