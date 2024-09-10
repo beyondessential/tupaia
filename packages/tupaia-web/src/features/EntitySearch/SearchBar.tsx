@@ -8,9 +8,9 @@ import styled from 'styled-components';
 import { TextField, TextFieldProps } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { Close, Search } from '@material-ui/icons';
-import { IconButton, Button } from '@tupaia/ui-components';
+import { IconButton } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
-import { QRScanIcon } from './QRScanIcon';
+import { QRCodeScanner } from '../QRCodeScanner';
 
 const SearchInput = styled(TextField).attrs({
   variant: 'outlined',
@@ -100,19 +100,6 @@ const MobileWrapper = styled.div`
   }
 `;
 
-const QrScanButton = styled(Button).attrs({
-  startIcon: <QRScanIcon />,
-  variant: 'text',
-})`
-  background: ${({ theme }) => theme.palette.background.paper};
-  text-transform: none;
-  font-size: 0.875rem;
-  font-weight: 400;
-  padding-inline: 0.5rem;
-  white-space: nowrap;
-  height: 100%;
-`;
-
 interface SearchBarProps {
   value?: string;
   onChange: (newValue: string) => void;
@@ -158,7 +145,7 @@ export const SearchBar = ({ value = '', onChange, onFocusChange, onClose }: Sear
           inputRef={inputRef}
         />
         <MobileWrapper>
-          <QrScanButton>Scan ID</QrScanButton>
+          <QRCodeScanner />
           <MobileCloseButton onClick={handleClickClose} color="default">
             <Close />
           </MobileCloseButton>
