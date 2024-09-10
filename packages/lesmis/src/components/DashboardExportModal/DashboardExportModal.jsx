@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
-import { useIsFetching } from 'react-query';
+import { useIsFetching } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import DownloadIcon from '@material-ui/icons/GetApp';
