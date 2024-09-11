@@ -1,17 +1,15 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
+import { useSearchParams } from 'react-router-dom';
 import { List, Typography } from '@material-ui/core';
-import { ViewReport } from '@tupaia/types';
-import { CheckboxList, Form as BaseForm } from '../../../components';
-import { URL_SEARCH_PARAMS } from '../../../constants';
-import { useDownloadRawData } from '../../../api/mutations';
+import { Button, SpinningLoader } from '@tupaia/ui-components';
+import { CheckboxList, Form as BaseForm } from '../../../../components';
+import { URL_SEARCH_PARAMS } from '../../../../constants';
 
 const ListItem = styled.li`
   text-align: center;
@@ -54,6 +52,7 @@ const FormButton = styled(Button)`
 const CheckboxListWrapper = styled.div`
   width: 30rem;
   max-width: 100%;
+  flex-grow: 1;
 `;
 
 const ErrorMessage = styled(Typography).attrs({
@@ -63,67 +62,53 @@ const ErrorMessage = styled(Typography).attrs({
   margin-bottom: 1rem;
 `;
 
-const EmailDownloadAlert = styled(Alert).attrs({
-  severity: 'info',
-})`
-  margin-bottom: 1rem;
-`;
-
-interface DataDownloadProps {
-  report: ViewReport;
+interface DownloadVisualProps {
+  options: { label?: string; value: any }[];
+  isLoading: boolean;
+  onDownload: (selectedValues: string[]) => void;
   isEnlarged?: boolean;
+  children?: React.ReactNode;
+  error?: Error;
+  onClose?: () => void;
 }
 
-export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
+/**
+ * @description Component for downloading data from a visual. This component is used in the DataDownload and DownloadFiles visuals.
+ */
+export const DownloadVisual = ({
+  options,
+  isLoading,
+  onDownload,
+  isEnlarged,
+  children,
+  error,
+  onClose,
+}: DownloadVisualProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
   const formContext = useForm({
     mode: 'onChange',
   });
-  const selectedCodes = formContext.watch(reportCode!);
-  const {
-    mutateAsync: fetchDownloadData,
-    isLoading,
-    error,
-    data: downloadResponse,
-  } = useDownloadRawData(report?.downloadUrl);
+  const selectedValues = formContext.watch(reportCode!);
 
-  const { data } = report;
   if (!isEnlarged)
-    return (
-      <List>
-        {data?.map(({ name }) => (
-          <ListItem key={name}>{name}</ListItem>
-        ))}
-      </List>
-    );
+    return <List>{options?.map(({ label }) => <ListItem key={label}>{label}</ListItem>)}</List>;
 
   const closeModal = () => {
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT);
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_PERIOD);
     setUrlSearchParams(urlSearchParams);
+    if (onClose) onClose();
   };
   return isLoading ? (
     <SpinningLoader />
   ) : (
     <Form formContext={formContext}>
-      {downloadResponse?.emailTimeoutHit && (
-        <EmailDownloadAlert>
-          This export is taking a while, and will continue in the background. You will be emailed
-          when the export process completes.
-        </EmailDownloadAlert>
-      )}
+      {children}
       {error && <ErrorMessage>{error.message}</ErrorMessage>}
       <CheckboxListWrapper>
         <CheckboxList
-          options={
-            data
-              ? data.map(({ name, value }) => ({
-                  label: name,
-                  value: value as string,
-                }))
-              : []
-          }
+          options={options}
           name={reportCode!}
           legend="Select the data you wish to download"
           required
@@ -135,8 +120,8 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
           Cancel
         </FormButton>
         <FormButton
-          disabled={!selectedCodes || selectedCodes.length === 0 || isLoading}
-          onClick={() => fetchDownloadData(selectedCodes)}
+          disabled={!selectedValues || selectedValues.length === 0 || isLoading}
+          onClick={() => onDownload(selectedValues)}
         >
           Download
         </FormButton>
