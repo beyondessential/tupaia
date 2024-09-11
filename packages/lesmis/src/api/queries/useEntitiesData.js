@@ -41,7 +41,7 @@ const PROJECT_PARAMS = {
 
 export const useProjectEntitiesData = () => {
   const query = useQuery(
-    'entities',
+    ['entities'],
     () => get(`entities/${PROJECT_CODE}`, { params: PROJECT_PARAMS }),
     {
       staleTime: 1000 * 60 * 60 * 1,
