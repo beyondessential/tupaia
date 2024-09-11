@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import { useDownloadFiles } from '../../../../api/mutations';
 import { DownloadVisual } from './DownloadVisual';
@@ -15,28 +15,21 @@ interface DownloadFilesVisualProps {
 }
 
 export const DownloadFiles = ({ report, isEnlarged }: DownloadFilesVisualProps) => {
-  const { mutateAsync: download, error, reset, isLoading } = useDownloadFiles();
-  const [isDownloading, setIsDownloading] = useState(false);
+  const { mutate: download, error, reset, isLoading } = useDownloadFiles();
   const options =
     report?.data?.map(({ label, uniqueFileName }) => ({
       value: uniqueFileName,
       label,
     })) ?? [];
 
-  const downloadSelectedFiles = async selectedValues => {
-    try {
-      setIsDownloading(true);
-      await download(Array.isArray(selectedValues) ? selectedValues : [selectedValues]);
-      setIsDownloading(false);
-    } catch (error) {
-      setIsDownloading(false);
-    }
+  const downloadSelectedFiles = selectedValues => {
+    download(Array.isArray(selectedValues) ? selectedValues : [selectedValues]);
   };
 
   return (
     <DownloadVisual
       options={options}
-      isLoading={isLoading || isDownloading}
+      isLoading={isLoading}
       onDownload={downloadSelectedFiles}
       isEnlarged={isEnlarged}
       error={error as Error}
