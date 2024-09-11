@@ -45,6 +45,7 @@ export const schema = {
       6, // Introduced survey groups
       8, // Replaced answersEnablingFollowUp with more complex visibilityCriteria
       9, // Added validation criteria to survey screen components
+      26, // Added user entity permissions and user accounts
     ];
     if (oldRealm.schemaVersion < Math.max(versionsRequiringFullResync)) {
       const results = newRealm.objects('Setting').filtered('key = "LATEST_SERVER_SYNC_TIMESTAMP"');
