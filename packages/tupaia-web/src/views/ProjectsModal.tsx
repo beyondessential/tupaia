@@ -204,7 +204,6 @@ export const ProjectsModal = () => {
                       option.label.toLowerCase().startsWith(searchTerm.toLowerCase()),
                     );
                   },
-                  debug: true,
                 }}
                 getOptionSelected={(option, value) => option.value === value}
               />
