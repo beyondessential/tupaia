@@ -8,7 +8,7 @@ export { useLandingPage } from './useLandingPage';
 export { useProject } from './useProject';
 export { useProjects } from './useProjects';
 export { useUser } from './useUser';
-export { useEntity } from './useEntity';
+export { useEntity, useEntityById } from './useEntity';
 export { useEntityAncestors } from './useEntityAncestors';
 export { useEntities, useEntitiesWithLocation } from './useEntities';
 export { useDashboards } from './useDashboards';

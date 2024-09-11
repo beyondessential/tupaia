@@ -10,6 +10,7 @@ import { get } from '../api';
 import { DEFAULT_BOUNDS, MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { useModal } from '../../utils';
 import { useUser } from './useUser';
+import { useEntities } from './useEntities';
 
 export const useEntity = (
   projectCode?: ProjectCode,
@@ -49,6 +50,39 @@ export const useEntity = (
           },
         ]);
       },
+    },
+  );
+};
+
+export const useEntityById = (
+  projectCode,
+  entityId,
+  fields = [
+    'parent_code',
+    'code',
+    'name',
+    'type',
+    'point',
+    'image_url',
+    'attributes',
+    'child_codes',
+  ],
+  onSuccess,
+) => {
+  return useQuery(
+    ['entities', projectCode, entityId, fields],
+    async (): Promise<Entity> => {
+      const results = await get(`entities/${projectCode}/${projectCode}`, {
+        params: {
+          filter: { id: entityId },
+          fields,
+        },
+      });
+      return results[0] ?? null;
+    },
+    {
+      enabled: !!projectCode && !!entityId,
+      onSuccess,
     },
   );
 };

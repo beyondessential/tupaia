@@ -145,7 +145,7 @@ export const SearchBar = ({ value = '', onChange, onFocusChange, onClose }: Sear
           inputRef={inputRef}
         />
         <MobileWrapper>
-          <QRCodeScanner />
+          <QRCodeScanner onCloseEntitySearch={handleClickClose} />
           <MobileCloseButton onClick={handleClickClose} color="default">
             <Close />
           </MobileCloseButton>
