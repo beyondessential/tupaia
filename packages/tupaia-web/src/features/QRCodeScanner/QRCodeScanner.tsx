@@ -60,7 +60,7 @@ const Title = styled(Typography).attrs({
   font-weight: 500;
 `;
 
-export const QRCodeScanner = ({ onCloseEntitySearch }) => {
+export const QRCodeScanner = ({ onCloseEntitySearch }: { onCloseEntitySearch: () => void }) => {
   const { projectCode, dashboardName } = useParams();
   const navigate = useNavigate();
   const location = useLocation();

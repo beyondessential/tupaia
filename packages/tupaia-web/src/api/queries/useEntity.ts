@@ -10,7 +10,6 @@ import { get } from '../api';
 import { DEFAULT_BOUNDS, MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { useModal } from '../../utils';
 import { useUser } from './useUser';
-import { useEntities } from './useEntities';
 
 export const useEntity = (
   projectCode?: ProjectCode,
@@ -55,8 +54,8 @@ export const useEntity = (
 };
 
 export const useEntityById = (
-  projectCode,
-  entityId,
+  projectCode?: ProjectCode,
+  entityId?: string,
   fields = [
     'parent_code',
     'code',
@@ -67,7 +66,7 @@ export const useEntityById = (
     'attributes',
     'child_codes',
   ],
-  onSuccess,
+  onSuccess?: (data: Entity) => void,
 ) => {
   return useQuery(
     ['entities', projectCode, entityId, fields],
