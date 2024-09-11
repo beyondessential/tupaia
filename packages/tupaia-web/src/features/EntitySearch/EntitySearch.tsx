@@ -15,7 +15,6 @@ import { SearchResults } from './SearchResults';
 import { gaEvent } from '../../utils';
 
 const Container = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,11 +39,10 @@ const ResultsWrapper = styled.div`
   overflow-y: auto;
 
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    position: fixed;
+    width: 100%;
     top: ${TOP_BAR_HEIGHT_MOBILE};
     left: 0;
     right: 0;
-    z-index: 1;
     min-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE});
     max-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE});
     border-radius: 0;
