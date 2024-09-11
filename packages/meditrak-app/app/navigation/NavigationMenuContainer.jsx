@@ -18,6 +18,7 @@ import {
 const DEVELOPER_EMAIL_ADDRESSES = [
   // To add realm database explorer to the menu
   'edmofro@gmail.com',
+  'alex+test@bes.au',
 ];
 
 function mapStateToProps({ sideMenu, authentication, nav, rewards }) {
