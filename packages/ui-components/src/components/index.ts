@@ -16,7 +16,6 @@ export * from './DataGrid';
 export * from './DataTable';
 export * from './DateRangePicker';
 export * from './Dialog';
-export * from './DownloadFilesVisual';
 export * from './Editor';
 export * from './EnvBanner';
 export * from './ErrorBoundary';

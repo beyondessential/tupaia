@@ -4,7 +4,7 @@
  *
  */
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { SingleProject } from '../../types';
 import { get } from '../api';
 import { useUser } from './useUser';
