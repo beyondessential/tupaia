@@ -13,13 +13,13 @@ export const EntityHierarchyExportModal = () => {
 
   return (
     <ExportModal
-      title="Export Entity Hierarchies"
+      title="Download entity hierarchies"
       values={{ hierarchies }}
       exportEndpoint="hierarchies"
     >
       <ReduxAutocomplete
-        label="Hierarchy to export"
-        helperText="Please select an entity hierarchy to export"
+        label="Hierarchy to download"
+        helperText="Please select an entity hierarchy to download"
         reduxId="hierarchyIds"
         onChange={setHierarchies}
         endpoint="hierarchies"

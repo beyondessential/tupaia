@@ -250,6 +250,7 @@ const CREATE_CONFIG = {
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
     fields: [
+      SURVEY_FIELDS.surveyQuestions,
       SURVEY_FIELDS.project,
       SURVEY_FIELDS.name,
       SURVEY_FIELDS.code,
@@ -261,7 +262,6 @@ const CREATE_CONFIG = {
       SURVEY_FIELDS.requires_approval,
       SURVEY_FIELDS['data_group.service_type'],
       SURVEY_FIELDS['data_group.config'],
-      SURVEY_FIELDS.surveyQuestions,
     ],
     // Custom component needed because on create we suggest the code
     FieldsComponent: SurveyEditFields,
