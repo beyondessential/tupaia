@@ -13,12 +13,15 @@ import { PasswordStrengthBar } from '../widgets/PasswordStrengthBar';
 import { useUser } from '../api/queries';
 import { useResetPassword } from '../api/mutations';
 
+const Wrapper = styled.div`
+  overflow: auto;
+`;
+
 const Container = styled.section`
   padding-top: 1rem;
   padding-bottom: 1rem;
-  max-width: 460px;
+  max-width: 26rem;
   margin: 2.5rem auto;
-  min-height: calc(100vh - 445px);
 `;
 
 const StyledButton = styled(Button)`
@@ -54,62 +57,64 @@ export const ChangePasswordPage = React.memo(() => {
   const newPassword = watch('newPassword');
 
   return (
-    <Container>
-      <PageHeader title={user.name} />
-      <form onSubmit={onSubmit} noValidate>
-        {error && <ErrorMessage>{error.message}</ErrorMessage>}
-        {isSuccess && <SuccessMessage>Password successfully updated.</SuccessMessage>}
-        <TextField
-          label="Current Password"
-          name="oldPassword"
-          autoComplete="current-password"
-          placeholder="Enter your current password"
-          required
-          type="password"
-          error={!!errors.oldPassword}
-          helperText={errors.oldPassword && errors.oldPassword.message}
-          inputRef={register({
-            required: 'Required',
-          })}
-        />
-        <Divider />
-        <TextField
-          label="New Password"
-          name="newPassword"
-          placeholder="Enter your password"
-          required
-          type="password"
-          error={!!errors.newPassword}
-          helperText={errors.newPassword && errors.newPassword.message}
-          inputRef={register({
-            required: 'Required',
-            minLength: { value: 9, message: 'Password must be over 8 characters long.' },
-          })}
-        />
-        <TextField
-          label="Confirm Password"
-          name="newPasswordConfirm"
-          placeholder="Enter your password"
-          required
-          type="password"
-          error={!!errors.newPasswordConfirm}
-          helperText={errors.newPasswordConfirm && errors.newPasswordConfirm.message}
-          inputRef={register({
-            required: 'Required',
-            minLength: { value: 9, message: 'Password must be over 8 characters long.' },
-            validate: value => value === newPassword || 'Passwords do not match.',
-          })}
-        />
-        <PasswordStrengthBar
-          password={newPassword}
-          helperText="New password must be over 8 characters long."
-          pt={1}
-          pb={4}
-        />
-        <StyledButton type="submit" fullWidth isLoading={isLoading}>
-          Save Password
-        </StyledButton>
-      </form>
-    </Container>
+    <Wrapper>
+      <Container>
+        <PageHeader title={user.name} />
+        <form onSubmit={onSubmit} noValidate>
+          {error && <ErrorMessage>{error.message}</ErrorMessage>}
+          {isSuccess && <SuccessMessage>Password successfully updated.</SuccessMessage>}
+          <TextField
+            label="Current Password"
+            name="oldPassword"
+            autoComplete="current-password"
+            placeholder="Enter your current password"
+            required
+            type="password"
+            error={!!errors.oldPassword}
+            helperText={errors.oldPassword && errors.oldPassword.message}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <Divider />
+          <TextField
+            label="New Password"
+            name="newPassword"
+            placeholder="Enter your password"
+            required
+            type="password"
+            error={!!errors.newPassword}
+            helperText={errors.newPassword && errors.newPassword.message}
+            inputRef={register({
+              required: 'Required',
+              minLength: { value: 9, message: 'Password must be over 8 characters long.' },
+            })}
+          />
+          <TextField
+            label="Confirm Password"
+            name="newPasswordConfirm"
+            placeholder="Enter your password"
+            required
+            type="password"
+            error={!!errors.newPasswordConfirm}
+            helperText={errors.newPasswordConfirm && errors.newPasswordConfirm.message}
+            inputRef={register({
+              required: 'Required',
+              minLength: { value: 9, message: 'Password must be over 8 characters long.' },
+              validate: value => value === newPassword || 'Passwords do not match.',
+            })}
+          />
+          <PasswordStrengthBar
+            password={newPassword}
+            helperText="New password must be over 8 characters long."
+            pt={1}
+            pb={4}
+          />
+          <StyledButton type="submit" fullWidth isLoading={isLoading}>
+            Save Password
+          </StyledButton>
+        </form>
+      </Container>
+    </Wrapper>
   );
 });

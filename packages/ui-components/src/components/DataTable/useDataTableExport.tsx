@@ -3,10 +3,10 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import xlsx from 'xlsx';
 import { toFilename } from '@tupaia/utils';
 import { useTable } from 'react-table';
 import moment, { Moment } from 'moment';
+import { utils, writeFile } from 'xlsx';
 
 export const useDataTableExport = (
   columns: any[],
@@ -52,22 +52,22 @@ export const useDataTableExport = (
 
     // Make xlsx worksheet
     // @see https://github.com/SheetJS/sheetjs
-    const sheet = xlsx.utils.aoa_to_sheet([[title]]);
+    const sheet = utils.aoa_to_sheet([[title]]);
     sheet['!cols'] = [{ wch: 20 }];
 
     // add header
-    xlsx.utils.sheet_add_aoa(sheet, header, {
+    utils.sheet_add_aoa(sheet, header, {
       origin: 'A3',
     });
 
     // add body
-    xlsx.utils.sheet_add_aoa(sheet, body, { origin: -1 });
+    utils.sheet_add_aoa(sheet, body, { origin: -1 });
 
     // spacer before footer
-    xlsx.utils.sheet_add_aoa(sheet, [[]], {
+    utils.sheet_add_aoa(sheet, [[]], {
       origin: -1,
     });
-    xlsx.utils.sheet_add_aoa(sheet, [[]], {
+    utils.sheet_add_aoa(sheet, [[]], {
       origin: -1,
     });
 
@@ -75,7 +75,7 @@ export const useDataTableExport = (
     if (startDate && endDate) {
       const formatDate = (dateToFormat: Date | string | Moment) =>
         moment(dateToFormat).format('DD/MM/YY');
-      xlsx.utils.sheet_add_aoa(
+      utils.sheet_add_aoa(
         sheet,
         [[`Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}.`]],
         {
@@ -83,7 +83,7 @@ export const useDataTableExport = (
         },
       );
     }
-    xlsx.utils.sheet_add_aoa(
+    utils.sheet_add_aoa(
       sheet,
       [[`Exported on ${String(moment())} from ${window.location.hostname}`]],
       {
@@ -99,7 +99,7 @@ export const useDataTableExport = (
     const fileName = title ? toFilename(`export-${title}-${date}`, true) : `export-${date}`;
 
     // Write file. This will trigger the file download in the browser
-    return xlsx.writeFile(workbook, `${fileName}.xlsx`);
+    return writeFile(workbook, `${fileName}.xlsx`);
   };
 
   return { doExport };
