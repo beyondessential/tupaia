@@ -5,7 +5,7 @@
 
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 import {
   FormControl as MuiFormControl,
