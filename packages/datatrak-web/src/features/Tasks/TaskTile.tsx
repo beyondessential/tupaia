@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { generatePath, Link } from 'react-router-dom';
-import { ROUTES } from '../../constants';
+import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../constants';
 import { displayDate } from '../../utils';
 import { ButtonLink } from '../../components';
 import { StatusPill } from './StatusPill';
@@ -94,7 +94,7 @@ export const TaskTile = ({ task }) => {
     countryCode: entity.countryCode,
   });
   // Link needs to include page number because if the redirect happens, the "from" state is lost
-  const surveyLink = `${path}/1`;
+  const surveyLink = `${path}/1?${PRIMARY_ENTITY_CODE_PARAM}=${entity.code}`;
   const taskLink = generatePath(ROUTES.TASK_DETAILS, {
     taskId: task.id,
   });
@@ -114,7 +114,7 @@ export const TaskTile = ({ task }) => {
         </TileContent>
       </TileLeft>
       <TileRight>
-        <ButtonLink to={surveyLink} component={Link} state={{ primaryEntityCode: entity.code }}>
+        <ButtonLink to={surveyLink} component={Link}>
           Complete task
         </ButtonLink>
       </TileRight>

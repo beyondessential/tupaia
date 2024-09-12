@@ -36,6 +36,7 @@ export const ROUTES = {
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
+export const PRIMARY_ENTITY_CODE_PARAM = 'primaryEntityCode';
 
 export const ADMIN_ONLY_ROUTES = [
   ROUTES.REPORTS,

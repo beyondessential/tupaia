@@ -5,10 +5,9 @@
 import React, { createContext, Dispatch, useContext, useReducer, useState, useMemo } from 'react';
 import { useMatch, useParams, useSearchParams } from 'react-router-dom';
 import { QuestionType } from '@tupaia/types';
-import { ROUTES } from '../../../constants';
+import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
-import { usePrimaryEntityLocation } from '../../../utils';
 import { getAllSurveyComponents, getPrimaryEntityParentQuestionIds } from '../utils';
 import {
   generateCodeForCodeGeneratorQuestions,
@@ -46,7 +45,8 @@ export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction
 export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const [urlSearchParams] = useSearchParams();
   const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
-  const primaryEntityCode = usePrimaryEntityLocation();
+  const primaryEntityCodeParam = urlSearchParams.get(PRIMARY_ENTITY_CODE_PARAM) || undefined;
+  const [primaryEntityCode] = useState(primaryEntityCodeParam);
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const params = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;

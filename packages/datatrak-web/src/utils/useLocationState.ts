@@ -11,13 +11,9 @@ function hasProperty<T extends string>(state: unknown, property: T): state is Re
   return false;
 }
 
-function useLocationState(property: 'primaryEntityCode' | 'from'): string | undefined {
+function useLocationState(property: 'from'): string | undefined {
   const location = useLocation();
   return hasProperty(location.state, property) ? location.state[property] : undefined;
-}
-
-export function usePrimaryEntityLocation() {
-  return useLocationState('primaryEntityCode');
 }
 
 export function useFromLocation() {

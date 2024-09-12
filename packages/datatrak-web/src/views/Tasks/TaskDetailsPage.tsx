@@ -12,7 +12,7 @@ import { Modal, ModalCenteredContent, SpinningLoader } from '@tupaia/ui-componen
 import { Button } from '../../components';
 import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
-import { ROUTES } from '../../constants';
+import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../constants';
 import { useFromLocation } from '../../utils';
 import { SingleTaskResponse } from '../../types';
 import { TasksContentWrapper } from '../../layout';
@@ -73,6 +73,7 @@ const ButtonComponent = ({
     surveyCode: survey?.code,
     screenNumber: '1',
   });
+  const surveyLink = `${surveyUrl}?${PRIMARY_ENTITY_CODE_PARAM}=${entity?.code}`;
 
   if (taskStatus === TaskStatus.cancelled) return null;
   if (taskStatus === TaskStatus.completed) {
@@ -89,7 +90,7 @@ const ButtonComponent = ({
     );
   }
   return (
-    <Button to={surveyUrl} state={{ from, primaryEntityCode: entity.code }}>
+    <Button to={surveyLink} state={{ from }}>
       Complete task
     </Button>
   );
