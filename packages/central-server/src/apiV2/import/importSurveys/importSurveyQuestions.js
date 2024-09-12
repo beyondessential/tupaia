@@ -4,7 +4,7 @@
  */
 
 import xlsx from 'xlsx';
-
+import { isEqual } from 'lodash';
 import {
   DatabaseError,
   UploadError,
@@ -23,14 +23,14 @@ import {
   SURVEY_METADATA,
 } from './processSurveyMetadata';
 import { caseAndSpaceInsensitiveEquals, convertCellToJson } from './utilities';
-import { RECORDS } from '@tupaia/database';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
 
 const objectsAreEqual = (a, b) => {
-  if (!!a === !!b) return true;
-  return JSON.stringify(a) === JSON.stringify(b);
+  // If one is falsy and the other is truthy, they are not equal
+  if (!!a !== !!b) return false;
+  return isEqual(a, b);
 };
 
 const validateQuestionExistence = rows => {
@@ -131,6 +131,8 @@ const updateOrCreateSurveyScreenComponent = async (
     if (detailLabel !== existingScreenComponent.detail_label) {
       changes.detail_label = detailLabel;
     }
+
+    console.log('changes', changes);
 
     if (Object.keys(changes).length > 0) {
       await models.surveyScreenComponent.update({ id: existingScreenComponent.id }, changes);
