@@ -13,7 +13,7 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../../constants';
 import { useResubmitSurveyResponse, useSubmitSurveyResponse } from '../../api/mutations';
 import { SurveyParams } from '../../types';
-import { useFromLocation, usePrimaryEntityLocation } from '../../utils';
+import { useFromLocation } from '../../utils';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { getErrorsByScreen } from './utils';
@@ -75,7 +75,6 @@ const LoadingContainer = styled.div`
 export const SurveyLayout = () => {
   const navigate = useNavigate();
   const from = useFromLocation();
-  const primaryEntityCode = usePrimaryEntityLocation();
   const params = useParams<SurveyParams>();
   const isFetchingEntities = useIsFetching({ queryKey: ['entityAncestors'] });
 
@@ -104,7 +103,6 @@ export const SurveyLayout = () => {
     navigate(path, {
       state: {
         ...(from && { from }),
-        ...(primaryEntityCode && { primaryEntityCode }),
       },
     });
   };
@@ -140,7 +138,6 @@ export const SurveyLayout = () => {
       {
         state: {
           ...(from && { from }),
-          ...(primaryEntityCode && { primaryEntityCode }),
           errors: stringifiedErrors,
         },
       },

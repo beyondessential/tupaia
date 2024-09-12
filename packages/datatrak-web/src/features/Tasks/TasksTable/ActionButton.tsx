@@ -8,7 +8,7 @@ import { generatePath, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
-import { ROUTES } from '../../../constants';
+import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
 import { SingleTaskResponse } from '../../../types';
 import { AssignTaskModal } from './AssignTaskModal';
 
@@ -56,7 +56,7 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
     countryCode: entity.countryCode,
   });
   // Link needs to include page number because if the redirect happens, the "from" state is lost
-  const surveyLink = `${path}/1`;
+  const surveyLink = `${path}/1?${PRIMARY_ENTITY_CODE_PARAM}=${entity.code}`;
 
   return (
     <ActionButtonComponent
@@ -65,7 +65,6 @@ export const ActionButton = ({ task }: ActionButtonProps) => {
       variant="contained"
       state={{
         from: location.pathname,
-        primaryEntityCode: entity.code,
       }}
     >
       Complete task
