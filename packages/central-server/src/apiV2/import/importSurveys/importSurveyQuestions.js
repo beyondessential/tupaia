@@ -132,8 +132,6 @@ const updateOrCreateSurveyScreenComponent = async (
       changes.detail_label = detailLabel;
     }
 
-    console.log('changes', changes);
-
     if (Object.keys(changes).length > 0) {
       await models.surveyScreenComponent.update({ id: existingScreenComponent.id }, changes);
     }
