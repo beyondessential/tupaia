@@ -109,7 +109,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
-  const { exportWithLabels, exportWithTable } = useExportSettings();
+  const { exportWithLabels, exportWithTable, separatePagePerItem } = useExportSettings();
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
@@ -124,6 +124,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
       settings: {
         exportWithLabels,
         exportWithTable,
+        separatePagePerItem,
       },
     });
 

@@ -144,13 +144,14 @@ export const PDFExportDashboardItem = ({
 
   const { config = {} as DashboardItemConfig } = dashboardItem || ({} as DashboardItem);
 
+  const { separatePagePerItem, ...restOfSettings } = settings || {};
   const presentationOptions =
     config && 'presentationOptions' in config ? config.presentationOptions : undefined;
   const dashboardItemConfig = {
     ...config,
     presentationOptions: {
       ...presentationOptions,
-      ...settings,
+      ...restOfSettings,
     },
   } as DashboardItemConfig;
   const { description, entityHeader, name, periodGranularity, reference } = dashboardItemConfig;
@@ -169,6 +170,7 @@ export const PDFExportDashboardItem = ({
       key={dashboardItem?.code}
       $isPreview={isPreview}
       $previewZoom={previewZoom}
+      separatePage={separatePagePerItem}
     >
       <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
         {entityName}

@@ -42,7 +42,7 @@ export const DashboardPDFExport = ({
 
   const { activeDashboard } = useDashboard();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { exportWithLabels, exportWithTable } = useExportSettings();
+  const { exportWithLabels, exportWithTable, separatePagePerItem } = useExportSettings();
 
   if (!activeDashboard) return null;
 
@@ -60,6 +60,7 @@ export const DashboardPDFExport = ({
         JSON.parse(urlSettings) || {
           exportWithLabels,
           exportWithTable,
+          separatePagePerItem,
         }
       );
     }
@@ -67,6 +68,7 @@ export const DashboardPDFExport = ({
     return {
       exportWithLabels,
       exportWithTable,
+      separatePagePerItem,
     };
   };
 
