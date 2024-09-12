@@ -27,7 +27,5 @@ export const downloadDashboardAsPdf = (
     settings: JSON.stringify(settings),
   });
 
-  console.log('pdfPageUrl', pdfPageUrl);
-
-  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain);
+  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, false, true);
 };

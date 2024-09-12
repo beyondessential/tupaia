@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
+import { A4Page } from '@tupaia/ui-components';
 import { DashboardPDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 
@@ -46,6 +47,13 @@ const PreviewContainer = styled.div`
   min-width: 20rem;
   overflow-y: auto;
   overflow-x: hidden;
+  ${A4Page} {
+    // simulate the margins of the printed page
+    padding-block-start: 5rem;
+    &:last-child {
+      padding-block-end: 5rem;
+    }
+  }
 `;
 
 const PreviewTitle = styled(Typography).attrs({

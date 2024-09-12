@@ -32,10 +32,12 @@ const StyledA4Page = styled(A4Page)<{
 }>`
   ${({ $isPreview, $previewZoom = 0.25 }) =>
     $isPreview ? `width: 100%; zoom: ${$previewZoom};` : ''};
+  padding-block-start: 0;
+  padding-block-end: 1cm;
 `;
 
 const PDFExportBody = styled.main`
-  margin-block: 36pt;
+  margin-block-start: 36pt;
 `;
 
 const Title = styled.h3`
@@ -167,7 +169,6 @@ export const PDFExportDashboardItem = ({
 
   const data = isLoading ? undefined : (report as BaseReport)?.data;
 
-  console.log(displayHeader);
   return (
     <StyledA4Page
       ref={pageRef}
