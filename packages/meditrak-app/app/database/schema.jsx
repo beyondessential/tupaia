@@ -45,6 +45,7 @@ export const schema = {
       6, // Introduced survey groups
       8, // Replaced answersEnablingFollowUp with more complex visibilityCriteria
       9, // Added validation criteria to survey screen components
+      26, // added user entity permission and user accounts
     ];
 
     if (oldRealm.schemaVersion < Math.max(versionsRequiringFullResync)) {
