@@ -10,7 +10,11 @@ import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { DashboardItemVizTypes, MOBILE_BREAKPOINT } from '../../../constants';
-import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
+import {
+  DisplayFormatSettings,
+  DisplayOptionsSettings,
+  useExportSettings,
+} from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
@@ -99,6 +103,17 @@ const ExportSettingsInstructionsContainer = styled.div`
   padding-bottom: 1.4rem;
 `;
 
+const ExportSettingsWrapper = styled.div`
+  padding-block-end: 2rem;
+  & + & {
+    padding-block-start: 1.5rem;
+    border-top: 0.1rem solid ${({ theme }) => theme.palette.text.secondary};
+  }
+  &:last-child {
+    padding-block-end: 0;
+  }
+`;
+
 interface ExportDashboardProps {
   onClose: () => void;
   selectedDashboardItems: string[];
@@ -150,7 +165,12 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
             <ExportSetting>
               {hasChartItems && (
                 <section>
-                  <DisplayOptionsSettings />
+                  <ExportSettingsWrapper>
+                    <DisplayFormatSettings />
+                  </ExportSettingsWrapper>
+                  <ExportSettingsWrapper>
+                    <DisplayOptionsSettings />
+                  </ExportSettingsWrapper>
                 </section>
               )}
               <MailingListSection
