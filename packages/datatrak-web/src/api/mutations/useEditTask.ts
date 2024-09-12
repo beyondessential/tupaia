@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Task } from '@tupaia/types';
 import { put } from '../api';
 import { successToast } from '../../utils';
@@ -22,7 +22,7 @@ export const useEditTask = (taskId?: Task['id'], onSuccess?: () => void) => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('tasks');
+        queryClient.invalidateQueries(['tasks']);
         queryClient.invalidateQueries(['tasks', taskId]);
         queryClient.invalidateQueries(['taskMetric', projectId]);
         successToast('Task updated successfully');

@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { DatatrakWebTaskChangeRequest } from '@tupaia/types';
 import { post } from '../api';
 import { successToast } from '../../utils';
@@ -20,7 +20,7 @@ export const useCreateTask = (onSuccess?: () => void) => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('tasks');
+        queryClient.invalidateQueries(['tasks']);
         queryClient.invalidateQueries(['taskMetric', projectId]);
         successToast('Task successfully created');
         if (onSuccess) onSuccess();

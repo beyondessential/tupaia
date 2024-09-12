@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useIsFetching } from 'react-query';
+import { useIsFetching } from '@tanstack/react-query';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';

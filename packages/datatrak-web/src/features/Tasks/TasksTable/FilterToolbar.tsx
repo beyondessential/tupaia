@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   FormGroup as MuiFormGroup,
   FormControlLabel as MuiFormControlLabel,
@@ -54,7 +54,7 @@ const FilterCheckbox = ({ name, label }) => {
     // reset the page to 0 when the filter changes
     onChangePage(0);
     // Clear the cache so that the task data is re-fetched
-    queryClient.invalidateQueries('tasks');
+    queryClient.invalidateQueries(['tasks']);
   };
 
   return (

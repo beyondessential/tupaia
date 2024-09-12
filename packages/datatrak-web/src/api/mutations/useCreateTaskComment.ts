@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Task, TaskCommentType } from '@tupaia/types';
 import { post } from '../api';
 import { successToast } from '../../utils';
@@ -21,7 +21,7 @@ export const useCreateTaskComment = (taskId?: Task['id'], onSuccess?: () => void
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('tasks');
+        queryClient.invalidateQueries(['tasks']);
         queryClient.invalidateQueries(['tasks', taskId]);
         successToast('Comment added successfully');
         if (onSuccess) {
