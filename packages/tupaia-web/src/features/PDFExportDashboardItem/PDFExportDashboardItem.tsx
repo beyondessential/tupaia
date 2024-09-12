@@ -100,6 +100,7 @@ interface PDFExportDashboardItemProps {
   activeDashboard?: Dashboard;
   isPreview?: boolean;
   settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
+  displayHeader?: boolean;
 }
 
 /**
@@ -112,6 +113,7 @@ export const PDFExportDashboardItem = ({
   activeDashboard,
   isPreview = false,
   settings,
+  displayHeader,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -164,6 +166,8 @@ export const PDFExportDashboardItem = ({
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
   const data = isLoading ? undefined : (report as BaseReport)?.data;
+
+  console.log(displayHeader);
   return (
     <StyledA4Page
       ref={pageRef}
@@ -172,11 +176,13 @@ export const PDFExportDashboardItem = ({
       $previewZoom={previewZoom}
       separatePage={separatePagePerItem}
     >
-      <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
-        {entityName}
-      </PDFExportHeader>
+      {displayHeader && (
+        <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
+          {entityName}
+        </PDFExportHeader>
+      )}
       <PDFExportBody>
-        <DashboardName>{activeDashboard?.name}</DashboardName>
+        {displayHeader && <DashboardName>{activeDashboard?.name}</DashboardName>}
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}

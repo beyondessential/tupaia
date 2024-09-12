@@ -158,11 +158,17 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                 settings={{
                   exportWithTable,
                   exportWithLabels,
+                  separatePagePerItem,
                 }}
               />
             </ExportSetting>
           </ExportSettingsContainer>
-          {!isLoading && <Preview selectedDashboardItems={selectedDashboardItems} />}
+          {!isLoading && (
+            <Preview
+              selectedDashboardItems={selectedDashboardItems}
+              separatePagePerItem={separatePagePerItem}
+            />
+          )}
         </Container>
       </Wrapper>
       <ButtonGroup>

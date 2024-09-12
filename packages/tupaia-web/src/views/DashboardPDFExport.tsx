@@ -87,7 +87,7 @@ export const DashboardPDFExport = ({
 
   return (
     <Parent $isPreview={isPreview}>
-      {dashboardItems?.map(dashboardItem => (
+      {dashboardItems?.map((dashboardItem, i) => (
         <PDFExportDashboardItem
           key={dashboardItem.code}
           dashboardItem={dashboardItem}
@@ -95,6 +95,7 @@ export const DashboardPDFExport = ({
           activeDashboard={activeDashboard}
           isPreview={isPreview}
           settings={settings}
+          displayHeader={settings.separatePagePerItem || i === 0}
         />
       ))}
     </Parent>
