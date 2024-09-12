@@ -35,7 +35,7 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  padding-block-end: 2.5rem;
+  padding-block-end: 2rem;
   & + & {
     padding-block-start: 1.5rem;
     border-top: 0.1rem solid ${({ theme }) => theme.palette.text.secondary};
