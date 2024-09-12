@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { FormControl, FormControlLabel, FormGroup, Radio, RadioGroup } from '@material-ui/core';
+import { FormControl, FormGroup } from '@material-ui/core';
 import { Checkbox as BaseCheckbox } from '@tupaia/ui-components';
 import { ExportFormats, useExportSettings } from './ExportSettingsContext';
 import { ExportSettingLabel } from './ExportSettingLabel';
