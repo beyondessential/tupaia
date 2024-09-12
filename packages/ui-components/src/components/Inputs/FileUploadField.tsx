@@ -154,6 +154,7 @@ export interface FileUploadFieldProps {
    * has a file selected.
    */
   disabled?: boolean;
+  initialFiles?: File[];
 }
 
 export const FileUploadField = ({
@@ -169,6 +170,7 @@ export const FileUploadField = ({
   tooltip,
   disabled = false,
   fileName,
+  initialFiles = [],
 }: FileUploadFieldProps) => {
   if (disabled)
     return (
@@ -191,7 +193,7 @@ export const FileUploadField = ({
    *
    * This array uses set semantics. See {@link onDropAccepted}.
    */
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<File[]>(initialFiles);
   const hasFileSelected = files.length > 0;
 
   /**
@@ -220,6 +222,13 @@ export const FileUploadField = ({
 
   /** Propagates file selection changes to parent */
   useEffect(() => {
+    // if the files are the same as the initial files, don't call onChange
+    if (
+      initialFiles.length &&
+      files.length &&
+      files.every((file, i) => initialFiles?.[i]?.name === file.name)
+    )
+      return;
     onChange(files);
   }, [files]);
 

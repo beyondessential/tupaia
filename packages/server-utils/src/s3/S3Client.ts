@@ -101,13 +101,15 @@ export class S3Client {
     const buffer = Buffer.from(encodedImageString, 'base64');
 
     // use the file type from the image if it's available, otherwise default to png
-    const fileType =
+    let fileType =
       base64EncodedImage.includes('data:image') && base64EncodedImage.includes(';base64')
         ? base64EncodedImage.substring('data:image/'.length, base64EncodedImage.indexOf(';base64'))
         : 'png';
 
     // If is not an image file type, e.g. a pdf, throw an error
     if (!imageTypes.includes(fileType)) throw new Error(`File type ${fileType} is not supported`);
+
+    if (fileType === 'jpeg') fileType = 'jpg';
 
     const fileExtension = fileType.replace('+xml', '');
 

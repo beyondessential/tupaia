@@ -16,7 +16,7 @@ import {
   TextField,
 } from '../../components';
 import { useRequestCountryAccess } from '../../api/mutations';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Note = styled.p`
   text-align: left;

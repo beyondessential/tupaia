@@ -11,7 +11,12 @@ export { ProjectsRequest, ProjectsRoute } from './ProjectsRoute';
 export { SingleEntityRequest, SingleEntityRoute } from './SingleEntityRoute';
 export { EntityDescendantsRequest, EntityDescendantsRoute } from './EntityDescendantsRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
-export { SubmitSurveyResponseRequest, SubmitSurveyResponseRoute } from './SubmitSurveyReponse';
+export {
+  SubmitSurveyResponseRequest,
+  SubmitSurveyResponseRoute,
+  ResubmitSurveyResponseRequest,
+  ResubmitSurveyResponseRoute,
+} from './SubmitSurveyReponse';
 export { RecentSurveysRequest, RecentSurveysRoute } from './RecentSurveysRoute';
 export {
   SingleSurveyResponseRequest,

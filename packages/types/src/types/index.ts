@@ -98,6 +98,7 @@ export {
   EntityQuestionConfigFieldValue,
   EntityQuestionConfigFieldKey,
   ProjectConfig,
+  EntityType,
 } from './models-extra';
 export * from './requests';
 export * from './css';

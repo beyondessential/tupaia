@@ -8,10 +8,11 @@ import { connect } from 'react-redux';
 import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { Dashboard, HomeButton, LightTab, WarningCloud } from '@tupaia/ui-components';
+import { Dashboard, HomeButton, WarningCloud } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import { ProfileButton } from './ProfileButton';
 import { checkIsMultiCountryUser, getCountryCodes, getHomeUrl } from '../store';
+import { LightTab } from '../components';
 
 const Wrapper = styled.nav`
   position: relative;
