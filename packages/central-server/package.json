@@ -42,7 +42,7 @@
     "adm-zip": "^0.5.5",
     "api-error-handler": "^1.0.0",
     "async": "^2.6.2",
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.3",
     "case": "^1.6.1",
     "compare-versions": "^6.1.0",
     "cors": "^2.8.5",
