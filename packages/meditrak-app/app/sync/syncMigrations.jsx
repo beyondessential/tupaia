@@ -46,16 +46,13 @@ const migrations = {
   9: async (synchroniser, setProgressMessage) => {
     await resyncRecordTypes(synchroniser, setProgressMessage, ['survey_screen_component']);
   },
-  // Resync all users so that the new user entity permission structure comes through
+  // Resync all users so that the new user entity permission structure comes through, and the permission grousp so that the user question can correctly filter by permission group: version 1.14.144
   10: async (synchroniser, setProgressMessage) => {
-    await resyncRecordTypes(synchroniser, setProgressMessage, ['user_account']);
-  },
-  11: async (synchroniser, setProgressMessage) => {
-    await resyncRecordTypes(synchroniser, setProgressMessage, ['user_entity_permission']);
-  },
-  // Resync all permission groups in case they're coming from a version prior to db schema 26
-  12: async (synchroniser, setProgressMessage) => {
-    await resyncRecordTypes(synchroniser, setProgressMessage, ['permission_group']);
+    await resyncRecordTypes(synchroniser, setProgressMessage, [
+      'user_account',
+      'user_entity_permission',
+      'permission_group',
+    ]);
   },
 };
 
