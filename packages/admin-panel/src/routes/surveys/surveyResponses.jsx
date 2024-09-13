@@ -168,6 +168,10 @@ const IMPORT_CONFIG = {
       timeZone: getBrowserTimeZone(),
       respondWithEmailTimeout: 10 * 1000, // if an import doesn't finish in 10 seconds, email results
     },
+    accept: {
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    },
   },
   queryParameters: [
     {

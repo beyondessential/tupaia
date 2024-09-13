@@ -191,10 +191,7 @@ export const ImportModalComponent = React.memo(
                   onChange={newFiles => setFiles(newFiles ?? [])}
                   name="file-upload"
                   multiple={actionConfig.multiple}
-                  accept={{
-                    'application/vnd.ms-excel': ['.xls'],
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-                  }}
+                  accept={actionConfig.accept}
                 />
               </>
             )}
