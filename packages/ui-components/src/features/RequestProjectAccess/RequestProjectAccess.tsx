@@ -7,12 +7,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { WebServerProjectRequest } from '@tupaia/types';
+import { ProjectCountryAccessListRequest, WebServerProjectRequest } from '@tupaia/types';
 import { ProjectAccessForm } from './ProjectAccessForm';
+import { Alert } from '../../components';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  text-align: left;
 `;
 
 const BodyText = styled(Typography).attrs({
@@ -30,24 +32,40 @@ const Logo = styled.img`
   max-width: 7.5rem;
   width: 100%;
   height: auto;
+  border-radius: 3px;
 `;
 
 const ProjectDetails = styled.div`
   padding: 1rem 0 1.6rem;
 `;
 
-type Country = {
-  id: string;
-  name: string;
-  hasPendingAccess: boolean;
-};
+const Title = styled(Typography).attrs({
+  variant: 'h1',
+})`
+  font-size: 1.125rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
+const ProjectName = styled(Typography).attrs({
+  variant: 'h2',
+})`
+  font-size: 1rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
+const ProjectDescription = styled(Typography)`
+  font-size: 0.875rem;
+  margin-block-start: 0.25rem;
+`;
+
+type CountryAccessListItem = ProjectCountryAccessListRequest.ResBody[number];
 
 interface RequestProjectAccessProps {
   onClose?: () => void;
   project?: WebServerProjectRequest.ResBody;
   isLoading?: boolean;
   isFetched?: boolean;
-  countries: Country[];
+  countries: CountryAccessListItem[];
   onSubmit: (data: { entityIds: string[]; message: string; projectCode: string }) => void;
   isSubmitting: boolean;
   isSuccess: boolean;
@@ -65,9 +83,23 @@ export const RequestProjectAccess = ({
 }: RequestProjectAccessProps) => {
   const showLoading = isLoading || !isFetched;
 
+  const countriesWithAccess = countries?.filter((c: CountryAccessListItem) => c.hasAccess);
+
+  // the countries that have already got a request
+  const requestedCountries = countries?.filter((c: CountryAccessListItem) => c.hasPendingAccess);
+
+  // the countries that are available to request
+  const availableCountries = countries?.filter(
+    (c: CountryAccessListItem) => !c.hasAccess && !c.hasPendingAccess,
+  );
+
+  // show the no countries message if the country access list has loaded and there are no countries available
+  const showNoCountriesMessage = true;
+  // !isLoading && !availableCountries?.length;
+
   return (
     <Wrapper>
-      <Typography variant="h1">Request project access</Typography>
+      <Title>Request project access</Title>
       <BodyText>Complete the form below to request access to this project</BodyText>
       <Container>
         {showLoading ? (
@@ -76,17 +108,27 @@ export const RequestProjectAccess = ({
           <>
             {project?.logoUrl && <Logo src={project.logoUrl} alt={project.name} />}
             <ProjectDetails>
-              <Typography variant="h2">{project?.name}</Typography>
-              {project?.description && <Typography>{project.description}</Typography>}
+              <ProjectName>{project?.name}</ProjectName>
+              {project?.description && (
+                <ProjectDescription>{project.description}</ProjectDescription>
+              )}
             </ProjectDetails>
-            <ProjectAccessForm
-              project={project}
-              onClose={onClose}
-              onSubmit={onSubmit}
-              isSubmitting={isSubmitting}
-              isSuccess={isSuccess}
-              countries={countries}
-            />
+            {showNoCountriesMessage ? (
+              <Alert severity="info">
+                There are no countries available to request access to for this project. This means
+                you already have access to all countries in this project. If you need to change your
+                permissions, please contact your system administrator.
+              </Alert>
+            ) : (
+              <ProjectAccessForm
+                project={project}
+                onClose={onClose}
+                onSubmit={onSubmit}
+                isSubmitting={isSubmitting}
+                isSuccess={isSuccess}
+                countries={countries}
+              />
+            )}
           </>
         )}
       </Container>

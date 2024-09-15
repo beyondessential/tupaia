@@ -12,10 +12,10 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import styled from 'styled-components';
-import { Alert, SpinningLoader } from '@tupaia/ui-components';
+import { RequestProjectAccess } from '@tupaia/ui-components';
 import { CountryAccessListItem } from '../../types';
 import { DEFAULT_URL, MODAL_ROUTES, ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../../constants';
-import { LoadingScreen, Modal } from '../../components';
+import { Modal } from '../../components';
 import { gaEvent, removeUrlSearchParams } from '../../utils';
 import {
   useProjectCountryAccessList,
@@ -24,17 +24,13 @@ import {
   useUser,
   useEntity,
 } from '../../api/queries';
-import { ModalHeader } from './ModalHeader';
-import { ProjectHero } from './ProjectHero';
-import { ProjectDetails } from './ProjectDetails';
-import { ProjectAccessForm } from './ProjectAccessForm';
-import { RequestedCountries } from './RequestedCountries';
+import { useRequestCountryAccess } from '../../api/mutations';
 
 const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.2rem 0 0;
-  width: 30rem;
+  padding: 1.2rem;
+  width: 48rem;
   max-width: 100%;
 
   .MuiAlert-root + .MuiAlert-root {
@@ -46,6 +42,14 @@ export const RequestProjectAccessModal = () => {
   const [urlSearchParams] = useSearchParams();
   const params = useParams();
   const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
+
+  const {
+    mutate: requestCountryAccess,
+    isLoading: isSubmitting,
+    isError: hasRequestCountryAccessError,
+    error: requestCountryAccessError,
+    isSuccess,
+  } = useRequestCountryAccess();
   const { hash, ...location } = useLocation();
   const navigate = useNavigate();
   const { isLandingPage } = useLandingPage();
@@ -55,7 +59,7 @@ export const RequestProjectAccessModal = () => {
   const altProjectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
   const requestingProjectCode = altProjectCode || params?.projectCode;
 
-  const { data: requestingProject, isLoading } = useProject(requestingProjectCode!);
+  const { data: requestingProject, isLoading, isFetched } = useProject(requestingProjectCode!);
   // the project loaded behind the modal, based on the url project code
   const { data: backgroundProject } = useProject(params?.projectCode);
 
@@ -161,43 +165,15 @@ export const RequestProjectAccessModal = () => {
   return (
     <Modal isOpen onClose={onCloseModal}>
       <ModalBody>
-        <LoadingScreen isLoading={isLoading} />
-        <ModalHeader isLandingPage={isLandingPage} baseCloseLocation={closeLocation} />
-        <ProjectHero project={requestingProject} />
-        <ProjectDetails project={requestingProject} />
-        {isLoadingCountryAccessList ? (
-          <SpinningLoader />
-        ) : (
-          <>
-            {showError && <Alert severity="error">{error.message}</Alert>}
-            {showNoCountriesMessage && (
-              <Alert severity="info">
-                There are no countries available to request access to for this project. This means
-                you already have access to all countries in this project. If you need to change your
-                permissions, please contact your system administrator.
-              </Alert>
-            )}
-            {showRequestedCountries && (
-              <RequestedCountries
-                requestedCountries={requestedCountries}
-                countriesWithAccess={countriesWithAccess}
-                hasAdditionalCountries={availableCountries.length > 0}
-                onShowForm={() => setRequestAdditionalCountries(true)}
-                isLandingPage={isLandingPage}
-                baseCloseLocation={closeLocation}
-              />
-            )}
-            {showForm && (
-              <ProjectAccessForm
-                availableCountries={availableCountries}
-                projectName={requestingProject?.name}
-                isLandingPage={isLandingPage}
-                onCloseModal={onCloseModal}
-                closeButtonText={isReturningToProjects ? 'Return to projects' : 'Close'}
-              />
-            )}
-          </>
-        )}
+        <RequestProjectAccess
+          project={requestingProject}
+          countries={countries}
+          isLoading={isLoading || isLoadingCountryAccessList}
+          isSubmitting={isSubmitting}
+          onSubmit={requestCountryAccess}
+          isSuccess={isSuccess}
+          isFetched={isFetched}
+        />
       </ModalBody>
     </Modal>
   );

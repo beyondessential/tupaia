@@ -57,6 +57,9 @@ const TextArea = styled(TextField).attrs({
     font-size: 0.875rem;
     padding: 0.875rem;
   }
+  .MuiInputBase-root {
+    background-color: ${({ theme }) => theme.palette.background.paper};
+  }
   // we have to override this here as there are selectors inside ui-components with higher specificity than we can achieve via the theme overrides
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     box-shadow: none;
@@ -93,6 +96,10 @@ const StyledDialogActions = styled(DialogActions)`
   & > :not(:first-child) {
     margin-inline-start: 0;
   }
+`;
+
+const FormButton = styled(Button)`
+  text-transform: none;
 `;
 
 type Country = {
@@ -187,16 +194,16 @@ export const ProjectAccessForm = ({
       </FormControl>
       <FormInput Input={TextArea} name="message" />
       <StyledDialogActions>
-        <Button variant="outlined" onClick={onClose}>
+        <FormButton variant="text" onClick={onClose} color="default">
           Back
-        </Button>
-        <Button
+        </FormButton>
+        <FormButton
           type="submit"
           disabled={!isValid}
           tooltip={isValid ? undefined : 'Select one or more countries to proceed'}
         >
           Request access
-        </Button>
+        </FormButton>
       </StyledDialogActions>
     </Form>
   );
