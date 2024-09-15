@@ -6,10 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { SpinningLoader } from '@tupaia/ui-components';
 import { ProjectCountryAccessListRequest, WebServerProjectRequest } from '@tupaia/types';
 import { ProjectAccessForm } from './ProjectAccessForm';
-import { Alert } from '../../components';
+import { Alert, SpinningLoader } from '../../components';
 
 const Wrapper = styled.div`
   display: flex;
