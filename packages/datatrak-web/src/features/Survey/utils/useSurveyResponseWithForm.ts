@@ -18,8 +18,8 @@ export const useSurveyResponseWithForm = (
 ) => {
   const { setFormData, surveyScreens, surveyCode, formData } = useSurveyForm();
 
-  const { isLoading, isFetched } = useSurvey(surveyCode);
-  const surveyLoading = isLoading || !isFetched;
+  const { isLoading, isFetched, isFetching } = useSurvey(surveyCode);
+  const surveyLoading = isLoading || !isFetched || isFetching;
   const formContext = useFormContext();
 
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
