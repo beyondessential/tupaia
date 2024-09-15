@@ -18,15 +18,15 @@ export const useSurveyResponseWithForm = (
 ) => {
   const { setFormData, surveyScreens, surveyCode, formData } = useSurveyForm();
 
-  const { isLoading, isFetched, isFetching } = useSurvey(surveyCode);
-  const surveyLoading = isLoading || !isFetched || isFetching;
+  const { isLoading, isFetched, isSuccess } = useSurvey(surveyCode);
+  const surveyLoading = isLoading || !isFetched;
   const formContext = useFormContext();
 
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
 
   // Populate the form with the survey response data - this is not in in the onSuccess hook because it doesn't get called if the response has previously been fetched and is in the cache
   useEffect(() => {
-    if (!surveyResponse?.id || surveyLoading) return;
+    if (!surveyResponse?.id || !isSuccess) return;
     const primaryEntityQuestion = flattenedScreenComponents.find(
       component => component.type === QuestionType.PrimaryEntity,
     );
