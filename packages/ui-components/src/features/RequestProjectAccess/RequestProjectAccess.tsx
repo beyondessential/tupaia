@@ -68,6 +68,8 @@ interface RequestProjectAccessProps {
   onSubmit: (data: { entityIds: string[]; message: string; projectCode: string }) => void;
   isSubmitting: boolean;
   isSuccess: boolean;
+  closeButtonText?: string;
+  errorMessage?: string;
 }
 
 export const RequestProjectAccess = ({
@@ -79,13 +81,10 @@ export const RequestProjectAccess = ({
   onSubmit,
   isSuccess,
   isSubmitting,
+  closeButtonText,
+  errorMessage,
 }: RequestProjectAccessProps) => {
   const showLoading = isLoading || !isFetched;
-
-  const countriesWithAccess = countries?.filter((c: CountryAccessListItem) => c.hasAccess);
-
-  // the countries that have already got a request
-  const requestedCountries = countries?.filter((c: CountryAccessListItem) => c.hasPendingAccess);
 
   // the countries that are available to request
   const availableCountries = countries?.filter(
@@ -93,8 +92,7 @@ export const RequestProjectAccess = ({
   );
 
   // show the no countries message if the country access list has loaded and there are no countries available
-  const showNoCountriesMessage = true;
-  // !isLoading && !availableCountries?.length;
+  const showNoCountriesMessage = !isLoading && !availableCountries?.length;
 
   return (
     <Wrapper>
@@ -112,6 +110,7 @@ export const RequestProjectAccess = ({
                 <ProjectDescription>{project.description}</ProjectDescription>
               )}
             </ProjectDetails>
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             {showNoCountriesMessage ? (
               <Alert severity="info">
                 There are no countries available to request access to for this project. This means
@@ -126,6 +125,7 @@ export const RequestProjectAccess = ({
                 isSubmitting={isSubmitting}
                 isSuccess={isSuccess}
                 countries={countries}
+                closeButtonText={closeButtonText}
               />
             )}
           </>

@@ -85,24 +85,6 @@ export const RequestProjectAccessModal = () => {
   const { data: countries = [], isFetching: isLoadingCountryAccessList } =
     useProjectCountryAccessList(requestingProjectCode!);
 
-  const countriesWithAccess = countries?.filter((c: CountryAccessListItem) => c.hasAccess);
-
-  // the countries that have already got a request
-  const requestedCountries = countries?.filter((c: CountryAccessListItem) => c.hasPendingAccess);
-
-  // the countries that are available to request
-  const availableCountries = countries?.filter(
-    (c: CountryAccessListItem) => !c.hasAccess && !c.hasPendingAccess,
-  );
-
-  // Show the form if there are available countries, or if there are requested countries and the user has opted to request additional countries
-  const showForm = requestedCountries?.length
-    ? requestAdditionalCountries && availableCountries?.length > 0
-    : availableCountries?.length > 0;
-
-  // Show the requested countries if there are any, and the user has not opted to request additional countries
-  const showRequestedCountries = requestedCountries?.length > 0 && !requestAdditionalCountries;
-
   // if the project code is the same as the selected project and the user has access, then we are not returning to the projects page, we just want to close the modal
   const isReturningToProjects = !(
     (!altProjectCode || altProjectCode === params?.projectCode) &&
@@ -120,30 +102,26 @@ export const RequestProjectAccessModal = () => {
   // show the error if the user is getting a 403 error when trying to access an entity, as this means they have been redirected here from the useEntity hook
   const showError = isError && error.code === 403;
 
-  // show the no countries message if the country access list has loaded and there are no countries available
-  const showNoCountriesMessage = !isLoadingCountryAccessList && !availableCountries?.length;
-
   const getBaseCloseLocation = () => {
     if (isLandingPage) return location;
-    // if the user has accessed the request access modal and does have access to that project in some way, then return to the project. This would happen if the user went directly to the project with the request access modal details in the url
-    if (
-      (!altProjectCode || altProjectCode === params?.projectCode) &&
-      requestingProject?.hasAccess
-    ) {
+
+    if (isReturningToProjects) {
       return {
         ...location,
-        pathname: generatePath(ROUTE_STRUCTURE, {
-          projectCode: requestingProject?.code,
-          entityCode: requestingProject?.homeEntityCode,
-          dashboardName: requestingProject?.dashboardGroupName as string | undefined,
-        }),
+        // if the user has access to the project in the background, then return to the project with the project modal open, otherwise return to the default url with the project modal open
+        pathname: backgroundProject?.hasAccess ? location.pathname : DEFAULT_URL,
+        hash: MODAL_ROUTES.PROJECTS,
       };
     }
+
+    // if the user has accessed the request access modal and does have access to that project in some way, then return to the project. This would happen if the user went directly to the project with the request access modal details in the url
     return {
       ...location,
-      // if the user has access to the project in the background, then return to the project with the project modal open, otherwise return to the default url with the project modal open
-      pathname: backgroundProject?.hasAccess ? location.pathname : DEFAULT_URL,
-      hash: MODAL_ROUTES.PROJECTS,
+      pathname: generatePath(ROUTE_STRUCTURE, {
+        projectCode: requestingProject?.code,
+        entityCode: requestingProject?.homeEntityCode,
+        dashboardName: requestingProject?.dashboardGroupName as string | undefined,
+      }),
     };
   };
 
@@ -173,6 +151,9 @@ export const RequestProjectAccessModal = () => {
           onSubmit={requestCountryAccess}
           isSuccess={isSuccess}
           isFetched={isFetched}
+          onClose={onCloseModal}
+          closeButtonText={isReturningToProjects ? 'Return to projects' : 'Close'}
+          errorMessage={showError ? error.message : undefined}
         />
       </ModalBody>
     </Modal>

@@ -115,6 +115,7 @@ interface ProjectAccessFormProps {
   onSubmit: (data: { entityIds: string[]; message: string; projectCode: string }) => void;
   isSubmitting: boolean;
   isSuccess: boolean;
+  closeButtonText?: string;
 }
 
 export const ProjectAccessForm = ({
@@ -124,6 +125,7 @@ export const ProjectAccessForm = ({
   onSubmit,
   isSubmitting,
   isSuccess,
+  closeButtonText = 'Back to projects',
 }: ProjectAccessFormProps) => {
   const formContext = useForm({
     mode: 'onChange',
@@ -157,7 +159,7 @@ export const ProjectAccessForm = ({
         </SuccessWrapper>
 
         <DialogActions>
-          <Button onClick={onClose}>Back to Projects</Button>
+          <FormButton onClick={onClose}>{closeButtonText}</FormButton>
         </DialogActions>
       </>
     );
