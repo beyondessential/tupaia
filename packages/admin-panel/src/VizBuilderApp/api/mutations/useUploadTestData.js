@@ -10,4 +10,4 @@ import { upload } from '../api';
 const FILE_NAME = 'testData';
 
 export const useUploadTestData = () =>
-  useMutation('uploadTestData', file => upload('uploadTestData', {}, FILE_NAME, file));
+  useMutation(['uploadTestData'], file => upload('uploadTestData', {}, FILE_NAME, file));
