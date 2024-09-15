@@ -212,7 +212,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                       onChange={onChange}
                       inputRef={ref}
                       label="Due date"
-                      disablePast={process.env.REACT_APP_ALLOW_PAST_DUE_DATES !== 'true'}
+                      disablePast
                       fullWidth
                       required
                       invalid={invalid}
