@@ -45,12 +45,28 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
         false,
       );
 
+      const data = descendants.map(
+        (row: {
+          grandparent_name: string;
+          grandparent_code: string;
+          parent_name: string;
+          parent_code: string;
+          name: string;
+          code: string;
+          type: string;
+          attributes: {};
+        }) => ({
+          ...row,
+          attributes: JSON.stringify(row.attributes),
+        }),
+      );
+
       const projectEntity = await entityApi.getEntity(hierarchy, hierarchy, {
         fields: ['name'],
       });
 
       const sheetName = projectEntity?.name || hierarchy;
-      const sheet = xlsx.utils.json_to_sheet(descendants);
+      const sheet = xlsx.utils.json_to_sheet(data);
       xlsx.utils.book_append_sheet(workbook, sheet, sheetName);
     }
 
