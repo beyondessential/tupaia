@@ -26,7 +26,7 @@ export const useSurveyResponseWithForm = (
 
   // Populate the form with the survey response data - this is not in in the onSuccess hook because it doesn't get called if the response has previously been fetched and is in the cache
   useEffect(() => {
-    if (!surveyResponse?.id || !isSuccess) return;
+    if (!surveyResponse?.id || !isSuccess || !flattenedScreenComponents?.length) return;
     const primaryEntityQuestion = flattenedScreenComponents.find(
       component => component.type === QuestionType.PrimaryEntity,
     );
@@ -80,7 +80,7 @@ export const useSurveyResponseWithForm = (
     setFormData(newData);
     // Reset the form context with the new answers, to trigger re-render of the form
     formContext.reset(newData);
-  }, [surveyResponse?.id, surveyLoading]);
+  }, [surveyResponse?.id, isSuccess, flattenedScreenComponents?.length]);
 
   return { surveyLoading };
 };
