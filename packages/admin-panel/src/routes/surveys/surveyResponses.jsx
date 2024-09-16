@@ -29,7 +29,7 @@ const Pill = styled.span`
 `;
 
 const ResponseStatusPill = ({ value }) => {
-  const text = value ? 'Outdated' : 'Current';
+  const text = value ? 'Archived' : 'Current';
   const color = value ? GREY : GREEN;
   return <Pill $color={color}>{text}</Pill>;
 };
