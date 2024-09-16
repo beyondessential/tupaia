@@ -63,6 +63,8 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'requestCountryAccess',
       handleWith(routes.RequestCountryAccessRoute),
     )
+    // @ts-ignore
+    .post<routes.LoginRequest>('loginUser', handleWith(routes.LoginRoute))
     .get<routes.EntityRequest>('entity/:projectCode/:entityCode', handleWith(routes.EntityRoute))
     .get<routes.EntitiesRequest>(
       'entities/:projectCode/:rootEntityCode',

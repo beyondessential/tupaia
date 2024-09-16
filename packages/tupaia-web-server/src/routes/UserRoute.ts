@@ -14,13 +14,6 @@ export type UserRequest = Request<
   TupaiaWebUserRequest.ReqQuery
 >;
 
-function snakeToCapitalCase(str: string) {
-  return str
-    .toLowerCase() // Convert the whole string to lowercase
-    .replace(/_/g, ' ') // Replace underscores with spaces
-    .replace(/\b\w/g, char => char.toUpperCase()); // Capitalize the first letter of each word
-}
-
 export class UserRoute extends Route<UserRequest> {
   public async buildResponse() {
     const { ctx, session } = this.req;
@@ -38,22 +31,28 @@ export class UserRoute extends Route<UserRequest> {
       preferences,
     } = await ctx.services.central.getUser();
 
-    let project;
+    const userResponse = { userName: `${firstName} ${lastName}`, email };
 
     if (preferences?.project_id) {
-      [project] = await this.req.ctx.services.central.fetchResources('projects', {
-        filter: {
-          id: preferences.project_id,
-        },
-        columns: ['id', 'code'],
+      const { projects = [] } = await ctx.services.webConfig.fetchProjects({
+        showExcludedProjects: false,
       });
-      project = {
-        name: snakeToCapitalCase(project.code),
-        code: project.code,
-        id: project.id,
+
+      const { id, name, code, homeEntityCode, dashboardGroupName, defaultMeasure } = projects.find(
+        ({ id }: { id: string }) => id === preferences?.project_id,
+      );
+
+      // @ts-ignore
+      userResponse.project = {
+        id,
+        name,
+        code,
+        homeEntityCode,
+        dashboardGroupName,
+        defaultMeasure,
       };
     }
 
-    return { userName: `${firstName} ${lastName}`, email, project };
+    return userResponse;
   }
 }
