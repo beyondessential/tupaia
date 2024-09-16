@@ -135,7 +135,13 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
     type: 'archive',
     actionConfig: {
       endpoint: 'surveyResponses',
-      title: 'Archive survey response',
+    },
+  },
+  {
+    Header: 'Delete',
+    type: 'delete',
+    actionConfig: {
+      endpoint: 'surveyResponses',
     },
   },
 ];
@@ -199,6 +205,7 @@ export const surveyResponses = {
   defaultFilters: [{ id: 'outdated', value: false }],
   defaultSorting: [{ id: 'data_time', desc: true }],
   ExportModalComponent: SurveyResponsesExportModal,
+  needsBESAdminAccess: ['delete'],
   nestedViews: [
     {
       title: 'Answers',
