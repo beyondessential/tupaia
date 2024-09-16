@@ -131,8 +131,8 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
     type: 'resubmitSurveyResponse',
   },
   {
-    Header: 'Delete',
-    type: 'delete',
+    Header: 'Archive',
+    type: 'archive',
     actionConfig: {
       endpoint: 'surveyResponses',
     },
