@@ -36,7 +36,7 @@
     "cookie": "^0.6.0",
     "date-fns": "^2.29.2",
     "date-fns-tz": "^2.0.1",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.6.0",
