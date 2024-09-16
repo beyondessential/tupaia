@@ -13,7 +13,7 @@ import { ArchiveIcon } from '../../icons';
 export const ArchiveSurveyResponseButtonComponent = ({ openModal, row }) => {
   if (row.original.outdated) return null;
   return (
-    <ColumnActionButton onClick={openModal}>
+    <ColumnActionButton onClick={openModal} title="Archive">
       <ArchiveIcon />
     </ColumnActionButton>
   );
