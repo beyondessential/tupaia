@@ -22,7 +22,7 @@ const Error = styled(Typography).attrs({
 `;
 
 interface CheckboxListProps {
-  options: { value: string; label: string }[];
+  options: { value: string; label?: string }[];
   legend: string;
   name: string;
   required?: boolean;
@@ -38,7 +38,7 @@ export const CheckboxList = ({ options, legend, name, required }: CheckboxListPr
         <CheckboxField
           key={value}
           value={value}
-          label={label}
+          label={label || value}
           name={name}
           required={required}
           helperText={null}

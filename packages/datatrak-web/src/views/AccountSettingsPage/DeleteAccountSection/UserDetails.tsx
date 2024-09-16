@@ -64,7 +64,7 @@ export const UserDetails = () => {
   return (
     <UserContent $appearsDisabled={user.deleteAccountRequested}>
       <div>
-        <UserName>{user.userName}</UserName>
+        <UserName>{user.fullName}</UserName>
         <Typography>{user.email}</Typography>
       </div>
       <UserRewards>

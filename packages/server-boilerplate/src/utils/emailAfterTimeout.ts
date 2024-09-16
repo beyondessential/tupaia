@@ -7,26 +7,39 @@ import { sendEmail } from '@tupaia/server-utils';
 import { UserAccount } from '@tupaia/types';
 import { respond } from '@tupaia/utils';
 
+type TemplateContext = {
+  title: string;
+  message: string;
+  cta?: {
+    text: string;
+    url: string;
+  };
+};
+
 type ConstructEmailFromResponseT = (
   responseBody: any,
   req: any,
 ) => Promise<{
   subject: string;
-  message: string;
   attachments?: { filename: string; content: Buffer }[];
+  templateContext: TemplateContext;
 }>;
 
 const sendResponseAsEmail = (
   user: UserAccount,
   subject: string,
-  message: string,
+  templateContext: TemplateContext,
   attachments?: { filename: string; content: Buffer }[],
 ) => {
-  const text = `Hi ${user.first_name},
-
-${message}
-  `;
-  sendEmail(user.email, { subject, text, attachments });
+  sendEmail(user.email, {
+    subject,
+    attachments,
+    templateName: 'emailAfterTimeout',
+    templateContext: {
+      ...templateContext,
+      userName: user.first_name,
+    },
+  });
 };
 
 const setupEmailResponse = async (
@@ -54,8 +67,11 @@ const setupEmailResponse = async (
   // override the respond function so that when the endpoint handler finishes (or throws an error),
   // the response is sent via email
   res.overrideRespond = async (responseBody: any) => {
-    const { subject, message, attachments } = await constructEmailFromResponse(responseBody, req);
-    sendResponseAsEmail(user, subject, message, attachments);
+    const { subject, attachments, templateContext } = await constructEmailFromResponse(
+      responseBody,
+      req,
+    );
+    sendResponseAsEmail(user, subject, templateContext, attachments);
   };
 };
 

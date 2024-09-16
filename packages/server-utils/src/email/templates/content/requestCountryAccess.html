@@ -1,0 +1,19 @@
+<div>
+  <p>
+    {{user.first_name}} {{user.last_name}} ({{user.email}} - {{user.id}}, {{user.position}} at
+    {{user.employer}}) has requested access to countries:
+  </p>
+  <ul style="list-style: none; padding: 0; margin: 0">
+    {{#each countries}}
+    <li style="padding: 0; margin: 0">{{this}}</li>
+    {{/each}}
+  </ul>
+  {{#if project}}
+  <p>
+    For the project {{project.code}} (linked to permission groups: {{project.permissionGroups}})
+  </p>
+  {{/if}}
+  {{#if message}}
+  <p>With the message: "{{message}}"</p>
+  {{/if}}
+</div>
