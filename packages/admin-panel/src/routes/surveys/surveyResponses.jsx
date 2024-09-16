@@ -135,6 +135,7 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
     type: 'archive',
     actionConfig: {
       endpoint: 'surveyResponses',
+      title: 'Archive survey response',
     },
   },
 ];
