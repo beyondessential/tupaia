@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Location,
   generatePath,
@@ -13,18 +13,17 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 import { RequestProjectAccess } from '@tupaia/ui-components';
-import { CountryAccessListItem } from '../../types';
-import { DEFAULT_URL, MODAL_ROUTES, ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../../constants';
-import { Modal } from '../../components';
-import { gaEvent, removeUrlSearchParams } from '../../utils';
+import { DEFAULT_URL, MODAL_ROUTES, ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../constants';
+import { Modal } from '../components';
+import { gaEvent, removeUrlSearchParams } from '../utils';
 import {
   useProjectCountryAccessList,
   useLandingPage,
   useProject,
   useUser,
   useEntity,
-} from '../../api/queries';
-import { useRequestCountryAccess } from '../../api/mutations';
+} from '../api/queries';
+import { useRequestCountryAccess } from '../api/mutations';
 
 const ModalBody = styled.div`
   display: flex;
@@ -41,7 +40,6 @@ const ModalBody = styled.div`
 export const RequestProjectAccessModal = () => {
   const [urlSearchParams] = useSearchParams();
   const params = useParams();
-  const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
 
   const {
     mutate: requestCountryAccess,
@@ -93,14 +91,16 @@ export const RequestProjectAccessModal = () => {
 
   // only request the entity if the project code is the same as the selected project, or if the alt project code is not set, so that we don't get any false errors. This query is just to check if the user has been directed here from the useEntity hook because of a 403 error
   const showCheckForEntityError = !altProjectCode || params.projectCode === altProjectCode;
-  const { error, isError } = useEntity(
+  const { error: entityError, isError } = useEntity(
     params.projectCode,
     params.entityCode,
     showCheckForEntityError,
   );
 
+  const error = requestCountryAccessError || entityError;
+
   // show the error if the user is getting a 403 error when trying to access an entity, as this means they have been redirected here from the useEntity hook
-  const showError = isError && error.code === 403;
+  const showError = (isError && entityError.code === 403) || hasRequestCountryAccessError;
 
   const getBaseCloseLocation = () => {
     if (isLandingPage) return location;
@@ -140,6 +140,7 @@ export const RequestProjectAccessModal = () => {
     gaEvent('User', 'Close Dialog');
     navigate(closeLocation);
   };
+
   return (
     <Modal isOpen onClose={onCloseModal}>
       <ModalBody>

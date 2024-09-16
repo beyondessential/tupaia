@@ -28,10 +28,12 @@ const Container = styled.div`
 `;
 
 const Logo = styled.img`
-  max-width: 7.5rem;
+  max-width: 8rem;
   width: 100%;
   height: auto;
   border-radius: 3px;
+  background-color: ${({ theme }) => theme.palette.common.white};
+  padding: 0.8rem;
 `;
 
 const ProjectDetails = styled.div`

@@ -100,6 +100,7 @@ const StyledDialogActions = styled(DialogActions)`
 
 const FormButton = styled(Button)`
   text-transform: none;
+  font-size: 0.875rem;
 `;
 
 type Country = {
