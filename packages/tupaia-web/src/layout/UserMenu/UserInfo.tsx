@@ -61,7 +61,7 @@ const SignInButton = styled(RouterButton).attrs({
   padding-right: 1em;
 `;
 
-const Project = styled(RouterButton).attrs({
+const ProjectButton = styled(RouterButton).attrs({
   variant: 'text',
 })`
   padding-inline: 0.3rem;
@@ -102,7 +102,7 @@ export const UserInfo = ({ user, isLandingPage, secondaryColor, isLoggedIn }: Us
         {user?.userName} |
         {user?.project?.name && (
           <Tooltip arrow interactive placement="top" title="Change project">
-            <Project modal={MODAL_ROUTES.REQUEST_PROJECT_ACCESS}>{user?.project?.name}</Project>
+            <ProjectButton modal={MODAL_ROUTES.PROJECT_SELECT}>{user?.project?.name}</ProjectButton>
           </Tooltip>
         )}
       </UsernameContainer>

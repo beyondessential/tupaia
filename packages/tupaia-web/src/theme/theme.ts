@@ -8,6 +8,13 @@ const LIGHT_GREY = '#9BA0A6';
 export const theme = createMuiTheme({
   typography: {
     fontSize: 16, // this needs to be 16 to correctly calculate the axis labels in recharts
+    h1: {
+      fontSize: '1rem', // page titles
+      fontWeight: 500,
+      [overMobileBreakpoint]: {
+        fontSize: '1.125rem',
+      },
+    },
     body1: {
       fontSize: '1rem',
     },
