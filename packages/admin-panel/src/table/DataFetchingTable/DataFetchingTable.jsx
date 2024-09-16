@@ -145,6 +145,7 @@ const DataFetchingTableComponent = memo(
         Header: actionLabel || 'Action',
         maxWidth: buttonWidths,
         width: buttonWidths,
+        disableSortBy: true,
         // eslint-disable-next-line react/prop-types
         Cell: ({ row }) => {
           return (
