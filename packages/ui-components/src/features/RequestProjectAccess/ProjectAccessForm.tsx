@@ -13,8 +13,14 @@ import {
   Typography,
 } from '@material-ui/core';
 import { CheckCircle } from '@material-ui/icons';
-import { WebServerProjectRequest } from '@tupaia/types';
-import { Checkbox as BaseCheckbox, SpinningLoader, TextField, Button } from '../../components';
+import { ProjectCountryAccessListRequest, WebServerProjectRequest } from '@tupaia/types';
+import {
+  Checkbox as BaseCheckbox,
+  SpinningLoader,
+  TextField,
+  Button,
+  Alert,
+} from '../../components';
 import { Form, FormInput } from '../Form';
 
 const FormControl = styled(BaseFormControl).attrs({
@@ -92,7 +98,7 @@ const LoaderWrapper = styled.div`
 /** Fixes janky spacing changes when 'Request access' button is enabled or disabled */
 const StyledDialogActions = styled(DialogActions)`
   gap: 1rem;
-
+  padding: 1.5rem 0 0 0;
   & > :not(:first-child) {
     margin-inline-start: 0;
   }
@@ -103,11 +109,7 @@ const FormButton = styled(Button)`
   font-size: 0.875rem;
 `;
 
-type Country = {
-  id: string;
-  name: string;
-  hasPendingAccess: boolean;
-};
+type Country = ProjectCountryAccessListRequest.ResBody[number];
 
 interface ProjectAccessFormProps {
   project?: WebServerProjectRequest.ResBody;
@@ -117,6 +119,7 @@ interface ProjectAccessFormProps {
   isSubmitting: boolean;
   isSuccess: boolean;
   closeButtonText?: string;
+  isLoading?: boolean;
 }
 
 export const ProjectAccessForm = ({
@@ -127,6 +130,7 @@ export const ProjectAccessForm = ({
   isSubmitting,
   isSuccess,
   closeButtonText = 'Back to projects',
+  isLoading,
 }: ProjectAccessFormProps) => {
   const formContext = useForm({
     mode: 'onChange',
@@ -143,6 +147,29 @@ export const ProjectAccessForm = ({
       projectCode,
     });
   };
+
+  // the countries that are available to request
+  const availableCountries = countries?.filter((c: Country) => !c.hasAccess && !c.hasPendingAccess);
+
+  // show the no countries message if the country access list has loaded and there are no countries available
+  const showNoCountriesMessage = !isLoading && !availableCountries?.length && !isSuccess;
+
+  if (showNoCountriesMessage) {
+    return (
+      <>
+        <Alert severity="info">
+          There are no countries available to request access to for this project. This means you
+          already have access to all countries in this project. If you need to change your
+          permissions, please contact your system administrator.
+        </Alert>
+        <StyledDialogActions>
+          <FormButton onClick={onClose} variant="text" color="default">
+            Back
+          </FormButton>
+        </StyledDialogActions>
+      </>
+    );
+  }
 
   // On success, show a success message to the user and direct them back to the projects list
   if (isSuccess)

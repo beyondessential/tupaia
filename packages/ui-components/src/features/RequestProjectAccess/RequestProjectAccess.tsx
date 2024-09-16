@@ -59,14 +59,12 @@ const ProjectDescription = styled(Typography)`
   margin-block-start: 0.25rem;
 `;
 
-type CountryAccessListItem = ProjectCountryAccessListRequest.ResBody[number];
-
 interface RequestProjectAccessProps {
   onClose?: () => void;
   project?: WebServerProjectRequest.ResBody;
   isLoading?: boolean;
   isFetched?: boolean;
-  countries: CountryAccessListItem[];
+  countries: ProjectCountryAccessListRequest.ResBody[number][];
   onSubmit: (data: { entityIds: string[]; message: string; projectCode: string }) => void;
   isSubmitting: boolean;
   isSuccess: boolean;
@@ -88,14 +86,6 @@ export const RequestProjectAccess = ({
 }: RequestProjectAccessProps) => {
   const showLoading = isLoading || !isFetched;
 
-  // the countries that are available to request
-  const availableCountries = countries?.filter(
-    (c: CountryAccessListItem) => !c.hasAccess && !c.hasPendingAccess,
-  );
-
-  // show the no countries message if the country access list has loaded and there are no countries available
-  const showNoCountriesMessage = !isLoading && !availableCountries?.length;
-
   return (
     <Wrapper>
       <Title>Request project access</Title>
@@ -113,23 +103,17 @@ export const RequestProjectAccess = ({
               )}
             </ProjectDetails>
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-            {showNoCountriesMessage ? (
-              <Alert severity="info">
-                There are no countries available to request access to for this project. This means
-                you already have access to all countries in this project. If you need to change your
-                permissions, please contact your system administrator.
-              </Alert>
-            ) : (
-              <ProjectAccessForm
-                project={project}
-                onClose={onClose}
-                onSubmit={onSubmit}
-                isSubmitting={isSubmitting}
-                isSuccess={isSuccess}
-                countries={countries}
-                closeButtonText={closeButtonText}
-              />
-            )}
+
+            <ProjectAccessForm
+              project={project}
+              onClose={onClose}
+              onSubmit={onSubmit}
+              isSubmitting={isSubmitting}
+              isSuccess={isSuccess}
+              countries={countries}
+              closeButtonText={closeButtonText}
+              isLoading={isLoading}
+            />
           </>
         )}
       </Container>
