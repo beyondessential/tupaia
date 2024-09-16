@@ -200,23 +200,33 @@ export const ProjectAccessForm = ({
       </LoaderWrapper>
     );
 
+  const getTooltip = (country: Country) => {
+    if (country.hasPendingAccess) {
+      return 'Approval in progress';
+    }
+    if (country.hasAccess) {
+      return 'You already have access to this country';
+    }
+    return undefined;
+  };
+
   return (
     <Form onSubmit={submitForm as SubmitHandler<any>} formContext={formContext}>
       <FormControl>
         <FormGroup>
-          {countries?.map(({ id, name, hasPendingAccess }) => {
+          {countries?.map(country => {
+            const { id, name, hasPendingAccess, hasAccess } = country;
+            const tooltip = getTooltip(country);
             return (
               <Checkbox
                 id={id}
                 inputRef={register({ validate: value => value.length > 0 })}
-                disabled={hasPendingAccess}
+                disabled={hasPendingAccess || hasAccess}
                 key={id}
                 label={name}
                 name="entityIds"
                 value={id}
-                tooltip={
-                  hasPendingAccess ? 'You have already requested access to this country' : undefined
-                }
+                tooltip={tooltip}
               />
             );
           })}
