@@ -1,9 +1,12 @@
 import { createMuiTheme } from '@material-ui/core';
+import { MOBILE_BREAKPOINT } from '../constants';
 
 // MUI v4 doesn't support callbacks for theme overrides, so since these shades get used in multiple places, we need to define them here
 const LIGHT_BLACK = '#2e2f33';
 const DARK_BLACK = '#202124';
 const LIGHT_GREY = '#9BA0A6';
+
+const overMobileBreakpoint = `@media (min-width: ${MOBILE_BREAKPOINT})`;
 
 export const theme = createMuiTheme({
   typography: {
