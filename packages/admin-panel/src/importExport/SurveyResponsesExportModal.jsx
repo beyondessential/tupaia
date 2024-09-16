@@ -10,6 +10,7 @@ import { stripTimezoneFromDate } from '@tupaia/utils';
 import { ReduxAutocomplete } from '../autocomplete';
 import { ExportModal } from './ExportModal';
 import { EntityOptionLabel } from '../widgets';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 const MODES = {
   COUNTRY: { value: 'country', formInput: 'countryCode' },
@@ -125,6 +126,17 @@ export const SurveyResponsesExportModal = () => {
             handleValueChange('endDate', stripTimezoneFromDate(date));
           }
         }}
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={values.includeArchived}
+            onChange={event => handleValueChange('includeArchived', event.target.checked)}
+            name="include-archived"
+            color="primary"
+          />
+        }
+        label="Include archived survey responses"
       />
     </ExportModal>
   );
