@@ -59,6 +59,11 @@ const Description = styled(Typography)`
   text-align: center;
 `;
 
+const ExportDescription = styled(Typography)`
+  color: ${({ theme }) => theme.palette.text.secondary};
+  text-align: justify;
+`;
+
 const ExportContent = styled.div<{
   $hasData?: boolean;
 }>`
@@ -100,6 +105,7 @@ interface PDFExportDashboardItemProps {
   activeDashboard?: Dashboard;
   isPreview?: boolean;
   settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
+  displayHeader?: boolean;
 }
 
 /**
@@ -112,6 +118,7 @@ export const PDFExportDashboardItem = ({
   activeDashboard,
   isPreview = false,
   settings,
+  displayHeader = false,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -161,6 +168,7 @@ export const PDFExportDashboardItem = ({
 
   const title = entityHeader ? `${name}, ${entityHeader}` : name;
   const period = getDatesAsString(periodGranularity, startDate, endDate);
+  const exportDescription = settings?.exportDescription;
 
   const data = isLoading ? undefined : (report as BaseReport)?.data;
   return (
@@ -175,6 +183,7 @@ export const PDFExportDashboardItem = ({
       </PDFExportHeader>
       <PDFExportBody>
         <DashboardName>{activeDashboard?.name}</DashboardName>
+        {displayHeader && <ExportDescription>{exportDescription}</ExportDescription>}
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}

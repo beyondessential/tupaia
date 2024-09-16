@@ -15,6 +15,7 @@ import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
 import { Preview } from './Preview';
+import ExportDescriptionInput from '../../ExportSettings/ExportDescriptionInput';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -99,6 +100,17 @@ const ExportSettingsInstructionsContainer = styled.div`
   padding-bottom: 1.4rem;
 `;
 
+const ExportSettingsWrapper = styled.div`
+  padding-block-end: 2rem;
+  & + & {
+    padding-block-start: 1.5rem;
+    border-top: 0.1rem solid ${({ theme }) => theme.palette.text.secondary};
+  }
+  &:last-child {
+    padding-block-end: 0;
+  }
+`;
+
 interface ExportDashboardProps {
   onClose: () => void;
   selectedDashboardItems: string[];
@@ -109,7 +121,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
-  const { exportWithLabels, exportWithTable } = useExportSettings();
+  const { exportWithLabels, exportWithTable, exportDescription } = useExportSettings();
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
@@ -124,6 +136,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
       settings: {
         exportWithLabels,
         exportWithTable,
+        exportDescription,
       },
     });
 
@@ -149,7 +162,12 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
             <ExportSetting>
               {hasChartItems && (
                 <section>
-                  <DisplayOptionsSettings />
+                  <ExportSettingsWrapper>
+                    <ExportDescriptionInput />
+                  </ExportSettingsWrapper>
+                  <ExportSettingsWrapper>
+                    <DisplayOptionsSettings />
+                  </ExportSettingsWrapper>
                 </section>
               )}
               <MailingListSection
@@ -157,6 +175,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                 settings={{
                   exportWithTable,
                   exportWithLabels,
+                  exportDescription,
                 }}
               />
             </ExportSetting>

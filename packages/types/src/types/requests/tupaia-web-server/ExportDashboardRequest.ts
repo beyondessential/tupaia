@@ -20,6 +20,7 @@ export type ReqBody = {
   settings?: {
     exportWithTable: boolean;
     exportWithLabels: boolean;
+    exportDescription: string | null;
   };
 };
 export type ReqQuery = Record<string, string>;

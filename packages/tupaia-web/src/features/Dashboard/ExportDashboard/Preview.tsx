@@ -74,7 +74,11 @@ export const Preview = ({ selectedDashboardItems }: { selectedDashboardItems: st
         />
       </PreviewHeaderContainer>
       <PreviewContainer>
-        <DashboardPDFExport selectedDashboardItems={[visualisationToPreview]} isPreview={true} />
+        <DashboardPDFExport
+          selectedDashboardItems={[visualisationToPreview]}
+          isPreview={true}
+          pageIndex={page}
+        />
       </PreviewContainer>
     </PreviewPanelContainer>
   );
