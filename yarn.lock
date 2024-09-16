@@ -9818,7 +9818,7 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
     ace-builds: ^1.10.1
-    axios: ^1.6.8
+    axios: ^1.7.4
     case: ^1.5.3
     content-disposition-header: ^0.6.0
     date-fns: ^2.29.2
@@ -10145,7 +10145,7 @@ __metadata:
     "@types/react": 16.8.6
     "@types/react-table": ^7.7.14
     "@vitejs/plugin-react": ^4.0.0
-    axios: ^1.6.8
+    axios: ^1.7.4
     bson-objectid: ^1.2.2
     date-fns: ^2.29.2
     downloadjs: 1.4.7
@@ -10307,7 +10307,7 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    axios: ^1.6.8
+    axios: ^1.7.4
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
     downloadjs: ^1.4.7
@@ -10464,7 +10464,7 @@ __metadata:
     "@tupaia/database": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    axios: ^1.6.8
+    axios: ^1.7.4
     cross-env: ^7.0.2
     date-fns: ^2.16.1
     faker: ^4.1.0
@@ -10654,7 +10654,7 @@ __metadata:
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
     "@vitejs/plugin-react": ^4.0.0
-    axios: ^1.6.8
+    axios: ^1.7.4
     dom-to-image: 2.6.0
     downloadjs: 1.4.7
     leaflet: ^1.7.1
@@ -13583,7 +13583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.5, axios@npm:^1.6.8":
+"axios@npm:^1.6.5":
   version: 1.6.8
   resolution: "axios@npm:1.6.8"
   dependencies:
@@ -13591,6 +13591,17 @@ __metadata:
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
   checksum: bf007fa4b207d102459300698620b3b0873503c6d47bf5a8f6e43c0c64c90035a4f698b55027ca1958f61ab43723df2781c38a99711848d232cad7accbcdfcdd
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.7.4":
+  version: 1.7.7
+  resolution: "axios@npm:1.7.7"
+  dependencies:
+    follow-redirects: ^1.15.6
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 882d4fe0ec694a07c7f5c1f68205eb6dc5a62aecdb632cc7a4a3d0985188ce3030e0b277e1a8260ac3f194d314ae342117660a151fabffdc5081ca0b5a8b47fe
   languageName: node
   linkType: hard
 
