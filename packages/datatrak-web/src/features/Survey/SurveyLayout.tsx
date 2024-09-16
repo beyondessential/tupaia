@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useIsFetching } from '@tanstack/react-query';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -12,6 +13,7 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../../constants';
 import { useResubmitSurveyResponse, useSubmitSurveyResponse } from '../../api/mutations';
 import { SurveyParams } from '../../types';
+import { useFromLocation } from '../../utils';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { getErrorsByScreen } from './utils';
@@ -72,7 +74,10 @@ const LoadingContainer = styled.div`
  */
 export const SurveyLayout = () => {
   const navigate = useNavigate();
+  const from = useFromLocation();
   const params = useParams<SurveyParams>();
+  const isFetchingEntities = useIsFetching({ queryKey: ['entityAncestors'] });
+
   const {
     updateFormData,
     formData,
@@ -85,16 +90,21 @@ export const SurveyLayout = () => {
     visibleScreens,
     isResubmitReviewScreen,
   } = useSurveyForm();
+
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurveyResponse, isLoading: isSubmittingSurveyResponse } =
-    useSubmitSurveyResponse();
+    useSubmitSurveyResponse(from);
   const { mutate: resubmitSurveyResponse, isLoading: isResubmittingSurveyResponse } =
     useResubmitSurveyResponse();
   const { back, next } = useSurveyRouting(numberOfScreens);
 
   const handleStep = (path, data) => {
     updateFormData({ ...formData, ...data });
-    navigate(path);
+    navigate(path, {
+      state: {
+        ...(from && { from }),
+      },
+    });
   };
 
   const onStepPrevious = () => {
@@ -119,6 +129,7 @@ export const SurveyLayout = () => {
     if (!surveyScreenToSnapTo) return;
     // we have to serialize the errors for the location state as per https://github.com/remix-run/react-router/issues/8792. We can't just set the errors manually in the form because when we navigate to the screen, the form errors will reset
     const stringifiedErrors = JSON.stringify(screenErrors);
+
     navigate(
       generatePath(ROUTES.SURVEY_SCREEN, {
         ...params,
@@ -126,6 +137,7 @@ export const SurveyLayout = () => {
       }),
       {
         state: {
+          ...(from && { from }),
           errors: stringifiedErrors,
         },
       },
@@ -134,13 +146,14 @@ export const SurveyLayout = () => {
 
   const onSubmit = data => {
     const submitAction = isResubmitReviewScreen ? resubmitSurveyResponse : submitSurveyResponse;
-    if (isReviewScreen || isResubmitReviewScreen) return submitAction(data);
+    if (isReviewScreen || isResubmitReviewScreen) return submitAction({ ...formData, ...data });
     return navigateNext(data);
   };
 
   const handleClickSubmit = handleSubmit(onSubmit, onError);
 
-  const showLoader = isSubmittingSurveyResponse || isResubmittingSurveyResponse;
+  const showLoader =
+    isSubmittingSurveyResponse || isResubmittingSurveyResponse || !!isFetchingEntities;
 
   return (
     <>

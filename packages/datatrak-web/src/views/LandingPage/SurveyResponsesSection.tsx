@@ -45,34 +45,24 @@ export const SurveyResponsesSection = () => {
         {isSuccess && (
           <>
             {recentSurveyResponses?.length > 0 ? (
-              recentSurveyResponses.map(
-                ({
-                  id,
-                  surveyName,
-                  surveyCode,
-                  dataTime,
-                  entityName,
-                  countryName,
-                  countryCode,
-                }) => (
-                  <Tile
-                    key={id}
-                    title={surveyName}
-                    text={entityName}
-                    to={`/survey/${countryCode}/${surveyCode}/response/${id}`}
-                    tooltip={
-                      <>
-                        {surveyName}
-                        <br />
-                        {entityName}
-                      </>
-                    }
-                    Icon={SurveyTickIcon}
-                  >
-                    {countryName}, {displayDate(dataTime)}
-                  </Tile>
-                ),
-              )
+              recentSurveyResponses.map(({ id, surveyName, dataTime, entityName, countryName }) => (
+                <Tile
+                  key={id}
+                  title={surveyName}
+                  text={entityName}
+                  to={`?responseId=${id}`}
+                  tooltip={
+                    <>
+                      {surveyName}
+                      <br />
+                      {entityName}
+                    </>
+                  }
+                  Icon={SurveyTickIcon}
+                >
+                  {countryName}, {displayDate(dataTime)}
+                </Tile>
+              ))
             ) : (
               <Typography variant="body2" color="textSecondary">
                 No recent surveys responses to display for {project?.name || 'project'}

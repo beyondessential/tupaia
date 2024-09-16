@@ -11,8 +11,10 @@ import { processArithmeticConfig } from './processArithmeticConfig';
 import { processConditionConfig } from './processConditionConfig';
 import { processAutocompleteConfig } from './processAutocompleteConfig';
 import { processEntityConfig } from './processEntityConfig';
+import { processTaskConfig } from './processTaskConfig';
+import { processUserConfig } from './processUserConfig';
 
-const { CODE_GENERATOR, ARITHMETIC, CONDITION, AUTOCOMPLETE, ENTITY, PRIMARY_ENTITY } =
+const { CODE_GENERATOR, ARITHMETIC, CONDITION, AUTOCOMPLETE, ENTITY, PRIMARY_ENTITY, TASK, USER } =
   ANSWER_TYPES;
 
 export class ConfigImporter {
@@ -85,6 +87,15 @@ export class ConfigImporter {
         const entityConfig = await processEntityConfig(this.models, config);
         return { entity: entityConfig };
       }
+      case TASK: {
+        const taskConfig = await processTaskConfig(this.models, config);
+        return { task: taskConfig };
+      }
+      case USER: {
+        const userConfig = await processUserConfig(this.models, config);
+        return { user: userConfig };
+      }
+
       default:
         return {};
     }

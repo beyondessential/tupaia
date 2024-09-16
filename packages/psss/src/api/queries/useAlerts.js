@@ -38,8 +38,8 @@ export const useArchiveAlert = alertId => {
   const queryClient = useQueryClient();
   return useMutation(() => put(`alerts/${alertId}/archive`), {
     onSuccess: () => {
-      queryClient.invalidateQueries(`alerts/active`);
-      queryClient.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries([`alerts/active`]);
+      queryClient.invalidateQueries([`alerts/archive`]);
     },
     throwOnError: true,
   });
@@ -49,8 +49,8 @@ export const useRestoreArchivedAlert = alertId => {
   const queryClient = useQueryClient();
   return useMutation(() => put(`alerts/${alertId}/unarchive`), {
     onSuccess: () => {
-      queryClient.invalidateQueries(`alerts/active`);
-      queryClient.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries([`alerts/active`]);
+      queryClient.invalidateQueries([`alerts/archive`]);
     },
     throwOnError: true,
   });
@@ -60,7 +60,7 @@ export const useDeleteAlert = alertId => {
   const queryClient = useQueryClient();
   return useMutation(() => remove(`alerts/${alertId}`), {
     onSuccess: () => {
-      queryClient.invalidateQueries(`alerts/archive`);
+      queryClient.invalidateQueries([`alerts/archive`]);
     },
     throwOnError: true,
   });
