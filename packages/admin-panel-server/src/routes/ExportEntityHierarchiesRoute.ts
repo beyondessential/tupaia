@@ -14,6 +14,17 @@ export type ExportEntityHierarchiesRequest = Request<
   Record<string, any>
 >;
 
+type ExportEntityHierarchiesData = {
+  grandparent_name: string;
+  grandparent_code: string;
+  parent_name: string;
+  parent_code: string;
+  name: string;
+  code: string;
+  type: string;
+  attributes: Record<string, any>;
+};
+
 export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesRequest> {
   protected readonly type = 'download';
 
@@ -45,28 +56,30 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
         false,
       );
 
-      const data = descendants.map(
-        (row: {
-          grandparent_name: string;
-          grandparent_code: string;
-          parent_name: string;
-          parent_code: string;
-          name: string;
-          code: string;
-          type: string;
-          attributes: {};
-        }) => ({
-          ...row,
-          attributes: JSON.stringify(row.attributes),
-        }),
-      );
+      const data = descendants.map((row: ExportEntityHierarchiesData) => ({
+        ...row,
+        attributes: Object.entries(row.attributes)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join('\r\n'),
+      }));
 
       const projectEntity = await entityApi.getEntity(hierarchy, hierarchy, {
         fields: ['name'],
       });
 
       const sheetName = projectEntity?.name || hierarchy;
-      const sheet = xlsx.utils.json_to_sheet(data);
+      const sheet = xlsx.utils.json_to_sheet(data, {
+        header: [
+          'grandparent_name',
+          'grandparent_code',
+          'parent_name',
+          'parent_code',
+          'name',
+          'code',
+          'type',
+          'attributes',
+        ],
+      });
       xlsx.utils.book_append_sheet(workbook, sheet, sheetName);
     }
 
