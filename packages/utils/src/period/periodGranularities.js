@@ -303,7 +303,7 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
       throw new Error(`Start date must be earlier than the end date`);
     }
 
-    return roundStartEndDates(periodGranularity, startDate, endDate);
+    return roundStartEndDates(periodGranularity, startDate, endDate, dateOffset);
   }
 
   let defaultStartDate = moment(DEFAULT_MIN_DATE);
