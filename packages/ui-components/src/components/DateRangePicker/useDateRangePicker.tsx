@@ -113,6 +113,7 @@ interface UseDateRangePickerProps {
   granularity?: GranularityType;
   onSetDates: (startDate: string, endDate: string) => void;
   weekDisplayFormat?: string | number;
+  dateOffset?: DateOffsetSpec;
 }
 export const useDateRangePicker = ({
   startDate,
@@ -122,6 +123,7 @@ export const useDateRangePicker = ({
   granularity,
   onSetDates,
   weekDisplayFormat,
+  dateOffset,
 }: UseDateRangePickerProps) => {
   /**
    * Call the on change handler prop using iso formatted date
@@ -137,18 +139,51 @@ export const useDateRangePicker = ({
     momentShorthand: string;
   } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
 
-  const minMomentDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
-  const maxMomentDate = maxDate ? moment(maxDate) : moment();
+  const initialMinDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
+
+  // round the start date, including the date offset if it is set
+  const minMomentDate = roundStartDate(granularity, initialMinDate, dateOffset);
+
+  const getMaxDate = () => {
+    // Get the moment object for the max date, or if it's not set, use the current date
+    const initialMaxDate = maxDate ? moment(maxDate) : moment();
+
+    // if there is no offset, just round the end date and return it
+    if (!dateOffset) return roundEndDate(granularity, initialMaxDate);
+
+    // calculate the difference between the min and max dates, and round up to the nearest whole number
+    const differenceBetweenDates = Math.ceil(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - diff types are not compatible with our period momentShorthand type (which is inferred as a string)
+      initialMaxDate.diff(minMomentDate, momentShorthand, true),
+    );
+
+    // add the difference between the min and max dates to the min date to get the new max date
+    const newMaxDate = minMomentDate
+      .clone()
+      .add(differenceBetweenDates, momentShorthand)
+      .subtract(1, 'days'); // subtract one day to make sure the max date is inclusive
+
+    // round the end date, using the date offset if it is set
+    const roundedEndDate = roundEndDate(dateOffset?.unit ?? granularity, newMaxDate);
+
+    return roundedEndDate;
+  };
+
+  const maxMomentDate = getMaxDate();
 
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates({
     periodGranularity: granularity,
+    dateOffset,
   }) as {
     startDate: Moment;
     endDate: Moment;
   };
 
+  const displayGranularity = dateOffset ? dateOffset.unit : granularity;
+
   const { currentStartDate, currentEndDate } = getCurrentDates(
-    granularity!,
+    displayGranularity!,
     startDate!,
     endDate!,
     defaultStartDate,
@@ -159,10 +194,11 @@ export const useDateRangePicker = ({
   const prevDisabled = currentStartDate.isSameOrBefore(minMomentDate);
   const labelText = getDatesAsString(
     isSingleDate,
-    granularity,
+    displayGranularity,
     currentStartDate,
     currentEndDate,
     weekDisplayFormat,
+    dateOffset,
   );
 
   /**

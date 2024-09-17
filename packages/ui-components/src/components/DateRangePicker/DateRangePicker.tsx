@@ -119,6 +119,7 @@ export const DateRangePicker = ({
     granularity,
     onSetDates,
     weekDisplayFormat,
+    dateOffset,
   });
 
   const handleOpen = () => {

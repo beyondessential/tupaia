@@ -5,14 +5,17 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import styled from 'styled-components';
 import { DialogProps, Typography } from '@material-ui/core';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
+  GRANULARITY_CONFIG,
   GRANULARITY_SHAPE,
+  roundEndDate,
+  roundStartDate,
   roundStartEndDates,
 } from '@tupaia/utils';
 import { Dialog, DialogHeader, DialogContent, DialogFooter } from '../Dialog';
@@ -167,7 +170,7 @@ type DatePickerDialogProps = {
   endDate: string;
   minDate?: string;
   maxDate?: string;
-  onSetNewDates: (startDate: string, endDate: string) => void;
+  onSetNewDates: (startDate: Moment, endDate: Moment) => void;
   weekDisplayFormat?: string;
   muiDialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
   dateRangeDelimiter?: string;
@@ -211,19 +214,22 @@ export const DatePickerDialog = ({
       return setErrorMessage('Start date must be before end date');
     }
 
-    const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
-      granularity,
-      isSingleDate ? selectedEndDate.clone() : selectedStartDate,
-      selectedEndDate,
-    );
+    const { momentUnit } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
+
+    // calculate the rounded start date
+    const startDate = isSingleDate
+      ? // if is a single date granularity, we just subtract one unit from the selected end date
+        selectedEndDate.clone().subtract(1, momentUnit as moment.DurationInputArg2)
+      : selectedStartDate;
+    const roundedStartDate = roundStartDate(granularity, startDate, dateOffset);
 
     // Only update if the dates have actually changed by at least one day
     if (
       !momentStartDate.isSame(roundedStartDate, 'day') ||
-      !momentEndDate.isSame(roundedEndDate, 'day')
+      !momentEndDate.isSame(selectedEndDate, 'day')
     ) {
       // Update the external control values!
-      onSetNewDates(roundedStartDate, roundedEndDate);
+      onSetNewDates(roundedStartDate, selectedEndDate);
     }
     onClose();
     return setErrorMessage('');
