@@ -97,8 +97,6 @@ export const useDateRanges = (
   // this only applies to dashboard items, not map overlays
   const dateOffset = 'dateOffset' in selectedItem ? selectedItem.dateOffset : undefined;
 
-  // this only applies to dashboard items, not map overlays
-  const dateOffset = 'dateOffset' in selectedItem ? selectedItem.dateOffset : undefined;
   // this only applies to map overlays
   const isTimePeriodEditable =
     'isTimePeriodEditable' in selectedItem ? selectedItem.isTimePeriodEditable : true;
