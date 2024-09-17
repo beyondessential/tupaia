@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
 import { YearPickerProps } from '../../types';
@@ -18,29 +18,37 @@ import { getDatesAsString } from './useDateRangePicker';
 
 const getOffsetStartDateForYear = (
   year: number,
-  momentDateValue: YearPickerProps['momentDateValue'],
   granularity: YearPickerProps['granularity'],
   dateOffset: YearPickerProps['dateOffset'],
 ) => {
-  if (!dateOffset) {
-    return year;
-  }
+  const startDate = moment().set({
+    year,
+    month: 0,
+    date: 1,
+    hour: 0,
+    minute: 0,
+    second: 0,
+  });
 
-  return roundStartDate(granularity, momentDateValue.clone().year(year), dateOffset);
+  return roundStartDate(granularity, startDate, dateOffset);
 };
 
 const getOffsetEndDateForYear = (
   year: number,
   offsetStartDate: Moment,
-  momentDateValue: YearPickerProps['momentDateValue'],
   granularity: YearPickerProps['granularity'],
   dateOffset: YearPickerProps['dateOffset'],
 ) => {
-  if (!dateOffset) {
-    return year;
-  }
-
   const isSetRangeGranularity = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+
+  const endDate = moment().set({
+    year,
+    month: 11,
+    date: 31,
+    hour: 23,
+    minute: 59,
+    second: 59,
+  });
 
   if (isSetRangeGranularity) {
     const { momentUnit } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
@@ -50,7 +58,7 @@ const getOffsetEndDateForYear = (
       .subtract(1, 'minute'); // set to the end of the day at the end of the range
   }
 
-  return roundEndDate(granularity, momentDateValue.clone().year(year), dateOffset);
+  return roundEndDate(granularity, endDate, dateOffset);
 };
 
 export const YearPicker = ({
@@ -81,20 +89,9 @@ export const YearPicker = ({
     // if there is no dateOffset, return the year as it is
     if (!dateOffset) return year;
 
-    const offsetStartDate = getOffsetStartDateForYear(
-      year,
-      momentDateValue,
-      granularity,
-      dateOffset,
-    );
+    const offsetStartDate = getOffsetStartDateForYear(year, granularity, dateOffset);
 
-    const offsetEndDate = getOffsetEndDateForYear(
-      year,
-      offsetStartDate,
-      momentDateValue,
-      granularity,
-      dateOffset,
-    );
+    const offsetEndDate = getOffsetEndDateForYear(year, offsetStartDate, granularity, dateOffset);
 
     if (isSetRangeGranularity) {
       return getDatesAsString(
@@ -133,8 +130,9 @@ export const YearPicker = ({
 
   for (let y = minYear; y <= maxYear; y++) {
     const displayLabel = getDisplayLabel(y);
-    const startDate = getOffsetStartDateForYear(y, momentDateValue, granularity, dateOffset);
-    const endDate = getOffsetEndDateForYear(y, startDate, momentDateValue, granularity, dateOffset);
+    const startDate = getOffsetStartDateForYear(y, granularity, dateOffset);
+    const endDate = getOffsetEndDateForYear(y, startDate, granularity, dateOffset);
+    // use the correct year based on the valueKey
     const yearToUse = valueKey === 'startDate' ? startDate : endDate;
     yearOptions.push({
       value: yearToUse.year(),

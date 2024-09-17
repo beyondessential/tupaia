@@ -120,6 +120,7 @@ export const DateRangePicker = ({
     onSetDates,
     weekDisplayFormat,
     dateOffset,
+    dateRangeDelimiter,
   });
 
   const handleOpen = () => {

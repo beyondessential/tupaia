@@ -114,6 +114,7 @@ interface UseDateRangePickerProps {
   onSetDates: (startDate: string, endDate: string) => void;
   weekDisplayFormat?: string | number;
   dateOffset?: DateOffsetSpec;
+  dateRangeDelimiter?: string;
 }
 export const useDateRangePicker = ({
   startDate,
@@ -124,6 +125,7 @@ export const useDateRangePicker = ({
   onSetDates,
   weekDisplayFormat,
   dateOffset,
+  dateRangeDelimiter,
 }: UseDateRangePickerProps) => {
   /**
    * Call the on change handler prop using iso formatted date
@@ -199,6 +201,7 @@ export const useDateRangePicker = ({
     currentEndDate,
     weekDisplayFormat,
     dateOffset,
+    dateRangeDelimiter,
   );
 
   /**
