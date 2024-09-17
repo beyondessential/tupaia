@@ -197,7 +197,7 @@ export const DatePickerDialog = ({
   const [selectedStartDate, setSelectedStartDate] = useState(momentStartDate);
   const [selectedEndDate, setSelectedEndDate] = useState(momentEndDate);
   const [errorMessage, setErrorMessage] = useState('');
-  const isSetRangeGranularity = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
 
   const onCancelDateSelection = () => {
     onClose();
@@ -208,7 +208,7 @@ export const DatePickerDialog = ({
   };
 
   const onSubmit = () => {
-    if (!isSetRangeGranularity && selectedStartDate.isAfter(selectedEndDate)) {
+    if (!isSingleDate && selectedStartDate.isAfter(selectedEndDate)) {
       return setErrorMessage('Start date must be before end date');
     }
 
@@ -244,7 +244,7 @@ export const DatePickerDialog = ({
   }, [momentStartDate?.format('DD/MM/YYYY'), momentEndDate?.format('DD/MM/YYYY')]);
 
   useEffect(() => {
-    if (!isSetRangeGranularity) return;
+    if (!isSingleDate) return;
 
     const { momentUnit } = granularity;
     const newStartDate = selectedEndDate.clone().subtract(1, momentUnit);
@@ -261,7 +261,7 @@ export const DatePickerDialog = ({
     >
       <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
       <StyledDialogContent>
-        {!isSetRangeGranularity && (
+        {!isSingleDate && (
           <DateRow
             granularity={granularity}
             momentDateValue={selectedStartDate}
