@@ -214,11 +214,18 @@ export const DatePickerDialog = ({
 
     const { momentUnit } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
 
+    const getStartDate = () => {
+      if (dateOffset && isSingleDate) {
+        return selectedEndDate.clone().subtract(1, momentUnit as moment.DurationInputArg2);
+      }
+      if (isSingleDate) {
+        return selectedEndDate.clone();
+      }
+      return selectedStartDate;
+    };
+
     // calculate the rounded start date
-    const startDate = isSingleDate
-      ? // if is a single date granularity, we just subtract one unit from the selected end date
-        selectedEndDate.clone().subtract(1, momentUnit as moment.DurationInputArg2)
-      : selectedStartDate;
+    const startDate = getStartDate();
     const roundedStartDate = roundStartDate(granularity, startDate, dateOffset);
 
     // Only update if the dates have actually changed by at least one day
