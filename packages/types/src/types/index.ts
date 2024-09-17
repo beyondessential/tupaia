@@ -104,6 +104,7 @@ export {
   TaskCommentTemplateVariables,
   RepeatSchedule,
   EntityType,
+  DateOffsetSpec,
 } from './models-extra';
 export * from './requests';
 export * from './css';

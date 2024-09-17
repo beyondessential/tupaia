@@ -106,7 +106,7 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
-export { VizPeriodGranularity, DashboardItemType } from './common';
+export { VizPeriodGranularity, DashboardItemType, DateOffsetSpec } from './common';
 export { isChartReport, isViewReport, isMatrixReport } from './report';
 export { UserAccountPreferences } from './user';
 export { ProjectConfig } from './project';

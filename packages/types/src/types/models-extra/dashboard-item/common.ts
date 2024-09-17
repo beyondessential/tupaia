@@ -22,6 +22,11 @@ export type BaseConfig = {
   periodGranularity?: `${VizPeriodGranularity}`;
 
   /**
+   * @description The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.
+   * Currently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.
+   */
+  dateOffset?: DateOffsetSpec;
+  /**
    * @description
    * Initial date range for this viz.
    * Either a single offset, or an ISO string / offset for start/end date
