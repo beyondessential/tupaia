@@ -8,22 +8,5 @@ import { Country } from '@tupaia/types';
 import { get } from '../api';
 
 export const useCountries = () => {
-  return useQuery(
-    ['countries'],
-    (): Promise<Country[]> =>
-      get('countries', {
-        params: {
-          columns: JSON.stringify(['code', 'name']),
-          sort: JSON.stringify(['name']),
-          pageSize: 'ALL',
-          // TL is turned off for Tupaia right now
-          filter: JSON.stringify({
-            code: {
-              comparator: '!=',
-              comparisonValue: 'TL',
-            },
-          }),
-        },
-      }),
-  );
+  return useQuery(['countries'], (): Promise<Partial<Country>[]> => get('countries'));
 };
