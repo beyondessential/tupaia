@@ -105,7 +105,7 @@ interface PDFExportDashboardItemProps {
   activeDashboard?: Dashboard;
   isPreview?: boolean;
   settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
-  displayHeader?: boolean;
+  displayDescription?: boolean;
 }
 
 /**
@@ -118,7 +118,7 @@ export const PDFExportDashboardItem = ({
   activeDashboard,
   isPreview = false,
   settings,
-  displayHeader = false,
+  displayDescription = false,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -183,7 +183,7 @@ export const PDFExportDashboardItem = ({
       </PDFExportHeader>
       <PDFExportBody>
         <DashboardName>{activeDashboard?.name}</DashboardName>
-        {displayHeader && <ExportDescription>{exportDescription}</ExportDescription>}
+        {displayDescription && <ExportDescription>{exportDescription}</ExportDescription>}
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}

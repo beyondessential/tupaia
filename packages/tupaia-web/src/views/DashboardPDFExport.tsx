@@ -97,7 +97,7 @@ export const DashboardPDFExport = ({
           activeDashboard={activeDashboard}
           isPreview={isPreview}
           settings={settings}
-          displayHeader={pageIndex === 1 || (!isPreview && i === 0)}
+          displayDescription={pageIndex === 1 || (!isPreview && i === 0)}
         />
       ))}
     </Parent>
