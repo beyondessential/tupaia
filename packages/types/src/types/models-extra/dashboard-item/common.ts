@@ -27,6 +27,10 @@ export type BaseConfig = {
    */
   dateOffset?: DateOffsetSpec;
   /**
+   * @description If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'
+   */
+  dateRangeDelimiter?: string;
+  /**
    * @description
    * Initial date range for this viz.
    * Either a single offset, or an ISO string / offset for start/end date
