@@ -28,7 +28,7 @@ import { Modal, RouterButton } from '../components';
 import { SingleProject } from '../types';
 import { useModal } from '../utils';
 
-const OFF_WHITE = '#dedede';
+const OFF_WHITE = '#B8B8B8';
 
 const Wrapper = styled.div`
   display: flex;
@@ -149,6 +149,9 @@ const SearchAutocomplete = styled(Autocomplete)`
   }
   .MuiAutocomplete-endAdornment {
     top: initial;
+  }
+  .MuiSvgIcon-root {
+    color: ${OFF_WHITE};
   }
 `;
 
