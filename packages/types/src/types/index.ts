@@ -105,6 +105,7 @@ export {
   RepeatSchedule,
   EntityType,
   DateOffsetSpec,
+  DatePickerOffsetSpec,
 } from './models-extra';
 export * from './requests';
 export * from './css';
