@@ -209,13 +209,19 @@ export const useDateRangePicker = ({
     if (!isSingleDate) {
       console.warn('Can only change period for single unit date pickers (e.g. one month)');
     }
-    const newStartDate = currentStartDate.clone().add(numberOfPeriodsToMove, momentShorthand);
-    const newEndDate = currentEndDate.clone().add(numberOfPeriodsToMove, momentShorthand);
+
+    // If the dateOffset is set, we need to round the start and end dates to the nearest period, so that when we add the number of periods to move, we get the correct period, and can then round the start and end dates again. We shouldn't use the dates directly on the off cancel that a current date has been entered directly into the url, for example, and it doesn't match the range we want to work with.
+    const startDateWithoutOffset = roundStartDate(granularity, startDate);
+    const newStartDate = startDateWithoutOffset.clone().add(numberOfPeriodsToMove, momentShorthand);
+    const newEndDate = newStartDate.clone();
+
     const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
       granularity,
       newStartDate,
       newEndDate,
+      dateOffset,
     );
+
     handleDateChange(roundedStartDate, roundedEndDate);
   };
 
