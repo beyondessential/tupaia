@@ -148,8 +148,8 @@ export const YearPicker = ({
     </MenuItem>
   ));
 
-  const onChangeValue = e => {
-    return onChange(momentToYear(momentDateValue.clone(), e.target.value));
+  const onChangeValue = (value: number) => {
+    return onChange(momentToYear(momentDateValue.clone(), value));
   };
 
   const getSelectedOption = () => {
@@ -175,7 +175,7 @@ export const YearPicker = ({
     <DatePicker
       label="Year"
       selectedValue={selectedOption}
-      onChange={onChangeValue}
+      onChange={e => onChangeValue(e.target.value)}
       menuItems={menuItems}
     />
   );
