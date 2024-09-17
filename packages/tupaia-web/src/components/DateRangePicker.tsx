@@ -97,6 +97,8 @@ export const DateRangePicker = ({
   onSetDates,
   onResetDate,
   weekDisplayFormat,
+  dateOffset,
+  dateRangeDelimiter,
 }: DateRangePickerProps) => {
   return (
     <Wrapper>

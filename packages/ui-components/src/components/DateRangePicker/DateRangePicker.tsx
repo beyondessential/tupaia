@@ -21,6 +21,7 @@ import { FlexStart } from '../Layout';
 import { WeekDisplayFormatType } from '../../types';
 import { useDateRangePicker } from './useDateRangePicker';
 import { DatePickerDialog } from './DatePickerDialog';
+import { DateOffsetSpec } from '@tupaia/types';
 
 const IconButton = styled(MuiIconButton)`
   background: white;
@@ -83,6 +84,8 @@ interface DateRangePickerProps {
   isLoading?: boolean;
   weekDisplayFormat?: WeekDisplayFormatType;
   dialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
+  dateOffset?: DateOffsetSpec;
+  dateRangeDelimiter?: string;
 }
 
 export const DateRangePicker = ({
@@ -95,6 +98,8 @@ export const DateRangePicker = ({
   isLoading = false,
   weekDisplayFormat,
   dialogProps,
+  dateOffset,
+  dateRangeDelimiter,
 }: DateRangePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -164,6 +169,8 @@ export const DateRangePicker = ({
         onSetNewDates={handleDateChange}
         weekDisplayFormat={weekDisplayFormat}
         muiDialogProps={dialogProps}
+        dateOffset={dateOffset}
+        dateRangeDelimiter={dateRangeDelimiter}
       />
     </>
   );

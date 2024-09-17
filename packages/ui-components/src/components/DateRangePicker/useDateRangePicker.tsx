@@ -19,35 +19,58 @@ import {
   WEEK_DISPLAY_CONFIG,
 } from '@tupaia/utils';
 import { GranularityType, ModifierType } from '../../types';
+import { DateOffsetSpec } from '@tupaia/types';
 
 const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 
-const getDatesAsString = (
+export const getDatesAsString = (
   isSingleDate: boolean,
   granularity: GranularityType = DEFAULT_GRANULARITY,
   startDate: Moment,
   endDate: Moment,
   weekDisplayFormat?: string | number,
+  dateOffset?: DateOffsetSpec,
+  dateRangeDelimiter = ' – ',
 ) => {
   const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
-  const { rangeFormat, modifier } = (
+
+  // when it's a single date, we use the preferred range delimiter, otherwise use the default delimiter because this indicates multiple offset dates selected
+  const delimiterToUse = isSingleDate && !!dateOffset ? dateRangeDelimiter : ' – ';
+
+  const displayGranularity = dateOffset?.unit ?? granularity;
+
+  const { rangeFormat, modifier, momentUnit } = (
     isWeek && weekDisplayFormat
       ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
       : GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG]
   ) as {
     rangeFormat: string;
     modifier?: ModifierType;
+    momentUnit: moment.unitOfTime.StartOf;
   };
+
+  // if the start and end dates are the same day, we only need to display one date
+  const displayAsRange = !startDate.clone().isSame(endDate.clone(), momentUnit);
+
+  const formattedEndDate = momentToDateDisplayString(
+    endDate,
+    displayGranularity,
+    rangeFormat,
+    modifier,
+  );
+
+  if (!displayAsRange) {
+    return formattedEndDate;
+  }
 
   const formattedStartDate = momentToDateDisplayString(
     startDate,
-    granularity,
+    displayGranularity,
     rangeFormat,
-    modifier!,
+    modifier,
   );
-  const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, modifier!);
 
-  return isSingleDate ? formattedEndDate : `${formattedStartDate} – ${formattedEndDate}`; // En dash
+  return `${formattedStartDate}${delimiterToUse}${formattedEndDate}`; // En dash
 };
 
 /**

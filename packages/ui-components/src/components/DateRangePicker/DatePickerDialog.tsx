@@ -23,18 +23,10 @@ import { WeekPicker } from './WeekPicker';
 import { QuarterPicker } from './QuarterPicker';
 import { Button, OutlinedButton } from '../Button';
 import { BaseDatePickerProps, WeekPickerProps, YearPickerProps } from '../../types';
+import { DateOffsetSpec } from '@tupaia/types';
 
-const {
-  DAY,
-  WEEK,
-  SINGLE_WEEK,
-  MONTH,
-  SINGLE_MONTH,
-  QUARTER,
-  SINGLE_QUARTER,
-  YEAR,
-  SINGLE_YEAR,
-} = GRANULARITIES;
+const { DAY, WEEK, SINGLE_WEEK, MONTH, SINGLE_MONTH, QUARTER, SINGLE_QUARTER, YEAR, SINGLE_YEAR } =
+  GRANULARITIES;
 
 const Container = styled.fieldset`
   display: flex;
@@ -89,7 +81,8 @@ type DateRowProps = (BaseDatePickerProps | YearPickerProps | WeekPickerProps) & 
   title?: string;
 };
 
-const DateRow = ({ title, granularity, ...props }: DateRowProps) => {
+const DateRow = ({ title, ...props }: DateRowProps) => {
+  const { granularity } = props;
   const getDatePickerComponent = () => {
     switch (granularity) {
       default:
@@ -177,6 +170,8 @@ type DatePickerDialogProps = {
   onSetNewDates: (startDate: string, endDate: string) => void;
   weekDisplayFormat?: string;
   muiDialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
+  dateRangeDelimiter?: string;
+  dateOffset?: DateOffsetSpec;
 };
 
 export const DatePickerDialog = ({
@@ -190,6 +185,8 @@ export const DatePickerDialog = ({
   onSetNewDates,
   weekDisplayFormat,
   muiDialogProps = {},
+  dateRangeDelimiter,
+  dateOffset,
 }: DatePickerDialogProps) => {
   const momentStartDate = moment(startDate);
   const momentEndDate = moment(endDate);
@@ -261,6 +258,9 @@ export const DatePickerDialog = ({
             onChange={setSelectedStartDate}
             weekDisplayFormat={weekDisplayFormat}
             title="Start date"
+            dateOffset={dateOffset}
+            dateRangeDelimiter={dateRangeDelimiter}
+            valueKey="startDate"
           />
         )}
         <DateRow
@@ -271,6 +271,9 @@ export const DatePickerDialog = ({
           onChange={setSelectedEndDate}
           weekDisplayFormat={weekDisplayFormat}
           title={isSingleDate ? '' : 'End date'}
+          dateOffset={dateOffset}
+          dateRangeDelimiter={dateRangeDelimiter}
+          valueKey="endDate"
         />
         {errorMessage ? <Error>{errorMessage}</Error> : null}
       </StyledDialogContent>
