@@ -13,4 +13,6 @@ export {
   EntityQuestionConfigFields,
   EntityQuestionConfigFieldValue,
   EntityQuestionConfigFieldKey,
+  TaskQuestionConfig,
+  UserQuestionConfig,
 } from './surveyScreenComponent';

@@ -31,7 +31,8 @@ export const ProjectSelectModal = ({ onClose }: ModalProps) => {
   const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(onClose);
 
   return (
-    <Modal open onClose={onClose} PaperComponent={Wrapper}>
+    // Enable the portal so it displays over any other content and we don't get z-index issues
+    <Modal open onClose={onClose} PaperComponent={Wrapper} disablePortal={false}>
       {requestAccessProjectCode ? (
         <RequestProjectAccess
           projectCode={requestAccessProjectCode}
