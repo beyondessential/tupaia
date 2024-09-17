@@ -11,15 +11,6 @@ import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
 import { SpinningLoader, Button as UIButton } from '../components';
 import { Button, SelectList } from '../components';
 
-type Project = KeysToCamelCase<ProjectT> & {
-  hasAccess: boolean;
-  hasPendingAccess: boolean;
-  homeEntityCode: Entity['code'];
-  name: Entity['name'];
-  names?: Entity['name'][];
-  value: string;
-};
-
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -47,6 +38,15 @@ const ListWrapper = styled.div<{
     max-block-size: 35rem;
   }
 `;
+
+type Project = KeysToCamelCase<ProjectT> & {
+  hasAccess: boolean;
+  hasPendingAccess: boolean;
+  homeEntityCode: Entity['code'];
+  name: Entity['name'];
+  names?: Entity['name'][];
+  value?: string;
+};
 
 interface ProjectSelectFormProps {
   projectId?: Project['id'];

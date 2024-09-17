@@ -87,7 +87,7 @@ const ExploreButton = styled(RouterButton).attrs({
 `;
 
 const Line = styled.div`
-  background-color: #9ba0a6;
+  background-color: ${({ theme }) => theme.palette.text.secondary};
   height: 1px;
   margin-top: 0.7rem;
 `;

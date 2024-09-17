@@ -68,10 +68,8 @@ const ProjectButton = styled(RouterButton).attrs({
 
   .MuiButton-label {
     text-transform: none;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    color: #9ba0a6;
+    font-size: 0.875rem;
+    color: ${({ theme }) => theme.palette.text.secondary};
     line-height: 140%;
     transition: color 0.2s;
   }

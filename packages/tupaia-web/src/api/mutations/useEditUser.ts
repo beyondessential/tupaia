@@ -6,15 +6,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { put } from '../api';
 
-type UserAccountDetails = {
-  projectId: string;
-};
+type UserAccountDetails = Record<string, any>;
 
 export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, UserAccountDetails, unknown>(
-    async (userDetails: UserAccountDetails) => {
+    async (userDetails: Record<string, any>) => {
       const data = {
         project_id: userDetails.projectId,
       };

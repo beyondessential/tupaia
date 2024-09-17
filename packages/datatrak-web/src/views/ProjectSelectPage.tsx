@@ -44,7 +44,6 @@ export const ProjectSelectPage = () => {
       <ProjectSelectForm
         onRequestAccess={onRequestAccess}
         onClose={onSuccess}
-        // @ts-ignore
         projects={projects}
         isLoading={isLoading}
         onConfirm={onConfirm}

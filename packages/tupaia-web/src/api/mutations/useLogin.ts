@@ -47,7 +47,6 @@ export const useLogin = () => {
         } else if (location.pathname.includes(DEFAULT_PROJECT_ENTITY)) {
           if (data.project) {
             const { code, homeEntityCode, dashboardGroupName } = data.project;
-            // @ts-ignore
             navigate(`/${code}/${homeEntityCode}/${dashboardGroupName}`);
           } else {
             navigateToModal(MODAL_ROUTES.PROJECTS);

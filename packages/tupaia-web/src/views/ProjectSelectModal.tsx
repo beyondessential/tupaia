@@ -2,37 +2,42 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { ProjectSelectForm } from '@tupaia/ui-components';
 import { useProjects, useUser } from '../api/queries';
 import { useEditUser } from '../api/mutations';
 import { Modal } from '../components';
 import { useModal } from '../utils';
 import { MODAL_ROUTES } from '../constants';
-import { useNavigate } from 'react-router-dom';
 
 const ModalBody = styled.div`
-  display: flex;
-  flex-direction: column;
+  text-align: left;
   padding: 1.2rem;
-  width: 48rem;
+  width: 46rem;
   max-width: 100%;
+  margin-top: -1rem;
+
+  > div {
+    max-block-size: 28rem;
+  }
+
+  .MuiDialogActions-root {
+    position: relative;
+    top: 1rem;
+  }
 `;
 
 export const ProjectSelectModal = () => {
   const { data } = useUser();
   const projectId = data?.project?.id;
-  const [requestAccessProjectCode, setRequestAccessProjectCode] = useState<string | null>(null);
   const { data: projects, isFetching } = useProjects();
   const { closeModal } = useModal();
   const navigate = useNavigate();
   const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(closeModal);
 
-  console.log('requestAccessProjectCode', requestAccessProjectCode);
-
-  const onRequestAccess = (projectCode: string) => {
-    setRequestAccessProjectCode(projectCode);
+  const onRequestAccess = () => {
     navigate({
       ...location,
       hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
@@ -47,10 +52,8 @@ export const ProjectSelectModal = () => {
           projectId={projectId}
           onClose={closeModal}
           onRequestAccess={onRequestAccess}
-          // @ts-ignore
           projects={projects?.projects}
           isLoading={isFetching}
-          // @ts-ignore
           onConfirm={onConfirm}
           isConfirming={isConfirming}
         />

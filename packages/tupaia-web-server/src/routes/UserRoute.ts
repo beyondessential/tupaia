@@ -31,7 +31,18 @@ export class UserRoute extends Route<UserRequest> {
       preferences,
     } = await ctx.services.central.getUser();
 
-    const userResponse = { userName: `${firstName} ${lastName}`, email };
+    const userResponse: {
+      userName: string;
+      email: string;
+      project?: {
+        id: string;
+        name: string;
+        code: string;
+        homeEntityCode: string;
+        dashboardGroupName: string;
+        defaultMeasure: string;
+      };
+    } = { userName: `${firstName} ${lastName}`, email };
 
     if (preferences?.project_id) {
       const { projects = [] } = await ctx.services.webConfig.fetchProjects({
@@ -42,7 +53,6 @@ export class UserRoute extends Route<UserRequest> {
         ({ id }: { id: string }) => id === preferences?.project_id,
       );
 
-      // @ts-ignore
       userResponse.project = {
         id,
         name,

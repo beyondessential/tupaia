@@ -63,7 +63,7 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'requestCountryAccess',
       handleWith(routes.RequestCountryAccessRoute),
     )
-    // @ts-ignore
+    // @ts-ignore LoginRoute types cannot be extended at this time
     .post<routes.LoginRequest>('loginUser', handleWith(routes.LoginRoute))
     .get<routes.EntityRequest>('entity/:projectCode/:entityCode', handleWith(routes.EntityRoute))
     .get<routes.EntitiesRequest>(

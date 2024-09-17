@@ -43,7 +43,6 @@ export const ProjectSelectModal = ({ onClose }: ModalProps) => {
           projectId={projectId}
           onClose={onClose}
           onRequestAccess={setRequestAccessProjectCode}
-          // @ts-ignore
           projects={projects}
           isLoading={isLoading}
           onConfirm={onConfirm}

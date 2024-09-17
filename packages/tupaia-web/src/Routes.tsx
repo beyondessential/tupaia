@@ -19,13 +19,10 @@ import { LoadingScreen } from './components';
 import { gaEvent, useEntityLink } from './utils';
 
 const HomeRedirect = () => {
-  // @ts-ignore
   const { isLoggedIn, data } = useUser();
   gaEvent('Navigate', 'Go Home');
-  console.log('HomeRedirect', data);
 
   if (data?.project) {
-    // @ts-ignore
     const { code, homeEntityCode, dashboardGroupName } = data.project;
     return <Navigate to={`/${code}/${homeEntityCode}/${dashboardGroupName}`} replace />;
   }

@@ -11,6 +11,8 @@ export interface ResBody {
     id: string;
     code: string;
     name: string;
+    homeEntityCode: string;
+    dashboardGroupName: string;
   };
 }
 export type ReqBody = Record<string, never>;

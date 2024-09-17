@@ -4,34 +4,28 @@
  */
 
 import { Request } from 'express';
-import { LoginRoute as BaseLoginRoute } from '@tupaia/server-boilerplate';
+import { LoginRoute as BaseLoginRoute, LoginRequest } from '@tupaia/server-boilerplate';
 import { WebServerProjectRequest } from '@tupaia/types';
 
-export type LoginRequest = Request<
-  WebServerProjectRequest.Params,
-  WebServerProjectRequest.ResBody,
-  WebServerProjectRequest.ReqBody,
-  WebServerProjectRequest.ReqQuery
->;
+type UserResponse = Record<any, any>;
 
 export class LoginRoute extends BaseLoginRoute {
-  // @ts-ignore
+  // @ts-ignore LoginRoute types cannot be extended at this time
   public async buildResponse() {
     const { ctx } = this.req;
-    const { user } = await super.buildResponse();
+    const authResponse = await super.buildResponse();
+    const user: UserResponse = authResponse.user;
 
-    // @ts-ignore
+    // @ts-ignore LoginRoute types cannot be extended at this time
     const { projects = [] } = await ctx.services.webConfig.fetchProjects({
       showExcludedProjects: false,
     });
 
-    // @ts-ignore
     const projectId = user?.preferences?.project_id;
     if (projectId) {
       const { id, name, code, homeEntityCode, dashboardGroupName, defaultMeasure } = projects.find(
         ({ id }: { id: string }) => id === projectId,
       );
-      // @ts-ignore
       user.project = {
         id,
         name,
