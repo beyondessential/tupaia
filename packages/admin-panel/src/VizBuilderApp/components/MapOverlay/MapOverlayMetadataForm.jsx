@@ -5,11 +5,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm, Controller } from 'react-hook-form';
-import { Autocomplete, TextField } from '@tupaia/ui-components';
+import { Autocomplete, TextField, useDebounce } from '@tupaia/ui-components';
 import Chip from '@material-ui/core/Chip';
 import { useCountries, useProjects, useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfigContext } from '../../context';
-import { useDebounce } from '../../../utilities';
 import { MAP_OVERLAY_VIZ_TYPES } from '../../constants';
 import { REQUIRED_FIELD_ERROR } from '../../../editor';
 

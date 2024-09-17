@@ -7,11 +7,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
-import { Select, DateTimePicker } from '@tupaia/ui-components';
+import { Select, DateTimePicker, useDebounce } from '@tupaia/ui-components';
 import { ApprovalStatus } from '@tupaia/types';
 import { format } from 'date-fns';
 import { Autocomplete } from '../autocomplete';
-import { useDebounce } from '../utilities';
 import { useEntities } from '../VizBuilderApp/api';
 import { EntityOptionLabel } from '../widgets';
 
