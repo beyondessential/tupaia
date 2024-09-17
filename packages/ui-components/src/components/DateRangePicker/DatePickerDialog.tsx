@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import moment, { Moment } from 'moment';
 import styled from 'styled-components';
 import { DialogProps, Typography } from '@material-ui/core';
-import { DateOffsetSpec } from '@tupaia/types';
+import { DatePickerOffsetSpec } from '@tupaia/types';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITIES,
@@ -172,7 +172,7 @@ type DatePickerDialogProps = {
   weekDisplayFormat?: string;
   muiDialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
   dateRangeDelimiter?: string;
-  dateOffset?: DateOffsetSpec;
+  dateOffset?: DatePickerOffsetSpec;
 };
 
 export const DatePickerDialog = ({

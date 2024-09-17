@@ -9,6 +9,8 @@ export {
   LinkReferenceProps,
   EntityAttributes,
   DateOffsetSpec,
+  VizPeriodGranularity,
+  DashboardItemType,
 } from './common';
 export type {
   ReportConfig,
@@ -73,6 +75,7 @@ export {
   ComponentConfig,
   LineChartChartConfig,
   ExportPresentationOptions,
+  DatePickerOffsetSpec,
 } from './dashboard-item';
 export {
   MapOverlayConfig,
@@ -107,7 +110,6 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
-export { VizPeriodGranularity, DashboardItemType, DateOffsetSpec } from './common';
 export { isChartReport, isViewReport, isMatrixReport } from './report';
 export { UserAccountPreferences } from './user';
 export { ProjectConfig } from './project';

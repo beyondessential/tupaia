@@ -340,6 +340,27 @@ export const CssColorSchema = {
 	"type": "string"
 } 
 
+export const DatePickerOffsetSpecSchema = {
+	"type": "object",
+	"properties": {
+		"unit": {
+			"enum": [
+				"month",
+				"quarter"
+			],
+			"type": "string"
+		},
+		"offset": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"offset",
+		"unit"
+	]
+} 
+
 export const BaseConfigSchema = {
 	"type": "object",
 	"properties": {
@@ -366,6 +387,27 @@ export const BaseConfigSchema = {
 				"year"
 			],
 			"type": "string"
+		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
 		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
@@ -524,51 +566,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -852,6 +849,27 @@ export const MatrixConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -1009,51 +1027,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -1602,6 +1575,27 @@ export const MatrixVizBuilderConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -1759,51 +1753,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -2847,6 +2796,27 @@ export const ComponentConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -3004,51 +2974,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -3418,6 +3343,27 @@ export const BaseChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -3575,51 +3521,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -4332,6 +4233,27 @@ export const CartesianChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -4489,51 +4411,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -5191,6 +5068,27 @@ export const PieChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -5348,51 +5246,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -5790,6 +5643,27 @@ export const BarChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -5947,51 +5821,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -6785,6 +6614,27 @@ export const LineChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -6942,51 +6792,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -7772,6 +7577,27 @@ export const ComposedChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -7929,51 +7755,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -8575,6 +8356,27 @@ export const GaugeChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -8732,51 +8534,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -9081,6 +8838,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -9238,51 +9016,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -9620,6 +9353,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -9777,51 +9531,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -10439,6 +10148,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -10596,51 +10326,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -11252,6 +10937,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -11409,51 +11115,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -12054,6 +11715,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -12211,51 +11893,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -12690,6 +12327,27 @@ export const BaseViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -12847,51 +12505,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -13191,6 +12804,27 @@ export const MultiValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -13348,51 +12982,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -13800,6 +13389,27 @@ export const MultiValueRowViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -13957,51 +13567,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -14360,6 +13925,27 @@ export const SingleValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -14517,51 +14103,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -14834,6 +14375,27 @@ export const MultiPhotographViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -14991,51 +14553,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -15304,6 +14821,27 @@ export const MultiSingleValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -15461,51 +14999,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -15774,6 +15267,27 @@ export const SingleDownloadLinkViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -15931,51 +15445,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -16244,6 +15713,27 @@ export const DataDownloadViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -16401,51 +15891,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -16714,6 +16159,27 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -16871,51 +16337,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -17200,6 +16621,27 @@ export const SingleDateViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -17357,51 +16799,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -17670,6 +17067,27 @@ export const DownloadFilesViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -17827,51 +17245,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -18140,6 +17513,27 @@ export const QRCodeViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -18297,51 +17691,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false
 				}
-			]
-		},
-		"dateOffset": {
-			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-			"type": "object",
-			"properties": {
-				"unit": {
-					"description": "Time unit to offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"offset": {
-					"description": "Offset distance (can be negative to offset to an earlier date)",
-					"type": "number"
-				},
-				"modifier": {
-					"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-					"enum": [
-						"end_of",
-						"start_of"
-					],
-					"type": "string"
-				},
-				"modifierUnit": {
-					"description": "Time unit to modify the offset by",
-					"enum": [
-						"day",
-						"month",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"offset",
-				"unit"
 			]
 		},
 		"datePickerLimits": {
@@ -18612,6 +17961,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -18769,51 +18139,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -19094,6 +18419,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -19251,51 +18597,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -19653,6 +18954,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -19810,51 +19132,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -20126,6 +19403,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -20283,51 +19581,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -20595,6 +19848,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -20752,51 +20026,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -21064,6 +20293,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -21221,51 +20471,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -21533,6 +20738,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -21690,51 +20916,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -22002,6 +21183,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -22159,51 +21361,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -22471,6 +21628,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -22628,51 +21806,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -22940,6 +22073,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -23097,51 +22251,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -23524,6 +22633,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -23681,51 +22811,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -24274,6 +23359,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -24431,51 +23537,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -24727,6 +23788,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -24884,51 +23966,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -25266,6 +24303,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -25423,51 +24481,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -26085,6 +25098,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -26242,51 +25276,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -26898,6 +25887,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -27055,51 +26065,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -27700,6 +26665,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -27857,51 +26843,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -28202,6 +27143,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -28359,51 +27321,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -28684,6 +27601,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -28841,51 +27779,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -29243,6 +28136,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -29400,51 +28314,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -29716,6 +28585,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -29873,51 +28763,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -30185,6 +29030,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -30342,51 +29208,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -30654,6 +29475,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -30811,51 +29653,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -31123,6 +29920,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -31280,51 +30098,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -31592,6 +30365,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -31749,51 +30543,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -32061,6 +30810,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -32218,51 +30988,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -32530,6 +31255,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -32687,51 +31433,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false
 						}
-					]
-				},
-				"dateOffset": {
-					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-					"type": "object",
-					"properties": {
-						"unit": {
-							"description": "Time unit to offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"description": "Offset distance (can be negative to offset to an earlier date)",
-							"type": "number"
-						},
-						"modifier": {
-							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"description": "Time unit to modify the offset by",
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
 					]
 				},
 				"datePickerLimits": {
@@ -43703,6 +42404,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -43860,51 +42582,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -44453,6 +43130,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -44610,51 +43308,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -44906,6 +43559,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -45063,51 +43737,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -45445,6 +44074,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -45602,51 +44252,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -46264,6 +44869,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -46421,51 +45047,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -47077,6 +45658,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -47234,51 +45836,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -47879,6 +46436,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -48036,51 +46614,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -48381,6 +46914,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -48538,51 +47092,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -48863,6 +47372,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -49020,51 +47550,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -49422,6 +47907,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -49579,51 +48085,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -49895,6 +48356,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -50052,51 +48534,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -50364,6 +48801,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -50521,51 +48979,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -50833,6 +49246,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -50990,51 +49424,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -51302,6 +49691,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -51459,51 +49869,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -51771,6 +50136,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -51928,51 +50314,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -52240,6 +50581,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -52397,51 +50759,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -52709,6 +51026,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -52866,51 +51204,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -53215,6 +51508,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -53372,51 +51686,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -53965,6 +52234,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -54122,51 +52412,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -54418,6 +52663,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -54575,51 +52841,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -54957,6 +53178,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -55114,51 +53356,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -55776,6 +53973,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -55933,51 +54151,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -56589,6 +54762,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -56746,51 +54940,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -57391,6 +55540,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -57548,51 +55718,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -57893,6 +56018,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -58050,51 +56196,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -58375,6 +56476,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -58532,51 +56654,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -58934,6 +57011,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -59091,51 +57189,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -59407,6 +57460,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -59564,51 +57638,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -59876,6 +57905,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -60033,51 +58083,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -60345,6 +58350,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -60502,51 +58528,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -60814,6 +58795,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -60971,51 +58973,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -61283,6 +59240,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -61440,51 +59418,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -61752,6 +59685,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -61909,51 +59863,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -62221,6 +60130,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -62378,51 +60308,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -62721,6 +60606,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -62878,51 +60784,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -63471,6 +61332,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -63628,51 +61510,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -63924,6 +61761,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -64081,51 +61939,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -64463,6 +62276,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -64620,51 +62454,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -65282,6 +63071,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -65439,51 +63249,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -66095,6 +63860,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -66252,51 +64038,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -66897,6 +64638,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -67054,51 +64816,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -67399,6 +65116,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -67556,51 +65294,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -67881,6 +65574,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -68038,51 +65752,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -68440,6 +66109,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -68597,51 +66287,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -68913,6 +66558,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -69070,51 +66736,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -69382,6 +67003,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -69539,51 +67181,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -69851,6 +67448,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -70008,51 +67626,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -70320,6 +67893,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -70477,51 +68071,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -70789,6 +68338,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -70946,51 +68516,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -71258,6 +68783,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -71415,51 +68961,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -71727,6 +69228,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -71884,51 +69406,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false
 								}
-							]
-						},
-						"dateOffset": {
-							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-							"type": "object",
-							"properties": {
-								"unit": {
-									"description": "Time unit to offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"description": "Offset distance (can be negative to offset to an earlier date)",
-									"type": "number"
-								},
-								"modifier": {
-									"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"description": "Time unit to modify the offset by",
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
 							]
 						},
 						"datePickerLimits": {
@@ -89242,6 +86719,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -89399,51 +86897,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -89992,6 +87445,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -90149,51 +87623,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -90445,6 +87874,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -90602,51 +88052,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -90984,6 +88389,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -91141,51 +88567,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -91803,6 +89184,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -91960,51 +89362,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -92616,6 +89973,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -92773,51 +90151,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -93418,6 +90751,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -93575,51 +90929,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -93920,6 +91229,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -94077,51 +91407,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -94402,6 +91687,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -94559,51 +91865,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -94961,6 +92222,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -95118,51 +92400,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -95434,6 +92671,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -95591,51 +92849,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -95903,6 +93116,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -96060,51 +93294,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -96372,6 +93561,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -96529,51 +93739,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -96841,6 +94006,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -96998,51 +94184,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -97310,6 +94451,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -97467,51 +94629,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -97779,6 +94896,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -97936,51 +95074,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {
@@ -98248,6 +95341,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -98405,51 +95519,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false
 											}
-										]
-									},
-									"dateOffset": {
-										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
-										"type": "object",
-										"properties": {
-											"unit": {
-												"description": "Time unit to offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											},
-											"offset": {
-												"description": "Offset distance (can be negative to offset to an earlier date)",
-												"type": "number"
-											},
-											"modifier": {
-												"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
-												"enum": [
-													"end_of",
-													"start_of"
-												],
-												"type": "string"
-											},
-											"modifierUnit": {
-												"description": "Time unit to modify the offset by",
-												"enum": [
-													"day",
-													"month",
-													"quarter",
-													"week",
-													"year"
-												],
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"offset",
-											"unit"
 										]
 									},
 									"datePickerLimits": {

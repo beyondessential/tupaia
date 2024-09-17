@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import moment, { Moment } from 'moment';
-import { DateOffsetSpec } from '@tupaia/types';
+import { DatePickerOffsetSpec } from '@tupaia/types';
 import {
   DEFAULT_MIN_DATE,
   getDefaultDates,
@@ -29,7 +29,7 @@ export const getDatesAsString = (
   startDate: Moment,
   endDate: Moment,
   weekDisplayFormat?: string | number,
-  dateOffset?: DateOffsetSpec,
+  dateOffset?: DatePickerOffsetSpec,
   dateRangeDelimiter = ' – ',
 ) => {
   const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
@@ -110,7 +110,7 @@ interface UseDateRangePickerProps {
   granularity?: GranularityType;
   onSetDates: (startDate: string, endDate: string) => void;
   weekDisplayFormat?: string | number;
-  dateOffset?: DateOffsetSpec;
+  dateOffset?: DatePickerOffsetSpec;
   dateRangeDelimiter?: string;
 }
 export const useDateRangePicker = ({

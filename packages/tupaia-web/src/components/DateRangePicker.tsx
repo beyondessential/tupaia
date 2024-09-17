@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Moment } from 'moment';
-import { DateOffsetSpec, VizPeriodGranularity } from '@tupaia/types';
+import { DatePickerOffsetSpec, VizPeriodGranularity } from '@tupaia/types';
 import { DateRangePicker as DateRangePickerComponent, TextButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
 
@@ -84,7 +84,7 @@ interface DateRangePickerProps {
   maxDate?: string;
   onResetDate?: () => void;
   weekDisplayFormat?: string;
-  dateOffset?: DateOffsetSpec;
+  dateOffset?: DatePickerOffsetSpec;
   dateRangeDelimiter?: string;
 }
 

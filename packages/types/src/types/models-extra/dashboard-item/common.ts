@@ -5,6 +5,11 @@
 
 import { DateOffsetSpec, DefaultTimePeriod, ReferenceProps, VizPeriodGranularity } from '../common';
 
+export type DatePickerOffsetSpec = {
+  unit: 'month' | 'quarter';
+  offset: number;
+};
+
 export type BaseConfig = {
   /**
    * @description The title of the viz
@@ -22,14 +27,11 @@ export type BaseConfig = {
   periodGranularity?: `${VizPeriodGranularity}`;
 
   /**
-   * @description The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.
+   * @description The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.
    * Currently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.
    */
-  dateOffset?: DateOffsetSpec;
-  /**
-   * @description If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'
-   */
-  dateRangeDelimiter?: string;
+  dateOffset?: DatePickerOffsetSpec;
+
   /**
    * @description
    * Initial date range for this viz.
@@ -60,12 +62,6 @@ export type BaseConfig = {
    * }
    */
   defaultTimePeriod?: DefaultTimePeriod;
-
-  /**
-   * @description The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June.
-   * Currently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.
-   */
-  dateOffset?: DateOffsetSpec;
 
   /**
    * @description Maximum date ranges that the date picker can be used to choose from
