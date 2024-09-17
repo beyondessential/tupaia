@@ -22,6 +22,7 @@ import { FlexStart } from '../Layout';
 import { WeekDisplayFormatType } from '../../types';
 import { useDateRangePicker } from './useDateRangePicker';
 import { DatePickerDialog } from './DatePickerDialog';
+import { DateOffsetSpec } from '@tupaia/types';
 
 const IconButton = styled(MuiIconButton)`
   background: white;

@@ -24,7 +24,7 @@ import { GranularityType, ModifierType } from '../../types';
 const DEFAULT_GRANULARITY = GRANULARITIES.DAY;
 
 export const getDatesAsString = (
-  isSetRangeGranularity: boolean,
+  isSingleDate: boolean,
   granularity: GranularityType = DEFAULT_GRANULARITY,
   startDate: Moment,
   endDate: Moment,
@@ -35,7 +35,8 @@ export const getDatesAsString = (
   const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
 
   // when it's a single date, we use the preferred range delimiter, otherwise use the default delimiter because this indicates multiple offset dates selected
-  const delimiterToUse = isSetRangeGranularity && !!dateOffset ? dateRangeDelimiter : ' – ';
+  const delimiterToUse = isSingleDate && !!dateOffset ? dateRangeDelimiter : ' – ';
+
   const displayGranularity = dateOffset?.unit ?? granularity;
 
   const { rangeFormat, modifier, momentUnit } = (
@@ -130,7 +131,7 @@ export const useDateRangePicker = ({
     onSetDates(toStandardDateString(newStartDate), toStandardDateString(newEndDate));
   };
 
-  const isSetRangeGranularity = GRANULARITIES_WITH_ONE_DATE.includes(granularity ?? '');
+  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity ?? '');
   const { momentShorthand } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
 
   const initialMinDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
@@ -177,9 +178,9 @@ export const useDateRangePicker = ({
   const displayGranularity = dateOffset ? dateOffset.unit : granularity;
 
   const { currentStartDate, currentEndDate } = getCurrentDates(
-    displayGranularity,
-    startDate,
-    endDate,
+    displayGranularity!,
+    startDate!,
+    endDate!,
     defaultStartDate,
     defaultEndDate,
   );
@@ -188,8 +189,8 @@ export const useDateRangePicker = ({
   const prevDisabled = currentStartDate.isSameOrBefore(minMomentDate);
 
   const labelText = getDatesAsString(
-    isSetRangeGranularity,
-    granularity,
+    isSingleDate,
+    displayGranularity,
     currentStartDate,
     currentEndDate,
     weekDisplayFormat,
@@ -202,7 +203,7 @@ export const useDateRangePicker = ({
    * Use a negative number to set backwards
    */
   const changePeriod = (numberOfPeriodsToMove: number) => {
-    if (!isSetRangeGranularity) {
+    if (!isSingleDate) {
       console.warn('Can only change period for single unit date pickers (e.g. one month)');
     }
 
@@ -237,7 +238,7 @@ export const useDateRangePicker = ({
   }, []);
 
   return {
-    isSingleDate: isSetRangeGranularity,
+    isSingleDate: isSingleDate,
     currentStartDate: toStandardDateString(currentStartDate),
     currentEndDate: toStandardDateString(currentEndDate),
     handleReset,

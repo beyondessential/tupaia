@@ -19,12 +19,14 @@ import {
   ResetPasswordPage,
   AccountSettingsPage,
   ReportsPage,
+  TasksDashboardPage,
+  TaskDetailsPage,
   NotAuthorisedPage,
 } from '../views';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
 
@@ -61,6 +63,10 @@ export const Routes = () => {
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<LandingPage />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
+          <Route element={<TasksLayout />}>
+            <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />
+            <Route path={ROUTES.TASK_DETAILS} element={<TaskDetailsPage />} />
+          </Route>
           <Route
             path="/"
             element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}

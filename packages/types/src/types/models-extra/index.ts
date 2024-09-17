@@ -97,6 +97,8 @@ export {
   EntityQuestionConfigFields,
   EntityQuestionConfigFieldValue,
   EntityQuestionConfigFieldKey,
+  TaskQuestionConfig,
+  UserQuestionConfig,
 } from './survey';
 export { LeaderboardItem } from './leaderboard';
 export {
@@ -105,8 +107,9 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
-export { VizPeriodGranularity, DashboardItemType } from './common';
+export { VizPeriodGranularity, DashboardItemType, DateOffsetSpec } from './common';
 export { isChartReport, isViewReport, isMatrixReport } from './report';
 export { UserAccountPreferences } from './user';
 export { ProjectConfig } from './project';
+export { RepeatSchedule, TaskCommentTemplateVariables, SystemCommentSubType } from './task';
 export { EntityType } from './entityType';

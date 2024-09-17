@@ -6,9 +6,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Modal } from '@tupaia/ui-components';
 import { QrCodeContainer } from './QrCodeContainer';
 import { closeQrCodeModal } from './actions';
-import { Modal } from '../widgets';
 
 export const QrCodeModalComponent = ({ isOpen, onDismiss, qrCodeContents, humanReadableId }) => {
   return (

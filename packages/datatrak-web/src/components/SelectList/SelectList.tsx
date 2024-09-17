@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FormLabel, Typography } from '@material-ui/core';
+import { FormLabel, FormLabelProps, Typography } from '@material-ui/core';
 import { ListItemType } from './ListItem';
 import { List } from './List';
 
@@ -46,13 +46,13 @@ const NoResultsMessage = styled(Typography)`
   color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
-const Label = styled(FormLabel).attrs({
-  component: 'h2',
-})`
+const Label = styled(FormLabel)<{
+  component: React.ElementType;
+}>`
   margin-bottom: 1rem;
   font-size: 0.875rem;
-  color: ${({ theme }) => theme.palette.text.secondary};
   font-weight: 400;
+  color: ${({ theme, color }) => theme.palette.text[color!]};
 `;
 interface SelectListProps {
   items?: ListItemType[];
@@ -60,6 +60,9 @@ interface SelectListProps {
   label?: string;
   ListItem?: React.ElementType;
   variant?: 'fullPage' | 'inline';
+  labelProps?: FormLabelProps & {
+    component?: React.ElementType;
+  };
 }
 
 export const SelectList = ({
@@ -68,11 +71,16 @@ export const SelectList = ({
   label,
   ListItem,
   variant = 'inline',
+  labelProps = {},
 }: SelectListProps) => {
   return (
     <Wrapper>
-      {label && <Label>{label}</Label>}
-      <ListWrapper $variant={variant}>
+      {label && (
+        <Label {...labelProps} component={labelProps?.component ?? 'h2'}>
+          {label}
+        </Label>
+      )}
+      <ListWrapper $variant={variant} className="list-wrapper">
         {items.length === 0 ? (
           <NoResultsMessage>No items to display</NoResultsMessage>
         ) : (

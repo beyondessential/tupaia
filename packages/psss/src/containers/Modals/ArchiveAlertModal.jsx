@@ -17,11 +17,11 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  ConfirmModal,
 } from '@tupaia/ui-components';
 
 import { useArchiveAlert } from '../../api/queries';
 import { AlertsPanelContext } from '../../context';
+import { ConfirmModal } from '../../components';
 
 const TickIcon = styled(CheckCircle)`
   font-size: 2.5rem;
