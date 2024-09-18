@@ -33,6 +33,17 @@ export const useDownloadImages = (
     },
     {
       onSuccess: async fetchedImages => {
+        if (fetchedImages.length === 1) {
+          const { blob } = fetchedImages[0];
+          const { type } = blob;
+          const fileExtension = type.split('/')[1];
+          download(
+            blob,
+            `${projectCode}_${entityCode}_${dashboardCode}_${reportCode}.${fileExtension}`,
+          );
+          return;
+        }
+
         const blobsWithNames: {
           blob: Blob;
           name: string;
