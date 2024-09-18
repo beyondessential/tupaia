@@ -44,4 +44,4 @@ export * from './Tooltip';
 export * from './UserMessage';
 export * from './TooltipIconButton';
 export * from './Pagination';
-export * from './List';
+export * from './SelectList';
