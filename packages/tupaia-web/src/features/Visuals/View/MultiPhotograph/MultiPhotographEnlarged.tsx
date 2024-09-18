@@ -8,22 +8,13 @@ import { ViewConfig, ViewReport } from '@tupaia/types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
-import { GetApp, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { IconButton, Typography } from '@material-ui/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { URL_SEARCH_PARAMS } from '../../../../constants';
 import { useDashboard } from '../../../Dashboard';
 import { useDownloadImages } from './useDownloadImages';
-
-const ExportButton = styled(IconButton).attrs({
-  color: 'default',
-  title: 'Export visualisation',
-})`
-  position: absolute;
-  top: 0.2rem;
-  right: 2.7rem;
-  z-index: 1;
-`;
+import { ExportIconButton } from '../../../EnlargedDashboardItem';
 
 const Wrapper = styled.div`
   position: relative;
@@ -236,9 +227,11 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
 
   return (
     <>
-      <ExportButton onClick={() => downloadImages()} disabled={isLoading}>
-        <GetApp />
-      </ExportButton>
+      <ExportIconButton
+        onClick={() => downloadImages()}
+        isLoading={isLoading}
+        title="Export images"
+      />
       <Wrapper>
         <MainSliderContainer>
           <Slider
