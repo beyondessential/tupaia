@@ -172,16 +172,16 @@ type ProjectAllowedLinkProps = LinkProps & {
 export const ProjectAllowedLink = ({ projectId, url, isLandingPage }: ProjectAllowedLinkProps) => {
   const navigate = useNavigate();
   const { mutate } = useEditUser(() => {
-    navigate(url);
+    if (isLandingPage) {
+      window.open(url, '_blank');
+    } else {
+      navigate(url);
+    }
   });
   const handleSelectProject = () => {
     mutate({ projectId });
   };
-  return (
-    <Button onClick={handleSelectProject} target={isLandingPage ? '_blank' : '_self'}>
-      View project
-    </Button>
-  );
+  return <Button onClick={handleSelectProject}>View project</Button>;
 };
 
 interface ProjectCardProps extends Partial<SingleProject> {
