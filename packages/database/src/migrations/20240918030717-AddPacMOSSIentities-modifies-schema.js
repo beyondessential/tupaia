@@ -14,7 +14,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function (db) {
+exports.up = function (db) {
   return db.runSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_district';
   ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_village';
   ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_spraying_site';`);
