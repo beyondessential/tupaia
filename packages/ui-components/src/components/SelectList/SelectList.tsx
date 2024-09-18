@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FormLabel, Typography } from '@material-ui/core';
+import { FormLabel, Typography, FormLabelProps } from '@material-ui/core';
 import { ListItemType } from './types';
 import { List } from './List';
 
@@ -46,20 +46,24 @@ const NoResultsMessage = styled(Typography)`
   color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
-const Label = styled(FormLabel).attrs({
-  component: 'h2',
-})`
+const Label = styled(FormLabel)<{
+  component: React.ElementType;
+}>`
   margin-bottom: 1rem;
   font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.secondary};
   font-weight: 400;
 `;
+
 interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ElementType;
   variant?: 'fullPage' | 'inline';
+  labelProps?: FormLabelProps & {
+    component?: React.ElementType;
+  };
 }
 
 export const SelectList = ({
@@ -68,10 +72,15 @@ export const SelectList = ({
   label,
   ListItem,
   variant = 'inline',
+  labelProps = {},
 }: SelectListProps) => {
   return (
     <Wrapper>
-      {label && <Label>{label}</Label>}
+      {label && (
+        <Label {...labelProps} component={labelProps?.component ?? 'h2'}>
+          {label}
+        </Label>
+      )}
       <ListWrapper $variant={variant}>
         {items.length === 0 ? (
           <NoResultsMessage>No items to display</NoResultsMessage>

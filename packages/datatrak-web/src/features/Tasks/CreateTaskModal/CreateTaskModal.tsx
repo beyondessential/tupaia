@@ -208,6 +208,12 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                       setSelectedSurvey={onChange}
                       selectedCountry={selectedCountry}
                       label="Select survey"
+                      labelProps={{
+                        required: true,
+                        color: 'primary',
+                        component: 'label',
+                        error: invalid,
+                      }}
                       error={invalid ? '*Required' : undefined}
                     />
                   </ListSelectWrapper>
@@ -281,6 +287,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                   )}
                 />
               </InputRow>
+
               <CommentsInput label="Comments" name="comment" inputRef={register} />
             </TaskForm>
           </FormProvider>
