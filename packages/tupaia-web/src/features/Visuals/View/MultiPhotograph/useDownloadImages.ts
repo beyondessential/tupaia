@@ -33,6 +33,8 @@ export const useDownloadImages = (
     },
     {
       onSuccess: async fetchedImages => {
+        if (!fetchedImages?.length) return;
+        // if there is only one image, download it directly
         if (fetchedImages.length === 1) {
           const { blob } = fetchedImages[0];
           const { type } = blob;
