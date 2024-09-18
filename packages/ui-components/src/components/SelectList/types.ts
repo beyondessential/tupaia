@@ -15,7 +15,4 @@ export type ListItemType = Record<string, unknown> & {
   tooltip?: string;
   button?: boolean;
   disabled?: boolean;
-  labelProps?: FormLabelProps & {
-    component?: React.ElementType;
-  };
 };
