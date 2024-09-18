@@ -16,7 +16,7 @@ import {
 } from '@tupaia/ui-components';
 import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { useSurveyResponse } from '../api/queries';
-import { Button, SurveyTickIcon } from '../components';
+import { Button, DownloadIcon, SurveyTickIcon } from '../components';
 import { displayDate } from '../utils';
 import { SurveyReviewSection, useSurveyResponseWithForm } from './Survey';
 import { SurveyContext } from '.';
@@ -24,13 +24,9 @@ import { SurveyContext } from '.';
 const Header = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  padding-block: 0.5rem;
+  padding-inline: 0.5rem 1.5rem;
   width: 100%;
-
-  .MuiSvgIcon-root {
-    font-size: 2.5em;
-    margin-right: 0.35em;
-  }
 `;
 
 const Heading = styled(Typography).attrs({
@@ -62,6 +58,21 @@ const Loader = styled(SpinningLoader)`
 const Content = styled.div`
   width: 62rem;
   max-width: 100%;
+`;
+
+const Icon = styled(SurveyTickIcon)`
+  font-size: 2.5rem;
+  margin-right: 0.35rem;
+`;
+
+const DownloadButton = styled(Button).attrs({
+  variant: 'outlined',
+})`
+  margin-left: auto;
+  .MuiSvgIcon-root {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+  }
 `;
 
 const getSubHeadingText = surveyResponse => {
@@ -96,11 +107,15 @@ const SurveyResponseModalContent = ({
       <ModalHeader onClose={onClose} title={error ? 'Error loading survey response' : ''}>
         {!showLoading && !error && (
           <Header>
-            <SurveyTickIcon />
+            <Icon />
             <div>
               <Heading>{surveyResponse?.surveyName}</Heading>
               <SubHeading>{subHeading}</SubHeading>
             </div>
+            <DownloadButton>
+              <DownloadIcon />
+              Download
+            </DownloadButton>
           </Header>
         )}
       </ModalHeader>
