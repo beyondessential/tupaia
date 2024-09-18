@@ -21,4 +21,3 @@ export { useUnsubscribeDashboard } from './useUnsubscribeDashboard';
 export { useUnsubscribeDashboardMailingList } from './useUnsubscribeDashboardMailingList';
 export { useEmailDashboard } from './useEmailDashboard';
 export { useExportMapOverlay } from './useExportMapOverlay';
-export { useDownloadImages } from './useDownloadImages';
