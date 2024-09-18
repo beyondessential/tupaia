@@ -8,9 +8,12 @@ import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import { darken, lighten } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
+import { Button } from '@tupaia/ui-components';
 import { SingleProject } from '../../types';
 import { MODAL_ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { RouterButton } from '../../components';
+import { useNavigate } from 'react-router-dom';
+import { useEditUser } from '../../api/mutations';
 
 const Card = styled.div`
   display: flex;
@@ -162,11 +165,24 @@ export const ProjectPendingLink = () => (
   </OutlineLink>
 );
 
-export const ProjectAllowedLink = ({ url, isLandingPage }: LinkProps) => (
-  <BaseLink to={url} target={isLandingPage ? '_blank' : '_self'}>
-    View project
-  </BaseLink>
-);
+type ProjectAllowedLinkProps = LinkProps & {
+  projectId: string;
+};
+
+export const ProjectAllowedLink = ({ projectId, url, isLandingPage }: ProjectAllowedLinkProps) => {
+  const navigate = useNavigate();
+  const { mutate } = useEditUser(() => {
+    navigate(url);
+  });
+  const handleSelectProject = () => {
+    mutate({ projectId });
+  };
+  return (
+    <Button onClick={handleSelectProject} target={isLandingPage ? '_blank' : '_self'}>
+      View project
+    </Button>
+  );
+};
 
 interface ProjectCardProps extends Partial<SingleProject> {
   ProjectButton: ComponentType;

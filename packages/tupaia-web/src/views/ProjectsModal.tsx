@@ -145,11 +145,12 @@ export const ProjectsModal = () => {
                 projects={data?.projects ?? []}
                 actions={{
                   [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                    project: { code, homeEntityCode, dashboardGroupName },
+                    project: { id, code, homeEntityCode, dashboardGroupName },
                   }: {
                     project: SingleProject;
                   }) => (
                     <ProjectAllowedLink
+                      projectId={id}
                       url={`/${code}/${homeEntityCode}${
                         dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
                       }`}

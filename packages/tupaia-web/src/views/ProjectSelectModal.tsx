@@ -35,7 +35,18 @@ export const ProjectSelectModal = () => {
   const { data: projects, isFetching } = useProjects();
   const { closeModal } = useModal();
   const navigate = useNavigate();
-  const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(closeModal);
+
+  const onSelectProject = data => {
+    const { projectId } = data;
+    const project = projects.projects.find(p => p.id === projectId);
+    const { code, homeEntityCode } = project;
+    const dashboardGroupName = project.dashboardGroupName
+      ? encodeURIComponent(project.dashboardGroupName)
+      : '';
+    navigate(`/${code}/${homeEntityCode}/${dashboardGroupName}`);
+  };
+
+  const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(onSelectProject);
 
   const onRequestAccess = () => {
     navigate({

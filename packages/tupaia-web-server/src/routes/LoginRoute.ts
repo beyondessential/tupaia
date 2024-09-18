@@ -3,7 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { LoginRoute as BaseLoginRoute } from '@tupaia/server-boilerplate';
+import {
+  LoginRoute as BaseLoginRoute,
+  LoginRequest as BaseLoginRequest,
+} from '@tupaia/server-boilerplate';
+
+export type LoginRequest = BaseLoginRequest;
 
 type UserResponse = Record<any, any>;
 

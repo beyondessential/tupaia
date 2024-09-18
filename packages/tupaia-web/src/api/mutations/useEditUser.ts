@@ -8,20 +8,23 @@ import { put } from '../api';
 
 type UserAccountDetails = Record<string, any>;
 
-export const useEditUser = (onSuccess?: () => void) => {
+export const useEditUser = (onSuccess?: (data: UserAccountDetails) => void) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, UserAccountDetails, unknown>(
-    async (userDetails: Record<string, any>) => {
+    async ({ projectId }: Record<string, any>) => {
       const data = {
-        project_id: userDetails.projectId,
+        project_id: projectId,
       };
       await put('me', { data });
+      return {
+        projectId,
+      };
     },
     {
-      onSuccess: () => {
+      onSuccess: data => {
         queryClient.invalidateQueries(['getUser']);
-        if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess(data);
       },
     },
   );
