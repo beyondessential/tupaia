@@ -15,6 +15,7 @@ import { URL_SEARCH_PARAMS } from '../../../../constants';
 import { useDashboard } from '../../../Dashboard';
 import { useDownloadImages } from './useDownloadImages';
 import { ExportIconButton } from '../../../EnlargedDashboardItem';
+import { SmallAlert } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   position: relative;
@@ -157,13 +158,11 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
   const { projectCode, entityCode } = useParams();
   const { activeDashboard } = useDashboard();
 
-  const { mutate: downloadImages, isLoading } = useDownloadImages(
-    projectCode,
-    entityCode,
-    activeDashboard?.code,
-    reportCode,
-    data,
-  );
+  const {
+    mutate: downloadImages,
+    isLoading,
+    error,
+  } = useDownloadImages(projectCode, entityCode, activeDashboard?.code, reportCode, data);
 
   useEffect(() => {
     if (!sliderRef1.current || mainSlider) return;
@@ -232,8 +231,10 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
         isLoading={isLoading}
         title="Export images"
       />
+
       <Wrapper>
         <MainSliderContainer>
+          {error && <SmallAlert severity="error">{(error as Error).message}</SmallAlert>}
           <Slider
             {...settings}
             asNavFor={thumbnailSlider}

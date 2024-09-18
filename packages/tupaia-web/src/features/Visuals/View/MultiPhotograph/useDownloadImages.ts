@@ -19,16 +19,16 @@ export const useDownloadImages = (
     ['images', projectCode, entityCode, dashboardCode, reportCode],
     async () => {
       return Promise.all(
-        images?.map(photo =>
-          fetch(photo.value, {
+        images?.map(photo => {
+          return fetch(photo.value, {
             method: 'GET',
           }).then(async response => {
             return {
               blob: await response.blob(),
               label: photo.label,
             };
-          }),
-        ) ?? [],
+          });
+        }) ?? [],
       );
     },
     {
@@ -68,7 +68,7 @@ export const useDownloadImages = (
             return blobsWithNames.push({ blob, name: label });
           }
           // Default to Image 1, Image 2, etc.
-          blobsWithNames.push({ blob, name: `${reportCode}_image_${index + 1}` });
+          blobsWithNames.push({ blob, name: `Image ${index + 1}` });
         });
 
         const zip = new JSZip();
