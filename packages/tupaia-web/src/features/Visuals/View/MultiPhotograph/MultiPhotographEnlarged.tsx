@@ -10,9 +10,10 @@ import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import { GetApp, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { IconButton, Typography } from '@material-ui/core';
-import { useDownloadImages } from '../../../../api/mutations';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { URL_SEARCH_PARAMS } from '../../../../constants';
+import { useDashboard } from '../../../Dashboard';
+import { useDownloadImages } from './useDownloadImages';
 
 const ExportButton = styled(IconButton).attrs({
   color: 'default',
@@ -162,8 +163,16 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
   const [thumbnailSlider, setThumbnailSlider] = useState(null);
 
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
+  const { projectCode, entityCode } = useParams();
+  const { activeDashboard } = useDashboard();
 
-  const { mutate: downloadImages, isLoading } = useDownloadImages(reportCode);
+  const { mutate: downloadImages, isLoading } = useDownloadImages(
+    projectCode,
+    entityCode,
+    activeDashboard?.code,
+    reportCode,
+    data,
+  );
 
   useEffect(() => {
     if (!sliderRef1.current || mainSlider) return;
