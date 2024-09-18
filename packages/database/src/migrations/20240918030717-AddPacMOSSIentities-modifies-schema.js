@@ -1,7 +1,5 @@
 'use strict';
 
-import { TupaiaDatabase } from '../TupaiaDatabase';
-
 var dbm;
 var type;
 var seed;
@@ -16,14 +14,10 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function () {
-  const db = new TupaiaDatabase();
-  await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_district';`);
-  await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_village';`);
-  await db.executeSql(
-    `ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_spraying_site';`,
-  );
-  return db.closeConnections();
+exports.up = async function (db) {
+  return db.runSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_district';
+  ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_village';
+  ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'pacmossi_spraying_site';`);
 };
 
 exports.down = function (db) {
