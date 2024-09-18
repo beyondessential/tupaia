@@ -51,7 +51,7 @@ const Label = styled(FormLabel)<{
 }>`
   margin-bottom: 1rem;
   font-size: 0.875rem;
-  color: ${({ theme }) => theme.palette.text.secondary};
+  color: ${({ theme, color }) => theme.palette.text[color!]};
   font-weight: 400;
 `;
 
@@ -81,7 +81,7 @@ export const SelectList = ({
           {label}
         </Label>
       )}
-      <ListWrapper $variant={variant}>
+      <ListWrapper $variant={variant} className="list-wrapper">
         {items.length === 0 ? (
           <NoResultsMessage>No items to display</NoResultsMessage>
         ) : (
