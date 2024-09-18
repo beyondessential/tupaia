@@ -4,5 +4,5 @@
  */
 
 export { List } from './List';
-export { ListItem, ListItemType } from './ListItem';
+export { ListItem } from './ListItem';
 export { SelectList } from './SelectList';

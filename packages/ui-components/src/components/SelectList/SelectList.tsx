@@ -6,7 +6,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { FormLabel, Typography } from '@material-ui/core';
-import { ListItemType } from './ListItem';
+import { ListItemType } from './types';
 import { List } from './List';
 
 const Wrapper = styled.div`

@@ -5,7 +5,8 @@
 
 import React from 'react';
 import { List as MuiList } from '@material-ui/core';
-import { ListItem as Item, ListItemType } from './ListItem';
+import { ListItem as Item } from './ListItem';
+import { ListItemType } from './types';
 
 interface SelectListProps {
   items?: ListItemType[];

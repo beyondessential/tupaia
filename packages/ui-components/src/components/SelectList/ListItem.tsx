@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { Check, KeyboardArrowRight } from '@material-ui/icons';
 import { Tooltip } from '../Tooltip';
+import { ListItemType } from './types';
 
 // explicitly set the types so that the overrides are applied, for the `button` prop
 export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
@@ -73,17 +74,6 @@ const IconWrapper = styled.div`
     height: auto;
   }
 `;
-
-export type ListItemType = Record<string, unknown> & {
-  children?: ListItemType[];
-  content: string | ReactNode;
-  value: string;
-  selected?: boolean;
-  icon?: ReactNode;
-  tooltip?: string;
-  button?: boolean;
-  disabled?: boolean;
-};
 
 interface ListItemProps {
   item: ListItemType;
