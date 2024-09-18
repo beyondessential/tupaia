@@ -8,8 +8,21 @@ import { ViewConfig, ViewReport } from '@tupaia/types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { GetApp, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { IconButton, Typography } from '@material-ui/core';
+import { useDownloadImages } from '../../../../api/mutations';
+import { useSearchParams } from 'react-router-dom';
+import { URL_SEARCH_PARAMS } from '../../../../constants';
+
+const ExportButton = styled(IconButton).attrs({
+  color: 'default',
+  title: 'Export visualisation',
+})`
+  position: absolute;
+  top: 0.2rem;
+  right: 2.7rem;
+  z-index: 1;
+`;
 
 const Wrapper = styled.div`
   position: relative;
@@ -137,6 +150,7 @@ interface MultiPhotographEnlargedProps {
 
 export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlargedProps) => {
   const { data = [] } = report ?? {};
+  const [urlSearchParams] = useSearchParams();
 
   /**  The following is a workaround for an issue where the slider doesn't link the two sliders together until another re-render, because the ref is not set yet
    * See [example](https://react-slick.neostack.com/docs/example/as-nav-for)
@@ -146,6 +160,10 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
   const sliderRef2 = useRef(null);
   const [mainSlider, setMainSlider] = useState(null);
   const [thumbnailSlider, setThumbnailSlider] = useState(null);
+
+  const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT);
+
+  const { mutate: downloadImages, isLoading } = useDownloadImages(reportCode);
 
   useEffect(() => {
     if (!sliderRef1.current || mainSlider) return;
@@ -208,50 +226,55 @@ export const MultiPhotographEnlarged = ({ report, config }: MultiPhotographEnlar
   const hasMoreThumbnails = data.length > maxThumbnailsToDisplay;
 
   return (
-    <Wrapper>
-      <MainSliderContainer>
-        <Slider
-          {...settings}
-          asNavFor={thumbnailSlider}
-          ref={sliderRef1}
-          slidesToShow={1}
-          arrows
-          infinite={hasMoreThumbnails}
-          responsive={mainSliderResponsiveSettings}
-        >
-          {data.map((photo, index) => (
-            <MainSlide key={photo.value}>
-              <Image
-                url={photo.value}
-                title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
-              />
-              {photo.label && <Caption>{photo.label}</Caption>}
-            </MainSlide>
-          ))}
-        </Slider>
-      </MainSliderContainer>
+    <>
+      <ExportButton onClick={() => downloadImages()} disabled={isLoading}>
+        <GetApp />
+      </ExportButton>
+      <Wrapper>
+        <MainSliderContainer>
+          <Slider
+            {...settings}
+            asNavFor={thumbnailSlider}
+            ref={sliderRef1}
+            slidesToShow={1}
+            arrows
+            infinite={hasMoreThumbnails}
+            responsive={mainSliderResponsiveSettings}
+          >
+            {data.map((photo, index) => (
+              <MainSlide key={photo.value}>
+                <Image
+                  url={photo.value}
+                  title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
+                />
+                {photo.label && <Caption>{photo.label}</Caption>}
+              </MainSlide>
+            ))}
+          </Slider>
+        </MainSliderContainer>
 
-      <ThumbSliderContainer>
-        <Slider
-          {...settings}
-          asNavFor={mainSlider}
-          ref={sliderRef2}
-          slidesToShow={maxThumbnailsToDisplay}
-          focusOnSelect
-          infinite={hasMoreThumbnails}
-          arrows={hasMoreThumbnails}
-          responsive={thumbnailResponsiveSettings}
-        >
-          {data?.map((photo, index) => (
-            <Thumbnail key={photo.value} $thumbCount={maxThumbnailsToDisplay}>
-              <Image
-                url={photo.value}
-                title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
-              />
-            </Thumbnail>
-          ))}
-        </Slider>
-      </ThumbSliderContainer>
-    </Wrapper>
+        <ThumbSliderContainer>
+          <Slider
+            {...settings}
+            asNavFor={mainSlider}
+            ref={sliderRef2}
+            slidesToShow={maxThumbnailsToDisplay}
+            focusOnSelect
+            infinite={hasMoreThumbnails}
+            arrows={hasMoreThumbnails}
+            responsive={thumbnailResponsiveSettings}
+          >
+            {data?.map((photo, index) => (
+              <Thumbnail key={photo.value} $thumbCount={maxThumbnailsToDisplay}>
+                <Image
+                  url={photo.value}
+                  title={photo.label || `Image ${index + 1} for visualisation ${config?.name}`}
+                />
+              </Thumbnail>
+            ))}
+          </Slider>
+        </ThumbSliderContainer>
+      </Wrapper>
+    </>
   );
 };
