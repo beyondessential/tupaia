@@ -4,7 +4,7 @@
  */
 import React, { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
-import { FormHelperText, FormLabelProps } from '@material-ui/core';
+import { FormHelperText } from '@material-ui/core';
 import { Country } from '@tupaia/types';
 import { SelectList } from '@tupaia/ui-components';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
@@ -31,9 +31,6 @@ type ListItemType = Record<string, unknown> & {
   tooltip?: string;
   button?: boolean;
   disabled?: boolean;
-  labelProps?: FormLabelProps & {
-    component?: React.ElementType;
-  };
 };
 
 const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
@@ -47,9 +44,6 @@ interface GroupedSurveyListProps {
   selectedSurvey: Survey['code'] | null;
   selectedCountry?: Country | null;
   label?: string;
-  labelProps?: FormLabelProps & {
-    component?: React.ElementType;
-  };
   error?: string;
 }
 
@@ -58,7 +52,6 @@ export const GroupedSurveyList = ({
   selectedSurvey,
   selectedCountry,
   label,
-  labelProps,
   error,
 }: GroupedSurveyListProps) => {
   const user = useCurrentUserContext();
@@ -117,12 +110,7 @@ export const GroupedSurveyList = ({
   };
   return (
     <ListWrapper>
-      <SelectList
-        items={groupedSurveys}
-        onSelect={onSelectSurvey}
-        label={label}
-        labelProps={labelProps}
-      />
+      <SelectList items={groupedSurveys} onSelect={onSelectSurvey} label={label} />
       {error && <FormHelperText error>{error}</FormHelperText>}
     </ListWrapper>
   );
