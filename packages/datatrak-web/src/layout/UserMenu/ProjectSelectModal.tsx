@@ -5,8 +5,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
-import { ProjectSelectForm, RequestProjectAccess } from '../../features';
-import { useCurrentUserContext } from '../../api';
+import { ProjectSelectForm } from '@tupaia/ui-components';
+import { RequestProjectAccess } from '../../features';
+import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
 import { Modal } from '../../components';
 
 const Wrapper = styled(Paper)`
@@ -26,6 +27,8 @@ interface ModalProps {
 export const ProjectSelectModal = ({ onClose }: ModalProps) => {
   const { projectId } = useCurrentUserContext();
   const [requestAccessProjectCode, setRequestAccessProjectCode] = useState<string | null>(null);
+  const { data: projects, isLoading } = useProjects();
+  const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(onClose);
 
   return (
     // Enable the portal so it displays over any other content and we don't get z-index issues
@@ -41,6 +44,10 @@ export const ProjectSelectModal = ({ onClose }: ModalProps) => {
           projectId={projectId}
           onClose={onClose}
           onRequestAccess={setRequestAccessProjectCode}
+          projects={projects}
+          isLoading={isLoading}
+          onConfirm={onConfirm}
+          isConfirming={isConfirming}
         />
       )}
     </Modal>

@@ -6,7 +6,8 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { FormHelperText, FormLabelProps } from '@material-ui/core';
 import { Country } from '@tupaia/types';
-import { ListItemType, SelectList, SurveyFolderIcon, SurveyIcon } from '../components';
+import { SelectList, ListItemType } from '@tupaia/ui-components';
+import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
 

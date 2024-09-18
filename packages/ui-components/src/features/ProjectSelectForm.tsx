@@ -4,15 +4,12 @@
  */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';
 import { DialogActions, Typography } from '@material-ui/core';
 import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
-import { Button as UIButton, SpinningLoader } from '@tupaia/ui-components';
-import { Project } from '@tupaia/types';
+import { SpinningLoader, Button as UIButton } from '../components';
 import { Button, SelectList } from '../components';
-import { useEditUser, useProjects } from '../api';
-import { ROUTES } from '../constants';
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -42,11 +39,24 @@ const ListWrapper = styled.div<{
   }
 `;
 
+type Project = KeysToCamelCase<ProjectT> & {
+  hasAccess: boolean;
+  hasPendingAccess: boolean;
+  homeEntityCode: Entity['code'];
+  name: Entity['name'];
+  names?: Entity['name'][];
+  value?: string;
+};
+
 interface ProjectSelectFormProps {
   projectId?: Project['id'];
   variant?: 'modal' | 'page';
   onClose: () => void;
-  onRequestAccess?: (projectCode: Project['code']) => void;
+  onRequestAccess: (projectCode: Project['code']) => void;
+  projects?: Project[];
+  isLoading: boolean;
+  onConfirm: (data: Record<string, any>) => void;
+  isConfirming: boolean;
 }
 
 export const ProjectSelectForm = ({
@@ -54,34 +64,23 @@ export const ProjectSelectForm = ({
   onClose,
   variant = 'page',
   onRequestAccess,
+  projects,
+  isLoading,
+  onConfirm,
+  isConfirming,
 }: ProjectSelectFormProps) => {
-  const navigate = useNavigate();
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
-  const { data: projects, isLoading } = useProjects();
 
-  const { mutate, isLoading: isConfirming } = useEditUser(onClose);
-
-  const onConfirm = () => {
-    mutate({ projectId: selectedProjectId! });
-  };
-
-  const handleRequestAccess = project => {
-    if (variant === 'modal' && onRequestAccess) {
-      onRequestAccess(project.code);
-    } else {
-      navigate({
-        pathname: ROUTES.REQUEST_ACCESS,
-        search: `?project=${project?.code}`,
-      });
-    }
-  };
-
-  const onSelect = project => {
+  const onSelect = (project: any) => {
     if (project.hasAccess) {
       setSelectedProjectId(project.value);
     } else {
-      handleRequestAccess(project);
+      onRequestAccess(project.code);
     }
+  };
+
+  const handleConfirm = () => {
+    onConfirm({ projectId: selectedProjectId! });
   };
 
   const getProjectIcon = (hasAccess: boolean, hasPendingAccess: boolean) => {
@@ -139,7 +138,7 @@ export const ProjectSelectForm = ({
           </UIButton>
         )}
         <Button
-          onClick={onConfirm}
+          onClick={handleConfirm}
           variant="contained"
           color="primary"
           isLoading={isConfirming}
