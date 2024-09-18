@@ -33,6 +33,7 @@ export const ROUTES = {
   TASKS: '/tasks',
   TASK_DETAILS: '/tasks/:taskId',
   NOT_AUTHORISED: '/not-authorised',
+  EXPORT_SURVEY_RESPONSE: 'export/:surveyResponseId',
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';

@@ -22,6 +22,7 @@ import {
   TasksDashboardPage,
   TaskDetailsPage,
   NotAuthorisedPage,
+  ExportSurveyResponsePage,
 } from '../views';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
@@ -58,6 +59,7 @@ const AuthViewLoggedInRedirect = ({ children }) => {
 export const Routes = () => {
   return (
     <RouterRoutes>
+      <Route path={ROUTES.EXPORT_SURVEY_RESPONSE} element={<ExportSurveyResponsePage />} />
       <Route path="/" element={<MainPageLayout />}>
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
