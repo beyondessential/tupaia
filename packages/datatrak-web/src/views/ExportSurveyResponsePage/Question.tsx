@@ -6,9 +6,9 @@
 import { QuestionType } from '@tupaia/types';
 import React from 'react';
 import styled from 'styled-components';
-import { useAutocompleteOptions, useEntityById } from '../../../api';
-import { displayDate } from '../../../utils';
-import { SurveyScreenComponent } from '../../../types';
+import { useAutocompleteOptions, useEntityById } from '../../api';
+import { displayDate } from '../../utils';
+import { SurveyScreenComponent } from '../../types';
 import { Typography } from '@material-ui/core';
 
 const QuestionWrapper = styled.div`

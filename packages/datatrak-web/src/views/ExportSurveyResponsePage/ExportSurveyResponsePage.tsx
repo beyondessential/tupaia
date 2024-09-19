@@ -10,8 +10,12 @@ import { useSurvey, useSurveyResponse } from '../../api';
 import { A4Page } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
 import { displayDate } from '../../utils';
-import { Question } from './Questions';
+import { Question } from './Question';
 import { getIsQuestionVisible } from '../../features/Survey/SurveyContext/utils';
+
+const Page = styled(A4Page)`
+  background-color: white;
+`;
 
 const Header = styled.div`
   display: flex;
@@ -70,7 +74,7 @@ export const ExportSurveyResponsePage = () => {
       ?.filter(screenComponents => screenComponents.length > 0) ?? [];
 
   return (
-    <A4Page>
+    <Page>
       <Header>
         <ProjectLogo
           src={survey?.project?.logoUrl || '/tupaia-logo-dark.svg'}
@@ -89,7 +93,7 @@ export const ExportSurveyResponsePage = () => {
         </SurveyResponseDetailsWrapper>
       </Header>
       {visibleScreens.map((screenComponents, index) => (
-        <ScreenWrapper key={`screen-${index}`} className="screen-wrapper">
+        <ScreenWrapper key={`screen-${index}`}>
           {screenComponents.map((surveyScreenComponent, index) => (
             <Question
               key={index}
@@ -99,6 +103,6 @@ export const ExportSurveyResponsePage = () => {
           ))}
         </ScreenWrapper>
       ))}
-    </A4Page>
+    </Page>
   );
 };
