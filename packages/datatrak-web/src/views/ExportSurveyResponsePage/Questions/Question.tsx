@@ -13,6 +13,7 @@ import { Typography } from '@material-ui/core';
 
 const QuestionWrapper = styled.div`
   border-bottom: 1px solid #000;
+
   & + & {
     margin-block-start: 1.125rem;
   }
@@ -20,18 +21,21 @@ const QuestionWrapper = styled.div`
 
 const InstructionQuestionText = styled(Typography)`
   font-size: 0.875rem;
-  margin-block-start: 1.125rem;
+  margin-block-start: 2rem;
   margin-block-end: 0.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
 const QuestionLabel = styled(Typography)`
   font-size: 0.75rem;
-  line-height: 1.4;
+  line-height: 1.8;
 `;
 
-const Answer = styled(Typography)`
+const SmallText = styled(Typography)`
   font-size: 0.625rem;
+`;
+
+const Answer = styled(SmallText)`
   margin-block: 0.8rem 0.3rem;
   margin-inline: 0.25rem;
 `;
@@ -80,7 +84,7 @@ export const Question = ({
   surveyScreenComponent: SurveyScreenComponent;
   answer?: string;
 }) => {
-  const { type, text, optionSetId, options } = surveyScreenComponent;
+  const { type, text, optionSetId, options, detailLabel } = surveyScreenComponent;
   const displayAnswer = useDisplayAnswer(type, answer, options, optionSetId);
 
   if (type === QuestionType.Instruction) {
@@ -90,6 +94,7 @@ export const Question = ({
   return (
     <QuestionWrapper>
       <QuestionLabel>{text}</QuestionLabel>
+      <SmallText>{detailLabel}</SmallText>
       {displayAnswer && <Answer>{displayAnswer}</Answer>}
     </QuestionWrapper>
   );

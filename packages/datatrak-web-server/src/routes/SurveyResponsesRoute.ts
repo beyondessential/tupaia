@@ -6,13 +6,7 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import {
-  DatatrakWebSurveyResponsesRequest,
-  SurveyResponse,
-  Country,
-  Entity,
-  Survey,
-} from '@tupaia/types';
+import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
 
 export type SurveyResponsesRequest = Request<
   DatatrakWebSurveyResponsesRequest.Params,

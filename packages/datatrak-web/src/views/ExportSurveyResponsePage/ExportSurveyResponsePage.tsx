@@ -10,7 +10,6 @@ import { useSurvey, useSurveyResponse } from '../../api';
 import { A4Page } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
 import { displayDate } from '../../utils';
-import { getAllSurveyComponents } from '../../features';
 import { Question } from './Questions';
 import { getIsQuestionVisible } from '../../features/Survey/SurveyContext/utils';
 
@@ -27,7 +26,6 @@ const ScreenWrapper = styled.div`
   & + & {
     margin-block-start: 2rem;
     padding-block-start: 2rem;
-    border-top: 4px double #444;
   }
 `;
 
@@ -64,10 +62,6 @@ export const ExportSurveyResponsePage = () => {
 
   const { answers } = surveyResponse;
 
-  const visibleScreenComponents = getAllSurveyComponents(survey?.screens ?? []).filter(question =>
-    getIsQuestionVisible(question, answers),
-  );
-
   const visibleScreens =
     survey?.screens
       ?.map(screen =>
@@ -95,7 +89,7 @@ export const ExportSurveyResponsePage = () => {
         </SurveyResponseDetailsWrapper>
       </Header>
       {visibleScreens.map((screenComponents, index) => (
-        <ScreenWrapper key={`screen-${index}`}>
+        <ScreenWrapper key={`screen-${index}`} className="screen-wrapper">
           {screenComponents.map((surveyScreenComponent, index) => (
             <Question
               key={index}
