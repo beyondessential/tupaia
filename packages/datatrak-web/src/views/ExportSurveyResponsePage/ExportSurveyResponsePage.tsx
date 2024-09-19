@@ -6,10 +6,13 @@
 import React from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
-import { useSurvey, useSurveyResponse } from '../api';
+import { useSurvey, useSurveyResponse } from '../../api';
 import { A4Page } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
-import { displayDate } from '../utils';
+import { displayDate } from '../../utils';
+import { getAllSurveyComponents } from '../../features';
+import { Question } from './Questions';
+import { getIsQuestionVisible } from '../../features/Survey/SurveyContext/utils';
 
 const Header = styled.div`
   display: flex;
@@ -18,6 +21,14 @@ const Header = styled.div`
   padding-block-end: 0.75rem;
   margin-bottom: 2rem;
   border-bottom: 1px solid #444;
+`;
+
+const ScreenWrapper = styled.div`
+  & + & {
+    margin-block-start: 2rem;
+    padding-block-start: 2rem;
+    border-top: 4px double #444;
+  }
 `;
 
 const SurveyResponseDetailsWrapper = styled.div`
@@ -51,6 +62,19 @@ export const ExportSurveyResponsePage = () => {
 
   if (isLoading || !surveyResponse) return null;
 
+  const { answers } = surveyResponse;
+
+  const visibleScreenComponents = getAllSurveyComponents(survey?.screens ?? []).filter(question =>
+    getIsQuestionVisible(question, answers),
+  );
+
+  const visibleScreens =
+    survey?.screens
+      ?.map(screen =>
+        screen.surveyScreenComponents.filter(question => getIsQuestionVisible(question, answers)),
+      )
+      ?.filter(screenComponents => screenComponents.length > 0) ?? [];
+
   return (
     <A4Page>
       <Header>
@@ -70,6 +94,17 @@ export const ExportSurveyResponsePage = () => {
           <SurveyResponseDetails>Submitted by: {surveyResponse.assessorName}</SurveyResponseDetails>
         </SurveyResponseDetailsWrapper>
       </Header>
+      {visibleScreens.map((screenComponents, index) => (
+        <ScreenWrapper key={`screen-${index}`}>
+          {screenComponents.map((surveyScreenComponent, index) => (
+            <Question
+              key={index}
+              surveyScreenComponent={surveyScreenComponent}
+              answer={surveyResponse.answers[surveyScreenComponent.id!]}
+            />
+          ))}
+        </ScreenWrapper>
+      ))}
     </A4Page>
   );
 };
