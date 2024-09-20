@@ -24,9 +24,8 @@ export const RequestProjectAccess = ({ projectCode, onClose }: RequestProjectAcc
       project={project}
       onSubmit={requestProjectAccess}
       isLoading={isLoadingProject}
-      isSubmitting={isLoading}
+      isSubmitting={isLoading || !isFetched}
       isSuccess={isSuccess}
-      isFetched={isFetched}
       countries={countries}
     />
   );
