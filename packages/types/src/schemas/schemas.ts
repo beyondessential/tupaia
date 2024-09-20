@@ -31481,10 +31481,7 @@ export const MeasureConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"values": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -31629,10 +31626,7 @@ export const DisplayedValueTypeSchema = {
 } 
 
 export const EntityLevelSchema = {
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
+	"type": "string"
 } 
 
 export const MeasureValueTypeSchema = {
@@ -31928,10 +31922,7 @@ export const BaseMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"displayedValueKey": {
 			"description": "Use to override the default column of data that we display",
@@ -32029,10 +32020,7 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
+						"type": "string"
 					},
 					"values": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -32120,10 +32108,7 @@ export const BaseMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
@@ -32502,10 +32487,7 @@ export const SpectrumMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"displayedValueKey": {
 			"description": "Use to override the default column of data that we display",
@@ -32603,10 +32585,7 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
+						"type": "string"
 					},
 					"values": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -32694,10 +32673,7 @@ export const SpectrumMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
@@ -33181,10 +33157,7 @@ export const IconMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"displayedValueKey": {
 			"description": "Use to override the default column of data that we display",
@@ -33282,10 +33255,7 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
+						"type": "string"
 					},
 					"values": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -33373,10 +33343,7 @@ export const IconMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
@@ -33785,10 +33752,7 @@ export const RadiusMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"displayedValueKey": {
 			"description": "Use to override the default column of data that we display",
@@ -33886,10 +33850,7 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
+						"type": "string"
 					},
 					"values": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -33977,10 +33938,7 @@ export const RadiusMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
@@ -34363,10 +34321,7 @@ export const ColorMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"displayedValueKey": {
 			"description": "Use to override the default column of data that we display",
@@ -34464,10 +34419,7 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
+						"type": "string"
 					},
 					"values": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -34555,10 +34507,7 @@ export const ColorMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
@@ -34955,10 +34904,7 @@ export const ShadingMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"displayedValueKey": {
 			"description": "Use to override the default column of data that we display",
@@ -35056,10 +35002,7 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
+						"type": "string"
 					},
 					"values": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -35147,10 +35090,7 @@ export const ShadingMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
+			"type": "string"
 		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
@@ -35539,10 +35479,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -35640,10 +35577,7 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -35731,10 +35665,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -36217,10 +36148,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -36318,10 +36246,7 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -36409,10 +36334,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -36820,10 +36742,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -36921,10 +36840,7 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -37012,10 +36928,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -37397,10 +37310,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -37498,10 +37408,7 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -37589,10 +37496,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -37988,10 +37892,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -38089,10 +37990,7 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -38180,10 +38078,7 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -69719,10 +69614,7 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -69820,10 +69712,7 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -69911,10 +69800,7 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -70397,10 +70283,7 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -70498,10 +70381,7 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -70589,10 +70469,7 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -71000,10 +70877,7 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -71101,10 +70975,7 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -71192,10 +71063,7 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -71577,10 +71445,7 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -71678,10 +71543,7 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -71769,10 +71631,7 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -72168,10 +72027,7 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -72269,10 +72125,7 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -72360,10 +72213,7 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -72813,10 +72663,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -72914,10 +72761,7 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -73005,10 +72849,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -73491,10 +73332,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -73592,10 +73430,7 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -73683,10 +73518,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -74094,10 +73926,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -74195,10 +74024,7 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -74286,10 +74112,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -74671,10 +74494,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -74772,10 +74592,7 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -74863,10 +74680,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -75262,10 +75076,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -75363,10 +75174,7 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -75454,10 +75262,7 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -75900,10 +75705,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -76001,10 +75803,7 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -76092,10 +75891,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -76578,10 +76374,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -76679,10 +76472,7 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -76770,10 +76560,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -77181,10 +76968,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -77282,10 +77066,7 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -77373,10 +77154,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -77758,10 +77536,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -77859,10 +77634,7 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -77950,10 +77722,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -78349,10 +78118,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"displayedValueKey": {
 							"description": "Use to override the default column of data that we display",
@@ -78450,10 +78216,7 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
+										"type": "string"
 									},
 									"values": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -78541,10 +78304,7 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
+							"type": "string"
 						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
@@ -93025,10 +92785,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -93126,10 +92883,7 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -93217,10 +92971,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -93726,10 +93477,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -93827,10 +93575,7 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -93918,10 +93663,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -94352,10 +94094,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -94453,10 +94192,7 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -94544,10 +94280,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -94952,10 +94685,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -95053,10 +94783,7 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -95144,10 +94871,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
@@ -95566,10 +95290,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"displayedValueKey": {
 					"description": "Use to override the default column of data that we display",
@@ -95667,10 +95388,7 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
+								"type": "string"
 							},
 							"values": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
@@ -95758,10 +95476,7 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+					"type": "string"
 				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
