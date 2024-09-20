@@ -7,7 +7,7 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Dialog, Typography } from '@material-ui/core';
+import { CircularProgress, Dialog, Typography } from '@material-ui/core';
 import {
   ModalContentProvider,
   ModalFooter,
@@ -20,6 +20,7 @@ import { Button, DownloadIcon, SurveyTickIcon } from '../components';
 import { displayDate } from '../utils';
 import { SurveyReviewSection, useSurveyResponseWithForm } from './Survey';
 import { SurveyContext } from '.';
+import { useExportSurveyResponse } from '../api';
 
 const Header = styled.div`
   display: flex;
@@ -70,8 +71,12 @@ const DownloadButton = styled(Button).attrs({
 })`
   margin-left: auto;
   .MuiSvgIcon-root {
-    margin-right: 0.5rem;
+    margin-inline-end: 0.5rem;
     font-size: 1rem;
+  }
+  .MuiCircularProgress-root {
+    margin-inline-start: 0.5rem;
+    color: ${({ theme }) => theme.palette.text.secondary};
   }
 `;
 
@@ -101,6 +106,10 @@ const SurveyResponseModalContent = ({
   const { surveyLoading } = useSurveyResponseWithForm(surveyResponse);
   const subHeading = getSubHeadingText(surveyResponse);
   const showLoading = isLoading || surveyLoading;
+  const [urlSearchParams] = useSearchParams();
+  const surveyResponseId = urlSearchParams.get('responseId');
+  const { mutate: downloadSurveyResponse, isLoading: isDownloadingSurveyResponse } =
+    useExportSurveyResponse(surveyResponseId!);
 
   return (
     <>
@@ -112,9 +121,10 @@ const SurveyResponseModalContent = ({
               <Heading>{surveyResponse?.surveyName}</Heading>
               <SubHeading>{subHeading}</SubHeading>
             </div>
-            <DownloadButton>
+            <DownloadButton onClick={downloadSurveyResponse} disabled={isDownloadingSurveyResponse}>
               <DownloadIcon />
               Download
+              {isDownloadingSurveyResponse && <CircularProgress size={15} />}
             </DownloadButton>
           </Header>
         )}

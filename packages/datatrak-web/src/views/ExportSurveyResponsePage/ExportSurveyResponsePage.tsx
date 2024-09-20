@@ -15,6 +15,10 @@ import { getIsQuestionVisible } from '../../features/Survey/SurveyContext/utils'
 
 const Page = styled(A4Page)`
   background-color: white;
+  padding-block-start: 0;
+  padding-block-end: 1cm;
+  padding-inline: 1.55cm;
+  width: 21cm; // A4 width in cm
 `;
 
 const Header = styled.div`
@@ -28,8 +32,7 @@ const Header = styled.div`
 
 const ScreenWrapper = styled.div`
   & + & {
-    margin-block-start: 2rem;
-    padding-block-start: 2rem;
+    margin-block-start: 1.5rem;
   }
 `;
 
@@ -50,8 +53,9 @@ const SurveyResponseDetails = styled(Typography)`
 `;
 
 const ProjectLogo = styled.img`
-  height: 4rem;
+  max-height: 4rem;
   width: auto;
+  max-width: 5rem;
 `;
 
 export const ExportSurveyResponsePage = () => {

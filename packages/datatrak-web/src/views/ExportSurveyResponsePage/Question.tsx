@@ -13,7 +13,7 @@ import { Typography } from '@material-ui/core';
 
 const QuestionWrapper = styled.div`
   border-bottom: 1px solid #000;
-
+  page-break-inside: avoid;
   & + & {
     margin-block-start: 1.125rem;
   }
@@ -21,7 +21,7 @@ const QuestionWrapper = styled.div`
 
 const InstructionQuestionText = styled(Typography)`
   font-size: 0.875rem;
-  margin-block-start: 2rem;
+  margin-block-start: 1rem;
   margin-block-end: 0.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
