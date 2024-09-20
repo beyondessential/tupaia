@@ -37,10 +37,9 @@ export const RequestProjectAccessPage = () => {
         onClose={onReturnToProjects}
         project={project}
         onSubmit={requestProjectAccess}
-        isLoading={isLoadingProject}
+        isLoading={isLoadingProject || !isFetched}
         isSubmitting={isLoading}
         isSuccess={isSuccess}
-        isFetched={isFetched}
         countries={countries}
       />
     </Wrapper>

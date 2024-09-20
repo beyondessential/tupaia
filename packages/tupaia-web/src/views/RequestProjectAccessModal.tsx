@@ -147,11 +147,10 @@ export const RequestProjectAccessModal = () => {
         <RequestProjectAccess
           project={requestingProject}
           countries={countries}
-          isLoading={isLoading || isLoadingCountryAccessList}
+          isLoading={isLoading || isLoadingCountryAccessList || !isFetched}
           isSubmitting={isSubmitting}
           onSubmit={requestCountryAccess}
           isSuccess={isSuccess}
-          isFetched={isFetched}
           onClose={onCloseModal}
           closeButtonText={isReturningToProjects ? 'Return to projects' : 'Close'}
           errorMessage={showError ? error.message : undefined}

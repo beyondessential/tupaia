@@ -119,7 +119,6 @@ interface ProjectAccessFormProps {
   isSubmitting: boolean;
   isSuccess: boolean;
   closeButtonText?: string;
-  isLoading?: boolean;
 }
 
 export const ProjectAccessForm = ({
@@ -130,7 +129,6 @@ export const ProjectAccessForm = ({
   isSubmitting,
   isSuccess,
   closeButtonText = 'Back to projects',
-  isLoading,
 }: ProjectAccessFormProps) => {
   const formContext = useForm({
     mode: 'onChange',
@@ -152,7 +150,7 @@ export const ProjectAccessForm = ({
   const availableCountries = countries?.filter((c: Country) => !c.hasAccess && !c.hasPendingAccess);
 
   // show the no countries message if the country access list has loaded and there are no countries available
-  const showNoCountriesMessage = !isLoading && !availableCountries?.length && !isSuccess;
+  const showNoCountriesMessage = !availableCountries?.length && !isSuccess;
 
   if (showNoCountriesMessage) {
     return (

@@ -63,7 +63,6 @@ interface RequestProjectAccessProps {
   onClose?: () => void;
   project?: WebServerProjectRequest.ResBody;
   isLoading?: boolean;
-  isFetched?: boolean;
   countries: ProjectCountryAccessListRequest.ResBody[number][];
   onSubmit: (data: { entityIds: string[]; message: string; projectCode: string }) => void;
   isSubmitting: boolean;
@@ -76,7 +75,6 @@ export const RequestProjectAccess = ({
   onClose,
   project,
   isLoading,
-  isFetched,
   countries,
   onSubmit,
   isSuccess,
@@ -84,14 +82,12 @@ export const RequestProjectAccess = ({
   closeButtonText,
   errorMessage,
 }: RequestProjectAccessProps) => {
-  const showLoading = isLoading || !isFetched;
-
   return (
     <Wrapper>
       <Title>Request project access</Title>
       <BodyText>Complete the form below to request access to this project</BodyText>
       <Container>
-        {showLoading ? (
+        {isLoading ? (
           <SpinningLoader />
         ) : (
           <>
@@ -112,7 +108,6 @@ export const RequestProjectAccess = ({
               isSuccess={isSuccess}
               countries={countries}
               closeButtonText={closeButtonText}
-              isLoading={isLoading}
             />
           </>
         )}
