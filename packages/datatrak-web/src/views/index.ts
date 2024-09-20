@@ -12,7 +12,6 @@ export { VerifyEmailResendPage } from './VerifyEmailResendPage';
 export { VerifyEmailPage } from './VerifyEmailPage';
 export { ErrorPage } from './ErrorPage';
 export { ProjectSelectPage } from './ProjectSelectPage';
-export { SurveyResponsePage } from './SurveyResponsePage';
 export {
   SurveySuccessScreen,
   SurveyReviewScreen,
@@ -24,4 +23,5 @@ export { ForgotPasswordPage } from './ForgotPasswordPage';
 export { ResetPasswordPage } from './ResetPasswordPage';
 export { AccountSettingsPage } from './AccountSettingsPage';
 export { ReportsPage } from './ReportsPage';
+export { TasksDashboardPage, TaskDetailsPage } from './Tasks';
 export { NotAuthorisedPage } from './NotAuthorisedPage';

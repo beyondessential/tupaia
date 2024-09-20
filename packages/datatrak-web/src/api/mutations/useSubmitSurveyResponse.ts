@@ -35,14 +35,13 @@ export const useSurveyResponseData = () => {
   };
 };
 
-export const useSubmitSurveyResponse = () => {
+export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
-
   const surveyResponseData = useSurveyResponseData();
 
   return useMutation<any, Error, AnswersT, unknown>(
@@ -69,6 +68,8 @@ export const useSubmitSurveyResponse = () => {
         queryClient.invalidateQueries(['rewards']);
         queryClient.invalidateQueries(['leaderboard']);
         queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities
+        queryClient.invalidateQueries(['tasks']);
+        queryClient.invalidateQueries(['taskMetric', user.projectId]);
 
         const createNewAutocompleteQuestions = surveyResponseData?.questions?.filter(
           question => question?.config?.autocomplete?.createNew,
@@ -86,6 +87,7 @@ export const useSubmitSurveyResponse = () => {
         // include the survey response data in the location state, so that we can use it to generate QR codes
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
           state: {
+            ...(from && { from }),
             surveyResponse: JSON.stringify(data),
           },
         });

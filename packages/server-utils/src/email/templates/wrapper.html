@@ -1,0 +1,120 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body style="font-family: 'Roboto', sans-serif">
+    <div class="wrapper" style="padding: 45px; max-width: 551px">
+      <div class="container" style="border: 1px solid rgba(155, 160, 166, 0.5); padding: 45px">
+        <table style="width: 100%">
+          <tr>
+            <td style="width: 25%" colspan="1"></td>
+            <td style="width: 25%" colspan="2" style="text-align: center; padding-bottom: 32px">
+              <img
+                src="https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/tupaia-logo-black.png"
+                width="101"
+                height="41"
+                title="Tupaia logo"
+                alt="Tupaia logo"
+                style="display: block; margin: 0 auto"
+              />
+            </td>
+            <td style="width: 25%" colspan="1"></td>
+          </tr>
+          <tr>
+            <td style="width: 25%" colspan="4">
+              <h1 class="title" style="font-size: 24px; font-weight: 500">{{title}}</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 25%" colspan="4" style="padding: 16px 0 20px 0">{{{content}}}</td>
+          </tr>
+          {{#if cta}}
+          <tr>
+            <td style="width: 25%" colspan="4" style="padding: 20px 0">
+              <a
+                href="{{cta.url}}"
+                style="
+                  background-color: #1978d4;
+                  color: white;
+                  border: none;
+                  padding: 11px 21px;
+                  font-size: 14px;
+                  border-radius: 3px;
+                  text-decoration: none;
+                "
+                >{{cta.text}}</a
+              >
+            </td>
+          </tr>
+          {{/if}}
+          <tr>
+            <td style="width: 25%" colspan="3">
+              {{#if signoff}}
+              <p style="max-width: 90%">{{signoff}}</p>
+              {{else}}
+              <p style="max-width: 90%">
+                Cheers,
+                <br />
+                The Tupaia Team
+              </p>
+              {{/if}}
+              <img
+                src="https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/tupaia-logo-black.png"
+                width="74"
+                height="31"
+                title="Tupaia logo"
+                alt="Tupaia logo"
+                style="display: block"
+              />
+            </td>
+            <td style="width: 25%" colspan="1" rowspan="2" class="footer-image-cell">
+              <img
+                src="https://tupaia.s3.ap-southeast-2.amazonaws.com/uploads/tupaia-illustration.png"
+                alt="Tupaia illustration"
+                width="101"
+                height="194"
+                style="display: block; float: right"
+                title="Tupaia illustration"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 25%" colspan="3">
+              <a
+                href="https://tupaia.org"
+                style="
+                  color: #9ba0a6;
+                  font-size: 12px;
+                  border-right: 1px solid #9ba0a6;
+                  padding-right: 5px;
+                "
+                >tupaia.org</a
+              >
+              <a href="https://bes.au" style="color: #9ba0a6; font-size: 12px">bes.au</a>
+              <p style="color: #9ba0a6; font-size: 12px">
+                Beyond Essential Systems
+                <br />
+                89 Nicholson St, Brunswick East VIC 3057 Australia
+              </p>
+            </td>
+          </tr>
+          {{#if unsubscribeUrl}}
+          <tr>
+            <td colspan="4">
+              <p style="color: #9ba0a6; font-size: 12px">
+                If you wish to unsubscribe from these emails please click
+                <a href="{{unsubscribeUrl}}">here</a>
+              </p>
+            </td>
+          </tr>
+          {{/if}}
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
