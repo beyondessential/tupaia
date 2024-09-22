@@ -6,12 +6,13 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { DESKTOP_MEDIA_QUERY, ROUTES } from '../../constants';
+import { ROUTES } from '../../constants';
 import { Button, ButtonLink as BaseButtonLink } from '../../components';
 
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
-const SurveyAlert = styled.div`
+const SectionContainer = styled.section`
+  grid-area: surveySelect;
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
   padding: 1rem;
@@ -19,20 +20,35 @@ const SurveyAlert = styled.div`
   position: relative;
   align-items: flex-start;
   justify-content: space-between;
+  overflow: visible !important;
+  height: max-content;
+
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2.3rem;
+    padding: 1rem 3rem 1rem 2.2rem;
+    margin-block-start: 2.1rem !important;
+  }
+`;
+
+const SectionContent = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  width: 70%;
+  padding-inline-end: 2rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
   }
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
   font-size: 1rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-inline: 0.5rem;
   & ~ .MuiButtonBase-root {
-    margin-left: 0; // override default margin from ui-components
+    margin-inline-start: 0; // override default margin from ui-components
   }
   &:last-child {
-    margin-top: 1rem;
+    margin-block-start: 1rem;
   }
 `;
 
@@ -50,76 +66,63 @@ const ButtonWrapper = styled.div`
     line-height: 1.1;
     padding: 0.75rem;
     &:last-child {
-      margin-top: 0.625rem;
+      margin-block-start: 0.625rem;
     }
   }
 `;
 
 const TextWrapper = styled.div`
-  margin: 0;
+  margin-block-end: 1rem;
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-right: 4rem;
+    margin-block-end: 0;
     max-width: 75%;
-    padding-left: 2rem;
+    padding-inline: 2rem 4rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-right: 1rem;
+    padding-inline-end: 1rem;
     max-width: 80%;
   }
 `;
 
 const Text = styled(Typography)`
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 1.5;
   }
 `;
 
 const DesktopText = styled.span`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
+  ${({ theme }) => theme.breakpoints.down('xs')} {
     display: none;
   }
 `;
 
 const SurveysImage = styled.img`
-  width: auto;
-  height: calc(100% + 3rem);
   position: absolute;
+  width: auto;
   display: flex;
   align-items: center;
-  right: 0;
-  top: -1.5rem;
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    top: -20%;
-    right: 2rem;
-    height: 150%;
-  }
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1rem;
+  height: 100%;
 
-  ${DESKTOP_MEDIA_QUERY} {
-    top: -2rem;
-    height: calc(100% + 6rem);
-  }
-`;
-
-const SurveyAlertContent = styled.div`
-  display: flex;
-  flex-direction: column-reverse;
-  width: 70%;
-  padding-right: 2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
+    right: -1rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('lg')} {
+    height: 160%;
   }
 `;
 
 export const SurveySelectSection = () => {
   return (
-    <SurveyAlert>
-      <SurveyAlertContent>
+    <SectionContainer>
+      <SectionContent>
         <ButtonWrapper>
           <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
           <Button variant="outlined" onClick={() => window.open(TUPAIA_REDIRECT_URL)}>
@@ -137,8 +140,8 @@ export const SurveySelectSection = () => {
             </DesktopText>
           </Text>
         </TextWrapper>
-      </SurveyAlertContent>
+      </SectionContent>
       <SurveysImage src="/surveys.svg" alt="Illustration of woman holding a tablet" />
-    </SurveyAlert>
+    </SectionContainer>
   );
 };

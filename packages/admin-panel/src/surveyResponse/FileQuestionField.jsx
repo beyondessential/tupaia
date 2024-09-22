@@ -7,13 +7,13 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import generateId from 'uuid/v1';
-import { TextField } from '@tupaia/ui-components';
+import { TextField, Modal } from '@tupaia/ui-components';
 import { getUniqueFileNameParts } from '@tupaia/utils';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExportIcon from '@material-ui/icons/GetApp';
 import { FileUploadField } from '../widgets/InputField/FileUploadField';
-import { IconButton, Modal } from '../widgets';
+import { IconButton } from '../widgets';
 import { useApiContext } from '../utilities/ApiProvider';
 
 const Container = styled.div`

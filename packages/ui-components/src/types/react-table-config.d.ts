@@ -3,7 +3,6 @@ import {
   UseSortByColumnProps,
   UseSortByOptions,
   UseSortByState,
-  UseTableRowProps as BaseUseTableRowProps,
 } from 'react-table';
 
 type RowT = Record<string, any> & {
