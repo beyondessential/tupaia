@@ -78,7 +78,11 @@ export class DatabaseModel {
     if (!this.fieldNames) {
       const schema = await this.fetchSchema();
 
-      this.fieldNames = Object.keys(schema);
+      const customColumnSelectors = this.customColumnSelectors || {};
+
+      this.fieldNames = [
+        ...new Set([...Object.keys(schema), ...Object.keys(customColumnSelectors)]),
+      ];
     }
     return this.fieldNames;
   }
@@ -120,11 +124,12 @@ export class DatabaseModel {
     // Alias field names to the table to prevent errors when joining other tables
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
+
     return fieldNames.map(fieldName => {
       const qualifiedName = this.fullyQualifyColumn(fieldName);
-      const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
-      if (customSelector) {
-        return { [fieldName]: customSelector(qualifiedName) };
+      const customColumnSelector = this.getColumnSelector(fieldName, qualifiedName);
+      if (customColumnSelector) {
+        return { [fieldName]: customColumnSelector };
       }
       return qualifiedName;
     });
@@ -148,6 +153,14 @@ export class DatabaseModel {
     return { ...options, ...customQueryOptions };
   }
 
+  getColumnSelector(fieldName, qualifiedName) {
+    const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
+    if (customSelector) {
+      return customSelector(qualifiedName);
+    }
+    return null;
+  }
+
   async getDbConditions(dbConditions = {}) {
     const fieldNames = await this.fetchFieldNames();
     const fullyQualifiedConditions = {};
@@ -162,9 +175,15 @@ export class DatabaseModel {
         // Don't touch RAW conditions
         fullyQualifiedConditions[field] = value;
       } else {
-        const fullyQualifiedField = fieldNames.includes(field)
-          ? this.fullyQualifyColumn(field)
-          : field;
+        const qualifiedName = this.fullyQualifyColumn(field);
+        const customSelector = this.getColumnSelector(field, qualifiedName);
+        let fieldSelector = qualifiedName;
+        // if there is a custom selector, and it is a string, use it as the field selector. In some cases it will be an object, e.g. `castAs: 'text'` which is used to cast the field to a specific type, but this is not used as the field selector as an error will be thrown.
+        if (customSelector && typeof customSelector === 'string') {
+          fieldSelector = customSelector;
+        }
+
+        const fullyQualifiedField = fieldNames.includes(field) ? fieldSelector : field;
         fullyQualifiedConditions[fullyQualifiedField] = value;
       }
     }

@@ -11,7 +11,7 @@ import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
 export const useProjects = columns =>
   useQuery(
-    'projects',
+    ['projects'],
     async () => {
       const defaultColumns = ['project.code', 'entity.name'];
       const endpoint = stringifyQuery(undefined, 'projects', {

@@ -15,6 +15,6 @@ export class EditTask extends EditHandler {
   }
 
   async editRecord() {
-    await this.updateRecord();
+    return this.models.task.updateById(this.recordId, this.updatedFields, this.req.user.id);
   }
 }

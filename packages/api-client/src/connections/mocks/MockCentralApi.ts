@@ -8,6 +8,7 @@ import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
 import { ProjectCountryAccessListRequest } from '@tupaia/types';
 import { CentralApiInterface } from '..';
 import { RequestBody } from '../ApiConnection';
+import { SurveyResponseCreatedResponse } from '../../types';
 
 type Data = Record<string, any>[];
 
@@ -79,6 +80,13 @@ export class MockCentralApi implements CentralApiInterface {
   public createSurveyResponses(responses: MeditrakSurveyResponseRequest[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
+
+  public createSurveyResponse(
+    response: MeditrakSurveyResponseRequest,
+  ): Promise<SurveyResponseCreatedResponse> {
+    throw new Error('Method not implemented.');
+  }
+
   public resubmitSurveyResponse(
     originalResponseId: string,
     newResponse: MeditrakSurveyResponseRequest,
