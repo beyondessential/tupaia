@@ -8,6 +8,6 @@ import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
 export const useMapOverlays = () =>
-  useQuery('mapOverlays', () => get('mapOverlays'), {
+  useQuery(['mapOverlays'], () => get('mapOverlays'), {
     ...DEFAULT_REACT_QUERY_OPTIONS,
   });

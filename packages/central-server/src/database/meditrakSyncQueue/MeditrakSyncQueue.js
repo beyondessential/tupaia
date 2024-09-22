@@ -10,7 +10,7 @@ import { ChangeHandler } from '@tupaia/database';
 import { MeditrakSyncRecordUpdater } from './MeditrakSyncRecordUpdater';
 
 const modelValidator = model => {
-  if (!model.meditrakConfig.minAppVersion) {
+  if (!model.meditrakConfig?.minAppVersion) {
     throw new Error(
       `Model for ${model.databaseRecord} must have a meditrakConfig.minAppVersion property`,
     );
@@ -33,6 +33,7 @@ export class MeditrakSyncQueue extends ChangeHandler {
     super(models, 'meditrak-sync-queue');
 
     const typesToSync = models.getTypesToSyncWithMeditrak();
+
     const modelNamesToSync = Object.entries(models)
       .filter(([, model]) => typesToSync.includes(model.databaseRecord))
       .map(([modelName]) => modelName);

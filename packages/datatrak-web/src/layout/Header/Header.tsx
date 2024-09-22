@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
   box-shadow: inset 0 0 1px #333;
+  z-index: 10;
 `;
 
 const Container = styled(PageContainer).attrs({

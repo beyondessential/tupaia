@@ -139,7 +139,8 @@ class AutocompleteComponent extends PureComponent {
               data={options}
               onEndReached={this.onEndReached}
               onEndReachedThreshold={endReachedOffset}
-              keyExtractor={item => item}
+              // add an index here to make sure all options are unique
+              keyExtractor={(item, i) => `${item}-${i}`}
               ItemSeparatorComponent={() => <View style={localStyles.separator} />}
               renderItem={({ item }) => (
                 <AutocompleteOption onOptionSelected={this.onOptionPress} option={item} />

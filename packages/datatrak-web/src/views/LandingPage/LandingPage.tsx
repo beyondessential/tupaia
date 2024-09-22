@@ -11,6 +11,7 @@ import { SurveyResponsesSection } from './SurveyResponsesSection';
 import { LeaderboardSection } from './LeaderboardSection';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
+import { TasksSection } from './TasksSection';
 import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
 
 const PageContainer = styled(BasePageContainer)`
@@ -21,7 +22,7 @@ const PageContainer = styled(BasePageContainer)`
 const PageBody = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 0;
+  padding: 0.5rem 0 1.5rem;
   width: 100%;
   max-width: 85rem;
   margin: 0 auto;
@@ -29,12 +30,7 @@ const PageBody = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     height: calc(100vh - ${HEADER_HEIGHT});
-    padding: 2rem 2.75rem 0.8rem 2.75rem;
-  }
-
-  ${DESKTOP_MEDIA_QUERY} {
-    padding-top: 4rem;
-    padding-bottom: 2.5rem;
+    padding: 0.2rem 1rem 0.8rem;
   }
 `;
 
@@ -44,6 +40,8 @@ const Grid = styled.div`
   flex-direction: column;
   margin-top: 1rem;
   min-height: 0; // This is needed to stop the grid overflowing the flex container
+  max-width: 100%;
+  margin-inline: auto;
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
@@ -54,14 +52,20 @@ const Grid = styled.div`
     overflow: hidden;
   }
 
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    max-width: 38rem;
+  }
+
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: grid;
     gap: 1.25rem;
-    grid-template-rows: auto auto;
-    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 20rem auto auto;
+    grid-template-columns: 2fr 1fr;
     grid-template-areas:
-      'recentSurveys leaderboard'
-      'recentResponses activityFeed';
+      'surveySelect tasks'
+      'recentSurveys recentResponses'
+      'activityFeed leaderboard';
+    max-width: none;
 
     > section {
       margin: 0;
@@ -70,9 +74,11 @@ const Grid = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    grid-template-columns: 23% 1fr 1fr 28%;
+    grid-template-rows: 10.5rem auto auto;
+    grid-template-columns: 23% 1fr 1fr 30%;
     grid-template-areas:
-      'recentSurveys recentSurveys recentSurveys leaderboard'
+      'surveySelect surveySelect surveySelect tasks'
+      'recentSurveys recentSurveys recentSurveys tasks'
       'recentResponses activityFeed activityFeed leaderboard';
     > div {
       min-height: auto;
@@ -80,17 +86,20 @@ const Grid = styled.div`
   }
 
   ${DESKTOP_MEDIA_QUERY} {
-    margin-top: 2.5rem;
     gap: 1.81rem;
   }
 `;
 
 export const LandingPage = () => {
+  // Todo: Remove this feature flag once the feature is complete
+  const showTasks = process.env.REACT_APP_TUPAIA_TASKS !== 'false';
+
   return (
     <PageContainer>
       <PageBody>
-        <SurveySelectSection />
         <Grid>
+          <SurveySelectSection />
+          {showTasks && <TasksSection />}
           <LeaderboardSection />
           <RecentSurveysSection />
           <SurveyResponsesSection />

@@ -21,10 +21,11 @@ export type SurveysRequest = Request<
 
 export class SurveysRoute extends Route<SurveysRequest> {
   public async buildResponse() {
-    const { ctx, query = {} } = this.req;
-    const { fields = [], projectId } = query;
+    const { ctx, query = {}, models } = this.req;
+    const { fields = [], projectId, countryCode } = query;
+    const country = await models.country.findOne({ code: countryCode });
 
-    const surveys = await ctx.services.central.fetchResources('surveys', {
+    const surveys = await ctx.services.central.fetchResources(`countries/${country.id}/surveys`, {
       ...query,
       filter: {
         project_id: projectId,

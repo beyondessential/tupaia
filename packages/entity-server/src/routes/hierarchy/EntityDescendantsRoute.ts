@@ -17,16 +17,22 @@ export type DescendantsRequest = SingleEntityRequest<
   SingleEntityRequestParams,
   EntityResponse[],
   RequestBody,
-  EntityRequestQuery & { includeRootEntity?: string }
+  EntityRequestQuery & { includeRootEntity?: string; pageSize?: number }
 >;
 export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   public async buildResponse() {
     const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
-    const { includeRootEntity: includeRootEntityString = 'false' } = this.req.query;
+    const { includeRootEntity: includeRootEntityString = 'false', pageSize } = this.req.query;
     const includeRootEntity = includeRootEntityString?.toLowerCase() === 'true';
-    const descendants = await entity.getDescendants(hierarchyId, {
-      ...filter,
-    });
+    const descendants = await entity.getDescendants(
+      hierarchyId,
+      {
+        ...filter,
+      },
+      {
+        limit: pageSize,
+      },
+    );
     const responseEntities = includeRootEntity ? [entity].concat(descendants) : descendants;
 
     return formatEntitiesForResponse(

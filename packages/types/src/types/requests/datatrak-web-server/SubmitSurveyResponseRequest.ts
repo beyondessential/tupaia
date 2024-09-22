@@ -10,7 +10,12 @@ export type FileUploadAnswer = {
   value: string;
 };
 
-export type Answer = string | number | boolean | null | undefined | FileUploadAnswer;
+export type UserAnswer = {
+  id: string;
+  name: string;
+};
+
+export type Answer = string | number | boolean | null | undefined | FileUploadAnswer | UserAnswer;
 
 export type Answers = Record<string, Answer>;
 
