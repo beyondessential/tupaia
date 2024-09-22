@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { useDebounce } from '../utilities';
+import { useDebounce } from '@tupaia/ui-components';
 import { useApiContext } from '../utilities/ApiProvider';
 import { useSuggestSurveyCode } from './useSuggestSurveyCode';
 

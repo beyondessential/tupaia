@@ -71,6 +71,7 @@ export type CommonContext = {
   fields: ExtendedEntityFieldName[];
   filter: EntityFilter;
   field?: FlattableEntityFieldName;
+  pageSize?: string;
 };
 
 export interface SingleEntityContext extends CommonContext {

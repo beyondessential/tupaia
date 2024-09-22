@@ -70,6 +70,7 @@ const updateOrCreateSurveyScreenComponent = async (
     detailLabel = null,
     visibilityCriteria = null,
     validationCriteria = null,
+    type,
   } = questionObject;
 
   const validationCriteriaObject = convertCellToJson(
@@ -91,13 +92,27 @@ const updateOrCreateSurveyScreenComponent = async (
       } else if (questionCode === 'hidden') {
         processedVisibilityCriteria.hidden = answers[0] === 'true';
       } else {
-        const { id: questionId } = await models.question.findOne({
+        const relatedQuestion = await models.question.findOne({
           code: questionCode,
         });
+        if (!relatedQuestion) {
+          throw new ImportValidationError(
+            `Question with code ${questionCode} does not exist`,
+            excelRowNumber,
+            'visibilityCriteria',
+            tabName,
+          );
+        }
+        const { id: questionId } = relatedQuestion;
         processedVisibilityCriteria[questionId] = answers;
       }
     }),
   );
+
+  // If the question is a task, set it to hidden always
+  if (type === ANSWER_TYPES.TASK && !processedVisibilityCriteria.hidden) {
+    processedVisibilityCriteria.hidden = true;
+  }
 
   // If the screen component already exists, update only the changed values, otherwise create a new one
   if (existingScreenComponent) {
