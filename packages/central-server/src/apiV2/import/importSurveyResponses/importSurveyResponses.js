@@ -46,6 +46,25 @@ const ANSWER_TRANSFORMERS = {
     }
     return entity.id;
   },
+  [ANSWER_TYPES.USER]: async (models, answerValue) => {
+    if (!answerValue) {
+      return answerValue;
+    }
+
+    const userIdRegex = new RegExp(/(?<=\().+?(?=\))/);
+    const userId = answerValue.match(userIdRegex)?.[0];
+
+    if (!userId) {
+      throw new Error(`Could not find user id in ${answerValue}`);
+    }
+    const user = await models.user.findById(userId);
+
+    if (!user) {
+      throw new Error(`Could not find user with id ${userId}`);
+    }
+
+    return user.id;
+  },
 };
 
 const IMPORT_MODES = {

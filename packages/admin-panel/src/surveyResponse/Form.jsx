@@ -6,9 +6,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Button } from '@tupaia/ui-components';
+import { Button, ModalContentProvider, ModalFooter } from '@tupaia/ui-components';
 import { useGetExistingData } from './useGetExistingData';
-import { ModalContentProvider, ModalFooter } from '../widgets';
 import { useEditSurveyResponse } from '../api/mutations/useEditSurveyResponse';
 import { ResponseFields } from './ResponseFields';
 

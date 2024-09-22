@@ -61,6 +61,7 @@ import { DataElementDataServiceModel } from './DataElementDataService';
 import { SupersetInstanceModel } from './SupersetInstance';
 import { TaskModel } from './Task';
 import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
+import { TaskCommentModel } from './TaskComment';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -117,6 +118,7 @@ export const modelClasses = {
   SurveyScreenComponent: SurveyScreenComponentModel,
   SyncGroupLog: SyncGroupLogModel,
   Task: TaskModel,
+  TaskComment: TaskCommentModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
@@ -190,3 +192,4 @@ export {
   UserCountryAccessAttemptModel,
   UserCountryAccessAttemptRecord,
 } from './UserCountryAccessAttempt';
+export { TaskCommentModel, TaskCommentRecord } from './TaskComment';

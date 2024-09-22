@@ -147,4 +147,60 @@ export class DatabaseAccess extends SyncingDatabase {
   getOptionSetById(optionSetId) {
     return this.findOne('OptionSet', optionSetId);
   }
+
+  getAncestorsOfPermissionGroup(permissionGroup, acc = []) {
+    if (!permissionGroup || !permissionGroup.parentId) {
+      return acc;
+    }
+
+    const parent = this.findOne('PermissionGroup', permissionGroup.parentId);
+
+    if (!parent) {
+      return acc;
+    }
+
+    return this.getAncestorsOfPermissionGroup(parent, [...acc, parent.id]);
+  }
+
+  getUsersByPermissionGroupAndCountry(
+    countryCode,
+    permissionGroupId,
+    excludeInternalUsers = false,
+  ) {
+    // get user entity permission entries by the country code and permission group name
+    const countryEntity = this.getEntities({ code: countryCode })[0];
+
+    const permissionGroup = this.findOne('PermissionGroup', permissionGroupId, 'id');
+
+    const ancestors = this.getAncestorsOfPermissionGroup(permissionGroup);
+
+    const permissionGroupIds = [permissionGroup.id, ...ancestors];
+
+    const userEntityPermissionEntries = this.objects('UserEntityPermission').filtered(
+      combineClauses(
+        [
+          conditionsToClauses({ entityId: countryEntity.id }),
+          conditionsToClauses({ permissionGroupId: permissionGroupIds }),
+        ],
+        'AND',
+      ),
+    );
+
+    const userIds = [...new Set(userEntityPermissionEntries.map(entry => entry.userId))];
+
+    if (userIds.length === 0) {
+      return [];
+    }
+
+    const clauses = conditionsToClauses({ id: userIds });
+    if (excludeInternalUsers) {
+      clauses.push('internal = false');
+    }
+
+    const userQuery = combineClauses(clauses, 'AND');
+
+    const users = this.objects('UserAccount').filtered(userQuery);
+
+    return users;
+  }
 }

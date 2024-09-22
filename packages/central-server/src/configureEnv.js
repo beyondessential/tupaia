@@ -16,6 +16,7 @@ const envFilePaths = [
   path.resolve(__dirname, '../../../env/aws.env'),
   path.resolve(__dirname, '../../../env/aggregation.env'),
   path.resolve(__dirname, '../../../env/api-client.env'),
+  path.resolve(__dirname, '../../../env/platform.env'),
   path.resolve(__dirname, '../.env'),
 ];
 

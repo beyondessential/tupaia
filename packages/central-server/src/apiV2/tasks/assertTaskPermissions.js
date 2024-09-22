@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { RECORDS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import { fetchCountryCodesByPermissionGroupId, mergeFilter, mergeMultiJoin } from '../utilities';
+import { fetchCountryCodesByPermissionGroupId } from '../utilities';
 
 const getUserSurveys = async (models, accessPolicy, projectId) => {
   const query = {};
@@ -13,7 +13,7 @@ const getUserSurveys = async (models, accessPolicy, projectId) => {
     query.project_id = projectId;
   }
   const userSurveys = await models.survey.findByAccessPolicy(accessPolicy, query, {
-    columns: ['id'],
+    columns: ['id', 'permission_group_id', 'country_ids'],
   });
   return userSurveys;
 };
@@ -22,41 +22,13 @@ export const createTaskDBFilter = async (accessPolicy, models, criteria, options
   if (hasBESAdminAccess(accessPolicy)) {
     return { dbConditions: criteria, dbOptions: options };
   }
-  const { projectId, ...dbConditions } = { ...criteria };
+  const dbConditions = { ...criteria };
   const dbOptions = { ...options };
 
-  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
-    accessPolicy,
-    models,
-  );
+  const taskPermissionsQuery = await models.task.createAccessPolicyQueryClause(accessPolicy);
 
-  const surveys = await getUserSurveys(models, accessPolicy, projectId);
+  dbConditions[QUERY_CONJUNCTIONS.RAW] = taskPermissionsQuery;
 
-  dbConditions['entity.country_code'] = mergeFilter(
-    {
-      comparator: 'IN',
-      comparisonValue: Object.values(countryCodesByPermissionGroupId).flat(),
-    },
-    dbConditions['entity.country_code'],
-  );
-
-  dbConditions['task.survey_id'] = mergeFilter(
-    {
-      comparator: 'IN',
-      comparisonValue: surveys.map(survey => survey.id),
-    },
-    dbConditions['task.survey_id'],
-  );
-
-  dbOptions.multiJoin = mergeMultiJoin(
-    [
-      {
-        joinWith: RECORDS.ENTITY,
-        joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.TASK}.entity_id`],
-      },
-    ],
-    dbOptions.multiJoin,
-  );
   return { dbConditions, dbOptions };
 };
 

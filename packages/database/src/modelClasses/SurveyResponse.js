@@ -25,6 +25,10 @@ const INTERNAL_EMAIL = ['@beyondessential.com.au', '@bes.au'];
 
 export class SurveyResponseRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_RESPONSE;
+
+  async getAnswers(conditions = {}) {
+    return this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
+  }
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {

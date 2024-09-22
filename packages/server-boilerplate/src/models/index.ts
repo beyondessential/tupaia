@@ -65,3 +65,5 @@ export {
   UserCountryAccessAttemptModel,
   UserCountryAccessAttemptRecord,
 } from './UserCountryAccessAttempt';
+export { TaskModel, TaskRecord } from './Task';
+export { TaskCommentModel, TaskCommentRecord } from './TaskComment';

@@ -38838,6 +38838,90 @@ export const ArithmeticQuestionConfigSchema = {
 	]
 } 
 
+export const UserQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"permissionGroup": {
+			"description": "Filters the users by permission group.",
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"permissionGroup"
+	]
+} 
+
+export const TaskQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"shouldCreateTask": {
+			"description": "Determines if a task should be created.",
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
+		"entityId": {
+			"description": "Determines the entity that the task will be created for.",
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
+		"surveyCode": {
+			"description": "Determines the survey that the task will be created for.",
+			"type": "string"
+		},
+		"dueDate": {
+			"description": "Determines the due date of the task.",
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
+		"assignee": {
+			"description": "Determines the assignee of the task.",
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"assignee",
+		"dueDate",
+		"entityId",
+		"shouldCreateTask",
+		"surveyCode"
+	]
+} 
+
 export const SurveyScreenComponentConfigSchema = {
 	"type": "object",
 	"properties": {
@@ -39293,6 +39377,88 @@ export const SurveyScreenComponentConfigSchema = {
 			"required": [
 				"formula"
 			]
+		},
+		"user": {
+			"type": "object",
+			"properties": {
+				"permissionGroup": {
+					"description": "Filters the users by permission group.",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"permissionGroup"
+			]
+		},
+		"task": {
+			"type": "object",
+			"properties": {
+				"shouldCreateTask": {
+					"description": "Determines if a task should be created.",
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"entityId": {
+					"description": "Determines the entity that the task will be created for.",
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"surveyCode": {
+					"description": "Determines the survey that the task will be created for.",
+					"type": "string"
+				},
+				"dueDate": {
+					"description": "Determines the due date of the task.",
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"assignee": {
+					"description": "Determines the assignee of the task.",
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"assignee",
+				"dueDate",
+				"entityId",
+				"shouldCreateTask",
+				"surveyCode"
+			]
 		}
 	},
 	"additionalProperties": false
@@ -39547,6 +39713,193 @@ export const ProjectConfigSchema = {
 		}
 	},
 	"additionalProperties": false
+} 
+
+export const SystemCommentSubTypeSchema = {
+	"enum": [
+		"complete",
+		"create",
+		"overdue",
+		"update"
+	],
+	"type": "string"
+} 
+
+export const TaskUpdateCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"update"
+			]
+		},
+		"originalValue": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"newValue": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"field": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCreateCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"create"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCompletedCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"complete"
+			]
+		},
+		"taskId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCommentTemplateVariablesSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"update"
+					]
+				},
+				"originalValue": {
+					"type": [
+						"string",
+						"number"
+					]
+				},
+				"newValue": {
+					"type": [
+						"string",
+						"number"
+					]
+				},
+				"field": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"create"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"complete"
+					]
+				},
+				"taskId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		}
+	]
+} 
+
+export const RepeatScheduleSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"freq": {
+			"type": "number"
+		},
+		"interval": {
+			"type": "number"
+		},
+		"bymonthday": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "number"
+					}
+				},
+				{
+					"type": "number"
+				}
+			]
+		},
+		"bysetpos": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "number"
+					}
+				},
+				{
+					"type": "number"
+				}
+			]
+		},
+		"dtstart": {
+			"type": "string",
+			"format": "date-time"
+		}
+	}
 } 
 
 export const AccessRequestSchema = {
@@ -39814,7 +40167,9 @@ export const AnalyticsSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -39879,7 +40234,9 @@ export const AnalyticsCreateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -39944,7 +40301,9 @@ export const AnalyticsUpdateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -79641,7 +80000,9 @@ export const QuestionSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -79704,7 +80065,9 @@ export const QuestionCreateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -79769,7 +80132,9 @@ export const QuestionUpdateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -80918,9 +81283,12 @@ export const TaskSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
-		"due_date": {
+		"created_at": {
 			"type": "string",
 			"format": "date-time"
+		},
+		"due_date": {
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
@@ -80928,9 +81296,57 @@ export const TaskSchema = {
 		"id": {
 			"type": "string"
 		},
+		"initial_request_id": {
+			"type": "string"
+		},
+		"overdue_email_sent": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"parent_task_id": {
+			"type": "string"
+		},
 		"repeat_schedule": {
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
@@ -80942,10 +81358,14 @@ export const TaskSchema = {
 		},
 		"survey_id": {
 			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
+		"created_at",
 		"entity_id",
 		"id",
 		"survey_id"
@@ -80958,16 +81378,67 @@ export const TaskCreateSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
-		"due_date": {
+		"created_at": {
 			"type": "string",
 			"format": "date-time"
+		},
+		"due_date": {
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
 		},
+		"initial_request_id": {
+			"type": "string"
+		},
+		"overdue_email_sent": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"parent_task_id": {
+			"type": "string"
+		},
 		"repeat_schedule": {
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
@@ -80978,6 +81449,9 @@ export const TaskCreateSchema = {
 			"type": "string"
 		},
 		"survey_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
 			"type": "string"
 		}
 	},
@@ -80994,9 +81468,12 @@ export const TaskUpdateSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
-		"due_date": {
+		"created_at": {
 			"type": "string",
 			"format": "date-time"
+		},
+		"due_date": {
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
@@ -81004,9 +81481,57 @@ export const TaskUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
+		"initial_request_id": {
+			"type": "string"
+		},
+		"overdue_email_sent": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"parent_task_id": {
+			"type": "string"
+		},
 		"repeat_schedule": {
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
@@ -81017,6 +81542,318 @@ export const TaskUpdateSchema = {
 			"type": "string"
 		},
 		"survey_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const TaskCommentSchema = {
+	"type": "object",
+	"properties": {
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"created_at",
+		"id",
+		"task_id",
+		"template_variables",
+		"type",
+		"user_name"
+	]
+} 
+
+export const TaskCommentCreateSchema = {
+	"type": "object",
+	"properties": {
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"message": {
+			"type": "string"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"task_id",
+		"user_name"
+	]
+} 
+
+export const TaskCommentUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
 			"type": "string"
 		}
 	},
@@ -81626,6 +82463,14 @@ export const TaskStatusSchema = {
 	"type": "string"
 } 
 
+export const TaskCommentTypeSchema = {
+	"enum": [
+		"system",
+		"user"
+	],
+	"type": "string"
+} 
+
 export const SyncGroupSyncStatusSchema = {
 	"enum": [
 		"ERROR",
@@ -81668,7 +82513,9 @@ export const QuestionTypeSchema = {
 		"Photo",
 		"PrimaryEntity",
 		"Radio",
-		"SubmissionDate"
+		"SubmissionDate",
+		"Task",
+		"User"
 	],
 	"type": "string"
 } 
@@ -81731,6 +82578,9 @@ export const EntityTypeEnumSchema = {
 		"medical_area",
 		"msupply_store",
 		"nursing_zone",
+		"pacmossi_district",
+		"pacmossi_spraying_site",
+		"pacmossi_village",
 		"postcode",
 		"project",
 		"repair_request",
@@ -82312,7 +83162,9 @@ export const CamelCasedQuestionSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -82396,6 +83248,23 @@ export const FileUploadAnswerSchema = {
 	"required": [
 		"name",
 		"value"
+	]
+} 
+
+export const UserAnswerSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name"
 	]
 } 
 
@@ -82787,6 +83656,9 @@ export const EntityResponseSchema = {
 		},
 		"isRecent": {
 			"type": "boolean"
+		},
+		"parent_name": {
+			"type": "string"
 		}
 	},
 	"required": [
@@ -82796,6 +83668,376 @@ export const EntityResponseSchema = {
 		"metadata",
 		"name",
 		"type"
+	]
+} 
+
+export const AssigneeSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const TaskResponseSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"assigneeId": {
+			"type": "string"
+		},
+		"initialRequestId": {
+			"type": "string"
+		},
+		"overdueEmailSent": {
+			"type": "object",
+			"properties": {
+				"toString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toDateString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toTimeString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleDateString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleTimeString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"valueOf": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getTime": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getDay": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCDay": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getTimezoneOffset": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setTime": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toUTCString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toISOString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toJSON": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getVarDate": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"getDate",
+				"getDay",
+				"getFullYear",
+				"getHours",
+				"getMilliseconds",
+				"getMinutes",
+				"getMonth",
+				"getSeconds",
+				"getTime",
+				"getTimezoneOffset",
+				"getUTCDate",
+				"getUTCDay",
+				"getUTCFullYear",
+				"getUTCHours",
+				"getUTCMilliseconds",
+				"getUTCMinutes",
+				"getUTCMonth",
+				"getUTCSeconds",
+				"getVarDate",
+				"setDate",
+				"setFullYear",
+				"setHours",
+				"setMilliseconds",
+				"setMinutes",
+				"setMonth",
+				"setSeconds",
+				"setTime",
+				"setUTCDate",
+				"setUTCFullYear",
+				"setUTCHours",
+				"setUTCMilliseconds",
+				"setUTCMinutes",
+				"setUTCMonth",
+				"setUTCSeconds",
+				"toDateString",
+				"toISOString",
+				"toJSON",
+				"toLocaleDateString",
+				"toLocaleString",
+				"toLocaleTimeString",
+				"toString",
+				"toTimeString",
+				"toUTCString",
+				"valueOf"
+			]
+		},
+		"parentTaskId": {
+			"type": "string"
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"surveyResponseId": {
+			"type": "string"
+		},
+		"assignee": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"taskStatus": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"overdue",
+				"repeating",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				},
+				"code": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"code",
+				"id",
+				"name"
+			]
+		},
+		"entity": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				},
+				"code": {
+					"type": "string"
+				},
+				"countryCode": {
+					"type": "string"
+				},
+				"parentName": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"code",
+				"countryCode",
+				"id",
+				"name"
+			]
+		},
+		"repeatSchedule": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"taskDueDate": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"required": [
+		"entity",
+		"survey",
+		"taskStatus"
+	]
+} 
+
+export const UserResponseSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name"
 	]
 } 
 
