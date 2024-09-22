@@ -75,6 +75,7 @@ export type QueryOptions = {
   sort?: string[];
   rawSort?: string;
   joinWith?: string;
+  columns?: string[];
   joinCondition?: [string, string];
 };
 

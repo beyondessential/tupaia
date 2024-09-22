@@ -11,6 +11,7 @@ import moment from 'moment';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
+  findOrCreateDummyRecord,
   findOrCreateRecords,
 } from '@tupaia/database';
 import { resetTestData, TestableApp } from '../../../testUtilities';
@@ -108,6 +109,20 @@ export const testFunctionality = async () => {
 
   before(async () => {
     await app.grantFullAccess();
+
+    await findOrCreateDummyRecord(models.user, {
+      email: 'test_email1@email.com',
+      first_name: 'Test',
+      last_name: 'User1',
+      id: 'test_user_id_1',
+    });
+
+    await findOrCreateDummyRecord(models.user, {
+      email: 'test_email2@email.com',
+      first_name: 'Test',
+      last_name: 'User2',
+      id: 'test_user_id_2',
+    });
 
     await findOrCreateDummyCountryEntity(models, { code: 'DL', name: 'Demo Land' });
     const entities = [

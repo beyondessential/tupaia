@@ -9,8 +9,7 @@ import PropTypes from 'prop-types';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
 import { useRouteMatch } from 'react-router-dom';
-import { TabsToolbar } from '@tupaia/ui-components';
-import { Header, HeaderTitle } from '../components';
+import { Header, HeaderTitle, TabsToolbar } from '../components';
 import { ProfileRoutes } from '../routes/ProfileRoutes';
 import { getCurrentUser } from '../store';
 

@@ -162,6 +162,19 @@ describe('descendants', () => {
       expect(entities).toBeArray();
       expect(entities).toIncludeSameMembers(getEntitiesWithFields([], ['code', 'name', 'type']));
     });
+
+    it('can limit by page size', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/KANTO/descendants', {
+        query: {
+          fields: 'code,name',
+          filter: 'type==city',
+          pageSize: 5,
+        },
+      });
+
+      expect(entities).toBeArray();
+      expect(entities.length).toBe(5);
+    });
   });
 
   describe('/hierarchy/:hierarchyName/descendants', () => {

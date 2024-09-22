@@ -7,7 +7,6 @@ import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import { respond, DatabaseError } from '@tupaia/utils';
 import { RECORDS } from '@tupaia/database';
-import { camel } from 'case';
 import { getColumnsForMeditrakApp } from './utilities';
 import {
   supportsPermissionsBasedSync,
@@ -33,10 +32,11 @@ function getRecordForSync(models, record, recordType, appVersion) {
     }
   });
 
+  const model = models.getModelForDatabaseRecord(recordType);
+
   // Translate values in columns based on meditrak app version
-  const selectedModel = models[camel(recordType)];
-  const translatedRecord = selectedModel?.meditrakConfig.translateRecordForSync
-    ? selectedModel.meditrakConfig.translateRecordForSync(recordWithoutNulls, appVersion)
+  const translatedRecord = model?.meditrakConfig.translateRecordForSync
+    ? model.meditrakConfig.translateRecordForSync(recordWithoutNulls, appVersion)
     : recordWithoutNulls;
   return translatedRecord;
 }

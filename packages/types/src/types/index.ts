@@ -98,6 +98,12 @@ export {
   EntityQuestionConfigFieldValue,
   EntityQuestionConfigFieldKey,
   ProjectConfig,
+  TaskQuestionConfig,
+  UserQuestionConfig,
+  SystemCommentSubType,
+  TaskCommentTemplateVariables,
+  RepeatSchedule,
+  EntityType,
 } from './models-extra';
 export * from './requests';
 export * from './css';

@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { EntityType, QuestionType } from '@tupaia/types';
+import { QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurveyReponse/processSurveyResponse';
@@ -12,7 +12,7 @@ const mockFindEntityById = async (id: string) => ({
   id: 'theEntityId',
   code: 'theEntityCode',
   name: 'The Entity Name',
-  type: 'facility' as EntityType,
+  type: 'facility',
 });
 
 const optionSetId = 'optionSetId';
@@ -86,10 +86,21 @@ describe('processSurveyResponse', () => {
           screenId: 'screen2',
           componentNumber: 2,
         },
+        {
+          questionId: 'question3',
+          type: QuestionType.User,
+          text: 'question3',
+          screenId: 'screen3',
+          componentNumber: 3,
+        },
       ],
       answers: {
         question1: 'answer1',
         question2: 'answer2',
+        question3: {
+          id: 'theUserId',
+          name: 'theUserName',
+        },
       },
     });
 
@@ -105,6 +116,11 @@ describe('processSurveyResponse', () => {
           question_id: 'question2',
           type: QuestionType.Number,
           body: 'answer2',
+        },
+        {
+          question_id: 'question3',
+          type: QuestionType.User,
+          body: 'theUserId',
         },
       ],
     });
