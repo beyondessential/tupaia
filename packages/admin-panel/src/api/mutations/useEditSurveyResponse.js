@@ -22,7 +22,7 @@ export const useEditSurveyResponse = (surveyResponseId, updatedSurveyResponse, o
         if (onSuccess) {
           onSuccess();
         }
-        return 'completed';
+        return true;
       },
     },
   );
