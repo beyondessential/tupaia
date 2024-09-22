@@ -6,8 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Modal } from '@tupaia/ui-components';
 import { changeLogsTablePage, closeLogsModal } from './actions';
-import { Modal } from '../widgets';
 import { LogsTable } from './LogsTable';
 
 export const LogsModalComponent = ({

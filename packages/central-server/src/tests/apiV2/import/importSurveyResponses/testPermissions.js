@@ -69,6 +69,12 @@ export const testPermissions = async () => {
             type: 'FreeText',
             text: 'Opening hours',
           },
+          {
+            id: 'fdfcc42a44456c123a9_test',
+            code: 'TEST_IMPORT_SURVEY_RESPONSES_1_question_3_test',
+            type: 'User',
+            text: 'User assigned',
+          },
         ],
       },
       {
