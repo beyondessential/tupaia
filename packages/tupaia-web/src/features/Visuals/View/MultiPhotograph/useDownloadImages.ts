@@ -16,18 +16,17 @@ export const useDownloadImages = (
   images: ViewReport['data'],
 ) => {
   return useMutation(
-    ['images', projectCode, entityCode, dashboardCode, reportCode],
     async () => {
       return Promise.all(
-        images?.map(photo => {
-          return fetch(photo.value, {
+        images?.map(async photo => {
+          const response = await fetch(photo.value, {
             method: 'GET',
-          }).then(async response => {
-            return {
-              blob: await response.blob(),
-              label: photo.label,
-            };
           });
+
+          return {
+            blob: await response.blob(),
+            label: photo.label,
+          };
         }) ?? [],
       );
     },

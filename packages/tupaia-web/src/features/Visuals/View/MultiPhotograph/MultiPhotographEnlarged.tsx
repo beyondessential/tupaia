@@ -11,11 +11,11 @@ import Slider from 'react-slick';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { IconButton, Typography } from '@material-ui/core';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { SmallAlert } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../../../constants';
 import { useDashboard } from '../../../Dashboard';
 import { useDownloadImages } from './useDownloadImages';
 import { ExportIconButton } from '../../../EnlargedDashboardItem';
-import { SmallAlert } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   position: relative;
