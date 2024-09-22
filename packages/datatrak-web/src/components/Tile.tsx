@@ -30,6 +30,7 @@ const ButtonWrapper = styled(Wrapper).attrs({
   flex-direction: row;
   position: relative;
   justify-content: flex-start;
+  align-items: flex-start;
 
   svg {
     margin-right: 0.4rem;

@@ -51,6 +51,15 @@ const getBaseSchema = (type: QuestionType) => {
         })
         .nullable()
         .default(() => ({}));
+    case QuestionType.User:
+      return yup
+        .object()
+        .shape({
+          id: yup.string(),
+          name: yup.string(),
+        })
+        .nullable()
+        .default(null); // Allow this value to be empty to stop a typeError. The mandatory validation will handle this instead
     default:
       return yup.string();
   }

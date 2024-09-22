@@ -39,8 +39,11 @@ export const constructExportEmail = async (responseBody: ResponseBody, req: Req)
   if (error) {
     return {
       subject,
-      message: `Unfortunately, your export failed.
-${error}`,
+      templateContext: {
+        title: 'Export failed',
+        message: `Unfortunately, your export failed.
+        ${error}`,
+      },
     };
   }
 
@@ -51,15 +54,25 @@ ${error}`,
   if (emailExportFileMode === EmailExportFileModes.ATTACHMENT) {
     return {
       subject,
-      message: 'Please find your requested export attached to this email.',
       attachments: await generateAttachments(filePath),
+      templateContext: {
+        title: 'Your export is ready',
+        message: 'Please find your requested export attached to this email.',
+      },
     };
   }
 
   const downloadLink = createDownloadLink(filePath);
   return {
     subject,
-    message: `Please click this one-time link to download your requested export: ${downloadLink}
-Note that you need to be logged in to the admin panel for it to work, and after clicking it once, you won't be able to download the file again.`,
+    templateContext: {
+      title: 'Your export is ready',
+      message:
+        "Here is your one time link to access your requested export.\nNote that you need to be logged in to the admin panel for it to work, and after clicking it once, you won't be able to download the file again.",
+      cta: {
+        url: downloadLink,
+        text: 'Download export',
+      },
+    },
   };
 };

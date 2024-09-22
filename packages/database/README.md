@@ -51,4 +51,10 @@ A migration file can be technically called anything however the standard is to p
 ## Schema
 
 We keep a copy of the schema in schema/schema.sql. This is used to spin up a new database e.g. as a test database or a new deployment
-of Tupaia. Periodically this should be updated (`yarn update-schema`) to squash the schema migrations into it.
+of Tupaia. Periodically this should be updated (`yarn update-schema`) to squash the schema migrations into it.'
+
+## Change handlers
+
+When implementing a change handler, you MUST have a trigger on the record type in the database. This can be added through a migration. If this is not added, the change handler will not work.
+
+Change handlers get initialised in the `central-server` in the `index.js` file.

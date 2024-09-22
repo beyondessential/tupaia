@@ -9,7 +9,7 @@ type WindowWithGa = Window & {
 
 const gtag = (window as unknown as WindowWithGa).gtag || (() => {});
 
-if (!(window as unknown as WindowWithGa).gtag) {
+if (!(window as unknown as WindowWithGa).gtag && process.env.NODE_ENV === 'production') {
   // eslint-disable-next-line no-console
   console.warn('Google Analytics library not found');
 }

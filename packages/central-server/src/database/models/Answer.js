@@ -34,6 +34,8 @@ export const ANSWER_TYPES = {
   ARITHMETIC: 'Arithmetic',
   CONDITION: 'Condition',
   FILE: 'File',
+  TASK: 'Task',
+  USER: 'User',
   // If adding a new type, add validation in both importSurveys and updateSurveyResponses
 };
 

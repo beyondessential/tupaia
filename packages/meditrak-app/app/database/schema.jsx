@@ -7,7 +7,7 @@ import * as DataTypes from './types';
 
 export const schema = {
   schema: Object.values(DataTypes),
-  schemaVersion: 25,
+  schemaVersion: 26,
   migration: (oldRealm, newRealm) => {
     // For anyone upgrading from below version 3, change permission level to permission group
     if (oldRealm.schemaVersion < 3) {
@@ -46,6 +46,7 @@ export const schema = {
       8, // Replaced answersEnablingFollowUp with more complex visibilityCriteria
       9, // Added validation criteria to survey screen components
     ];
+
     if (oldRealm.schemaVersion < Math.max(versionsRequiringFullResync)) {
       const results = newRealm.objects('Setting').filtered('key = "LATEST_SERVER_SYNC_TIMESTAMP"');
       if (results) newRealm.delete(results);
