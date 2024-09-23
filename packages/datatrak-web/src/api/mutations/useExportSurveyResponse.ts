@@ -20,6 +20,7 @@ export const useExportSurveyResponse = (surveyResponseId: string) => {
         data: {
           cookieDomain,
           baseUrl,
+          locale: window.navigator.language,
         },
       });
     },

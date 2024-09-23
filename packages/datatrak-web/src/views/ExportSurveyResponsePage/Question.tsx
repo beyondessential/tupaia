@@ -7,9 +7,10 @@ import { QuestionType } from '@tupaia/types';
 import React from 'react';
 import styled from 'styled-components';
 import { useAutocompleteOptions, useEntityById } from '../../api';
-import { displayDate } from '../../utils';
+import { displayDate, displayDateTime } from '../../utils';
 import { SurveyScreenComponent } from '../../types';
 import { Typography } from '@material-ui/core';
+import { useSearchParams } from 'react-router-dom';
 
 const QuestionWrapper = styled.div`
   border-bottom: 1px solid #000;
@@ -41,6 +42,8 @@ const Answer = styled(SmallText)`
 `;
 
 const useDisplayAnswer = (type, answer, options, optionSetId) => {
+  const [urlSearchParams] = useSearchParams();
+  const locale = urlSearchParams.get('locale') || 'en-AU';
   const { data: entity } = useEntityById(answer, {
     enabled: type === QuestionType.Entity || type === QuestionType.PrimaryEntity,
   });
@@ -68,7 +71,9 @@ const useDisplayAnswer = (type, answer, options, optionSetId) => {
     case QuestionType.Date:
     case QuestionType.DateOfData:
     case QuestionType.SubmissionDate:
-      return displayDate(answer);
+      return displayDate(answer, locale);
+    case QuestionType.DateTime:
+      return displayDateTime(answer, locale);
     // If the question is a geolocate question, display the latitude and longitude
     case QuestionType.Geolocate: {
       const { latitude, longitude } = JSON.parse(answer);

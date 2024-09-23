@@ -9,9 +9,10 @@ import styled from 'styled-components';
 import { useSurvey, useSurveyResponse } from '../../api';
 import { A4Page } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
-import { displayDate } from '../../utils';
 import { Question } from './Question';
 import { getIsQuestionVisible } from '../../features/Survey/SurveyContext/utils';
+import { useSearchParams } from 'react-router-dom';
+import { displayDate } from '../../utils';
 
 const Page = styled(A4Page)`
   background-color: white;
@@ -60,15 +61,17 @@ const ProjectLogo = styled.img`
 
 export const ExportSurveyResponsePage = () => {
   const { surveyResponseId } = useParams();
+  const [urlSearchParams] = useSearchParams();
   const { data: surveyResponse, isLoading: isLoadingSurveyResponse } =
     useSurveyResponse(surveyResponseId);
+  const locale = urlSearchParams.get('locale') || 'en-AU';
   const { data: survey, isLoading: isLoadingSurvey } = useSurvey(surveyResponse?.surveyCode);
 
   const isLoading = isLoadingSurveyResponse || isLoadingSurvey;
 
   if (isLoading || !surveyResponse) return null;
 
-  const { answers } = surveyResponse;
+  const { answers, dataTime, entityParentName, entityName, assessorName } = surveyResponse;
 
   const visibleScreens =
     survey?.screens
@@ -76,6 +79,9 @@ export const ExportSurveyResponsePage = () => {
         screen.surveyScreenComponents.filter(question => getIsQuestionVisible(question, answers)),
       )
       ?.filter(screenComponents => screenComponents.length > 0) ?? [];
+
+  // Format the date and time in the timezone provided in the URL because the server is in UTC
+  const formattedDataTime = displayDate(dataTime, locale);
 
   return (
     <Page>
@@ -89,11 +95,9 @@ export const ExportSurveyResponsePage = () => {
             {survey?.project?.name} | {survey?.name}
           </SurveyTitle>
           <SurveyResponseDetails>
-            {surveyResponse.entityName}{' '}
-            {surveyResponse.entityParentName && `| ${surveyResponse.entityParentName}`}{' '}
-            {displayDate(surveyResponse.dataTime)}
+            {entityName} {entityParentName && `| ${entityParentName}`} {formattedDataTime}
           </SurveyResponseDetails>
-          <SurveyResponseDetails>Submitted by: {surveyResponse.assessorName}</SurveyResponseDetails>
+          <SurveyResponseDetails>Submitted by: {assessorName}</SurveyResponseDetails>
         </SurveyResponseDetailsWrapper>
       </Header>
       {visibleScreens.map((screenComponents, index) => (
