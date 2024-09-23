@@ -60,7 +60,7 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
         ...row,
         attributes: Object.entries(row.attributes)
           .map(([key, value]) => `${key}: ${value}`)
-          .join('\r\n'),
+          .join('\n'),
       }));
 
       const projectEntity = await entityApi.getEntity(hierarchy, hierarchy, {
