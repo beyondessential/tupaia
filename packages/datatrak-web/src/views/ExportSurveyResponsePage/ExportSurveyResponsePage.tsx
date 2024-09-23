@@ -31,9 +31,9 @@ const Header = styled.div`
 `;
 
 const ScreenWrapper = styled.div`
-  & + & {
-    margin-block-start: 1.5rem;
-  }
+  border-bottom: 2px solid #000;
+  padding-block-end: 0.5rem;
+  margin-block-start: 1.125rem;
 `;
 
 const SurveyResponseDetailsWrapper = styled.div`

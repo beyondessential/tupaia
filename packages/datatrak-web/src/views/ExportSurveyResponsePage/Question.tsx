@@ -14,6 +14,7 @@ import { Typography } from '@material-ui/core';
 const QuestionWrapper = styled.div`
   border-bottom: 1px solid #000;
   page-break-inside: avoid;
+
   & + & {
     margin-block-start: 1.125rem;
   }
@@ -21,14 +22,13 @@ const QuestionWrapper = styled.div`
 
 const InstructionQuestionText = styled(Typography)`
   font-size: 0.875rem;
-  margin-block-start: 1rem;
-  margin-block-end: 0.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  line-height: 1.5;
 `;
 
 const QuestionLabel = styled(Typography)`
   font-size: 0.75rem;
-  line-height: 1.8;
+  line-height: 1.5;
 `;
 
 const SmallText = styled(Typography)`
@@ -36,7 +36,7 @@ const SmallText = styled(Typography)`
 `;
 
 const Answer = styled(SmallText)`
-  margin-block: 0.8rem 0.3rem;
+  margin-block: 0.75rem 0.3rem;
   margin-inline: 0.25rem;
 `;
 
@@ -94,7 +94,7 @@ export const Question = ({
   return (
     <QuestionWrapper>
       <QuestionLabel>{text}</QuestionLabel>
-      <SmallText>{detailLabel}</SmallText>
+      {detailLabel && <SmallText>{detailLabel}</SmallText>}
       {displayAnswer && <Answer>{displayAnswer}</Answer>}
     </QuestionWrapper>
   );
