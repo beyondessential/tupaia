@@ -70,8 +70,10 @@ const useDisplayAnswer = (type, answer, options, optionSetId) => {
     case QuestionType.SubmissionDate:
       return displayDate(answer);
     // If the question is a geolocate question, display the latitude and longitude
-    case QuestionType.Geolocate:
-      return `${answer.latitude}, ${answer.longitude} (latitude, longitude)`;
+    case QuestionType.Geolocate: {
+      const { latitude, longitude } = JSON.parse(answer);
+      return `${latitude}, ${longitude} (latitude, longitude)`;
+    }
     default:
       return answer;
   }
