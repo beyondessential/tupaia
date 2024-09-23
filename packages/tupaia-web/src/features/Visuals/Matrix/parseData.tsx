@@ -2,13 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
-import styled from 'styled-components';
 import { MatrixColumnType, MatrixRowType, SearchFilter } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MatrixConfig, MatrixReportColumn, MatrixReportRow } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../../constants';
-import { RouterLink } from '../../../components';
 
 const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value']) => {
   if (typeof value !== 'string' && typeof value !== 'number') return false;
@@ -30,11 +27,6 @@ const getRowMatchesSearchFilter = (row: MatrixReportRow, searchFilters: SearchFi
     return getValueMatchesSearchFilter(rowValue, filter.value);
   });
 };
-
-const Link = styled(RouterLink)`
-  font-size: 1rem;
-  color: ${props => props.theme.palette.primary.main};
-`;
 
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 export const parseRows = (
@@ -134,17 +126,8 @@ export const parseRows = (
       if (!matchesSearchFilter) return result;
     }
     // otherwise, handle as a regular row
-    // @ts-ignore
-    const title =
-      row.dataElement_metadata !== null && row?.dataElement_metadata?.link ? (
-        <Link to={row?.dataElement_metadata?.link}>{dataElement}</Link>
-      ) : (
-        dataElement
-      );
-
     result.push({
-      // @ts-ignore
-      title,
+      title: dataElement,
       onClick: drillDown ? () => onDrillDown(row) : undefined,
       ...formattedRowValues,
     });
@@ -154,19 +137,21 @@ export const parseRows = (
 
 // This is a recursive function that parses the columns of the matrix into a format that the Matrix component can use.
 export const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
-  return columns.map(column => {
-    const { category, key, title, columns: children } = column;
-    // if a column has a category, then it has children, so we need to parse them using this same function
-    if (category)
+  return columns
+    .filter(column => column.key !== 'dataElement_link')
+    .map(column => {
+      const { category, key, title, columns: children } = column;
+      // if a column has a category, then it has children, so we need to parse them using this same function
+      if (category)
+        return {
+          title: category,
+          key: category,
+          children: parseColumns(children!),
+        };
+      // otherwise, handle as a regular column
       return {
-        title: category,
-        key: category,
-        children: parseColumns(children!),
+        title,
+        key,
       };
-    // otherwise, handle as a regular column
-    return {
-      title,
-      key,
-    };
-  });
+    });
 };
