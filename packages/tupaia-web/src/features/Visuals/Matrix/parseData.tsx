@@ -2,10 +2,13 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+import React from 'react';
+import styled from 'styled-components';
 import { MatrixColumnType, MatrixRowType, SearchFilter } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MatrixConfig, MatrixReportColumn, MatrixReportRow } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../../constants';
+import { RouterLink } from '../../../components';
 
 const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value']) => {
   if (typeof value !== 'string' && typeof value !== 'number') return false;
@@ -27,6 +30,11 @@ const getRowMatchesSearchFilter = (row: MatrixReportRow, searchFilters: SearchFi
     return getValueMatchesSearchFilter(rowValue, filter.value);
   });
 };
+
+const Link = styled(RouterLink)`
+  font-size: 1rem;
+  color: ${props => props.theme.palette.primary.main};
+`;
 
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 export const parseRows = (
@@ -63,6 +71,7 @@ export const parseRows = (
     const { dataElement = '', category, valueType: rowValueType, ...rest } = row;
     const valueTypeToUse = rowValueType || valueType;
     // if the row has a category, then it has children, so we need to parse them using this same function
+
     if (category) {
       const children = parseRows(
         rows,
@@ -97,6 +106,7 @@ export const parseRows = (
       // some items are objects, and we need to parse them to get the value
       if (typeof item === 'object' && item !== null) {
         const { value, metadata } = item as { value: any; metadata?: any };
+
         acc[key] = formatDataValueByType(
           {
             value,
@@ -104,11 +114,13 @@ export const parseRows = (
           },
           valueTypeToUse,
         );
+
         return acc;
       }
       acc[key] = formatDataValueByType({ value: item }, valueTypeToUse);
       return acc;
     }, {});
+
     // if the row is a regular row, and there is a search filter, then we need to check if the row matches the search filter, and ignore this row if it doesn't. This filter only applies to standard rows, not category rows.
     if (searchFilters?.length > 0) {
       const matchesSearchFilter = getRowMatchesSearchFilter(
@@ -122,8 +134,17 @@ export const parseRows = (
       if (!matchesSearchFilter) return result;
     }
     // otherwise, handle as a regular row
+    // @ts-ignore
+    const title =
+      row.dataElement_metadata !== null && row?.dataElement_metadata?.link ? (
+        <Link to={row?.dataElement_metadata?.link}>{dataElement}</Link>
+      ) : (
+        dataElement
+      );
+
     result.push({
-      title: dataElement,
+      // @ts-ignore
+      title,
       onClick: drillDown ? () => onDrillDown(row) : undefined,
       ...formattedRowValues,
     });
