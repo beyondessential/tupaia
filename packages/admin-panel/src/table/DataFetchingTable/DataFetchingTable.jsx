@@ -110,9 +110,10 @@ const DataFetchingTableComponent = memo(
     defaultFilters,
     editorState,
     defaultSorting,
+    reduxId,
   }) => {
     const formattedColumns = useMemo(() => {
-      const cols = columns.map(column => formatColumnForReactTable(column));
+      const cols = columns.map(column => formatColumnForReactTable(column, reduxId));
       // for the columns that are not buttons, display them using a custom wrapper
       const nonButtonColumns = cols
         .filter(col => !col.isButtonColumn)
@@ -151,7 +152,7 @@ const DataFetchingTableComponent = memo(
             <ButtonCell>
               {buttonColumns.map(({ Cell, accessor, ...col }) => {
                 return (
-                  <SingleButtonWrapper $width={col.width}>
+                  <SingleButtonWrapper $width={col.width} key={col.id}>
                     <Cell key={`${col.id}`} {...col} row={row} />
                   </SingleButtonWrapper>
                 );
@@ -270,7 +271,6 @@ DataFetchingTableComponent.propTypes = {
   onSortedChange: PropTypes.func.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
-  sorting: PropTypes.array.isRequired,
   deleteConfig: PropTypes.object,
   totalRecords: PropTypes.number,
   detailUrl: PropTypes.string,

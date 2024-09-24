@@ -74,7 +74,7 @@ export const Modal = ({
               to,
             }) => (
               <Button
-                key={id}
+                key={id || text}
                 onClick={onClick}
                 color={color}
                 id={id}
