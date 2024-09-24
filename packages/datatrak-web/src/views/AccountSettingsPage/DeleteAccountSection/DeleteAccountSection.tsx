@@ -33,10 +33,7 @@ export const DeleteAccountSection = () => {
       <AccountSettingsSection
         title="Delete account"
         description={
-          <Typography color="textSecondary">
-            By requesting your account to be deleted, you will still be able to log in. You will be
-            contacted shortly to confirm your account deletion request
-          </Typography>
+          'By requesting your account to be deleted, you will still be able to log in. You will be contacted shortly to confirm your account deletion request'
         }
       >
         <AccountSettingsColumn>

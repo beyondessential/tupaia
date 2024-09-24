@@ -69,7 +69,7 @@ export const AssigneeInput = ({
         setSearchValue(newValue);
       }, 100)}
       inputValue={selectedValue?.name ?? searchValue}
-      getOptionLabel={option => option.label}
+      getOptionLabel={option => option.name}
       getOptionSelected={(option, selected) => option.id === selected?.id}
       placeholder="Search..."
       loading={isLoading}

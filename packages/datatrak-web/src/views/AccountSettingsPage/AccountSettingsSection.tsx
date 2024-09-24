@@ -38,18 +38,24 @@ interface AccountSettingsSectionProps {
   title?: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
+  DescriptionComponent?: ReactNode;
 }
 
 export const AccountSettingsSection = ({
   title,
   description,
   children,
+  DescriptionComponent,
 }: AccountSettingsSectionProps) => {
   return (
     <Wrapper>
       <AccountSettingsColumn>
         <Title>{title}</Title>
-        <Typography color="textSecondary">{description}</Typography>
+        {DescriptionComponent ? (
+          DescriptionComponent
+        ) : (
+          <Typography color="textSecondary">{description}</Typography>
+        )}
       </AccountSettingsColumn>
       {children}
     </Wrapper>

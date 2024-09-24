@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { Typography } from '@material-ui/core';
 import { useCountryAccessList, useCurrentUserContext } from '../../../api';
 import { ChangeProjectButton } from '../../../components';
 import { AccountSettingsSection } from '../AccountSettingsSection';
@@ -23,13 +24,15 @@ export const RequestCountryAccessSection = () => {
 
   const description = (
     <>
-      <p>Select the countries you would like access to and the reason for requesting access</p>
+      <Typography color="textSecondary">
+        Select the countries you would like access to and the reason for requesting access
+      </Typography>
       <AccessGrantedCountryList countryAccessList={countryAccessList} />
     </>
   );
 
   return (
-    <AccountSettingsSection title={title} description={description}>
+    <AccountSettingsSection title={title} DescriptionComponent={description}>
       <RequestCountryAccessForm countryAccessList={countryAccessList} project={project} />
     </AccountSettingsSection>
   );
