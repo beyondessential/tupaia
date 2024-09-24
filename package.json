@@ -35,6 +35,7 @@
     "test-all": "node ./scripts/node/testAll --silent",
     "validate": "./scripts/bash/validate.sh",
     "package:build:ts": "cd $INIT_CWD && tsc -p tsconfig-build.json",
+    "package:build:ts-watch": "cd $INIT_CWD && tsc -p tsconfig-build.json --watch",
     "package:build:js": "cd $INIT_CWD && babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
     "package:build:types": "cd $INIT_CWD && tsc",
     "package:build:vite": "cd $INIT_CWD && vite build --config \"../../vite.config.js\"",
