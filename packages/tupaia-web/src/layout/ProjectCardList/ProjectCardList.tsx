@@ -8,8 +8,14 @@ import { ProjectCard as ProjectCardComponent } from './ProjectCard';
 import { PROJECT_ACCESS_TYPES } from '../../constants';
 import { getProjectAccessType } from '../../utils';
 import { SingleProject } from '../../types';
+import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
 
 const EXPLORE_CODE = 'explore';
+
+const NoResultsMessage = styled(Typography)`
+  font-size: 0.875rem;
+`;
 
 interface ProjectCardListProps {
   projects: SingleProject[];
@@ -79,6 +85,10 @@ export const ProjectCardList = ({
   const sortedProjects = getSortedProjects();
 
   // Have to wrap this in a fragment so that consuming components don't throw a TS error about type of component not being valid
+
+  if (sortedProjects.length === 0) {
+    return <NoResultsMessage>No results found</NoResultsMessage>;
+  }
   return (
     <>
       {sortedProjects.map(project => {
