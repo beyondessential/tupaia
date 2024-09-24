@@ -5,31 +5,36 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { TextField } from '@material-ui/core';
 import { useExportSettings } from './ExportSettingsContext';
 import { ExportSettingLabel } from './ExportSettingLabel';
+import { TextField, OutlinedTextFieldProps } from '@material-ui/core';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const ExportDescriptionInputArea = styled(TextField)`
+const ExportDescriptionInputArea = styled((props: OutlinedTextFieldProps) => (
+  <TextField {...props} />
+))`
   & .MuiOutlinedInput-root {
     border-radius: 4px;
+  }
+  & .MuiFilledInput-underline:before {
+    border-bottom: none;
   }
   & .MuiOutlinedInput-notchedOutline {
     border: 0.1rem solid ${({ theme }) => theme.palette.text.secondary};
   }
   & .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
-    border: 0.1rem solid #f76853;
+    border: 0.1rem solid ${({ theme }) => theme.palette.error.main};
   }
   & .MuiInputBase-root {
-    padding: 0.5em;
+    padding: 0.5rem;
     background: none;
-    color: white;
+    color: ${({ theme }) => theme.palette.text.primary};
   }
-  margin-block-start: 1em;
+  margin-block-start: 1rem;
 `;
 
 const ExportDescriptionFooter = styled.div<{
@@ -38,8 +43,9 @@ const ExportDescriptionFooter = styled.div<{
   display: flex;
   align-self: end;
   justify-content: space-between;
-  margin-top: 5px;
-  color: ${({ charLimitReached }) => (charLimitReached ? '#f76853' : '#ffffff')};
+  margin-top: 0.313rem;
+  color: ${({ charLimitReached, theme }) =>
+    charLimitReached ? theme.palette.error.main : theme.palette.text.primary};
 `;
 
 const ExportDescriptionInput = () => {

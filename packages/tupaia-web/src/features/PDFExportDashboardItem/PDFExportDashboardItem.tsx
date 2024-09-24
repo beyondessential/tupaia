@@ -168,7 +168,6 @@ export const PDFExportDashboardItem = ({
 
   const title = entityHeader ? `${name}, ${entityHeader}` : name;
   const period = getDatesAsString(periodGranularity, startDate, endDate);
-  const exportDescription = settings?.exportDescription;
 
   const data = isLoading ? undefined : (report as BaseReport)?.data;
   return (
@@ -183,7 +182,7 @@ export const PDFExportDashboardItem = ({
       </PDFExportHeader>
       <PDFExportBody>
         <DashboardName>{activeDashboard?.name}</DashboardName>
-        {displayDescription && <ExportDescription>{exportDescription}</ExportDescription>}
+        {displayDescription && <ExportDescription>{settings?.exportDescription}</ExportDescription>}
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}
