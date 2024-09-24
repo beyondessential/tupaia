@@ -88,8 +88,6 @@ export const ExportDashboard = () => {
           exportWithTable: true,
           exportWithTableDisabled: false,
           exportDescription: null,
-          exportDescriptionCharLimit: 250,
-          exportDescriptionCharLimitReached: false,
         }}
       >
         <Wrapper>

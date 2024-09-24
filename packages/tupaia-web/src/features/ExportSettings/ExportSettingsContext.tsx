@@ -16,8 +16,6 @@ type ExportSettings = {
   exportWithTable: boolean;
   exportWithTableDisabled: boolean;
   exportDescription: string | null;
-  exportDescriptionCharLimit: number;
-  exportDescriptionCharLimitReached: boolean;
 };
 
 type ExportSettingsContextType = ExportSettings & {
@@ -25,7 +23,6 @@ type ExportSettingsContextType = ExportSettings & {
   setExportWithLabels: (value: boolean) => void;
   setExportWithTable: (value: boolean) => void;
   setExportDescription: (value: string | null) => void;
-  setExportDescriptionCharLimitReached: (value: boolean) => void;
 };
 
 const defaultContext: ExportSettingsContextType = {
@@ -34,13 +31,10 @@ const defaultContext: ExportSettingsContextType = {
   exportWithTable: true,
   exportWithTableDisabled: false,
   exportDescription: null,
-  exportDescriptionCharLimit: 250,
-  exportDescriptionCharLimitReached: false,
   setExportFormat: () => {},
   setExportWithLabels: () => {},
   setExportWithTable: () => {},
   setExportDescription: () => {},
-  setExportDescriptionCharLimitReached: () => {},
 };
 
 // This is the context for the export settings
@@ -53,13 +47,10 @@ export const useExportSettings = () => {
     exportWithTable,
     exportWithTableDisabled,
     exportDescription,
-    exportDescriptionCharLimit,
-    exportDescriptionCharLimitReached,
     setExportFormat,
     setExportWithLabels,
     setExportWithTable,
     setExportDescription,
-    setExportDescriptionCharLimitReached,
   } = useContext(ExportSettingsContext);
 
   const updateExportFormat = (e: ChangeEvent<HTMLInputElement>) =>
@@ -74,14 +65,7 @@ export const useExportSettings = () => {
   };
 
   const updateExportDescription = (e: ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    if (value.length > exportDescriptionCharLimit) {
-      value = value.slice(0, exportDescriptionCharLimit);
-      setExportDescriptionCharLimitReached(true);
-    } else {
-      setExportDescriptionCharLimitReached(false);
-    }
-    setExportDescription(value);
+    setExportDescription(e.target.value);
   };
 
   const resetExportSettings = (dashboardItemType?: string) => {
@@ -89,7 +73,6 @@ export const useExportSettings = () => {
     setExportWithLabels(false);
     setExportWithTable(true);
     setExportDescription(null);
-    setExportDescriptionCharLimitReached(false);
   };
 
   return {
@@ -98,8 +81,6 @@ export const useExportSettings = () => {
     exportWithTable,
     exportWithTableDisabled,
     exportDescription,
-    exportDescriptionCharLimit,
-    exportDescriptionCharLimitReached,
     updateExportFormat,
     updateExportWithLabels,
     updateExportWithTable,
@@ -130,9 +111,6 @@ export const ExportSettingsContextProvider = ({
   const [exportWithTableDisabled] = useState<boolean>(
     defaultSettings?.exportWithTableDisabled || false,
   );
-  const [exportDescriptionCharLimit] = useState<number>(250);
-  const [exportDescriptionCharLimitReached, setExportDescriptionCharLimitReached] =
-    useState<boolean>(false);
 
   return (
     <ExportSettingsContext.Provider
@@ -142,13 +120,10 @@ export const ExportSettingsContextProvider = ({
         exportWithTable,
         exportWithTableDisabled,
         exportDescription,
-        exportDescriptionCharLimit,
-        exportDescriptionCharLimitReached,
         setExportFormat,
         setExportWithLabels,
         setExportWithTable,
         setExportDescription,
-        setExportDescriptionCharLimitReached,
       }}
     >
       {children}

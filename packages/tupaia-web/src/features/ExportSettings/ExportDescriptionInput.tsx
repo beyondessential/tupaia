@@ -3,11 +3,13 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useExportSettings } from './ExportSettingsContext';
 import { ExportSettingLabel } from './ExportSettingLabel';
 import { TextField, OutlinedTextFieldProps } from '@material-ui/core';
+
+const EXPORT_DESCRIPTION_LIMIT = 250;
 
 const Wrapper = styled.div`
   display: flex;
@@ -49,12 +51,14 @@ const ExportDescriptionFooter = styled.div<{
 `;
 
 const ExportDescriptionInput = () => {
-  const {
-    exportDescription,
-    updateExportDescription,
-    exportDescriptionCharLimitReached,
-    exportDescriptionCharLimit,
-  } = useExportSettings();
+  const { exportDescription, updateExportDescription } = useExportSettings();
+  const [descriptionCharLimitReached, setDescriptionCharLimitReached] = useState(false);
+
+  const handleExportDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setDescriptionCharLimitReached(newValue.length >= EXPORT_DESCRIPTION_LIMIT);
+    updateExportDescription(event);
+  };
 
   return (
     <Wrapper>
@@ -64,14 +68,15 @@ const ExportDescriptionInput = () => {
         multiline
         rows={6}
         value={exportDescription}
-        onChange={updateExportDescription}
+        onChange={handleExportDescriptionChange}
         variant="outlined"
-        error={exportDescriptionCharLimitReached}
+        error={descriptionCharLimitReached}
+        inputProps={{ maxLength: EXPORT_DESCRIPTION_LIMIT }}
         placeholder="Enter description here"
       />
-      <ExportDescriptionFooter charLimitReached={exportDescriptionCharLimitReached}>
-        {exportDescriptionCharLimitReached ? `Character limit reached:` : `Characters:`}{' '}
-        {exportDescription?.length || 0}/{exportDescriptionCharLimit}
+      <ExportDescriptionFooter charLimitReached={descriptionCharLimitReached}>
+        {descriptionCharLimitReached ? `Character limit reached:` : `Characters:`}{' '}
+        {exportDescription?.length}/{EXPORT_DESCRIPTION_LIMIT}{' '}
       </ExportDescriptionFooter>
     </Wrapper>
   );
