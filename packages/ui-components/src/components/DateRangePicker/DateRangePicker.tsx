@@ -12,7 +12,6 @@ import {
   Typography,
   CircularProgress,
   Button as MuiButton,
-  ButtonGroup as MuiButtonGroup,
   IconButton as MuiIconButton,
 } from '@material-ui/core';
 import { DateRange, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
@@ -69,7 +68,21 @@ const Label = styled(Typography)`
     min-width: 8rem;
   }
   &.MuiButtonGroup-groupedOutlinedHorizontal {
-    margin-left: 0;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  button:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  button:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 `;
 
@@ -127,7 +140,7 @@ export const DateRangePicker = ({
   return (
     <>
       <FlexStart>
-        <MuiButtonGroup>
+        <ButtonGroup>
           {isSingleDate && (
             <Button
               aria-label="prev"
@@ -148,7 +161,7 @@ export const DateRangePicker = ({
               <KeyboardArrowRight />
             </Button>
           )}
-        </MuiButtonGroup>
+        </ButtonGroup>
         <IconButton onClick={handleOpen}>
           {isLoading ? <CircularProgress size={21} /> : <DateRange />}
         </IconButton>

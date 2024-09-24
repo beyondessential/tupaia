@@ -126,7 +126,7 @@ const MapOverlayAccordion = ({
           'children' in mapOverlay ? (
             <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
           ) : (
-            <Wrapper>
+            <Wrapper key={mapOverlay.code}>
               <FormLabel
                 value={mapOverlay.code}
                 control={<Radio />}
