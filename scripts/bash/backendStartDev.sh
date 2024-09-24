@@ -46,6 +46,7 @@ fi
 
 echo "Starting server"
 
+# If internal dependencies are included, add them to the watch list. This will watch for changes to the dist folder of each internal dependency. If the internal dependency then gets rebuilt, the server will restart.
 if [[ ${include_internal} == true ]]; then
     echo "Internal dependencies are under watch for hot reload"
     for PACKAGE in $(${DIR}/getInternalDependencies.sh); do
