@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { UseMutationResult, QueryClient } from 'react-query';
+import { UseMutationResult, QueryClient } from '@tanstack/react-query';
 import { MemoryRouter, Routes as Router } from 'react-router-dom';
 import { renderHook } from '@testing-library/react-hooks';
 import '@testing-library/jest-dom';

@@ -1,9 +1,9 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 20211Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  *
  */
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { post, put } from '../api';
 
 export const useSaveMapOverlayVisualisation = config =>

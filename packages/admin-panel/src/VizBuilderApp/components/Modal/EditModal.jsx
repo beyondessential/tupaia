@@ -4,11 +4,16 @@
  */
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Dialog } from '@tupaia/ui-components';
+import {
+  Button,
+  Dialog,
+  ModalContentProvider,
+  ModalFooter,
+  ModalHeader,
+} from '@tupaia/ui-components';
 import { DashboardItemMetadataForm } from '../DashboardItem';
 import { MapOverlayMetadataForm } from '../MapOverlay';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../../constants';
-import { ModalContentProvider, ModalFooter, ModalHeader } from '../../../widgets';
 
 export const EditModal = () => {
   const { dashboardItemOrMapOverlay } = useParams();

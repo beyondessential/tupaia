@@ -4,7 +4,7 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntityDescendantsRequest, EntityType, UserAccount } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, UserAccount } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
@@ -45,7 +45,7 @@ const getRecentEntities = (
 
   const entityTypes = type.split(',');
   const recentEntitiesOfTypes = entityTypes
-    .map(entityType => userRecentEntities[countryCode][entityType as EntityType] ?? [])
+    .map(entityType => userRecentEntities[countryCode][entityType] ?? [])
     .flat();
 
   return recentEntitiesOfTypes;
@@ -63,6 +63,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },
       searchString,
       fields = DEFAULT_FIELDS,
+      pageSize,
     } = query;
 
     if (isLoggedIn) {
@@ -108,6 +109,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       {
         fields,
         filter,
+        pageSize,
       },
       false,
       !isLoggedIn,

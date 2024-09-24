@@ -6,7 +6,12 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
+import {
+  DatatrakWebSurveyRequest,
+  WebServerProjectRequest,
+  Question,
+  QuestionType,
+} from '@tupaia/types';
 import { PermissionsError } from '@tupaia/utils';
 
 export type SurveyRequest = Request<
@@ -116,6 +121,9 @@ export class SurveyRoute extends Route<SurveyRequest> {
             .sort((a: any, b: any) => a.componentNumber - b.componentNumber),
         };
       })
+      // Hide Task questions from the survey. They are not displayed in the web app and are
+      // just used to trigger new tasks in the TaskCreationHandler
+      .filter((question: Question) => question.type !== QuestionType.Task)
       .sort((a: any, b: any) => a.screenNumber - b.screenNumber);
 
     // renaming survey_questions to screens to make it make more representative of what it is, since questions is more representative of the component within the screen

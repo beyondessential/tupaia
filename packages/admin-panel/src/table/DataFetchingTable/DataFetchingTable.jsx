@@ -136,7 +136,10 @@ const DataFetchingTableComponent = memo(
       const buttonColumns = cols.filter(col => col.isButtonColumn);
       if (!buttonColumns.length) return nonButtonColumns;
 
-      const buttonWidths = buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0);
+      const buttonWidths =
+        buttonColumns.length === 1
+          ? 120
+          : buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0);
       // Group all button columns into a single column so they can be displayed together under a single header
       const singleButtonColumn = {
         Header: actionLabel || 'Action',
@@ -157,6 +160,7 @@ const DataFetchingTableComponent = memo(
           );
         },
       };
+
       return [...nonButtonColumns, singleButtonColumn];
     }, [JSON.stringify(columns)]);
 
@@ -217,7 +221,6 @@ const DataFetchingTableComponent = memo(
         <FilterableTable
           columns={formattedColumns}
           data={data}
-          isLoading={isChangingDataOnServer}
           pageIndex={pageIndex}
           pageSize={pageSize}
           sorting={sortingToUse}
@@ -230,8 +233,6 @@ const DataFetchingTableComponent = memo(
           onChangePage={onPageChange}
           onChangePageSize={onPageSizeChange}
           onChangeSorting={onSortedChange}
-          refreshData={onRefreshData}
-          errorMessage={errorMessage}
           totalRecords={totalRecords}
         />
 

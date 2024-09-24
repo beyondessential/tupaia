@@ -90,7 +90,7 @@ export const InputLabel = ({
       {tooltip && (
         <Tooltip title={tooltip} placement="top">
           <TooltipWrapper tabIndex={0}>
-            <TooltipIcon />
+            <TooltipIcon className="tooltip" />
           </TooltipWrapper>
         </Tooltip>
       )}

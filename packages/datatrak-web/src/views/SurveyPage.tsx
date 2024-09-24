@@ -47,7 +47,7 @@ const SurveyScreenContainer = styled.div<{
 `;
 
 const SurveyPageInner = () => {
-  const { screenNumber, countryCode, surveyCode } = useParams<SurveyParams>();
+  const { screenNumber } = useParams<SurveyParams>();
   const {
     formData,
     isSuccessScreen,
@@ -55,6 +55,8 @@ const SurveyPageInner = () => {
     cancelModalOpen,
     closeCancelConfirmation,
     isResubmit,
+    countryCode,
+    surveyCode,
   } = useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
@@ -111,8 +113,9 @@ const SurveyPageInner = () => {
 
 // The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
 export const SurveyPage = () => {
+  const { countryCode, surveyCode } = useParams<SurveyParams>();
   return (
-    <SurveyContext>
+    <SurveyContext surveyCode={surveyCode} countryCode={countryCode}>
       <SurveyPageInner />
     </SurveyContext>
   );

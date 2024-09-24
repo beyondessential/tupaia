@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  *
  */
 /*
@@ -12,7 +12,10 @@ import { DashboardItemConfig } from './models-extra';
 import { MapOverlayConfig } from './models-extra';
 import { EntityAttributes } from './models-extra';
 import { UserAccountPreferences } from './models-extra';
+import { EntityType } from './models-extra';
 import { ProjectConfig } from './models-extra';
+import { TaskCommentTemplateVariables } from './models-extra';
+import { RepeatSchedule } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -1550,29 +1553,73 @@ export interface SyncGroupLogUpdate {
 }
 export interface Task {
   'assignee_id'?: string | null;
-  'due_date'?: Date | null;
+  'created_at': Date;
+  'due_date'?: number | null;
   'entity_id': string;
   'id': string;
-  'repeat_schedule'?: {} | null;
+  'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
+  'parent_task_id'?: string | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
+  'survey_response_id'?: string | null;
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;
-  'due_date'?: Date | null;
+  'created_at'?: Date;
+  'due_date'?: number | null;
   'entity_id': string;
-  'repeat_schedule'?: {} | null;
+  'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
+  'parent_task_id'?: string | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id': string;
+  'survey_response_id'?: string | null;
 }
 export interface TaskUpdate {
   'assignee_id'?: string | null;
-  'due_date'?: Date | null;
+  'created_at'?: Date;
+  'due_date'?: number | null;
   'entity_id'?: string;
   'id'?: string;
-  'repeat_schedule'?: {} | null;
+  'initial_request_id'?: string | null;
+  'overdue_email_sent'?: Date | null;
+  'parent_task_id'?: string | null;
+  'repeat_schedule'?: RepeatSchedule | null;
   'status'?: TaskStatus | null;
   'survey_id'?: string;
+  'survey_response_id'?: string | null;
+}
+export interface TaskComment {
+  'created_at': Date;
+  'id': string;
+  'message'?: string | null;
+  'task_id': string;
+  'template_variables': TaskCommentTemplateVariables;
+  'type': TaskCommentType;
+  'user_id'?: string | null;
+  'user_name': string;
+}
+export interface TaskCommentCreate {
+  'created_at'?: Date;
+  'message'?: string | null;
+  'task_id': string;
+  'template_variables'?: TaskCommentTemplateVariables;
+  'type'?: TaskCommentType;
+  'user_id'?: string | null;
+  'user_name': string;
+}
+export interface TaskCommentUpdate {
+  'created_at'?: Date;
+  'id'?: string;
+  'message'?: string | null;
+  'task_id'?: string;
+  'template_variables'?: TaskCommentTemplateVariables;
+  'type'?: TaskCommentType;
+  'user_id'?: string | null;
+  'user_name'?: string;
 }
 export interface TupaiaWebSession {
   'access_policy': {};
@@ -1711,6 +1758,10 @@ export enum TaskStatus {
   'cancelled' = 'cancelled',
   'completed' = 'completed',
 }
+export enum TaskCommentType {
+  'user' = 'user',
+  'system' = 'system',
+}
 export enum SyncGroupSyncStatus {
   'IDLE' = 'IDLE',
   'SYNCING' = 'SYNCING',
@@ -1745,6 +1796,8 @@ export enum QuestionType {
   'Radio' = 'Radio',
   'SubmissionDate' = 'SubmissionDate',
   'File' = 'File',
+  'Task' = 'Task',
+  'User' = 'User',
 }
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
@@ -1758,7 +1811,7 @@ export enum PeriodGranularity {
   'weekly' = 'weekly',
   'daily' = 'daily',
 }
-export enum EntityType {
+export enum EntityTypeEnum {
   'world' = 'world',
   'project' = 'project',
   'country' = 'country',
@@ -1808,6 +1861,9 @@ export enum EntityType {
   'larval_sample' = 'larval_sample',
   'transfer' = 'transfer',
   'hospital_area' = 'hospital_area',
+  'pacmossi_district' = 'pacmossi_district',
+  'pacmossi_village' = 'pacmossi_village',
+  'pacmossi_spraying_site' = 'pacmossi_spraying_site',
 }
 export enum DataTableType {
   'analytics' = 'analytics',

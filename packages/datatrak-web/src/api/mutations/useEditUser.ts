@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserAccountDetails } from '../../types';
 import { put } from '../api';
 
@@ -41,10 +41,11 @@ export const useEditUser = (onSuccess?: () => void) => {
     },
     {
       onSuccess: (_, variables) => {
-        queryClient.invalidateQueries('getUser');
+        queryClient.invalidateQueries(['getUser']);
         // If the user changes their project, we need to invalidate the entity descendants query so that recent entities are updated if they change back to the previous project without refreshing the page
         if (variables.projectId) {
-          queryClient.invalidateQueries('entityDescendants');
+          queryClient.invalidateQueries(['entityDescendants']);
+          queryClient.invalidateQueries(['tasks']);
         }
         if (onSuccess) onSuccess();
       },

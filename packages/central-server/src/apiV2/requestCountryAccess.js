@@ -6,7 +6,6 @@
 import { requireEnv, respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
 import { sendEmail } from '@tupaia/server-utils';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
-import { getUserInfoInString } from './utilities';
 
 const checkUserPermission = (req, userId) => {
   const authHeader = req.headers.authorization;
@@ -17,26 +16,30 @@ const checkUserPermission = (req, userId) => {
   }
 };
 
-const sendRequest = (userInfo, countryNames, message, project) => {
+const sendRequest = async (userId, models, countries, message, project) => {
+  const user = await models.user.findById(userId);
+
   const TUPAIA_ADMIN_EMAIL_ADDRESS = requireEnv('TUPAIA_ADMIN_EMAIL_ADDRESS');
 
-  const emailText = `
-${userInfo} has requested access to countries:
-${countryNames.map(n => `  -  ${n}`).join('\n')}
-${
-  project
-    ? `
-For the project ${project.code} (linked to permission groups: ${project.permission_groups.join(
-        ', ',
-      )})
-    `
-    : ''
-}
-With the message: '${message}'
-`;
   return sendEmail(TUPAIA_ADMIN_EMAIL_ADDRESS, {
     subject: 'Tupaia Country Access Request',
-    text: emailText,
+    templateName: 'requestCountryAccess',
+    templateContext: {
+      title: 'You have a new country request!',
+      cta: {
+        url: `${process.env.ADMIN_PANEL_FRONT_END_URL}/users/access-requests/${userId}`,
+        text: 'Approve or deny request',
+      },
+      countries,
+      message,
+      project: project
+        ? {
+            code: project.code,
+            permissionGroups: project.permission_groups.join(', '),
+          }
+        : null,
+      user,
+    },
   });
 };
 
@@ -79,13 +82,12 @@ export const requestCountryAccess = async (req, res) => {
   } catch (error) {
     throw new UnauthenticatedError(error.message);
   }
-  const userInfo = await getUserInfoInString(userId, models);
 
   const project = projectCode && (await models.project.findOne({ code: projectCode }));
   await createAccessRequests(models, userId, entities, message, project);
 
   const countryNames = entities.map(e => e.name);
-  await sendRequest(userInfo, countryNames, message, project);
+  await sendRequest(userId, models, countryNames, message, project);
 
   respond(res, { message: 'Country access requested' }, 200);
 };
