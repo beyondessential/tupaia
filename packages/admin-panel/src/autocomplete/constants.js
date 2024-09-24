@@ -4,7 +4,7 @@
  */
 
 export const DEFAULT_AUTOCOMPLETE_STATE = {
-  selection: [],
+  selection: null,
   searchTerm: '',
   results: [],
   isLoading: false,

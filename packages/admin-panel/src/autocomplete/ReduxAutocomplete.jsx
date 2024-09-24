@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import { getAutocompleteState } from './selectors';
 import { changeSelection, changeSearchTerm, clearState } from './actions';
 import { Autocomplete } from './Autocomplete';
-import { EntityOptionLabel } from '../widgets';
 
 const getPlaceholder = (placeholder, selection) => {
   if (selection && selection.length) {
@@ -43,7 +42,6 @@ const ReduxAutocompleteComponent = ({
   tooltip,
   optionValueKey,
   renderOption,
-  optionFields,
 }) => {
   const [hasUpdated, setHasUpdated] = React.useState(false);
   React.useEffect(() => {
@@ -126,8 +124,8 @@ ReduxAutocompleteComponent.propTypes = {
 
 ReduxAutocompleteComponent.defaultProps = {
   allowMultipleValues: false,
-  selection: [],
-  initialValue: [],
+  selection: null,
+  initialValue: null,
   results: [],
   canCreateNewOptions: false,
   searchTerm: null,
