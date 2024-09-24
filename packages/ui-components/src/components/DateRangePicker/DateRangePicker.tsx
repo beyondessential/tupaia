@@ -67,7 +67,6 @@ const Label = styled(Typography)`
     border: 1px solid ${props => props.theme.palette.grey['400']};
     min-width: 8rem;
   }
-  &.MuiButtonGroup-groupedOutlinedHorizontal {
 `;
 
 const ButtonGroup = styled.div`
