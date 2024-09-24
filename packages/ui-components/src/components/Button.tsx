@@ -11,7 +11,7 @@ import { OverrideableComponentProps } from '../types';
 const StyledButton = styled(MuiButton)`
   line-height: 1.75;
   letter-spacing: 0;
-  padding: 0.5rem 1.75rem;
+  padding: 0.5rem 1.2rem;
   box-shadow: none;
   min-width: 3rem;
 
