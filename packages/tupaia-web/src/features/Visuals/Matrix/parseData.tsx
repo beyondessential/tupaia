@@ -33,11 +33,13 @@ export const parseRows = (
   rows: MatrixReportRow[],
   categoryId: MatrixReportRow['categoryId'] | undefined,
   searchFilters: SearchFilter[],
-  drillDown: MatrixConfig['drillDown'] | undefined,
-  valueType: MatrixConfig['valueType'] | undefined,
+  config: MatrixConfig,
   urlSearchParams: URLSearchParams,
   setUrlSearchParams: (searchParams: URLSearchParams) => void,
+  projectCode: string,
 ): MatrixRowType[] => {
+  const { drillDown, valueType, rowTitleEntityKey } = config;
+
   const onDrillDown = row => {
     if (!drillDown) return;
     const { itemCode, parameterLink } = drillDown;
@@ -69,10 +71,10 @@ export const parseRows = (
         rows,
         category,
         searchFilters,
-        drillDown,
-        valueTypeToUse,
+        { ...config, valueType: valueTypeToUse },
         urlSearchParams,
         setUrlSearchParams,
+        projectCode,
       );
 
       if (searchFilters.length > 0) {
@@ -125,9 +127,16 @@ export const parseRows = (
 
       if (!matchesSearchFilter) return result;
     }
+
+    let entityLink: string | undefined;
+    if (rowTitleEntityKey) {
+      entityLink = `/${projectCode}/${row[rowTitleEntityKey]}`;
+    }
+
     // otherwise, handle as a regular row
     result.push({
       title: dataElement,
+      entityLink,
       onClick: drillDown ? () => onDrillDown(row) : undefined,
       ...formattedRowValues,
     });

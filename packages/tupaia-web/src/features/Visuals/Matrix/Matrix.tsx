@@ -5,7 +5,7 @@
 
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Matrix as MatrixComponent, NoData, SearchFilter } from '@tupaia/ui-components';
 import { DashboardItemType, isMatrixReport } from '@tupaia/types';
@@ -39,6 +39,7 @@ const NoResultsMessage = styled(Typography)`
 
 const MatrixVisual = () => {
   const context = useContext(DashboardItemContext);
+  const { projectCode } = useParams();
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
   const reportPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_PERIOD);
@@ -59,10 +60,10 @@ const MatrixVisual = () => {
         rows,
         undefined,
         searchFilters,
-        drillDown,
-        valueType,
+        config,
         urlSearchParams,
         setUrlSearchParams,
+        projectCode!,
       ),
     [
       JSON.stringify(rows),
@@ -71,6 +72,7 @@ const MatrixVisual = () => {
       valueType,
       JSON.stringify(urlSearchParams),
       setUrlSearchParams,
+      projectCode,
     ],
   );
   const parsedColumns = useMemo(() => parseColumns(columns), [JSON.stringify(columns)]);

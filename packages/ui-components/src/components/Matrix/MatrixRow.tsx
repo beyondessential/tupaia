@@ -171,7 +171,7 @@ interface MatrixRowProps {
 
 type MatrixRowHeaderProps = {
   depth: number;
-  rowLink?: string;
+  entityLink?: string;
   isExpanded: boolean;
   rowTitle: string;
   hasChildren: boolean;
@@ -231,7 +231,7 @@ const RowLink = styled(RouterLink)`
  */
 const RowHeaderCell = ({
   rowTitle,
-  rowLink,
+  entityLink,
   depth,
   isExpanded,
   hasChildren,
@@ -248,13 +248,13 @@ const RowHeaderCell = ({
     }
   };
 
-  if (rowLink) {
+  if (entityLink) {
     return (
       <HeaderCell
         $characterLength={typeof children === 'string' ? rowTitle?.length : 0}
         $depth={depth}
       >
-        <RowLink to={rowLink}>{rowTitle}</RowLink>
+        <RowLink to={entityLink}>{rowTitle}</RowLink>
       </HeaderCell>
     );
   }
@@ -292,8 +292,7 @@ const RowHeaderCell = ({
  * This is a recursive component that renders a row in the matrix. It renders a MatrixRowGroup component if the row has children, otherwise it renders a regular row.
  */
 export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
-  console.log('MATRIX ROW', row);
-  const { children, title, dataElement_link, onClick } = row;
+  const { children, title, entityLink, onClick } = row;
   const { columns, expandedRows, disableExpand = false, searchFilters } = useContext(MatrixContext);
   const flattenedColumns = getFlattenedColumns(columns);
 
@@ -330,7 +329,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
           isExpanded={isExpanded}
           depth={depth}
           rowTitle={title}
-          rowLink={dataElement_link}
+          entityLink={entityLink}
           hasChildren={isCategory}
           disableExpandButton={disableExpand}
           onClick={onClick}
