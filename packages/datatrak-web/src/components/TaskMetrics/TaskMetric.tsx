@@ -19,11 +19,6 @@ const MetricWrapper = styled.div`
 const MetricNumber = styled.p`
   font-size: 0.875rem;
   line-height: 1.75;
-  padding: 0.5rem 1.75rem;
-  border-right: 1px solid ${({ theme }) => theme.palette.divider};
-  min-width: 3rem;
-  padding-inline: 0.9rem;
-  align-content: center;
   text-align: center;
   font-weight: 500;
   margin: 0;
@@ -42,10 +37,23 @@ const MetricText = styled.p`
   }
 `;
 
+const NumberWrapper = styled.div`
+  padding-block: 0.5rem;
+  padding-inline: 0.9rem;
+  border-right: 1px solid ${({ theme }) => theme.palette.divider};
+  min-width: 3rem;
+  align-content: center;
+  .MuiCircularProgress-root {
+    color: ${({ theme }) => theme.palette.text.primary};
+  }
+`;
+
 export const TaskMetric = ({ number, text, isLoading }) => {
   return (
     <MetricWrapper>
-      <MetricNumber>{isLoading ? <SpinningLoader spinnerSize={14} /> : number}</MetricNumber>
+      <NumberWrapper>
+        {isLoading ? <SpinningLoader spinnerSize={14} /> : <MetricNumber>{number}</MetricNumber>}
+      </NumberWrapper>
       <MetricText>{text}</MetricText>
     </MetricWrapper>
   );
