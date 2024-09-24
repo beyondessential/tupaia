@@ -6,13 +6,14 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import { FlexEnd, FlexSpaceBetween, FlexStart, ImportModal } from '@tupaia/ui-components';
+import { FlexEnd, FlexSpaceBetween, FlexStart } from '@tupaia/ui-components';
 import { usePreviewDataContext, useVizConfigContext } from '../../context';
 import { LinkButton } from '../LinkButton';
 import { useUploadTestData } from '../../api';
 import { ProjectField } from './ProjectField';
 import { LocationField } from './LocationField';
 import { DateRangeField } from './DateRangeField';
+import { ImportModal } from './ImportModal';
 
 const Container = styled(FlexSpaceBetween)`
   padding: 24px 0;
@@ -57,6 +58,7 @@ const UploadDataModal = ({ isOpen, onSubmit, onClose }) => (
     actionText="Upload"
     loadingText="Uploading"
     showLoadingContainer={false}
+    hasCustomButton={true}
   />
 );
 

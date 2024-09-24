@@ -95,6 +95,11 @@ export const FACILITY_FUNDAMENTALS_SURVEY = {
       code: 'TFF_Catchment_pop',
       type: 'Number',
     },
+    {
+      id: 'tff_assigned_user___test',
+      code: 'TFF_Assigned_user',
+      type: 'User',
+    },
   ],
 };
 
@@ -112,6 +117,12 @@ export const BASIC_SURVEY_A = {
       id: 'basic_survey_a_q2___test',
       code: 'basic_survey_a_q2',
       type: 'FreeText',
+    },
+    {
+      id: 'basic_survey_a_q3___test',
+      code: 'basic_survey_a_q3',
+      type: 'User',
+      text: 'User assigned',
     },
   ],
 };
@@ -259,6 +270,7 @@ export const NON_PERIODIC_RESPONSES_AFTER_UPDATES = {
       answers: {
         tff_other_names_____test: 'FNQ',
         tff_catchment_pop___test: '7500',
+        tff_assigned_user___test: 'test_user_id_1',
       },
     },
   ],
@@ -339,6 +351,7 @@ export const NON_PERIODIC_RESPONSES_AFTER_UPDATES = {
       answers: {
         tff_other_names_____test: 'Thorno',
         tff_catchment_pop___test: '8000',
+        tff_assigned_user___test: 'test_user_id_2',
       },
     },
   ],

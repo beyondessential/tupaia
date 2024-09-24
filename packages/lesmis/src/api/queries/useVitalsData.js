@@ -84,7 +84,7 @@ const useEntityReport = entity =>
   );
 
 const useEntityVitals = entity => {
-  const { data: results, isLoading } = useEntityReport(entity);
+  const { data: results, isInitialLoading: isLoading } = useEntityReport(entity);
 
   return {
     data: results?.data?.[0],

@@ -6,7 +6,7 @@
 export { PageContainer } from './PageContainer';
 export * from './Icons';
 export * from './SelectList';
-export { Autocomplete } from './Autocomplete';
+export { Autocomplete, QuestionAutocomplete } from './Autocomplete';
 export { Button } from './Button';
 export { ButtonLink } from './ButtonLink';
 export { CancelConfirmModal } from './CancelConfirmModal';
@@ -20,3 +20,4 @@ export { TextInput } from './TextInput';
 export { Tile, LoadingTile } from './Tile';
 export { Toast } from './Toast';
 export { TopProgressBar } from './TopProgressBar';
+export { TaskMetrics } from './TaskMetrics';
