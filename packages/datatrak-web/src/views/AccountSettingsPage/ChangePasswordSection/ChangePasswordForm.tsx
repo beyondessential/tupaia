@@ -95,7 +95,7 @@ export const ChangePasswordForm = () => {
         <FormInput
           autoComplete="password"
           Input={StyledTextField}
-          inputProps={{ enterKeyHint: 'next' }}
+          inputProps={{ enterkeyhint: 'next' }}
           label="Current password"
           name="oldPassword"
           placeholder="Current password"
@@ -105,7 +105,7 @@ export const ChangePasswordForm = () => {
         <FormInput
           autoComplete="new-password"
           Input={StyledTextField}
-          inputProps={{ enterKeyHint: 'next' }}
+          inputProps={{ enterkeyhint: 'next' }}
           label="New password"
           name="newPassword"
           options={FORM_FIELD_VALIDATION.PASSWORD}
@@ -116,7 +116,7 @@ export const ChangePasswordForm = () => {
         <FormInput
           autoComplete="new-password"
           Input={StyledTextField}
-          inputProps={{ enterKeyHint: 'done' }}
+          inputProps={{ enterkeyhint: 'done' }}
           label="Confirm new password"
           name="newPasswordConfirm"
           options={{

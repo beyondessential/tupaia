@@ -110,7 +110,7 @@ export const PersonalDetailsForm = () => {
           autoFocus
           id="firstName"
           Input={StyledTextField}
-          inputProps={{ enterKeyHint: 'next' }}
+          inputProps={{ enterkeyhint: 'next' }}
           label="First name"
           name="firstName"
           placeholder="First name"
@@ -120,7 +120,7 @@ export const PersonalDetailsForm = () => {
           autoComplete="family-name"
           id="lastName"
           Input={StyledTextField}
-          inputProps={{ enterKeyHint: 'next' }}
+          inputProps={{ enterkeyhint: 'next' }}
           label="Last name"
           name="lastName"
           placeholder="Last name"
@@ -130,7 +130,7 @@ export const PersonalDetailsForm = () => {
           autoComplete="email"
           disabled
           id="email"
-          inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
+          inputProps={{ enterkeyhint: 'next', inputMode: 'email' }}
           label="Email"
           name="email"
           placeholder="Email"
@@ -143,7 +143,7 @@ export const PersonalDetailsForm = () => {
           autoComplete="tel"
           id="mobileNumber"
           Input={StyledTextField}
-          inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
+          inputProps={{ enterkeyhint: 'next', inputMode: 'tel' }}
           label="Contact number (optional)"
           name="mobileNumber"
           placeholder="Contact number"
@@ -153,7 +153,7 @@ export const PersonalDetailsForm = () => {
           autoComplete="organization"
           id="employer"
           Input={StyledTextField}
-          inputProps={{ enterKeyHint: 'next' }}
+          inputProps={{ enterkeyhint: 'next' }}
           label="Employer"
           name="employer"
           placeholder="Employer"
@@ -163,7 +163,7 @@ export const PersonalDetailsForm = () => {
           autoComplete="organization-title"
           id="position"
           Input={StyledTextField}
-          inputProps={{ enterKeyHint: 'done' }}
+          inputProps={{ enterkeyhint: 'done' }}
           label="Position"
           name="position"
           placeholder="Position"

@@ -175,7 +175,7 @@ export const RequestCountryAccessForm = ({
             id="message"
             Input={TextField}
             inputProps={{
-              enterKeyHint: 'done',
+              enterkeyhint: 'done',
               /*
                * Make `<textarea>` scroll upon overflow.
                *
