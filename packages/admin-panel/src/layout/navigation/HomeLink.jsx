@@ -28,7 +28,7 @@ const Link = styled(BaseLink)`
 
 export const HomeLink = ({ logo, homeLink, disableHomeLink }) => {
   return (
-    <Link to={homeLink} component={disableHomeLink ? 'div' : undefined}>
+    <Link to={homeLink} component={disableHomeLink ? 'div' : undefined} className="home-link">
       <img src={logo?.url} alt={logo?.alt || 'Logo'} />
     </Link>
   );
