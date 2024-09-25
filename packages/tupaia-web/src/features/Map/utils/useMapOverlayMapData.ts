@@ -5,7 +5,7 @@
 
 import { useParams } from 'react-router';
 import {
-  useEntitiesWithLocation,
+  useEntityDescendantsWithLocation,
   useEntity,
   useEntityAncestors,
   useMapOverlays,
@@ -25,7 +25,7 @@ const filterOutPointEntities = (entities: Entity[]) => {
 };
 
 const useEntityRelativesWithLocation = (projectCode, entityCode, enabled) => {
-  return useEntitiesWithLocation(
+  return useEntityDescendantsWithLocation(
     projectCode,
     entityCode,
     {

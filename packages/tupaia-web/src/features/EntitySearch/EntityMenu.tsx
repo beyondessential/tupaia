@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Entity, ProjectCode } from '../../types';
 import { LocalHospital as HospitalIcon, ExpandMore as ExpandIcon } from '@material-ui/icons';
 import { Button, IconButton, List as MuiList, ListItemProps } from '@material-ui/core';
-import { useEntities } from '../../api/queries';
+import { useEntityDescendants } from '../../api/queries';
 
 const FlexRow = styled.div`
   display: flex;
@@ -82,7 +82,12 @@ interface EntityMenuItemProps {
 const EntityMenuItem = ({ projectCode, entity, children, onClose }: EntityMenuItemProps) => {
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data = [] } = useEntities(projectCode!, entity.code!, {}, { enabled: isExpanded });
+  const { data = [] } = useEntityDescendants(
+    projectCode!,
+    entity.code!,
+    {},
+    { enabled: isExpanded },
+  );
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);

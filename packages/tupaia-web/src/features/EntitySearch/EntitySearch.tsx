@@ -9,7 +9,7 @@ import { ClickAwayListener } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import { SearchBar } from './SearchBar';
 import { EntityMenu } from './EntityMenu';
-import { useEntities, useProject } from '../../api/queries';
+import { useEntityDescendants, useProject } from '../../api/queries';
 import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../constants';
 import { SearchResults } from './SearchResults';
 import { gaEvent } from '../../utils';
@@ -54,7 +54,7 @@ const ResultsWrapper = styled.div`
 export const EntitySearch = () => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode!);
-  const { data: entities = [] } = useEntities(projectCode!, project?.entityCode);
+  const { data: entities = [] } = useEntityDescendants(projectCode!, project?.entityCode);
   const [searchValue, setSearchValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => {

@@ -9,7 +9,7 @@ import { Entity } from '../../types';
 
 type QueryOptions = QueryObserverOptions<Entity[], Error, Entity[]>;
 
-export const useEntities = (
+export const useEntityDescendants = (
   projectCode?: string,
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
@@ -49,13 +49,13 @@ export const useEntities = (
   );
 };
 
-export const useEntitiesWithLocation = (
+export const useEntityDescendantsWithLocation = (
   projectCode?: string,
   entityCode?: string,
   axiosConfig?: AxiosRequestConfig,
   queryOptions: QueryOptions = {},
 ) => {
-  return useEntities(
+  return useEntityDescendants(
     projectCode,
     entityCode,
     {

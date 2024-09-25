@@ -7,7 +7,7 @@ import { LegendProps, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {
-  useEntitiesWithLocation,
+  useEntityDescendantsWithLocation,
   useEntity,
   useMapOverlayReport,
   useMapOverlays,
@@ -43,7 +43,7 @@ const useMapOverlayEntities = (
   keepPreviousEntitiesData?: boolean,
   entityAttributesFilter: TupaiaWebMapOverlaysRequest.TranslatedMapOverlay['entityAttributesFilter'] = {},
 ) => {
-  return useEntitiesWithLocation(
+  return useEntityDescendantsWithLocation(
     projectCode,
     rootEntityCode,
     {
