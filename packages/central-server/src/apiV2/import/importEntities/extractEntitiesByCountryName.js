@@ -50,12 +50,12 @@ const processXlsxRow = (row, { countryName }) => {
 };
 
 const xlsxParser = filePath => {
-  const workbook = xlsx.readFile(filePath);
+  const workbook = xlsx.readFile(filePath, { raw: false });
   return Object.entries(workbook.Sheets).reduce(
     (entitiesByCountry, [countryName, sheet]) => ({
       ...entitiesByCountry,
       [countryName]: xlsx.utils
-        .sheet_to_json(sheet)
+        .sheet_to_json(sheet, { raw: false })
         .map(row => processXlsxRow(row, { countryName })),
     }),
     {},

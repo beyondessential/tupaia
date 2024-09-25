@@ -38,3 +38,5 @@ export {
 } from './UnsubscribeDashboardMailingListRoute';
 
 export { ExportMapOverlayRequest, ExportMapOverlayRoute } from './ExportMapOverlayRoute';
+
+export { CountriesRequest, CountriesRoute } from './CountriesRoute';
