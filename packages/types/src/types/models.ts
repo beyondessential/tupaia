@@ -1846,6 +1846,9 @@ export enum EntityTypeEnum {
   'larval_sample' = 'larval_sample',
   'transfer' = 'transfer',
   'hospital_area' = 'hospital_area',
+  'pacmossi_district' = 'pacmossi_district',
+  'pacmossi_village' = 'pacmossi_village',
+  'pacmossi_spraying_site' = 'pacmossi_spraying_site',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
