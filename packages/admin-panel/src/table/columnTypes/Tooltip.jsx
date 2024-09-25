@@ -32,6 +32,9 @@ const useTooltip = column => {
 
 export const Tooltip = ({ value, column }) => {
   const { displayTooltip, contentRef } = useTooltip(column);
+  if (value === undefined || value === null) {
+    return null;
+  }
 
   if (!displayTooltip) {
     return <Content ref={contentRef}>{value}</Content>;
@@ -45,7 +48,12 @@ export const Tooltip = ({ value, column }) => {
 };
 
 Tooltip.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
+  value: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   column: PropTypes.object.isRequired,
 };
 
@@ -55,6 +63,9 @@ Tooltip.defaultProps = {
 
 export const JSONTooltip = ({ value, column }) => {
   const { displayTooltip, contentRef } = useTooltip(column);
+  if (value === undefined || value === null) {
+    return null;
+  }
 
   if (!displayTooltip) {
     return <Content ref={contentRef}>{JSON.stringify(value)}</Content>;

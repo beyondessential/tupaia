@@ -140,8 +140,8 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
 };
 
 DashboardItemMetadataForm.propTypes = {
-  Header: PropTypes.node.isRequired,
-  Body: PropTypes.node.isRequired,
-  Footer: PropTypes.node.isRequired,
+  Header: PropTypes.oneOfType([PropTypes.func, PropTypes.node]).isRequired,
+  Body: PropTypes.oneOfType([PropTypes.func, PropTypes.node, PropTypes.elementType]).isRequired,
+  Footer: PropTypes.oneOfType([PropTypes.func, PropTypes.node]).isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

@@ -61,7 +61,7 @@ PageHeader.propTypes = {
   exportConfig: PropTypes.object,
   ExportModalComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
-  resourceName: PropTypes.string.isRequired,
+  resourceName: PropTypes.string,
 };
 
 PageHeader.defaultProps = {
@@ -70,4 +70,5 @@ PageHeader.defaultProps = {
   exportConfig: {},
   ExportModalComponent: null,
   LinksComponent: null,
+  resourceName: null,
 };

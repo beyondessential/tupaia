@@ -115,7 +115,7 @@ ReduxAutocompleteComponent.propTypes = {
   label: PropTypes.string,
   helperText: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object, PropTypes.string]),
   required: PropTypes.bool,
   error: PropTypes.bool,
   optionValueKey: PropTypes.string.isRequired,

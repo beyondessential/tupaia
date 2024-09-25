@@ -85,7 +85,7 @@ const SearchField = styled(TextField).attrs({
   fullWidth: true,
   placeholder: 'Search',
   color: 'primary',
-  ariaLabel: 'Search',
+  'aria-label': 'Search',
   InputProps: {
     startAdornment: <Search />,
   },
@@ -221,7 +221,7 @@ CheckboxListField.propTypes = {
   distinct: PropTypes.bool,
   label: PropTypes.string.isRequired,
   required: PropTypes.bool,
-  pageSize: PropTypes.number,
+  pageSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   value: PropTypes.array,
   onChange: PropTypes.func.isRequired,
   tooltip: PropTypes.string,

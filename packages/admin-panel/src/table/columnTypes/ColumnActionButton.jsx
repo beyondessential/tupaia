@@ -18,7 +18,10 @@ export const ColumnActionButton = ({ title, children, ...props }) => {
   if (!title) return <Button {...props}>{children}</Button>;
   return (
     <Tooltip title={title}>
-      <Button {...props}>{children}</Button>
+      {/** Need a span here because if the button is disabled MUI complains that the tooltip needs a non-disabled child element */}
+      <span>
+        <Button {...props}>{children}</Button>
+      </span>
     </Tooltip>
   );
 };

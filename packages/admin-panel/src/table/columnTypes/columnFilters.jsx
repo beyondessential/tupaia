@@ -69,7 +69,7 @@ BooleanSelectFilter.propTypes = {
 BooleanSelectFilter.defaultProps = {
   onChange: null,
   column: {},
-  filter: {},
+  filter: null,
 };
 
 /*
@@ -104,7 +104,7 @@ OutdatedFilter.propTypes = {
 OutdatedFilter.defaultProps = {
   onChange: null,
   column: {},
-  filter: {},
+  filter: null,
 };
 
 export const VerifiedFilter = ({ filter, onChange, column }) => {

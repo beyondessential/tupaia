@@ -95,7 +95,7 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
     if (type === SECTION_FIELD_TYPE) {
       return (
         <InputGroup
-          key={Header}
+          key={source}
           title={Header}
           fields={field.fields.map(subfield => getFieldInput(subfield))}
           WrapperComponent={WrapperComponent}

@@ -77,7 +77,7 @@ export const TestDatabaseConnectionButton = ({ row }) => {
     return (
       <ButtonContainer>
         <TestConnectionButton />
-        <Tooltip title={toolTip}>
+        <Tooltip title={toolTip || ''}>
           <SuccessIcon />
         </Tooltip>
       </ButtonContainer>
@@ -88,7 +88,7 @@ export const TestDatabaseConnectionButton = ({ row }) => {
     return (
       <ButtonContainer>
         <TestConnectionButton />
-        <Tooltip title={toolTip}>
+        <Tooltip title={toolTip || ''}>
           <FailedIcon />
         </Tooltip>
       </ButtonContainer>

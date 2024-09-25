@@ -212,8 +212,8 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
 };
 
 MapOverlayMetadataForm.propTypes = {
-  Header: PropTypes.node.isRequired,
-  Body: PropTypes.node.isRequired,
-  Footer: PropTypes.node.isRequired,
+  Header: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+  Body: PropTypes.oneOfType([PropTypes.func, PropTypes.node, PropTypes.elementType]).isRequired,
+  Footer: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

@@ -20,7 +20,8 @@ export const HierarchyField = ({ name, value, onChange, config }) => {
       id="hierarchy-field"
       name={name}
       label={name}
-      defaultValue={value}
+      defaultValue={config?.defaultValue}
+      value={value || null}
       placeholder={config?.defaultValue}
       options={hierarchies.map(p => p['project.code'])}
       disabled={isLoading}
@@ -36,5 +37,5 @@ HierarchyField.propTypes = {
 };
 
 HierarchyField.defaultProps = {
-  value: '',
+  value: null,
 };
