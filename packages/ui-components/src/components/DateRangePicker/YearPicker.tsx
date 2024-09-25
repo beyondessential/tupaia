@@ -134,6 +134,10 @@ export const YearPicker = ({
     const endDate = getOffsetEndDateForYear(y, startDate, granularity, dateOffset);
     // use the correct year based on the valueKey
     const yearToUse = valueKey === 'startDate' ? startDate : endDate;
+
+    if (startDate.isAfter(maxMomentDate)) {
+      continue;
+    }
     yearOptions.push({
       value: yearToUse.year(),
       displayLabel,
