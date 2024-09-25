@@ -22,9 +22,9 @@ export const useEntityDescendants = (
   }
 
   return useQuery(
-    ['entities', projectCode, entityCode, axiosConfig, queryOptions],
+    ['entityDescendants', projectCode, entityCode, axiosConfig, queryOptions],
     (): Promise<Entity[]> =>
-      get(`entities/${projectCode}/${entityCode}`, {
+      get(`entityDescendants/${projectCode}/${entityCode}`, {
         params: {
           includeRootEntity: true,
           fields: [

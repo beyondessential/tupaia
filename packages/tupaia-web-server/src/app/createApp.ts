@@ -64,9 +64,9 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.RequestCountryAccessRoute),
     )
     .get<routes.EntityRequest>('entity/:projectCode/:entityCode', handleWith(routes.EntityRoute))
-    .get<routes.EntitiesRequest>(
-      'entities/:projectCode/:rootEntityCode',
-      handleWith(routes.EntitiesRoute),
+    .get<routes.EntityDescendantsRequest>(
+      'entityDescendants/:projectCode/:rootEntityCode',
+      handleWith(routes.EntityDescendantsRoute),
     )
     .get<routes.EntitySearchRequest>(
       'entitySearch/:projectCode',

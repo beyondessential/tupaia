@@ -9,7 +9,7 @@ import { TupaiaWebEntitiesRequest, Entity } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
 import { generateFrontendExcludedFilter } from '../utils';
 
-export type EntitiesRequest = Request<
+export type EntityDescendantsRequest = Request<
   TupaiaWebEntitiesRequest.Params,
   TupaiaWebEntitiesRequest.ResBody,
   TupaiaWebEntitiesRequest.ReqBody,
@@ -47,7 +47,7 @@ const parseFilter = (filter: Record<string, any>): Record<string, any> =>
     return { ...newFilter, [key]: parser ? parser(value) : value };
   }, {});
 
-export class EntitiesRoute extends Route<EntitiesRequest> {
+export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
   public async buildResponse() {
     const { params, query, ctx, models, accessPolicy } = this.req;
     const { rootEntityCode, projectCode } = params;
