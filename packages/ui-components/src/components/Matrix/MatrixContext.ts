@@ -23,6 +23,8 @@ export type MatrixProps = Omit<MatrixConfig, 'type' | 'name'> & {
   searchFilters?: SearchFilter[];
   updateSearchFilter?: (searchFilter: SearchFilter) => void;
   clearSearchFilter?: (key: SearchFilter['key']) => void;
+  pageSize?: number;
+  onPageChange?: (pageIndex: number) => void;
 };
 
 export type MatrixContextT = MatrixProps & {

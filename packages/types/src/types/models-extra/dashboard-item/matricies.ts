@@ -47,7 +47,7 @@ export type MatrixConfig = BaseConfig & {
   /**
    * @description Makes the first cell of each row a link to the entity page. Requires that the rowField is an entity code
    */
-  rowTitleEntityKey?: string;
+  rowTitleEntityLink?: string;
 
   /**
    * @description Makes the column headers a link to the entity page. Requires that the column headers are entity codes

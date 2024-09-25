@@ -29,19 +29,29 @@ const ScrollContainer = styled(TableContainer)`
 
 const DEFAULT_PAGE_SIZE = 50;
 
-export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
+export const Matrix = ({
+  columns = [],
+  rows = [],
+  disableExpand,
+  onPageChange,
+  pageSize = DEFAULT_PAGE_SIZE,
+  ...config
+}: MatrixProps) => {
   const [pageIndex, setPageIndex] = useState(0);
   const [{ expandedRows }, dispatch] = useReducer(matrixReducer, {
     expandedRows: [],
   });
   const tableEl = useRef<HTMLTableElement | null>(null);
 
-  const pageStart = pageIndex * DEFAULT_PAGE_SIZE;
-  const pageEnd = pageStart + DEFAULT_PAGE_SIZE;
+  const pageStart = pageIndex * pageSize;
+  const pageEnd = pageStart + pageSize;
   const visibleRows = rows.slice(pageStart, pageEnd);
 
-  const onPageChange = (newPageIndex: number) => {
+  const handleChangePage = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
+    if (onPageChange) {
+      onPageChange(newPageIndex);
+    }
     if (tableEl.current) {
       // scroll to the top of the table when changing pages
       tableEl.current.scrollIntoView({ behavior: 'auto' });
@@ -62,7 +72,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
         <MatrixLegend />
         <ScrollContainer>
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
-            <MatrixHeader onPageChange={onPageChange} />
+            <MatrixHeader onPageChange={handleChangePage} />
             <TableBody>
               {visibleRows.map((row, i) => (
                 <MatrixRow row={row} key={`${row.title}-${i}`} parents={[]} index={i + 1} />
@@ -72,9 +82,9 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
         </ScrollContainer>
         <MatrixPagination
           totalRows={rows.length}
-          pageSize={DEFAULT_PAGE_SIZE}
+          pageSize={pageSize}
           pageIndex={pageIndex}
-          handleChangePage={onPageChange}
+          handleChangePage={handleChangePage}
           columnsCount={columns.length}
         />
       </MatrixDispatchContext.Provider>

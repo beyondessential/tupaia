@@ -7,17 +7,26 @@ import { useQuery } from '@tanstack/react-query';
 import { Entity } from '../../types';
 import { get } from '../api';
 
+const getEntityNamesByCode = (entities: Entity[]) =>
+  entities.reduce((acc, entity) => {
+    acc[entity.code] = entity.name;
+    return acc;
+  }, {});
+
 export const useEntities = (codes?: string[]) => {
-  return useQuery(
+  const query = useQuery(
     ['entities', codes],
     (): Promise<Entity> =>
       get(`entities`, {
         params: {
-          codes,
+          filter: JSON.stringify({ code: codes }),
         },
       }),
     {
       enabled: !!codes,
     },
   );
+
+  const entityNamesByCode = query.data ? getEntityNamesByCode(query.data) : {};
+  return { ...query, entityNamesByCode };
 };

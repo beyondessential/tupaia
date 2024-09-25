@@ -98,6 +98,7 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'dashboardMailingList/:mailingListId/unsubscribe',
       handleWith(routes.UnsubscribeDashboardMailingListRoute),
     )
+    .use('entities', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .use('me/countries', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
