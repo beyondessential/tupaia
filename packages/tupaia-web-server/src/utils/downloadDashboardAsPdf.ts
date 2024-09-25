@@ -10,7 +10,7 @@ import { stringifyQuery } from '@tupaia/utils';
 export const downloadDashboardAsPdf = (
   projectCode: string,
   entityCode: string,
-  dashboardName: string,
+  dashboardCode: string,
   baseUrl: TupaiaWebExportDashboardRequest.ReqBody['baseUrl'],
   cookie: string,
   cookieDomain: TupaiaWebExportDashboardRequest.ReqBody['cookieDomain'],
@@ -20,7 +20,7 @@ export const downloadDashboardAsPdf = (
     exportWithTable: false,
   },
 ) => {
-  const endpoint = `${projectCode}/${entityCode}/${dashboardName}/dashboard-pdf-export`;
+  const endpoint = `${projectCode}/${entityCode}/${dashboardCode}/dashboard-pdf-export`;
   const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
     selectedDashboardItems: selectedDashboardItems?.join(','),
     settings: JSON.stringify(settings),

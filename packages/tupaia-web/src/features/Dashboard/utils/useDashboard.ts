@@ -8,7 +8,7 @@ import { DashboardContext } from './DashboardContext';
 
 // Contains the dashboards, active dashboard, and export and subscribe state
 export const useDashboard = () => {
-  const { dashboardName, entityCode, projectCode } = useParams();
+  const { dashboardCode, entityCode, projectCode } = useParams();
   const { data: dashboards = [] } = useDashboards(projectCode, entityCode);
   const { exportModalOpen, subscribeModalOpen, setExportModalOpen, setSubscribeModalOpen } =
     useContext(DashboardContext);
@@ -22,7 +22,7 @@ export const useDashboard = () => {
   };
   // trim dashboard name to avoid issues with trailing or leading spaces
   const activeDashboard =
-    dashboards?.find(dashboard => dashboard.name.trim() === dashboardName?.trim()) ?? undefined;
+    dashboards?.find(dashboard => dashboard.code.trim() === dashboardCode?.trim()) ?? undefined;
 
   useGAEffect('Dashboard', 'Change Tab', activeDashboard?.name);
 
