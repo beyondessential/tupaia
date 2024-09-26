@@ -5,6 +5,7 @@
 import React, { useContext } from 'react';
 import { darken, TableHead, TableRow } from '@material-ui/core';
 import styled from 'styled-components';
+import { Link as RouterLink } from 'react-router-dom-v6';
 import { MatrixColumnType } from '../../types';
 import { MatrixContext } from './MatrixContext';
 import { HeaderCell } from './Cell';
@@ -23,6 +24,18 @@ const THead = styled(TableHead)`
   top: 0;
   z-index: 3;
 `;
+
+const CellLink = styled(RouterLink)`
+  color: white;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const TitleCell = ({ title, entityLink }: { title: string; entityLink?: string }) => {
+  return entityLink ? <CellLink to={entityLink}>{title}</CellLink> : <>{title}</>;
+};
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
@@ -76,17 +89,16 @@ export const MatrixHeader = ({
         <TableRow>
           {/** If hasParents is true, then this row header column cell will have already been rendered. */}
           {!hasParents && RowHeaderColumn}
-          {flattenedColumns.map(({ title, key }) => (
+          {flattenedColumns.map(({ title, key, entityLink }) => (
             <HeaderCell
               key={key}
               aria-label={hideColumnTitles ? title : ''}
               $characterLength={title?.length}
             >
-              {!hideColumnTitles && title}
+              {!hideColumnTitles && <TitleCell title={title} entityLink={entityLink} />}
             </HeaderCell>
           ))}
         </TableRow>
-
         <MatrixSearchRow onPageChange={onPageChange} />
       </THead>
     </>

@@ -151,18 +151,30 @@ export const parseRows = (
 };
 
 // This is a recursive function that parses the columns of the matrix into a format that the Matrix component can use.
-export const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
+export const parseColumns = (
+  columns: MatrixReportColumn[],
+  projectCode: string,
+): MatrixColumnType[] => {
   return columns
     .filter(column => column.key !== 'dataElement_link')
     .map(column => {
-      const { category, key, title, columns: children } = column;
+      const { category, key, title, columns: children, entityCode } = column;
       // if a column has a category, then it has children, so we need to parse them using this same function
-      if (category)
+      if (category) {
         return {
           title: category,
           key: category,
-          children: parseColumns(children!),
+          children: parseColumns(children!, projectCode),
         };
+      }
+
+      if (entityCode) {
+        return {
+          title,
+          key,
+          entityLink: `/${projectCode}/${entityCode}`,
+        };
+      }
       // otherwise, handle as a regular column
       return {
         title,

@@ -231,7 +231,6 @@ export const PreviewSection = () => {
                 onInvalidChange={handleInvalidPresentationChange}
                 mode="code"
                 mainMenuBar={false}
-                schema={presentationSchema}
               />
             )}
           </EditorContainer>

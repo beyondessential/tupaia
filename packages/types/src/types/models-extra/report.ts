@@ -34,6 +34,7 @@ export type MatrixReportRow = Record<string, unknown> & {
 export type MatrixReportColumn = {
   title: string;
   key: string;
+  entityCode: string;
   category?: string; // this means the column is a grouped column
   columns?: MatrixReportColumn[]; // these are the child columns of a grouped column
 };

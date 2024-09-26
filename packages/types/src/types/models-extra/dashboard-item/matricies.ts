@@ -67,7 +67,7 @@ export type MatrixVizBuilderConfig = MatrixConfig & {
      * The columns of the data-table that should be included as columns in the matrix.
      * Can be either a list of column names, or '*' to indicate all columns
      */
-    columns?: string | string[];
+    columns?: string | (string | { entityCode: string; entityLabel: string })[];
   };
 };
 

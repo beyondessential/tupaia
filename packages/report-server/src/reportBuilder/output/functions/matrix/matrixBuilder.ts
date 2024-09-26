@@ -37,7 +37,14 @@ export class MatrixBuilder {
      *                  '[ ${columnName} ]'
      */
     const assignColumnSetToMatrixData = (columns: string[]) => {
-      this.matrixData.columns = columns.map(c => ({ key: c, title: c }));
+      this.matrixData.columns = columns.map(c => {
+        // @ts-ignore
+        if (typeof c === 'object' && c.entityLabel && c.entityCode) {
+          // @ts-ignore
+          return { key: c.entityLabel, title: c.entityLabel, entityCode: c.entityCode };
+        }
+        return { key: c, title: c };
+      });
     };
 
     const getRemainingFieldsFromRows = (includeFields: string[], excludeFields: string[]) => {
@@ -74,18 +81,24 @@ export class MatrixBuilder {
       }
       rows.push(newRows);
     });
-
     this.matrixData.rows = rows;
   }
 
   private adjustRowsToUseIncludedColumns() {
-    const { includeFields } = this.params.columns;
+    const includeFields = this.params.columns.includeFields.map(f => {
+      if (typeof f === 'object') {
+        // @ts-ignore
+        return f.entityLabel;
+      }
+      return f;
+    });
     const newRows: Row[] = [];
 
     if (includeFields.includes('*')) {
       // All fields are in the matrix, so no need to filter down rows
       return;
     }
+    console.log('includeFields', includeFields);
 
     this.matrixData.rows.forEach(row => {
       const columnsDataFields = pick(row, includeFields);

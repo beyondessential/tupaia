@@ -69,9 +69,13 @@ const MatrixVisual = () => {
       JSON.stringify(config),
       JSON.stringify(urlSearchParams),
       setUrlSearchParams,
+      projectCode,
     ],
   );
-  const parsedColumns = useMemo(() => parseColumns(columns), [JSON.stringify(columns)]);
+  const parsedColumns = useMemo(
+    () => parseColumns(columns, projectCode!),
+    [JSON.stringify(columns), projectCode],
+  );
 
   const updateSearchFilter = ({ key, value }: SearchFilter) => {
     const filtersWithoutKey = searchFilters.filter(filter => filter.key !== key);
