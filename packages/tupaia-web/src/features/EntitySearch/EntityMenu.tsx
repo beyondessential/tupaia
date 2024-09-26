@@ -8,41 +8,41 @@ import styled from 'styled-components';
 import { Entity, ProjectCode } from '../../types';
 import { LocalHospital as HospitalIcon, ExpandMore as ExpandIcon } from '@material-ui/icons';
 import { Button, IconButton, List as MuiList, ListItemProps } from '@material-ui/core';
-import { useEntityDescendants } from '../../api/queries';
+import { useEntities } from '../../api/queries';
 
 const FlexRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 `;
 
 const List = styled(MuiList)`
-  margin-left: 1rem;
+    margin-left: 1rem;
 
-  .MuiIconButton-root,
-  .MuiSvgIcon-root {
-    font-size: 1.5rem;
-  }
+    .MuiIconButton-root,
+    .MuiSvgIcon-root {
+        font-size: 1.5rem;
+    }
 
-  // Hide expand icon when there are no children but keep the element on the page for spacing
-  .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
-    color: transparent;
-  }
+    // Hide expand icon when there are no children but keep the element on the page for spacing
+    .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
+        color: transparent;
+    }
 `;
 
 const MenuLink = styled(Button).attrs({
   component: Link,
 })<ListItemProps>`
-  display: inline;
-  flex: 1;
-  justify-content: flex-start;
-  text-transform: none;
-  padding: 0.8rem;
-  font-size: 0.875rem;
+    display: inline;
+    flex: 1;
+    justify-content: flex-start;
+    text-transform: none;
+    padding: 0.8rem;
+    font-size: 0.875rem;
 
-  .MuiSvgIcon-root {
-    vertical-align: bottom;
-  }
+    .MuiSvgIcon-root {
+        vertical-align: bottom;
+    }
 `;
 
 interface EntityMenuProps {
@@ -82,12 +82,7 @@ interface EntityMenuItemProps {
 const EntityMenuItem = ({ projectCode, entity, children, onClose }: EntityMenuItemProps) => {
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data = [] } = useEntityDescendants(
-    projectCode!,
-    entity.code!,
-    {},
-    { enabled: isExpanded },
-  );
+  const { data = [] } = useEntities(projectCode!, entity.code!, {}, { enabled: isExpanded });
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);

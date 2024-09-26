@@ -6,7 +6,7 @@
 export { ChangePasswordRequest, ChangePasswordRoute } from './ChangePasswordRoute';
 export { DashboardsRequest, DashboardsRoute } from './DashboardsRoute';
 export { EntityRequest, EntityRoute } from './EntityRoute';
-export { EntityDescendantsRequest, EntityDescendantsRoute } from './EntityDescendantsRoute';
+export { EntityDescendantsRequest, EntitiesRoute } from './EntitiesRoute';
 export { EntitySearchRequest, EntitySearchRoute } from './EntitySearchRoute';
 export { EntityAncestorsRequest, EntityAncestorsRoute } from './EntityAncestorsRoute';
 export { ReportRequest, ReportRoute } from './ReportRoute';

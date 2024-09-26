@@ -7,7 +7,7 @@ import { LegendProps, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {
-  useEntityDescendantsWithLocation,
+  useEntitiesWithLocation,
   useEntity,
   useMapOverlayReport,
   useMapOverlays,
@@ -43,7 +43,7 @@ const useMapOverlayEntities = (
   keepPreviousEntitiesData?: boolean,
   entityAttributesFilter: TupaiaWebMapOverlaysRequest.TranslatedMapOverlay['entityAttributesFilter'] = {},
 ) => {
-  return useEntityDescendantsWithLocation(
+  return useEntitiesWithLocation(
     projectCode,
     rootEntityCode,
     {
@@ -72,9 +72,9 @@ interface UseMapOverlayDataProps {
   rootEntityCode?: Entity;
 }
 export const useMapOverlayTableData = ({
-  hiddenValues = {},
-  rootEntityCode,
-}: UseMapOverlayDataProps = {}) => {
+                                         hiddenValues = {},
+                                         rootEntityCode,
+                                       }: UseMapOverlayDataProps = {}) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
   const keepPreviousData = useKeepPreviousData(projectCode, selectedOverlay?.measureLevel);
