@@ -9,12 +9,16 @@ import { TransformTable } from '../../../transform';
 import { MatrixBuilder } from './matrixBuilder';
 import { Matrix, MatrixParams } from './types';
 
+const matrixOutputColumnSchema = yup.object({
+  entityCode: yup.string().required(),
+  entityLabel: yup.string().required(),
+});
+
 const paramsValidator = yup.object().shape(
   {
     columns: yup.lazy((value: unknown) =>
       Array.isArray(value)
-        ? // ? yup.array().of(yup.string().required())
-          yup.array()
+        ? yup.array()
         : yup.mixed<'*'>().oneOf(['*'], "columns must be either '*' or an array"),
     ),
     rowField: yup

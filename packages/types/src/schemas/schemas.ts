@@ -2194,7 +2194,27 @@ export const MatrixVizBuilderConfigSchema = {
 						{
 							"type": "array",
 							"items": {
-								"type": "string"
+								"anyOf": [
+									{
+										"type": "object",
+										"properties": {
+											"entityCode": {
+												"type": "string"
+											},
+											"entityLabel": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"entityCode",
+											"entityLabel"
+										]
+									},
+									{
+										"type": "string"
+									}
+								]
 							}
 						},
 						{
@@ -30767,7 +30787,27 @@ export const MatrixReportRowSchema = {
 	"type": "object",
 	"properties": {
 		"dataElement": {
-			"type": "string"
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"value": {
+							"type": "string"
+						},
+						"label": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"label",
+						"value"
+					]
+				},
+				{
+					"type": "string"
+				}
+			]
 		},
 		"categoryId": {
 			"type": "string"
@@ -31042,7 +31082,27 @@ export const MatrixReportSchema = {
 				"type": "object",
 				"properties": {
 					"dataElement": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "object",
+								"properties": {
+									"value": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"label",
+									"value"
+								]
+							},
+							{
+								"type": "string"
+							}
+						]
 					},
 					"categoryId": {
 						"type": "string"
@@ -31299,7 +31359,27 @@ export const DashboardItemReportSchema = {
 						"type": "object",
 						"properties": {
 							"dataElement": {
-								"type": "string"
+								"anyOf": [
+									{
+										"type": "object",
+										"properties": {
+											"value": {
+												"type": "string"
+											},
+											"label": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"label",
+											"value"
+										]
+									},
+									{
+										"type": "string"
+									}
+								]
 							},
 							"categoryId": {
 								"type": "string"

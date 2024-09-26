@@ -1,6 +1,6 @@
 import pick from 'lodash.pick';
+import { MatrixOutputColumn } from '@tupaia/types';
 import { TransformTable } from '../../../transform';
-
 import { Row } from '../../../types';
 import { MatrixParams, Matrix } from './types';
 
@@ -36,18 +36,23 @@ export class MatrixBuilder {
      * eventually we want to refactor Tupaia frontend logic to render columns with an array formatted as
      *                  '[ ${columnName} ]'
      */
-    const assignColumnSetToMatrixData = (columns: string[]) => {
+    const assignColumnSetToMatrixData = (columns: (string | MatrixOutputColumn)[]) => {
       this.matrixData.columns = columns.map(c => {
-        // @ts-ignore
         if (typeof c === 'object' && c.entityLabel && c.entityCode) {
-          // @ts-ignore
-          return { key: c.entityLabel, title: c.entityLabel, entityCode: c.entityCode };
+          return {
+            key: c.entityLabel,
+            title: c.entityLabel,
+            entityCode: c.entityCode,
+          };
         }
-        return { key: c, title: c };
+        return { key: c as string, title: c as string };
       });
     };
 
-    const getRemainingFieldsFromRows = (includeFields: string[], excludeFields: string[]) => {
+    const getRemainingFieldsFromRows = (
+      includeFields: (string | MatrixOutputColumn)[],
+      excludeFields: string[],
+    ) => {
       return this.table
         .getColumns()
         .filter(
@@ -87,7 +92,6 @@ export class MatrixBuilder {
   private adjustRowsToUseIncludedColumns() {
     const includeFields = this.params.columns.includeFields.map(f => {
       if (typeof f === 'object') {
-        // @ts-ignore
         return f.entityLabel;
       }
       return f;
@@ -98,7 +102,6 @@ export class MatrixBuilder {
       // All fields are in the matrix, so no need to filter down rows
       return;
     }
-    console.log('includeFields', includeFields);
 
     this.matrixData.rows.forEach(row => {
       const columnsDataFields = pick(row, includeFields);
