@@ -5,7 +5,7 @@
 
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Matrix as MatrixComponent, NoData, SearchFilter } from '@tupaia/ui-components';
 import { DashboardItemType, isMatrixReport } from '@tupaia/types';
@@ -13,7 +13,6 @@ import { DashboardItemContext } from '../../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
 import { parseColumns, parseRows } from './parseData';
-import { useEntities } from '../../../api/queries';
 
 const Wrapper = styled.div`
   // override the base table styles to handle expanded rows, which need to be done with classes and JS because nth-child will not handle skipped rows
@@ -34,14 +33,12 @@ const NoResultsMessage = styled(Typography)`
   padding: 1rem;
 `;
 
-const PAGE_SIZE = 50;
-
 /**
  * This is the component that is used to display a matrix. It handles the parsing of the data into the format that the Matrix component can use, as well as placeholder images. It shows a message when there are no rows available to display.
  */
+
 const MatrixVisual = () => {
   const context = useContext(DashboardItemContext);
-  const [pageIndex, setPageIndex] = useState(0);
   const { projectCode } = useParams();
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
@@ -51,21 +48,8 @@ const MatrixVisual = () => {
   // type guard to ensure that the report is a matrix report and config, even though we know it is
   if (!isMatrixReport(report) || context.config?.type !== DashboardItemType.Matrix) return null;
   const { config } = context;
-  const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
-
   const { columns = [], rows = [] } = report;
-
-  const onPageChange = (pageIndex: number) => {
-    setPageIndex(pageIndex);
-  };
-
-  const pageStart = pageIndex * PAGE_SIZE;
-  const pageEnd = pageStart + PAGE_SIZE;
-  const visibleRows = rows.slice(pageStart, pageEnd);
-  const codes = visibleRows.map(row => row.dataElement) as string[];
-  const { entityNamesByCode } = useEntities(codes);
-
-  const { drillDown, valueType } = config;
+  const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
 
   // memoise the parsed rows and columns so that they don't get recalculated on every render, for performance reasons
   const parsedRows = useMemo(
@@ -78,17 +62,13 @@ const MatrixVisual = () => {
         urlSearchParams,
         setUrlSearchParams,
         projectCode!,
-        entityNamesByCode,
       ),
     [
       JSON.stringify(rows),
-      JSON.stringify(entityNamesByCode),
       JSON.stringify(searchFilters),
-      JSON.stringify(drillDown),
-      valueType,
+      JSON.stringify(config),
       JSON.stringify(urlSearchParams),
       setUrlSearchParams,
-      projectCode,
     ],
   );
   const parsedColumns = useMemo(() => parseColumns(columns), [JSON.stringify(columns)]);
@@ -131,8 +111,6 @@ const MatrixVisual = () => {
         searchFilters={searchFilters}
         updateSearchFilter={updateSearchFilter}
         clearSearchFilter={clearSearchFilter}
-        pageSize={PAGE_SIZE}
-        onPageChange={onPageChange}
       />
       {searchFilters?.length > 0 && !parsedRows.length && (
         <NoResultsMessage>No results found</NoResultsMessage>

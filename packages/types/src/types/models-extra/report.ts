@@ -24,7 +24,7 @@ export type ReportConfig = StandardReportConfig | CustomReportConfig;
 
 // This is the row type in the response from the report endpoint when the report is a matrix. It will contain data for each column, keyed by the column key, as well as dataElement, categoryId and category
 export type MatrixReportRow = Record<string, unknown> & {
-  dataElement?: string; // this is the data to display in the row header cell
+  dataElement?: string | { value: string; label: string }; // this is the data to display in the row header cell
   categoryId?: string; // this means the row is a child of a grouped row
   category?: string; // this means the row is a grouped row
   valueType?: ValueType;

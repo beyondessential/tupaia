@@ -29,29 +29,19 @@ const ScrollContainer = styled(TableContainer)`
 
 const DEFAULT_PAGE_SIZE = 50;
 
-export const Matrix = ({
-  columns = [],
-  rows = [],
-  disableExpand,
-  onPageChange,
-  pageSize = DEFAULT_PAGE_SIZE,
-  ...config
-}: MatrixProps) => {
+export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
   const [pageIndex, setPageIndex] = useState(0);
   const [{ expandedRows }, dispatch] = useReducer(matrixReducer, {
     expandedRows: [],
   });
   const tableEl = useRef<HTMLTableElement | null>(null);
 
-  const pageStart = pageIndex * pageSize;
-  const pageEnd = pageStart + pageSize;
+  const pageStart = pageIndex * DEFAULT_PAGE_SIZE;
+  const pageEnd = pageStart + DEFAULT_PAGE_SIZE;
   const visibleRows = rows.slice(pageStart, pageEnd);
 
-  const handleChangePage = (newPageIndex: number) => {
+  const onPageChange = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
-    if (onPageChange) {
-      onPageChange(newPageIndex);
-    }
     if (tableEl.current) {
       // scroll to the top of the table when changing pages
       tableEl.current.scrollIntoView({ behavior: 'auto' });
@@ -72,7 +62,7 @@ export const Matrix = ({
         <MatrixLegend />
         <ScrollContainer>
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
-            <MatrixHeader onPageChange={handleChangePage} />
+            <MatrixHeader onPageChange={onPageChange} />
             <TableBody>
               {visibleRows.map((row, i) => (
                 <MatrixRow row={row} key={`${row.title}-${i}`} parents={[]} index={i + 1} />
@@ -82,9 +72,9 @@ export const Matrix = ({
         </ScrollContainer>
         <MatrixPagination
           totalRows={rows.length}
-          pageSize={pageSize}
+          pageSize={DEFAULT_PAGE_SIZE}
           pageIndex={pageIndex}
-          handleChangePage={handleChangePage}
+          handleChangePage={onPageChange}
           columnsCount={columns.length}
         />
       </MatrixDispatchContext.Provider>

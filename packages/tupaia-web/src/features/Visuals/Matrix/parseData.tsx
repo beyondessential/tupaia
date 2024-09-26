@@ -37,9 +37,8 @@ export const parseRows = (
   urlSearchParams: URLSearchParams,
   setUrlSearchParams: (searchParams: URLSearchParams) => void,
   projectCode: string,
-  entityNamesByCode: Record<string, string>,
 ): MatrixRowType[] => {
-  const { drillDown, valueType, rowTitleEntityLink } = config;
+  const { drillDown, valueType } = config;
 
   const onDrillDown = row => {
     if (!drillDown) return;
@@ -63,7 +62,7 @@ export const parseRows = (
   }
   // loop through the topLevelRows, and parse them into the format that the Matrix component can use
   return topLevelRows.reduce((result: MatrixRowType[], row: MatrixReportRow) => {
-    const { dataElement = '', category, valueType: rowValueType, ...rest } = row;
+    const { dataElement, category, valueType: rowValueType, ...rest } = row;
     const valueTypeToUse = rowValueType || valueType;
     // if the row has a category, then it has children, so we need to parse them using this same function
 
@@ -76,7 +75,6 @@ export const parseRows = (
         urlSearchParams,
         setUrlSearchParams,
         projectCode,
-        entityNamesByCode,
       );
 
       if (searchFilters.length > 0) {
@@ -130,22 +128,21 @@ export const parseRows = (
       if (!matchesSearchFilter) return result;
     }
 
-    if (rowTitleEntityLink) {
-      const entityLink = `/${projectCode}/${dataElement}`;
-      const entityName = entityNamesByCode[dataElement] || '...';
+    if (typeof dataElement === 'object') {
+      const entityLink = `/${projectCode}/${dataElement.value}`;
+      const entityName = dataElement.label;
       result.push({
         title: entityName,
         entityLink,
         onClick: drillDown ? () => onDrillDown(row) : undefined,
         ...formattedRowValues,
       });
-
       return result;
     }
 
     // otherwise, handle as a regular row
     result.push({
-      title: dataElement,
+      title: dataElement || '',
       onClick: drillDown ? () => onDrillDown(row) : undefined,
       ...formattedRowValues,
     });

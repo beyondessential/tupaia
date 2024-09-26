@@ -43,16 +43,6 @@ export type MatrixConfig = BaseConfig & {
    * @description Specify whether to show search filters on the matrix
    */
   enableSearch?: boolean;
-
-  /**
-   * @description Makes the first cell of each row a link to the entity page. Requires that the rowField is an entity code
-   */
-  rowTitleEntityLink?: string;
-
-  /**
-   * @description Makes the column headers a link to the entity page. Requires that the column headers are entity codes
-   */
-  columnHeaderEntityKey?: string;
 };
 
 export type MatrixVizBuilderConfig = MatrixConfig & {
