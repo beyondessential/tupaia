@@ -149,7 +149,7 @@ const groupedRows = [
 
 const basicRows = [
   {
-    title: <a href="/project/entity">Data item 1</a>,
+    title: 'Data item 1',
     Col4: 59.5,
     Col2: 43.4,
   },

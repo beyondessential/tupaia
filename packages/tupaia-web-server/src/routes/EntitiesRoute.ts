@@ -47,7 +47,7 @@ const parseFilter = (filter: Record<string, any>): Record<string, any> =>
     return { ...newFilter, [key]: parser ? parser(value) : value };
   }, {});
 
-export class EntitiesRoute extends Route<EntityDescendantsRequest> {
+export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
     const { params, query, ctx, models, accessPolicy } = this.req;
     const { rootEntityCode, projectCode } = params;
