@@ -16,6 +16,7 @@ import {
   IconButton as MuiIconButton,
 } from '@material-ui/core';
 import { DateRange, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { DatePickerOffsetSpec } from '@tupaia/types';
 import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/utils';
 import { FlexStart } from '../Layout';
 import { WeekDisplayFormatType } from '../../types';
@@ -83,6 +84,8 @@ interface DateRangePickerProps {
   isLoading?: boolean;
   weekDisplayFormat?: WeekDisplayFormatType;
   dialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
+  dateOffset?: DatePickerOffsetSpec;
+  dateRangeDelimiter?: string;
 }
 
 export const DateRangePicker = ({
@@ -95,6 +98,8 @@ export const DateRangePicker = ({
   isLoading = false,
   weekDisplayFormat,
   dialogProps,
+  dateOffset,
+  dateRangeDelimiter,
 }: DateRangePickerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -114,6 +119,8 @@ export const DateRangePicker = ({
     granularity,
     onSetDates,
     weekDisplayFormat,
+    dateOffset,
+    dateRangeDelimiter,
   });
 
   const handleOpen = () => {
@@ -164,6 +171,8 @@ export const DateRangePicker = ({
         onSetNewDates={handleDateChange}
         weekDisplayFormat={weekDisplayFormat}
         muiDialogProps={dialogProps}
+        dateOffset={dateOffset}
+        dateRangeDelimiter={dateRangeDelimiter}
       />
     </>
   );
