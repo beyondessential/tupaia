@@ -1476,6 +1476,23 @@ export const MatrixConfigSchema = {
 	]
 } 
 
+export const MatrixOutputColumnSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"entityLabel": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entityCode",
+		"entityLabel"
+	]
+} 
+
 export const MatrixVizBuilderConfigSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -2194,26 +2211,25 @@ export const MatrixVizBuilderConfigSchema = {
 						{
 							"type": "array",
 							"items": {
-								"anyOf": [
-									{
-										"type": "object",
-										"properties": {
-											"entityCode": {
-												"type": "string"
-											},
-											"entityLabel": {
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"entityCode",
-											"entityLabel"
-										]
+								"type": "string"
+							}
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"entityCode": {
+										"type": "string"
 									},
-									{
+									"entityLabel": {
 										"type": "string"
 									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"entityCode",
+									"entityLabel"
 								]
 							}
 						},
