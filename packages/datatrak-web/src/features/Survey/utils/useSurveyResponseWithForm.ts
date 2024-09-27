@@ -74,7 +74,7 @@ export const useSurveyResponseWithForm = (
 
     const combinedData = { ...formattedAnswers, ...formData };
 
-    // combine this so that formData always takes precedence, and apply a code to any code generator questions without answers
+    // combine this so that formData always takes precedence, and apply a code to any code generator questions without answers when resubmitting. This is because otherwise, if there is no code generator answer already saved, the code generator will not be triggered and the answer will remain empty.
     const newData = isResponseScreen
       ? combinedData
       : generateCodeForCodeGeneratorQuestions(flattenedScreenComponents, combinedData);
