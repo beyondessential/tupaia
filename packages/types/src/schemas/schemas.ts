@@ -2206,7 +2206,7 @@ export const MatrixVizBuilderConfigSchema = {
 					"type": "string"
 				},
 				"columns": {
-					"description": "The columns of the data-table that should be included as columns in the matrix.\nCan be either a list of column names, or '*' to indicate all columns",
+					"description": "The columns of the data-table that should be included as columns in the matrix.\nCan be either:\na list of column names,\n'*' to indicate all columns\nor a list of objects with an entityCode and entityLabel to generate entity links",
 					"anyOf": [
 						{
 							"type": "array",
