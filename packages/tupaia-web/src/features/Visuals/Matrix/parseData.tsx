@@ -24,7 +24,9 @@ const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value
 const getRowMatchesSearchFilter = (row: MatrixReportRow, searchFilters: SearchFilter[]) => {
   return searchFilters.every(filter => {
     const rowValue = row[filter.key];
-    return getValueMatchesSearchFilter(rowValue, filter.value);
+    const parsedRowValue =
+      typeof rowValue === 'object' && rowValue !== null ? rowValue.entityLabel : rowValue;
+    return getValueMatchesSearchFilter(parsedRowValue, filter.value);
   });
 };
 
