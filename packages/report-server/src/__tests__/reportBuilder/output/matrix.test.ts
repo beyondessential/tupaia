@@ -246,6 +246,68 @@ describe('matrix', () => {
       );
       expect(result).toEqual(expectedData);
     });
+
+    it.only('can include entity columns', async () => {
+      const expectedData = {
+        columns: [
+          {
+            entityCode: 'TO',
+            key: 'Tonga',
+            title: 'Tonga',
+          },
+          {
+            key: 'InfrastructureType',
+            title: 'InfrastructureType',
+          },
+          {
+            key: 'Laos',
+            title: 'Laos',
+          },
+        ],
+        rows: [
+          {
+            dataElement: 'hospital',
+            InfrastructureType: 'medical center',
+            Tonga: 0,
+            Laos: 3,
+          },
+          {
+            InfrastructureType: 'medical center',
+            dataElement: 'clinic',
+            Tonga: 9,
+            Laos: 4,
+          },
+          {
+            InfrastructureType: 'others',
+            Tonga: 0,
+            dataElement: 'park',
+          },
+          {
+            InfrastructureType: 'others',
+            Tonga: 5,
+            dataElement: 'library',
+          },
+        ],
+      };
+      const output = buildOutput(
+        {
+          type: 'matrix',
+          rowField: 'FacilityType',
+          columns: [{ entityLabel: 'Tonga', entityCode: 'TO' }, 'InfrastructureType', 'Laos'],
+        },
+        reportServerAggregator,
+      );
+
+      const ENTITY_CELL_DATA = [
+        { InfrastructureType: 'medical center', FacilityType: 'hospital', Laos: 3, Tonga: 0 },
+        { InfrastructureType: 'medical center', FacilityType: 'clinic', Laos: 4, Tonga: 9 },
+        { InfrastructureType: 'others', FacilityType: 'park', Tonga: 0 },
+        { InfrastructureType: 'others', FacilityType: 'library', Tonga: 5 },
+      ];
+      const result = await output(TransformTable.fromRows(ENTITY_CELL_DATA));
+      console.log('result', result);
+      expect(result).toEqual(expectedData);
+    });
   });
 
   describe('categoryField', () => {
