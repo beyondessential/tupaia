@@ -1,8 +1,8 @@
-import { MatrixOutputColumn } from '@tupaia/types';
+import { MatrixEntityCell } from '@tupaia/types';
 import { Row } from '../../../types';
 
 export type MatrixParams = {
-  columns: { includeFields: (string | MatrixOutputColumn)[]; excludeFields: string[] };
+  columns: { includeFields: (string | MatrixEntityCell)[]; excludeFields: string[] };
   rows: { rowField: string; categoryField: string | undefined };
 };
 

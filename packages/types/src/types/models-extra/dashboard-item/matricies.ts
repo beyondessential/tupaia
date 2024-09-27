@@ -45,7 +45,7 @@ export type MatrixConfig = BaseConfig & {
   enableSearch?: boolean;
 };
 
-export type MatrixOutputColumn = { entityCode: string; entityLabel: string };
+export type MatrixEntityCell = { entityCode: string; entityLabel: string };
 
 export type MatrixVizBuilderConfig = MatrixConfig & {
   /**
@@ -69,7 +69,7 @@ export type MatrixVizBuilderConfig = MatrixConfig & {
      * The columns of the data-table that should be included as columns in the matrix.
      * Can be either a list of column names, or '*' to indicate all columns
      */
-    columns?: string | string[] | MatrixOutputColumn[];
+    columns?: string | string[] | MatrixEntityCell[];
   };
 };
 

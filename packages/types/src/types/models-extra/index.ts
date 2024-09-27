@@ -41,7 +41,7 @@ export {
   ValueType,
   MatrixConfig,
   MatrixVizBuilderConfig,
-  MatrixOutputColumn,
+  MatrixEntityCell,
   PresentationOptionCondition,
   MatrixPresentationOptions,
   ConditionsObject,

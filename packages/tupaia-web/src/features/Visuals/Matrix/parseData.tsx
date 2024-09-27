@@ -2,10 +2,15 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+import { generatePath } from 'react-router-dom';
 import { MatrixColumnType, MatrixRowType, SearchFilter } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { MatrixConfig, MatrixReportColumn, MatrixReportRow } from '@tupaia/types';
-import { URL_SEARCH_PARAMS } from '../../../constants';
+import { MatrixConfig, MatrixReportColumn, MatrixReportRow, MatrixEntityCell } from '@tupaia/types';
+import { ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../../../constants';
+
+function isMatrixEntityCell(cell: unknown): cell is MatrixEntityCell {
+  return typeof cell === 'object' && cell !== null && 'entityLabel' in cell && 'entityCode' in cell;
+}
 
 const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value']) => {
   if (typeof value !== 'string' && typeof value !== 'number') return false;
@@ -24,8 +29,7 @@ const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value
 const getRowMatchesSearchFilter = (row: MatrixReportRow, searchFilters: SearchFilter[]) => {
   return searchFilters.every(filter => {
     const rowValue = row[filter.key];
-    const parsedRowValue =
-      typeof rowValue === 'object' && rowValue !== null ? rowValue.entityLabel : rowValue;
+    const parsedRowValue = isMatrixEntityCell(rowValue) ? rowValue.entityLabel : rowValue;
     return getValueMatchesSearchFilter(parsedRowValue, filter.value);
   });
 };
@@ -130,8 +134,11 @@ export const parseRows = (
       if (!matchesSearchFilter) return result;
     }
 
-    if (typeof dataElement === 'object') {
-      const entityLink = `/${projectCode}/${dataElement.entityCode}`;
+    if (isMatrixEntityCell(dataElement)) {
+      const entityLink = generatePath(ROUTE_STRUCTURE, {
+        projectCode: projectCode,
+        entityCode: dataElement.entityCode,
+      });
       const entityName = dataElement.entityLabel;
       result.push({
         title: entityName,
@@ -157,30 +164,28 @@ export const parseColumns = (
   columns: MatrixReportColumn[],
   projectCode: string,
 ): MatrixColumnType[] => {
-  return columns
-    .filter(column => column.key !== 'dataElement_link')
-    .map(column => {
-      const { category, key, title, columns: children, entityCode } = column;
-      // if a column has a category, then it has children, so we need to parse them using this same function
-      if (category) {
-        return {
-          title: category,
-          key: category,
-          children: parseColumns(children!, projectCode),
-        };
-      }
+  return columns.map(column => {
+    const { category, key, title, columns: children, entityCode } = column;
+    // if a column has a category, then it has children, so we need to parse them using this same function
+    if (category) {
+      return {
+        title: category,
+        key: category,
+        children: parseColumns(children!, projectCode),
+      };
+    }
 
-      if (entityCode) {
-        return {
-          title,
-          key,
-          entityLink: `/${projectCode}/${entityCode}`,
-        };
-      }
-      // otherwise, handle as a regular column
+    if (entityCode) {
       return {
         title,
         key,
+        entityLink: `/${projectCode}/${entityCode}`,
       };
-    });
+    }
+    // otherwise, handle as a regular column
+    return {
+      title,
+      key,
+    };
+  });
 };

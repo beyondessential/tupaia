@@ -1476,7 +1476,7 @@ export const MatrixConfigSchema = {
 	]
 } 
 
-export const MatrixOutputColumnSchema = {
+export const MatrixEntityCellSchema = {
 	"type": "object",
 	"properties": {
 		"entityCode": {
@@ -30807,17 +30807,17 @@ export const MatrixReportRowSchema = {
 				{
 					"type": "object",
 					"properties": {
-						"value": {
+						"entityCode": {
 							"type": "string"
 						},
-						"label": {
+						"entityLabel": {
 							"type": "string"
 						}
 					},
 					"additionalProperties": false,
 					"required": [
-						"label",
-						"value"
+						"entityCode",
+						"entityLabel"
 					]
 				},
 				{
@@ -31102,17 +31102,17 @@ export const MatrixReportSchema = {
 							{
 								"type": "object",
 								"properties": {
-									"value": {
+									"entityCode": {
 										"type": "string"
 									},
-									"label": {
+									"entityLabel": {
 										"type": "string"
 									}
 								},
 								"additionalProperties": false,
 								"required": [
-									"label",
-									"value"
+									"entityCode",
+									"entityLabel"
 								]
 							},
 							{
@@ -31379,17 +31379,17 @@ export const DashboardItemReportSchema = {
 									{
 										"type": "object",
 										"properties": {
-											"value": {
+											"entityCode": {
 												"type": "string"
 											},
-											"label": {
+											"entityLabel": {
 												"type": "string"
 											}
 										},
 										"additionalProperties": false,
 										"required": [
-											"label",
-											"value"
+											"entityCode",
+											"entityLabel"
 										]
 									},
 									{
