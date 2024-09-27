@@ -67,7 +67,10 @@ export type MatrixVizBuilderConfig = MatrixConfig & {
     /**
      * @description
      * The columns of the data-table that should be included as columns in the matrix.
-     * Can be either a list of column names, or '*' to indicate all columns
+     * Can be either:
+     * a list of column names,
+     * '*' to indicate all columns
+     * or a list of objects with an entityCode and entityLabel to generate entity links
      */
     columns?: string | string[] | MatrixEntityCell[];
   };

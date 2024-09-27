@@ -134,27 +134,23 @@ export const parseRows = (
       if (!matchesSearchFilter) return result;
     }
 
+    const newResult = {
+      title: dataElement || '',
+      onClick: drillDown ? () => onDrillDown(row) : undefined,
+      ...formattedRowValues,
+    } as MatrixRowType;
+
+    // if the row is a matrix entity cell, then we need to add the entityLink to the row
     if (isMatrixEntityCell(dataElement)) {
       const entityLink = generatePath(ROUTE_STRUCTURE, {
         projectCode: projectCode,
         entityCode: dataElement.entityCode,
       });
-      const entityName = dataElement.entityLabel;
-      result.push({
-        title: entityName,
-        entityLink,
-        onClick: drillDown ? () => onDrillDown(row) : undefined,
-        ...formattedRowValues,
-      });
-      return result;
+      newResult.title = dataElement.entityLabel;
+      newResult.entityLink = entityLink;
     }
 
-    // otherwise, handle as a regular row
-    result.push({
-      title: dataElement || '',
-      onClick: drillDown ? () => onDrillDown(row) : undefined,
-      ...formattedRowValues,
-    });
+    result.push(newResult);
     return result;
   }, []);
 };
