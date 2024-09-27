@@ -53,10 +53,14 @@ export class MatrixBuilder {
       includeFields: (string | MatrixOutputColumn)[],
       excludeFields: string[],
     ) => {
-      return this.table.getColumns().filter((columnName: string | MatrixOutputColumn) => {
+      const entityFields = includeFields.filter(f => typeof f === 'object') as MatrixOutputColumn[];
+      const entityFieldNames = entityFields.map(f => f.entityLabel);
+
+      return this.table.getColumns().filter((columnName: string) => {
         return (
-          !excludeFields.includes(columnName as string) &&
-          !includeFields.includes(columnName as string)
+          !entityFieldNames.includes(columnName) &&
+          !excludeFields.includes(columnName) &&
+          !includeFields.includes(columnName)
         );
       });
     };
@@ -97,11 +101,9 @@ export class MatrixBuilder {
       }
       return f;
     });
-    console.log('includeFields', includeFields.length);
     const newRows: Row[] = [];
 
     if (includeFields.includes('*')) {
-      console.log('include all');
       // All fields are in the matrix, so no need to filter down rows
       return;
     }

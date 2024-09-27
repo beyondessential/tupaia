@@ -247,7 +247,7 @@ describe('matrix', () => {
       expect(result).toEqual(expectedData);
     });
 
-    it.only('can include entity columns', async () => {
+    it('can include entity columns', async () => {
       const expectedData = {
         columns: [
           {
@@ -289,7 +289,8 @@ describe('matrix', () => {
           },
         ],
       };
-      const output = buildOutput(
+      // Test setting fixed columns
+      const output1 = buildOutput(
         {
           type: 'matrix',
           rowField: 'FacilityType',
@@ -297,16 +298,24 @@ describe('matrix', () => {
         },
         reportServerAggregator,
       );
+      const result1 = await output1(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS),
+      );
+      expect(result1).toEqual(expectedData);
 
-      const ENTITY_CELL_DATA = [
-        { InfrastructureType: 'medical center', FacilityType: 'hospital', Laos: 3, Tonga: 0 },
-        { InfrastructureType: 'medical center', FacilityType: 'clinic', Laos: 4, Tonga: 9 },
-        { InfrastructureType: 'others', FacilityType: 'park', Tonga: 0 },
-        { InfrastructureType: 'others', FacilityType: 'library', Tonga: 5 },
-      ];
-      const result = await output(TransformTable.fromRows(ENTITY_CELL_DATA));
-      console.log('result', result);
-      expect(result).toEqual(expectedData);
+      // Test setting fixed & dynamic columns
+      const output2 = buildOutput(
+        {
+          type: 'matrix',
+          rowField: 'FacilityType',
+          columns: [{ entityLabel: 'Tonga', entityCode: 'TO' }, '*'],
+        },
+        reportServerAggregator,
+      );
+      const result2 = await output2(
+        TransformTable.fromRows(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS),
+      );
+      expect(result2).toEqual(expectedData);
     });
   });
 
