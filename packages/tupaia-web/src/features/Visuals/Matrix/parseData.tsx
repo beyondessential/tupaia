@@ -129,8 +129,8 @@ export const parseRows = (
     }
 
     if (typeof dataElement === 'object') {
-      const entityLink = `/${projectCode}/${dataElement.value}`;
-      const entityName = dataElement.label;
+      const entityLink = `/${projectCode}/${dataElement.entityCode}`;
+      const entityName = dataElement.entityLabel;
       result.push({
         title: entityName,
         entityLink,
