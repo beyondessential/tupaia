@@ -63,6 +63,8 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'requestCountryAccess',
       handleWith(routes.RequestCountryAccessRoute),
     )
+    // @ts-ignore LoginRoute types cannot be extended at this time
+    .post<routes.LoginRequest>('loginUser', handleWith(routes.LoginRoute))
     .get<routes.EntityRequest>('entity/:projectCode/:entityCode', handleWith(routes.EntityRoute))
     .get<routes.EntitiesRequest>(
       'entities/:projectCode/:rootEntityCode',
@@ -99,6 +101,7 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .use('me/countries', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
+    .use('me', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('dashboards', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('export/chart', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

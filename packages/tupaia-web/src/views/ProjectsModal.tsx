@@ -87,7 +87,7 @@ const ExploreButton = styled(RouterButton).attrs({
 `;
 
 const Line = styled.div`
-  background-color: #9ba0a6;
+  background-color: ${({ theme }) => theme.palette.text.secondary};
   height: 1px;
   margin-top: 0.7rem;
 `;
@@ -145,11 +145,12 @@ export const ProjectsModal = () => {
                 projects={data?.projects ?? []}
                 actions={{
                   [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                    project: { code, homeEntityCode, dashboardGroupName },
+                    project: { id, code, homeEntityCode, dashboardGroupName },
                   }: {
                     project: SingleProject;
                   }) => (
                     <ProjectAllowedLink
+                      projectId={id}
                       url={`/${code}/${homeEntityCode}${
                         dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
                       }`}
