@@ -36,7 +36,6 @@ export const useLogin = () => {
         gaEvent('User', 'Log in', 'Attempt');
       },
       onSuccess: data => {
-        console.log('=== data ===', data);
         gaEvent('User', 'Login', 'success');
         queryClient.invalidateQueries();
         // if the user was redirected to the login page, redirect them back to the page they were on

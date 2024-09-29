@@ -70,14 +70,14 @@ const ProjectButton = styled(RouterButton).attrs({
     text-transform: none;
     font-size: 0.875rem;
     color: ${({ theme }) => theme.palette.text.secondary};
-    line-height: 140%;
+    line-height: 1.4;
     transition: color 0.2s;
   }
 
   &:hover {
     background: none;
     .MuiButton-label {
-      color: white;
+      color: ${({ theme }) => theme.palette.text.primary};
       text-decoration: underline;
     }
   }

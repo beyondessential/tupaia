@@ -30,15 +30,15 @@ const ModalBody = styled.div`
 `;
 
 export const ProjectSelectModal = () => {
-  const { data } = useUser();
-  const projectId = data?.project?.id;
-  const { data: projects, isFetching } = useProjects();
+  const { data: userData } = useUser();
+  const projectId = userData?.project?.id;
+  const { data: projectsData, isFetching } = useProjects();
   const { closeModal } = useModal();
   const navigate = useNavigate();
 
   const onSelectProject = data => {
     const { projectId } = data;
-    const project = projects.projects.find(p => p.id === projectId);
+    const project = projectsData?.projects.find(p => p.id === projectId);
     const { code, homeEntityCode } = project;
     const dashboardGroupName = project.dashboardGroupName
       ? encodeURIComponent(project.dashboardGroupName)
@@ -63,7 +63,7 @@ export const ProjectSelectModal = () => {
           projectId={projectId}
           onClose={closeModal}
           onRequestAccess={onRequestAccess}
-          projects={projects?.projects}
+          projects={projectsData?.projects}
           isLoading={isFetching}
           onConfirm={onConfirm}
           isConfirming={isConfirming}

@@ -181,7 +181,16 @@ export const ProjectAllowedLink = ({ projectId, url, isLandingPage }: ProjectAll
   const handleSelectProject = () => {
     mutate({ projectId });
   };
-  return <Button onClick={handleSelectProject}>View project</Button>;
+  return (
+    <Button
+      onClick={handleSelectProject}
+      tabIndex="0"
+      role="link"
+      aria-label="Select and navigate to project"
+    >
+      View project
+    </Button>
+  );
 };
 
 interface ProjectCardProps extends Partial<SingleProject> {
