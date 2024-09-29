@@ -38,6 +38,7 @@ const TooltipWrapper = styled.span`
 const Tooltip = styled(BaseTooltip)`
   & .MuiTooltip-tooltip {
     background-color: ${props => props.theme.palette.text.primary};
+    color: ${props => props.theme.palette.background.paper};
     border-radius: 3px;
     font-weight: ${props => props.theme.typography.fontWeightRegular};
     font-size: 0.69rem;
