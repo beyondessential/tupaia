@@ -168,7 +168,7 @@ export async function exportResponsesToFile(
       survey_id: survey.id,
     };
 
-    if (includeArchived !== true) {
+    if (includeArchived !== true && includeArchived !== 'true') {
       surveyResponseFindConditions.outdated = false; // only get the latest version of each survey response unless includeArchived === true. Outdated responses are usually resubmissions
     }
 
