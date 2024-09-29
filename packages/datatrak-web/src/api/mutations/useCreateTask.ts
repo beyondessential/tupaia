@@ -33,6 +33,7 @@ export const useCreateTask = (onSuccess?: () => void) => {
         gaEvent('task_created_by_project', project?.code!);
         gaEvent('task_created_by_country', variables.country_code);
         gaEvent('task_created_by_survey', variables.survey_code);
+        gaEvent('task_created', 'Task created');
 
         if (onSuccess) onSuccess();
       },
