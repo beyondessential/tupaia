@@ -110,7 +110,7 @@ export const useMapOverlayTableData = ({
     isLoading,
     isFetched,
     isFetching,
-    isIdle,
+    fetchStatus,
     isPreviousData,
     error: mapOverlayReportError,
     refetch: refetchMapOverlayReport,
@@ -134,7 +134,7 @@ export const useMapOverlayTableData = ({
     hiddenValues: hiddenValues ? hiddenValues : {},
   });
 
-  const loadingData = isLoading || isFetching || (!isFetched && !isIdle);
+  const loadingData = isLoading || isFetching || (!isFetched && fetchStatus !== 'idle');
 
   const isLoadingDifferentMeasureLevel =
     (!isPreviousData || data?.measureLevel !== selectedOverlay?.measureLevel) && loadingData;

@@ -6,10 +6,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Dialog } from '@tupaia/ui-components';
+import { Dialog, ModalHeader } from '@tupaia/ui-components';
 import { closeResubmitSurveyModal, onAfterMutate as onAfterMutateAction } from './actions';
 import { Form } from './Form';
-import { ModalHeader } from '../widgets';
 
 export const ResubmitSurveyResponseModalComponent = ({
   isOpen,
@@ -41,7 +40,8 @@ ResubmitSurveyResponseModalComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  ...state.resubmitSurveyResponse,
+  ...state.surveyResponse,
+  isOpen: state.surveyResponse.isResubmitModalOpen,
 });
 
 const mapDispatchToProps = dispatch => ({

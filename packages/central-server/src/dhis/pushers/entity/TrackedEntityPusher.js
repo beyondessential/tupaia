@@ -74,6 +74,10 @@ export class TrackedEntityPusher extends EntityPusher {
       filter: { displayName: this.entityToTypeName(entity) },
     });
 
+    if (!trackedEntityType) {
+      throw new Error(`Tracked entity type not found for ${type}`);
+    }
+
     return trackedEntityType.id;
   }
 

@@ -7,11 +7,11 @@ import styled from 'styled-components';
 import { To, Link as RouterLink } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
-import { useSurveyForm } from '../../SurveyContext';
-import { useIsMobile } from '../../../../utils';
+import { useFromLocation, useIsMobile } from '../../../../utils';
 import { getSurveyScreenNumber } from '../../utils';
 import { useSurveyRouting } from '../../useSurveyRouting';
 import { SideMenuButton } from './SideMenuButton';
+import { useSurveyForm } from '../../SurveyContext';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
@@ -51,6 +51,9 @@ const SurveyMenuItem = styled(ListItem).attrs({
     to: To;
     $active?: boolean;
     $isInstructionOnly?: boolean;
+    state: {
+      from?: string | undefined;
+    };
   }
 >`
   padding: 0.5rem;
@@ -95,6 +98,7 @@ const Header = styled.div`
 
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
+  const from = useFromLocation();
   const isMobile = useIsMobile();
   const {
     sideMenuOpen,
@@ -142,6 +146,9 @@ export const SurveySideMenu = () => {
             return (
               <li key={screen.id}>
                 <SurveyMenuItem
+                  state={{
+                    ...(from && { from }),
+                  }}
                   to={getScreenPath(num)}
                   $active={screenNumber === num}
                   onClick={onChangeScreen}

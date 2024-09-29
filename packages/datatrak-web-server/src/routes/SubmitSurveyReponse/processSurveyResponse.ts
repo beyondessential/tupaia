@@ -27,6 +27,7 @@ type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
 };
 type AnswerT = DatatrakWebSubmitSurveyResponseRequest.Answer;
 type FileUploadAnswerT = DatatrakWebSubmitSurveyResponseRequest.FileUploadAnswer;
+type UserAnswerT = DatatrakWebSubmitSurveyResponseRequest.UserAnswer;
 
 export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => {
   if (!config?.entity) {
@@ -203,6 +204,13 @@ export const processSurveyResponse = async (
         answersToSubmit.push({
           ...answerObject,
           body: answer,
+        });
+        break;
+      }
+      case QuestionType.User: {
+        answersToSubmit.push({
+          ...answerObject,
+          body: (answer as UserAnswerT).id,
         });
         break;
       }
