@@ -41,8 +41,20 @@ export const SurveyResponsesExportModal = () => {
     }));
   };
 
+  const clearValues = () => {
+    setValues({});
+    onChangeMode(MODES.COUNTRY.value);
+    setCountryCode(undefined);
+    setEntityIds(undefined);
+  };
+
   return (
-    <ExportModal title="Download survey responses" values={values} exportEndpoint="surveyResponses">
+    <ExportModal
+      title="Download survey responses"
+      values={values}
+      exportEndpoint="surveyResponses"
+      onCloseModal={clearValues}
+    >
       <ReduxAutocomplete
         label="Surveys to include"
         helperText="Please enter the names of the surveys to be exported."
