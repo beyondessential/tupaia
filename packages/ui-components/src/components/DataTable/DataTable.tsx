@@ -57,13 +57,6 @@ export const DataTable = ({
     {
       columns,
       data,
-      initialState: {
-        sortBy: [
-          {
-            id: getColumnId(columns[0]),
-          },
-        ],
-      },
     },
     useSortBy,
   );
