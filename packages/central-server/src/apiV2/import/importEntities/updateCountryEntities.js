@@ -195,19 +195,21 @@ export async function updateCountryEntities(
       try {
         await transactingModels.entity.updateRegionCoordinates(code, translatedGeojson);
       } catch (error) {
-        const largeGeoEntities = entityObjects.filter(entityObject => {
-          if (!entityObject?.geojson) return false;
-          const geoJsonString = JSON.stringify(entityObject.geojson);
-          // If the geo json is too large, we will hit the max payload size limit.
-          // Hard postgres max is 8000 characters, but we need to account for other data in the query payload
-          const maxGeoJsonPayload = 6500;
-          if (geoJsonString.length > maxGeoJsonPayload) {
-            return true;
-          }
-        });
-        const text = largeGeoEntities.map(entity => entity.code).join(', ');
+        if (error.message.includes('payload string too long')) {
+          const largeGeoEntities = entityObjects.filter(entityObject => {
+            if (!entityObject?.geojson) return false;
+            const geoJsonString = JSON.stringify(entityObject.geojson);
+            // If the geo json is too large, we will hit the max payload size limit.
+            // Hard postgres max is 8000 characters, but we need to account for other data in the query payload
+            const maxGeoJsonPayload = 5200;
+            if (geoJsonString.length > maxGeoJsonPayload) {
+              return true;
+            }
+          });
+          const text = largeGeoEntities.map(entity => entity.code).join(', ');
+          error.message = `Error updating region coordinates for entities: ${text} ${error.message}`;
+        }
 
-        error.message = `Error updating region coordinates for entities ${text}: ${error.message}`;
         throw error;
       }
     }
