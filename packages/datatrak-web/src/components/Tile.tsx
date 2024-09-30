@@ -100,6 +100,8 @@ const ButtonContent = styled.div`
   width: 100%;
   ${DESKTOP_MEDIA_QUERY} {
     flex-direction: row;
+    // To make ellipsis work on the text, we need to set a max-width, and by adding calc(90%) we can make it responsive as well because calc converts the percentage to pixels
+    max-width: calc(90%);
   }
 `;
 
