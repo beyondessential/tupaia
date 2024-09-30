@@ -27,7 +27,7 @@ const PageContainer = styled(BasePageContainer)`
 const PageBody = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.5rem 0 1.5rem;
+  padding: 0.5rem 0 0.5rem;
   width: 100%;
   max-width: 85rem;
   margin: 0 auto;
@@ -55,8 +55,10 @@ const Grid = styled.div<{
   }
 
   > section {
-    margin-bottom: 1rem;
     overflow: hidden;
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
   }
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
