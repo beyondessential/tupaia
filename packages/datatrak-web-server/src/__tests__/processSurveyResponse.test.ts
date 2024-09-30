@@ -86,10 +86,21 @@ describe('processSurveyResponse', () => {
           screenId: 'screen2',
           componentNumber: 2,
         },
+        {
+          questionId: 'question3',
+          type: QuestionType.User,
+          text: 'question3',
+          screenId: 'screen3',
+          componentNumber: 3,
+        },
       ],
       answers: {
         question1: 'answer1',
         question2: 'answer2',
+        question3: {
+          id: 'theUserId',
+          name: 'theUserName',
+        },
       },
     });
 
@@ -105,6 +116,11 @@ describe('processSurveyResponse', () => {
           question_id: 'question2',
           type: QuestionType.Number,
           body: 'answer2',
+        },
+        {
+          question_id: 'question3',
+          type: QuestionType.User,
+          body: 'theUserId',
         },
       ],
     });

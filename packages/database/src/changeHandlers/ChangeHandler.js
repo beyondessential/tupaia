@@ -7,6 +7,10 @@ import winston from 'winston';
 
 const MAX_RETRY_ATTEMPTS = 3;
 
+/**
+ * @description Base class for listen to changes to records in the database.
+ * IMPORTANT: Make sure the table has a trigger on it, otherwise this will not work.
+ */
 export class ChangeHandler {
   /**
    * A map of change translators by record type. Each translator can alter the change details that

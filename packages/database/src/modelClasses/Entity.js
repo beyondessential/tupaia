@@ -183,8 +183,8 @@ export class EntityRecord extends DatabaseRecord {
     return this.model.getAncestorsOfEntities(hierarchyId, [this.id], criteria);
   }
 
-  async getDescendants(hierarchyId, criteria) {
-    return this.model.getDescendantsOfEntities(hierarchyId, [this.id], criteria);
+  async getDescendants(hierarchyId, criteria, options) {
+    return this.model.getDescendantsOfEntities(hierarchyId, [this.id], criteria, options);
   }
 
   async getRelatives(hierarchyId, criteria) {
@@ -454,9 +454,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {*} ancestorsOrDescendants
    * @param {*} entityIds
    * @param {*} criteria
+   * @param {*} options
    * @returns {Promise<EntityRecord[]>}
    */
-  async getRelationsOfEntities(ancestorsOrDescendants, entityIds, criteria) {
+  async getRelationsOfEntities(ancestorsOrDescendants, entityIds, criteria, options) {
     const cacheKey = this.getCacheKey(this.getRelationsOfEntities.name, arguments);
     const [joinTablesOn, filterByEntityId] =
       ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
@@ -473,6 +474,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           joinWith: RECORDS.ANCESTOR_DESCENDANT_RELATION,
           joinCondition: ['entity.id', joinTablesOn],
           sort: ['generational_distance ASC'],
+          ...options,
         },
       );
       const relationData = await Promise.all(relations.map(async r => r.getData()));
@@ -489,11 +491,16 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     });
   }
 
-  async getDescendantsOfEntities(hierarchyId, entityIds, criteria) {
-    return this.getRelationsOfEntities(ENTITY_RELATION_TYPE.DESCENDANTS, entityIds, {
-      entity_hierarchy_id: hierarchyId,
-      ...criteria,
-    });
+  async getDescendantsOfEntities(hierarchyId, entityIds, criteria, options) {
+    return this.getRelationsOfEntities(
+      ENTITY_RELATION_TYPE.DESCENDANTS,
+      entityIds,
+      {
+        entity_hierarchy_id: hierarchyId,
+        ...criteria,
+      },
+      options,
+    );
   }
 
   async getRelativesOfEntities(hierarchyId, entityIds, criteria) {

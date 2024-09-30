@@ -6,10 +6,11 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
+import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 import { PermissionsError } from '@tupaia/utils';
+import { getParentEntityName } from '../utils';
 
 export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.Params,
@@ -18,7 +19,7 @@ export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.ReqQuery
 >;
 
-const ANSWER_COLUMNS = ['text', 'question_id'];
+const ANSWER_COLUMNS = ['text', 'question_id', 'type'];
 
 const DEFAULT_FIELDS = [
   'assessor_name',
@@ -33,11 +34,13 @@ const DEFAULT_FIELDS = [
   'country.code',
   'survey.permission_group_id',
   'timezone',
+  'survey.project_id',
 ];
+
+type AnswerT = string | number | boolean | null | undefined | { name: string; id: string };
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 
-// If the user is not a BES admin or does not have access to the admin panel, they should not be able to view the survey response
 const assertCanViewSurveyResponse = (
   accessPolicy: AccessPolicy,
   countryCode: string,
@@ -48,14 +51,9 @@ const assertCanViewSurveyResponse = (
     return true;
   }
 
-  const hasAdminPanelAccess = accessPolicy.allowsSome(
-    undefined,
-    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  );
-
+  // The user must have access to the country with the survey permission group
   const hasAccessToCountry = accessPolicy.allows(countryCode, surveyPermissionGroupName);
-  // The user must have access to the admin panel AND the country with the survey permission group
-  if (!hasAdminPanelAccess && !hasAccessToCountry) {
+  if (!hasAccessToCountry) {
     throw new PermissionsError('You do not have access to view this survey response');
   }
 
@@ -85,6 +83,7 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       user_id: userId,
       'country.code': countryCode,
       'survey.permission_group_id': surveyPermissionGroupId,
+      'survey.project_id': projectId,
       ...response
     } = surveyResponse;
 
@@ -97,20 +96,32 @@ export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest
       assertCanViewSurveyResponse(accessPolicy, countryCode, permissionGroup.name);
     }
 
+    const entityParentName = await getParentEntityName(models, projectId, response['entity.id']);
+
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },
       columns: ANSWER_COLUMNS,
       pageSize: 'ALL',
     });
-    const answers = answerList.reduce(
-      (output: Record<string, string>, answer: { question_id: string; text: string }) => ({
-        ...output,
-        [answer.question_id]: answer.text,
-      }),
-      {},
-    );
+
+    const answers: Record<string, AnswerT> = {};
+    for (const answer of answerList) {
+      const { question_id: questionId, type, text } = answer;
+      if (!text) continue;
+      if (type === QuestionType.User) {
+        const user = await models.user.findById(text);
+        if (!user) {
+          // Log the error but continue to the next answer. This is in case the user was deleted
+          console.error(`User with id ${text} not found`);
+          continue;
+        }
+        answers[questionId] = { id: user.id, name: user.full_name };
+        continue;
+      }
+      answers[questionId] = text;
+    }
 
     // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
-    return camelcaseKeys({ ...response, userId, answers });
+    return camelcaseKeys({ ...response, countryCode, entityParentName, userId, answers });
   }
 }

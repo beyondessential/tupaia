@@ -56,6 +56,7 @@ const StyledSmallAlert = styled(StyledAlert)`
   padding-block: 0;
   padding-inline: 1rem;
   box-shadow: none;
+  word-break: break-word;
 
   .MuiAlert-icon {
     padding: 0.5rem 0;

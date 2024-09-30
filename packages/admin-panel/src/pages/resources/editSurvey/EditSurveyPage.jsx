@@ -8,7 +8,7 @@ import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
-import { Button, SpinningLoader } from '@tupaia/ui-components';
+import { Button, SpinningLoader, Modal } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
 import { useValidationScroll, withConnectedEditor } from '../../../editor';
@@ -16,7 +16,6 @@ import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
 import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
-import { Modal } from '../../../widgets';
 import { useLinkToPreviousSearchState } from '../../../utilities';
 
 const Wrapper = styled.div`

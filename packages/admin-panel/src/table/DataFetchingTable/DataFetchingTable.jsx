@@ -145,6 +145,7 @@ const DataFetchingTableComponent = memo(
         Header: actionLabel || 'Action',
         maxWidth: buttonWidths,
         width: buttonWidths,
+        disableSortBy: true,
         // eslint-disable-next-line react/prop-types
         Cell: ({ row }) => {
           return (
@@ -221,7 +222,6 @@ const DataFetchingTableComponent = memo(
         <FilterableTable
           columns={formattedColumns}
           data={data}
-          isLoading={isChangingDataOnServer}
           pageIndex={pageIndex}
           pageSize={pageSize}
           sorting={sortingToUse}
@@ -234,8 +234,6 @@ const DataFetchingTableComponent = memo(
           onChangePage={onPageChange}
           onChangePageSize={onPageSizeChange}
           onChangeSorting={onSortedChange}
-          refreshData={onRefreshData}
-          errorMessage={errorMessage}
           totalRecords={totalRecords}
         />
 
@@ -244,7 +242,7 @@ const DataFetchingTableComponent = memo(
           onConfirm={onConfirmAction}
           onCancel={onCancelAction}
           title={deleteConfig?.title || `Delete ${singular}`}
-          heading={deleteConfig?.heading || `You are about to delete this ${singular}`}
+          heading={deleteConfig?.heading ?? `You are about to delete this ${singular}`}
           description={
             deleteConfig?.description ||
             `Are you sure you would like to delete this ${singular}? This cannot be undone.`
