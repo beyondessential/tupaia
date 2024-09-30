@@ -66,13 +66,13 @@ const ButtonWrapper = styled.div`
     line-height: 1.1;
     padding: 0.75rem;
     &:last-child {
-      margin-block-start: 0.625rem;
+      margin-block-start: 0.5rem;
     }
   }
 `;
 
 const TextWrapper = styled.div`
-  margin-block-end: 1rem;
+  margin-block-end: 0.7rem;
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -107,8 +107,8 @@ const SurveysImage = styled.img`
   align-items: center;
   top: 50%;
   transform: translateY(-50%);
-  right: 1rem;
-  height: 100%;
+  right: 0rem;
+  height: 130%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     right: -1rem;
