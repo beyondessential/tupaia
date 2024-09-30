@@ -170,6 +170,9 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'mapOverlayVisualisations',
     multiple: true,
+    accept: {
+      'application/json': ['.json'],
+    },
   },
   getFinishedMessage: response => (
     <>
