@@ -62,8 +62,18 @@ const Text = styled(Typography)`
   &:not(:last-child) {
     margin-bottom: 0.2rem;
   }
+  &:last-child {
+    border-top: 1px solid ${({ theme }) => theme.palette.divider};
+    padding-block: 0.5rem;
+    margin-block-start: 0.4rem;
+  }
   ${DESKTOP_MEDIA_QUERY} {
     padding-inline: 0;
+    &:last-child {
+      border-top: none;
+      padding-block: 0;
+      margin-block-start: 0;
+    }
   }
 `;
 
