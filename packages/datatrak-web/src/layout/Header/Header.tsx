@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { PageContainer } from '../../components';
 import { HEADER_HEIGHT } from '../../constants';
 import { UserMenu } from '../UserMenu';
-import { LogoButton } from './LogoButton';
+import { HeaderLeft } from './HeaderLeft';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
@@ -31,7 +31,7 @@ export const Header = () => {
   return (
     <Wrapper>
       <Container>
-        <LogoButton />
+        <HeaderLeft />
         <UserMenu />
       </Container>
     </Wrapper>

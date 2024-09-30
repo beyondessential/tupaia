@@ -12,7 +12,7 @@ import { LeaderboardSection } from './LeaderboardSection';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
 import { TasksSection } from './TasksSection';
-import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
+import { LARGE_DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
 import { useCurrentUserRecentSurveys } from '../../api';
 
 const PageContainer = styled(BasePageContainer)`
@@ -104,7 +104,7 @@ const Grid = styled.div<{
     }
   }
 
-  ${DESKTOP_MEDIA_QUERY} {
+  ${LARGE_DESKTOP_MEDIA_QUERY} {
     gap: 1.81rem;
   }
 `;
