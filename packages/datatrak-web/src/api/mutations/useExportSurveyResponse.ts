@@ -3,8 +3,9 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { useMutation } from '@tanstack/react-query';
-import { API_URL, post } from '../api';
 import download from 'downloadjs';
+import { API_URL, post } from '../api';
+import { successToast } from '../../utils';
 
 // Requests a survey response PDF export from the server, and returns the response
 export const useExportSurveyResponse = (surveyResponseId: string) => {
@@ -27,6 +28,7 @@ export const useExportSurveyResponse = (surveyResponseId: string) => {
     {
       onSuccess: data => {
         download(data, `survey_response_${surveyResponseId}.pdf`);
+        successToast('Survey response downloaded');
       },
     },
   );
