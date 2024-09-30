@@ -16,11 +16,12 @@ import {
   TableRow,
 } from '@material-ui/core';
 import { UserRewards } from '../../types';
+import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 const TableContainer = styled(MuiTableContainer)`
   font-variant-numeric: tabular-nums;
   height: 100%;
-  padding: 1rem 1.6rem;
+  padding: 0.7rem 1rem;
 
   table {
     height: 100%;
@@ -37,9 +38,33 @@ const TableContainer = styled(MuiTableContainer)`
     vertical-align: baseline;
   }
 
-  table th,
   table td {
-    padding: 0.5rem 1rem;
+    padding-inline: 0.5rem;
+    padding-block: 0.5rem 0.2rem;
+    font-size: 0.75rem;
+  }
+  tbody tr:last-child {
+    td {
+      padding-block-end: 0.5rem;
+    }
+  }
+  th {
+    padding-block-start: 0;
+    padding-block-end: 0.5rem;
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
+  }
+  tfoot td {
+    padding-block-end: 0;
+  }
+  ${DESKTOP_MEDIA_QUERY} {
+    padding: 1rem 1.6rem;
+    table th,
+    table td {
+      font-size: 0.875rem;
+      padding-inline: 1rem;
+      padding-block: 0.5rem;
+    }
   }
 `;
 
