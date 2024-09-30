@@ -1,8 +1,12 @@
 import pick from 'lodash.pick';
+import { MatrixEntityCell } from '@tupaia/types';
 import { TransformTable } from '../../../transform';
-
 import { Row } from '../../../types';
 import { MatrixParams, Matrix } from './types';
+
+function isMatrixEntityCell(cell: unknown): cell is MatrixEntityCell {
+  return typeof cell === 'object' && cell !== null && 'entityLabel' in cell && 'entityCode' in cell;
+}
 
 /** TODO: currently we are using 'dataElement' as a key in rows to specify row field (name),
  * eventually we want to change Tupaia front end logic to use 'rowField' instead of 'dataElement'
@@ -36,16 +40,35 @@ export class MatrixBuilder {
      * eventually we want to refactor Tupaia frontend logic to render columns with an array formatted as
      *                  '[ ${columnName} ]'
      */
-    const assignColumnSetToMatrixData = (columns: string[]) => {
-      this.matrixData.columns = columns.map(c => ({ key: c, title: c }));
+    const assignColumnSetToMatrixData = (columns: (string | MatrixEntityCell)[]) => {
+      this.matrixData.columns = columns.map(c => {
+        if (isMatrixEntityCell(c)) {
+          return {
+            key: c.entityLabel,
+            title: c.entityLabel,
+            entityCode: c.entityCode,
+          };
+        }
+        return { key: c as string, title: c as string };
+      });
     };
 
-    const getRemainingFieldsFromRows = (includeFields: string[], excludeFields: string[]) => {
-      return this.table
-        .getColumns()
-        .filter(
-          columnName => !excludeFields.includes(columnName) && !includeFields.includes(columnName),
+    const getRemainingFieldsFromRows = (
+      includeFields: (string | MatrixEntityCell)[],
+      excludeFields: string[],
+    ) => {
+      const entityFields = includeFields.filter(field =>
+        isMatrixEntityCell(field),
+      ) as MatrixEntityCell[];
+      const entityFieldNames = entityFields.map(field => field.entityLabel);
+
+      return this.table.getColumns().filter((columnName: string) => {
+        return (
+          !entityFieldNames.includes(columnName) &&
+          !excludeFields.includes(columnName) &&
+          !includeFields.includes(columnName)
         );
+      });
     };
 
     const { includeFields, excludeFields } = this.params.columns;
@@ -74,12 +97,16 @@ export class MatrixBuilder {
       }
       rows.push(newRows);
     });
-
     this.matrixData.rows = rows;
   }
 
   private adjustRowsToUseIncludedColumns() {
-    const { includeFields } = this.params.columns;
+    const includeFields = this.params.columns.includeFields.map(field => {
+      if (isMatrixEntityCell(field)) {
+        return field.entityLabel;
+      }
+      return field;
+    });
     const newRows: Row[] = [];
 
     if (includeFields.includes('*')) {

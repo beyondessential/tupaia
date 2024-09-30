@@ -23,6 +23,8 @@ export {
   CartesianChartConfig,
   ValueType,
   MatrixConfig,
+  MatrixVizBuilderConfig,
+  MatrixEntityCell,
   PresentationOptionCondition,
   MatrixPresentationOptions,
   ConditionsObject,
