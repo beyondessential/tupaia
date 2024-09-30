@@ -13,8 +13,9 @@ import { Typography } from '@material-ui/core';
 import { useSearchParams } from 'react-router-dom';
 
 const QuestionWrapper = styled.div`
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid #ccc;
   page-break-inside: avoid;
+  max-width: 500px;
 
   & + & {
     margin-block-start: 1.125rem;
@@ -22,9 +23,11 @@ const QuestionWrapper = styled.div`
 `;
 
 const InstructionQuestionText = styled(Typography)`
+  max-width: 500px;
   font-size: 0.875rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   line-height: 1.5;
+  margin-block: 1.5rem;
 `;
 
 const QuestionLabel = styled(Typography)`
@@ -38,7 +41,6 @@ const SmallText = styled(Typography)`
 
 const Answer = styled(SmallText)`
   margin-block: 0.75rem 0.3rem;
-  margin-inline: 0.25rem;
 `;
 
 const useDisplayAnswer = (type, answer, options, optionSetId) => {
