@@ -9,6 +9,8 @@ import { Typography } from '@material-ui/core';
 import { SurveyIcon, Tile, LoadingTile } from '../../components';
 import { useCurrentUserRecentSurveys } from '../../api';
 import { SectionHeading } from './SectionHeading';
+import { DESKTOP_MEDIA_QUERY, MOBILE_MEDIA_QUERY } from '../../constants';
+import { ResponsiveScrollBody } from './ResponsiveScrollBody';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -16,29 +18,13 @@ const RecentSurveys = styled.section`
   flex-direction: column;
 `;
 
-const ScrollBody = styled.div<{
+const ScrollBody = styled(ResponsiveScrollBody)<{
   $hasMoreThanOneSurvey: boolean;
 }>`
-  border-radius: 10px;
-  display: grid;
-  grid-template-columns: ${({ $hasMoreThanOneSurvey }) =>
-    $hasMoreThanOneSurvey ? ' repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr))' : '1fr'};
-  grid-column-gap: 1rem;
-  grid-row-gap: 0.6rem;
-
-  // make a vertical scrollable container for medium screens (tablet)
-  ${({ theme }) => theme.breakpoints.down('md')} {
-    grid-template-columns: 1fr;
-    overflow: auto;
-  }
-  // make a horizontal scrollable container for small screens
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    grid-auto-flow: column;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    overflow: auto;
-    > .MuiButton-root {
-      min-width: 15rem;
-    }
+  // make the 2 row grid on desktop
+  ${DESKTOP_MEDIA_QUERY} {
+    grid-template-columns: ${({ $hasMoreThanOneSurvey }) =>
+      $hasMoreThanOneSurvey ? ' repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr))' : '1fr'};
   }
 `;
 

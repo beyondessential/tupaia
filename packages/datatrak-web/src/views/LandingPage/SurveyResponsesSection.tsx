@@ -10,27 +10,13 @@ import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api'
 import { displayDate } from '../../utils';
 import { LoadingTile, SurveyTickIcon, Tile } from '../../components';
 import { SectionHeading } from './SectionHeading';
+import { DESKTOP_MEDIA_QUERY } from '../../constants';
+import { ResponsiveScrollBody } from './ResponsiveScrollBody';
 
 const Container = styled.section`
   grid-area: recentResponses;
   display: flex;
   flex-direction: column;
-`;
-
-const ScrollBody = styled.div`
-  overflow: auto;
-  > span {
-    margin-bottom: 0.6rem;
-  }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: flex;
-    flex-direction: row;
-
-    > span {
-      min-width: 15rem;
-      margin-right: 1rem;
-    }
-  }
 `;
 
 export const SurveyResponsesSection = () => {
@@ -40,7 +26,7 @@ export const SurveyResponsesSection = () => {
   return (
     <Container>
       <SectionHeading>Submission history</SectionHeading>
-      <ScrollBody>
+      <ResponsiveScrollBody>
         {isLoading && <LoadingTile count={15} />}
         {isSuccess && (
           <>
@@ -70,7 +56,7 @@ export const SurveyResponsesSection = () => {
             )}{' '}
           </>
         )}
-      </ScrollBody>
+      </ResponsiveScrollBody>
     </Container>
   );
 };

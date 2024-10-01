@@ -12,7 +12,7 @@ import { LeaderboardSection } from './LeaderboardSection';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
 import { TasksSection } from './TasksSection';
-import { LARGE_DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
+import { LARGE_DESKTOP_MEDIA_QUERY, HEADER_HEIGHT, DESKTOP_MEDIA_QUERY } from '../../constants';
 import { useCurrentUserRecentSurveys } from '../../api';
 
 const PageContainer = styled(BasePageContainer)`
@@ -33,7 +33,7 @@ const PageBody = styled.div`
   margin: 0 auto;
   height: auto;
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
+  ${DESKTOP_MEDIA_QUERY} {
     height: calc(100vh - ${HEADER_HEIGHT});
     padding: 0.2rem 1rem 0.8rem;
   }
@@ -45,7 +45,6 @@ const Grid = styled.div<{
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-top: 1rem;
   min-height: 0; // This is needed to stop the grid overflowing the flex container
   max-width: 100%;
   margin-inline: auto;
@@ -61,28 +60,9 @@ const Grid = styled.div<{
     }
   }
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    max-width: 38rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
+  ${DESKTOP_MEDIA_QUERY} {
+    margin-top: 1rem;
     display: grid;
-    gap: 1.25rem;
-    grid-template-rows: 20rem auto auto;
-    grid-template-columns: 2fr 1fr;
-    grid-template-areas:
-      'surveySelect tasks'
-      'recentSurveys recentResponses'
-      'activityFeed leaderboard';
-    max-width: none;
-
-    > section {
-      margin: 0;
-      height: auto;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
     grid-template-rows: ${({ $hasMoreThanOneSurvey }) =>
       $hasMoreThanOneSurvey ? '10.5rem auto auto' : '10.5rem 7rem auto'};
     grid-template-columns: 23% 1fr 1fr 30%;
