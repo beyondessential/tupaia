@@ -22,10 +22,11 @@ const SectionContainer = styled.section`
   justify-content: space-between;
   overflow: visible !important;
   height: max-content;
-
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-block-start: 1.3rem !important;
+  }
+  ${({ theme }) => theme.breakpoints.up('lg')} {
     padding: 1rem 3rem 1rem 2.2rem;
-    margin-block-start: 2.1rem !important;
   }
 `;
 
@@ -78,11 +79,11 @@ const TextWrapper = styled.div`
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-block-end: 0;
     max-width: 75%;
-    padding-inline: 2rem 4rem;
+    padding-inline: 1rem 4rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-inline-end: 1rem;
+    padding-inline: 2rem 1rem;
     max-width: 80%;
   }
 `;
@@ -112,10 +113,10 @@ const SurveysImage = styled.img`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     right: -1rem;
+    height: 130%;
   }
-
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    height: 160%;
+    height: 140%;
   }
 `;
 

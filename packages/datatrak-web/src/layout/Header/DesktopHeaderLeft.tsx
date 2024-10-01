@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
 import { Button } from '../../components';
-import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
+import { HEADER_HEIGHT } from '../../constants';
 
 const Logo = styled(Button)`
   height: ${HEADER_HEIGHT};
@@ -26,7 +26,7 @@ const Logo = styled(Button)`
       max-height: 100%;
     }
   }
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: block;
   }
 `;

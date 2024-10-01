@@ -10,14 +10,13 @@ import { useCurrentProjectActivityFeed } from '../../../api/queries';
 import { PinIcon as BasePinIcon } from '../../../components';
 import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
 import { ActivityFeedItem } from './ActivityFeedItem';
-import { DESKTOP_MEDIA_QUERY } from '../../../constants';
 
 const PinIcon = styled(BasePinIcon)`
   position: absolute;
   top: 1.5rem;
   left: 1.3rem;
   font-size: 1rem;
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     left: -1.3rem;
   }
 `;

@@ -5,7 +5,6 @@
 
 import styled from 'styled-components';
 import { ListItem, ListItemProps } from '@material-ui/core';
-import { DESKTOP_MEDIA_QUERY } from '../../../constants';
 
 export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
   color: ${({ theme }) => theme.palette.text.primary};
@@ -34,7 +33,7 @@ export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
   &:focus {
     text-decoration: none;
   }
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1.12rem 0.6rem 0.75rem 0;
     &:not(:last-child) {
       border-bottom: 1px solid ${({ theme }) => theme.palette.divider};

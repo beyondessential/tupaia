@@ -9,7 +9,6 @@ import { Typography } from '@material-ui/core';
 import { SurveyIcon, Tile, LoadingTile } from '../../components';
 import { useCurrentUserRecentSurveys } from '../../api';
 import { SectionHeading } from './SectionHeading';
-import { DESKTOP_MEDIA_QUERY, MOBILE_MEDIA_QUERY } from '../../constants';
 import { ResponsiveScrollBody } from './ResponsiveScrollBody';
 
 const RecentSurveys = styled.section`
@@ -22,7 +21,8 @@ const ScrollBody = styled(ResponsiveScrollBody)<{
   $hasMoreThanOneSurvey: boolean;
 }>`
   // make the 2 row grid on desktop
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    grid-auto-flow: row;
     grid-template-columns: ${({ $hasMoreThanOneSurvey }) =>
       $hasMoreThanOneSurvey ? ' repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr))' : '1fr'};
   }

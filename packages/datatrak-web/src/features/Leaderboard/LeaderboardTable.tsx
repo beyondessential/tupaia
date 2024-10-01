@@ -16,7 +16,6 @@ import {
   TableRow,
 } from '@material-ui/core';
 import { UserRewards } from '../../types';
-import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 const TableContainer = styled(MuiTableContainer)`
   font-variant-numeric: tabular-nums;
@@ -57,7 +56,7 @@ const TableContainer = styled(MuiTableContainer)`
   tfoot td {
     padding-block-end: 0;
   }
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1rem 1.6rem;
     table th,
     table td {

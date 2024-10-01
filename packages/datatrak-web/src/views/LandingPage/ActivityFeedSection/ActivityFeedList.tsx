@@ -12,14 +12,13 @@ import { ActivityFeedSurveyItem } from './ActivityFeedSurveyItem';
 import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
 import { PinnedFeedItem } from './PinnedFeedItem';
 import { ActivityFeedItem } from './ActivityFeedItem';
-import { DESKTOP_MEDIA_QUERY } from '../../../constants';
 
 const List = styled.ul`
   border-radius: 10px;
   padding: 0;
   margin: 0;
   flex: 1;
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 0 1.8rem;
   }
 `;

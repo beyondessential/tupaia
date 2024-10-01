@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
-import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
+import { HEADER_HEIGHT } from '../../constants';
 import { IconButton, Typography } from '@material-ui/core';
 import { useCurrentUserContext } from '../../api';
 import { ChangeProjectButton } from '../../components';
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   max-width: 80%;
   padding-block: 1rem;
 
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
 `;

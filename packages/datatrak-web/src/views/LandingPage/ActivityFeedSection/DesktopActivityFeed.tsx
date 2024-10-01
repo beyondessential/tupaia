@@ -6,15 +6,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { InfiniteActivityFeed } from './InfiniteActivityFeed';
-import { DESKTOP_MEDIA_QUERY } from '../../../constants';
 
 const Wrapper = styled.div`
-  display: none;
+  display: flex;
   height: 100%;
   overflow: hidden;
   flex: 1;
-  ${DESKTOP_MEDIA_QUERY} {
-    display: flex;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 

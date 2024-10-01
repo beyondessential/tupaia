@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { Typography, Box, Paper } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Button } from './Button';
-import { DESKTOP_MEDIA_QUERY } from '../constants';
 
 const Wrapper = styled(Paper).attrs({
   elevation: 0,
@@ -44,7 +43,7 @@ const ButtonWrapper = styled(Wrapper).attrs({
   &:hover {
     background-color: ${({ theme }) => theme.palette.primaryHover};
   }
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding-inline: 1rem;
     padding-block: 0.8rem;
   }
@@ -67,7 +66,7 @@ const Text = styled(Typography)`
     padding-block: 0.5rem;
     margin-block-start: 0.4rem;
   }
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding-inline: 0;
     &:last-child {
       border-top: none;
@@ -98,7 +97,7 @@ const ButtonContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     // To make ellipsis work on the text, we need to set a max-width, and by adding calc(90%) we can make it responsive as well because calc converts the percentage to pixels
     max-width: calc(90%);
@@ -108,7 +107,7 @@ const ButtonContent = styled.div`
 const TextWrapper = styled(Box)`
   margin-block-start: 0.2rem;
   width: 100%;
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     margin-block-start: 0;
   }
 `;
@@ -117,7 +116,7 @@ const ContentItem = styled.div`
   width: 100%;
   padding-inline: 1rem;
 
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     width: auto;
     padding-inline: 0;
   }

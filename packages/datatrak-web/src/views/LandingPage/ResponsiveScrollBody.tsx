@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 export const ResponsiveScrollBody = styled.div`
   display: grid;
@@ -9,14 +8,8 @@ export const ResponsiveScrollBody = styled.div`
   grid-row-gap: 0.6rem;
   grid-template-rows: 1fr;
   grid-auto-flow: column;
-  > * {
+  .MuiButtonBase-root {
     width: 18rem;
-  }
-
-  ${DESKTOP_MEDIA_QUERY} {
-    grid-auto-flow: row;
-    > span {
-      width: 100%;
-    }
+    max-width: 100%;
   }
 `;

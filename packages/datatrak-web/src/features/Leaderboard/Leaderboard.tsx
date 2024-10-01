@@ -30,7 +30,7 @@ export const Leaderboard = () => {
   const { data: userRewards, isSuccess } = useUserRewards();
   const { data: leaderboard } = useLeaderboard(user.projectId);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   let leaderboardList = leaderboard ?? [];
 
   if (isMobile && leaderboard) {

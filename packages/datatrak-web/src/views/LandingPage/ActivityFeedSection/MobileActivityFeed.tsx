@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../../constants';
+import { HEADER_HEIGHT } from '../../../constants';
 import { ActivityFeedList } from './ActivityFeedList';
 import { useCurrentProjectActivityFeed } from '../../../api';
 import { Button } from '../../../components';
@@ -15,7 +15,7 @@ import { StickyMobileHeader } from '../../../layout';
 import { InfiniteActivityFeed } from './InfiniteActivityFeed';
 
 const Wrapper = styled.div`
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
 `;

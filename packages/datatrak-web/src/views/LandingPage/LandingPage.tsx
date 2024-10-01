@@ -12,7 +12,7 @@ import { LeaderboardSection } from './LeaderboardSection';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
 import { TasksSection } from './TasksSection';
-import { LARGE_DESKTOP_MEDIA_QUERY, HEADER_HEIGHT, DESKTOP_MEDIA_QUERY } from '../../constants';
+import { HEADER_HEIGHT } from '../../constants';
 import { useCurrentUserRecentSurveys } from '../../api';
 
 const PageContainer = styled(BasePageContainer)`
@@ -33,8 +33,8 @@ const PageBody = styled.div`
   margin: 0 auto;
   height: auto;
 
-  ${DESKTOP_MEDIA_QUERY} {
-    height: calc(100vh - ${HEADER_HEIGHT});
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    height: calc(100vh - ${HEADER_HEIGHT} - 1rem);
     padding: 0.2rem 1rem 0.8rem;
   }
 `;
@@ -48,6 +48,7 @@ const Grid = styled.div<{
   min-height: 0; // This is needed to stop the grid overflowing the flex container
   max-width: 100%;
   margin-inline: auto;
+  margin-block: 1.3rem;
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
@@ -60,11 +61,12 @@ const Grid = styled.div<{
     }
   }
 
-  ${DESKTOP_MEDIA_QUERY} {
-    margin-top: 1rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    gap: 1.5rem;
     display: grid;
+    margin-block: 0.5rem;
     grid-template-rows: ${({ $hasMoreThanOneSurvey }) =>
-      $hasMoreThanOneSurvey ? '10.5rem auto auto' : '10.5rem 7rem auto'};
+      $hasMoreThanOneSurvey ? 'auto auto auto' : 'auto 7rem auto'};
     grid-template-columns: 23% 1fr 1fr 30%;
     grid-template-areas: ${({ $hasMoreThanOneSurvey }) => {
       //If there is < 2 surveys, the recentSurveys section will be smaller and the activity feed will shift upwards on larger screens
@@ -80,13 +82,18 @@ const Grid = styled.div<{
         'recentResponses activityFeed activityFeed leaderboard'
         `;
     }};
+    > section {
+      &:not(:last-child) {
+        margin-bottom: 0;
+      }
+    }
 
     > div {
       min-height: auto;
     }
   }
 
-  ${LARGE_DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('lg')} {
     gap: 1.81rem;
   }
 `;

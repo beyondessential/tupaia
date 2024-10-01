@@ -9,7 +9,6 @@ import { Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
 import { MarkdownFeedItem } from '../../../types';
 import { displayDate } from '../../../utils';
-import { DESKTOP_MEDIA_QUERY } from '../../../constants';
 
 const Wrapper = styled.div`
   display: flex;
@@ -40,7 +39,7 @@ const Header = styled.div<{
   margin-bottom: 0.6rem;
   display: flex;
   padding-inline-start: ${({ $isPinned }) => ($isPinned ? '1rem' : '0')};
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding-inline-start: 0;
   }
 `;

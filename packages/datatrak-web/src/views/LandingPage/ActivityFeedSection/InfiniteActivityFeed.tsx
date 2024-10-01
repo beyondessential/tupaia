@@ -9,7 +9,6 @@ import { useCurrentProjectActivityFeed } from '../../../api/queries';
 import { InfiniteScroll } from './InfiniteScroll';
 import { SkeletonFeed } from './SkeletonFeed';
 import { ActivityFeedList } from './ActivityFeedList';
-import { DESKTOP_MEDIA_QUERY } from '../../../constants';
 
 const Body = styled.div`
   flex: 1;
@@ -17,7 +16,7 @@ const Body = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 0.625rem;
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     background: ${({ theme }) => theme.palette.background.paper};
   }
 `;

@@ -14,14 +14,6 @@ const ActivityFeed = styled.section`
   display: flex;
   flex-direction: column;
   height: auto;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    height: 25rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    margin-left: 1rem;
-    margin-right: 1rem;
-  }
 `;
 
 export const ActivityFeedSection = () => {

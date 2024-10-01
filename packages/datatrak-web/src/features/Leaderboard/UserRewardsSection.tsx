@@ -8,14 +8,13 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Coconut, Pig } from '../../components';
 import { UserRewards } from '../../types';
-import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   padding: 0.6rem 2rem;
   border-bottom: 1px solid ${props => props.theme.palette.divider};
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1.5rem 2.2rem;
   }
 `;
@@ -28,7 +27,7 @@ const UserRewardItem = styled.div`
   }
   svg {
     font-size: 1.3rem;
-    ${DESKTOP_MEDIA_QUERY} {
+    ${({ theme }) => theme.breakpoints.up('md')} {
       font-size: 1.8rem;
     }
   }
@@ -71,7 +70,7 @@ const AnimatedPig = styled(Pig)`
   }
 
   // stop the animation on desktop
-  ${DESKTOP_MEDIA_QUERY} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     animation: none;
   }
 `;
