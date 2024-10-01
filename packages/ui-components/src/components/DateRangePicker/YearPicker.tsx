@@ -157,10 +157,6 @@ export const YearPicker = ({
   };
 
   const getSelectedOption = () => {
-    if (!dateOffset) {
-      return momentToYear(momentDateValue);
-    }
-
     const applicableOption = yearOptions.find(option => {
       const { startDate, endDate } = option;
       if (valueKey === 'startDate') {
