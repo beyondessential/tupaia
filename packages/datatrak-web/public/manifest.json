@@ -1,0 +1,59 @@
+{
+  "name": "Tupaia",
+  "short_name": "Tupaia",
+  "theme_color": "#ffcbe4",
+  "background_color": "#fa99ca",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "description": "Pacific Health Information System",
+  "screenshots": [
+    {
+      "src": "screenshots/login.png",
+      "sizes": "2000x1000",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Login"
+    },
+    {
+      "src": "screenshots/dashboard.png",
+      "sizes": "2000x1000",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard"
+    },
+    {
+      "src": "screenshots/login-mobile.png",
+      "sizes": "381x667",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Login Mobile"
+    }
+  ],
+  "icons": [
+    {
+      "src": "icons/manifest-icon-192.maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/manifest-icon-192.maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
