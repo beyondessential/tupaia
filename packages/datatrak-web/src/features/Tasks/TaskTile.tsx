@@ -18,7 +18,8 @@ const TileContainer = styled(Link)`
   justify-content: space-between;
   text-decoration: none;
   border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
+  background-color: ${({ theme }) => theme.palette.background.paper};
+
   width: 100%;
   padding: 0.4rem 0.7rem;
   margin-block-end: 0.5rem;
@@ -29,6 +30,10 @@ const TileContainer = styled(Link)`
 
   .MuiButton-label {
     font-size: 0.75rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 
   @media screen and (max-width: 30rem) {

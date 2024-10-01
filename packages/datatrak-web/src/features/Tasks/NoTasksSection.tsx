@@ -70,10 +70,12 @@ const MobileContainer = styled.div`
     text-align: left;
     margin-inline-end: 1rem;
     margin-block-end: 0;
+    font-size: 0.75rem;
   }
 
   a.MuiButtonBase-root {
     display: inline-block;
+    margin-block-end: 0;
   }
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
@@ -83,6 +85,9 @@ const MobileContainer = styled.div`
 const Mobile = () => (
   <MobileContainer>
     <Text>You have no tasks to complete.</Text>
+    <Button to={ROUTES.TASKS} component={Link}>
+      View all tasks
+    </Button>
   </MobileContainer>
 );
 

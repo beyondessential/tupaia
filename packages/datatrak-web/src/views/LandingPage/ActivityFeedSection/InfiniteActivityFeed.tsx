@@ -15,8 +15,9 @@ const Body = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-radius: 0.625rem;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    border-radius: 0.625rem;
     background: ${({ theme }) => theme.palette.background.paper};
   }
 `;

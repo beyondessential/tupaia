@@ -14,7 +14,7 @@ const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https:
 const SectionContainer = styled.section`
   grid-area: surveySelect;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  border-radius: 0.625rem;
+
   padding: 1rem;
   display: flex;
   position: relative;
@@ -24,6 +24,7 @@ const SectionContainer = styled.section`
   height: max-content;
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-block-start: 1.3rem !important;
+    border-radius: 0.625rem;
   }
   ${({ theme }) => theme.breakpoints.up('lg')} {
     padding: 1rem 3rem 1rem 2.2rem;
