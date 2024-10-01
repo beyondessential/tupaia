@@ -133,13 +133,18 @@ export const YearPicker = ({
     const startDate = getOffsetStartDateForYear(y, granularity, dateOffset);
     const endDate = getOffsetEndDateForYear(y, startDate, granularity, dateOffset);
     // use the correct year based on the valueKey
-    const yearToUse = valueKey === 'startDate' ? startDate : endDate;
+    let yearToUse = y;
+
+    if (dateOffset) {
+      const keyDate = valueKey === 'startDate' ? startDate : endDate;
+      yearToUse = keyDate.year();
+    }
 
     if (startDate.isAfter(maxMomentDate)) {
       continue;
     }
     yearOptions.push({
-      value: yearToUse.year(),
+      value: yearToUse,
       displayLabel,
       startDate,
       endDate,
@@ -157,6 +162,9 @@ export const YearPicker = ({
   };
 
   const getSelectedOption = () => {
+    if (!dateOffset) {
+      return momentToYear(momentDateValue);
+    }
     const applicableOption = yearOptions.find(option => {
       const { startDate, endDate } = option;
       if (valueKey === 'startDate') {
@@ -170,7 +178,6 @@ export const YearPicker = ({
     return applicableOption[valueKey].year();
   };
   const selectedOption = getSelectedOption();
-
   return (
     <DatePicker
       label="Year"
