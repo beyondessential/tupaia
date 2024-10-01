@@ -5,15 +5,17 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import styled from 'styled-components';
 import { DialogProps, Typography } from '@material-ui/core';
+import { DatePickerOffsetSpec } from '@tupaia/types';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
+  GRANULARITY_CONFIG,
   GRANULARITY_SHAPE,
-  roundStartEndDates,
+  roundStartDate,
 } from '@tupaia/utils';
 import { Dialog, DialogHeader, DialogContent, DialogFooter } from '../Dialog';
 import { DayPicker } from './DayPicker';
@@ -24,17 +26,8 @@ import { QuarterPicker } from './QuarterPicker';
 import { Button, OutlinedButton } from '../Button';
 import { BaseDatePickerProps, WeekPickerProps, YearPickerProps } from '../../types';
 
-const {
-  DAY,
-  WEEK,
-  SINGLE_WEEK,
-  MONTH,
-  SINGLE_MONTH,
-  QUARTER,
-  SINGLE_QUARTER,
-  YEAR,
-  SINGLE_YEAR,
-} = GRANULARITIES;
+const { DAY, WEEK, SINGLE_WEEK, MONTH, SINGLE_MONTH, QUARTER, SINGLE_QUARTER, YEAR, SINGLE_YEAR } =
+  GRANULARITIES;
 
 const Container = styled.fieldset`
   display: flex;
@@ -89,7 +82,8 @@ type DateRowProps = (BaseDatePickerProps | YearPickerProps | WeekPickerProps) & 
   title?: string;
 };
 
-const DateRow = ({ title, granularity, ...props }: DateRowProps) => {
+const DateRow = ({ title, ...props }: DateRowProps) => {
+  const { granularity } = props;
   const getDatePickerComponent = () => {
     switch (granularity) {
       default:
@@ -98,7 +92,7 @@ const DateRow = ({ title, granularity, ...props }: DateRowProps) => {
           <>
             <DayPicker {...props} />
             <MonthPicker {...props} />
-            <YearPicker {...(props as YearPickerProps)} />
+            <YearPicker {...(props as YearPickerProps)} granularity={granularity} />
           </>
         );
       case SINGLE_WEEK:
@@ -106,7 +100,7 @@ const DateRow = ({ title, granularity, ...props }: DateRowProps) => {
         return (
           <>
             <WeekPicker {...props} />
-            <YearPicker {...(props as YearPickerProps)} isIsoYear />
+            <YearPicker {...(props as YearPickerProps)} isIsoYear granularity={granularity} />
           </>
         );
       case MONTH:
@@ -114,7 +108,7 @@ const DateRow = ({ title, granularity, ...props }: DateRowProps) => {
         return (
           <>
             <MonthPicker {...props} />
-            <YearPicker {...(props as YearPickerProps)} />
+            <YearPicker {...(props as YearPickerProps)} granularity={granularity} />
           </>
         );
       case QUARTER:
@@ -122,12 +116,12 @@ const DateRow = ({ title, granularity, ...props }: DateRowProps) => {
         return (
           <>
             <QuarterPicker {...props} />
-            <YearPicker {...(props as YearPickerProps)} />
+            <YearPicker {...(props as YearPickerProps)} granularity={granularity} />
           </>
         );
       case YEAR:
       case SINGLE_YEAR:
-        return <YearPicker {...(props as YearPickerProps)} />;
+        return <YearPicker {...(props as YearPickerProps)} granularity={granularity} />;
     }
   };
   return (
@@ -174,9 +168,11 @@ type DatePickerDialogProps = {
   endDate: string;
   minDate?: string;
   maxDate?: string;
-  onSetNewDates: (startDate: string, endDate: string) => void;
+  onSetNewDates: (startDate: Moment, endDate: Moment) => void;
   weekDisplayFormat?: string;
   muiDialogProps?: Omit<DialogProps, 'open' | 'onClose'>;
+  dateRangeDelimiter?: string;
+  dateOffset?: DatePickerOffsetSpec;
 };
 
 export const DatePickerDialog = ({
@@ -190,6 +186,8 @@ export const DatePickerDialog = ({
   onSetNewDates,
   weekDisplayFormat,
   muiDialogProps = {},
+  dateRangeDelimiter,
+  dateOffset,
 }: DatePickerDialogProps) => {
   const momentStartDate = moment(startDate);
   const momentEndDate = moment(endDate);
@@ -214,19 +212,29 @@ export const DatePickerDialog = ({
       return setErrorMessage('Start date must be before end date');
     }
 
-    const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
-      granularity,
-      isSingleDate ? selectedEndDate.clone() : selectedStartDate,
-      selectedEndDate,
-    );
+    const { momentUnit } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
+
+    const getStartDate = () => {
+      if (dateOffset && isSingleDate) {
+        return selectedEndDate.clone().subtract(1, momentUnit as moment.DurationInputArg2);
+      }
+      if (isSingleDate) {
+        return selectedEndDate.clone();
+      }
+      return selectedStartDate;
+    };
+
+    // calculate the rounded start date
+    const startDate = getStartDate();
+    const roundedStartDate = roundStartDate(granularity, startDate, dateOffset);
 
     // Only update if the dates have actually changed by at least one day
     if (
       !momentStartDate.isSame(roundedStartDate, 'day') ||
-      !momentEndDate.isSame(roundedEndDate, 'day')
+      !momentEndDate.isSame(selectedEndDate, 'day')
     ) {
       // Update the external control values!
-      onSetNewDates(roundedStartDate, roundedEndDate);
+      onSetNewDates(roundedStartDate, selectedEndDate);
     }
     onClose();
     return setErrorMessage('');
@@ -241,6 +249,14 @@ export const DatePickerDialog = ({
       setSelectedEndDate(momentEndDate);
     }
   }, [momentStartDate?.format('DD/MM/YYYY'), momentEndDate?.format('DD/MM/YYYY')]);
+
+  useEffect(() => {
+    if (!isSingleDate) return;
+
+    const { momentUnit } = granularity;
+    const newStartDate = selectedEndDate.clone().subtract(1, momentUnit);
+    setSelectedStartDate(newStartDate);
+  }, [selectedEndDate?.format('DD/MM/YYYY')]);
 
   return (
     <Dialog
@@ -261,6 +277,9 @@ export const DatePickerDialog = ({
             onChange={setSelectedStartDate}
             weekDisplayFormat={weekDisplayFormat}
             title="Start date"
+            dateOffset={dateOffset}
+            dateRangeDelimiter={dateRangeDelimiter}
+            valueKey="startDate"
           />
         )}
         <DateRow
@@ -271,6 +290,9 @@ export const DatePickerDialog = ({
           onChange={setSelectedEndDate}
           weekDisplayFormat={weekDisplayFormat}
           title={isSingleDate ? '' : 'End date'}
+          dateOffset={dateOffset}
+          dateRangeDelimiter={dateRangeDelimiter}
+          valueKey="endDate"
         />
         {errorMessage ? <Error>{errorMessage}</Error> : null}
       </StyledDialogContent>
