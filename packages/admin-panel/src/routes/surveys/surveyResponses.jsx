@@ -29,7 +29,7 @@ const Pill = styled.span`
 `;
 
 const ResponseStatusPill = ({ value }) => {
-  const text = value ? 'Outdated' : 'Current';
+  const text = value ? 'Archived' : 'Current';
   const color = value ? GREY : GREEN;
   return <Pill $color={color}>{text}</Pill>;
 };
@@ -131,6 +131,13 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
     type: 'resubmitSurveyResponse',
   },
   {
+    Header: 'Archive',
+    type: 'archive',
+    actionConfig: {
+      endpoint: 'surveyResponses',
+    },
+  },
+  {
     Header: 'Delete',
     type: 'delete',
     actionConfig: {
@@ -175,6 +182,10 @@ const IMPORT_CONFIG = {
       timeZone: getBrowserTimeZone(),
       respondWithEmailTimeout: 10 * 1000, // if an import doesn't finish in 10 seconds, email results
     },
+    accept: {
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    },
   },
   queryParameters: [
     {
@@ -198,6 +209,7 @@ export const surveyResponses = {
   defaultFilters: [{ id: 'outdated', value: false }],
   defaultSorting: [{ id: 'data_time', desc: true }],
   ExportModalComponent: SurveyResponsesExportModal,
+  needsBESAdminAccess: ['delete'],
   nestedViews: [
     {
       title: 'Answers',
