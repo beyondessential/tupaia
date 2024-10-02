@@ -36,9 +36,7 @@ const StyledA4Page = styled(A4Page)<{
   padding-block-end: 1cm;
 `;
 
-const PDFExportBody = styled.main`
-  margin-block-start: 36pt;
-`;
+const PDFExportBody = styled.main``;
 
 const Title = styled.h3`
   font-size: 1.25rem;
