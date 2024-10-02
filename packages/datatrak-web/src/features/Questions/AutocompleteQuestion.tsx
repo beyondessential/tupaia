@@ -67,7 +67,7 @@ export const AutocompleteQuestion = ({
   config = {},
   controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(selectedValue?.value || selectedValue || '');
   const { autocomplete = {} } = config!;
   const { attributes, createNew } = autocomplete;
   const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(
@@ -130,7 +130,8 @@ export const AutocompleteQuestion = ({
         value={selectedValue?.value || selectedValue || null}
         required={required}
         onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
-        onInputChange={throttle((_, newValue) => {
+        onInputChange={throttle((e, newValue) => {
+          if (newValue === searchValue || !e || !e.target) return;
           setSearchValue(newValue);
         }, 200)}
         inputValue={searchValue}

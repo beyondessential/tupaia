@@ -123,7 +123,7 @@ export async function updateCountryEntities(
       screen_bounds: screenBounds,
       category_code: categoryCode,
       facility_type: facilityType,
-      attributes = {},
+      attributes,
     } = entityObject;
     if (codes.includes(code)) {
       throw new ImportValidationError(
@@ -175,9 +175,12 @@ export async function updateCountryEntities(
         country_code: country.code,
         image_url: imageUrl,
         metadata: entityMetadata,
-        attributes,
       },
     );
+
+    if (attributes !== undefined) {
+      await transactingModels.entity.updateEntityAttributes(code, attributes);
+    }
     if (longitude && latitude) {
       await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });
     }

@@ -63,6 +63,7 @@ export async function exportResponsesToFile(
     surveyResponse,
     surveys,
     timeZone,
+    includeArchived = false,
   },
 ) {
   if (surveys.length === 0) {
@@ -165,8 +166,12 @@ export async function exportResponsesToFile(
   const findResponsesForSurvey = async survey => {
     const surveyResponseFindConditions = {
       survey_id: survey.id,
-      outdated: false, // only get the latest version of each survey response. Outdated responses are usually resubmissions
     };
+
+    if (includeArchived !== true && includeArchived !== 'true') {
+      surveyResponseFindConditions.outdated = false; // only get the latest version of each survey response unless includeArchived === true. Outdated responses are usually resubmissions
+    }
+
     const dataTimeCondition = getDataTimeCondition();
     if (dataTimeCondition) {
       surveyResponseFindConditions.data_time = dataTimeCondition;

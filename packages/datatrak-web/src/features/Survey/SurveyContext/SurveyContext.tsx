@@ -36,6 +36,9 @@ const defaultContext = {
   cancelModalOpen: false,
   countryCode: '',
   primaryEntityQuestion: null,
+  isResubmitScreen: false,
+  isResubmitReviewScreen: false,
+  isResubmit: false,
 } as SurveyFormContextType;
 
 const SurveyFormContext = createContext(defaultContext);
@@ -52,7 +55,11 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
   const isResponseScreen = !!urlSearchParams.get('responseId');
-  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
+  const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
+  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW) || isResubmitReviewScreen;
+  const isResubmitScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SCREEN);
+  const isResubmit =
+    !!useMatch(ROUTES.SURVEY_RESUBMIT) || isResubmitScreen || isResubmitReviewScreen;
 
   let { formData } = state;
 
@@ -101,7 +108,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
   const initialiseFormData = () => {
-    if (!surveyCode || isResponseScreen) return;
+    if (!surveyCode || isResponseScreen || isResubmit) return;
     // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
     const initialFormData = generateCodeForCodeGeneratorQuestions(
       flattenedScreenComponents,
@@ -146,6 +153,9 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
         countryCode,
         surveyCode,
         primaryEntityQuestion,
+        isResubmitScreen,
+        isResubmitReviewScreen,
+        isResubmit,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
@@ -164,10 +174,6 @@ export const useSurveyForm = () => {
   const numberOfScreens = visibleScreens?.length || 0;
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const isResubmitScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SCREEN);
-  const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
-  const isResubmit =
-    !!useMatch(ROUTES.SURVEY_RESUBMIT) || isResubmitScreen || isResubmitReviewScreen;
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
@@ -211,8 +217,5 @@ export const useSurveyForm = () => {
     getAnswerByQuestionId,
     openCancelConfirmation,
     closeCancelConfirmation,
-    isResubmitScreen,
-    isResubmitReviewScreen,
-    isResubmit,
   };
 };
