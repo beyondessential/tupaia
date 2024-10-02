@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const ResponsiveScrollBody = styled.div`
   display: grid;
-  overflow: auto;
+  overflow-x: auto;
   grid-template-columns: repeat(auto-fill, 18rem);
   grid-column-gap: 1rem;
   grid-row-gap: 0.6rem;

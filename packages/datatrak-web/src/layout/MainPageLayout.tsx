@@ -6,7 +6,7 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
-import { HEADER_HEIGHT, MOBILE_MEDIA_QUERY } from '../constants';
+import { HEADER_HEIGHT } from '../constants';
 import { Header } from '.';
 import { MobileAppPrompt, SurveyResponseModal } from '../features';
 
@@ -18,9 +18,6 @@ const PageWrapper = styled.div`
 
   + .notistack-SnackbarContainer {
     top: calc(1rem + ${HEADER_HEIGHT});
-  }
-  ${MOBILE_MEDIA_QUERY} {
-    padding-top: ${HEADER_HEIGHT};
   }
 `;
 

@@ -22,6 +22,7 @@ const ScrollBody = styled(ResponsiveScrollBody)`
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: flex;
     flex-direction: column;
+    overflow: auto;
   }
 `;
 

@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { PageContainer } from '../../components';
-import { HEADER_HEIGHT, MOBILE_MEDIA_QUERY } from '../../constants';
+import { HEADER_HEIGHT } from '../../constants';
 import { UserMenu } from '../UserMenu';
 import { HeaderLeft } from './HeaderLeft';
 
@@ -14,10 +14,6 @@ const Wrapper = styled.div`
   width: 100%;
   box-shadow: inset 0 0 1px #333;
   z-index: 10;
-  ${MOBILE_MEDIA_QUERY} {
-    position: fixed;
-    top: 0;
-  }
 `;
 
 const Container = styled(PageContainer).attrs({

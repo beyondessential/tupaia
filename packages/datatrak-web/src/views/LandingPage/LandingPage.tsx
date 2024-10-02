@@ -22,6 +22,12 @@ const PageContainer = styled(BasePageContainer)`
   }) => `linear-gradient(252deg, ${theme.palette.primary.main}24 1.92%, ${theme.palette.background.default}33 29.06%),
     linear-gradient(242deg, ${theme.palette.background.default}4d 68.02%, ${theme.palette.primary.main}28 100%);
   `};
+  height: 100%;
+  // make the container scrollable on small screens
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    max-height: calc(100vh - ${HEADER_HEIGHT});
+    overflow-y: auto;
+  }
 `;
 
 const PageBody = styled.div`
@@ -31,11 +37,12 @@ const PageBody = styled.div`
   width: 100%;
   max-width: 85rem;
   margin: 0 auto;
-  height: auto;
+  height: 100%;
 
+  // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
-    height: calc(100vh - ${HEADER_HEIGHT} - 1rem);
     padding: 0.2rem 1rem 0.8rem;
+    height: calc(100vh - ${HEADER_HEIGHT});
   }
 `;
 
