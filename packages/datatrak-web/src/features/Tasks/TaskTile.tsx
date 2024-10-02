@@ -36,17 +36,11 @@ const TileContainer = styled(Link)`
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 
-  @media screen and (max-width: 30rem) {
-    .MuiButtonBase-root {
-      padding-inline: 0.8rem;
-    }
-  }
-
-  @media screen and (max-width: 24rem) {
-    flex-direction: column;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiButtonBase-root {
       margin-block-end: 0.4rem;
       margin-block-start: 0.8rem;
+      padding-inline: 0.8rem;
     }
   }
 
@@ -76,7 +70,9 @@ const TileLeft = styled.div`
 
 const TileContent = styled.div`
   display: flex;
+  flex-wrap: wrap;
   font-size: 0.75rem;
+  gap: 0.25rem;
   color: ${({ theme }) => theme.palette.text.secondary};
   align-items: center;
 

@@ -25,12 +25,13 @@ const SectionContainer = styled.section`
 
 const Paper = styled.div`
   text-align: center;
-  border-radius: 10px;
+
   flex: 1;
   overflow: auto;
   ${({ theme }) => theme.breakpoints.up('md')} {
     background: ${({ theme }) => theme.palette.background.paper};
     padding: 1rem 1.25rem;
+    border-radius: 10px;
   }
 `;
 
