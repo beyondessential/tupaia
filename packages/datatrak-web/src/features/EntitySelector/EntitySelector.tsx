@@ -68,6 +68,7 @@ interface EntitySelectorProps {
     component?: React.ElementType;
     variant?: TypographyProps['variant'];
   };
+  noResultsMessage?: string;
 }
 
 export const EntitySelector = ({
@@ -88,6 +89,7 @@ export const EntitySelector = ({
   showSearchInput,
   legend,
   legendProps,
+  noResultsMessage,
 }: EntitySelectorProps) => {
   const { errors } = useFormContext();
   const [isDirty, setIsDirty] = useState(false);
@@ -164,6 +166,7 @@ export const EntitySelector = ({
               onSelect={onSelect}
               searchResults={disableSearch ? [] : displayResults}
               showRecentEntities={showRecentEntities}
+              noResultsMessage={noResultsMessage}
             />
           )}
         </div>
