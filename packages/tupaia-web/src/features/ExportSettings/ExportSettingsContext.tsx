@@ -15,12 +15,14 @@ type ExportSettings = {
   exportWithLabels: boolean;
   exportWithTable: boolean;
   exportWithTableDisabled: boolean;
+  separatePagePerItem: boolean;
 };
 
 type ExportSettingsContextType = ExportSettings & {
   setExportFormat: (value: ExportFormats) => void;
   setExportWithLabels: (value: boolean) => void;
   setExportWithTable: (value: boolean) => void;
+  setSeparatePagePerItem: (value: boolean) => void;
 };
 
 const defaultContext = {
@@ -28,9 +30,11 @@ const defaultContext = {
   exportWithLabels: false,
   exportWithTable: true,
   exportWithTableDisabled: false,
+  separatePagePerItem: true,
   setExportFormat: () => {},
   setExportWithLabels: () => {},
   setExportWithTable: () => {},
+  setSeparatePagePerItem: () => {},
 } as ExportSettingsContextType;
 
 // This is the context for the export settings
@@ -45,6 +49,8 @@ export const useExportSettings = () => {
     setExportFormat,
     setExportWithLabels,
     setExportWithTable,
+    separatePagePerItem,
+    setSeparatePagePerItem,
   } = useContext(ExportSettingsContext);
 
   const updateExportFormat = (e: ChangeEvent<HTMLInputElement>) =>
@@ -58,10 +64,15 @@ export const useExportSettings = () => {
     setExportWithTable(e.target.checked);
   };
 
+  const updateSeparatePagePerItem = (e: ChangeEvent<HTMLInputElement>) => {
+    setSeparatePagePerItem(e.target.value === 'true');
+  };
+
   const resetExportSettings = (dashboardItemType?: string) => {
     setExportFormat(dashboardItemType === 'matrix' ? ExportFormats.XLSX : ExportFormats.PNG);
     setExportWithLabels(false);
     setExportWithTable(true);
+    setSeparatePagePerItem(true);
   };
 
   return {
@@ -73,6 +84,8 @@ export const useExportSettings = () => {
     updateExportWithLabels,
     updateExportWithTable,
     resetExportSettings,
+    separatePagePerItem,
+    updateSeparatePagePerItem,
   };
 };
 
@@ -95,6 +108,11 @@ export const ExportSettingsContextProvider = ({
   const [exportWithTableDisabled] = useState<boolean>(
     defaultSettings?.exportWithTableDisabled || false,
   );
+
+  const [separatePagePerItem, setSeparatePagePerItem] = useState<boolean>(
+    defaultSettings?.separatePagePerItem || true,
+  );
+
   return (
     <ExportSettingsContext.Provider
       value={{
@@ -105,6 +123,8 @@ export const ExportSettingsContextProvider = ({
         setExportFormat,
         setExportWithLabels,
         setExportWithTable,
+        separatePagePerItem,
+        setSeparatePagePerItem,
       }}
     >
       {children}
