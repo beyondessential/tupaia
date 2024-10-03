@@ -180,6 +180,7 @@ export class Authenticator {
   }
 
   async saveMeditrakDevice(user, meditrakDeviceDetails) {
+    console.log('saveMeditrakDevice', user.id, meditrakDeviceDetails);
     if (!meditrakDeviceDetails) return null;
     const { installId, platform, appVersion } = meditrakDeviceDetails;
     return this.models.meditrakDevice.updateOrCreate(
@@ -188,6 +189,7 @@ export class Authenticator {
         user_id: user.id,
         platform,
         app_version: appVersion,
+        last_login: new Date(),
       },
     );
   }
