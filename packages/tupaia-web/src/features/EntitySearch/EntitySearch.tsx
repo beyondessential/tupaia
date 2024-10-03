@@ -21,16 +21,18 @@ const Container = styled.div`
   margin-right: 1rem;
   margin-top: 0.6rem;
   width: 19rem;
+  position: relative;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     width: auto;
     margin: 0;
+    position: initial;
   }
 `;
 
 const ResultsWrapper = styled.div`
   position: absolute;
   top: 100%;
-  left: 0;
+  right: 0;
   background: ${({ theme }) => theme.palette.background.paper};
   padding: 0 0.3rem 0.625rem;
   width: calc(100% + 5px);
@@ -46,6 +48,7 @@ const ResultsWrapper = styled.div`
     min-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE});
     max-height: calc(100vh - ${TOP_BAR_HEIGHT_MOBILE});
     border-radius: 0;
+    position: fixed;
   }
 `;
 
