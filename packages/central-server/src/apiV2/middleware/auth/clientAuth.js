@@ -17,7 +17,7 @@ export async function getAPIClientUser(authHeader, models) {
   const apiClient = await models.apiClient.findOne({
     username,
   });
-  const verified = await verifyPassword(secretKey, API_CLIENT_SALT, apiClient.secret_key_hash);
+  const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
   if (!verified) {
     throw new UnauthenticatedError('Incorrect client username or secret');
   }

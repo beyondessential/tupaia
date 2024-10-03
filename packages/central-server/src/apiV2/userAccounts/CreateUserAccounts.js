@@ -1,17 +1,15 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
+import { encryptPassword, generateSecretKey } from '@tupaia/auth';
 import { CreateHandler } from '../CreateHandler';
 import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   assertAdminPanelAccess,
   assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
-  hasTupaiaAdminPanelAccessToCountry,
 } from '../../permissions';
 
 /**
@@ -46,7 +44,7 @@ export class CreateUserAccounts extends CreateHandler {
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
-          secret_key_hash: await encryptPassword(secretKey, process.env.API_CLIENT_SALT),
+          secret_key_hash: await encryptPassword(secretKey),
         });
       }
 
@@ -103,7 +101,7 @@ export class CreateUserAccounts extends CreateHandler {
       ...restOfUser
     },
   ) {
-    const passwordAndSalt = await hashAndSaltPassword(password);
+    const passwordHash = await encryptPassword(password);
 
     return transactingModels.user.create({
       first_name: firstName,
@@ -111,7 +109,7 @@ export class CreateUserAccounts extends CreateHandler {
       email: emailAddress,
       mobile_number: contactNumber,
       primary_platform: primaryPlatform,
-      ...passwordAndSalt,
+      password_hash: passwordHash,
       verified_email: verifiedEmail,
       ...restOfUser,
     });

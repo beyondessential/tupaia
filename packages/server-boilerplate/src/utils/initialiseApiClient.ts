@@ -14,14 +14,12 @@ const upsertUserAccount = async ({
   models,
   email,
   password,
-  salt,
 }: {
   models: ServerBoilerplateModelRegistry;
   email: string;
   password: string;
-  salt: string;
 }): Promise<string> => {
-  const passwordHash = await encryptPassword(password, salt);
+  const passwordHash = await encryptPassword(password);
   const firstName = email;
   const lastName = 'API Client';
 
@@ -35,7 +33,6 @@ const upsertUserAccount = async ({
         last_name: lastName,
         email: email,
         password_hash: passwordHash,
-        password_salt: salt,
       },
     );
     return existingUserAccount.id;
@@ -48,7 +45,6 @@ const upsertUserAccount = async ({
     last_name: lastName,
     email: email,
     password_hash: passwordHash,
-    password_salt: salt,
   });
   return newId;
 };
@@ -58,15 +54,13 @@ const upsertApiClient = async ({
   userAccountId,
   username,
   password,
-  salt,
 }: {
   models: ServerBoilerplateModelRegistry;
   userAccountId: string;
   username: string;
   password: string;
-  salt: string;
 }) => {
-  const secretKeyHash = await encryptPassword(password, salt);
+  const secretKeyHash = await encryptPassword(password);
 
   const existingApiClient = await models.apiClient.findOne({
     username: username,
@@ -142,21 +136,18 @@ export const initialiseApiClient = async (
 ) => {
   const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
   const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
-  const API_CLIENT_SALT = requireEnv('API_CLIENT_SALT');
 
   await models.wrapInTransaction(async (transactingModels: ServerBoilerplateModelRegistry) => {
     const userAccountId = await upsertUserAccount({
       models: transactingModels,
       email: API_CLIENT_NAME,
       password: API_CLIENT_PASSWORD,
-      salt: API_CLIENT_SALT,
     });
     await upsertApiClient({
       models: transactingModels,
       userAccountId,
       username: API_CLIENT_NAME,
       password: API_CLIENT_PASSWORD,
-      salt: API_CLIENT_SALT,
     });
     await upsertPermissions({
       models: transactingModels,

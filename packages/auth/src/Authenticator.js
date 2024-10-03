@@ -50,11 +50,7 @@ export class Authenticator {
     const apiClient = await this.models.apiClient.findOne({
       username,
     });
-    const verified = await verifyPassword(
-      secretKey,
-      process.env.API_CLIENT_SALT,
-      apiClient.secret_key_hash,
-    );
+    const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
     if (!verified) {
       throw new UnauthenticatedError('Could not authenticate Api Client');
     }

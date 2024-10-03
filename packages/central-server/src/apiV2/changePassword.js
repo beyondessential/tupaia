@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import { DatabaseError, FormValidationError, isValidPassword, respond } from '@tupaia/utils';
-import { hashAndSaltPassword } from '@tupaia/auth';
+import { encryptPassword } from '@tupaia/auth';
 import { allowNoPermissions } from '../permissions';
 
 export async function changePassword(req, res, next) {
@@ -53,9 +53,9 @@ export async function changePassword(req, res, next) {
     throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
   }
 
-  const passwordAndSalt = await hashAndSaltPassword(passwordParam);
+  const newPasswordHash = await encryptPassword(passwordParam);
   await models.user.updateById(userId, {
-    ...passwordAndSalt,
+    password_hash: newPasswordHash,
   });
 
   respond(res, { message: 'Password successfully updated' });

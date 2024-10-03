@@ -21,16 +21,17 @@ exports.up = async function (db) {
     ALTER TABLE user_account
     RENAME COLUMN password_hash TO password_hash_old;
     ALTER TABLE user_account ALTER COLUMN password_hash_old DROP NOT NULL;
+    ALTER TABLE user_account ALTER COLUMN password_salt DROP NOT NULL;
 
     ALTER TABLE user_account
     ADD COLUMN password_hash TEXT;
   `);
-  const users = await db.runSql('SELECT id, password_hash_old, password_salt FROM user_account');
+  const users = await db.runSql('SELECT id, password_hash_old FROM user_account');
 
   await Promise.all(
     users.rows.map(async user => {
-      const { id, password_hash_old, password_salt } = user;
-      const hashedValue = await hash(`${password_hash_old}${password_salt}`);
+      const { id, password_hash_old } = user;
+      const hashedValue = await hash(password_hash_old);
       await db.runSql('UPDATE user_account SET password_hash = $1 WHERE id = $2', [
         hashedValue,
         id,

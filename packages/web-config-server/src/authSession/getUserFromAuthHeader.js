@@ -1,6 +1,6 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import {
   getUserAndPassFromBasicAuth,
@@ -15,11 +15,10 @@ const getApiClientUserFromBasicAuth = async (models, authHeader) => {
   const apiClient = await models.apiClient.findOne({
     username,
   });
-  const verified = await verifyPassword(
-    secretKey,
-    process.env.API_CLIENT_SALT,
-    apiClient.secret_key_hash,
-  );
+  if (!apiClient) {
+    return undefined;
+  }
+  const verified = await verifyPassword(secretKey, apiClient.secret_key_hash);
   return verified ? apiClient?.getUser() : undefined;
 };
 

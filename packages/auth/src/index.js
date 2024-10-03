@@ -4,12 +4,7 @@
  */
 export { Authenticator } from './Authenticator';
 export { AccessPolicyBuilder } from './AccessPolicyBuilder';
-export {
-  encryptPassword,
-  verifyPassword,
-  hashAndSaltPassword,
-  sha256EncryptPassword,
-} from './passwordEncryption';
+export { encryptPassword, verifyPassword, sha256EncryptPassword } from './passwordEncryption';
 export { getJwtToken, extractRefreshTokenFromReq, generateSecretKey } from './security';
 export {
   getTokenClaimsFromBearerAuth,

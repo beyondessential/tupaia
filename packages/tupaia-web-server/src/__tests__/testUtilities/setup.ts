@@ -1,9 +1,9 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { hashAndSaltPassword } from '@tupaia/auth';
+import { encryptPassword } from '@tupaia/auth';
 import { createBasicHeader, requireEnv } from '@tupaia/utils';
 import { TestableServer } from '@tupaia/server-boilerplate';
 
@@ -13,7 +13,6 @@ import {
   getTestModels,
   EntityHierarchyCacher,
   getTestDatabase,
-  findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 
 import { createApp } from '../../app';
@@ -48,7 +47,7 @@ export const setupTestData = async () => {
   hierarchyCacher.stopListeningForChanges();
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
-  const userAccountPasswordAndSalt = await hashAndSaltPassword(userAccountPassword);
+  const newPasswordHash = await encryptPassword(userAccountPassword);
 
   await findOrCreateDummyRecord(
     models.user,
@@ -58,14 +57,14 @@ export const setupTestData = async () => {
     {
       first_name: 'Ash',
       last_name: 'Ketchum',
-      ...userAccountPasswordAndSalt,
+      password_hash: newPasswordHash,
       verified_email: VERIFIED,
     },
   );
 
   const apiClientEmail = requireEnv('API_CLIENT_NAME');
   const apiClientPassword = requireEnv('API_CLIENT_PASSWORD');
-  const apiClientPasswordAndSalt = await hashAndSaltPassword(apiClientPassword);
+  const newApiClientPassword = await encryptPassword(apiClientPassword);
 
   const apiClient = await findOrCreateDummyRecord(
     models.user,
@@ -75,7 +74,7 @@ export const setupTestData = async () => {
     {
       first_name: 'API',
       last_name: 'Client',
-      ...apiClientPasswordAndSalt,
+      password_hash: newApiClientPassword,
       verified_email: VERIFIED,
     },
   );

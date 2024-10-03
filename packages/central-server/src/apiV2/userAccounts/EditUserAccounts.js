@@ -1,9 +1,9 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { hashAndSaltPassword } from '@tupaia/auth';
+import { encryptPassword } from '@tupaia/auth';
 import { S3Client, S3 } from '@tupaia/server-utils';
 import { EditHandler } from '../EditHandler';
 import {
@@ -49,7 +49,7 @@ export class EditUserAccounts extends EditHandler {
       ...restOfUpdatedFields
     } = this.updatedFields;
     let updatedFields = restOfUpdatedFields;
-    const passwordAndSalt = await hashAndSaltPassword(password);
+    const passwordAndSalt = await encryptPassword(password);
 
     if (password) {
       updatedFields = {

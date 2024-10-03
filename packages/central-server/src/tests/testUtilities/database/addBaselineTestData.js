@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { encryptPassword } from '@tupaia/auth';
@@ -90,7 +90,7 @@ export async function addBaselineTestData() {
     },
     {
       user_account_id: apiUser.userId,
-      secret_key_hash: await encryptPassword(TEST_API_USER_PASSWORD, process.env.API_CLIENT_SALT),
+      secret_key_hash: await encryptPassword(TEST_API_USER_PASSWORD),
     },
   );
 }

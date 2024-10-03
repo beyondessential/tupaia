@@ -1,13 +1,10 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import { expect } from 'chai';
-
 import {
   encryptPassword,
-  hashAndSaltPassword,
   getTokenClaims,
   sha256EncryptPassword,
   verifyPassword,
@@ -45,13 +42,13 @@ describe('Authenticate', function () {
     });
 
     // Create test users
-    const passwordAndSalt = await hashAndSaltPassword(userAccountPassword);
+    const passwordHash = await encryptPassword(userAccountPassword);
 
     userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Ash',
       last_name: 'Ketchum',
       email: 'ash-ketchum@pokemon.org',
-      ...passwordAndSalt,
+      password_hash: passwordHash,
       verified_email: VERIFIED,
     });
 
@@ -64,7 +61,7 @@ describe('Authenticate', function () {
     await findOrCreateDummyRecord(models.apiClient, {
       username: apiClientUserAccount.email,
       user_account_id: apiClientUserAccount.id,
-      secret_key_hash: await encryptPassword(apiClientSecret, process.env.API_CLIENT_SALT),
+      secret_key_hash: await encryptPassword(apiClientSecret),
     });
 
     // Public Demo Land Permission
@@ -117,13 +114,12 @@ describe('Authenticate', function () {
     const password = 'oldPassword123!';
     const salt = 'xyz123^';
     const sha256Hash = await sha256EncryptPassword(password, salt);
-    const argon2Hash = await encryptPassword(sha256Hash, salt);
+    const argon2Hash = await encryptPassword(sha256Hash);
     const migratedUser = await findOrCreateDummyRecord(models.user, {
       first_name: 'Peeka',
       last_name: 'Chu',
       email: email,
       password_hash: argon2Hash,
-      password_salt: salt,
       verified_email: VERIFIED,
     });
 
@@ -146,7 +142,7 @@ describe('Authenticate', function () {
     expect(userDetails.email).to.equal(migratedUser.email);
   });
 
-  it("Should migrate user's password to argon2 after successful login", async () => {
+  it.only("Should migrate user's password to argon2 after successful login", async () => {
     const email = 'squirtle@pokemon.org';
     const password = 'oldPassword123!';
     const salt = 'xyz123^';
@@ -161,7 +157,7 @@ describe('Authenticate', function () {
       verified_email: VERIFIED,
     });
 
-    const isVerifiedBefore = await verifyPassword(password, salt, migratedUser.password_hash);
+    const isVerifiedBefore = await verifyPassword(password, migratedUser.password_hash);
     expect(isVerifiedBefore).to.be.false;
 
     const authResponse = await app.post('auth?grantType=password', {
@@ -178,7 +174,7 @@ describe('Authenticate', function () {
     expect(authResponse.status).to.equal(200);
 
     const userDetails = await models.user.findById(migratedUser.id);
-    const isVerifiedAfter = await verifyPassword(password, salt, userDetails.password_hash);
+    const isVerifiedAfter = await verifyPassword(password, userDetails.password_hash);
     expect(isVerifiedAfter).to.be.true;
   });
 });

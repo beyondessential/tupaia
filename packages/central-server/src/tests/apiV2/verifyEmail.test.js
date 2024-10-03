@@ -1,9 +1,8 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { expect } from 'chai';
-
 import { encryptPassword } from '@tupaia/auth';
 import { randomEmail } from '@tupaia/utils';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
@@ -43,7 +42,7 @@ describe('Verify Email', () => {
 
   const verifyEmail = async userId => {
     const user = await models.user.findById(userId);
-    const token = await encryptPassword(`${user.email}${user.password_hash}`, user.password_salt);
+    const token = await encryptPassword(`${user.email}${user.password_hash}`);
 
     return app.post('auth/verifyEmail', {
       headers,

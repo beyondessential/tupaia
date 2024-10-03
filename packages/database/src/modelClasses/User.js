@@ -31,17 +31,17 @@ export class UserRecord extends DatabaseRecord {
     const hash = this.password_hash;
 
     // Try to verify password using argon2 directly
-    const isVerified = await verifyPassword(password, this.password_salt, this.password_hash);
+    const isVerified = await verifyPassword(password, this.password_hash);
     if (isVerified) {
       return true;
     }
 
     // Try to verify password using sha256 plus argon2
     const hashedUserInput = sha256EncryptPassword(password, salt);
-    const isVerifiedSha256 = await verify(hash, `${hashedUserInput}${salt}`);
+    const isVerifiedSha256 = await verify(hash, hashedUserInput);
     if (isVerifiedSha256) {
       // Move password to argon2
-      const encryptedPassword = await encryptPassword(password, salt);
+      const encryptedPassword = await encryptPassword(password);
       await this.model.updateById(this.id, { password_hash: encryptedPassword });
       return true;
     }
