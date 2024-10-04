@@ -6,12 +6,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, IconButton, SmallAlert } from '@tupaia/ui-components';
 import { QrReader } from 'react-qr-reader';
+import { get } from '../../api';
 // This import is the actual type that QrReader uses
 import { Result } from '@zxing/library';
 import { QRScanIcon } from './QRScanIcon';
 import { ClickAwayListener, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import { useEntityById } from '../../api/queries';
 import { generatePath, useLocation, useNavigate, useParams } from 'react-router';
 import { ROUTE_STRUCTURE } from '../../constants';
 
@@ -65,22 +65,53 @@ export const QRCodeScanner = ({ onCloseEntitySearch }: { onCloseEntitySearch: ()
   const navigate = useNavigate();
   const location = useLocation();
   const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
-  const [entityId, setEntityId] = useState<string | null>(null);
-  const [qrCodeScanError, setQrCodeScanError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const toggleQRScanner = () => setIsQRScannerOpen(!isQRScannerOpen);
+  const toggleQRScanner = () => {
+    setIsQRScannerOpen(!isQRScannerOpen);
+    setErrorMessage(null);
+  };
 
-  const directToEntity = result => {
-    if (!result) {
-      return setQrCodeScanError(
-        'No matching entity found in selected project. Please try another QR code, or check your project selection.',
-      );
+  const handleScan = async (data?: Result | null, error?: Error | null) => {
+    if (error?.message) {
+      setErrorMessage(error.message);
     }
-    const { code } = result;
+
+    if (!data) {
+      return;
+    }
+
+    const text = data.getText();
+    const entityId = text.replace('entity-', '');
+    let entityCode: string;
+
+    try {
+      const results = await get(`entities/${projectCode}/${projectCode}`, {
+        params: {
+          filter: { id: entityId },
+          fields: ['code'],
+        },
+      });
+      const entity = results[0] ?? null;
+
+      if (!entity) {
+        setErrorMessage(
+          'No matching entity found in selected project. Please try another QR code, or check your project selection.',
+        );
+        return;
+      }
+      entityCode = entity.code;
+      // reset error message
+      setErrorMessage(null);
+    } catch (e) {
+      setErrorMessage('Error fetching entity details. Please refresh the page and try again.');
+      return;
+    }
+
     const path = generatePath(ROUTE_STRUCTURE, {
       projectCode,
       dashboardName,
-      entityCode: code,
+      entityCode,
     });
 
     // navigate to the entity page and close the scanner and entity search
@@ -91,27 +122,6 @@ export const QRCodeScanner = ({ onCloseEntitySearch }: { onCloseEntitySearch: ()
 
     setIsQRScannerOpen(false);
     onCloseEntitySearch();
-  };
-
-  const { error: entityError } = useEntityById(
-    projectCode,
-    entityId ?? '',
-    ['code'],
-    directToEntity,
-  );
-
-  const error = qrCodeScanError || (entityError as Error)?.message;
-
-  const handleScan = (data?: Result | null, error?: Error | null) => {
-    if (data) {
-      const text = data.getText();
-      const entityId = text.replace('entity-', '');
-      setEntityId(entityId);
-    }
-
-    if (error) {
-      setQrCodeScanError(error.message);
-    }
   };
 
   return (
@@ -126,7 +136,7 @@ export const QRCodeScanner = ({ onCloseEntitySearch }: { onCloseEntitySearch: ()
                 <Close />
               </CloseButton>
             </Header>
-            {error && <SmallAlert severity="error">{error}</SmallAlert>}
+            {errorMessage && <SmallAlert severity="error">{errorMessage}</SmallAlert>}
             <QrReader
               // use the camera facing the environment (back camera)
               constraints={{ facingMode: 'environment' }}

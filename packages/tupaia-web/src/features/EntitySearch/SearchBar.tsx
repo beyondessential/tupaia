@@ -14,7 +14,7 @@ import { QRCodeScanner } from '../QRCodeScanner';
 
 const SearchInput = styled(TextField).attrs({
   variant: 'outlined',
-  placeholder: 'Search location',
+  placeholder: 'Search location...',
   fullWidth: true,
   InputProps: {
     startAdornment: <SearchIcon />,

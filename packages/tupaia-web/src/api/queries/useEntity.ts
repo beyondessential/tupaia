@@ -52,36 +52,3 @@ export const useEntity = (
     },
   );
 };
-
-export const useEntityById = (
-  projectCode?: ProjectCode,
-  entityId?: string,
-  fields = [
-    'parent_code',
-    'code',
-    'name',
-    'type',
-    'point',
-    'image_url',
-    'attributes',
-    'child_codes',
-  ],
-  onSuccess?: (data: Entity) => void,
-) => {
-  return useQuery(
-    ['entities', projectCode, entityId, fields],
-    async (): Promise<Entity> => {
-      const results = await get(`entities/${projectCode}/${projectCode}`, {
-        params: {
-          filter: { id: entityId },
-          fields,
-        },
-      });
-      return results[0] ?? null;
-    },
-    {
-      enabled: !!projectCode && !!entityId,
-      onSuccess,
-    },
-  );
-};
