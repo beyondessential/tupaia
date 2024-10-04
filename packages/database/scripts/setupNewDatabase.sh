@@ -30,6 +30,7 @@ else
 fi
 
 PGPASSWORD="$DB_PG_PASSWORD" psql -h "$DB_URL" -p "$DB_PORT" -U "$DB_PG_USER" -c "CREATE ROLE tupaia_read PASSWORD '$DB_PASSWORD'" || echo "Role tupaia_read already exists?"
+PGPASSWORD="$DB_PG_PASSWORD" psql -h "$DB_URL" -p "$DB_PORT" -U "$DB_PG_USER" -c "DROP DATABASE $DB_NAME"
 PGPASSWORD="$DB_PG_PASSWORD" psql -h "$DB_URL" -p "$DB_PORT" -U "$DB_PG_USER" -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER"
 PGPASSWORD="$DB_PG_PASSWORD" psql -h "$DB_URL" -p "$DB_PORT" -U "$DB_PG_USER" "$DB_NAME" -c "CREATE EXTENSION IF NOT EXISTS postgis"
 PGPASSWORD=$DB_PASSWORD psql -h "$DB_URL" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f schema/schema.sql
