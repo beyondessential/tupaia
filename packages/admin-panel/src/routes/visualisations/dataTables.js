@@ -113,6 +113,9 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'dataTables',
     multiple: true,
+    accept: {
+      'application/json': ['.json'],
+    },
   },
 };
 const EDITOR_CONFIG = { displayUsedBy: true };

@@ -49,6 +49,7 @@ interface ResultsListProps {
   searchResults?: SearchResults;
   onSelect: (value: ListItemType) => void;
   showRecentEntities?: boolean;
+  noResultsMessage?: string;
 }
 
 export const ResultsList = ({
@@ -56,6 +57,7 @@ export const ResultsList = ({
   searchResults,
   onSelect,
   showRecentEntities,
+  noResultsMessage,
 }: ResultsListProps) => {
   const getEntitiesList = (returnRecentEntities?: boolean) => {
     const entities = searchResults?.filter(({ isRecent }) =>
@@ -85,7 +87,12 @@ export const ResultsList = ({
       )}
       <SubListWrapper>
         {showRecentEntities && <Subtitle>All entities</Subtitle>}
-        <SelectList items={displayResults} onSelect={onSelect} variant="fullPage" />
+        <SelectList
+          items={displayResults}
+          onSelect={onSelect}
+          variant="fullPage"
+          noResultsMessage={noResultsMessage}
+        />
       </SubListWrapper>
     </ListWrapper>
   );
