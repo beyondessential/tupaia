@@ -41,7 +41,7 @@ export const ExportButton = ({ actionConfig, row }) => {
         await api.download(
           endpoint,
           { queryParameters, ...extraQueryParameters },
-          processedFileName,
+          `${processedFileName}.json`,
         );
       }}
     >
