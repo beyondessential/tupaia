@@ -16,6 +16,7 @@ import { gaEvent } from '../../utils';
 
 const Container = styled.div`
   display: flex;
+  z-index: 1;
   flex-direction: column;
   align-items: center;
   margin-right: 1rem;
