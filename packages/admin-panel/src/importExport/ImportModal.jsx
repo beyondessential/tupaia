@@ -190,6 +190,7 @@ export const ImportModalComponent = React.memo(
                   onChange={newFiles => setFiles(newFiles ?? [])}
                   name="file-upload"
                   multiple={actionConfig.multiple}
+                  accept={actionConfig.accept}
                 />
               </>
             )}

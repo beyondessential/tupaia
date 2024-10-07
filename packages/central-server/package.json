@@ -20,7 +20,7 @@
     "lint:fix": "yarn lint --fix",
     "scheduled-task": "babel-node ./scripts/scheduledTask.js --config-file '../../babel.config.json'",
     "start": "node dist",
-    "start-dev": "yarn package:start:backend-start-dev 9999",
+    "start-dev": "yarn package:start:backend-start-dev 9999 -i",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "setup-test": "yarn workspace @tupaia/database setup-test-database",
     "test": "yarn workspace @tupaia/database check-test-database-exists && NODE_ENV=test mocha",
