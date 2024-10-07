@@ -5,8 +5,11 @@
 import React from 'react';
 import { render as renderReactApp } from 'react-dom';
 import { App } from './App';
+import { initializeSQLite } from './sqlite';
 
 renderReactApp(<App />, document.getElementById('root'));
+
+await initializeSQLite();
 
 window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {

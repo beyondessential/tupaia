@@ -10455,6 +10455,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sqlite.org/sqlite-wasm@npm:^3.46.1-build3":
+  version: 3.46.1-build3
+  resolution: "@sqlite.org/sqlite-wasm@npm:3.46.1-build3"
+  bin:
+    sqlite-wasm: bin/index.js
+  checksum: 43c854c7c42629b5c74e88a523a7d15b7cdcff2848dedc6224259094d5412d91f3d889afad9c4497d5f1bafcec5655f21b7d7cc8c77770b497fa0afe5fefe120
+  languageName: node
+  linkType: hard
+
 "@storybook/addon-actions@npm:8.2.9":
   version: 8.2.9
   resolution: "@storybook/addon-actions@npm:8.2.9"
@@ -11440,6 +11449,7 @@ __metadata:
     "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
+    "@sqlite.org/sqlite-wasm": ^3.46.1-build3
     "@tanstack/react-query": 4.36.1
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
@@ -11478,6 +11488,7 @@ __metadata:
     vite: ^4.5.3
     workbox-cli: ^7.1.0
     workbox-precaching: ^7.1.0
+    workbox-recipes: ^7.1.0
     workbox-routing: ^7.1.0
     workbox-strategies: ^7.1.0
     workbox-sw: ^7.1.0
@@ -38671,7 +38682,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"workbox-recipes@npm:7.1.0":
+"workbox-recipes@npm:7.1.0, workbox-recipes@npm:^7.1.0":
   version: 7.1.0
   resolution: "workbox-recipes@npm:7.1.0"
   dependencies:
