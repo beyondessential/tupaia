@@ -367,6 +367,18 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  async updateEntityAttributes(code, attributes) {
+    attributes = attributes ?? {};
+    return this.database.executeSql(
+      `
+          UPDATE "entity"
+          SET "attributes" = ?
+          WHERE "code" = ?;
+        `,
+      [attributes, code],
+    );
+  }
+
   async updateRegionCoordinates(code, geojson) {
     const shouldSetBounds =
       (

@@ -10,7 +10,11 @@ import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { DashboardItemVizTypes, MOBILE_BREAKPOINT } from '../../../constants';
-import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
+import {
+  DisplayFormatSettings,
+  DisplayOptionsSettings,
+  useExportSettings,
+} from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
@@ -99,6 +103,17 @@ const ExportSettingsInstructionsContainer = styled.div`
   padding-bottom: 1.4rem;
 `;
 
+const ExportSettingsWrapper = styled.div`
+  padding-block-end: 2rem;
+  & + & {
+    padding-block-start: 1.5rem;
+    border-top: 0.1rem solid ${({ theme }) => theme.palette.text.secondary};
+  }
+  &:last-child {
+    padding-block-end: 0;
+  }
+`;
+
 interface ExportDashboardProps {
   onClose: () => void;
   selectedDashboardItems: string[];
@@ -109,7 +124,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
-  const { exportWithLabels, exportWithTable } = useExportSettings();
+  const { exportWithLabels, exportWithTable, separatePagePerItem } = useExportSettings();
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
@@ -124,6 +139,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
       settings: {
         exportWithLabels,
         exportWithTable,
+        separatePagePerItem,
       },
     });
 
@@ -149,7 +165,12 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
             <ExportSetting>
               {hasChartItems && (
                 <section>
-                  <DisplayOptionsSettings />
+                  <ExportSettingsWrapper>
+                    <DisplayFormatSettings />
+                  </ExportSettingsWrapper>
+                  <ExportSettingsWrapper>
+                    <DisplayOptionsSettings />
+                  </ExportSettingsWrapper>
                 </section>
               )}
               <MailingListSection
@@ -157,11 +178,17 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                 settings={{
                   exportWithTable,
                   exportWithLabels,
+                  separatePagePerItem,
                 }}
               />
             </ExportSetting>
           </ExportSettingsContainer>
-          {!isLoading && <Preview selectedDashboardItems={selectedDashboardItems} />}
+          {!isLoading && (
+            <Preview
+              selectedDashboardItems={selectedDashboardItems}
+              separatePagePerItem={separatePagePerItem}
+            />
+          )}
         </Container>
       </Wrapper>
       <ButtonGroup>
