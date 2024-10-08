@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom';
-import { Tooltip } from '@tupaia/ui-components';
+import { Tooltip as UITooltip } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT, MODAL_ROUTES } from '../../constants';
 import { RouterButton } from '../../components';
 import { User } from '../../types';
@@ -83,6 +83,13 @@ const ProjectButton = styled(RouterButton).attrs({
   }
 `;
 
+// Wrap the button in a <span> to support the tooltip
+const Tooltip = ({ children }) => (
+  <UITooltip arrow interactive placement="top" title="Change project">
+    <span>{children}</span>
+  </UITooltip>
+);
+
 interface UserInfoProps {
   user?: User;
   isLandingPage?: boolean;
@@ -99,7 +106,7 @@ export const UserInfo = ({ user, isLandingPage, secondaryColor, isLoggedIn }: Us
       <UsernameContainer $isLandingPage={isLandingPage}>
         {user?.userName} |
         {user?.project?.name && (
-          <Tooltip arrow interactive placement="top" title="Change project">
+          <Tooltip>
             <ProjectButton modal={MODAL_ROUTES.PROJECT_SELECT}>{user?.project?.name}</ProjectButton>
           </Tooltip>
         )}

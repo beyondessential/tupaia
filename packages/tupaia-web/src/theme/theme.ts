@@ -45,6 +45,7 @@ export const theme = createMuiTheme({
     form: {
       border: '#d9d9d9',
     },
+    tooltip: '#606368',
     overlaySelector: {
       overlayNameBackground: '#072849',
       menuBackground: '#203e5c', // Dark blue used for button and header background in mobile overlay selector, as well as the background of the menu list on desktop
