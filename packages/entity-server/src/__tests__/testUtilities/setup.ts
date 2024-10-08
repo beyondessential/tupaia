@@ -1,11 +1,10 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { hashAndSaltPassword } from '@tupaia/auth';
+import { encryptPassword } from '@tupaia/auth';
 import { TestableServer } from '@tupaia/server-boilerplate';
-
 import {
   findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
@@ -45,6 +44,8 @@ export const setupTestData = async () => {
 
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 
+  const passwordHash = await encryptPassword(userAccountPassword);
+
   await findOrCreateDummyRecord(
     models.user,
     {
@@ -53,7 +54,7 @@ export const setupTestData = async () => {
     {
       first_name: 'Ash',
       last_name: 'Ketchum',
-      ...hashAndSaltPassword(userAccountPassword),
+      password_hash: passwordHash,
       verified_email: VERIFIED,
     },
   );
