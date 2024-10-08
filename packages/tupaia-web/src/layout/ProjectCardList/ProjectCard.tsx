@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ComponentType } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import { darken, lighten } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import { Button } from '@tupaia/ui-components';
+import { Button as UIButton } from '@tupaia/ui-components';
 import { SingleProject } from '../../types';
 import { MODAL_ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { RouterButton } from '../../components';
@@ -95,7 +95,7 @@ const TextWrapper = styled.div`
   height: 100%;
 `;
 
-const BaseLink = styled(RouterButton)`
+const ButtonStyles = css`
   background: ${({ theme }) => theme.palette.primary.main};
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   color: white;
@@ -117,6 +117,14 @@ const BaseLink = styled(RouterButton)`
   @media (max-width: ${MOBILE_BREAKPOINT}) {
     margin-bottom: 0.875rem;
   }
+`;
+
+const BaseLink = styled(RouterButton)`
+  ${ButtonStyles}
+`;
+
+const Button = styled(UIButton)`
+  ${ButtonStyles}
 `;
 
 const OutlineLink = styled(BaseLink).attrs({

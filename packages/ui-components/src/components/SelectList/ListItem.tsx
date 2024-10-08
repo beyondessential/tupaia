@@ -33,7 +33,10 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
     &.Mui-selected:hover,
     &:focus,
     &.Mui-selected:focus {
-      background-color: ${({ theme }) => theme.palette.primary.main}33;
+      background-color: ${({ theme }) =>
+        theme.palette.type === 'light'
+          ? `${theme.palette.primary.main}33`
+          : 'rgba(96, 99, 104, 0.50)'};
     }
   }
   .MuiSvgIcon-root {

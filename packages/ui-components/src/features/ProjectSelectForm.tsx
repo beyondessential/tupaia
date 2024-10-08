@@ -8,8 +8,13 @@ import styled from 'styled-components';
 import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';
 import { DialogActions, Typography } from '@material-ui/core';
 import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
-import { SpinningLoader, Button as UIButton } from '../components';
-import { Button, SelectList } from '../components';
+import { SelectList, SpinningLoader, Button as UIButton } from '../components';
+
+const Button = styled(UIButton)`
+  text-transform: none;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.6rem;
+`;
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -53,7 +58,7 @@ interface ProjectSelectFormProps {
   variant?: 'modal' | 'page';
   onClose: () => void;
   onRequestAccess: (projectCode: Project['code']) => void;
-  projects?: Project[];
+  projects: Project[];
   isLoading: boolean;
   onConfirm: (data: Record<string, any>) => void;
   isConfirming: boolean;
@@ -133,9 +138,9 @@ export const ProjectSelectForm = ({
       )}
       <DialogActions>
         {variant === 'modal' && (
-          <UIButton onClick={onClose} variant="outlined">
+          <Button onClick={onClose} variant="text" color="default">
             Cancel
-          </UIButton>
+          </Button>
         )}
         <Button
           onClick={handleConfirm}
