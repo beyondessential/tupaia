@@ -40,7 +40,8 @@ ResubmitSurveyResponseModalComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  ...state.resubmitSurveyResponse,
+  ...state.surveyResponse,
+  isOpen: state.surveyResponse.isResubmitModalOpen,
 });
 
 const mapDispatchToProps = dispatch => ({

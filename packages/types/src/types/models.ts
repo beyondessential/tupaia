@@ -991,6 +991,7 @@ export interface MeditrakDevice {
   'config'?: {} | null;
   'id': string;
   'install_id': string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id': string;
 }
@@ -998,6 +999,7 @@ export interface MeditrakDeviceCreate {
   'app_version'?: string | null;
   'config'?: {} | null;
   'install_id': string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id': string;
 }
@@ -1006,6 +1008,7 @@ export interface MeditrakDeviceUpdate {
   'config'?: {} | null;
   'id'?: string;
   'install_id'?: string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id'?: string;
 }
