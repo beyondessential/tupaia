@@ -163,6 +163,13 @@ export const requestDeleteRecord = (reduxId, endpoint, id, confirmMessage) => ({
   actionCreator: () => deleteRecordFromTable(reduxId, endpoint, id),
 });
 
+export const requestArchiveSurveyResponse = (reduxId, endpoint, id, confirmMessage) => ({
+  type: ACTION_REQUEST,
+  reduxId,
+  confirmMessage: confirmMessage || 'Are you sure you want to archive this record?',
+  actionCreator: () => archiveSurveyResponse(reduxId, endpoint, id),
+});
+
 export const deleteRecordFromTable =
   (reduxId, endpoint, id) =>
   async (dispatch, getState, { api }) => {
@@ -193,3 +200,32 @@ export const deleteRecordFromTable =
 export const clearError = () => ({
   type: CLEAR_ERROR,
 });
+
+export const archiveSurveyResponse =
+  (reduxId, endpoint, id) =>
+  async (dispatch, getState, { api }) => {
+    const fetchId = generateId();
+    dispatch({
+      type: DATA_CHANGE_REQUEST,
+      fetchId,
+      reduxId,
+    });
+    try {
+      await api.put(`${endpoint}/${id}`, null, {
+        outdated: true,
+      });
+      dispatch({
+        type: DATA_CHANGE_SUCCESS,
+        fetchId,
+        reduxId,
+      });
+    } catch (error) {
+      dispatch({
+        type: DATA_CHANGE_ERROR,
+        reduxId,
+        fetchId,
+        errorMessage: error.message,
+        confirmActionMessage: '',
+      });
+    }
+  };
