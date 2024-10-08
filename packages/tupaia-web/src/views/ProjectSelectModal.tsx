@@ -63,7 +63,7 @@ export const ProjectSelectModal = () => {
           projectId={projectId}
           onClose={closeModal}
           onRequestAccess={onRequestAccess}
-          projects={projects}
+          projects={projects!}
           isLoading={isFetching}
           onConfirm={onConfirm}
           isConfirming={isConfirming}
