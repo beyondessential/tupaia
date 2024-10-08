@@ -10,6 +10,8 @@ import { IconButton } from '@tupaia/ui-components';
 import CloseIcon from '@material-ui/icons/Close';
 import { MenuItem, MenuList } from './MenuList';
 import { MOBILE_BREAKPOINT, MODAL_ROUTES } from '../../constants';
+import { User } from '../../types';
+import { RouterButton } from '../../components';
 
 /**
  * DrawerMenu is a drawer menu used when the user is on a mobile device
@@ -47,23 +49,20 @@ const Username = styled.p<{
   color: ${({ $secondaryColor }) => $secondaryColor};
   opacity: 0.5;
   font-size: 1.2rem;
-  padding: 0.5rem 0.5em 0.3rem;
 `;
 
-const MenuHeaderWrapper = styled.div`
-  padding: 0;
-`;
-
-const MenuHeaderContainer = styled.div<{
+const MenuHeader = styled.div<{
   $secondaryColor?: string;
 }>`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0.8em 0;
-  align-items: center;
+  align-items: flex-start;
   border-bottom: 1px solid ${({ $secondaryColor }) => $secondaryColor};
   color: ${({ $secondaryColor }) => $secondaryColor};
 `;
+
+const MenuHeaderContainer = styled.div``;
 
 const MenuCloseIcon = styled(CloseIcon)<{
   $secondaryColor?: string;
@@ -77,6 +76,28 @@ const MenuCloseButton = styled(IconButton)`
   padding: 0;
 `;
 
+const ProjectButton = styled(RouterButton).attrs({
+  variant: 'text',
+})`
+  padding-inline: 0.3rem;
+
+  .MuiButton-label {
+    text-transform: none;
+    font-size: 0.875rem;
+    color: ${({ theme }) => theme.palette.text.secondary};
+    line-height: 1.4;
+    transition: color 0.2s;
+  }
+
+  &:hover {
+    background: none;
+    .MuiButton-label {
+      color: ${({ theme }) => theme.palette.text.primary};
+      text-decoration: underline;
+    }
+  }
+`;
+
 interface DrawerMenuProps {
   children: ReactNode;
   menuOpen: boolean;
@@ -84,7 +105,7 @@ interface DrawerMenuProps {
   primaryColor?: string;
   secondaryColor?: string;
   isLoggedIn: boolean;
-  currentUserUsername?: string;
+  currentUser?: User;
 }
 
 export const DrawerMenu = ({
@@ -94,8 +115,10 @@ export const DrawerMenu = ({
   primaryColor,
   secondaryColor,
   isLoggedIn,
-  currentUserUsername,
+  currentUser,
 }: DrawerMenuProps) => {
+  const currentUserUsername = currentUser?.userName;
+  const userProjectName = currentUser?.project?.name;
   return (
     <Drawer
       anchor="right"
@@ -104,16 +127,27 @@ export const DrawerMenu = ({
       PaperProps={{ style: { backgroundColor: primaryColor, minWidth: '70vw' } }}
     >
       <MenuWrapper>
-        <MenuHeaderWrapper>
-          <MenuHeaderContainer $secondaryColor={secondaryColor}>
+        <MenuHeader $secondaryColor={secondaryColor}>
+          <MenuHeaderContainer>
             {currentUserUsername && (
               <Username $secondaryColor={secondaryColor}>{currentUserUsername}</Username>
             )}
-            <MenuCloseButton onClick={onCloseMenu} aria-label="Close menu">
-              <MenuCloseIcon $secondaryColor={secondaryColor} />
-            </MenuCloseButton>
+
+            {userProjectName && (
+              <ProjectButton
+                modal={MODAL_ROUTES.PROJECT_SELECT}
+                onClick={() => {
+                  onCloseMenu();
+                }}
+              >
+                {userProjectName}
+              </ProjectButton>
+            )}
           </MenuHeaderContainer>
-        </MenuHeaderWrapper>
+          <MenuCloseButton onClick={onCloseMenu} aria-label="Close menu">
+            <MenuCloseIcon $secondaryColor={secondaryColor} />
+          </MenuCloseButton>
+        </MenuHeader>
         <MenuList secondaryColor={secondaryColor}>
           {/** If the user is not logged in, show the register and login buttons */}
           {!isLoggedIn && (

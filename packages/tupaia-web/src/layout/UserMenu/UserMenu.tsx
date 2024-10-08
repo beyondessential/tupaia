@@ -150,7 +150,7 @@ export const UserMenu = () => {
           isLoggedIn={isLoggedIn}
           primaryColor={menuPrimaryColor}
           secondaryColor={menuSecondaryColor}
-          currentUserUsername={user?.name}
+          currentUser={user}
         >
           {menuItems}
         </DrawerMenu>
