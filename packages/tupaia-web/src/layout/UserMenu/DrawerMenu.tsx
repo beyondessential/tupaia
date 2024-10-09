@@ -121,7 +121,7 @@ export const DrawerMenu = ({
   currentUser,
 }: DrawerMenuProps) => {
   const currentUserUsername = currentUser?.userName;
-  const userProjectName = currentUser?.project?.name;
+  const userProjectName = currentUser?.project?.name || 'Explore';
   return (
     <Drawer
       anchor="right"

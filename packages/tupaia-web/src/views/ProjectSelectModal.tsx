@@ -10,7 +10,7 @@ import { useProjects, useUser } from '../api/queries';
 import { useEditUser } from '../api/mutations';
 import { Modal } from '../components';
 import { useModal } from '../utils';
-import { MODAL_ROUTES } from '../constants';
+import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../constants';
 
 const ModalBody = styled.div`
   text-align: left;
@@ -48,9 +48,10 @@ export const ProjectSelectModal = () => {
 
   const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(onSelectProject);
 
-  const onRequestAccess = () => {
+  const onRequestAccess = (projectCode: string) => {
     navigate({
       ...location,
+      search: `?${URL_SEARCH_PARAMS.PROJECT}=${projectCode}`,
       hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
     });
   };

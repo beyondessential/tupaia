@@ -102,14 +102,14 @@ interface UserInfoProps {
  */
 export const UserInfo = ({ user, isLandingPage, secondaryColor, isLoggedIn }: UserInfoProps) => {
   if (isLoggedIn) {
+    const userName = user?.userName;
+    const userProjectName = user?.project?.name || 'Explore';
     return (
       <UsernameContainer $isLandingPage={isLandingPage}>
-        {user?.userName} |
-        {user?.project?.name && (
-          <Tooltip>
-            <ProjectButton modal={MODAL_ROUTES.PROJECT_SELECT}>{user?.project?.name}</ProjectButton>
-          </Tooltip>
-        )}
+        {userName} |
+        <Tooltip>
+          <ProjectButton modal={MODAL_ROUTES.PROJECT_SELECT}>{userProjectName}</ProjectButton>
+        </Tooltip>
       </UsernameContainer>
     );
   }
