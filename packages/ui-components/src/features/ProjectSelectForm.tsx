@@ -58,7 +58,7 @@ interface ProjectSelectFormProps {
   variant?: 'modal' | 'page';
   onClose: () => void;
   onRequestAccess: (projectCode: Project['code']) => void;
-  projects: Project[];
+  projects?: Project[];
   isLoading: boolean;
   onConfirm: (data: Record<string, any>) => void;
   isConfirming: boolean;
