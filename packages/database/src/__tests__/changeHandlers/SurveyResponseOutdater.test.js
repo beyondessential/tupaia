@@ -356,6 +356,20 @@ describe('SurveyResponseOutdater', () => {
       });
     });
 
+    it("Changing a response to be outdated doesn't change the status", async () => {
+      const [idA] = await createResponses([
+        { survey_id: monthlySurveyId, entity_id: tonga.id, date: '2021-06-01' },
+      ]);
+      await assertOutdatedStatuses({
+        [idA]: false,
+      });
+
+      await models.surveyResponse.update({ id: idA }, { outdated: true });
+      await assertOutdatedStatuses({
+        [idA]: true,
+      });
+    });
+
     it('moving an outdated response to a non periodic survey makes it "not outdated"', async () => {
       const [idA, , idC] = await createResponses([
         { survey_id: monthlySurveyId, entity_id: tonga.id, date: '2021-06-01' },

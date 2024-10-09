@@ -19,6 +19,7 @@ export type ReqBody = {
     exportWithTable: boolean;
     exportWithLabels: boolean;
     exportDescription: string | null;
+    separatePagePerItem: boolean;
   };
 };
 export type ReqQuery = Record<string, string>;

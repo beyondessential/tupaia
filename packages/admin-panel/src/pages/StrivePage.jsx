@@ -12,6 +12,10 @@ const importConfig = {
   title: 'Import lab results or vector data',
   actionConfig: {
     importEndpoint: 'striveLabResults',
+    accept: {
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    },
   },
 };
 

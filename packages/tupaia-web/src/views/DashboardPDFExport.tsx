@@ -44,7 +44,8 @@ export const DashboardPDFExport = ({
 
   const { activeDashboard } = useDashboard();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { exportWithLabels, exportWithTable, exportDescription } = useExportSettings();
+  const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
+    useExportSettings();
 
   if (!activeDashboard) return null;
 
@@ -63,6 +64,7 @@ export const DashboardPDFExport = ({
           exportWithLabels,
           exportWithTable,
           exportDescription,
+          separatePagePerItem,
         }
       );
     }
@@ -71,6 +73,7 @@ export const DashboardPDFExport = ({
       exportWithLabels,
       exportWithTable,
       exportDescription,
+      separatePagePerItem,
     };
   };
 
@@ -98,6 +101,7 @@ export const DashboardPDFExport = ({
           isPreview={isPreview}
           settings={settings}
           displayDescription={pageIndex === 1 || (!isPreview && i === 0)}
+          displayHeader={settings.separatePagePerItem || i === 0}
         />
       ))}
     </Parent>

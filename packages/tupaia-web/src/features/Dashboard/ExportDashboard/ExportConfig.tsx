@@ -10,7 +10,11 @@ import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { DashboardItemVizTypes, MOBILE_BREAKPOINT } from '../../../constants';
-import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
+import {
+  DisplayFormatSettings,
+  DisplayOptionsSettings,
+  useExportSettings,
+} from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
@@ -121,7 +125,8 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
-  const { exportWithLabels, exportWithTable, exportDescription } = useExportSettings();
+  const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
+    useExportSettings();
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
@@ -137,6 +142,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
         exportWithLabels,
         exportWithTable,
         exportDescription,
+        separatePagePerItem,
       },
     });
 
@@ -166,6 +172,9 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                     <ExportDescriptionInput />
                   </ExportSettingsWrapper>
                   <ExportSettingsWrapper>
+                    <DisplayFormatSettings />
+                  </ExportSettingsWrapper>
+                  <ExportSettingsWrapper>
                     <DisplayOptionsSettings />
                   </ExportSettingsWrapper>
                 </section>
@@ -176,11 +185,17 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                   exportWithTable,
                   exportWithLabels,
                   exportDescription,
+                  separatePagePerItem,
                 }}
               />
             </ExportSetting>
           </ExportSettingsContainer>
-          {!isLoading && <Preview selectedDashboardItems={selectedDashboardItems} />}
+          {!isLoading && (
+            <Preview
+              selectedDashboardItems={selectedDashboardItems}
+              separatePagePerItem={separatePagePerItem}
+            />
+          )}
         </Container>
       </Wrapper>
       <ButtonGroup>

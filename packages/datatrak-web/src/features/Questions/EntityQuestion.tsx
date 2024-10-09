@@ -36,17 +36,21 @@ export const EntityQuestion = ({
         invalid,
       }}
       showLegend={isReviewScreen || isResponseScreen}
+      disableSearch={(isReviewScreen || isResponseScreen) && !value}
       projectCode={surveyProjectCode}
       config={config}
       data={formData}
       countryCode={countryCode}
-      showRecentEntities
+      showRecentEntities={!isReviewScreen && !isResponseScreen}
       showSearchInput={!isReviewScreen && !isResponseScreen}
       legend={label}
       legendProps={{
         component: Typography,
         variant: 'h4',
       }}
+      noResultsMessage={
+        isReviewScreen || isResponseScreen ? 'No entity selected' : 'No entities to display'
+      }
     />
   );
 };

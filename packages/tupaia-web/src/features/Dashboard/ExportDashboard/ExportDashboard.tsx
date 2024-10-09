@@ -88,6 +88,7 @@ export const ExportDashboard = () => {
           exportWithTable: true,
           exportWithTableDisabled: false,
           exportDescription: null,
+          separatePagePerItem: true,
         }}
       >
         <Wrapper>

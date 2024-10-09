@@ -55,7 +55,8 @@ const xlsxParser = filePath => {
     (entitiesByCountry, [countryName, sheet]) => ({
       ...entitiesByCountry,
       [countryName]: xlsx.utils
-        .sheet_to_json(sheet, { raw: false })
+        .sheet_to_json(sheet, { defval: null, raw: false })
+        .filter(row => Object.values(row).some(value => value !== null))
         .map(row => processXlsxRow(row, { countryName })),
     }),
     {},
