@@ -28,6 +28,7 @@ export const ExportModal = React.memo(
     cancelButtonText,
     isExportingMessage,
     extraQueryParameters,
+    onCloseModal,
   }) => {
     const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
@@ -45,6 +46,9 @@ export const ExportModal = React.memo(
       setStatus(STATUS.IDLE);
       setError(null);
       setIsOpen(false);
+      if (onCloseModal) {
+        onCloseModal();
+      }
     };
 
     const handleSubmit = async event => {
@@ -154,6 +158,7 @@ ExportModal.propTypes = {
   exportButtonText: PropTypes.string,
   cancelButtonText: PropTypes.string,
   isExportingMessage: PropTypes.string,
+  onCloseModal: PropTypes.func,
   extraQueryParameters: PropTypes.object,
 };
 
@@ -165,5 +170,6 @@ ExportModal.defaultProps = {
   isExportingMessage:
     'Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.',
   values: {},
+  onCloseModal: null,
   extraQueryParameters: {},
 };
