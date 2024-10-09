@@ -59,6 +59,11 @@ const Description = styled(Typography)`
   text-align: center;
 `;
 
+const ExportDescription = styled(Typography)`
+  color: ${({ theme }) => theme.palette.text.secondary};
+  text-align: justify;
+`;
+
 const ExportContent = styled.div<{
   $hasData?: boolean;
 }>`
@@ -100,6 +105,7 @@ interface PDFExportDashboardItemProps {
   activeDashboard?: Dashboard;
   isPreview?: boolean;
   settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
+  displayDescription?: boolean;
   displayHeader?: boolean;
 }
 
@@ -113,6 +119,7 @@ export const PDFExportDashboardItem = ({
   activeDashboard,
   isPreview = false,
   settings,
+  displayDescription = false,
   displayHeader,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
@@ -182,6 +189,7 @@ export const PDFExportDashboardItem = ({
       )}
       <PDFExportBody>
         {displayHeader && <DashboardName>{activeDashboard?.name}</DashboardName>}
+        {displayDescription && <ExportDescription>{settings?.exportDescription}</ExportDescription>}
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}
