@@ -246,13 +246,27 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
           } else if (questionCode === 'hidden') {
             processedVisibilityCriteria.hidden = answers[0] === 'true';
           } else {
-            const { id: questionId } = await models.question.findOne({
+            const relatedQuestion = await models.question.findOne({
               code: questionCode,
             });
+            if (!relatedQuestion) {
+              throw new ImportValidationError(
+                `Question with code ${questionCode} does not exist`,
+                excelRowNumber,
+                'visibilityCriteria',
+                tabName,
+              );
+            }
+            const { id: questionId } = relatedQuestion;
             processedVisibilityCriteria[questionId] = answers;
           }
         }),
       );
+
+      // If the question is a task, set it to hidden always
+      if (type === ANSWER_TYPES.TASK && !processedVisibilityCriteria.hidden) {
+        processedVisibilityCriteria.hidden = true;
+      }
 
       currentSurveyScreenComponent = await models.surveyScreenComponent.create({
         screen_id: currentScreen.id,

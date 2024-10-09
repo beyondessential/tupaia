@@ -19,12 +19,18 @@ export type SurveyFormContextType = {
   screenDetail?: string | null;
   displayQuestions: SurveyScreenComponent[];
   sideMenuOpen?: boolean;
-  isReviewScreen?: boolean;
+  isReviewScreen: boolean;
+  isResponseScreen: boolean;
   surveyScreens?: SurveyScreen[];
   visibleScreens?: SurveyScreen[];
   surveyStartTime?: string;
   isSuccessScreen?: boolean;
   cancelModalOpen: boolean;
+  countryCode: string;
+  primaryEntityQuestion?: SurveyScreenComponent | null;
+  isResubmitScreen: boolean;
+  isResubmitReviewScreen: boolean;
+  isResubmit: boolean;
 };
 
 export const surveyReducer = (

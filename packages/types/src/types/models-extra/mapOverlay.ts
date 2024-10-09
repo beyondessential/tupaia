@@ -7,6 +7,7 @@ import { PascalCase } from '../../utils';
 import { CssColor } from '../css';
 import { EntityType } from './entityType';
 import { DateOffsetSpec, DefaultTimePeriod, ReferenceProps, VizPeriodGranularity } from './common';
+import { EntityTypeEnum } from '../models';
 
 /**
  * @description A key that can be used to reference a value in a measureConfig, or to reference all values
@@ -123,7 +124,7 @@ enum DisplayedValueType {
   FACILITY_TYPE_NAME = 'facilityTypeName',
 }
 
-type EntityLevel = PascalCase<EntityType>;
+type EntityLevel = PascalCase<EntityTypeEnum> | EntityType;
 
 enum MeasureValueType {
   BOOLEAN = 'boolean',

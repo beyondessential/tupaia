@@ -169,6 +169,10 @@ const SURVEY_FIELDS = {
       name: 'surveyQuestions',
       labelTooltip:
         'Import a questions spreadsheet to update the questions and screens of this survey.',
+      accept: {
+        'application/vnd.ms-excel': ['.xls'],
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      },
     },
   },
 };
@@ -487,6 +491,62 @@ const QUESTION_COLUMNS = [
                         ],
                       },
                     ],
+                  },
+                ],
+              },
+              {
+                label: 'Task',
+                fieldName: 'task',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Should create task',
+                    fieldName: 'shouldCreateTask',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
+                    label: 'Entity ID',
+                    fieldName: 'entityId',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+
+                  {
+                    label: 'Survey code',
+                    fieldName: 'surveyCode',
+                    optionsEndpoint: 'surveys',
+                    optionLabelKey: 'name',
+                    optionValueKey: 'code',
+                    labelTooltip: 'Select the survey this task should be assigned for',
+                  },
+                  {
+                    label: 'Due date',
+                    fieldName: 'dueDate',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+
+                  {
+                    label: 'Assignee',
+                    fieldName: 'assignee',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                ],
+              },
+              {
+                label: 'User',
+                fieldName: 'user',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Permission group name',
+                    fieldName: 'permissionGroup',
+                    optionsEndpoint: 'permissionGroups',
+                    optionLabelKey: 'name',
+                    optionValueKey: 'id',
+                    labelTooltip: 'Select the permission group the user list should be filtered by',
                   },
                 ],
               },

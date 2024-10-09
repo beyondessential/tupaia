@@ -12,7 +12,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "copy-templates": "copyfiles -u 1 src/email/templates/**/**/* ./dist",
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts && npm run copy-templates",
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -25,13 +26,15 @@
     "@aws-sdk/lib-storage": "^3.348.0",
     "@tupaia/utils": "workspace:*",
     "cookie": "^0.5.0",
+    "copyfiles": "^2.4.1",
     "dotenv": "^16.4.5",
+    "handlebars": "^4.7.8",
     "nodemailer": "^6.9.12",
     "puppeteer": "^15.4.0",
     "sha256": "^0.2.0"
   },
   "devDependencies": {
-    "@types/nodemailer": "^6.4.13",
+    "@types/nodemailer": "^6.4.15",
     "@types/sha256": "^0.2.2"
   }
 }

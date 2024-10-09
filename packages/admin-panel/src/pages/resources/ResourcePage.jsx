@@ -15,6 +15,7 @@ import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
+import { ArchiveSurveyResponseModal } from '../../surveyResponse';
 
 const useEndpoint = (endpoint, details, params) => {
   if (!details && !params) return endpoint;
@@ -125,6 +126,7 @@ export const ResourcePage = ({
       <LogsModal />
       <QrCodeModal />
       <ResubmitSurveyResponseModal />
+      <ArchiveSurveyResponseModal />
     </>
   );
 };

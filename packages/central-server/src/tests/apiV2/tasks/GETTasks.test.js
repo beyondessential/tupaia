@@ -10,6 +10,7 @@ import {
   findOrCreateDummyRecord,
   generateId,
 } from '@tupaia/database';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 
@@ -20,7 +21,6 @@ describe('Permissions checker for GETTasks', async () => {
 
   const DEFAULT_POLICY = {
     DL: ['Donor'],
-    TO: ['Donor'],
   };
 
   const PUBLIC_POLICY = {
@@ -88,7 +88,7 @@ describe('Permissions checker for GETTasks', async () => {
     };
     await findOrCreateDummyRecord(models.user, assignee);
 
-    const dueDate = new Date('2021-12-31');
+    const dueDate = new Date('2021-12-31').getTime();
 
     tasks = [
       {
@@ -105,7 +105,20 @@ describe('Permissions checker for GETTasks', async () => {
         entity_id: facilities[1].id,
         assignee_id: assignee.id,
         due_date: null,
-        repeat_schedule: '{}',
+        repeat_schedule: {
+          freq: RRULE_FREQUENCIES.DAILY,
+        },
+        status: null,
+      },
+      {
+        id: generateId(),
+        survey_id: surveys[1].survey.id,
+        entity_id: facilities[0].id,
+        assignee_id: assignee.id,
+        due_date: null,
+        repeat_schedule: {
+          freq: RRULE_FREQUENCIES.DAILY,
+        },
         status: null,
       },
     ];

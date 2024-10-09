@@ -8,9 +8,14 @@ import { Link as RouterLink, To } from 'react-router-dom';
 import { Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 
-const StyledButton = styled(UIButton)`
+const StyledButton = styled(UIButton)<{
+  $enabledDisabledHoverEvents: boolean;
+}>`
   &.Mui-disabled {
-    pointer-events: auto; // this is to allow the hover effect of a tooltip to work
+    pointer-events: ${({ $enabledDisabledHoverEvents }) =>
+      $enabledDisabledHoverEvents
+        ? 'auto'
+        : 'none'}; // this is to allow the hover effect of a tooltip to work
   }
 `;
 
@@ -44,7 +49,12 @@ const ButtonWrapper = ({
 export const Button = ({ tooltip, children, to, ...restOfProps }: ButtonProps) => {
   return (
     <ButtonWrapper tooltip={tooltip}>
-      <StyledButton {...restOfProps} component={to ? RouterLink : undefined} to={to}>
+      <StyledButton
+        {...restOfProps}
+        component={to ? RouterLink : undefined}
+        to={to}
+        $enabledDisabledHoverEvents={!!tooltip}
+      >
         {children}
       </StyledButton>
     </ButtonWrapper>
