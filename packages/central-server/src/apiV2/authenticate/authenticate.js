@@ -69,6 +69,7 @@ const getMeditrakDeviceDetails = req => {
 
 const checkUserAuthentication = async req => {
   const { body, query, authenticator } = req;
+  console.log('query.grantType', query.grantType);
   switch (query.grantType) {
     case GRANT_TYPES.REFRESH_TOKEN:
       return authenticator.authenticateRefreshToken(body);
@@ -157,7 +158,7 @@ export async function authenticate(req, res) {
     if (authError.statusCode === 401) {
       // Record failed login attempt to rate limiter
       await bruteForceRateLimiter.addFailedAttempt(req);
-      if (grantType === GRANT_TYPES.PASSWORD) {
+      if (grantType === GRANT_TYPES.PASSWORD || grantType === undefined) {
         await consecutiveFailsRateLimiter.addFailedAttempt(req);
       }
     }
