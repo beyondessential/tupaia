@@ -14,7 +14,7 @@ const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https:
 const SectionContainer = styled.section`
   grid-area: surveySelect;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  border-radius: 0.625rem;
+
   padding: 1rem;
   display: flex;
   position: relative;
@@ -22,10 +22,12 @@ const SectionContainer = styled.section`
   justify-content: space-between;
   overflow: visible !important;
   height: max-content;
-
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-block-start: 1.3rem !important;
+    border-radius: 0.625rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('lg')} {
     padding: 1rem 3rem 1rem 2.2rem;
-    margin-block-start: 2.1rem !important;
   }
 `;
 
@@ -66,23 +68,23 @@ const ButtonWrapper = styled.div`
     line-height: 1.1;
     padding: 0.75rem;
     &:last-child {
-      margin-block-start: 0.625rem;
+      margin-block-start: 0.5rem;
     }
   }
 `;
 
 const TextWrapper = styled.div`
-  margin-block-end: 1rem;
+  margin-block-end: 0.7rem;
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-block-end: 0;
     max-width: 75%;
-    padding-inline: 2rem 4rem;
+    padding-inline: 1rem 4rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-inline-end: 1rem;
+    padding-inline: 2rem 1rem;
     max-width: 80%;
   }
 `;
@@ -107,15 +109,15 @@ const SurveysImage = styled.img`
   align-items: center;
   top: 50%;
   transform: translateY(-50%);
-  right: 1rem;
-  height: 100%;
+  right: 0rem;
+  height: 130%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     right: -1rem;
+    height: 130%;
   }
-
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    height: 160%;
+    height: 140%;
   }
 `;
 

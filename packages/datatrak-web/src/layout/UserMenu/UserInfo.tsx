@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
 import { Button, ChangeProjectButton } from '../../components';
 import { useCurrentUserContext } from '../../api';
-import { ROUTES } from '../../constants';
+import { DESKTOP_MEDIA_QUERY, ROUTES } from '../../constants';
 
 const Wrapper = styled.div`
   padding-inline-start: 1rem;
@@ -20,15 +20,15 @@ const Wrapper = styled.div`
 
 export const UserDetails = styled.div`
   align-items: baseline;
-  display: flex;
+  display: none;
   font-size: 1.2em;
   gap: 0.5rem;
   padding-inline: 0.5rem;
   > span {
     color: ${props => props.theme.palette.text.primary};
   }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
+  ${DESKTOP_MEDIA_QUERY} {
+    display: flex;
   }
 `;
 

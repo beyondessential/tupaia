@@ -9,6 +9,8 @@ import { useCurrentUserContext } from '../../api';
 import { useLeaderboard, useUserRewards } from '../../api/queries';
 import { UserRewardsSection } from './UserRewardsSection';
 import { LeaderboardTable } from './LeaderboardTable';
+import { useMediaQuery } from '@material-ui/core';
+import { useTheme } from '@material-ui/core';
 
 const ScrollBody = styled.div`
   overflow: auto;
@@ -27,11 +29,18 @@ export const Leaderboard = () => {
   const user = useCurrentUserContext();
   const { data: userRewards, isSuccess } = useUserRewards();
   const { data: leaderboard } = useLeaderboard(user.projectId);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  let leaderboardList = leaderboard ?? [];
+
+  if (isMobile && leaderboard) {
+    leaderboardList = leaderboard.slice(0, 5);
+  }
 
   return (
     <ScrollBody>
       {isSuccess && <UserRewardsSection pigs={userRewards.pigs} coconuts={userRewards.coconuts} />}
-      <LeaderboardTable userRewards={userRewards} leaderboard={leaderboard} user={user} />
+      <LeaderboardTable userRewards={userRewards} leaderboard={leaderboardList} user={user} />
     </ScrollBody>
   );
 };
