@@ -4,13 +4,14 @@
  */
 import fs from 'fs';
 import { respondWithDownload, ValidationError } from '@tupaia/utils';
-import { getExportPathForUser } from './getExportPathForUser';
+import { getExportPathForUser } from '@tupaia/server-utils';
 import { RouteHandler } from '../RouteHandler';
-import { assertAdminPanelAccess } from '../../permissions';
+import { allowNoPermissions } from '../../permissions';
 
 export class DownloadHandler extends RouteHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertAdminPanelAccess);
+    // This is a special case where we don't need to check permissions, as the user must be logged in anyway and the user can't generate an export without specific permissions
+    await this.assertPermissions(allowNoPermissions);
   }
 
   async handleRequest() {
