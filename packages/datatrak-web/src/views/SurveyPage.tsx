@@ -8,10 +8,15 @@ import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useCurrentUserContext, useEditUser, useEntityByCode, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
-import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
+import {
+  DesktopSurveyHeader,
+  useSurveyForm,
+  useValidationResolver,
+  SurveyContext,
+} from '../features';
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
-import { successToast } from '../utils';
+import { successToast, useIsMobile } from '../utils';
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
   display: flex;
@@ -99,7 +104,7 @@ const SurveyPageInner = () => {
   return (
     <PageWrapper>
       <FormProvider {...formContext}>
-        <SurveyToolbar />
+        {!useIsMobile() ? <DesktopSurveyHeader /> : null}
         <SurveyScreenContainer $scrollable={isSuccessScreen} $hasToolbar={!isResponseScreen}>
           {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}

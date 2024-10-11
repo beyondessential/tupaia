@@ -157,7 +157,7 @@ export const SurveyLayout = () => {
 
   return (
     <>
-      <SurveySideMenu />
+      {/*<SurveySideMenu />*/}
       <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
         <Paper>
           <Form onSubmit={handleClickSubmit} noValidate>
