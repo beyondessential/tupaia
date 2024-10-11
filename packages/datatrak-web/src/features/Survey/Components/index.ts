@@ -10,4 +10,5 @@ export { MobileSurveyHeader } from './MobileSurveyHeader';
 export * from './SurveySideMenu';
 export { SurveyReviewSection } from './SurveyReviewSection';
 export { SurveyPaginator } from './SurveyPaginator';
+export { SurveyMobilePaginator } from './SurveyMobilePaginator';
 export { SurveySuccess } from './SurveySuccess';

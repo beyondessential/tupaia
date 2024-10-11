@@ -17,6 +17,7 @@ import { useFromLocation } from '../../utils';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { getErrorsByScreen } from './utils';
+import { useIsMobile } from '../../utils';
 import { useSurveyRouting } from './useSurveyRouting';
 
 const ScrollableLayout = styled.div<{
@@ -77,6 +78,7 @@ export const SurveyLayout = () => {
   const from = useFromLocation();
   const params = useParams<SurveyParams>();
   const isFetchingEntities = useIsFetching({ queryKey: ['entityAncestors'] });
+  const isMobile = useIsMobile();
 
   const {
     updateFormData,
@@ -157,7 +159,7 @@ export const SurveyLayout = () => {
 
   return (
     <>
-      {/*<SurveySideMenu />*/}
+      {!isMobile ? <SurveySideMenu /> : null}
       <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
         <Paper>
           <Form onSubmit={handleClickSubmit} noValidate>

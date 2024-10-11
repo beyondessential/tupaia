@@ -39,12 +39,14 @@ const SurveyScreenContainer = styled.div<{
   display: flex;
   overflow: ${({ $scrollable }) => ($scrollable ? 'auto' : 'hidden')};
   align-items: flex-start;
-  height: ${({ $hasToolbar }) =>
-    $hasToolbar
-      ? `calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT})`
-      : `calc(100vh - ${HEADER_HEIGHT})`};
+
+  height: 100vh;
   width: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
+    height: ${({ $hasToolbar }) =>
+      $hasToolbar
+        ? `calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT})`
+        : `calc(100vh - ${HEADER_HEIGHT})`};
     margin-left: -1.25rem;
     padding-top: ${({ $scrollable }) => ($scrollable ? '0' : '2rem')};
     padding-bottom: 2rem;
