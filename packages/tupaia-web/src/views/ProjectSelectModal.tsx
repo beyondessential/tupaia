@@ -29,6 +29,21 @@ const ModalBody = styled.div`
   }
 `;
 
+const projectSort = (a, b) => {
+  // Sort by hasAccess = true first
+  if (a.hasAccess !== b.hasAccess) {
+    return a.hasAccess ? -1 : 1;
+  }
+
+  // Sort by hasPendingAccess = true second
+  if (a.hasPendingAccess !== b.hasPendingAccess) {
+    return a.hasPendingAccess ? -1 : 1;
+  }
+
+  // Otherwise, sort alphabetically by name
+  return a.name.localeCompare(b.name);
+};
+
 export const ProjectSelectModal = () => {
   const { data: userData } = useUser();
   const projectId = userData?.project?.id;
@@ -56,6 +71,8 @@ export const ProjectSelectModal = () => {
     });
   };
 
+  const sortedProjects = projects.sort(projectSort);
+
   return (
     <Modal isOpen={true} onClose={closeModal}>
       <ModalBody>
@@ -64,7 +81,7 @@ export const ProjectSelectModal = () => {
           projectId={projectId}
           onClose={closeModal}
           onRequestAccess={onRequestAccess}
-          projects={projects}
+          projects={sortedProjects}
           isLoading={isFetching}
           onConfirm={onConfirm}
           isConfirming={isConfirming}
