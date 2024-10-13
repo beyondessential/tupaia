@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';
-import { DialogActions, Typography } from '@material-ui/core';
+import { DialogActions, Typography, useTheme } from '@material-ui/core';
 import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
 import { SelectList, SpinningLoader, Button as UIButton } from '../components';
 
@@ -43,6 +43,17 @@ const ListWrapper = styled.div<{
     max-block-size: 35rem;
   }
 `;
+
+const CancelButton = ({ onClick, children }: { onClick: () => void; children: ReactNode }) => {
+  const { palette } = useTheme();
+  const variant = palette.type === 'light' ? 'outlined' : 'text';
+  const color = palette.type === 'light' ? 'primary' : 'default';
+  return (
+    <Button onClick={onClick} variant={variant} color={color}>
+      {children}
+    </Button>
+  );
+};
 
 type Project = KeysToCamelCase<ProjectT> & {
   hasAccess: boolean;
@@ -137,11 +148,7 @@ export const ProjectSelectForm = ({
         </ListWrapper>
       )}
       <DialogActions>
-        {variant === 'modal' && (
-          <Button onClick={onClose} variant="text" color="default">
-            Cancel
-          </Button>
-        )}
+        {variant === 'modal' && <CancelButton onClick={onClose}>Cancel</CancelButton>}
         <Button
           onClick={handleConfirm}
           variant="contained"
