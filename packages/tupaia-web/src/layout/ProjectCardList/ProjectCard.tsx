@@ -38,10 +38,6 @@ const Card = styled.div`
     padding-left: 1.875rem;
     padding-right: 1.875rem;
   }
-
-  button {
-    margin-top: auto;
-  }
 `;
 
 const LogoWrapper = styled.div`
