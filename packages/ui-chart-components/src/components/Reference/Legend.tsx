@@ -15,19 +15,13 @@ import { isMobile } from '../../utils';
 
 const LegendContainer = styled.div<{
   $position?: LegendPosition;
-  $isExporting?: boolean;
 }>`
   display: flex;
-  flex-wrap: ${props => (props.$isExporting ? 'nowrap' : 'wrap')};
-  justify-content: ${props => (props.$position === 'bottom' ? 'center' : 'flex-start')};
-  flex-direction: ${props => (props.$isExporting ? 'column' : 'row')};
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: row;
   // Add more padding at the bottom for exports
-  padding: ${props => {
-    if (props.$isExporting) {
-      return '1em';
-    }
-    return props.$position === 'bottom' ? '1rem 0 0 3.5rem' : '0 0 2rem 0';
-  }};
+  padding: ${props => (props.$position === 'bottom' ? '1em 0 0 3.5em' : '0 0 3em 0')};
 `;
 
 const PieLegendContainer = styled(LegendContainer)`
@@ -55,7 +49,7 @@ const LegendItem = styled(({ isExporting, ...props }) => <MuiButton {...props} /
   .MuiButton-label {
     display: flex;
     white-space: nowrap;
-    align-items: ${isExporting => (isExporting ? 'left' : 'center')};
+    align-items: center;
     color: ${({ theme, isExporting }) => getLegendTextColor(theme, isExporting)};
     > div {
       width: ${isExporting => (isExporting ? '100%' : '')};
@@ -129,7 +123,7 @@ export const getPieLegend =
   ({ payload }: any) => {
     const isMobileSize = isMobile(isExporting);
     return (
-      <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
+      <PieLegendContainer $position={isExporting ? 'top' : legendPosition}>
         {payload.map(({ color, value, payload: item }: TooltipPayload) => {
           const displayValue = getPieLegendDisplayValue(
             value,
@@ -173,7 +167,7 @@ export const getCartesianLegend =
   ({ payload }: any) => {
     const isMobileSize = isMobile(isExporting);
     return (
-      <LegendContainer $position={legendPosition} $isExporting={isExporting}>
+      <LegendContainer $position={isExporting ? 'top' : legendPosition}>
         {payload.map(({ color, value, dataKey }: TooltipPayload) => {
           // check the type here because according to TooltipPayload, value can be a number or a readonly string | number array
           const displayValue = (typeof value === 'string' && chartConfig?.[value]?.label) || value;

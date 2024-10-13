@@ -23,8 +23,11 @@ interface VerticalTickProps {
 export const VerticalTick = ({ x, y, payload }: VerticalTickProps) => {
   const stringVal =
     payload.value !== undefined && payload.value !== null ? String(payload.value) : '';
+  const marginX = 10; 
+  const marginY = 5; 
+  
   return (
-    <g transform={`translate(${x - 5},${y + 3})`}>
+    <g transform={`translate(${x + marginX},${y - marginY})`}>
       <text
         fontSize="13px"
         transform="rotate(305)"
