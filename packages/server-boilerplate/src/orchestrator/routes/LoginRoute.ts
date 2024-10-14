@@ -30,6 +30,7 @@ export class LoginRoute extends Route<LoginRequest> {
   public async buildResponse() {
     const { apiName } = this.req.ctx;
     const credentials = this.req.body;
+    console.log('LOGIN ROUTE IP: ', this.req.ip);
 
     const response = await this.authConnection.login(credentials, apiName);
 
