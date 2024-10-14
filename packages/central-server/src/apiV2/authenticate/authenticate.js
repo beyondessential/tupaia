@@ -69,7 +69,6 @@ const getMeditrakDeviceDetails = req => {
 
 const checkUserAuthentication = async req => {
   const { body, query, authenticator } = req;
-  console.log('query.grantType', query.grantType);
   switch (query.grantType) {
     case GRANT_TYPES.REFRESH_TOKEN:
       return authenticator.authenticateRefreshToken(body);

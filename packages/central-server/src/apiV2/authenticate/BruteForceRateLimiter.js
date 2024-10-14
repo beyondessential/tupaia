@@ -48,7 +48,7 @@ export class BruteForceRateLimiter {
    * @returns {string}
    */
   getIPkey(req) {
-    return req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    return req.headers['X-Real-IP'] || req.headers['X-Forwarded-For'] || req.socket.remoteAddress;
   }
 
   /**
