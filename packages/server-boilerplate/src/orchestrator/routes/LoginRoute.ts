@@ -32,7 +32,10 @@ export class LoginRoute extends Route<LoginRequest> {
     const credentials = this.req.body;
     console.log('LOGIN ROUTE IP: ', this.req.ip);
 
-    const response = await this.authConnection.login(credentials, apiName);
+    const originalIp = Array.isArray(this.req.headers['x-forwarded-for'])
+      ? this.req.headers['x-forwarded-for'][0] // Get the first IP if it's an array
+      : this.req.headers['x-forwarded-for'] || this.req.connection.remoteAddress || '';
+    const response = await this.authConnection.login(credentials, apiName, originalIp);
 
     if (this.req.ctx.verifyLogin) {
       this.req.ctx.verifyLogin(new AccessPolicy(response.accessPolicy));
