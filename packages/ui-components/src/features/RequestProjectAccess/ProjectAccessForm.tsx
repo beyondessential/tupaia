@@ -146,6 +146,14 @@ export const ProjectAccessForm = ({
     });
   };
 
+  if (isSubmitting) {
+    return (
+      <LoaderWrapper>
+        <SpinningLoader />
+      </LoaderWrapper>
+    );
+  }
+
   // the countries that are available to request
   const availableCountries = countries?.filter((c: Country) => !c.hasAccess && !c.hasPendingAccess);
 
@@ -187,14 +195,6 @@ export const ProjectAccessForm = ({
           <FormButton onClick={onBack}>{backButtonText}</FormButton>
         </DialogActions>
       </>
-    );
-
-  // While the request is being processed, show a loading spinner
-  if (isSubmitting)
-    return (
-      <LoaderWrapper>
-        <SpinningLoader />
-      </LoaderWrapper>
     );
 
   const getTooltip = (country: Country) => {
