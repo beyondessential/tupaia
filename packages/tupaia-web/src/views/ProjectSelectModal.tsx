@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ProjectSelectForm } from '@tupaia/ui-components';
 import { useProjects, useUser } from '../api/queries';
 import { useEditUser } from '../api/mutations';
@@ -46,6 +46,7 @@ const projectSort = (a, b) => {
 
 export const ProjectSelectModal = () => {
   const { data: userData } = useUser();
+  const location = useLocation();
   const projectId = userData?.project?.id;
   const { data: projects = [], isFetching } = useProjects();
   const { closeModal } = useModal();
@@ -64,11 +65,20 @@ export const ProjectSelectModal = () => {
   const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(onSelectProject);
 
   const onRequestAccess = (projectCode: string) => {
-    navigate({
-      ...location,
-      search: `?${URL_SEARCH_PARAMS.PROJECT}=${projectCode}`,
-      hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
-    });
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set(URL_SEARCH_PARAMS.PROJECT, projectCode);
+    navigate(
+      {
+        ...location,
+        search: searchParams.toString(),
+        hash: MODAL_ROUTES.REQUEST_PROJECT_ACCESS,
+      },
+      {
+        state: {
+          referrer: location,
+        },
+      },
+    );
   };
 
   const sortedProjects = projects.sort(projectSort);

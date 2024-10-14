@@ -21,28 +21,28 @@ const Wrapper = styled(Paper)`
 `;
 
 interface ModalProps {
-  onClose: () => void;
+  onBack: () => void;
 }
 
-export const ProjectSelectModal = ({ onClose }: ModalProps) => {
+export const ProjectSelectModal = ({ onBack }: ModalProps) => {
   const { projectId } = useCurrentUserContext();
   const [requestAccessProjectCode, setRequestAccessProjectCode] = useState<string | null>(null);
   const { data: projects, isLoading } = useProjects();
-  const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(onClose);
+  const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(onBack);
 
   return (
     // Enable the portal so it displays over any other content and we don't get z-index issues
-    <Modal open onClose={onClose} PaperComponent={Wrapper} disablePortal={false}>
+    <Modal open onClose={onBack} PaperComponent={Wrapper} disablePortal={false}>
       {requestAccessProjectCode ? (
         <RequestProjectAccess
           projectCode={requestAccessProjectCode}
-          onClose={() => setRequestAccessProjectCode(null)}
+          onBack={() => setRequestAccessProjectCode(null)}
         />
       ) : (
         <ProjectSelectForm
           variant="modal"
           projectId={projectId}
-          onClose={onClose}
+          onClose={onBack}
           onRequestAccess={setRequestAccessProjectCode}
           projects={projects}
           isLoading={isLoading}
