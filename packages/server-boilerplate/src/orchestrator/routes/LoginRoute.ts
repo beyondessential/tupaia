@@ -31,6 +31,8 @@ export class LoginRoute extends Route<LoginRequest> {
     const { apiName } = this.req.ctx;
     const credentials = this.req.body;
 
+    console.log('LOGIN ROUTE IP: ', this.req.ip);
+
     const response = await this.authConnection.login(credentials, apiName);
 
     if (this.req.ctx.verifyLogin) {
