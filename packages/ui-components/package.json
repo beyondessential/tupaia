@@ -38,7 +38,7 @@
     "js-sql-parser": "^1.4.1",
     "jszip": "^3.10.1",
     "lodash.throttle": "^4.1.1",
-    "markdown-to-jsx": "^6.4.1",
+    "markdown-to-jsx": "^7.4.0",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "qrcode": "^1.5.3",
