@@ -1,16 +1,18 @@
-@hostname = localhost
+@hostname = rn-1108-prevent-too-many-login-attempts-api.tupaia.org
 @port = 8090
 @version = v2
-@baseUrl = http://{{hostname}}:{{port}}/{{version}}
+@baseUrl = https://{{hostname}}/{{version}}
 
 @contentType = application/json
 
 ### Log in
 
 # @name login
-POST {{baseUrl}}/auth HTTP/2.0
+POST {{baseUrl}}/auth HTTP/1.1
 Authorization: Basic meditrak_client {{meditrak-app-secret}}
 content-type: {{contentType}}
+x-forwarded-for: 123456789
+tupaia-ip: 123456789
 
 {
     "emailAddress": "{{email}}",

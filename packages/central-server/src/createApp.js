@@ -8,7 +8,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import morgan from 'morgan';
-
+import { publicIpv4 } from 'public-ip';
 import { Authenticator } from '@tupaia/auth';
 import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 import { handleError } from './apiV2/middleware';
@@ -20,7 +20,16 @@ import { apiV2 } from './apiV2';
 export function createApp(database, models) {
   const app = express();
 
-  app.set('trust proxy', ['loopback', '172.31.0.0/16']);
+  // const CONFIG = ['172.31.0.0/16'];
+  // Dynamically set trusted proxy
+  publicIpv4()
+    .then(publicIp => {
+      app.set('trust proxy', ['loopback', '172.31.0.0/16', publicIp]);
+      console.log(`Server public IP: ${publicIp} is set as a trusted proxy`);
+    })
+    .catch(err => {
+      console.error('Error fetching public IP:', err);
+    });
   /**
    * Add middleware
    */
