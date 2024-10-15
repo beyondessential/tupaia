@@ -20,6 +20,7 @@ import { apiV2 } from './apiV2';
 export function createApp(database, models) {
   const app = express();
 
+  app.set('trust proxy', ['loopback', '172.31.0.0/16']);
   /**
    * Add middleware
    */

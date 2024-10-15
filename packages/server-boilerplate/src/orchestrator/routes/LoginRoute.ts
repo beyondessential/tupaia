@@ -30,6 +30,8 @@ export class LoginRoute extends Route<LoginRequest> {
   public async buildResponse() {
     const { apiName } = this.req.ctx;
     const credentials = this.req.body;
+
+    //  Todo: try to get ip from express request
     const originalIp = Array.isArray(this.req.headers['x-forwarded-for'])
       ? this.req.headers['x-forwarded-for'][0] // Get the first IP if it's an array
       : this.req.headers['x-forwarded-for'] || this.req.connection.remoteAddress || '';
