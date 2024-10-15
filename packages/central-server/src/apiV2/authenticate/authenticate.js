@@ -119,6 +119,7 @@ async function respondToRateLimitedUser(msBeforeNext, res) {
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
   const { grantType } = req.query;
+  console.log('HEADERS', req.headers);
   const consecutiveFailsRateLimiter = new ConsecutiveFailsRateLimiter(req.database);
   const bruteForceRateLimiter = new BruteForceRateLimiter(req.database);
 

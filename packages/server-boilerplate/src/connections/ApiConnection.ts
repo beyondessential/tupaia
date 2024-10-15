@@ -61,6 +61,7 @@ export class ApiConnection {
       fetchConfig.body = JSON.stringify(body);
     }
 
+    console.log('fetchConfig', fetchConfig);
     const response = await fetchWithTimeout(queryUrl, fetchConfig);
     await verifyResponseStatus(response);
     return response.json();
