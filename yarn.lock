@@ -10152,7 +10152,7 @@ __metadata:
     js-cookie: ^3.0.5
     leaflet: ^1.7.1
     lodash.throttle: ^4.1.1
-    markdown-to-jsx: ^6.4.1
+    markdown-to-jsx: ^7.4.0
     msw: ^1.3.1
     nanoid: ^2.0.3
     notistack: ^3.0.1
@@ -10210,7 +10210,7 @@ __metadata:
     cypress: ^6.6.0
     js-beautify: ^1.13.0
     lodash: ^4.17.4
-    markdown-to-jsx: ^6.4.1
+    markdown-to-jsx: ^7.4.0
     moment: ^2.24.0
     moment-timezone: ^0.5.45
     node-fetch: ^1.7.3
@@ -10745,7 +10745,7 @@ __metadata:
     js-sql-parser: ^1.4.1
     jszip: ^3.10.1
     lodash.throttle: ^4.1.1
-    markdown-to-jsx: ^6.4.1
+    markdown-to-jsx: ^7.4.0
     moment: ^2.24.0
     prop-types: ^15.7.2
     qrcode: ^1.5.3
@@ -25755,19 +25755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-to-jsx@npm:^6.4.1":
-  version: 6.10.3
-  resolution: "markdown-to-jsx@npm:6.10.3"
-  dependencies:
-    prop-types: ^15.6.2
-    unquote: ^1.1.0
-  peerDependencies:
-    react: ">= 0.14.0"
-  checksum: 7fb73a85bed20f52559d169e1426ab06e1d3b40d5fc6bc599dc9635a644ac6c053e5665ef4aa4c1d9f4ce0952833006c3fbbce0b31261bcbb8ccc161c44e5710
-  languageName: node
-  linkType: hard
-
-"markdown-to-jsx@npm:^7.4.5":
+"markdown-to-jsx@npm:^7.4.0, markdown-to-jsx@npm:^7.4.5":
   version: 7.5.0
   resolution: "markdown-to-jsx@npm:7.5.0"
   peerDependencies:
@@ -35458,13 +35446,6 @@ __metadata:
     webpack-sources: ^3.2.3
     webpack-virtual-modules: ^0.5.0
   checksum: 49f586b07988397aa130b44710e8017a0472e825d08a218557031f08d694788b3ee61d686e67af153cb39b73132e2616c2f135222b83ff8aa2f7a89027f74600
-  languageName: node
-  linkType: hard
-
-"unquote@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "unquote@npm:1.1.1"
-  checksum: 71745867d09cba44ba2d26cb71d6dda7045a98b14f7405df4faaf2b0c90d24703ad027a9d90ba9a6e0d096de2c8d56f864fd03f1c0498c0b7a3990f73b4c8f5f
   languageName: node
   linkType: hard
 

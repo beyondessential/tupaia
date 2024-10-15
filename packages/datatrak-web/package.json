@@ -30,7 +30,7 @@
     "js-cookie": "^3.0.5",
     "leaflet": "^1.7.1",
     "lodash.throttle": "^4.1.1",
-    "markdown-to-jsx": "^6.4.1",
+    "markdown-to-jsx": "^7.4.0",
     "nanoid": "^2.0.3",
     "notistack": "^3.0.1",
     "react": "^16.13.1",
