@@ -10572,7 +10572,7 @@ __metadata:
     http-proxy-middleware: ^2.0.1
     i18n: ^0.13.3
     morgan: ^1.9.0
-    public-ip: ^7.0.1
+    public-ip: 4.0.4
     winston: ^3.3.3
   languageName: unknown
   linkType: soft
@@ -22092,6 +22092,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ip-regex@npm:^4.0.0":
+  version: 4.3.0
+  resolution: "ip-regex@npm:4.3.0"
+  checksum: 7ff904b891221b1847f3fdf3dbb3e6a8660dc39bc283f79eb7ed88f5338e1a3d1104b779bc83759159be266249c59c2160e779ee39446d79d4ed0890dfd06f08
+  languageName: node
+  linkType: hard
+
 "ip-regex@npm:^5.0.0":
   version: 5.0.0
   resolution: "ip-regex@npm:5.0.0"
@@ -22509,6 +22516,15 @@ __metadata:
   version: 1.0.0
   resolution: "is-interactive@npm:1.0.0"
   checksum: 824808776e2d468b2916cdd6c16acacebce060d844c35ca6d82267da692e92c3a16fdba624c50b54a63f38bdc4016055b6f443ce57d7147240de4f8cdabaf6f9
+  languageName: node
+  linkType: hard
+
+"is-ip@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "is-ip@npm:3.1.0"
+  dependencies:
+    ip-regex: ^4.0.0
+  checksum: da2c2b282407194adf2320bade0bad94be9c9d0bdab85ff45b1b62d8185f31c65dff3884519d57bf270277e5ea2046c7916a6e5a6db22fe4b7ddcdd3760f23eb
   languageName: node
   linkType: hard
 
@@ -29656,6 +29672,17 @@ __metadata:
   version: 1.1.7
   resolution: "pstree.remy@npm:1.1.7"
   checksum: 6dc55d562d106d3168891701344c90a91feeb1307b57a7c61cb4408dd36fbc63fb402f65ab2207637385c7a6ef0c82613460df537c546001b2c3677c9354cfb2
+  languageName: node
+  linkType: hard
+
+"public-ip@npm:4.0.4":
+  version: 4.0.4
+  resolution: "public-ip@npm:4.0.4"
+  dependencies:
+    dns-socket: ^4.2.2
+    got: ^9.6.0
+    is-ip: ^3.1.0
+  checksum: 9a0c3194b219d14e8996080f90857ca025c37ebe233cb89b7ba629714ebcdc6dfd563084931d497c597b56599468ec064b7a9196bbdc92feefa908d1e1585ea7
   languageName: node
   linkType: hard
 
