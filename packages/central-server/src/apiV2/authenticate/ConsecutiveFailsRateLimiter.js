@@ -48,7 +48,6 @@ export class ConsecutiveFailsRateLimiter {
    */
   getUsernameIPkey(req) {
     const { body } = req;
-    const xForwardedFor = req.headers['x-forwarded-for'];
     const ip = req.ip;
     return `${body.emailAddress}_${ip}`;
   }

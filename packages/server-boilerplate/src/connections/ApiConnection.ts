@@ -8,7 +8,10 @@ import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/
 import { QueryParameters, RequestBody } from '../types';
 import { AuthHandler } from './types';
 
-type CustomHeaders = Record<string, string>;
+type CustomHeaders = {
+  'x-forwarded-for'?: string;
+};
+
 /**
  * @deprecated use @tupaia/api-client
  */
@@ -61,7 +64,6 @@ export class ApiConnection {
       fetchConfig.body = JSON.stringify(body);
     }
 
-    console.log('fetchConfig', fetchConfig);
     const response = await fetchWithTimeout(queryUrl, fetchConfig);
     await verifyResponseStatus(response);
     return response.json();
