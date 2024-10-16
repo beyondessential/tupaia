@@ -16,10 +16,13 @@ const RecentSurveys = styled.section`
   flex-direction: column;
 `;
 
-const ScrollBody = styled.div`
+const ScrollBody = styled.div<{
+  $hasMoreThanOneSurvey: boolean;
+}>`
   border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr));
+  grid-template-columns: ${({ $hasMoreThanOneSurvey }) =>
+    $hasMoreThanOneSurvey ? ' repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr))' : '1fr'};
   grid-column-gap: 1rem;
   grid-row-gap: 0.6rem;
 
@@ -41,11 +44,12 @@ const ScrollBody = styled.div`
 
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
+  const hasMoreThanOneSurvey = recentSurveys.length > 1;
 
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      <ScrollBody>
+      <ScrollBody $hasMoreThanOneSurvey={hasMoreThanOneSurvey}>
         {isLoading && <LoadingTile />}
         {isSuccess && (
           <>

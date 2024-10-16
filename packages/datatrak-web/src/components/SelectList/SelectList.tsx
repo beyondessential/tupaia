@@ -63,6 +63,7 @@ interface SelectListProps {
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
+  noResultsMessage?: string;
 }
 
 export const SelectList = ({
@@ -72,6 +73,7 @@ export const SelectList = ({
   ListItem,
   variant = 'inline',
   labelProps = {},
+  noResultsMessage = 'No items to display',
 }: SelectListProps) => {
   return (
     <Wrapper>
@@ -82,7 +84,7 @@ export const SelectList = ({
       )}
       <ListWrapper $variant={variant} className="list-wrapper">
         {items.length === 0 ? (
-          <NoResultsMessage>No items to display</NoResultsMessage>
+          <NoResultsMessage>{noResultsMessage}</NoResultsMessage>
         ) : (
           <List items={items} onSelect={onSelect} ListItem={ListItem} />
         )}

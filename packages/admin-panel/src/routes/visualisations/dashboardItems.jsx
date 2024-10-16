@@ -94,6 +94,9 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'dashboardVisualisations',
     multiple: true,
+    accept: {
+      'application/json': ['.json'],
+    },
   },
   getFinishedMessage: response => (
     <>
