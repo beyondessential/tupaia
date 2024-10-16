@@ -53,6 +53,7 @@ const TABLES_TO_CLEAR = [
   'map_overlay_group_relation',
   'map_overlay_group',
   'map_overlay',
+  'login_attempts',
 ];
 
 export async function clearTestData(db) {

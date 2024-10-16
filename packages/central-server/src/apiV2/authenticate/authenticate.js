@@ -1,13 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import winston from 'winston';
-
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
-import { allowNoPermissions } from '../permissions';
+import { allowNoPermissions } from '../../permissions';
+import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
+import { BruteForceRateLimiter } from './BruteForceRateLimiter';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -98,6 +98,13 @@ const checkApiClientAuthentication = async req => {
   }
 };
 
+async function respondToRateLimitedUser(msBeforeNext, res) {
+  const retrySecs = Math.round(msBeforeNext / 1000) || 1;
+  const retryMins = Math.round(retrySecs / 60) || 1;
+  res.set('Retry-After', retrySecs);
+  return respond(res, { error: `Too Many Requests. Retry in ${retryMins} min(s)` }, 429);
+}
+
 /**
  * Handler for a POST to the /auth endpoint
  * By default, or if URL parameters include grantType=password, will check the email address and
@@ -108,23 +115,53 @@ const checkApiClientAuthentication = async req => {
  * and if valid, returns a new JWT token that can be used for accessing the API
  * Override grants to do recursive authentication, for example when creating a new user.
  */
+
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
+  const { grantType } = req.query;
+  const consecutiveFailsRateLimiter = new ConsecutiveFailsRateLimiter(req.database);
+  const bruteForceRateLimiter = new BruteForceRateLimiter(req.database);
 
-  const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
-  const { user: apiClientUser } = await checkApiClientAuthentication(req);
+  if (await bruteForceRateLimiter.checkIsRateLimited(req)) {
+    const msBeforeNext = await bruteForceRateLimiter.getRetryAfter(req);
+    return respondToRateLimitedUser(msBeforeNext, res);
+  }
 
-  const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
-    req.models,
-    accessPolicy,
-  );
-  const authorizationObject = await getAuthorizationObject({
-    refreshToken,
-    user,
-    accessPolicy,
-    apiClientUser,
-    permissionGroups: permissionGroupsByCountryId,
-  });
+  if (await consecutiveFailsRateLimiter.checkIsRateLimited(req)) {
+    const msBeforeNext = await consecutiveFailsRateLimiter.getRetryAfter(req);
+    return respondToRateLimitedUser(msBeforeNext, res);
+  }
 
-  respond(res, authorizationObject);
+  // Check if the user is authorised
+  try {
+    const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
+    const { user: apiClientUser } = await checkApiClientAuthentication(req);
+    const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
+      req.models,
+      accessPolicy,
+    );
+
+    const authorizationObject = await getAuthorizationObject({
+      refreshToken,
+      user,
+      accessPolicy,
+      apiClientUser,
+      permissionGroups: permissionGroupsByCountryId,
+    });
+
+    // Reset on successful authorisation
+    await consecutiveFailsRateLimiter.resetFailedAttempts(req);
+    await bruteForceRateLimiter.resetFailedAttempts(req);
+    respond(res, authorizationObject, 200);
+  } catch (authError) {
+    if (authError.statusCode === 401) {
+      // Record failed login attempt to rate limiter
+      await bruteForceRateLimiter.addFailedAttempt(req);
+      if (grantType === GRANT_TYPES.PASSWORD || grantType === undefined) {
+        await consecutiveFailsRateLimiter.addFailedAttempt(req);
+      }
+    }
+
+    throw authError;
+  }
 }
