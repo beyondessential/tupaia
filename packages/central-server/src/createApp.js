@@ -8,7 +8,6 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import morgan from 'morgan';
-import publicIp from 'public-ip';
 import { Authenticator } from '@tupaia/auth';
 import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 import { handleError } from './apiV2/middleware';
@@ -20,15 +19,6 @@ import { apiV2 } from './apiV2';
 export function createApp(database, models) {
   const app = express();
 
-  // Dynamically set trusted proxy so that we can trust the IP address of the client
-  publicIp
-    .v4()
-    .then(publicIp => {
-      app.set('trust proxy', ['loopback', process.env.AWS_TRUSTED_PROXY_IP, publicIp]);
-    })
-    .catch(err => {
-      console.error('Error fetching public IP:', err);
-    });
   /**
    * Add middleware
    */
