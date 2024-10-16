@@ -8,7 +8,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import morgan from 'morgan';
-import { publicIpv4 } from 'public-ip';
+import publicIp from 'public-ip';
 import { Authenticator } from '@tupaia/auth';
 import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 import { handleError } from './apiV2/middleware';
@@ -22,7 +22,8 @@ export function createApp(database, models) {
 
   // const CONFIG = ['172.31.0.0/16'];
   // Dynamically set trusted proxy
-  publicIpv4()
+  publicIp
+    .v4()
     .then(publicIp => {
       app.set('trust proxy', ['loopback', process.env.AWS_TRUSTED_PROXY_IP, publicIp]);
       console.log(
