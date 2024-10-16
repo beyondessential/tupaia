@@ -20,15 +20,11 @@ import { apiV2 } from './apiV2';
 export function createApp(database, models) {
   const app = express();
 
-  // const CONFIG = ['172.31.0.0/16'];
-  // Dynamically set trusted proxy
+  // Dynamically set trusted proxy so that we can trust the IP address of the client
   publicIp
     .v4()
     .then(publicIp => {
       app.set('trust proxy', ['loopback', process.env.AWS_TRUSTED_PROXY_IP, publicIp]);
-      console.log(
-        `Server public IP: 'loopback', ${process.env.AWS_TRUSTED_PROXY_IP} and ${publicIp} are set as a trusted proxies`,
-      );
     })
     .catch(err => {
       console.error('Error fetching public IP:', err);

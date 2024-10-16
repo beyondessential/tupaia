@@ -64,14 +64,11 @@ export class ApiBuilder {
     this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
     this.attachAccessPolicy = buildAttachAccessPolicy(new AccessPolicyBuilder(this.models));
 
-    // Dynamically set trusted proxy
+    // Dynamically set trusted proxy so that we can trust the IP address of the client
     publicIp
       .v4()
       .then(publicIp => {
         this.app.set('trust proxy', ['loopback', process.env.AWS_TRUSTED_PROXY_IP, publicIp]);
-        console.log(
-          `Server public IP: 'loopback', ${process.env.AWS_TRUSTED_PROXY_IP} and ${publicIp} are set as a trusted proxies`,
-        );
       })
       .catch(err => {
         console.error('Error fetching public IP:', err);

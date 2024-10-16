@@ -50,8 +50,6 @@ export class ConsecutiveFailsRateLimiter {
     const { body } = req;
     const xForwardedFor = req.headers['x-forwarded-for'];
     const ip = req.ip;
-    console.log('xForwardedFor', xForwardedFor);
-    console.log('ip', ip);
     return `${body.emailAddress}_${ip}`;
   }
 
