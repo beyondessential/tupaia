@@ -38,11 +38,14 @@ export class AuthConnection extends ApiConnection {
   public async login(
     { emailAddress, password, deviceName }: Credentials,
     serverName: string = DEFAULT_NAME,
+    ip: string,
   ) {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
       { emailAddress, password, deviceName: `${serverName}: ${deviceName}` },
+      // forward the client's IP address to the auth server
+      { 'x-forwarded-for': ip },
     );
     return this.parseAuthResponse(response);
   }
