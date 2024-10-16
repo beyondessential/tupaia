@@ -13,6 +13,7 @@ import { Authenticator } from '@tupaia/auth';
 import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 import { handleError } from './apiV2/middleware';
 import { apiV2 } from './apiV2';
+
 /**
  * Set up express server with middleware,
  */
@@ -23,8 +24,10 @@ export function createApp(database, models) {
   // Dynamically set trusted proxy
   publicIpv4()
     .then(publicIp => {
-      app.set('trust proxy', ['loopback', '172.31.0.0/16', publicIp]);
-      console.log(`Server public IP: ${publicIp} is set as a trusted proxy`);
+      app.set('trust proxy', ['loopback', process.env.AWS_TRUSTED_PROXY_IP, publicIp]);
+      console.log(
+        `Server public IP: 'loopback', ${process.env.AWS_TRUSTED_PROXY_IP} and ${publicIp} are set as a trusted proxies`,
+      );
     })
     .catch(err => {
       console.error('Error fetching public IP:', err);

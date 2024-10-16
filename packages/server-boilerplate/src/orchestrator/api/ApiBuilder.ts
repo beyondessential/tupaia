@@ -67,8 +67,10 @@ export class ApiBuilder {
     // Dynamically set trusted proxy
     publicIpv4()
       .then(publicIp => {
-        this.app.set('trust proxy', ['loopback', '172.31.0.0/16', publicIp]);
-        console.log(`Server public IP: ${publicIp} is set as a trusted proxy`);
+        this.app.set('trust proxy', ['loopback', process.env.AWS_TRUSTED_PROXY_IP, publicIp]);
+        console.log(
+          `Server public IP: 'loopback', ${process.env.AWS_TRUSTED_PROXY_IP} and ${publicIp} are set as a trusted proxies`,
+        );
       })
       .catch(err => {
         console.error('Error fetching public IP:', err);
