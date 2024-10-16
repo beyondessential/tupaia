@@ -7,6 +7,7 @@ import express, { Express, Request, Response, NextFunction, RequestHandler } fro
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+import { publicIpv4 } from 'public-ip';
 import {
   AuthHandler,
   getBaseUrlsForHost,
@@ -62,6 +63,17 @@ export class ApiBuilder {
     this.attachVerifyLogin = emptyMiddleware;
     this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
     this.attachAccessPolicy = buildAttachAccessPolicy(new AccessPolicyBuilder(this.models));
+
+    // Dynamically set trusted proxy
+    publicIpv4()
+      .then(publicIp => {
+        this.app.set('trust proxy', ['loopback', '172.31.0.0/16', publicIp]);
+        console.log(`Server public IP: ${publicIp} is set as a trusted proxy`);
+      })
+      .catch(err => {
+        console.error('Error fetching public IP:', err);
+      });
+
     /**
      * Access logs
      */

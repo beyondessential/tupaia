@@ -44,7 +44,8 @@ export class AuthConnection extends ApiConnection {
       'auth',
       { grantType: 'password' },
       { emailAddress, password, deviceName: `${serverName}: ${deviceName}` },
-      { 'x-forwarded-for': ip, 'x-real-ip': ip },
+      // forward the client's IP address to the auth server
+      { 'x-forwarded-for': ip },
     );
     return this.parseAuthResponse(response);
   }

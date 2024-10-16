@@ -12,7 +12,6 @@ import { publicIpv4 } from 'public-ip';
 import { Authenticator } from '@tupaia/auth';
 import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 import { handleError } from './apiV2/middleware';
-
 import { apiV2 } from './apiV2';
 /**
  * Set up express server with middleware,
