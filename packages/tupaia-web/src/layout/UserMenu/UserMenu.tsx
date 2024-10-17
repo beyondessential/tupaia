@@ -122,7 +122,7 @@ export const UserMenu = () => {
     <ErrorBoundary>
       <UserMenuContainer>
         <UserInfo
-          currentUserUsername={user?.name}
+          user={user}
           isLoggedIn={isLoggedIn}
           isLandingPage={isLandingPage}
           secondaryColor={menuSecondaryColor}
@@ -150,7 +150,7 @@ export const UserMenu = () => {
           isLoggedIn={isLoggedIn}
           primaryColor={menuPrimaryColor}
           secondaryColor={menuSecondaryColor}
-          currentUserUsername={user?.name}
+          currentUser={user}
         >
           {menuItems}
         </DrawerMenu>

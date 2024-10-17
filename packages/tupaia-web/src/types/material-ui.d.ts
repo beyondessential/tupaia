@@ -1,6 +1,7 @@
 import { PaletteOptions, Palette } from '@material-ui/core/styles/createPalette';
 
 type CustomPalette = {
+  tooltip?: string;
   form?: {
     border: React.CSSProperties['color'];
   };

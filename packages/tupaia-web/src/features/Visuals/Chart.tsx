@@ -140,10 +140,11 @@ const ContentWrapper = styled.div<{
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
   height: ${({ $isExporting }) =>
     $isExporting ? 'auto' : '15rem'}; // to stop charts from shrinking to nothing at mobile size
-  min-height: ${({ $isEnlarged }) =>
-    $isEnlarged
-      ? '24rem'
-      : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
+  min-height: ${({ $isEnlarged, $isExporting }) => {
+    if ($isExporting) return '5rem'; // mainly for the 'no data' message
+    if ($isEnlarged) return '24rem';
+    return 0; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
+  }};
   ${A4Page} & {
     padding: 0;
     height: auto;

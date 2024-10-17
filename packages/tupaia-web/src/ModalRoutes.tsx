@@ -13,6 +13,7 @@ import {
   RequestProjectAccessModal,
   ForgotPasswordModal,
   ResetPasswordModal,
+  ProjectSelectModal,
 } from './views';
 import { useModal, useGAEffect } from './utils';
 
@@ -25,6 +26,7 @@ export const ModalRoutes = () => {
 
   const modalViews = {
     [MODAL_ROUTES.PROJECTS]: ProjectsModal,
+    [MODAL_ROUTES.PROJECT_SELECT]: ProjectSelectModal,
     [MODAL_ROUTES.LOGIN]: LoginModal,
     [MODAL_ROUTES.REGISTER]: RegisterModal,
     [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccessModal,

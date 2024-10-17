@@ -14,6 +14,7 @@ const DEFAULT_NAME = 'TUPAIA-SERVER';
 export interface AuthResponse {
   accessToken?: string;
   refreshToken?: string;
+  preferences?: Record<string, unknown>;
   user?: {
     email: string;
     accessPolicy: AccessPolicyObject;

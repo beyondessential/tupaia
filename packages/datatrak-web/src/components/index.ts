@@ -5,7 +5,6 @@
 
 export { PageContainer } from './PageContainer';
 export * from './Icons';
-export * from './SelectList';
 export { Autocomplete, QuestionAutocomplete } from './Autocomplete';
 export { Button } from './Button';
 export { ButtonLink } from './ButtonLink';

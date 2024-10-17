@@ -81284,6 +81284,10 @@ export const MeditrakDeviceSchema = {
 		"install_id": {
 			"type": "string"
 		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
 			"type": "string"
 		},
@@ -81311,6 +81315,10 @@ export const MeditrakDeviceCreateSchema = {
 		},
 		"install_id": {
 			"type": "string"
+		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"platform": {
 			"type": "string"
@@ -81341,6 +81349,10 @@ export const MeditrakDeviceUpdateSchema = {
 		},
 		"install_id": {
 			"type": "string"
+		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"platform": {
 			"type": "string"
