@@ -131,7 +131,7 @@ const SURVEY_FIELDS = {
       options: SERVICE_TYPES,
       setFieldsOnChange: (newValue, currentRecord = null) => {
         const { dhisInstanceCode = 'regional' } = currentRecord
-          ? currentRecord['data_group.config'] ?? {}
+          ? (currentRecord['data_group.config'] ?? {})
           : {};
         const config = newValue === 'dhis' ? { dhisInstanceCode } : {};
         return { 'data_group.config': config };
@@ -217,7 +217,7 @@ const SURVEY_COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'surveys',
-      fileName: '{name}',
+      fileName: '{name}.xlsx',
     },
   },
   {
