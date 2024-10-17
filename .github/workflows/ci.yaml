@@ -116,6 +116,9 @@ jobs:
       # viz-test-tool
       SLACK_BOT_OAUTH_TOKEN: cat1234
 
+      # Disable zendesk notifications in tests
+      ZENDESK_NOTIFICATIONS_DISABLED: 'true'
+
     strategy:
       fail-fast: false
       matrix:
