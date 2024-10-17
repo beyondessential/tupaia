@@ -1369,7 +1369,7 @@ export interface Survey {
   'integration_metadata'?: {} | null;
   'name': string;
   'period_granularity'?: PeriodGranularity | null;
-  'permission_group_id'?: string | null;
+  'permission_group_id': string;
   'project_id': string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
@@ -1382,7 +1382,7 @@ export interface SurveyCreate {
   'integration_metadata'?: {} | null;
   'name': string;
   'period_granularity'?: PeriodGranularity | null;
-  'permission_group_id'?: string | null;
+  'permission_group_id': string;
   'project_id': string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
@@ -1396,7 +1396,7 @@ export interface SurveyUpdate {
   'integration_metadata'?: {} | null;
   'name'?: string;
   'period_granularity'?: PeriodGranularity | null;
-  'permission_group_id'?: string | null;
+  'permission_group_id'?: string;
   'project_id'?: string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
