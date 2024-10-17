@@ -91,6 +91,9 @@ const AccordionContent = styled(AccordionDetails)`
 const FormLabel = styled(FormControlLabel)`
   border-radius: 3px;
 
+  &.Mui-disabled .MuiSvgIcon-root {
+    color: rgba(255, 255, 255, 0.5);
+  }
   &:hover {
     background: rgba(153, 153, 153, 0.2);
   }
