@@ -15,3 +15,4 @@ export { useGAEffect } from './useGAEffect';
 export { useUrlLoginToken } from './useUrlLoginToken';
 export { getTopBarHeight, getMobileTopBarHeight } from './getTopBarHeight';
 export { downloadPDF } from './downloadPDF';
+export { getFriendlyEntityType } from './getFriendlyEntityType';

@@ -6,6 +6,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import {
+  Entity,
   MapOverlay,
   MapOverlayGroup,
   MapOverlayGroupRelation,
@@ -77,6 +78,20 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     const { pageSize } = query;
 
     const entity = await ctx.services.entity.getEntity(projectCode, entityCode);
+
+    const ancestors: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
+      projectCode,
+      entityCode,
+      {
+        fields: ['code', 'type'],
+      },
+    );
+
+    // get the types of the ancestors, excluding the current entity
+    const ancestorTypes = ancestors
+      .filter(ancestor => ancestor.code !== entityCode)
+      .map(ancestor => ancestor.type.toLowerCase().replace('_', ''));
+
     const rootEntityCode = entity.country_code || entity.code;
 
     // Do the initial overlay fetch from the central server, since that enforces permissions
@@ -141,6 +156,11 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
         (relation: MapOverlayGroupRelation) => {
           if (relation.child_type === MAP_OVERLAY_CHILD_TYPE) {
             const overlay = overlaysById[relation.child_id];
+
+            // If the measure level is found in the ancestor types, that means the currently selected entity is a descendant of the measure level entity, so there will be no data to display. In this case, the overlay should be disabled.
+            const isDisabled = overlay.config.measureLevel
+              ? ancestorTypes.includes(overlay.config.measureLevel.toLowerCase())
+              : false;
             // Translate Map Overlay
             return {
               name: overlay.name,
@@ -149,6 +169,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
               legacy: overlay.legacy,
               sortOrder: relation.sort_order,
               entityAttributesFilter: overlay.entity_attributes_filter,
+              disabled: isDisabled,
               ...overlay.config,
             } as TranslatedMapOverlay;
           }
