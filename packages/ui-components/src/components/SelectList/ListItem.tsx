@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { ReactElement, ReactNode, useState } from 'react';
@@ -11,9 +11,10 @@ import {
   ListItemProps as MuiListItemProps,
 } from '@material-ui/core';
 import { Check, KeyboardArrowRight } from '@material-ui/icons';
-import { Tooltip } from '@tupaia/ui-components';
+import { Tooltip } from '../Tooltip';
+import { ListItemType } from './types';
 
-// explicity set the types so that the overrides are applied, for the `button` prop
+// explicitly set the types so that the overrides are applied, for the `button` prop
 export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   display: flex;
   align-items: center;
@@ -30,9 +31,12 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   &.MuiButtonBase-root {
     &:hover,
     &.Mui-selected:hover,
-    &:focus-visible,
-    &.Mui-selected:focus-visible {
-      background-color: ${({ theme }) => theme.palette.primary.main}33;
+    &:focus,
+    &.Mui-selected:focus {
+      background-color: ${({ theme }) =>
+        theme.palette.type === 'light'
+          ? `${theme.palette.primary.main}33`
+          : 'rgba(96, 99, 104, 0.50)'};
     }
   }
   .MuiSvgIcon-root {
@@ -73,17 +77,6 @@ const IconWrapper = styled.div`
     height: auto;
   }
 `;
-
-export type ListItemType = Record<string, unknown> & {
-  children?: ListItemType[];
-  content: string | ReactNode;
-  value: string;
-  selected?: boolean;
-  icon?: ReactNode;
-  tooltip?: string;
-  button?: boolean;
-  disabled?: boolean;
-};
 
 interface ListItemProps {
   item: ListItemType;
@@ -126,6 +119,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
 
   return (
     <li>
+      {/*@ts-ignore*/}
       <BaseListItem
         button={button}
         onClick={button ? onClick : null}

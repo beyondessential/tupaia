@@ -24,7 +24,7 @@ export const useLogin = () => {
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
-      return post('login', {
+      return post('loginUser', {
         data: {
           emailAddress: email,
           password,
@@ -37,7 +37,7 @@ export const useLogin = () => {
       onMutate: () => {
         gaEvent('User', 'Log in', 'Attempt');
       },
-      onSuccess: () => {
+      onSuccess: data => {
         gaEvent('User', 'Login', 'success');
         queryClient.invalidateQueries();
         // if the user was redirected to the login page, redirect them back to the page they were on
@@ -46,7 +46,12 @@ export const useLogin = () => {
             state: null,
           });
         } else if (location.pathname.includes(DEFAULT_PROJECT_ENTITY)) {
-          navigateToModal(MODAL_ROUTES.PROJECTS);
+          if (data.project) {
+            const { code, homeEntityCode, dashboardGroupName } = data.project;
+            navigate(`/${code}/${homeEntityCode}/${dashboardGroupName}`);
+          } else {
+            navigateToModal(MODAL_ROUTES.PROJECTS);
+          }
         } else {
           closeModal();
         }
