@@ -4,7 +4,7 @@
  */
 
 import { MapOverlay } from '../../models';
-import { MapOverlayConfig, ReferenceProps } from '../../models-extra';
+import { EntityType, MapOverlayConfig, ReferenceProps } from '../../models-extra';
 import { KeysToCamelCase } from '../../../utils';
 
 export interface Params {
@@ -18,6 +18,7 @@ export type TranslatedMapOverlay = KeysToCamelCase<
 > &
   MapOverlayConfig & {
     sortOrder?: number | null;
+    disabled?: boolean;
   };
 export interface TranslatedMapOverlayGroup {
   name: string;
