@@ -2,14 +2,31 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { fetchWithTimeout, requireEnv } from '@tupaia/utils';
+import { fetchWithTimeout, getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
+import { sendEmail } from '@tupaia/server-utils';
+
+const emailInternally = async (subject, message) => {
+  const sendTo = requireEnv('DEV_EMAIL_ADDRESS');
+  return sendEmail(sendTo, {
+    subject,
+    templateName: 'generic',
+    templateContext: {
+      userName: 'Tupaia Admin',
+      message,
+    },
+  });
+};
 
 export const createSupportTicket = async (subject, message) => {
+  // If ZENDESK_NOTIFICATIONS_DISABLE is set to true, do not create a support ticket
+  if (process.env.ZENDESK_NOTIFICATIONS_DISABLE === 'true') return;
+
+  // If we are in a production environment, send an email to the dev team instead of creating a support ticket
+  if (getIsProductionEnvironment()) {
+    return emailInternally();
+  }
+
   try {
-    // If ZENDESK_NOTIFICATIONS_DISABLE is set to true, do not create a support ticket
-
-    if (process.env.ZENDESK_NOTIFICATIONS_DISABLE === 'true') return;
-
     const zendeskApi = requireEnv('ZENDESK_API_URL');
     const apiToken = requireEnv('ZENDESK_API_TOKEN');
     const email = requireEnv('ZENDESK_EMAIL');
