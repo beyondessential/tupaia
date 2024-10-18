@@ -17,8 +17,9 @@ const USERS_EXCLUDED_FROM_LEADER_BOARD = [
 ];
 const SYSTEM_USERS = ["'tamanu-server@tupaia.org'", "'public@tupaia.org'", "'josh@sussol.net'"];
 
+const whitespace = /\s/g;
 const expectToBe = (expected, received) => {
-  expect(received.replace(/\s/g, '')).toBe(expected.replace(/\s/g, ''));
+  expect(received.replace(whitespace, '')).toBe(expected.replace(whitespace, ''));
 };
 
 describe('getLeaderboard()', () => {
