@@ -110,6 +110,7 @@ export const getAuthorizationObject = async ({
     email: user.email,
     profileImage: user.profile_image,
     verifiedEmail: user.verified_email,
+    preferences: user.preferences,
     accessPolicy,
   };
   if (permissionGroups) {

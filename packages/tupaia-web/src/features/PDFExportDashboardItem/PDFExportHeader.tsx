@@ -16,7 +16,7 @@ const Container = styled.div`
 
 const HeaderImage = styled.img`
   aspect-ratio: 1;
-  height: 3.5cm; // equivalent to 132px
+  height: 3.5cm;
   object-fit: contain;
 `;
 

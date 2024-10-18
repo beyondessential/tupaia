@@ -15,3 +15,4 @@ export { VerifyEmailResendModal } from './VerifyEmailResendModal';
 export { DashboardPDFExport } from './DashboardPDFExport';
 export { Unsubscribe } from './Unsubscribe';
 export { MapOverlayPDFExport } from './MapOverlayPDFExport';
+export { ProjectSelectModal } from './ProjectSelectModal';

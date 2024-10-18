@@ -27,7 +27,7 @@ export const Tooltip = styled(
   ),
 )`
   & .MuiTooltip-tooltip {
-    background-color: ${TOOLTIP_COLOR};
+    background-color: ${({ theme }) => theme.palette.tooltip || TOOLTIP_COLOR};
     color: white;
     border-radius: 3px;
     font-size: 0.75rem;
@@ -36,7 +36,7 @@ export const Tooltip = styled(
     letter-spacing: 0.4px;
 
     .MuiTooltip-arrow {
-      color: ${TOOLTIP_COLOR};
+      color: ${({ theme }) => theme.palette.tooltip || TOOLTIP_COLOR};
     }
   }
 `;

@@ -662,7 +662,8 @@ function addWhereClause(connection, baseQuery, where) {
       return querySoFar; // Ignore undefined criteria
     }
     if (value === null) {
-      return querySoFar.whereNull(key);
+      const columnKey = getColSelector(connection, key);
+      return querySoFar.whereNull(columnKey);
     }
     const {
       comparisonType = 'where',
@@ -746,6 +747,12 @@ function getColSelector(connection, inputColStr) {
   // Special handling of raw input statements
   if (RAW_INPUT_PATTERN.test(inputColStr)) {
     return connection.raw(inputColStr);
+  }
+
+  const asGeoJsonPattern = /^ST_AsGeoJSON\((.+)\)$/;
+  if (asGeoJsonPattern.test(inputColStr)) {
+    const [, argsString] = inputColStr.match(asGeoJsonPattern);
+    return connection.raw(`ST_AsGeoJSON(${argsString})`);
   }
 
   return inputColStr;

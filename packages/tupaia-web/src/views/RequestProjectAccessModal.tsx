@@ -15,7 +15,7 @@ import styled from 'styled-components';
 import { RequestProjectAccess } from '@tupaia/ui-components';
 import { DEFAULT_URL, MODAL_ROUTES, ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../constants';
 import { Modal } from '../components';
-import { gaEvent, removeUrlSearchParams } from '../utils';
+import { gaEvent, removeUrlSearchParams, useModal } from '../utils';
 import {
   useProjectCountryAccessList,
   useLandingPage,
@@ -40,6 +40,7 @@ const ModalBody = styled.div`
 export const RequestProjectAccessModal = () => {
   const [urlSearchParams] = useSearchParams();
   const params = useParams();
+  const { closeModal } = useModal();
 
   const {
     mutate: requestCountryAccess,
@@ -48,7 +49,10 @@ export const RequestProjectAccessModal = () => {
     error: requestCountryAccessError,
     isSuccess,
   } = useRequestCountryAccess();
-  const { hash, ...location } = useLocation();
+
+  const { hash, state, ...location } = useLocation() as Location & {
+    state: { referrer?: Location };
+  };
   const navigate = useNavigate();
   const { isLandingPage } = useLandingPage();
   const { isLoggedIn, isLoading: isLoadingUser, isFetching } = useUser();
@@ -102,15 +106,16 @@ export const RequestProjectAccessModal = () => {
   // show the error if the user is getting a 403 error when trying to access an entity, as this means they have been redirected here from the useEntity hook
   const showError = (isError && entityError.code === 403) || hasRequestCountryAccessError;
 
-  const getBaseCloseLocation = () => {
+  const getBaseBackLocation = () => {
     if (isLandingPage) return location;
 
     if (isReturningToProjects) {
+      const newHash = state?.referrer?.hash ? state?.referrer.hash : MODAL_ROUTES.PROJECTS;
       return {
         ...location,
         // if the user has access to the project in the background, then return to the project with the project modal open, otherwise return to the default url with the project modal open
         pathname: backgroundProject?.hasAccess ? location.pathname : DEFAULT_URL,
-        hash: MODAL_ROUTES.PROJECTS,
+        hash: newHash,
       };
     }
 
@@ -125,20 +130,24 @@ export const RequestProjectAccessModal = () => {
     };
   };
 
-  const getCloseLocation = () => {
-    const baseCloseLocation = getBaseCloseLocation();
+  const getBackLocation = () => {
+    const baseBackLocation = getBaseBackLocation();
     // return the base close location with the project search param removed
     return {
-      ...baseCloseLocation,
+      ...baseBackLocation,
       search: removeUrlSearchParams([URL_SEARCH_PARAMS.PROJECT]),
     } as Location;
   };
 
-  const closeLocation = getCloseLocation();
+  const backLocation = getBackLocation();
 
   const onCloseModal = () => {
     gaEvent('User', 'Close Dialog');
-    navigate(closeLocation);
+    closeModal();
+  };
+
+  const onBack = () => {
+    navigate(backLocation);
   };
 
   return (
@@ -151,8 +160,8 @@ export const RequestProjectAccessModal = () => {
           isSubmitting={isSubmitting}
           onSubmit={requestCountryAccess}
           isSuccess={isSuccess}
-          onClose={onCloseModal}
-          closeButtonText={isReturningToProjects ? 'Return to projects' : 'Close'}
+          onBack={onBack}
+          backButtonText={isReturningToProjects ? 'Back to projects' : 'Close'}
           errorMessage={showError ? error.message : undefined}
         />
       </ModalBody>

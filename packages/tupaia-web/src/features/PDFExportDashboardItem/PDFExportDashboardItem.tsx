@@ -32,11 +32,11 @@ const StyledA4Page = styled(A4Page)<{
 }>`
   ${({ $isPreview, $previewZoom = 0.25 }) =>
     $isPreview ? `width: 100%; zoom: ${$previewZoom};` : ''};
+  padding-block-start: 0;
+  padding-block-end: 1cm;
 `;
 
-const PDFExportBody = styled.main`
-  margin-block: 36pt;
-`;
+const PDFExportBody = styled.main``;
 
 const Title = styled.h3`
   font-size: 1.25rem;
@@ -100,6 +100,7 @@ interface PDFExportDashboardItemProps {
   activeDashboard?: Dashboard;
   isPreview?: boolean;
   settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
+  displayHeader?: boolean;
 }
 
 /**
@@ -112,6 +113,7 @@ export const PDFExportDashboardItem = ({
   activeDashboard,
   isPreview = false,
   settings,
+  displayHeader,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -144,13 +146,14 @@ export const PDFExportDashboardItem = ({
 
   const { config = {} as DashboardItemConfig } = dashboardItem || ({} as DashboardItem);
 
+  const { separatePagePerItem, ...restOfSettings } = settings || {};
   const presentationOptions =
     config && 'presentationOptions' in config ? config.presentationOptions : undefined;
   const dashboardItemConfig = {
     ...config,
     presentationOptions: {
       ...presentationOptions,
-      ...settings,
+      ...restOfSettings,
     },
   } as DashboardItemConfig;
   const { description, entityHeader, name, periodGranularity, reference } = dashboardItemConfig;
@@ -163,18 +166,22 @@ export const PDFExportDashboardItem = ({
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
   const data = isLoading ? undefined : (report as BaseReport)?.data;
+
   return (
     <StyledA4Page
       ref={pageRef}
       key={dashboardItem?.code}
       $isPreview={isPreview}
       $previewZoom={previewZoom}
+      separatePage={separatePagePerItem}
     >
-      <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
-        {entityName}
-      </PDFExportHeader>
+      {displayHeader && (
+        <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
+          {entityName}
+        </PDFExportHeader>
+      )}
       <PDFExportBody>
-        <DashboardName>{activeDashboard?.name}</DashboardName>
+        {displayHeader && <DashboardName>{activeDashboard?.name}</DashboardName>}
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}

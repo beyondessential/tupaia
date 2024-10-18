@@ -165,6 +165,7 @@ export const testAuthenticatePassword = () => {
               user_id: verifiedUser.id,
               app_version: meditrakDeviceDetails.appVersion,
               platform: meditrakDeviceDetails.platform,
+              last_login: new Date(),
             },
           );
 
