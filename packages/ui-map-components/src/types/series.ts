@@ -38,6 +38,7 @@ export type BaseSeries = Pick<
   popupHeaderFormat?: string;
   startDate: string;
   endDate: string;
+  hideFromTable?: boolean;
 };
 
 export type RadiusSeries = BaseSeries & {
