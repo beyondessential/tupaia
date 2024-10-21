@@ -32956,10 +32956,6 @@ export const MeasureConfigSchema = {
 			"description": "Whether to include this series in the table",
 			"type": "boolean"
 		},
-		"hideFromMap": {
-			"description": "Whether to include this series in the map",
-			"type": "boolean"
-		},
 		"name": {
 			"description": "Display name of this series",
 			"type": "string"
@@ -33505,10 +33501,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"hideFromTable": {
 						"description": "Whether to include this series in the table",
-						"type": "boolean"
-					},
-					"hideFromMap": {
-						"description": "Whether to include this series in the map",
 						"type": "boolean"
 					},
 					"name": {
@@ -34082,10 +34074,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"hideFromTable": {
 						"description": "Whether to include this series in the table",
-						"type": "boolean"
-					},
-					"hideFromMap": {
-						"description": "Whether to include this series in the map",
 						"type": "boolean"
 					},
 					"name": {
@@ -34766,10 +34754,6 @@ export const IconMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
-					"hideFromMap": {
-						"description": "Whether to include this series in the map",
-						"type": "boolean"
-					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -35373,10 +35357,6 @@ export const RadiusMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
-					"hideFromMap": {
-						"description": "Whether to include this series in the map",
-						"type": "boolean"
-					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -35952,10 +35932,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"hideFromTable": {
 						"description": "Whether to include this series in the table",
-						"type": "boolean"
-					},
-					"hideFromMap": {
-						"description": "Whether to include this series in the map",
 						"type": "boolean"
 					},
 					"name": {
@@ -36549,10 +36525,6 @@ export const ShadingMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
-					"hideFromMap": {
-						"description": "Whether to include this series in the map",
-						"type": "boolean"
-					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -37134,10 +37106,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromTable": {
 								"description": "Whether to include this series in the table",
-								"type": "boolean"
-							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
 								"type": "boolean"
 							},
 							"name": {
@@ -37817,10 +37785,6 @@ export const MapOverlayConfigSchema = {
 								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
-								"type": "boolean"
-							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -38423,10 +38387,6 @@ export const MapOverlayConfigSchema = {
 								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
-								"type": "boolean"
-							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -39001,10 +38961,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromTable": {
 								"description": "Whether to include this series in the table",
-								"type": "boolean"
-							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
 								"type": "boolean"
 							},
 							"name": {
@@ -39595,10 +39551,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromTable": {
 								"description": "Whether to include this series in the table",
-								"type": "boolean"
-							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
 								"type": "boolean"
 							},
 							"name": {
@@ -72606,10 +72558,6 @@ export const MapOverlaySchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -73287,10 +73235,6 @@ export const MapOverlaySchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -73893,10 +73837,6 @@ export const MapOverlaySchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -74471,10 +74411,6 @@ export const MapOverlaySchema = {
 									},
 									"hideFromTable": {
 										"description": "Whether to include this series in the table",
-										"type": "boolean"
-									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
 										"type": "boolean"
 									},
 									"name": {
@@ -75065,10 +75001,6 @@ export const MapOverlaySchema = {
 									},
 									"hideFromTable": {
 										"description": "Whether to include this series in the table",
-										"type": "boolean"
-									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
 										"type": "boolean"
 									},
 									"name": {
@@ -75715,10 +75647,6 @@ export const MapOverlayCreateSchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -76396,10 +76324,6 @@ export const MapOverlayCreateSchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -77002,10 +76926,6 @@ export const MapOverlayCreateSchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -77580,10 +77500,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromTable": {
 										"description": "Whether to include this series in the table",
-										"type": "boolean"
-									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
 										"type": "boolean"
 									},
 									"name": {
@@ -78174,10 +78090,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromTable": {
 										"description": "Whether to include this series in the table",
-										"type": "boolean"
-									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
 										"type": "boolean"
 									},
 									"name": {
@@ -78817,10 +78729,6 @@ export const MapOverlayUpdateSchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -79498,10 +79406,6 @@ export const MapOverlayUpdateSchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -80104,10 +80008,6 @@ export const MapOverlayUpdateSchema = {
 										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
-										"type": "boolean"
-									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -80682,10 +80582,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromTable": {
 										"description": "Whether to include this series in the table",
-										"type": "boolean"
-									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
 										"type": "boolean"
 									},
 									"name": {
@@ -81276,10 +81172,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromTable": {
 										"description": "Whether to include this series in the table",
-										"type": "boolean"
-									},
-									"hideFromMap": {
-										"description": "Whether to include this series in the map",
 										"type": "boolean"
 									},
 									"name": {
@@ -96397,10 +96289,6 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
-								"type": "boolean"
-							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -97101,10 +96989,6 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
-								"type": "boolean"
-							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -97730,10 +97614,6 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
-								"type": "boolean"
-							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -98331,10 +98211,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromTable": {
 								"description": "Whether to include this series in the table",
-								"type": "boolean"
-							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
 								"type": "boolean"
 							},
 							"name": {
@@ -98948,10 +98824,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromTable": {
 								"description": "Whether to include this series in the table",
-								"type": "boolean"
-							},
-							"hideFromMap": {
-								"description": "Whether to include this series in the map",
 								"type": "boolean"
 							},
 							"name": {
