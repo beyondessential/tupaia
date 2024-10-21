@@ -2,10 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebUserRequest } from '@tupaia/types';
+import { getProjectById } from '../utils';
 
 export type UserRequest = Request<
   TupaiaWebUserRequest.Params,
@@ -28,8 +28,28 @@ export class UserRoute extends Route<UserRequest> {
       first_name: firstName,
       last_name: lastName,
       email,
+      preferences,
     } = await ctx.services.central.getUser();
 
-    return { userName: `${firstName} ${lastName}`, email };
+    const userResponse: {
+      userName: string;
+      email: string;
+      project?: {
+        id: string;
+        name: string;
+        code: string;
+        homeEntityCode: string;
+        dashboardGroupName: string;
+        defaultMeasure: string;
+      };
+    } = { userName: `${firstName} ${lastName}`, email };
+
+    const projectId = preferences?.project_id;
+
+    if (projectId) {
+      userResponse.project = await getProjectById(ctx, projectId);
+    }
+
+    return userResponse;
   }
 }
