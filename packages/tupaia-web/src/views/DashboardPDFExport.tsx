@@ -22,6 +22,7 @@ const Parent = styled.div<{ $isPreview?: boolean }>`
 interface DashboardPDFExportProps {
   selectedDashboardItems?: TupaiaWebExportDashboardRequest.ReqBody['selectedDashboardItems'];
   isPreview?: boolean;
+  pageIndex?: number;
 }
 
 /**
@@ -30,6 +31,7 @@ interface DashboardPDFExportProps {
 export const DashboardPDFExport = ({
   selectedDashboardItems: propsSelectedDashboardItems,
   isPreview = false,
+  pageIndex,
 }: DashboardPDFExportProps) => {
   // Hacky way to change default background color without touching root css. Only apply when generating the pdf, not when in preview mode as it changes the display
   if (!isPreview) {
@@ -42,7 +44,8 @@ export const DashboardPDFExport = ({
 
   const { activeDashboard } = useDashboard();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { exportWithLabels, exportWithTable, separatePagePerItem } = useExportSettings();
+  const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
+    useExportSettings();
 
   if (!activeDashboard) return null;
 
@@ -60,6 +63,7 @@ export const DashboardPDFExport = ({
         JSON.parse(urlSettings) || {
           exportWithLabels,
           exportWithTable,
+          exportDescription,
           separatePagePerItem,
         }
       );
@@ -68,6 +72,7 @@ export const DashboardPDFExport = ({
     return {
       exportWithLabels,
       exportWithTable,
+      exportDescription,
       separatePagePerItem,
     };
   };
@@ -95,6 +100,7 @@ export const DashboardPDFExport = ({
           activeDashboard={activeDashboard}
           isPreview={isPreview}
           settings={settings}
+          displayDescription={pageIndex === 1 || (!isPreview && i === 0)}
           displayHeader={settings.separatePagePerItem || i === 0}
         />
       ))}
