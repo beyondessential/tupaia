@@ -15,6 +15,7 @@ const { createSupportTicket } = proxyquire('../../utilities/createSupportTicket'
   '@tupaia/utils': {
     fetchWithTimeout: fetchWithTimeoutStub,
     requireEnv: requireEnvStub,
+    getIsProductionEnvironment: () => true,
   },
 });
 
