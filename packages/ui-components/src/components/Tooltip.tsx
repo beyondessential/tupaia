@@ -14,14 +14,14 @@ const TOOLTIP_COLOR = '#002d47';
 
 // For placement options @see https://material-ui.com/api/tooltip
 export const Tooltip = styled(
-  ({ className, placement = 'top', enterDelay, ...props }: TooltipProps) => (
+  ({ className, placement = 'top', enterDelay, enterTouchDelay = 10, ...props }: TooltipProps) => (
     <MuiTooltip
       {...props}
       classes={{ popper: className }}
       placement={placement}
       enterDelay={enterDelay}
       enterNextDelay={enterDelay}
-      enterTouchDelay={enterDelay}
+      enterTouchDelay={enterTouchDelay}
       arrow
     />
   ),
