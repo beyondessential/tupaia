@@ -23,7 +23,7 @@ export const createSupportTicket = async (subject, message) => {
 
   // If we are not in a production environment, send an email to the dev team instead of creating a support ticket
   if (!getIsProductionEnvironment()) {
-    return emailInternally();
+    return emailInternally(subject, message);
   }
 
   try {
