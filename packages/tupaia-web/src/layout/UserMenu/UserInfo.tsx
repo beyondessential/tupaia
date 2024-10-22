@@ -106,10 +106,16 @@ export const UserInfo = ({ user, isLandingPage, secondaryColor, isLoggedIn }: Us
     const userProjectName = user?.project?.name || 'Explore';
     return (
       <UsernameContainer $isLandingPage={isLandingPage}>
-        {userName} |
-        <Tooltip>
-          <ProjectButton modal={MODAL_ROUTES.PROJECT_SELECT}>{userProjectName}</ProjectButton>
-        </Tooltip>
+        {userName}
+        {!isLandingPage ? (
+          <>
+            {' '}
+            |
+            <Tooltip>
+              <ProjectButton modal={MODAL_ROUTES.PROJECT_SELECT}>{userProjectName}</ProjectButton>
+            </Tooltip>
+          </>
+        ) : null}
       </UsernameContainer>
     );
   }
