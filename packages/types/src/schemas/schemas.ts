@@ -83966,6 +83966,60 @@ export const UserAccountUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const UserCountryAccessAttemptSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"id",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const UserEntityPermissionSchema = {
 	"type": "object",
 	"properties": {
