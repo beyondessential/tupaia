@@ -95593,6 +95593,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -96205,6 +96208,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -96792,6 +96798,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -97392,6 +97401,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -97982,6 +97994,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
