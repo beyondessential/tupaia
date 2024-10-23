@@ -51,16 +51,9 @@ export class MeditrakSyncQueue extends ChangeHandler {
    * @private
    */
   async refreshPermissionsBasedView(database) {
-    try {
-      const start = Date.now();
-      await database.executeSql(
-        `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
-      );
-      const end = Date.now();
-      winston.info(`permissions_based_meditrak_sync_queue refresh took: ${end - start}ms`);
-    } catch (error) {
-      winston.error(`permissions_based_meditrak_sync_queue refresh failed: ${error.message}`);
-    }
+    await database.executeSql(
+      `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
+    );
   }
 
   /**
