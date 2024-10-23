@@ -27,7 +27,7 @@ function setTrustedProxies(app) {
   publicIp
     .v4()
     .then(publicIp => {
-      this.app.set('trust proxy', ['loopback', ...trustedProxyIPs, publicIp]);
+      app.set('trust proxy', ['loopback', ...trustedProxyIPs, publicIp]);
     })
     .catch(err => {
       console.error('Error fetching public IP:', err);
