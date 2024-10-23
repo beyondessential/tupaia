@@ -6,7 +6,6 @@ import winston from 'winston';
 import { getCountryForTimezone } from 'countries-and-timezones';
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
-import { allowNoPermissions } from '../../permissions';
 import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
 import { BruteForceRateLimiter } from './BruteForceRateLimiter';
 import { allowNoPermissions } from '../permissions';
@@ -191,7 +190,6 @@ export async function authenticate(req, res) {
       apiClientUser,
       permissionGroups: permissionGroupsByCountryId,
     });
-
 
     await checkUserLocationAccess(req, user);
 
