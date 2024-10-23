@@ -3,13 +3,13 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import winston from 'winston';
-import { getCountryForTimezone } from 'countries-and-timezones';
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
 import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
 import { BruteForceRateLimiter } from './BruteForceRateLimiter';
-import { allowNoPermissions } from '../permissions';
-import { createSupportTicket } from '../utilities';
+import { allowNoPermissions } from '../../permissions';
+import { checkUserLocationAccess } from './checkUserLocationAccess';
+import { respondToRateLimitedUser } from './respondToRateLimitedUser';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -100,53 +100,6 @@ const checkApiClientAuthentication = async req => {
   }
 };
 
-const checkUserLocationAccess = async (req, user) => {
-  if (!user) return;
-  const { body, models } = req;
-  const { timezone } = body;
-
-  // The easiest way to get the country code is to use the timezone and get the most likely country using this timezone. This doesn't infringe on the user's privacy as the timezone is a very broad location. It also doesn't require the user to provide their location, which is a barrier to entry for some users.
-  const country = getCountryForTimezone(timezone);
-  if (!country) return;
-  // the ID is the ISO country code.
-  const { id, name } = country;
-
-  const existingEntry = await models.userCountryAccessAttempt.findOne({
-    user_id: user.id,
-    country_code: id,
-  });
-
-  // If there is already an entry for this user and country, return
-  if (existingEntry) return;
-
-  const userEntryCount = await models.userCountryAccessAttempt.count({
-    user_id: user.id,
-  });
-
-  const hasAnyEntries = userEntryCount > 0;
-
-  await models.userCountryAccessAttempt.create({
-    user_id: user.id,
-    country_code: id,
-  });
-
-  // Don't send an email if this is the first time the user has attempted to login
-  if (!hasAnyEntries) return;
-
-  // create a support ticket if the user has attempted to login from a new country
-  await createSupportTicket(
-    'User attempted to login from a new country',
-    `User ${user.first_name} ${user.last_name} (${user.id} - ${user.email}) attempted to access Tupaia from a new country: ${name}`,
-  );
-};
-
-async function respondToRateLimitedUser(msBeforeNext, res) {
-  const retrySecs = Math.round(msBeforeNext / 1000) || 1;
-  const retryMins = Math.round(retrySecs / 60) || 1;
-  res.set('Retry-After', retrySecs);
-  return respond(res, { error: `Too Many Requests. Retry in ${retryMins} min(s)` }, 429);
-}
-
 /**
  * Handler for a POST to the /auth endpoint
  * By default, or if URL parameters include grantType=password, will check the email address and
@@ -157,7 +110,6 @@ async function respondToRateLimitedUser(msBeforeNext, res) {
  * and if valid, returns a new JWT token that can be used for accessing the API
  * Override grants to do recursive authentication, for example when creating a new user.
  */
-
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
   const { grantType } = req.query;
