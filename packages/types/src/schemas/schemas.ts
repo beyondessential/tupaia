@@ -64,7 +64,6 @@ export const DateOffsetSpecSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"offset",
 		"unit"
 	]
 } 
@@ -130,7 +129,6 @@ export const DefaultTimePeriodSchema = {
 			},
 			"additionalProperties": false,
 			"required": [
-				"offset",
 				"unit"
 			]
 		},
@@ -180,7 +178,6 @@ export const DefaultTimePeriodSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -232,7 +229,6 @@ export const DefaultTimePeriodSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -452,7 +448,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -502,7 +497,6 @@ export const BaseConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -554,7 +548,6 @@ export const BaseConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -612,7 +605,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -656,7 +648,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -913,7 +904,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -963,7 +953,6 @@ export const MatrixConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1015,7 +1004,6 @@ export const MatrixConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1073,7 +1061,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1117,7 +1104,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -1639,7 +1625,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1689,7 +1674,6 @@ export const MatrixVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1741,7 +1725,6 @@ export const MatrixVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1799,7 +1782,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1843,7 +1825,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -2860,7 +2841,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -2910,7 +2890,6 @@ export const ComponentConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -2962,7 +2941,6 @@ export const ComponentConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3020,7 +2998,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3064,7 +3041,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -3407,7 +3383,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3457,7 +3432,6 @@ export const BaseChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3509,7 +3483,6 @@ export const BaseChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3567,7 +3540,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3611,7 +3583,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -4297,7 +4268,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4347,7 +4317,6 @@ export const CartesianChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -4399,7 +4368,6 @@ export const CartesianChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -4457,7 +4425,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4501,7 +4468,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -5132,7 +5098,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5182,7 +5147,6 @@ export const PieChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5234,7 +5198,6 @@ export const PieChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5292,7 +5255,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5336,7 +5298,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -5707,7 +5668,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5757,7 +5717,6 @@ export const BarChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5809,7 +5768,6 @@ export const BarChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5867,7 +5825,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5911,7 +5868,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -6678,7 +6634,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -6728,7 +6683,6 @@ export const LineChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -6780,7 +6734,6 @@ export const LineChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -6838,7 +6791,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -6882,7 +6834,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -7641,7 +7592,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -7691,7 +7641,6 @@ export const ComposedChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -7743,7 +7692,6 @@ export const ComposedChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -7801,7 +7749,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -7845,7 +7792,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -8420,7 +8366,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -8470,7 +8415,6 @@ export const GaugeChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -8522,7 +8466,6 @@ export const GaugeChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -8580,7 +8523,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -8624,7 +8566,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -8902,7 +8843,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -8952,7 +8892,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9004,7 +8943,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9062,7 +9000,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9106,7 +9043,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -9417,7 +9353,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9467,7 +9402,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9519,7 +9453,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9577,7 +9510,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9621,7 +9553,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -10212,7 +10143,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10262,7 +10192,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10314,7 +10243,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10372,7 +10300,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10416,7 +10343,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -11001,7 +10927,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11051,7 +10976,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11103,7 +11027,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11161,7 +11084,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11205,7 +11127,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -11779,7 +11700,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11829,7 +11749,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11881,7 +11800,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11939,7 +11857,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11983,7 +11900,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -12391,7 +12307,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12441,7 +12356,6 @@ export const BaseViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12493,7 +12407,6 @@ export const BaseViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12551,7 +12464,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12595,7 +12507,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -12868,7 +12779,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12918,7 +12828,6 @@ export const MultiValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12970,7 +12879,6 @@ export const MultiValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13028,7 +12936,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13072,7 +12979,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -13453,7 +13359,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13503,7 +13408,6 @@ export const MultiValueRowViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13555,7 +13459,6 @@ export const MultiValueRowViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13613,7 +13516,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13657,7 +13559,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -13989,7 +13890,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14039,7 +13939,6 @@ export const SingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14091,7 +13990,6 @@ export const SingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14149,7 +14047,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14193,7 +14090,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -14439,7 +14335,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14489,7 +14384,6 @@ export const MultiPhotographViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14541,7 +14435,6 @@ export const MultiPhotographViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14599,7 +14492,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14643,7 +14535,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -14885,7 +14776,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14935,7 +14825,6 @@ export const MultiSingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14987,7 +14876,6 @@ export const MultiSingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15045,7 +14933,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15089,7 +14976,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15331,7 +15217,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15381,7 +15266,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15433,7 +15317,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15491,7 +15374,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15535,7 +15417,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15777,7 +15658,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15827,7 +15707,6 @@ export const DataDownloadViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15879,7 +15758,6 @@ export const DataDownloadViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15937,7 +15815,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15981,7 +15858,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -16223,7 +16099,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16273,7 +16148,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16325,7 +16199,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16383,7 +16256,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16427,7 +16299,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -16685,7 +16556,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16735,7 +16605,6 @@ export const SingleDateViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16787,7 +16656,6 @@ export const SingleDateViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16845,7 +16713,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16889,7 +16756,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -17131,7 +16997,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17181,7 +17046,6 @@ export const DownloadFilesViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17233,7 +17097,6 @@ export const DownloadFilesViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17291,7 +17154,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17335,7 +17197,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -17577,7 +17438,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17627,7 +17487,6 @@ export const QRCodeViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17679,7 +17538,6 @@ export const QRCodeViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17737,7 +17595,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17781,7 +17638,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -18025,7 +17881,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18075,7 +17930,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18127,7 +17981,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18185,7 +18038,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18229,7 +18081,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -18483,7 +18334,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18533,7 +18383,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18585,7 +18434,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18643,7 +18491,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18687,7 +18534,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19018,7 +18864,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19068,7 +18913,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19120,7 +18964,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19178,7 +19021,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19222,7 +19064,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19467,7 +19308,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19517,7 +19357,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19569,7 +19408,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19627,7 +19465,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19671,7 +19508,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19912,7 +19748,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19962,7 +19797,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20014,7 +19848,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20072,7 +19905,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20116,7 +19948,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -20357,7 +20188,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20407,7 +20237,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20459,7 +20288,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20517,7 +20345,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20561,7 +20388,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -20802,7 +20628,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20852,7 +20677,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20904,7 +20728,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20962,7 +20785,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21006,7 +20828,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -21247,7 +21068,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21297,7 +21117,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21349,7 +21168,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21407,7 +21225,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21451,7 +21268,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -21692,7 +21508,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21742,7 +21557,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21794,7 +21608,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21852,7 +21665,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21896,7 +21708,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -22137,7 +21948,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22187,7 +21997,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22239,7 +22048,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22297,7 +22105,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22341,7 +22148,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -22697,7 +22503,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22747,7 +22552,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22799,7 +22603,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22857,7 +22660,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22901,7 +22703,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -23423,7 +23224,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23473,7 +23273,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23525,7 +23324,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23583,7 +23381,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23627,7 +23424,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -23852,7 +23648,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23902,7 +23697,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23954,7 +23748,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24012,7 +23805,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24056,7 +23848,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -24367,7 +24158,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24417,7 +24207,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24469,7 +24258,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24527,7 +24315,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24571,7 +24358,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -25162,7 +24948,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25212,7 +24997,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25264,7 +25048,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25322,7 +25105,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25366,7 +25148,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -25951,7 +25732,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26001,7 +25781,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26053,7 +25832,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26111,7 +25889,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26155,7 +25932,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -26729,7 +26505,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26779,7 +26554,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26831,7 +26605,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26889,7 +26662,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26933,7 +26705,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -27207,7 +26978,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27257,7 +27027,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27309,7 +27078,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27367,7 +27135,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27411,7 +27178,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -27665,7 +27431,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27715,7 +27480,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27767,7 +27531,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27825,7 +27588,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27869,7 +27631,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28200,7 +27961,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28250,7 +28010,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28302,7 +28061,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28360,7 +28118,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28404,7 +28161,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28649,7 +28405,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28699,7 +28454,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28751,7 +28505,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28809,7 +28562,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28853,7 +28605,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29094,7 +28845,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29144,7 +28894,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29196,7 +28945,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29254,7 +29002,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29298,7 +29045,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29539,7 +29285,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29589,7 +29334,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29641,7 +29385,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29699,7 +29442,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29743,7 +29485,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29984,7 +29725,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30034,7 +29774,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30086,7 +29825,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30144,7 +29882,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30188,7 +29925,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -30429,7 +30165,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30479,7 +30214,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30531,7 +30265,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30589,7 +30322,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30633,7 +30365,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -30874,7 +30605,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30924,7 +30654,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30976,7 +30705,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -31034,7 +30762,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -31078,7 +30805,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -31319,7 +31045,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -31369,7 +31094,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -31421,7 +31145,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -31479,7 +31202,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -31523,7 +31245,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -33110,7 +32831,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33154,7 +32874,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -33204,7 +32923,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33254,7 +32972,6 @@ export const BaseMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33306,7 +33023,6 @@ export const BaseMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33683,7 +33399,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33727,7 +33442,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -33777,7 +33491,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33827,7 +33540,6 @@ export const SpectrumMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33879,7 +33591,6 @@ export const SpectrumMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34361,7 +34072,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34405,7 +34115,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -34455,7 +34164,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34505,7 +34213,6 @@ export const IconMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34557,7 +34264,6 @@ export const IconMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34964,7 +34670,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35008,7 +34713,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -35058,7 +34762,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35108,7 +34811,6 @@ export const RadiusMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35160,7 +34862,6 @@ export const RadiusMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35541,7 +35242,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35585,7 +35285,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -35635,7 +35334,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35685,7 +35383,6 @@ export const ColorMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35737,7 +35434,6 @@ export const ColorMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -36132,7 +35828,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -36176,7 +35871,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -36226,7 +35920,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -36276,7 +35969,6 @@ export const ShadingMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -36328,7 +36020,6 @@ export const ShadingMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -36715,7 +36406,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36759,7 +36449,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -36809,7 +36498,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36859,7 +36547,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36911,7 +36598,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37392,7 +37078,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37436,7 +37121,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -37486,7 +37170,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37536,7 +37219,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37588,7 +37270,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37994,7 +37675,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38038,7 +37718,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -38088,7 +37767,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38138,7 +37816,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38190,7 +37867,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38570,7 +38246,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38614,7 +38289,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -38664,7 +38338,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38714,7 +38387,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38766,7 +38438,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -39160,7 +38831,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -39204,7 +38874,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -39254,7 +38923,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -39304,7 +38972,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -39356,7 +39023,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -42459,7 +42125,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42509,7 +42174,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42561,7 +42225,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42619,7 +42282,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42663,7 +42325,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -43185,7 +42846,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43235,7 +42895,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43287,7 +42946,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43345,7 +43003,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43389,7 +43046,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -43614,7 +43270,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43664,7 +43319,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43716,7 +43370,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43774,7 +43427,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43818,7 +43470,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -44129,7 +43780,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44179,7 +43829,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44231,7 +43880,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44289,7 +43937,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44333,7 +43980,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -44924,7 +44570,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44974,7 +44619,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45026,7 +44670,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45084,7 +44727,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45128,7 +44770,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -45713,7 +45354,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45763,7 +45403,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45815,7 +45454,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45873,7 +45511,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45917,7 +45554,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -46491,7 +46127,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46541,7 +46176,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46593,7 +46227,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46651,7 +46284,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46695,7 +46327,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -46969,7 +46600,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47019,7 +46649,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47071,7 +46700,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47129,7 +46757,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47173,7 +46800,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47427,7 +47053,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47477,7 +47102,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47529,7 +47153,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47587,7 +47210,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47631,7 +47253,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47962,7 +47583,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48012,7 +47632,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48064,7 +47683,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48122,7 +47740,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48166,7 +47783,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -48411,7 +48027,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48461,7 +48076,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48513,7 +48127,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48571,7 +48184,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48615,7 +48227,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -48856,7 +48467,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48906,7 +48516,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48958,7 +48567,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49016,7 +48624,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49060,7 +48667,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -49301,7 +48907,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49351,7 +48956,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49403,7 +49007,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49461,7 +49064,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49505,7 +49107,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -49746,7 +49347,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49796,7 +49396,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49848,7 +49447,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49906,7 +49504,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49950,7 +49547,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50191,7 +49787,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50241,7 +49836,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50293,7 +49887,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50351,7 +49944,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50395,7 +49987,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50636,7 +50227,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50686,7 +50276,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50738,7 +50327,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50796,7 +50384,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50840,7 +50427,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -51081,7 +50667,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51131,7 +50716,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51183,7 +50767,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51241,7 +50824,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51285,7 +50867,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -51563,7 +51144,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51613,7 +51193,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51665,7 +51244,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51723,7 +51301,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51767,7 +51344,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -52289,7 +51865,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52339,7 +51914,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52391,7 +51965,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52449,7 +52022,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52493,7 +52065,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -52718,7 +52289,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52768,7 +52338,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52820,7 +52389,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52878,7 +52446,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52922,7 +52489,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -53233,7 +52799,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53283,7 +52848,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53335,7 +52899,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53393,7 +52956,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53437,7 +52999,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -54028,7 +53589,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54078,7 +53638,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54130,7 +53689,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54188,7 +53746,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54232,7 +53789,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -54817,7 +54373,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54867,7 +54422,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54919,7 +54473,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54977,7 +54530,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55021,7 +54573,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -55595,7 +55146,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55645,7 +55195,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55697,7 +55246,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55755,7 +55303,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55799,7 +55346,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56073,7 +55619,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56123,7 +55668,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56175,7 +55719,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56233,7 +55776,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56277,7 +55819,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56531,7 +56072,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56581,7 +56121,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56633,7 +56172,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56691,7 +56229,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56735,7 +56272,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57066,7 +56602,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57116,7 +56651,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57168,7 +56702,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57226,7 +56759,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57270,7 +56802,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57515,7 +57046,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57565,7 +57095,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57617,7 +57146,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57675,7 +57203,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57719,7 +57246,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57960,7 +57486,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58010,7 +57535,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58062,7 +57586,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58120,7 +57643,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58164,7 +57686,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -58405,7 +57926,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58455,7 +57975,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58507,7 +58026,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58565,7 +58083,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58609,7 +58126,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -58850,7 +58366,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58900,7 +58415,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58952,7 +58466,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59010,7 +58523,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59054,7 +58566,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -59295,7 +58806,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59345,7 +58855,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59397,7 +58906,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59455,7 +58963,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59499,7 +59006,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -59740,7 +59246,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59790,7 +59295,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59842,7 +59346,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59900,7 +59403,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59944,7 +59446,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -60185,7 +59686,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60235,7 +59735,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60287,7 +59786,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60345,7 +59843,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60389,7 +59886,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -60661,7 +60157,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60711,7 +60206,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60763,7 +60257,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60821,7 +60314,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60865,7 +60357,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -61387,7 +60878,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61437,7 +60927,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61489,7 +60978,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61547,7 +61035,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61591,7 +61078,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -61816,7 +61302,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61866,7 +61351,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61918,7 +61402,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61976,7 +61459,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62020,7 +61502,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -62331,7 +61812,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62381,7 +61861,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62433,7 +61912,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62491,7 +61969,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62535,7 +62012,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -63126,7 +62602,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63176,7 +62651,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63228,7 +62702,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63286,7 +62759,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63330,7 +62802,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -63915,7 +63386,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63965,7 +63435,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64017,7 +63486,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64075,7 +63543,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64119,7 +63586,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -64693,7 +64159,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64743,7 +64208,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64795,7 +64259,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64853,7 +64316,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64897,7 +64359,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -65171,7 +64632,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65221,7 +64681,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65273,7 +64732,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65331,7 +64789,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65375,7 +64832,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -65629,7 +65085,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65679,7 +65134,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65731,7 +65185,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65789,7 +65242,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65833,7 +65285,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66164,7 +65615,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66214,7 +65664,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66266,7 +65715,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66324,7 +65772,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66368,7 +65815,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66613,7 +66059,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66663,7 +66108,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66715,7 +66159,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66773,7 +66216,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66817,7 +66259,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -67058,7 +66499,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67108,7 +66548,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67160,7 +66599,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67218,7 +66656,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67262,7 +66699,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -67503,7 +66939,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67553,7 +66988,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67605,7 +67039,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67663,7 +67096,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67707,7 +67139,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -67948,7 +67379,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67998,7 +67428,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68050,7 +67479,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68108,7 +67536,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68152,7 +67579,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -68393,7 +67819,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68443,7 +67868,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68495,7 +67919,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68553,7 +67976,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68597,7 +68019,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -68838,7 +68259,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68888,7 +68308,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68940,7 +68359,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68998,7 +68416,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -69042,7 +68459,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -69283,7 +68699,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -69333,7 +68748,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -69385,7 +68799,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -69443,7 +68856,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -69487,7 +68899,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72165,7 +71576,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72209,7 +71619,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72259,7 +71668,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72309,7 +71717,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72361,7 +71768,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72842,7 +72248,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72886,7 +72291,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72936,7 +72340,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72986,7 +72389,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73038,7 +72440,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73444,7 +72845,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73488,7 +72888,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -73538,7 +72937,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73588,7 +72986,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73640,7 +73037,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74020,7 +73416,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74064,7 +73459,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -74114,7 +73508,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74164,7 +73557,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74216,7 +73608,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74610,7 +74001,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74654,7 +74044,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -74704,7 +74093,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74754,7 +74142,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74806,7 +74193,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75254,7 +74640,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75298,7 +74683,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -75348,7 +74732,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75398,7 +74781,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75450,7 +74832,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75931,7 +75312,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75975,7 +75355,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -76025,7 +75404,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76075,7 +75453,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76127,7 +75504,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76533,7 +75909,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76577,7 +75952,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -76627,7 +76001,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76677,7 +76050,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76729,7 +76101,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77109,7 +76480,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77153,7 +76523,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -77203,7 +76572,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77253,7 +76621,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77305,7 +76672,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77699,7 +77065,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77743,7 +77108,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -77793,7 +77157,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77843,7 +77206,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77895,7 +77257,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -78336,7 +77697,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78380,7 +77740,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -78430,7 +77789,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78480,7 +77838,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -78532,7 +77889,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79013,7 +78369,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -79057,7 +78412,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -79107,7 +78461,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -79157,7 +78510,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79209,7 +78561,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79615,7 +78966,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -79659,7 +79009,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -79709,7 +79058,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -79759,7 +79107,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79811,7 +79158,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80191,7 +79537,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80235,7 +79580,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -80285,7 +79629,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80335,7 +79678,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80387,7 +79729,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80781,7 +80122,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80825,7 +80165,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -80875,7 +80214,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80925,7 +80263,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80977,7 +80314,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -86774,7 +86110,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -86824,7 +86159,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -86876,7 +86210,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -86934,7 +86267,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -86978,7 +86310,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -87500,7 +86831,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87550,7 +86880,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87602,7 +86931,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87660,7 +86988,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87704,7 +87031,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -87929,7 +87255,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87979,7 +87304,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88031,7 +87355,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88089,7 +87412,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88133,7 +87455,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -88444,7 +87765,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88494,7 +87814,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88546,7 +87865,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88604,7 +87922,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88648,7 +87965,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -89239,7 +88555,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89289,7 +88604,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89341,7 +88655,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89399,7 +88712,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89443,7 +88755,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -90028,7 +89339,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90078,7 +89388,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90130,7 +89439,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90188,7 +89496,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90232,7 +89539,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -90806,7 +90112,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90856,7 +90161,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90908,7 +90212,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90966,7 +90269,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91010,7 +90312,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -91284,7 +90585,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91334,7 +90634,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91386,7 +90685,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91444,7 +90742,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91488,7 +90785,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -91742,7 +91038,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91792,7 +91087,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91844,7 +91138,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91902,7 +91195,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91946,7 +91238,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92277,7 +91568,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92327,7 +91617,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92379,7 +91668,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92437,7 +91725,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92481,7 +91768,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92726,7 +92012,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92776,7 +92061,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92828,7 +92112,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92886,7 +92169,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92930,7 +92212,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -93171,7 +92452,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93221,7 +92501,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93273,7 +92552,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93331,7 +92609,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93375,7 +92652,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -93616,7 +92892,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93666,7 +92941,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93718,7 +92992,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93776,7 +93049,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93820,7 +93092,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -94061,7 +93332,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94111,7 +93381,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94163,7 +93432,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94221,7 +93489,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94265,7 +93532,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -94506,7 +93772,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94556,7 +93821,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94608,7 +93872,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94666,7 +93929,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94710,7 +93972,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -94951,7 +94212,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95001,7 +94261,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95053,7 +94312,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95111,7 +94369,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95155,7 +94412,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -95396,7 +94652,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95446,7 +94701,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95498,7 +94752,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95556,7 +94809,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95600,7 +94852,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -95896,7 +95147,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -95940,7 +95190,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -95990,7 +95239,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -96040,7 +95288,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -96092,7 +95339,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -96596,7 +95842,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -96640,7 +95885,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -96690,7 +95934,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -96740,7 +95983,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -96792,7 +96034,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97221,7 +96462,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97265,7 +96505,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -97315,7 +96554,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97365,7 +96603,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97417,7 +96654,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97820,7 +97056,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97864,7 +97099,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -97914,7 +97148,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97964,7 +97197,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -98016,7 +97248,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -98433,7 +97664,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -98477,7 +97707,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -98527,7 +97756,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -98577,7 +97805,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -98629,7 +97856,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
