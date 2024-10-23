@@ -52,11 +52,9 @@ export class ReportBuilder {
     }
 
     const data = this.testData || [];
-
     const context = await buildContext(this.config.transform, this.reqContext);
     const transform = buildTransform(this.config.transform, context);
     const transformedData = await transform(TransformTable.fromRows(data));
-
     const output = buildOutput(this.config.output, this.reqContext.aggregator);
     const outputData = await output(transformedData);
 

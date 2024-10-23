@@ -11,38 +11,38 @@ import { Button, IconButton, List as MuiList, ListItemProps } from '@material-ui
 import { useEntities } from '../../api/queries';
 
 const FlexRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 `;
 
 const List = styled(MuiList)`
-  margin-left: 1rem;
+    margin-left: 1rem;
 
-  .MuiIconButton-root,
-  .MuiSvgIcon-root {
-    font-size: 1.5rem;
-  }
+    .MuiIconButton-root,
+    .MuiSvgIcon-root {
+        font-size: 1.5rem;
+    }
 
-  // Hide expand icon when there are no children but keep the element on the page for spacing
-  .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
-    color: transparent;
-  }
+    // Hide expand icon when there are no children but keep the element on the page for spacing
+    .MuiButtonBase-root.MuiIconButton-root.Mui-disabled .MuiSvgIcon-root {
+        color: transparent;
+    }
 `;
 
 const MenuLink = styled(Button).attrs({
   component: Link,
 })<ListItemProps>`
-  display: inline;
-  flex: 1;
-  justify-content: flex-start;
-  text-transform: none;
-  padding: 0.8rem;
-  font-size: 0.875rem;
+    display: inline;
+    flex: 1;
+    justify-content: flex-start;
+    text-transform: none;
+    padding: 0.8rem;
+    font-size: 0.875rem;
 
-  .MuiSvgIcon-root {
-    vertical-align: bottom;
-  }
+    .MuiSvgIcon-root {
+        vertical-align: bottom;
+    }
 `;
 
 interface EntityMenuProps {

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { ValueType, ViewConfig } from './dashboard-item';
+import { ValueType, ViewConfig, MatrixEntityCell } from './dashboard-item';
 
 type Transform = string | Record<string, unknown>;
 
@@ -24,7 +24,7 @@ export type ReportConfig = StandardReportConfig | CustomReportConfig;
 
 // This is the row type in the response from the report endpoint when the report is a matrix. It will contain data for each column, keyed by the column key, as well as dataElement, categoryId and category
 export type MatrixReportRow = Record<string, unknown> & {
-  dataElement?: string; // this is the data to display in the row header cell
+  dataElement?: string | MatrixEntityCell; // this is the data to display in the row header cell
   categoryId?: string; // this means the row is a child of a grouped row
   category?: string; // this means the row is a grouped row
   valueType?: ValueType;
@@ -34,6 +34,7 @@ export type MatrixReportRow = Record<string, unknown> & {
 export type MatrixReportColumn = {
   title: string;
   key: string;
+  entityCode: string;
   category?: string; // this means the column is a grouped column
   columns?: MatrixReportColumn[]; // these are the child columns of a grouped column
 };
