@@ -28,6 +28,12 @@ const MenuButton = styled(IconButton).attrs({
   margin-left: 1rem;
 `;
 
+const MenuButton = styled(IconButton).attrs({
+  disableRipple: true,
+})`
+  margin-left: 1rem;
+`;
+
 const MenuIcon = styled(MuiMenuIcon)`
   color: ${({ theme }) => theme.palette.text.primary};
   width: 2rem;
