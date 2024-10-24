@@ -17,14 +17,16 @@ const processColumns = (serieses: Series[]) => {
     return [];
   }
 
-  const configColumns = serieses.map(column => {
-    return {
-      // @ts-ignore - The react table accessors don't work as strings if the key has a space so we
-      // need to use the function accessor. The row and column could be any type so we need to ignore
-      accessor: (row: any) => row[column.key],
-      Header: column.name,
-    };
-  });
+  const configColumns = serieses
+    .filter(column => !column.hideFromTable)
+    .map(column => {
+      return {
+        // @ts-ignore - The react table accessors don't work as strings if the key has a space so we
+        // need to use the function accessor. The row and column could be any type so we need to ignore
+        accessor: (row: any) => row[column.key],
+        Header: column.name,
+      };
+    });
 
   return [
     {

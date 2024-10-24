@@ -163,16 +163,16 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
               <ExportSubtitle>Edit export settings and click 'Download'.</ExportSubtitle>
             </ExportSettingsInstructionsContainer>
             <ExportSetting>
-              {hasChartItems && (
-                <section>
-                  <ExportSettingsWrapper>
-                    <DisplayFormatSettings />
-                  </ExportSettingsWrapper>
+              <section>
+                <ExportSettingsWrapper>
+                  <DisplayFormatSettings />
+                </ExportSettingsWrapper>
+                {hasChartItems && (
                   <ExportSettingsWrapper>
                     <DisplayOptionsSettings />
                   </ExportSettingsWrapper>
-                </section>
-              )}
+                )}
+              </section>
               <MailingListSection
                 selectedDashboardItems={selectedDashboardItems}
                 settings={{

@@ -27,6 +27,8 @@ export {
   RequiresSessionAuthHandler,
   attachSession,
   attachSessionIfAvailable,
+  LoginRoute,
+  LoginRequest,
 } from './orchestrator';
 export * from './types';
 export * from './models';
