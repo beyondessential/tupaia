@@ -9,8 +9,8 @@ import { Typography } from '@material-ui/core';
 import { ArrowBack, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../../constants';
-import { getMobileTopBarHeight } from '../../../utils';
-import { useMapOverlays } from '../../../api/queries';
+import { getFriendlyEntityType, getMobileTopBarHeight } from '../../../utils';
+import { useEntity, useMapOverlays } from '../../../api/queries';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
@@ -113,7 +113,10 @@ export const MobileMapOverlaySelector = ({
   toggleOverlayLibrary,
 }: MobileMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
+  const { data: entity } = useEntity(projectCode, entityCode, true);
   const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
+
+  const friendlyEntityType = getFriendlyEntityType(entity?.type);
 
   return (
     <Wrapper>
@@ -146,7 +149,9 @@ export const MobileMapOverlaySelector = ({
           <ArrowWrapper>
             <ArrowBack />
           </ArrowWrapper>
-          <OverlayLibraryHeader>Overlay Library</OverlayLibraryHeader>
+          <OverlayLibraryHeader>
+            Overlay Library {friendlyEntityType && `(${friendlyEntityType})`}
+          </OverlayLibraryHeader>
         </OverlayLibraryHeaderButton>
         <OverlayListWrapper>
           {/* Use the entity code as a key so that the local state of the MapOverlayList resets between entities */}

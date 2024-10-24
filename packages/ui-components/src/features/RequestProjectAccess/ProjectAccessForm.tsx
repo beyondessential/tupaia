@@ -113,22 +113,22 @@ type Country = ProjectCountryAccessListRequest.ResBody[number];
 
 interface ProjectAccessFormProps {
   project?: WebServerProjectRequest.ResBody;
-  onClose?: () => void;
+  onBack?: () => void;
   countries: Country[];
   onSubmit: (data: { entityIds: string[]; message: string; projectCode: string }) => void;
   isSubmitting: boolean;
   isSuccess: boolean;
-  closeButtonText?: string;
+  backButtonText?: string;
 }
 
 export const ProjectAccessForm = ({
   project,
-  onClose,
+  onBack,
   countries,
   onSubmit,
   isSubmitting,
   isSuccess,
-  closeButtonText = 'Back to projects',
+  backButtonText = 'Back to projects',
 }: ProjectAccessFormProps) => {
   const formContext = useForm({
     mode: 'onChange',
@@ -146,6 +146,14 @@ export const ProjectAccessForm = ({
     });
   };
 
+  if (isSubmitting) {
+    return (
+      <LoaderWrapper>
+        <SpinningLoader />
+      </LoaderWrapper>
+    );
+  }
+
   // the countries that are available to request
   const availableCountries = countries?.filter((c: Country) => !c.hasAccess && !c.hasPendingAccess);
 
@@ -161,7 +169,7 @@ export const ProjectAccessForm = ({
           permissions, please contact your system administrator.
         </Alert>
         <StyledDialogActions>
-          <FormButton onClick={onClose} variant="text" color="default">
+          <FormButton onClick={onBack} variant="text" color="default">
             Back
           </FormButton>
         </StyledDialogActions>
@@ -183,19 +191,10 @@ export const ProjectAccessForm = ({
             </Typography>
           </div>
         </SuccessWrapper>
-
         <DialogActions>
-          <FormButton onClick={onClose}>{closeButtonText}</FormButton>
+          <FormButton onClick={onBack}>{backButtonText}</FormButton>
         </DialogActions>
       </>
-    );
-
-  // While the request is being processed, show a loading spinner
-  if (isSubmitting)
-    return (
-      <LoaderWrapper>
-        <SpinningLoader />
-      </LoaderWrapper>
     );
 
   const getTooltip = (country: Country) => {
@@ -232,7 +231,7 @@ export const ProjectAccessForm = ({
       </FormControl>
       <FormInput Input={TextArea} name="message" />
       <StyledDialogActions>
-        <FormButton variant="text" onClick={onClose} color="default">
+        <FormButton variant="text" onClick={onBack} color="default">
           Back
         </FormButton>
         <FormButton
