@@ -1,11 +1,10 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import randomToken from 'rand-token';
 import moment from 'moment';
-import { DatabaseError, UnauthenticatedError } from '@tupaia/utils';
-
+import { UnauthenticatedError } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -37,15 +36,15 @@ export class OneTimeLoginModel extends DatabaseModel {
   async findValidOneTimeLoginOrFail(token, shouldAllowUsed = false, shouldAllowExpired = false) {
     const oneTimeLogin = await this.findOne({ token });
     if (!oneTimeLogin) {
-      throw new DatabaseError('No one time login found');
+      throw new UnauthenticatedError('No one time login found');
     }
 
     if (!shouldAllowUsed && oneTimeLogin.isUsed()) {
-      throw new DatabaseError('One time login is used');
+      throw new UnauthenticatedError('One time login is used');
     }
 
     if (!shouldAllowExpired && oneTimeLogin.isExpired()) {
-      throw new DatabaseError('One time login is expired');
+      throw new UnauthenticatedError('One time login is expired');
     }
 
     return oneTimeLogin;

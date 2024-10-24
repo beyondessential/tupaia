@@ -1,14 +1,15 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import winston from 'winston';
-import { getCountryForTimezone } from 'countries-and-timezones';
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
-import { allowNoPermissions } from '../permissions';
-import { createSupportTicket } from '../utilities';
+import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
+import { BruteForceRateLimiter } from './BruteForceRateLimiter';
+import { allowNoPermissions } from '../../permissions';
+import { checkUserLocationAccess } from './checkUserLocationAccess';
+import { respondToRateLimitedUser } from './respondToRateLimitedUser';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -99,46 +100,6 @@ const checkApiClientAuthentication = async req => {
   }
 };
 
-const checkUserLocationAccess = async (req, user) => {
-  if (!user) return;
-  const { body, models } = req;
-  const { timezone } = body;
-
-  // The easiest way to get the country code is to use the timezone and get the most likely country using this timezone. This doesn't infringe on the user's privacy as the timezone is a very broad location. It also doesn't require the user to provide their location, which is a barrier to entry for some users.
-  const country = getCountryForTimezone(timezone);
-  if (!country) return;
-  // the ID is the ISO country code.
-  const { id, name } = country;
-
-  const existingEntry = await models.userCountryAccessAttempt.findOne({
-    user_id: user.id,
-    country_code: id,
-  });
-
-  // If there is already an entry for this user and country, return
-  if (existingEntry) return;
-
-  const userEntryCount = await models.userCountryAccessAttempt.count({
-    user_id: user.id,
-  });
-
-  const hasAnyEntries = userEntryCount > 0;
-
-  await models.userCountryAccessAttempt.create({
-    user_id: user.id,
-    country_code: id,
-  });
-
-  // Don't send an email if this is the first time the user has attempted to login
-  if (!hasAnyEntries) return;
-
-  // create a support ticket if the user has attempted to login from a new country
-  await createSupportTicket(
-    'User attempted to login from a new country',
-    `User ${user.first_name} ${user.last_name} (${user.id} - ${user.email}) attempted to access Tupaia from a new country: ${name}`,
-  );
-};
-
 /**
  * Handler for a POST to the /auth endpoint
  * By default, or if URL parameters include grantType=password, will check the email address and
@@ -151,23 +112,53 @@ const checkUserLocationAccess = async (req, user) => {
  */
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
+  const { grantType } = req.query;
+  const consecutiveFailsRateLimiter = new ConsecutiveFailsRateLimiter(req.database);
+  const bruteForceRateLimiter = new BruteForceRateLimiter(req.database);
 
-  const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
-  const { user: apiClientUser } = await checkApiClientAuthentication(req);
+  if (await bruteForceRateLimiter.checkIsRateLimited(req)) {
+    const msBeforeNext = await bruteForceRateLimiter.getRetryAfter(req);
+    return respondToRateLimitedUser(msBeforeNext, res);
+  }
 
-  const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
-    req.models,
-    accessPolicy,
-  );
-  const authorizationObject = await getAuthorizationObject({
-    refreshToken,
-    user,
-    accessPolicy,
-    apiClientUser,
-    permissionGroups: permissionGroupsByCountryId,
-  });
+  if (await consecutiveFailsRateLimiter.checkIsRateLimited(req)) {
+    const msBeforeNext = await consecutiveFailsRateLimiter.getRetryAfter(req);
+    return respondToRateLimitedUser(msBeforeNext, res);
+  }
 
-  await checkUserLocationAccess(req, user);
+  // Check if the user is authorised
+  try {
+    const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
+    const { user: apiClientUser } = await checkApiClientAuthentication(req);
+    const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
+      req.models,
+      accessPolicy,
+    );
 
-  respond(res, authorizationObject);
+    const authorizationObject = await getAuthorizationObject({
+      refreshToken,
+      user,
+      accessPolicy,
+      apiClientUser,
+      permissionGroups: permissionGroupsByCountryId,
+    });
+
+    await checkUserLocationAccess(req, user);
+
+    // Reset rate limiting on successful authorisation
+    await consecutiveFailsRateLimiter.resetFailedAttempts(req);
+    await bruteForceRateLimiter.resetFailedAttempts(req);
+
+    respond(res, authorizationObject, 200);
+  } catch (authError) {
+    if (authError.statusCode === 401) {
+      // Record failed login attempt to rate limiter
+      await bruteForceRateLimiter.addFailedAttempt(req);
+      if (grantType === GRANT_TYPES.PASSWORD || grantType === undefined) {
+        await consecutiveFailsRateLimiter.addFailedAttempt(req);
+      }
+    }
+
+    throw authError;
+  }
 }
