@@ -116,5 +116,5 @@ export const dashboards = {
       displayProperty: 'name',
     },
   ],
-  needsBESAdminAccess: ['delete'],
+  needsBESAdminAccess: [],
 };

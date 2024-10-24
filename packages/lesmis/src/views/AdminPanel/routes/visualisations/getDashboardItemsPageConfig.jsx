@@ -54,7 +54,6 @@ export const getDashboardItemsPageConfig = (translate, adminUrl, isBESAdmin) => 
     {
       Header: 'Edit using Visualisation Builder',
       type: 'link',
-      show: isBESAdmin,
       editConfig: {
         type: 'link',
         linkOptions: {

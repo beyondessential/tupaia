@@ -200,5 +200,5 @@ export const mapOverlays = {
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
   LinksComponent,
-  needsBESAdminAccess: ['delete'],
+  needsBESAdminAccess: [],
 };
