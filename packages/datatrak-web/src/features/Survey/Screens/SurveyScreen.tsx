@@ -8,8 +8,14 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { QuestionType } from '@tupaia/types';
 import { useSurveyForm } from '../SurveyContext';
-import { SurveyPaginator, SurveyQuestionGroup } from '../Components';
+import {
+  SurveyPaginator,
+  SurveyQuestionGroup,
+  MobileSurveyHeader,
+  SurveyMobilePaginator,
+} from '../Components';
 import { ScrollableBody } from '../../../layout';
+import { useIsMobile } from '../../../utils';
 
 const ScreenHeader = styled.div<{
   $centered?: boolean;
@@ -35,6 +41,11 @@ const Heading = styled(Typography).attrs({ variant: 'h2' })`
   }
 `;
 
+const SurveyThumbMenu = () => {
+  const isMobile = useIsMobile();
+  return isMobile ? <SurveyMobilePaginator /> : <SurveyPaginator />;
+};
+
 /**
  * This is the component that renders survey questions.
  */
@@ -45,6 +56,7 @@ export const SurveyScreen = () => {
     screenDetail: instructionDetail,
     activeScreen,
   } = useSurveyForm();
+  const isMobile = useIsMobile();
 
   const pageHasOnlyInstructions = activeScreen.every(
     question => question.type === QuestionType.Instruction,
@@ -55,6 +67,7 @@ export const SurveyScreen = () => {
 
   return (
     <>
+      {isMobile && <MobileSurveyHeader />}
       <ScrollableBody $hasSidebar>
         {/*
          * If the first question on the active screen is an instruction, then display it in full
@@ -69,7 +82,7 @@ export const SurveyScreen = () => {
         </ScreenHeader>
         <SurveyQuestionGroup questions={displayQuestions} />
       </ScrollableBody>
-      <SurveyPaginator />
+      <SurveyThumbMenu />
     </>
   );
 };

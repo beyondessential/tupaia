@@ -11,7 +11,6 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { useEditUser } from '../api/mutations';
 import { Button } from '../components';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
-import { HEADER_HEIGHT } from '../constants';
 import { CountrySelector, GroupedSurveyList, useUserCountries } from '../features';
 import { Survey } from '../types';
 
@@ -34,11 +33,11 @@ const Container = styled(Paper).attrs({
     &.MuiPaper-root {
       height: 100%;
     }
-    // parent selector - targets the parent of this container
+    // parent selector - targets the parents of this container
     div:has(&) {
       padding: 0;
       align-items: flex-start;
-      height: calc(100vh - ${HEADER_HEIGHT});
+      height: calc(100vh);
     }
   }
 `;
