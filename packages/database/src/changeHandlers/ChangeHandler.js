@@ -83,7 +83,8 @@ export class ChangeHandler {
           // Translate changes and schedule their handling as a batch at a later stage
           const translatedChanges = await translator(changeDetails);
           this.changeQueue.push(...translatedChanges);
-          return this.scheduleChangeQueueHandler();
+          this.scheduleChangeQueueHandler();
+          return null; // Don't return the scheduled promise, so that it doesn't block processing other changes
         }),
     );
   }
@@ -132,8 +133,15 @@ export class ChangeHandler {
         await this.models.wrapInTransaction(async transactingModels => {
           // Acquire a database advisory lock for the transaction
           // Ensures no other server instance can execute its change handler at the same time
+          winston.info(`Acquiring lock for ${this.lockKey} change hander`);
           await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+          const start = Date.now();
+          winston.info(`Running ${this.lockKey} change hander with ${currentQueue.length} jobs`);
           await this.handleChanges(transactingModels, currentQueue);
+          const end = Date.now();
+          winston.info(
+            `Completed ${this.lockKey} change hander. ${currentQueue.length} jobs, took ${end - start}ms`,
+          );
         });
       } catch (error) {
         winston.warn(

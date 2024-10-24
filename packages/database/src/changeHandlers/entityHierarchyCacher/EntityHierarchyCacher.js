@@ -59,7 +59,6 @@ export class EntityHierarchyCacher extends ChangeHandler {
 
   async handleChanges(transactingModels, rebuildJobs) {
     // get the subtrees to delete, then run the delete
-    const start = Date.now();
     const subtreeRebuilder = new EntityHierarchySubtreeRebuilder(transactingModels);
     await subtreeRebuilder.rebuildSubtrees(rebuildJobs);
 
@@ -73,8 +72,5 @@ export class EntityHierarchyCacher extends ChangeHandler {
         rootEntityId,
       })),
     );
-
-    const end = Date.now();
-    winston.info(`Rebuilding entity hierarchy cache took: ${end - start}ms`);
   }
 }

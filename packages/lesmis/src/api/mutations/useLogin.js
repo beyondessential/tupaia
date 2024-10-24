@@ -5,6 +5,7 @@
  */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getBrowserTimeZone } from '@tupaia/utils';
 import { post } from '../api';
 import { useUser } from '../queries';
 import { useHomeUrl } from '../../utils/useHomeUrl';
@@ -22,6 +23,7 @@ export const useLogin = () => {
           emailAddress: email,
           password,
           deviceName: window.navigator.userAgent,
+          timezone: getBrowserTimeZone(),
         },
       }),
     {

@@ -103,4 +103,46 @@ describe('Authenticate', function () {
     expect(userId).to.equal(userAccount.id);
     expect(apiClientUserId).to.equal(apiClientUserAccount.id);
   });
+
+  it('should add a new entry to the user_country_access_attempts table if one does not already exist', async () => {
+    await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: userAccount.email,
+        password: userAccountPassword,
+        deviceName: 'test_device',
+        timezone: 'Pacific/Auckland',
+      },
+    });
+    const entries = await models.userCountryAccessAttempt.find({
+      user_id: userAccount.id,
+      country_code: 'NZ',
+    });
+    expect(entries).to.have.length(1);
+  });
+
+  it('should not add a new entry to the user_country_access_attempts table if one does already exist', async () => {
+    await models.userCountryAccessAttempt.create({
+      user_id: userAccount.id,
+      country_code: 'WS',
+    });
+    await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: userAccount.email,
+        password: userAccountPassword,
+        deviceName: 'test_device',
+        timezone: 'Pacific/Apia',
+      },
+    });
+    const entries = await models.userCountryAccessAttempt.find({
+      user_id: userAccount.id,
+      country_code: 'WS',
+    });
+    expect(entries).to.have.length(1);
+  });
 });
