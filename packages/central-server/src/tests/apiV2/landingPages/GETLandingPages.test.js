@@ -94,7 +94,9 @@ describe('GETLandingPages', async () => {
       });
 
       const result = await app.get(`landingPages/${LANDING_PAGES[0].id}`);
-      expect(result.text).to.equal('{"error":"Need Tupaia Admin Panel access"}');
+      expect(result.text).to.equal(
+        '{"error":"One of the following conditions need to be satisfied:\\nNeed BES Admin access\\nNeed Tupaia Admin Panel access\\n"}',
+      );
     });
   });
 
@@ -144,7 +146,9 @@ describe('GETLandingPages', async () => {
 
       expect(result.status).to.equal(403);
 
-      expect(result.text).to.equal('{"error":"Need Tupaia Admin Panel access"}');
+      expect(result.text).to.equal(
+        '{"error":"One of the following conditions need to be satisfied:\\nNeed BES Admin access\\nNeed Tupaia Admin Panel access\\n"}',
+      );
     });
 
     it('Throws an error if user does not have access to any projects', async () => {

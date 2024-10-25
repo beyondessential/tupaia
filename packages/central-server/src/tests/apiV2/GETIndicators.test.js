@@ -9,11 +9,11 @@ import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from 
 import { TestableApp } from '../testUtilities';
 
 describe('Permissions checker for GETIndicators', async () => {
-  const DEFAULT_POLICY = {
+  const NO_PERM_POLICY = {
     DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    KI: ['Admin'],
+    SB: ['Royal Australasian College of Surgeons'],
+    VU: ['Admin'],
     LA: ['Admin'],
   };
 
@@ -58,7 +58,7 @@ describe('Permissions checker for GETIndicators', async () => {
     });
 
     it('Insufficient permissions: Return an error message if user does not have BES admin access', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
+      await app.grantAccess(NO_PERM_POLICY);
       const { body: result } = await app.get(`indicators/${indicatorAId}`);
 
       expect(result).to.have.keys('error');
@@ -74,7 +74,7 @@ describe('Permissions checker for GETIndicators', async () => {
     });
 
     it('Insufficient permissions: Return an error message if user does not have BES admin access', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
+      await app.grantAccess(NO_PERM_POLICY);
       const { body: results } = await app.get(`indicators?${filterString}`);
 
       expect(results).to.have.keys('error');
