@@ -87,7 +87,7 @@ export const questions = {
   path: '/questions',
   endpoint: 'questions',
   columns: QUESTION_COLUMNS,
-  isBESAdminOnly: true,
+  isBESAdminOnly: false,
   editorConfig: EDITOR_CONFIG,
   nestedViews: [
     {

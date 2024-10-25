@@ -51,7 +51,7 @@ export const dataGroups = {
     },
   },
   editorConfig: EDITOR_CONFIG,
-  isBESAdminOnly: true,
+  isBESAdminOnly: false,
   nestedViews: [
     {
       resourceName: DATA_ELEMENT_RESOURCE_NAME,
