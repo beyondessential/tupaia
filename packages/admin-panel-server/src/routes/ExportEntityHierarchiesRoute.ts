@@ -57,7 +57,13 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
       );
 
       const data = descendants.map((row: ExportEntityHierarchiesData) => ({
-        ...row,
+        'grandparent name': row.grandparent_name,
+        'grandparent code': row.grandparent_code,
+        'parent name': row.parent_name,
+        'parent code': row.parent_code,
+        name: row.name,
+        code: row.code,
+        type: row.type,
         attributes: Object.entries(row.attributes)
           .map(([key, value]) => `${key}: ${value}`)
           .join('\n'),
@@ -70,10 +76,10 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
       const sheetName = projectEntity?.name || hierarchy;
       const sheet = xlsx.utils.json_to_sheet(data, {
         header: [
-          'grandparent_name',
-          'grandparent_code',
-          'parent_name',
-          'parent_code',
+          'grandparent name',
+          'grandparent code',
+          'parent name',
+          'parent code',
           'name',
           'code',
           'type',
