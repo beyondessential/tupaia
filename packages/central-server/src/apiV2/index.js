@@ -22,9 +22,9 @@ import {
   postChanges,
 } from './meditrakApp';
 import { BESAdminCreateHandler, TupaiaAdminCreateHandler } from './CreateHandler';
-import { BESAdminDeleteHandler } from './DeleteHandler';
-import { BESAdminEditHandler } from './EditHandler';
-import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
+import { BESAdminDeleteHandler, TupaiaAdminDeleteHandler } from './DeleteHandler';
+import { BESAdminEditHandler, TupaiaAdminEditHandler } from './EditHandler';
+import { TupaiaAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
@@ -205,7 +205,7 @@ apiV2.get(
   useRouteHandler(GETMapOverlayGroupRelations),
 );
 apiV2.get('/legacyReports/:recordId?', useRouteHandler(GETLegacyReports));
-apiV2.get('/indicators/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/indicators/:recordId?', useRouteHandler(TupaiaAdminGETHandler));
 apiV2.get('/feedItems/:recordId?', useRouteHandler(GETFeedItems));
 apiV2.get('/mapOverlays/:recordId?', useRouteHandler(GETMapOverlays));
 apiV2.get('/mapOverlayGroups/:recordId?', useRouteHandler(GETMapOverlayGroups));
@@ -258,7 +258,7 @@ apiV2.get('/supersetInstances/:recordId?', useRouteHandler(TupaiaAdminGETHandler
 apiV2.get('/dataServiceSyncGroups/:recordId?', useRouteHandler(GETSyncGroups));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs', useRouteHandler(GETSyncGroupLogs));
 apiV2.get('/dataServiceSyncGroups/:recordId/logs/count', useRouteHandler(GETSyncGroupLogsCount));
-apiV2.get('/dataElementDataServices/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/dataElementDataServices/:recordId?', useRouteHandler(TupaiaAdminGETHandler));
 apiV2.get(
   '/externalDatabaseConnections/:recordId?',
   useRouteHandler(GETExternalDatabaseConnections),
@@ -295,14 +295,14 @@ apiV2.post(
 );
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataElements', useRouteHandler(TupaiaAdminCreateHandler));
-apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataGroups', useRouteHandler(TupaiaAdminGETHandler));
+apiV2.post('/dataTables', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/dashboardMailingLists', useRouteHandler(CreateDashboardMailingList));
 apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailingListEntry));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
-apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/indicators', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/permissionGroups', useRouteHandler(CreatePermissionGroup));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
@@ -312,8 +312,8 @@ apiV2.post('/userFavouriteDashboardItems', useRouteHandler(POSTUpdateUserFavouri
 apiV2.post('/projects', useRouteHandler(CreateProject));
 apiV2.post('/dataServiceSyncGroups', useRouteHandler(CreateSyncGroups));
 apiV2.post('/dataServiceSyncGroups/:recordId/sync', useRouteHandler(ManuallySyncSyncGroup));
-apiV2.post('/dataElementDataServices', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/externalDatabaseConnections', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataElementDataServices', useRouteHandler(TupaiaAdminCreateHandler));
+apiV2.post('/externalDatabaseConnections', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
@@ -329,7 +329,7 @@ apiV2.put('/accessRequests/:recordId?', useRouteHandler(EditAccessRequests));
 apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenComponents));
 apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
-apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/dataTables/:recordId', useRouteHandler(TupaiaAdminEditHandler));
 apiV2.put('/feedItems/:recordId', useRouteHandler(EditFeedItems));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
 apiV2.put('/optionSets/:recordId', useRouteHandler(EditOptionSets));
@@ -345,13 +345,13 @@ apiV2.put('/legacyReports/:recordId', useRouteHandler(EditLegacyReport));
 apiV2.put('/mapOverlays/:recordId', useRouteHandler(EditMapOverlays));
 apiV2.put('/mapOverlayGroups/:recordId', useRouteHandler(EditMapOverlayGroups));
 apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayGroupRelations));
-apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/indicators/:recordId', useRouteHandler(TupaiaAdminEditHandler));
 apiV2.put('/projects/:recordId', useRouteHandler(EditProject));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
 apiV2.put('/me', useRouteHandler(EditUserForMe));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
-apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(TupaiaAdminEditHandler));
+apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(TupaiaAdminEditHandler));
 apiV2.put('/entityHierarchy/:recordId', useRouteHandler(EditEntityHierarchy));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
@@ -369,7 +369,7 @@ apiV2.delete('/surveyResponses/:recordId', useRouteHandler(DeleteSurveyResponses
 apiV2.delete('/surveyScreenComponents/:recordId', useRouteHandler(DeleteSurveyScreenComponents));
 apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
-apiV2.delete('/dataTables/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/dataTables/:recordId', useRouteHandler(TupaiaAdminDeleteHandler));
 apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntity));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));
@@ -390,10 +390,10 @@ apiV2.delete(
   '/mapOverlayGroupRelations/:recordId',
   useRouteHandler(DeleteMapOverlayGroupRelations),
 );
-apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/indicators/:recordId', useRouteHandler(TupaiaAdminDeleteHandler));
 apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
-apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
-apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(TupaiaAdminDeleteHandler));
+apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(TupaiaAdminDeleteHandler));
 apiV2.delete('/landingPages/:recordId', useRouteHandler(DeleteLandingPage));
 apiV2.delete('/dhisInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/supersetInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
