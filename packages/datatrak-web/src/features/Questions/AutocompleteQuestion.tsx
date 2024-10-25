@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import throttle from 'lodash.throttle';
 import { createFilterOptions } from '@material-ui/lab';
@@ -75,6 +75,15 @@ export const AutocompleteQuestion = ({
     attributes,
     searchValue,
   );
+
+  //If we programmatically set the value of the input, we need to update the search value
+  useEffect(() => {
+    // if the selection is the same as the search value, do not update the search value
+    if (!selectedValue || typeof selectedValue !== 'string' || selectedValue === searchValue)
+      return;
+
+    setSearchValue(selectedValue);
+  }, [JSON.stringify(selectedValue)]);
 
   const canCreateNew = !!createNew;
 
