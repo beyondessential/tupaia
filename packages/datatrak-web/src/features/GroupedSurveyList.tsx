@@ -6,10 +6,12 @@ import React, { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 import { FormHelperText, FormLabelProps } from '@material-ui/core';
 import { Country } from '@tupaia/types';
-import { SelectList } from '@tupaia/ui-components';
+import { SelectList as DesktopSelectList } from '@tupaia/ui-components';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
+import { useIsMobile } from '../utils';
+import { MobileSelectList } from './MobileSelectList';
 
 const ListWrapper = styled.div`
   max-height: 35rem;
@@ -61,6 +63,7 @@ export const GroupedSurveyList = ({
   labelProps,
   error,
 }: GroupedSurveyListProps) => {
+  const isMobile = useIsMobile();
   const user = useCurrentUserContext();
   const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.code);
   const groupedSurveys =
@@ -115,6 +118,9 @@ export const GroupedSurveyList = ({
     if (!listItem) return setSelectedSurvey(null);
     setSelectedSurvey(listItem?.value as Survey['code']);
   };
+
+  const SelectList = isMobile ? MobileSelectList : DesktopSelectList;
+
   return (
     <ListWrapper>
       <SelectList

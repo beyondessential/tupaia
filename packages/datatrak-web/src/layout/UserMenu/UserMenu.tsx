@@ -15,17 +15,6 @@ import { ProjectSelectModal } from './ProjectSelectModal';
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    justify-content: space-between;
-    width: 100%;
-  }
-`;
-
-const MenuButton = styled(IconButton).attrs({
-  disableRipple: true,
-})`
-  margin-left: 1rem;
 `;
 
 const MenuButton = styled(IconButton).attrs({

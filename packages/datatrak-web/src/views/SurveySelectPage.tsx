@@ -13,6 +13,7 @@ import { Button } from '../components';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { CountrySelector, GroupedSurveyList, useUserCountries } from '../features';
 import { Survey } from '../types';
+import { useIsMobile } from '../utils';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -26,6 +27,7 @@ const Container = styled(Paper).attrs({
     height: 35rem;
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
+    background: ${({ theme }) => theme.palette.background.default};
     width: 100%;
     border-radius: 0;
     border-left: none;
@@ -98,6 +100,7 @@ export const SurveySelectPage = () => {
   };
   const { mutateAsync: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
+  const isMobile = useIsMobile();
 
   const { isLoading, data: surveys } = useProjectSurveys(user.projectId, selectedCountry?.code);
 
@@ -158,18 +161,20 @@ export const SurveySelectPage = () => {
           selectedCountry={selectedCountry}
         />
       )}
-      <DialogActions>
-        <Button to="/" variant="outlined">
-          Cancel
-        </Button>
-        <Button
-          onClick={handleSelectSurvey}
-          disabled={!selectedSurvey || isUpdatingUser}
-          tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
-        >
-          Next
-        </Button>
-      </DialogActions>
+      {!isMobile && (
+        <DialogActions>
+          <Button to="/" variant="outlined">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSelectSurvey}
+            disabled={!selectedSurvey || isUpdatingUser}
+            tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
+          >
+            Next
+          </Button>
+        </DialogActions>
+      )}
     </Container>
   );
 };

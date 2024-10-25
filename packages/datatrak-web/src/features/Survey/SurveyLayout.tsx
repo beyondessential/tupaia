@@ -47,6 +47,7 @@ const Paper = styled(MuiPaper).attrs({
   display: flex;
   flex-direction: column;
   border-radius: 0;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-left: 1rem;
     border-radius: 4px;
