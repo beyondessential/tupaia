@@ -59,10 +59,7 @@ const Description = styled(Typography)`
   text-align: center;
 `;
 
-const ExportDescription = styled(Typography)`
-  color: ${({ theme }) => theme.palette.text.secondary};
-  text-align: justify;
-`;
+const ExportDescription = styled(Typography)``;
 
 const ExportContent = styled.div<{
   $hasData?: boolean;
@@ -188,8 +185,14 @@ export const PDFExportDashboardItem = ({
         </PDFExportHeader>
       )}
       <PDFExportBody>
-        {displayHeader && <DashboardName>{activeDashboard?.name}</DashboardName>}
-        {displayDescription && <ExportDescription>{settings?.exportDescription}</ExportDescription>}
+        {displayHeader && (
+          <DashboardName>
+            {activeDashboard?.name}
+            {displayDescription && (
+              <ExportDescription>{settings?.exportDescription}</ExportDescription>
+            )}
+          </DashboardName>
+        )}
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}
