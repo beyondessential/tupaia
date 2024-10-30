@@ -134,11 +134,11 @@ export const parseRows = (
       if (!matchesSearchFilter) return result;
     }
 
-    const newResult: MatrixRowType = {
+    const newResult = {
       title: dataElement || '',
       onClick: drillDown ? () => onDrillDown(row) : undefined,
       ...formattedRowValues,
-    };
+    } as MatrixRowType;
 
     // if the row is a matrix entity cell, then we need to add the entityLink to the row
     if (isMatrixEntityCell(dataElement)) {
