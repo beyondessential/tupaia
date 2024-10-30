@@ -9,11 +9,6 @@ import { TransformTable } from '../../../transform';
 import { MatrixBuilder } from './matrixBuilder';
 import { Matrix, MatrixParams } from './types';
 
-const matrixOutputColumnSchema = yup.object({
-  entityCode: yup.string().required(),
-  entityLabel: yup.string().required(),
-});
-
 const paramsValidator = yup.object().shape(
   {
     columns: yup.lazy((value: unknown) =>

@@ -72,9 +72,9 @@ interface UseMapOverlayDataProps {
   rootEntityCode?: Entity;
 }
 export const useMapOverlayTableData = ({
-                                         hiddenValues = {},
-                                         rootEntityCode,
-                                       }: UseMapOverlayDataProps = {}) => {
+  hiddenValues = {},
+  rootEntityCode,
+}: UseMapOverlayDataProps = {}) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
   const keepPreviousData = useKeepPreviousData(projectCode, selectedOverlay?.measureLevel);

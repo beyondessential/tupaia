@@ -26,7 +26,7 @@ const THead = styled(TableHead)`
 `;
 
 const CellLink = styled(RouterLink)`
-  color: white;
+  color: ${({ theme }) => theme.palette.text.primary};
   text-decoration: none;
   &:hover {
     text-decoration: underline;
@@ -34,7 +34,10 @@ const CellLink = styled(RouterLink)`
 `;
 
 const TitleCell = ({ title, entityLink }: { title: string; entityLink?: string }) => {
-  return entityLink ? <CellLink to={entityLink}>{title}</CellLink> : <>{title}</>;
+  if (entityLink) {
+    return <CellLink to={entityLink}>{title}</CellLink>;
+  }
+  return <>{title}</>;
 };
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.

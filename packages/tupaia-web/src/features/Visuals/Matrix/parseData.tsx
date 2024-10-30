@@ -134,11 +134,11 @@ export const parseRows = (
       if (!matchesSearchFilter) return result;
     }
 
-    const newResult = {
+    const newResult: MatrixRowType = {
       title: dataElement || '',
       onClick: drillDown ? () => onDrillDown(row) : undefined,
       ...formattedRowValues,
-    } as MatrixRowType;
+    };
 
     // if the row is a matrix entity cell, then we need to add the entityLink to the row
     if (isMatrixEntityCell(dataElement)) {
@@ -172,10 +172,14 @@ export const parseColumns = (
     }
 
     if (entityCode) {
+      const entityLink = generatePath(ROUTE_STRUCTURE, {
+        projectCode: projectCode,
+        entityCode: entityCode,
+      });
       return {
         title,
         key,
-        entityLink: `/${projectCode}/${entityCode}`,
+        entityLink,
       };
     }
     // otherwise, handle as a regular column

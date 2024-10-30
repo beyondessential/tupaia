@@ -218,7 +218,7 @@ const ClickableRowHeaderCell = ({
 };
 
 const RowLink = styled(RouterLink)`
-  color: white;
+  color: ${({ theme }) => theme.palette.text.primary};
   text-decoration: none;
   &:hover {
     text-decoration: underline;
