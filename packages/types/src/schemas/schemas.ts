@@ -32584,7 +32584,7 @@ export const MeasureConfigSchema = {
 	"type": "object",
 	"properties": {
 		"type": {
-			"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+			"description": "How to display this series (popup-only is deprecated)",
 			"enum": [
 				"color",
 				"icon",
@@ -32667,6 +32667,14 @@ export const MeasureConfigSchema = {
 		},
 		"hideFromLegend": {
 			"description": "Whether to include this series in the legend",
+			"type": "boolean"
+		},
+		"hideFromPopup": {
+			"description": "Whether to include this series in the popup/tooltip",
+			"type": "boolean"
+		},
+		"hideFromTable": {
+			"description": "Whether to include this series in the table",
 			"type": "boolean"
 		},
 		"name": {
@@ -33118,7 +33126,7 @@ export const BaseMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -33201,6 +33209,14 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -33678,7 +33694,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -33761,6 +33777,14 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -34343,7 +34367,7 @@ export const IconMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -34426,6 +34450,14 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -34933,7 +34965,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -35016,6 +35048,14 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -35497,7 +35537,7 @@ export const ColorMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -35580,6 +35620,14 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -36075,7 +36123,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -36158,6 +36206,14 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -36645,7 +36701,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -36728,6 +36784,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -37309,7 +37373,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -37392,6 +37456,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -37898,7 +37970,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -37981,6 +38053,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -38461,7 +38541,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -38544,6 +38624,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -39038,7 +39126,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -39121,6 +39209,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -71775,7 +71871,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -71858,6 +71954,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -72439,7 +72543,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -72522,6 +72626,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -73028,7 +73140,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -73111,6 +73223,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -73591,7 +73711,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -73674,6 +73794,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -74168,7 +74296,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -74251,6 +74379,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -74799,7 +74935,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -74882,6 +75018,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -75463,7 +75607,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -75546,6 +75690,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -76052,7 +76204,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -76135,6 +76287,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -76615,7 +76775,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -76698,6 +76858,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -77192,7 +77360,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -77275,6 +77443,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -77816,7 +77992,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -77899,6 +78075,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -78480,7 +78664,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -78563,6 +78747,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -79069,7 +79261,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -79152,6 +79344,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -79632,7 +79832,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -79715,6 +79915,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -80209,7 +80417,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -80292,6 +80500,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -83960,6 +84176,60 @@ export const UserAccountUpdateSchema = {
 				"unverified",
 				"verified"
 			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const UserCountryAccessAttemptSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"id",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
 			"type": "string"
 		}
 	},
@@ -95226,7 +95496,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -95309,6 +95579,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -95539,6 +95817,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -95913,7 +96194,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -95996,6 +96277,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -96151,6 +96440,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -96525,7 +96817,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -96608,6 +96900,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -96738,6 +97038,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -97111,7 +97414,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -97194,6 +97497,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -97338,6 +97649,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -97711,7 +98025,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -97794,6 +98108,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -97928,6 +98250,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
