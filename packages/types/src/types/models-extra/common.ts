@@ -25,7 +25,7 @@ export type DateOffsetSpec = {
   /**
    * @description Offset distance (can be negative to offset to an earlier date)
    */
-  offset: number;
+  offset?: number;
 
   /**
    * @description Used to modify the offset by either moving the date to the start/end of the modifier unit

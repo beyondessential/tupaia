@@ -64,7 +64,6 @@ export const DateOffsetSpecSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"offset",
 		"unit"
 	]
 } 
@@ -130,7 +129,6 @@ export const DefaultTimePeriodSchema = {
 			},
 			"additionalProperties": false,
 			"required": [
-				"offset",
 				"unit"
 			]
 		},
@@ -180,7 +178,6 @@ export const DefaultTimePeriodSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -232,7 +229,6 @@ export const DefaultTimePeriodSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -340,6 +336,27 @@ export const CssColorSchema = {
 	"type": "string"
 } 
 
+export const DatePickerOffsetSpecSchema = {
+	"type": "object",
+	"properties": {
+		"unit": {
+			"enum": [
+				"month",
+				"quarter"
+			],
+			"type": "string"
+		},
+		"offset": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"offset",
+		"unit"
+	]
+} 
+
 export const BaseConfigSchema = {
 	"type": "object",
 	"properties": {
@@ -366,6 +383,27 @@ export const BaseConfigSchema = {
 				"year"
 			],
 			"type": "string"
+		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
 		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
@@ -410,7 +448,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -460,7 +497,6 @@ export const BaseConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -512,7 +548,6 @@ export const BaseConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -570,7 +605,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -614,7 +648,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -719,6 +752,10 @@ export const BaseConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		}
 	},
@@ -803,6 +840,27 @@ export const MatrixConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -846,7 +904,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -896,7 +953,6 @@ export const MatrixConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -948,7 +1004,6 @@ export const MatrixConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1006,7 +1061,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1050,7 +1104,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -1155,6 +1208,10 @@ export const MatrixConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -1521,6 +1578,27 @@ export const MatrixVizBuilderConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -1564,7 +1642,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1614,7 +1691,6 @@ export const MatrixVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1666,7 +1742,6 @@ export const MatrixVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1724,7 +1799,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1768,7 +1842,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -1873,6 +1946,10 @@ export const MatrixVizBuilderConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -2736,6 +2813,27 @@ export const ComponentConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -2779,7 +2877,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -2829,7 +2926,6 @@ export const ComponentConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -2881,7 +2977,6 @@ export const ComponentConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -2939,7 +3034,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -2983,7 +3077,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -3088,6 +3181,10 @@ export const ComponentConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -3258,6 +3355,27 @@ export const BaseChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -3301,7 +3419,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3351,7 +3468,6 @@ export const BaseChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3403,7 +3519,6 @@ export const BaseChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3461,7 +3576,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3505,7 +3619,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -3610,6 +3723,10 @@ export const BaseChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -4123,6 +4240,27 @@ export const CartesianChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -4166,7 +4304,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4216,7 +4353,6 @@ export const CartesianChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -4268,7 +4404,6 @@ export const CartesianChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -4326,7 +4461,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4370,7 +4504,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -4475,6 +4608,10 @@ export const CartesianChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -4933,6 +5070,27 @@ export const PieChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -4976,7 +5134,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5026,7 +5183,6 @@ export const PieChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5078,7 +5234,6 @@ export const PieChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5136,7 +5291,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5180,7 +5334,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -5285,6 +5438,10 @@ export const PieChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -5483,6 +5640,27 @@ export const BarChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -5526,7 +5704,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5576,7 +5753,6 @@ export const BarChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5628,7 +5804,6 @@ export const BarChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5686,7 +5861,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5730,7 +5904,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -5835,6 +6008,10 @@ export const BarChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -6429,6 +6606,27 @@ export const LineChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -6472,7 +6670,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -6522,7 +6719,6 @@ export const LineChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -6574,7 +6770,6 @@ export const LineChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -6632,7 +6827,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -6676,7 +6870,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -6777,6 +6970,10 @@ export const LineChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -7367,6 +7564,27 @@ export const ComposedChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -7410,7 +7628,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -7460,7 +7677,6 @@ export const ComposedChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -7512,7 +7728,6 @@ export const ComposedChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -7570,7 +7785,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -7614,7 +7828,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -7715,6 +7928,10 @@ export const ComposedChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -8121,6 +8338,27 @@ export const GaugeChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -8164,7 +8402,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -8214,7 +8451,6 @@ export const GaugeChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -8266,7 +8502,6 @@ export const GaugeChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -8324,7 +8559,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -8368,7 +8602,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -8475,6 +8708,10 @@ export const GaugeChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+			"type": "string"
+		},
 		"type": {
 			"type": "string",
 			"enum": [
@@ -8578,6 +8815,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -8621,7 +8879,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -8671,7 +8928,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -8723,7 +8979,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -8781,7 +9036,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -8825,7 +9079,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -8930,6 +9183,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -9068,6 +9325,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -9111,7 +9389,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9161,7 +9438,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9213,7 +9489,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9271,7 +9546,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9315,7 +9589,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -9420,6 +9693,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -9838,6 +10115,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -9881,7 +10179,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9931,7 +10228,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9983,7 +10279,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10041,7 +10336,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10085,7 +10379,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -10186,6 +10479,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -10602,6 +10899,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -10645,7 +10963,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10695,7 +11012,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10747,7 +11063,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10805,7 +11120,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10849,7 +11163,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -10950,6 +11263,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -11355,6 +11672,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -11398,7 +11736,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11448,7 +11785,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11500,7 +11836,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11558,7 +11893,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11602,7 +11936,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -11707,6 +12040,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -11942,6 +12279,27 @@ export const BaseViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -11985,7 +12343,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12035,7 +12392,6 @@ export const BaseViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12087,7 +12443,6 @@ export const BaseViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12145,7 +12500,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12189,7 +12543,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -12294,6 +12647,10 @@ export const BaseViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -12394,6 +12751,27 @@ export const MultiValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -12437,7 +12815,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12487,7 +12864,6 @@ export const MultiValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12539,7 +12915,6 @@ export const MultiValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12597,7 +12972,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12641,7 +13015,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -12746,6 +13119,10 @@ export const MultiValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -12954,6 +13331,27 @@ export const MultiValueRowViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -12997,7 +13395,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13047,7 +13444,6 @@ export const MultiValueRowViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13099,7 +13495,6 @@ export const MultiValueRowViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13157,7 +13552,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13201,7 +13595,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -13306,6 +13699,10 @@ export const MultiValueRowViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -13465,6 +13862,27 @@ export const SingleValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -13508,7 +13926,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13558,7 +13975,6 @@ export const SingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13610,7 +14026,6 @@ export const SingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13668,7 +14083,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13712,7 +14126,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -13817,6 +14230,10 @@ export const SingleValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -13890,6 +14307,27 @@ export const MultiPhotographViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -13933,7 +14371,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13983,7 +14420,6 @@ export const MultiPhotographViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14035,7 +14471,6 @@ export const MultiPhotographViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14093,7 +14528,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14137,7 +14571,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -14242,6 +14675,10 @@ export const MultiPhotographViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -14311,6 +14748,27 @@ export const MultiSingleValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -14354,7 +14812,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14404,7 +14861,6 @@ export const MultiSingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14456,7 +14912,6 @@ export const MultiSingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14514,7 +14969,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14558,7 +15012,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -14663,6 +15116,10 @@ export const MultiSingleValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -14732,6 +15189,27 @@ export const SingleDownloadLinkViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -14775,7 +15253,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14825,7 +15302,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14877,7 +15353,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14935,7 +15410,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14979,7 +15453,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15084,6 +15557,10 @@ export const SingleDownloadLinkViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -15153,6 +15630,27 @@ export const DataDownloadViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -15196,7 +15694,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15246,7 +15743,6 @@ export const DataDownloadViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15298,7 +15794,6 @@ export const DataDownloadViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15356,7 +15851,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15400,7 +15894,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15505,6 +15998,10 @@ export const DataDownloadViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -15574,6 +16071,27 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -15617,7 +16135,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15667,7 +16184,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15719,7 +16235,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15777,7 +16292,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15821,7 +16335,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15926,6 +16439,10 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -16011,6 +16528,27 @@ export const SingleDateViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -16054,7 +16592,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16104,7 +16641,6 @@ export const SingleDateViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16156,7 +16692,6 @@ export const SingleDateViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16214,7 +16749,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16258,7 +16792,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -16363,6 +16896,10 @@ export const SingleDateViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -16432,6 +16969,27 @@ export const DownloadFilesViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -16475,7 +17033,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16525,7 +17082,6 @@ export const DownloadFilesViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16577,7 +17133,6 @@ export const DownloadFilesViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16635,7 +17190,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16679,7 +17233,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -16784,6 +17337,10 @@ export const DownloadFilesViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -16853,6 +17410,27 @@ export const QRCodeViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -16896,7 +17474,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16946,7 +17523,6 @@ export const QRCodeViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16998,7 +17574,6 @@ export const QRCodeViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17056,7 +17631,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17100,7 +17674,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -17205,6 +17778,10 @@ export const QRCodeViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -17276,6 +17853,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -17319,7 +17917,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -17369,7 +17966,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -17421,7 +18017,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -17479,7 +18074,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -17523,7 +18117,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -17628,6 +18221,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -17709,6 +18306,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -17752,7 +18370,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -17802,7 +18419,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -17854,7 +18470,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -17912,7 +18527,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -17956,7 +18570,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -18061,6 +18674,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -18219,6 +18836,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -18262,7 +18900,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18312,7 +18949,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18364,7 +19000,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18422,7 +19057,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18466,7 +19100,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -18571,6 +19204,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -18643,6 +19280,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -18686,7 +19344,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18736,7 +19393,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18788,7 +19444,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18846,7 +19501,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18890,7 +19544,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -18995,6 +19648,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -19063,6 +19720,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -19106,7 +19784,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19156,7 +19833,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19208,7 +19884,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19266,7 +19941,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19310,7 +19984,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19415,6 +20088,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -19483,6 +20160,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -19526,7 +20224,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19576,7 +20273,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19628,7 +20324,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19686,7 +20381,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19730,7 +20424,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19835,6 +20528,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -19903,6 +20600,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -19946,7 +20664,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19996,7 +20713,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20048,7 +20764,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20106,7 +20821,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20150,7 +20864,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -20255,6 +20968,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -20323,6 +21040,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -20366,7 +21104,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20416,7 +21153,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20468,7 +21204,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20526,7 +21261,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20570,7 +21304,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -20675,6 +21408,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -20743,6 +21480,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -20786,7 +21544,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20836,7 +21593,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20888,7 +21644,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20946,7 +21701,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20990,7 +21744,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -21095,6 +21848,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -21163,6 +21920,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -21206,7 +21984,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21256,7 +22033,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21308,7 +22084,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21366,7 +22141,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21410,7 +22184,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -21515,6 +22288,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -21698,6 +22475,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -21741,7 +22539,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21791,7 +22588,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21843,7 +22639,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21901,7 +22696,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21945,7 +22739,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -22050,6 +22843,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -22399,6 +23196,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -22442,7 +23260,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22492,7 +23309,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22544,7 +23360,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22602,7 +23417,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22646,7 +23460,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -22751,6 +23564,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -22803,6 +23620,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -22846,7 +23684,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22896,7 +23733,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22948,7 +23784,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23006,7 +23841,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23050,7 +23884,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -23155,6 +23988,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -23293,6 +24130,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -23336,7 +24194,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23386,7 +24243,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23438,7 +24294,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23496,7 +24351,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23540,7 +24394,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -23645,6 +24498,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -24063,6 +24920,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -24106,7 +24984,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24156,7 +25033,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24208,7 +25084,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24266,7 +25141,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24310,7 +25184,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -24411,6 +25284,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -24827,6 +25704,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -24870,7 +25768,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24920,7 +25817,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24972,7 +25868,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25030,7 +25925,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25074,7 +25968,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -25175,6 +26068,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -25580,6 +26477,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -25623,7 +26541,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25673,7 +26590,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25725,7 +26641,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25783,7 +26698,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25827,7 +26741,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -25932,6 +26845,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -26033,6 +26950,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -26076,7 +27014,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26126,7 +27063,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26178,7 +27114,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26236,7 +27171,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26280,7 +27214,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -26385,6 +27318,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -26466,6 +27403,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -26509,7 +27467,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26559,7 +27516,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26611,7 +27567,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26669,7 +27624,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26713,7 +27667,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -26818,6 +27771,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -26976,6 +27933,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -27019,7 +27997,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27069,7 +28046,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27121,7 +28097,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27179,7 +28154,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27223,7 +28197,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -27328,6 +28301,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -27400,6 +28377,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -27443,7 +28441,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27493,7 +28490,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27545,7 +28541,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27603,7 +28598,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27647,7 +28641,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -27752,6 +28745,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -27820,6 +28817,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -27863,7 +28881,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27913,7 +28930,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27965,7 +28981,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28023,7 +29038,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28067,7 +29081,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28172,6 +29185,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -28240,6 +29257,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -28283,7 +29321,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28333,7 +29370,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28385,7 +29421,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28443,7 +29478,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28487,7 +29521,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28592,6 +29625,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -28660,6 +29697,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -28703,7 +29761,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28753,7 +29810,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28805,7 +29861,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28863,7 +29918,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28907,7 +29961,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29012,6 +30065,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -29080,6 +30137,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -29123,7 +30201,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29173,7 +30250,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29225,7 +30301,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29283,7 +30358,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29327,7 +30401,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29432,6 +30505,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -29500,6 +30577,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -29543,7 +30641,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29593,7 +30690,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29645,7 +30741,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29703,7 +30798,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29747,7 +30841,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29852,6 +30945,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -29920,6 +31017,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -29963,7 +31081,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30013,7 +31130,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30065,7 +31181,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30123,7 +31238,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30167,7 +31281,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -30272,6 +31385,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -31563,7 +32680,7 @@ export const MeasureConfigSchema = {
 	"type": "object",
 	"properties": {
 		"type": {
-			"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+			"description": "How to display this series (popup-only is deprecated)",
 			"enum": [
 				"color",
 				"icon",
@@ -31646,6 +32763,14 @@ export const MeasureConfigSchema = {
 		},
 		"hideFromLegend": {
 			"description": "Whether to include this series in the legend",
+			"type": "boolean"
+		},
+		"hideFromPopup": {
+			"description": "Whether to include this series in the popup/tooltip",
+			"type": "boolean"
+		},
+		"hideFromTable": {
+			"description": "Whether to include this series in the table",
 			"type": "boolean"
 		},
 		"name": {
@@ -31802,7 +32927,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -31846,7 +32970,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -31896,7 +33019,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -31946,7 +33068,6 @@ export const BaseMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -31998,7 +33119,6 @@ export const BaseMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -32102,7 +33222,7 @@ export const BaseMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -32185,6 +33305,14 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -32367,7 +33495,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -32411,7 +33538,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -32461,7 +33587,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -32511,7 +33636,6 @@ export const SpectrumMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -32563,7 +33687,6 @@ export const SpectrumMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -32667,7 +33790,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -32750,6 +33873,14 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -33037,7 +34168,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33081,7 +34211,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -33131,7 +34260,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33181,7 +34309,6 @@ export const IconMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33233,7 +34360,6 @@ export const IconMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33337,7 +34463,7 @@ export const IconMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -33420,6 +34546,14 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -33632,7 +34766,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33676,7 +34809,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -33726,7 +34858,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33776,7 +34907,6 @@ export const RadiusMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33828,7 +34958,6 @@ export const RadiusMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33932,7 +35061,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -34015,6 +35144,14 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -34201,7 +35338,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34245,7 +35381,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -34295,7 +35430,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34345,7 +35479,6 @@ export const ColorMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34397,7 +35530,6 @@ export const ColorMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34501,7 +35633,7 @@ export const ColorMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -34584,6 +35716,14 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -34784,7 +35924,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34828,7 +35967,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -34878,7 +36016,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34928,7 +36065,6 @@ export const ShadingMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34980,7 +36116,6 @@ export const ShadingMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35084,7 +36219,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -35167,6 +36302,14 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -35359,7 +36502,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -35403,7 +36545,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -35453,7 +36594,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -35503,7 +36643,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -35555,7 +36694,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -35659,7 +36797,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -35742,6 +36880,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -36028,7 +37174,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36072,7 +37217,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -36122,7 +37266,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36172,7 +37315,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36224,7 +37366,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36328,7 +37469,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -36411,6 +37552,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -36622,7 +37771,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36666,7 +37814,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -36716,7 +37863,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36766,7 +37912,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36818,7 +37963,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36922,7 +38066,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -37005,6 +38149,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -37190,7 +38342,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37234,7 +38385,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -37284,7 +38434,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37334,7 +38483,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37386,7 +38534,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37490,7 +38637,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -37573,6 +38720,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -37772,7 +38927,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37816,7 +38970,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -37866,7 +39019,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37916,7 +39068,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37968,7 +39119,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38072,7 +39222,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -38155,6 +39305,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -40999,6 +42157,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -41042,7 +42221,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -41092,7 +42270,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -41144,7 +42321,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -41202,7 +42378,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -41246,7 +42421,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -41351,6 +42525,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -41700,6 +42878,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -41743,7 +42942,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -41793,7 +42991,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -41845,7 +43042,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -41903,7 +43099,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -41947,7 +43142,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -42052,6 +43246,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -42104,6 +43302,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -42147,7 +43366,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42197,7 +43415,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42249,7 +43466,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42307,7 +43523,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42351,7 +43566,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -42456,6 +43670,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -42594,6 +43812,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -42637,7 +43876,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42687,7 +43925,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42739,7 +43976,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42797,7 +44033,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42841,7 +44076,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -42946,6 +44180,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -43364,6 +44602,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -43407,7 +44666,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43457,7 +44715,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43509,7 +44766,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43567,7 +44823,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43611,7 +44866,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -43712,6 +44966,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -44128,6 +45386,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -44171,7 +45450,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44221,7 +45499,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44273,7 +45550,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44331,7 +45607,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44375,7 +45650,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -44476,6 +45750,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -44881,6 +46159,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -44924,7 +46223,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44974,7 +46272,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45026,7 +46323,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45084,7 +46380,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45128,7 +46423,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -45233,6 +46527,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -45334,6 +46632,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -45377,7 +46696,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45427,7 +46745,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45479,7 +46796,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45537,7 +46853,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45581,7 +46896,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -45686,6 +47000,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -45767,6 +47085,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -45810,7 +47149,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45860,7 +47198,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45912,7 +47249,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45970,7 +47306,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46014,7 +47349,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -46119,6 +47453,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -46277,6 +47615,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -46320,7 +47679,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46370,7 +47728,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46422,7 +47779,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46480,7 +47836,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46524,7 +47879,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -46629,6 +47983,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -46701,6 +48059,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -46744,7 +48123,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46794,7 +48172,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46846,7 +48223,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46904,7 +48280,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46948,7 +48323,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47053,6 +48427,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -47121,6 +48499,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -47164,7 +48563,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47214,7 +48612,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47266,7 +48663,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47324,7 +48720,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47368,7 +48763,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47473,6 +48867,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -47541,6 +48939,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -47584,7 +49003,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47634,7 +49052,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47686,7 +49103,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47744,7 +49160,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47788,7 +49203,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47893,6 +49307,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -47961,6 +49379,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -48004,7 +49443,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48054,7 +49492,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48106,7 +49543,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48164,7 +49600,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48208,7 +49643,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -48313,6 +49747,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -48381,6 +49819,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -48424,7 +49883,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48474,7 +49932,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48526,7 +49983,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48584,7 +50040,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48628,7 +50083,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -48733,6 +50187,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -48801,6 +50259,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -48844,7 +50323,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48894,7 +50372,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48946,7 +50423,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49004,7 +50480,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49048,7 +50523,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -49153,6 +50627,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -49221,6 +50699,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -49264,7 +50763,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49314,7 +50812,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49366,7 +50863,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49424,7 +50920,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49468,7 +50963,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -49573,6 +51067,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -49678,6 +51176,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -49721,7 +51240,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49771,7 +51289,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49823,7 +51340,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49881,7 +51397,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49925,7 +51440,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50030,6 +51544,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -50379,6 +51897,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -50422,7 +51961,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50472,7 +52010,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50524,7 +52061,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50582,7 +52118,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50626,7 +52161,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50731,6 +52265,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -50783,6 +52321,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -50826,7 +52385,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50876,7 +52434,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50928,7 +52485,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50986,7 +52542,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51030,7 +52585,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -51135,6 +52689,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -51273,6 +52831,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -51316,7 +52895,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51366,7 +52944,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51418,7 +52995,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51476,7 +53052,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51520,7 +53095,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -51625,6 +53199,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -52043,6 +53621,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -52086,7 +53685,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52136,7 +53734,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52188,7 +53785,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52246,7 +53842,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52290,7 +53885,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -52391,6 +53985,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -52807,6 +54405,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -52850,7 +54469,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52900,7 +54518,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52952,7 +54569,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53010,7 +54626,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53054,7 +54669,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -53155,6 +54769,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -53560,6 +55178,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -53603,7 +55242,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53653,7 +55291,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53705,7 +55342,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53763,7 +55399,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53807,7 +55442,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -53912,6 +55546,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -54013,6 +55651,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -54056,7 +55715,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54106,7 +55764,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54158,7 +55815,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54216,7 +55872,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54260,7 +55915,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -54365,6 +56019,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -54446,6 +56104,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -54489,7 +56168,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54539,7 +56217,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54591,7 +56268,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54649,7 +56325,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54693,7 +56368,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -54798,6 +56472,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -54956,6 +56634,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -54999,7 +56698,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55049,7 +56747,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55101,7 +56798,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55159,7 +56855,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55203,7 +56898,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -55308,6 +57002,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -55380,6 +57078,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -55423,7 +57142,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55473,7 +57191,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55525,7 +57242,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55583,7 +57299,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55627,7 +57342,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -55732,6 +57446,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -55800,6 +57518,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -55843,7 +57582,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55893,7 +57631,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55945,7 +57682,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56003,7 +57739,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56047,7 +57782,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56152,6 +57886,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -56220,6 +57958,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -56263,7 +58022,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56313,7 +58071,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56365,7 +58122,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56423,7 +58179,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56467,7 +58222,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56572,6 +58326,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -56640,6 +58398,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -56683,7 +58462,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56733,7 +58511,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56785,7 +58562,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56843,7 +58619,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56887,7 +58662,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56992,6 +58766,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -57060,6 +58838,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -57103,7 +58902,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57153,7 +58951,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57205,7 +59002,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57263,7 +59059,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57307,7 +59102,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57412,6 +59206,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -57480,6 +59278,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -57523,7 +59342,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57573,7 +59391,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57625,7 +59442,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57683,7 +59499,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57727,7 +59542,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57832,6 +59646,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -57900,6 +59718,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -57943,7 +59782,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57993,7 +59831,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58045,7 +59882,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58103,7 +59939,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58147,7 +59982,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -58252,6 +60086,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -58351,6 +60189,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -58394,7 +60253,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58444,7 +60302,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58496,7 +60353,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58554,7 +60410,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58598,7 +60453,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -58703,6 +60557,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -59052,6 +60910,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -59095,7 +60974,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59145,7 +61023,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59197,7 +61074,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59255,7 +61131,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59299,7 +61174,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -59404,6 +61278,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -59456,6 +61334,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -59499,7 +61398,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59549,7 +61447,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59601,7 +61498,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59659,7 +61555,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59703,7 +61598,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -59808,6 +61702,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -59946,6 +61844,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -59989,7 +61908,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60039,7 +61957,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60091,7 +62008,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60149,7 +62065,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60193,7 +62108,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -60298,6 +62212,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -60716,6 +62634,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -60759,7 +62698,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60809,7 +62747,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60861,7 +62798,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60919,7 +62855,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60963,7 +62898,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -61064,6 +62998,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -61480,6 +63418,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -61523,7 +63482,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61573,7 +63531,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61625,7 +63582,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61683,7 +63639,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61727,7 +63682,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -61828,6 +63782,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -62233,6 +64191,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -62276,7 +64255,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62326,7 +64304,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62378,7 +64355,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62436,7 +64412,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62480,7 +64455,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -62585,6 +64559,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -62686,6 +64664,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -62729,7 +64728,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62779,7 +64777,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62831,7 +64828,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62889,7 +64885,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62933,7 +64928,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -63038,6 +65032,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -63119,6 +65117,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -63162,7 +65181,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63212,7 +65230,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63264,7 +65281,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63322,7 +65338,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63366,7 +65381,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -63471,6 +65485,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -63629,6 +65647,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -63672,7 +65711,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63722,7 +65760,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63774,7 +65811,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63832,7 +65868,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63876,7 +65911,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -63981,6 +66015,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -64053,6 +66091,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -64096,7 +66155,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64146,7 +66204,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64198,7 +66255,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64256,7 +66312,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64300,7 +66355,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -64405,6 +66459,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -64473,6 +66531,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -64516,7 +66595,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64566,7 +66644,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64618,7 +66695,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64676,7 +66752,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64720,7 +66795,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -64825,6 +66899,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -64893,6 +66971,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -64936,7 +67035,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64986,7 +67084,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65038,7 +67135,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65096,7 +67192,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65140,7 +67235,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -65245,6 +67339,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -65313,6 +67411,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -65356,7 +67475,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65406,7 +67524,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65458,7 +67575,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65516,7 +67632,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65560,7 +67675,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -65665,6 +67779,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -65733,6 +67851,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -65776,7 +67915,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65826,7 +67964,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65878,7 +68015,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65936,7 +68072,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65980,7 +68115,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66085,6 +68219,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -66153,6 +68291,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -66196,7 +68355,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66246,7 +68404,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66298,7 +68455,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66356,7 +68512,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66400,7 +68555,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66505,6 +68659,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -66573,6 +68731,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -66616,7 +68795,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66666,7 +68844,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66718,7 +68895,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66776,7 +68952,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66820,7 +68995,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66925,6 +69099,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -69494,7 +71672,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -69538,7 +71715,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -69588,7 +71764,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -69638,7 +71813,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -69690,7 +71864,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -69794,7 +71967,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -69877,6 +72050,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -70163,7 +72344,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -70207,7 +72387,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -70257,7 +72436,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -70307,7 +72485,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -70359,7 +72536,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -70463,7 +72639,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -70546,6 +72722,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -70757,7 +72941,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -70801,7 +72984,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -70851,7 +73033,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -70901,7 +73082,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -70953,7 +73133,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -71057,7 +73236,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -71140,6 +73319,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -71325,7 +73512,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -71369,7 +73555,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -71419,7 +73604,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -71469,7 +73653,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -71521,7 +73704,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -71625,7 +73807,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -71708,6 +73890,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -71907,7 +74097,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -71951,7 +74140,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72001,7 +74189,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72051,7 +74238,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72103,7 +74289,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72207,7 +74392,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -72290,6 +74475,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -72543,7 +74736,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72587,7 +74779,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72637,7 +74828,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72687,7 +74877,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72739,7 +74928,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72843,7 +75031,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -72926,6 +75114,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -73212,7 +75408,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73256,7 +75451,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -73306,7 +75500,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73356,7 +75549,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73408,7 +75600,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73512,7 +75703,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -73595,6 +75786,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -73806,7 +76005,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73850,7 +76048,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -73900,7 +76097,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73950,7 +76146,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74002,7 +76197,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74106,7 +76300,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -74189,6 +76383,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -74374,7 +76576,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74418,7 +76619,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -74468,7 +76668,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74518,7 +76717,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74570,7 +76768,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74674,7 +76871,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -74757,6 +76954,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -74956,7 +77161,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75000,7 +77204,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -75050,7 +77253,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75100,7 +77302,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75152,7 +77353,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75256,7 +77456,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -75339,6 +77539,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -75585,7 +77793,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75629,7 +77836,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -75679,7 +77885,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75729,7 +77934,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75781,7 +77985,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75885,7 +78088,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -75968,6 +78171,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -76254,7 +78465,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76298,7 +78508,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -76348,7 +78557,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76398,7 +78606,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76450,7 +78657,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76554,7 +78760,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -76637,6 +78843,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -76848,7 +79062,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76892,7 +79105,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -76942,7 +79154,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76992,7 +79203,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77044,7 +79254,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77148,7 +79357,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -77231,6 +79440,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -77416,7 +79633,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77460,7 +79676,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -77510,7 +79725,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77560,7 +79774,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77612,7 +79825,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77716,7 +79928,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -77799,6 +80011,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -77998,7 +80218,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78042,7 +80261,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -78092,7 +80310,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78142,7 +80359,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -78194,7 +80410,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -78298,7 +80513,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -78381,6 +80596,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -78709,6 +80932,10 @@ export const MeditrakDeviceSchema = {
 		"install_id": {
 			"type": "string"
 		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
 			"type": "string"
 		},
@@ -78736,6 +80963,10 @@ export const MeditrakDeviceCreateSchema = {
 		},
 		"install_id": {
 			"type": "string"
+		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"platform": {
 			"type": "string"
@@ -78766,6 +80997,10 @@ export const MeditrakDeviceUpdateSchema = {
 		},
 		"install_id": {
 			"type": "string"
+		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"platform": {
 			"type": "string"
@@ -82043,6 +84278,60 @@ export const UserAccountUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const UserCountryAccessAttemptSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"id",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const UserEntityPermissionSchema = {
 	"type": "object",
 	"properties": {
@@ -83907,6 +86196,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -83950,7 +86260,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -84000,7 +86309,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -84052,7 +86360,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -84110,7 +86417,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -84154,7 +86460,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -84259,6 +86564,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -84608,6 +86917,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -84651,7 +86981,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -84701,7 +87030,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -84753,7 +87081,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -84811,7 +87138,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -84855,7 +87181,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -84960,6 +87285,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -85012,6 +87341,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -85055,7 +87405,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -85105,7 +87454,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -85157,7 +87505,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -85215,7 +87562,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -85259,7 +87605,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -85364,6 +87709,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -85502,6 +87851,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -85545,7 +87915,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -85595,7 +87964,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -85647,7 +88015,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -85705,7 +88072,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -85749,7 +88115,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -85854,6 +88219,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -86272,6 +88641,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -86315,7 +88705,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -86365,7 +88754,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -86417,7 +88805,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -86475,7 +88862,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -86519,7 +88905,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -86620,6 +89005,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -87036,6 +89425,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -87079,7 +89489,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87129,7 +89538,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87181,7 +89589,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87239,7 +89646,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87283,7 +89689,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -87384,6 +89789,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -87789,6 +90198,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -87832,7 +90262,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87882,7 +90311,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87934,7 +90362,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87992,7 +90419,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88036,7 +90462,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -88141,6 +90566,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -88242,6 +90671,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -88285,7 +90735,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88335,7 +90784,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88387,7 +90835,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88445,7 +90892,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88489,7 +90935,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -88594,6 +91039,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -88675,6 +91124,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -88718,7 +91188,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88768,7 +91237,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88820,7 +91288,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88878,7 +91345,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88922,7 +91388,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -89027,6 +91492,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -89185,6 +91654,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -89228,7 +91718,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89278,7 +91767,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89330,7 +91818,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89388,7 +91875,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89432,7 +91918,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -89537,6 +92022,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -89609,6 +92098,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -89652,7 +92162,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89702,7 +92211,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89754,7 +92262,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89812,7 +92319,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89856,7 +92362,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -89961,6 +92466,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -90029,6 +92538,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -90072,7 +92602,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90122,7 +92651,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90174,7 +92702,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90232,7 +92759,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90276,7 +92802,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -90381,6 +92906,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -90449,6 +92978,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -90492,7 +93042,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90542,7 +93091,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90594,7 +93142,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90652,7 +93199,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90696,7 +93242,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -90801,6 +93346,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -90869,6 +93418,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -90912,7 +93482,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90962,7 +93531,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91014,7 +93582,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91072,7 +93639,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91116,7 +93682,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -91221,6 +93786,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -91289,6 +93858,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -91332,7 +93922,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91382,7 +93971,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91434,7 +94022,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91492,7 +94079,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91536,7 +94122,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -91641,6 +94226,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -91709,6 +94298,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -91752,7 +94362,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91802,7 +94411,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91854,7 +94462,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91912,7 +94519,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91956,7 +94562,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92061,6 +94666,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -92129,6 +94738,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -92172,7 +94802,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92222,7 +94851,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92274,7 +94902,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92332,7 +94959,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92376,7 +95002,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92481,6 +95106,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -92668,7 +95297,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -92712,7 +95340,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -92762,7 +95389,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -92812,7 +95438,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -92864,7 +95489,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -92968,7 +95592,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -93051,6 +95675,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -93281,6 +95913,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -93360,7 +95995,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -93404,7 +96038,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -93454,7 +96087,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -93504,7 +96136,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -93556,7 +96187,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -93660,7 +96290,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -93743,6 +96373,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -93898,6 +96536,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -93977,7 +96618,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -94021,7 +96661,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -94071,7 +96710,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -94121,7 +96759,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -94173,7 +96810,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -94277,7 +96913,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -94360,6 +96996,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -94490,6 +97134,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -94568,7 +97215,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -94612,7 +97258,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -94662,7 +97307,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -94712,7 +97356,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -94764,7 +97407,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -94868,7 +97510,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -94951,6 +97593,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -95095,6 +97745,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -95173,7 +97826,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -95217,7 +97869,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -95267,7 +97918,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -95317,7 +97967,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -95369,7 +98018,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -95473,7 +98121,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -95556,6 +98204,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -95690,6 +98346,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
