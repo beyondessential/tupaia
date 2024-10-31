@@ -142,10 +142,7 @@ export const parseRows = (
 
     // if the row is a matrix entity cell, then we need to add the entityLink to the row
     if (isMatrixEntityCell(dataElement)) {
-      const entityLink = generatePath(ROUTE_STRUCTURE, {
-        projectCode: projectCode,
-        entityCode: dataElement.entityCode,
-      });
+      const entityLink = `/${projectCode}/${dataElement.entityCode}`;
       newResult.title = dataElement.entityLabel;
       newResult.entityLink = entityLink;
     }
@@ -172,14 +169,10 @@ export const parseColumns = (
     }
 
     if (entityCode) {
-      const entityLink = generatePath(ROUTE_STRUCTURE, {
-        projectCode: projectCode,
-        entityCode: entityCode,
-      });
       return {
         title,
         key,
-        entityLink,
+        entityLink: `/${projectCode}/${entityCode}`,
       };
     }
     // otherwise, handle as a regular column
