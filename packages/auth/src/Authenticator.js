@@ -187,6 +187,7 @@ export class Authenticator {
         user_id: user.id,
         platform,
         app_version: appVersion,
+        last_login: new Date(),
       },
     );
   }

@@ -3,16 +3,18 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
-import { DialogActions, Typography } from '@material-ui/core';
+import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';
+import { DialogActions, Typography, useTheme } from '@material-ui/core';
 import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
-import { Button as UIButton, SpinningLoader } from '@tupaia/ui-components';
-import { Project } from '@tupaia/types';
-import { Button, SelectList } from '../components';
-import { useEditUser, useProjects } from '../api';
-import { ROUTES } from '../constants';
+import { SelectList, SpinningLoader, Button as UIButton } from '../components';
+
+const Button = styled(UIButton)`
+  text-transform: none;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.6rem;
+`;
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -42,11 +44,35 @@ const ListWrapper = styled.div<{
   }
 `;
 
+const CancelButton = ({ onClick, children }: { onClick: () => void; children: ReactNode }) => {
+  const { palette } = useTheme();
+  const variant = palette.type === 'light' ? 'outlined' : 'text';
+  const color = palette.type === 'light' ? 'primary' : 'default';
+  return (
+    <Button onClick={onClick} variant={variant} color={color}>
+      {children}
+    </Button>
+  );
+};
+
+type Project = KeysToCamelCase<ProjectT> & {
+  hasAccess: boolean;
+  hasPendingAccess: boolean;
+  homeEntityCode: Entity['code'];
+  name: Entity['name'];
+  names?: Entity['name'][];
+  value?: string;
+};
+
 interface ProjectSelectFormProps {
   projectId?: Project['id'];
   variant?: 'modal' | 'page';
   onClose: () => void;
-  onRequestAccess?: (projectCode: Project['code']) => void;
+  onRequestAccess: (projectCode: Project['code']) => void;
+  projects?: Project[];
+  isLoading: boolean;
+  onConfirm: (data: Record<string, any>) => void;
+  isConfirming: boolean;
 }
 
 export const ProjectSelectForm = ({
@@ -54,34 +80,23 @@ export const ProjectSelectForm = ({
   onClose,
   variant = 'page',
   onRequestAccess,
+  projects,
+  isLoading,
+  onConfirm,
+  isConfirming,
 }: ProjectSelectFormProps) => {
-  const navigate = useNavigate();
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
-  const { data: projects, isLoading } = useProjects();
 
-  const { mutate, isLoading: isConfirming } = useEditUser(onClose);
-
-  const onConfirm = () => {
-    mutate({ projectId: selectedProjectId! });
-  };
-
-  const handleRequestAccess = project => {
-    if (variant === 'modal' && onRequestAccess) {
-      onRequestAccess(project.code);
-    } else {
-      navigate({
-        pathname: ROUTES.REQUEST_ACCESS,
-        search: `?project=${project?.code}`,
-      });
-    }
-  };
-
-  const onSelect = project => {
+  const onSelect = (project: any) => {
     if (project.hasAccess) {
       setSelectedProjectId(project.value);
     } else {
-      handleRequestAccess(project);
+      onRequestAccess(project.code);
     }
+  };
+
+  const handleConfirm = () => {
+    onConfirm({ projectId: selectedProjectId! });
   };
 
   const getProjectIcon = (hasAccess: boolean, hasPendingAccess: boolean) => {
@@ -133,13 +148,9 @@ export const ProjectSelectForm = ({
         </ListWrapper>
       )}
       <DialogActions>
-        {variant === 'modal' && (
-          <UIButton onClick={onClose} variant="outlined">
-            Cancel
-          </UIButton>
-        )}
+        {variant === 'modal' && <CancelButton onClick={onClose}>Cancel</CancelButton>}
         <Button
-          onClick={onConfirm}
+          onClick={handleConfirm}
           variant="contained"
           color="primary"
           isLoading={isConfirming}

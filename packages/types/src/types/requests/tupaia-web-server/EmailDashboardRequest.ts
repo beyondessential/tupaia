@@ -18,6 +18,7 @@ export type ReqBody = {
   settings?: {
     exportWithTable: boolean;
     exportWithLabels: boolean;
+    separatePagePerItem: boolean;
   };
 };
 export type ReqQuery = Record<string, string>;

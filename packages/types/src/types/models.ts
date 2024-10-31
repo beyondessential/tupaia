@@ -991,6 +991,7 @@ export interface MeditrakDevice {
   'config'?: {} | null;
   'id': string;
   'install_id': string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id': string;
 }
@@ -998,6 +999,7 @@ export interface MeditrakDeviceCreate {
   'app_version'?: string | null;
   'config'?: {} | null;
   'install_id': string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id': string;
 }
@@ -1006,6 +1008,7 @@ export interface MeditrakDeviceUpdate {
   'config'?: {} | null;
   'id'?: string;
   'install_id'?: string;
+  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id'?: string;
 }
@@ -1681,6 +1684,20 @@ export interface UserAccountUpdate {
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
+}
+export interface UserCountryAccessAttempt {
+  'country_code': string;
+  'id': string;
+  'user_id': string;
+}
+export interface UserCountryAccessAttemptCreate {
+  'country_code': string;
+  'user_id': string;
+}
+export interface UserCountryAccessAttemptUpdate {
+  'country_code'?: string;
+  'id'?: string;
+  'user_id'?: string;
 }
 export interface UserEntityPermission {
   'entity_id': string;
