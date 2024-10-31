@@ -34,7 +34,7 @@ export const RequestProjectAccessPage = () => {
   return (
     <Wrapper>
       <RequestProjectAccess
-        onClose={onReturnToProjects}
+        onBack={onReturnToProjects}
         project={project}
         onSubmit={requestProjectAccess}
         isLoading={isLoadingProject || !isFetched}

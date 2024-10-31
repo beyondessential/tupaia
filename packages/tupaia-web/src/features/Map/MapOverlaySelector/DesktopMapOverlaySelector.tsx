@@ -23,7 +23,12 @@ import { Entity } from '../../../types';
 import { useExportMapOverlay } from '../../../api/mutations';
 import { useEntity, useMapOverlays, useProject, useUser } from '../../../api/queries';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
-import { convertDateRangeToUrlPeriodString, useDateRanges, useGAEffect } from '../../../utils';
+import {
+  convertDateRangeToUrlPeriodString,
+  getFriendlyEntityType,
+  useDateRanges,
+  useGAEffect,
+} from '../../../utils';
 import { MapTableModal } from './MapTableModal';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
@@ -271,12 +276,14 @@ export const DesktopMapOverlaySelector = ({
 
   const exportTooltip = getExportTooltip();
 
+  const friendlyEntityType = getFriendlyEntityType(entity?.type);
+
   return (
     <>
       {mapModalOpen && <MapTableModal onClose={toggleMapTableModal} />}
       <Wrapper>
         <Header>
-          <Heading>Map Overlays</Heading>
+          <Heading>Map Overlays {friendlyEntityType && `(${friendlyEntityType})`}</Heading>
           {selectedOverlay && (
             <div>
               {isLoggedIn && (
