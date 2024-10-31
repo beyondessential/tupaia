@@ -85,7 +85,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
 
   const {
     data: report,
-    isLoading,
+    isInitialLoading: isLoading,
     error,
     refetch,
   } = useReport(

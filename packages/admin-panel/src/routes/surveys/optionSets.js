@@ -80,6 +80,10 @@ const IMPORT_CONFIG = {
   title: `Import ${getPluralForm(RESOURCE_NAME)}`,
   actionConfig: {
     importEndpoint: 'optionSets',
+    accept: {
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    },
   },
   queryParameters: [
     {
