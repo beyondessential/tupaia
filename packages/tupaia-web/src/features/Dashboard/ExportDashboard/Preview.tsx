@@ -49,10 +49,7 @@ const PreviewContainer = styled.div`
   overflow-x: hidden;
   ${A4Page} {
     // simulate the margins of the printed page
-    padding-block-start: 5rem;
-    &:last-child {
-      padding-block-end: 5rem;
-    }
+    padding: 1cm 2.5cm 2cm;
   }
 `;
 

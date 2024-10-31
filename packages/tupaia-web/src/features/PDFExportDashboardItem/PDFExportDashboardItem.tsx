@@ -59,7 +59,10 @@ const Description = styled(Typography)`
   text-align: center;
 `;
 
-const ExportDescription = styled(Typography)``;
+const ExportDescription = styled(Typography)`
+  margin-bottom: 0.3rem;
+  word-break: break-all;
+`;
 
 const ExportContent = styled.div<{
   $hasData?: boolean;
