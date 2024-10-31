@@ -19,7 +19,7 @@ import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
 import { Preview } from './Preview';
-import ExportDescriptionInput from '../../ExportSettings/ExportDescriptionInput';
+import { ExportDescriptionInput } from '../../ExportSettings/ExportDescriptionInput';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;

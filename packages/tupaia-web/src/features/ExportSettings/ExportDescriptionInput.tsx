@@ -3,13 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useExportSettings } from './ExportSettingsContext';
 import { ExportSettingLabel } from './ExportSettingLabel';
 import { TextField, OutlinedTextFieldProps } from '@material-ui/core';
-
-const EXPORT_DESCRIPTION_LIMIT = 250;
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,46 +17,43 @@ const Wrapper = styled.div`
 const ExportDescriptionInputArea = styled((props: OutlinedTextFieldProps) => (
   <TextField {...props} />
 ))`
-  & .MuiOutlinedInput-root {
-    border-radius: 4px;
-  }
-  & .MuiFilledInput-underline:before {
-    border-bottom: none;
-  }
-  & .MuiOutlinedInput-notchedOutline {
-    border: 0.1rem solid ${({ theme }) => theme.palette.text.secondary};
-  }
-  & .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
-    border: 0.1rem solid ${({ theme }) => theme.palette.error.main};
-  }
-  & .MuiInputBase-root {
-    padding: 0.5rem;
+  margin-block-start: 1rem;
+
+  .MuiInputBase-root {
+    border: 1px solid ${({ theme }) => theme.palette.text.secondary};
+    border-radius: 5px;
+    padding: 0.6rem 0.75rem 0.75rem;
     background: none;
     color: ${({ theme }) => theme.palette.text.primary};
+    font-size: 0.875rem;
+    line-height: 1.4;
+
+    &.Mui-error {
+      border: 1px solid ${({ theme }) => theme.palette.error.main};
+    }
+
+    &.Mui-focused {
+      border-color: ${({ theme }) => theme.palette.text.primary};
+    }
   }
-  margin-block-start: 1rem;
 `;
 
-const ExportDescriptionFooter = styled.div<{
-  charLimitReached: boolean;
+const ExportDescription = styled.div<{
+  error: boolean;
 }>`
   display: flex;
   align-self: end;
   justify-content: space-between;
   margin-top: 0.313rem;
-  color: ${({ charLimitReached, theme }) =>
-    charLimitReached ? theme.palette.error.main : theme.palette.text.primary};
+  color: ${({ error, theme }) => (error ? theme.palette.error.main : theme.palette.text.secondary)};
+  font-size: 0.75rem;
 `;
 
-const ExportDescriptionInput = () => {
-  const { exportDescription, updateExportDescription } = useExportSettings();
-  const [descriptionCharLimitReached, setDescriptionCharLimitReached] = useState(false);
+const MAX_CHARACTERS = 250;
 
-  const handleExportDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    setDescriptionCharLimitReached(newValue.length >= EXPORT_DESCRIPTION_LIMIT);
-    updateExportDescription(event);
-  };
+export const ExportDescriptionInput = () => {
+  const { exportDescription, updateExportDescription } = useExportSettings();
+  const showMaxCharsWarning = exportDescription.length >= MAX_CHARACTERS;
 
   return (
     <Wrapper>
@@ -68,18 +63,16 @@ const ExportDescriptionInput = () => {
         multiline
         rows={6}
         value={exportDescription}
-        onChange={handleExportDescriptionChange}
+        onChange={updateExportDescription}
         variant="outlined"
-        error={descriptionCharLimitReached}
-        inputProps={{ maxLength: EXPORT_DESCRIPTION_LIMIT }}
+        error={showMaxCharsWarning}
+        inputProps={{ maxLength: MAX_CHARACTERS }}
         placeholder="Enter description here"
       />
-      <ExportDescriptionFooter charLimitReached={descriptionCharLimitReached}>
-        {descriptionCharLimitReached ? `Character limit reached:` : `Characters:`}{' '}
-        {exportDescription?.length}/{EXPORT_DESCRIPTION_LIMIT}{' '}
-      </ExportDescriptionFooter>
+      <ExportDescription error={showMaxCharsWarning}>
+        {showMaxCharsWarning && 'Character limit reached: '}
+        {exportDescription.length}/{MAX_CHARACTERS}
+      </ExportDescription>
     </Wrapper>
   );
 };
-
-export default ExportDescriptionInput;

@@ -15,7 +15,7 @@ type ExportSettings = {
   exportWithLabels: boolean;
   exportWithTable: boolean;
   exportWithTableDisabled: boolean;
-  exportDescription: string | null;
+  exportDescription: string;
   separatePagePerItem: boolean;
 };
 
@@ -23,7 +23,7 @@ type ExportSettingsContextType = ExportSettings & {
   setExportFormat: (value: ExportFormats) => void;
   setExportWithLabels: (value: boolean) => void;
   setExportWithTable: (value: boolean) => void;
-  setExportDescription: (value: string | null) => void;
+  setExportDescription: (value: string) => void;
   setSeparatePagePerItem: (value: boolean) => void;
 };
 
@@ -32,7 +32,7 @@ const defaultContext: ExportSettingsContextType = {
   exportWithLabels: false,
   exportWithTable: true,
   exportWithTableDisabled: false,
-  exportDescription: null,
+  exportDescription: '',
   setExportFormat: () => {},
   setExportWithLabels: () => {},
   setExportWithTable: () => {},
@@ -82,7 +82,7 @@ export const useExportSettings = () => {
     setExportFormat(dashboardItemType === 'matrix' ? ExportFormats.XLSX : ExportFormats.PNG);
     setExportWithLabels(false);
     setExportWithTable(true);
-    setExportDescription(null);
+    setExportDescription('');
     setSeparatePagePerItem(true);
   };
 
@@ -118,8 +118,8 @@ export const ExportSettingsContextProvider = ({
   const [exportWithTable, setExportWithTable] = useState<boolean>(
     defaultSettings?.exportWithTable || true,
   );
-  const [exportDescription, setExportDescription] = useState<string | null>(
-    defaultSettings?.exportDescription || null,
+  const [exportDescription, setExportDescription] = useState<string>(
+    defaultSettings?.exportDescription || '',
   );
   const [exportWithTableDisabled] = useState<boolean>(
     defaultSettings?.exportWithTableDisabled || false,
