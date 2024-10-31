@@ -2,11 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { generatePath } from 'react-router-dom';
 import { MatrixColumnType, MatrixRowType, SearchFilter } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MatrixConfig, MatrixReportColumn, MatrixReportRow, MatrixEntityCell } from '@tupaia/types';
-import { ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../../../constants';
+import { URL_SEARCH_PARAMS } from '../../../constants';
 
 function isMatrixEntityCell(cell: unknown): cell is MatrixEntityCell {
   return typeof cell === 'object' && cell !== null && 'entityLabel' in cell && 'entityCode' in cell;
