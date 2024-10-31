@@ -59,7 +59,7 @@ export {
  */
 export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig | ViewConfig;
 
-export { ValueType, ExportPresentationOptions } from './common';
+export { ValueType, ExportPresentationOptions, DatePickerOffsetSpec } from './common';
 export type {
   MatrixConfig,
   PresentationOptionCondition,

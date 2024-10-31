@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { FormLabelProps, Typography } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
-import { ListItemType, SelectList } from '../../components';
+import { SelectList } from '@tupaia/ui-components';
 
 const DARK_BLUE = '#004975';
 
@@ -43,12 +43,27 @@ export const ResultItem = ({ name, parentName }) => {
   );
 };
 
+type ListItemType = Record<string, unknown> & {
+  children?: ListItemType[];
+  content: string | ReactNode;
+  value: string;
+  selected?: boolean;
+  icon?: ReactNode;
+  tooltip?: string;
+  button?: boolean;
+  disabled?: boolean;
+  labelProps?: FormLabelProps & {
+    component?: React.ElementType;
+  };
+};
+
 type SearchResults = DatatrakWebEntityDescendantsRequest.ResBody;
 interface ResultsListProps {
   value: string;
   searchResults?: SearchResults;
   onSelect: (value: ListItemType) => void;
   showRecentEntities?: boolean;
+  noResultsMessage?: string;
 }
 
 export const ResultsList = ({
@@ -56,6 +71,7 @@ export const ResultsList = ({
   searchResults,
   onSelect,
   showRecentEntities,
+  noResultsMessage,
 }: ResultsListProps) => {
   const getEntitiesList = (returnRecentEntities?: boolean) => {
     const entities = searchResults?.filter(({ isRecent }) =>
@@ -85,7 +101,12 @@ export const ResultsList = ({
       )}
       <SubListWrapper>
         {showRecentEntities && <Subtitle>All entities</Subtitle>}
-        <SelectList items={displayResults} onSelect={onSelect} variant="fullPage" />
+        <SelectList
+          items={displayResults}
+          onSelect={onSelect}
+          variant="fullPage"
+          noResultsMessage={noResultsMessage}
+        />
       </SubListWrapper>
     </ListWrapper>
   );

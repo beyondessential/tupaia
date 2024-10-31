@@ -9,6 +9,7 @@ import { stripTimezoneFromDate } from '@tupaia/utils';
 import { useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
 import { getAllSurveyComponents } from '../utils';
+import { generateCodeForCodeGeneratorQuestions } from '../SurveyContext/utils';
 
 /**
  * Utility hook to process survey response data and populate the form with it
@@ -16,7 +17,7 @@ import { getAllSurveyComponents } from '../utils';
 export const useSurveyResponseWithForm = (
   surveyResponse?: DatatrakWebSingleSurveyResponseRequest.ResBody,
 ) => {
-  const { setFormData, surveyScreens, surveyCode, formData } = useSurveyForm();
+  const { setFormData, surveyScreens, surveyCode, formData, isResponseScreen } = useSurveyForm();
 
   const { isLoading, isFetched, isSuccess } = useSurvey(surveyCode);
   const surveyLoading = isLoading || !isFetched;
@@ -71,11 +72,12 @@ export const useSurveyResponseWithForm = (
       formattedAnswers[dateOfDataQuestion.questionId] = surveyResponse.dataTime;
     }
 
-    // combine this so that formData always takes precedence
-    const newData = {
-      ...formattedAnswers,
-      ...formData,
-    };
+    const combinedData = { ...formattedAnswers, ...formData };
+
+    // combine this so that formData always takes precedence, and apply a code to any code generator questions without answers when resubmitting. This is because otherwise, if there is no code generator answer already saved, the code generator will not be triggered and the answer will remain empty.
+    const newData = isResponseScreen
+      ? combinedData
+      : generateCodeForCodeGeneratorQuestions(flattenedScreenComponents, combinedData);
 
     setFormData(newData);
     // Reset the form context with the new answers, to trigger re-render of the form
