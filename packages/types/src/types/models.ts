@@ -1642,7 +1642,8 @@ export interface UserAccount {
   'last_name'?: string | null;
   'mobile_number'?: string | null;
   'password_hash': string;
-  'password_salt': string;
+  'password_hash_old'?: string | null;
+  'password_salt'?: string | null;
   'position'?: string | null;
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
@@ -1658,7 +1659,8 @@ export interface UserAccountCreate {
   'last_name'?: string | null;
   'mobile_number'?: string | null;
   'password_hash': string;
-  'password_salt': string;
+  'password_hash_old'?: string | null;
+  'password_salt'?: string | null;
   'position'?: string | null;
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
@@ -1675,7 +1677,8 @@ export interface UserAccountUpdate {
   'last_name'?: string | null;
   'mobile_number'?: string | null;
   'password_hash'?: string;
-  'password_salt'?: string;
+  'password_hash_old'?: string | null;
+  'password_salt'?: string | null;
   'position'?: string | null;
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;

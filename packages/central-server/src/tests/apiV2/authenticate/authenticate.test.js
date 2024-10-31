@@ -1,11 +1,14 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import { expect } from 'chai';
-
-import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
+import {
+  encryptPassword,
+  getTokenClaims,
+  sha256EncryptPassword,
+  verifyPassword,
+} from '@tupaia/auth';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import { createBasicHeader } from '@tupaia/utils';
 
@@ -39,11 +42,13 @@ describe('Authenticate', function () {
     });
 
     // Create test users
+    const passwordHash = await encryptPassword(userAccountPassword);
+
     userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Ash',
       last_name: 'Ketchum',
       email: 'ash-ketchum@pokemon.org',
-      ...hashAndSaltPassword(userAccountPassword),
+      password_hash: passwordHash,
       verified_email: VERIFIED,
     });
 
@@ -56,7 +61,7 @@ describe('Authenticate', function () {
     await findOrCreateDummyRecord(models.apiClient, {
       username: apiClientUserAccount.email,
       user_account_id: apiClientUserAccount.id,
-      secret_key_hash: encryptPassword(apiClientSecret, process.env.API_CLIENT_SALT),
+      secret_key_hash: await encryptPassword(apiClientSecret),
     });
 
     // Public Demo Land Permission
@@ -102,6 +107,75 @@ describe('Authenticate', function () {
     const { userId, apiClientUserId } = getTokenClaims(accessToken);
     expect(userId).to.equal(userAccount.id);
     expect(apiClientUserId).to.equal(apiClientUserAccount.id);
+  });
+
+  it('Should authenticate user who has been migrated to argon2 password hashing', async () => {
+    const email = 'peeka@pokemon.org';
+    const password = 'oldPassword123!';
+    const salt = 'xyz123^';
+    const sha256Hash = await sha256EncryptPassword(password, salt);
+    const argon2Hash = await encryptPassword(sha256Hash);
+    const migratedUser = await findOrCreateDummyRecord(models.user, {
+      first_name: 'Peeka',
+      last_name: 'Chu',
+      email: email,
+      password_hash: argon2Hash,
+      verified_email: VERIFIED,
+    });
+
+    const authResponse = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: email,
+        password: password,
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(authResponse.status).to.equal(200);
+    const { accessToken, refreshToken, user: userDetails } = authResponse.body;
+    expect(accessToken).to.be.a('string');
+    expect(refreshToken).to.be.a('string');
+    expect(userDetails.id).to.equal(migratedUser.id);
+    expect(userDetails.email).to.equal(migratedUser.email);
+  });
+
+  it("Should migrate user's password to argon2 after successful login", async () => {
+    const email = 'squirtle@pokemon.org';
+    const password = 'oldPassword123!';
+    const salt = 'xyz123^';
+    const sha256Hash = await sha256EncryptPassword(password, salt);
+    const argon2Hash = await encryptPassword(sha256Hash, salt);
+    const migratedUser = await findOrCreateDummyRecord(models.user, {
+      first_name: 'Peeka',
+      last_name: 'Chu',
+      email: email,
+      password_hash: argon2Hash,
+      password_salt: salt,
+      verified_email: VERIFIED,
+    });
+
+    const isVerifiedBefore = await verifyPassword(password, migratedUser.password_hash);
+    expect(isVerifiedBefore).to.be.false;
+
+    const authResponse = await app.post('auth?grantType=password', {
+      headers: {
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
+      },
+      body: {
+        emailAddress: email,
+        password: password,
+        deviceName: 'test_device',
+      },
+    });
+
+    expect(authResponse.status).to.equal(200);
+
+    const userDetails = await models.user.findById(migratedUser.id);
+    const isVerifiedAfter = await verifyPassword(password, userDetails.password_hash);
+    expect(isVerifiedAfter).to.be.true;
   });
 
   it('should add a new entry to the user_country_access_attempts table if one does not already exist', async () => {

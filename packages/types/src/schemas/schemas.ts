@@ -83976,6 +83976,9 @@ export const UserAccountSchema = {
 		"password_hash": {
 			"type": "string"
 		},
+		"password_hash_old": {
+			"type": "string"
+		},
 		"password_salt": {
 			"type": "string"
 		},
@@ -84023,7 +84026,6 @@ export const UserAccountSchema = {
 		"email",
 		"id",
 		"password_hash",
-		"password_salt",
 		"preferences"
 	]
 } 
@@ -84054,6 +84056,9 @@ export const UserAccountCreateSchema = {
 			"type": "string"
 		},
 		"password_hash": {
+			"type": "string"
+		},
+		"password_hash_old": {
 			"type": "string"
 		},
 		"password_salt": {
@@ -84101,8 +84106,7 @@ export const UserAccountCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"email",
-		"password_hash",
-		"password_salt"
+		"password_hash"
 	]
 } 
 
@@ -84135,6 +84139,9 @@ export const UserAccountUpdateSchema = {
 			"type": "string"
 		},
 		"password_hash": {
+			"type": "string"
+		},
+		"password_hash_old": {
 			"type": "string"
 		},
 		"password_salt": {
