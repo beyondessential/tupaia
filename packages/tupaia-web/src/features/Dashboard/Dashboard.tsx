@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
@@ -110,7 +110,7 @@ const DashboardItemsWrapper = styled.div<{
 
 export const Dashboard = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const { data: project } = useProject(projectCode);
   const { data: user } = useUser();
   const { mutate: updateUser } = useEditUser();
 
@@ -119,7 +119,6 @@ export const Dashboard = () => {
       updateUser({ projectId: project?.id });
     }
   }, [project?.code, user?.project?.code]);
-  const { data: project } = useProject(projectCode);
 
   const { activeDashboard } = useDashboard();
   const { isLoading: isLoadingDashboards } = useDashboards(projectCode, entityCode);
