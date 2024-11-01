@@ -61,7 +61,7 @@ const Description = styled(Typography)`
 
 const ExportDescription = styled(Typography)`
   margin-bottom: 0.3rem;
-  word-break: break-all;
+  word-break: break-word;
 `;
 
 const ExportContent = styled.div<{
