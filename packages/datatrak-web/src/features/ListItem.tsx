@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { ArrowLeftIcon } from '../components';
 import { ListItem as MuiListItem, ListItemProps as MuiListItemProps } from '@material-ui/core';
@@ -49,48 +49,29 @@ const IconWrapper = styled.div`
   }
 `;
 
-const Paper = styled.div`
-  background-color: ${({ theme }) => theme.palette.background.default};
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-`;
-
 type ListItemType = Record<string, string>;
 
 interface ListItemProps {
   item: ListItemType;
-  onSelect: (item: any) => void;
+  onClick: (item: any) => void;
   children?: ReactNode;
 }
 
-export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
-  const [open, setOpen] = useState(false);
+export const ListItem = ({ item, onClick, children }: ListItemProps) => {
   const { content, selected, icon, button = true, disabled } = item;
   const isNested = !!item.children;
 
-  const toggleOpen = () => {
-    setOpen(!open);
-  };
-
-  const onClick = () => {
-    console.log('onClick');
-    console.log('is nested', isNested);
-    if (isNested) {
-      return toggleOpen();
-    }
-    console.log('select...');
-    return onSelect(item);
+  const handleOnClick = () => {
+    console.log('item', item);
+    onClick(item);
   };
 
   // @ts-ignore
   return (
-    <li>
+    <>
       <BaseListItem
         button={button}
-        onClick={button ? onClick : null}
+        onClick={button ? handleOnClick : null}
         selected={selected}
         disabled={disabled}
       >
@@ -98,8 +79,7 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
         <Content>{content}</Content>
         {isNested && <Arrow />}
       </BaseListItem>
-      {/*{isNested && <Collapse in={open}>{children}</Collapse>}*/}
-      {open && <Paper>{children}</Paper>}
-    </li>
+      {children}
+    </>
   );
 };

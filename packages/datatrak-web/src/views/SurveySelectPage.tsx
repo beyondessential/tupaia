@@ -13,7 +13,10 @@ import { Button } from '../components';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { CountrySelector, GroupedSurveyList, useUserCountries } from '../features';
 import { Survey } from '../types';
+import { MobileSelectList } from '../features/MobileSelectList';
 import { useIsMobile } from '../utils';
+import { useGroupedSurveyList } from '../features/useGroupedSurveyList.tsx';
+import { StickyMobileHeader } from '../layout';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -53,6 +56,12 @@ const LoadingContainer = styled.div`
   flex: 1;
 `;
 
+const Loader = () => (
+  <LoadingContainer>
+    <SpinningLoader />
+  </LoadingContainer>
+);
+
 const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -83,8 +92,101 @@ const Subheader = styled(Typography).attrs({
   }
 `;
 
-export const SurveySelectPage = () => {
+const DesktopTemplate = ({
+  selectedCountry,
+  selectedSurvey,
+  setSelectedSurvey,
+  showLoader,
+  SubmitButton,
+  CountrySelector,
+}) => {
+  return (
+    <Container>
+      <HeaderWrapper>
+        <div>
+          <Typography variant="h1">Select survey</Typography>
+          <Subheader>Select a survey from the list below</Subheader>
+        </div>
+        {CountrySelector}
+      </HeaderWrapper>
+      {showLoader ? (
+        <Loader />
+      ) : (
+        <GroupedSurveyList
+          setSelectedSurvey={setSelectedSurvey}
+          selectedSurvey={selectedSurvey}
+          selectedCountry={selectedCountry}
+        />
+      )}
+      <DialogActions>
+        <Button to="/" variant="outlined">
+          Cancel
+        </Button>
+        {SubmitButton}
+      </DialogActions>
+    </Container>
+  );
+};
+
+const MobileTemplate = ({
+  selectedCountry,
+  setSelectedSurvey,
+  showLoader,
+  CountrySelector,
+  selectedSurvey,
+  handleSelectSurvey,
+}) => {
+  const { groupedSurveys } = useGroupedSurveyList({
+    setSelectedSurvey,
+    selectedSurvey,
+    selectedCountry,
+  });
   const navigate = useNavigate();
+  const onClose = () => {
+    navigate(-1);
+  };
+  const onNavigateToSurvey = survey => {
+    handleSelectSurvey(selectedCountry, survey.value);
+  };
+
+  return (
+    <Container>
+      <HeaderWrapper>
+        <StickyMobileHeader onBack={onClose} onClose={onClose} title="Select a survey" />
+        {CountrySelector}
+      </HeaderWrapper>
+      {showLoader ? (
+        <Loader />
+      ) : (
+        <MobileSelectList items={groupedSurveys} onSelect={onNavigateToSurvey} />
+      )}
+    </Container>
+  );
+};
+
+const useNavigateToSurvey = () => {
+  const navigate = useNavigate();
+  const user = useCurrentUserContext();
+  const { mutate: updateUser } = useEditUser();
+
+  return (country, surveyCode) => {
+    if (country?.code === user.country?.code) {
+      return navigate(`/survey/${country?.code}/${surveyCode}`);
+    }
+
+    // update user with new country. If the user goes 'back' and doesn't select a survey, and does not yet have a country selected, that's okay because it will be set whenever they next select a survey
+    updateUser(
+      { countryId: country?.id },
+      {
+        onSuccess: () => {
+          navigate(`/survey/${country?.code}/${surveyCode}`);
+        },
+      },
+    );
+  };
+};
+
+export const SurveySelectPage = () => {
   const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
   const [urlSearchParams] = useSearchParams();
   const urlProjectId = urlSearchParams.get('projectId');
@@ -92,29 +194,13 @@ export const SurveySelectPage = () => {
     countries,
     selectedCountry,
     updateSelectedCountry,
-    countryHasUpdated,
     isLoading: isLoadingCountries,
   } = useUserCountries();
-  const navigateToSurvey = () => {
-    navigate(`/survey/${selectedCountry?.code}/${selectedSurvey}`);
-  };
-  const { mutateAsync: updateUser, isLoading: isUpdatingUser } = useEditUser();
+  const handleSelectSurvey = useNavigateToSurvey();
+  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
-  const isMobile = useIsMobile();
 
   const { isLoading, data: surveys } = useProjectSurveys(user.projectId, selectedCountry?.code);
-
-  const handleSelectSurvey = () => {
-    if (countryHasUpdated) {
-      // update user with new country. If the user goes 'back' and doesn't select a survey, and does not yet have a country selected, that's okay because it will be set whenever they next select a survey
-      updateUser(
-        { countryId: selectedCountry?.id },
-        {
-          onSuccess: navigateToSurvey,
-        },
-      );
-    } else navigateToSurvey();
-  };
 
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
@@ -137,44 +223,47 @@ export const SurveySelectPage = () => {
     isLoadingCountries ||
     isUpdatingUser ||
     (urlProjectId && urlProjectId !== user?.projectId); // in this case the user will be updating and all surveys etc will be reloaded, so showing a loader when this is the case means a more seamless experience
+
+  if (useIsMobile()) {
+    return (
+      <MobileTemplate
+        selectedCountry={selectedCountry}
+        selectedSurvey={selectedSurvey}
+        setSelectedSurvey={setSelectedSurvey}
+        handleSelectSurvey={handleSelectSurvey}
+        showLoader={showLoader}
+        CountrySelector={
+          <CountrySelector
+            countries={countries}
+            selectedCountry={selectedCountry}
+            onChangeCountry={updateSelectedCountry}
+          />
+        }
+      />
+    );
+  }
   return (
-    <Container>
-      <HeaderWrapper>
-        <div>
-          <Typography variant="h1">Select survey</Typography>
-          <Subheader>Select a survey from the list below</Subheader>
-        </div>
+    <DesktopTemplate
+      selectedCountry={selectedCountry}
+      selectedSurvey={selectedSurvey}
+      setSelectedSurvey={setSelectedSurvey}
+      showLoader={showLoader}
+      CountrySelector={
         <CountrySelector
           countries={countries}
           selectedCountry={selectedCountry}
           onChangeCountry={updateSelectedCountry}
         />
-      </HeaderWrapper>
-      {showLoader ? (
-        <LoadingContainer>
-          <SpinningLoader />
-        </LoadingContainer>
-      ) : (
-        <GroupedSurveyList
-          setSelectedSurvey={setSelectedSurvey}
-          selectedSurvey={selectedSurvey}
-          selectedCountry={selectedCountry}
-        />
-      )}
-      {!isMobile && (
-        <DialogActions>
-          <Button to="/" variant="outlined">
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSelectSurvey}
-            disabled={!selectedSurvey || isUpdatingUser}
-            tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
-          >
-            Next
-          </Button>
-        </DialogActions>
-      )}
-    </Container>
+      }
+      SubmitButton={
+        <Button
+          onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
+          disabled={!selectedSurvey || isUpdatingUser}
+          tooltip={selectedSurvey ? '' : 'Select survey to proceed'}
+        >
+          Next
+        </Button>
+      }
+    />
   );
 };
