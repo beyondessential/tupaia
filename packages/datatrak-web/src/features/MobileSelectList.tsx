@@ -9,13 +9,32 @@ import { Dialog, List as MuiList, Typography, Slide } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { ListItem } from './ListItem';
 import { StickyMobileHeader } from '../layout';
+import { CountrySelectWrapper } from './CountrySelector';
 
 type ListItemType = Record<string, string>;
 
-const Container = styled.div``;
-
 const BaseList = styled(MuiList)`
-  padding: 0;
+  padding: 20px 25px;
+  height: 100%;
+  background: ${({ theme }) => theme.palette.background.default};
+
+  ${CountrySelectWrapper} {
+    margin-bottom: 1rem;
+
+    .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
+
+    .MuiInputBase-root .MuiSvgIcon-root {
+      display: none;
+    }
+  }
+`;
+
+const CategoryTitle = styled(Typography)`
+  margin: -0.5rem 0 0.8rem;
+  padding-top: 1rem;
+  border-top: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -39,10 +58,11 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
-const List = ({ items, onSelect, onClose, expanded }) => {
+const List = ({ parentItem, items, onSelect, onClose, expanded, CountrySelector }) => {
   const [childExpanded, setChildExpanded] = React.useState(false);
   const onChildClose = () => setChildExpanded(false);
   const onOpen = () => setChildExpanded(true);
+  const category = parentItem?.value;
   return (
     <Dialog
       open={expanded}
@@ -53,10 +73,13 @@ const List = ({ items, onSelect, onClose, expanded }) => {
     >
       <StickyMobileHeader onBack={onClose} onClose={onClose} title="Select a survey" />
       <BaseList>
+        {CountrySelector}
+        {category && <CategoryTitle>{category}</CategoryTitle>}
         {items?.map(item => (
           <ListItem item={item} onClick={!!item.children ? onOpen : onSelect} key={item.value}>
             {item?.children && (
               <List
+                parentItem={item}
                 items={item.children}
                 onSelect={onSelect}
                 onClose={onChildClose}
@@ -70,31 +93,34 @@ const List = ({ items, onSelect, onClose, expanded }) => {
   );
 };
 
-export const MobileSelectList = ({ items = [], onSelect }: SelectListProps) => {
+export const MobileSelectList = ({ items = [], onSelect, CountrySelector }: SelectListProps) => {
   const [expanded, setExpanded] = React.useState(false);
   const onClose = () => setExpanded(false);
   const onOpen = () => setExpanded(true);
 
   return (
-    <Container>
+    <>
       {items.length === 0 ? (
         <NoResultsMessage>No items to display</NoResultsMessage>
       ) : (
         <BaseList>
+          {CountrySelector}
           {items?.map(item => (
             <ListItem item={item} onClick={!!item.children ? onOpen : onSelect} key={item.value}>
               {item?.children && (
                 <List
+                  parentItem={item}
                   items={item.children}
                   onSelect={onSelect}
                   expanded={expanded}
                   onClose={onClose}
+                  CountrySelector={CountrySelector}
                 />
               )}
             </ListItem>
           ))}
         </BaseList>
       )}
-    </Container>
+    </>
   );
 };

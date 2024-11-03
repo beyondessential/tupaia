@@ -22,6 +22,6 @@ export { MobileAppPrompt } from './MobileAppPrompt';
 export { Leaderboard } from './Leaderboard';
 export { Reports } from './Reports';
 export { TaskPageHeader, TasksTable, TaskDetails, CreateTaskModal, TaskActionsMenu } from './Tasks';
-export { useUserCountries, CountrySelector } from './CountrySelector';
+export { useUserCountries, CountrySelector, CountrySelectWrapper } from './CountrySelector';
 export { GroupedSurveyList } from './GroupedSurveyList';
 export { SurveyResponseModal } from './SurveyResponseModal';

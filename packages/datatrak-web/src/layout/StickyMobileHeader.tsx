@@ -11,7 +11,7 @@ import { HEADER_HEIGHT } from '../constants';
 import { Close } from '@material-ui/icons';
 
 const Wrapper = styled.div`
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -48,6 +48,7 @@ interface StickyMobileHeaderProps {
   title: string;
   onClose?: () => void;
 }
+
 export const StickyMobileHeader = ({ onBack, title, onClose }: StickyMobileHeaderProps) => {
   return (
     <Wrapper>

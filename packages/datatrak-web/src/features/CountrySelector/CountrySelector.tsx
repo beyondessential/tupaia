@@ -37,7 +37,8 @@ const Pin = styled.img.attrs({
   height: auto;
   margin-right: 0.5rem;
 `;
-const CountrySelectWrapper = styled.div`
+
+export const CountrySelectWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
