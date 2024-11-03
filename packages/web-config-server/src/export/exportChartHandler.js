@@ -57,7 +57,7 @@ export const exportChartHandler = async (req, res) => {
     true,
     {
       authorization: authHeader,
-    }
+    },
   );
 
   const matrixData = {

@@ -1,8 +1,13 @@
 import { addExportedDateAndOriginAtTheSheetBottom, formatDataValueByType } from '@tupaia/utils';
+import { MatrixEntityCell } from '@tupaia/types';
 
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
 };
+
+function isMatrixEntityCell(cell) {
+  return typeof cell === 'object' && cell !== null && 'entityLabel' in cell && 'entityCode' in cell;
+}
 
 // Takes in the data for a matrix type view and converts it into an array of arrays representing
 // an Excel spreadsheet in the format required by the xlsx library, i.e. an array of arrays,
@@ -56,7 +61,11 @@ export const formatMatrixDataForExcel = (
         columns.map(col => addValueOrEmpty(row[col.key], row.valueType));
 
     // prepend dataElementHeader
-    rowData.unshift(row.dataElement);
+    if (isMatrixEntityCell(row.dataElement)) {
+      rowData.unshift(row.dataElement.entityLabel);
+    } else {
+      rowData.unshift(row.dataElement);
+    }
 
     return rowData;
   };

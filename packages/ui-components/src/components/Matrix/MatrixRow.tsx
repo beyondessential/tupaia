@@ -221,6 +221,7 @@ const RowLink = styled(RouterLink)`
   color: ${({ theme }) => theme.palette.text.primary};
   text-decoration: none;
   &:hover {
+    font-weight: 700;
     text-decoration: underline;
   }
 `;
