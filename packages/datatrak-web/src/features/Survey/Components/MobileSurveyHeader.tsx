@@ -72,6 +72,7 @@ export const MobileSurveyHeader = () => {
   const surveyName = getDisplaySurveyName();
   const countryName = country?.name || '';
 
+  // Todo" Re-use Sticky header component
   return (
     <>
       <Container>

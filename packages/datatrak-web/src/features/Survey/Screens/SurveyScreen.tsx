@@ -12,7 +12,7 @@ import {
   SurveyPaginator,
   SurveyQuestionGroup,
   MobileSurveyHeader,
-  SurveyMobilePaginator,
+  MobileSurveyMenu,
 } from '../Components';
 import { ScrollableBody } from '../../../layout';
 import { useIsMobile } from '../../../utils';
@@ -40,11 +40,6 @@ const Heading = styled(Typography).attrs({ variant: 'h2' })`
     font-size: 1.25rem;
   }
 `;
-
-const SurveyThumbMenu = () => {
-  const isMobile = useIsMobile();
-  return isMobile ? <SurveyMobilePaginator /> : <SurveyPaginator />;
-};
 
 /**
  * This is the component that renders survey questions.
@@ -82,7 +77,7 @@ export const SurveyScreen = () => {
         </ScreenHeader>
         <SurveyQuestionGroup questions={displayQuestions} />
       </ScrollableBody>
-      <SurveyThumbMenu />
+      {isMobile ? <MobileSurveyMenu /> : <SurveyPaginator />}
     </>
   );
 };

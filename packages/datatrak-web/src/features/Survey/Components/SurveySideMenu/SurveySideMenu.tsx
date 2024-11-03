@@ -131,7 +131,7 @@ export const SurveySideMenu = () => {
 
   return (
     <>
-      <SideMenuButton />
+      {!isMobile && <SideMenuButton />}
       <Drawer
         open={sideMenuOpen}
         onClose={toggleSideMenu}
