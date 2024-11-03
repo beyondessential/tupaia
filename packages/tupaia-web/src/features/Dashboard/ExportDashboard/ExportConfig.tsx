@@ -19,6 +19,7 @@ import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
 import { Preview } from './Preview';
+import { ExportDescriptionInput } from '../../ExportSettings/ExportDescriptionInput';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -124,7 +125,8 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
-  const { exportWithLabels, exportWithTable, separatePagePerItem } = useExportSettings();
+  const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
+    useExportSettings();
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
@@ -139,6 +141,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
       settings: {
         exportWithLabels,
         exportWithTable,
+        exportDescription,
         separatePagePerItem,
       },
     });
@@ -165,6 +168,9 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
             <ExportSetting>
               <section>
                 <ExportSettingsWrapper>
+                  <ExportDescriptionInput />
+                </ExportSettingsWrapper>
+                <ExportSettingsWrapper>
                   <DisplayFormatSettings />
                 </ExportSettingsWrapper>
                 {hasChartItems && (
@@ -178,6 +184,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                 settings={{
                   exportWithTable,
                   exportWithLabels,
+                  exportDescription,
                   separatePagePerItem,
                 }}
               />
