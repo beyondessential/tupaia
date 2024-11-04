@@ -66,7 +66,7 @@ const COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'dashboardVisualisation',
-      fileName: '{code}',
+      fileName: '{code}.json',
     },
   },
   {
