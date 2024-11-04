@@ -15,11 +15,13 @@ const Wrapper = styled.div`
     padding: 1rem 2rem;
   }
 `;
+
 const ButtonWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   width: 100%;
-  padding-top: 1.3rem;
+  max-width: 20rem;
+  margin: 1.5rem auto 0;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     flex-direction: row;
     justify-content: center;
@@ -34,9 +36,10 @@ const Heading = styled(Typography).attrs({
 `;
 
 const ModalButton = styled(Button)`
+  flex: 1;
   ${({ theme }) => theme.breakpoints.down('xs')} {
     & + & {
-      margin: 1rem 0 0 0;
+      margin: 0 0 1rem 0;
     }
   }
 `;
@@ -56,10 +59,12 @@ export const CancelConfirmModal = ({
         <Heading>{headingText}</Heading>
         <Typography align="center">{bodyText}</Typography>
         <ButtonWrapper>
-          <ModalButton variant="outlined" to={confirmLink} onClick={onClose}>
+          <ModalButton onClick={onClose} variant="outlined">
+            {cancelText}
+          </ModalButton>
+          <ModalButton to={confirmLink} onClick={onClose}>
             {confirmText}
           </ModalButton>
-          <ModalButton onClick={onClose}>{cancelText}</ModalButton>
         </ButtonWrapper>
       </Wrapper>
     </Modal>

@@ -41,9 +41,22 @@ const StyledField = styled(TextField)<TextFieldProps>`
     font-size: 1.2em;
   }
 
+  .MuiInputAdornment-positionStart {
+    margin-right: 0.2rem;
+  }
+
   &&&& {
     .MuiInputBase-input::placeholder {
-      color: ${({ theme }) => theme.palette.text.tertiary};
+      color: ${({ theme }) => theme.palette.text.hint};
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
+    .MuiInputBase-root {
+      border-radius: 6.25rem;
     }
   }
 `;
