@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 const ExportDescriptionInputArea = styled((props: OutlinedTextFieldProps) => (
   <TextField {...props} />
 ))`
-  margin-block-start: 1rem;
+  margin-block-start: 0.6rem;
 
   .MuiInputBase-root {
     border: 1px solid ${({ theme }) => theme.palette.text.secondary};
@@ -44,7 +44,7 @@ const ExportDescription = styled.div<{
   display: flex;
   align-self: end;
   justify-content: space-between;
-  margin-top: 0.313rem;
+  margin-top: 0.3rem;
   color: ${({ error, theme }) => (error ? theme.palette.error.main : theme.palette.text.secondary)};
   font-size: 0.75rem;
 `;
@@ -61,7 +61,7 @@ export const ExportDescriptionInput = () => {
       <ExportDescriptionInputArea
         id="description"
         multiline
-        rows={6}
+        rows={4}
         value={exportDescription}
         onChange={updateExportDescription}
         variant="outlined"
