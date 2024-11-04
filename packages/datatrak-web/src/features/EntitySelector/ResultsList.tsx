@@ -9,6 +9,7 @@ import { FormLabelProps, Typography } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { SelectList } from '@tupaia/ui-components';
+import { useIsMobile } from '../../utils';
 
 const DARK_BLUE = '#004975';
 
@@ -35,13 +36,40 @@ const Subtitle = styled(Typography).attrs({
   margin-block-end: 0.2rem;
 `;
 
+const MobileResultItem = styled(Typography)`
+  font-size: 0.875rem;
+  line-height: 1.3;
+  margin-left: 0.5rem;
+
+  > div:last-child {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
+`;
+
 export const ResultItem = ({ name, parentName }) => {
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    return (
+      <MobileResultItem>
+        <div>{name}</div>
+        <div>{parentName}</div>
+      </MobileResultItem>
+    );
+  }
   return (
     <>
       {name} | <span className="text-secondary">{parentName}</span>
     </>
   );
 };
+
+const Icon = styled(RoomIcon)`
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    &.MuiSvgIcon-root {
+      font-size: 1.8rem !important;
+    }
+  }
+`;
 
 type ListItemType = Record<string, unknown> & {
   children?: ListItemType[];
@@ -83,7 +111,7 @@ export const ResultsList = ({
         value: id,
         code,
         selected: id === value,
-        icon: <RoomIcon />,
+        icon: <Icon />,
         button: true,
       })) ?? []
     );
