@@ -67,7 +67,7 @@ const COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'dataTable',
-      fileName: '{code}',
+      fileName: '{code}.json',
     },
   },
   {

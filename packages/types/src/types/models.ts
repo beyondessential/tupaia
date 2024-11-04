@@ -1682,6 +1682,20 @@ export interface UserAccountUpdate {
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
 }
+export interface UserCountryAccessAttempt {
+  'country_code': string;
+  'id': string;
+  'user_id': string;
+}
+export interface UserCountryAccessAttemptCreate {
+  'country_code': string;
+  'user_id': string;
+}
+export interface UserCountryAccessAttemptUpdate {
+  'country_code'?: string;
+  'id'?: string;
+  'user_id'?: string;
+}
 export interface UserEntityPermission {
   'entity_id': string;
   'id': string;
@@ -1852,6 +1866,7 @@ export enum EntityTypeEnum {
   'pacmossi_district' = 'pacmossi_district',
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
+  'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
