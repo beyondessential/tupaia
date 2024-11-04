@@ -17,6 +17,7 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: white;
   height: ${MOBILE_HEADER_HEIGHT};
 
   .MuiSvgIcon-root {

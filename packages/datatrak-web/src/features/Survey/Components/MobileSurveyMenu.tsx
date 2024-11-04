@@ -20,6 +20,7 @@ const Container = styled.div`
   align-items: stretch;
   padding: 0 0.5rem;
   border-top: 1px solid ${props => props.theme.palette.divider};
+  background: white;
 `;
 
 const IconButton = styled(MuiIconButton)`
