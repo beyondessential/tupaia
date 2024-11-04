@@ -9,7 +9,7 @@ import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { Survey } from '../types';
 import { SurveyIcon, SurveyFolderIcon } from '../components';
 
-type ListItemType = Record<string, unknown> & {
+export type ListItemType = Record<string, unknown> & {
   children?: ListItemType[];
   content: string | ReactNode;
   value: string;
