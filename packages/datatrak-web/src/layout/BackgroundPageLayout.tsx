@@ -25,6 +25,10 @@ export const Background = styled.div<{
   }};
   display: flex;
   margin-top: ${props => (props.$hideBorder ? '-1px' : 0)};
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex: 1;
+  }
 `;
 
 export const BackgroundPageLayout = ({

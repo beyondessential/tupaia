@@ -5,41 +5,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useOutletContext, useParams } from 'react-router-dom';
-import CloseIcon from '@material-ui/icons/Close';
-import { Button, ArrowLeftIcon, TopProgressBar } from '../../../components';
+import { TopProgressBar } from '../../../components';
 import { useEntityByCode, useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
-import { IconButton } from '@tupaia/ui-components';
-
-const MOBILE_HEADER_HEIGHT = '4rem';
-
-const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  height: ${MOBILE_HEADER_HEIGHT};
-
-  .MuiSvgIcon-root {
-    color: ${({ theme }) => theme.palette.text.primary};
-  }
-`;
+import { StickyMobileHeader } from '../../../layout';
 
 const CountryName = styled.span`
   padding-left: 0.3rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
-`;
-
-const BackButton = styled(Button)`
-  .MuiSvgIcon-root {
-    font-size: 1rem;
-  }
-`;
-
-const MobileTitle = styled.div`
-  text-align: center;
-  padding: 0 1rem;
-  font-weight: 600;
 `;
 
 type SurveyLayoutContextT = {
@@ -73,21 +46,18 @@ export const MobileSurveyHeader = () => {
   const surveyName = getDisplaySurveyName();
   const countryName = country?.name || '';
 
-  // Todo" Re-use Sticky header component
   return (
     <>
-      <Container>
-        <BackButton onClick={onStepPrevious} variant="text" title="Back">
-          <ArrowLeftIcon />
-        </BackButton>
-        <MobileTitle>
-          {surveyName}
-          {<CountryName>| {countryName}</CountryName>}
-        </MobileTitle>
-        <IconButton onClick={openCancelConfirmation} title="Cancel">
-          <CloseIcon />
-        </IconButton>
-      </Container>
+      <StickyMobileHeader
+        title={
+          <>
+            {surveyName}
+            {<CountryName>| {countryName}</CountryName>}
+          </>
+        }
+        onBack={onStepPrevious}
+        onClose={openCancelConfirmation}
+      />
       {screenNumberParam && (
         <TopProgressBar
           currentSurveyQuestion={screenNumber}

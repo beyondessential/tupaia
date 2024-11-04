@@ -35,6 +35,7 @@ const BackIcon = styled(ArrowLeftIcon)`
 `;
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
+  text-align: center;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
 `;
@@ -45,7 +46,7 @@ const ButtonContainer = styled.div`
 
 interface StickyMobileHeaderProps {
   onBack: () => void;
-  title: string;
+  title: string | React.ReactNode;
   onClose?: () => void;
 }
 
