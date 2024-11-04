@@ -16,4 +16,3 @@ export { TaskIcon } from './TaskIcon';
 export { CommentIcon } from './CommentIcon';
 export { ArrowLeftIcon } from './ArrowLeftIcon';
 export { ShareIcon } from './ShareIcon';
-export { ContentsIcon } from './ContentsIcon';

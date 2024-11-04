@@ -5,10 +5,14 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { KeyboardArrowRight } from '@material-ui/icons';
+import { KeyboardArrowRight, FormatListBulleted } from '@material-ui/icons';
 import { IconButton as MuiIconButton } from '@material-ui/core';
 import { useSurveyForm } from '../SurveyContext';
-import { Button as UIButton, CopyIcon, ShareIcon, ContentsIcon } from '../../../components';
+import { Button as UIButton, CopyIcon, ShareIcon } from '../../../components';
+import { useCopySurveyUrl } from './CopySurveyUrlButton';
+import { generatePath, useParams } from 'react-router-dom';
+import { ROUTES } from '../../../constants';
+import { useSurvey } from '../../../api';
 
 const Container = styled.div`
   display: flex;
@@ -21,6 +25,7 @@ const Container = styled.div`
 const IconButton = styled(MuiIconButton)`
   border-radius: 0;
   flex: 1;
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const Button = styled(UIButton).attrs({
@@ -34,8 +39,30 @@ const Button = styled(UIButton).attrs({
   border-left: 1px solid ${props => props.theme.palette.divider};
 `;
 
+const useShare = () => {
+  const params = useParams();
+  const { data: survey } = useSurvey(params.surveyCode);
+  const path = generatePath(ROUTES.SURVEY, params);
+  const link = `${window.location.origin}${path}`;
+
+  return async () => {
+    try {
+      await navigator.share({
+        title: document.title,
+        text: `Tupaia Survey: ${survey?.name}`,
+        url: link,
+      });
+    } catch (err) {
+      // Swallow the error
+      // Note that closing the share dialog will trigger the catch block
+    }
+  };
+};
+
 export const MobileSurveyMenu = () => {
   const { toggleSideMenu, isLast, isReviewScreen, isResubmitReviewScreen } = useSurveyForm();
+  const copyPageUrl = useCopySurveyUrl();
+  const share = useShare();
 
   const getNextButtonText = () => {
     if (isReviewScreen) return 'Submit';
@@ -46,23 +73,15 @@ export const MobileSurveyMenu = () => {
     return 'Next';
   };
 
-  const handleShare = () => {
-    console.log('Share');
-  };
-
-  const handleCopy = () => {
-    console.log('Copy');
-  };
-
   return (
     <Container>
       <IconButton onClick={toggleSideMenu}>
-        <ContentsIcon />
+        <FormatListBulleted />
       </IconButton>
-      <IconButton onClick={handleShare}>
+      <IconButton onClick={share}>
         <ShareIcon />
       </IconButton>
-      <IconButton onClick={handleCopy}>
+      <IconButton onClick={copyPageUrl}>
         <CopyIcon />
       </IconButton>
       <Button type="submit">{getNextButtonText()}</Button>

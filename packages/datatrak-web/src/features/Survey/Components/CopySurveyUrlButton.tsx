@@ -30,12 +30,11 @@ const Button = styled(IconButton)`
   }
 `;
 
-export const CopySurveyUrlButton = () => {
+export const useCopySurveyUrl = () => {
   const params = useParams();
   const path = generatePath(ROUTES.SURVEY, params);
   const link = `${window.location.origin}${path}`;
-
-  const copyPageUrl = () => {
+  return () => {
     try {
       navigator.clipboard.writeText(link);
       successToast('Page URL copied to clipboard');
@@ -43,6 +42,10 @@ export const CopySurveyUrlButton = () => {
       console.warn('Failed to copy page url: ', err);
     }
   };
+};
+
+export const CopySurveyUrlButton = () => {
+  const copyPageUrl = useCopySurveyUrl();
   return (
     <StyledTooltip
       title={
