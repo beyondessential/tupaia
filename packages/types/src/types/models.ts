@@ -991,7 +991,6 @@ export interface MeditrakDevice {
   'config'?: {} | null;
   'id': string;
   'install_id': string;
-  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id': string;
 }
@@ -999,7 +998,6 @@ export interface MeditrakDeviceCreate {
   'app_version'?: string | null;
   'config'?: {} | null;
   'install_id': string;
-  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id': string;
 }
@@ -1008,7 +1006,6 @@ export interface MeditrakDeviceUpdate {
   'config'?: {} | null;
   'id'?: string;
   'install_id'?: string;
-  'last_login'?: Date | null;
   'platform'?: string | null;
   'user_id'?: string;
 }
@@ -1539,76 +1536,6 @@ export interface SyncGroupLogUpdate {
   'sync_group_code'?: string;
   'timestamp'?: Date | null;
 }
-export interface Task {
-  'assignee_id'?: string | null;
-  'created_at': Date;
-  'due_date'?: number | null;
-  'entity_id': string;
-  'id': string;
-  'initial_request_id'?: string | null;
-  'overdue_email_sent'?: Date | null;
-  'parent_task_id'?: string | null;
-  'repeat_schedule'?: RepeatSchedule | null;
-  'status'?: TaskStatus | null;
-  'survey_id': string;
-  'survey_response_id'?: string | null;
-}
-export interface TaskCreate {
-  'assignee_id'?: string | null;
-  'created_at'?: Date;
-  'due_date'?: number | null;
-  'entity_id': string;
-  'initial_request_id'?: string | null;
-  'overdue_email_sent'?: Date | null;
-  'parent_task_id'?: string | null;
-  'repeat_schedule'?: RepeatSchedule | null;
-  'status'?: TaskStatus | null;
-  'survey_id': string;
-  'survey_response_id'?: string | null;
-}
-export interface TaskUpdate {
-  'assignee_id'?: string | null;
-  'created_at'?: Date;
-  'due_date'?: number | null;
-  'entity_id'?: string;
-  'id'?: string;
-  'initial_request_id'?: string | null;
-  'overdue_email_sent'?: Date | null;
-  'parent_task_id'?: string | null;
-  'repeat_schedule'?: RepeatSchedule | null;
-  'status'?: TaskStatus | null;
-  'survey_id'?: string;
-  'survey_response_id'?: string | null;
-}
-export interface TaskComment {
-  'created_at': Date;
-  'id': string;
-  'message'?: string | null;
-  'task_id': string;
-  'template_variables': TaskCommentTemplateVariables;
-  'type': TaskCommentType;
-  'user_id'?: string | null;
-  'user_name': string;
-}
-export interface TaskCommentCreate {
-  'created_at'?: Date;
-  'message'?: string | null;
-  'task_id': string;
-  'template_variables'?: TaskCommentTemplateVariables;
-  'type'?: TaskCommentType;
-  'user_id'?: string | null;
-  'user_name': string;
-}
-export interface TaskCommentUpdate {
-  'created_at'?: Date;
-  'id'?: string;
-  'message'?: string | null;
-  'task_id'?: string;
-  'template_variables'?: TaskCommentTemplateVariables;
-  'type'?: TaskCommentType;
-  'user_id'?: string | null;
-  'user_name'?: string;
-}
 export interface TupaiaWebSession {
   'access_policy': {};
   'access_token': string;
@@ -1682,20 +1609,6 @@ export interface UserAccountUpdate {
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
 }
-export interface UserCountryAccessAttempt {
-  'country_code': string;
-  'id': string;
-  'user_id': string;
-}
-export interface UserCountryAccessAttemptCreate {
-  'country_code': string;
-  'user_id': string;
-}
-export interface UserCountryAccessAttemptUpdate {
-  'country_code'?: string;
-  'id'?: string;
-  'user_id'?: string;
-}
 export interface UserEntityPermission {
   'entity_id': string;
   'id': string;
@@ -1755,15 +1668,6 @@ export enum VerifiedEmail {
   'new_user' = 'new_user',
   'verified' = 'verified',
 }
-export enum TaskStatus {
-  'to_do' = 'to_do',
-  'cancelled' = 'cancelled',
-  'completed' = 'completed',
-}
-export enum TaskCommentType {
-  'user' = 'user',
-  'system' = 'system',
-}
 export enum SyncGroupSyncStatus {
   'IDLE' = 'IDLE',
   'SYNCING' = 'SYNCING',
@@ -1798,8 +1702,6 @@ export enum QuestionType {
   'Radio' = 'Radio',
   'SubmissionDate' = 'SubmissionDate',
   'File' = 'File',
-  'Task' = 'Task',
-  'User' = 'User',
 }
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
@@ -1862,10 +1764,6 @@ export enum EntityTypeEnum {
   'maintenance' = 'maintenance',
   'larval_sample' = 'larval_sample',
   'transfer' = 'transfer',
-  'hospital_area' = 'hospital_area',
-  'pacmossi_district' = 'pacmossi_district',
-  'pacmossi_village' = 'pacmossi_village',
-  'pacmossi_spraying_site' = 'pacmossi_spraying_site',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
