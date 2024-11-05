@@ -135,7 +135,7 @@ interface ExportDashboardProps {
 const defaultSystemPrompt =
   'You are writing for a health software app that provides health data to a government department.' +
   'The summary will be used for an exported PDF. Summarise the dashboard in a sentence using up to 250' +
-  'characters and include the title of the dashboard, the project, country and a summary the dashboard items.';
+  'characters. Include a summary the provided dashboard items and use a friendly tone.';
 
 export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboardProps) => {
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
