@@ -44,9 +44,8 @@ const useSearchResults = (searchValue, filter, projectCode, disableSearch = fals
 
 interface EntitySelectorProps {
   id: string;
-  label?: string | null;
-  detailLabel?: string | null;
   name?: string | null;
+  label?: string | null;
   required?: boolean | null;
   controllerProps: {
     onChange: (value: string) => void;
@@ -73,9 +72,8 @@ interface EntitySelectorProps {
 
 export const EntitySelector = ({
   id,
-  label,
-  detailLabel,
   name,
+  label,
   required,
   controllerProps: { onChange, value, ref, invalid },
   projectCode,
@@ -145,8 +143,6 @@ export const EntitySelector = ({
             <SearchField
               id={id}
               isDirty={isDirty}
-              label={label}
-              detailLabel={detailLabel}
               name={name!}
               ref={ref}
               onChangeSearch={onChangeSearch}
@@ -162,6 +158,7 @@ export const EntitySelector = ({
             <SpinningLoader />
           ) : (
             <ResultsList
+              searchValue={searchValue}
               value={value}
               onSelect={onSelect}
               searchResults={disableSearch ? [] : displayResults}

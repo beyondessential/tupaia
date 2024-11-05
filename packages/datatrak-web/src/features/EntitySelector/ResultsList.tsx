@@ -14,10 +14,15 @@ import { useIsMobile } from '../../utils';
 const DARK_BLUE = '#004975';
 
 const ListWrapper = styled.div`
+  padding-top: 1rem;
+  border-top: 1px solid ${({ theme }) => theme.palette.divider};
   display: flex;
   flex-direction: column;
   overflow: auto;
   margin-top: 0.9rem;
+  li > div {
+    left: -0.5rem;
+  }
   li .MuiSvgIcon-root {
     color: ${DARK_BLUE};
   }
@@ -27,13 +32,6 @@ const SubListWrapper = styled.div`
   & + & {
     margin-block-start: 0.5rem;
   }
-`;
-
-const Subtitle = styled(Typography).attrs({
-  variant: 'h3',
-})`
-  font-size: 0.9375rem;
-  margin-block-end: 0.2rem;
 `;
 
 const MobileResultItem = styled(Typography)`
@@ -87,7 +85,8 @@ type ListItemType = Record<string, unknown> & {
 
 type SearchResults = DatatrakWebEntityDescendantsRequest.ResBody;
 interface ResultsListProps {
-  value: string;
+  value?: string;
+  searchValue?: string;
   searchResults?: SearchResults;
   onSelect: (value: ListItemType) => void;
   showRecentEntities?: boolean;
@@ -96,11 +95,13 @@ interface ResultsListProps {
 
 export const ResultsList = ({
   value,
+  searchValue,
   searchResults,
   onSelect,
   showRecentEntities,
   noResultsMessage,
 }: ResultsListProps) => {
+  console.log('value', value);
   const getEntitiesList = (returnRecentEntities?: boolean) => {
     const entities = searchResults?.filter(({ isRecent }) =>
       returnRecentEntities ? isRecent : !isRecent,
@@ -123,17 +124,16 @@ export const ResultsList = ({
     <ListWrapper>
       {recentEntities?.length > 0 && (
         <SubListWrapper>
-          <Subtitle>Recent entities</Subtitle>
-          <SelectList items={recentEntities} onSelect={onSelect} variant="fullPage" />
+          <SelectList items={recentEntities} onSelect={onSelect} subTitle="Recent entities" />
         </SubListWrapper>
       )}
       <SubListWrapper>
-        {showRecentEntities && <Subtitle>All entities</Subtitle>}
         <SelectList
           items={displayResults}
           onSelect={onSelect}
           variant="fullPage"
           noResultsMessage={noResultsMessage}
+          subTitle={!searchValue && 'All entities'}
         />
       </SubListWrapper>
     </ListWrapper>
