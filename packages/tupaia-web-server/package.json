@@ -38,6 +38,7 @@
     "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
+    "openai": "^4.71.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {

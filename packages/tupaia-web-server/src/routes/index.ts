@@ -39,3 +39,4 @@ export {
 export { ExportMapOverlayRequest, ExportMapOverlayRoute } from './ExportMapOverlayRoute';
 export { LoginRoute, LoginRequest } from './LoginRoute';
 export { CountriesRequest, CountriesRoute } from './CountriesRoute';
+export { OpenAIRoute, OpenAIRequest } from './OpenAIRoute';

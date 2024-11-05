@@ -28,6 +28,7 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
+    .post<routes.OpenAIRequest>('openai', handleWith(routes.OpenAIRoute))
     .get<routes.ReportRequest>('report/:reportCode', handleWith(routes.ReportRoute))
     .get<routes.LegacyDashboardReportRequest>(
       'legacyDashboardReport/:reportCode',

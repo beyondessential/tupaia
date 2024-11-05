@@ -3,11 +3,17 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { useExportSettings } from './ExportSettingsContext';
 import { ExportSettingLabel } from './ExportSettingLabel';
 import { TextField, OutlinedTextFieldProps } from '@material-ui/core';
+import { useMutation } from '@tanstack/react-query';
+import { Button } from '@tupaia/ui-components';
+import { post } from '../../api';
+import { useDashboard } from '../Dashboard';
+import { useParams } from 'react-router';
+import { useEntity, useProject } from '../../api/queries';
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,10 +57,44 @@ const ExportDescription = styled.div<{
 
 const MAX_CHARACTERS = 250;
 
-export const ExportDescriptionInput = () => {
-  const { exportDescription, updateExportDescription } = useExportSettings();
+export const ExportDescriptionInput = ({ systemPrompt, selectedDashboardItems }) => {
+  const { exportDescription, setExportDescription } = useExportSettings();
+  const { projectCode, entityCode } = useParams();
+  const { activeDashboard } = useDashboard();
+  const { data: project } = useProject(projectCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
+
+  const { mutate } = useMutation(
+    ['openai'],
+    systemPrompt => {
+      const userPrompt = {
+        title: activeDashboard?.name,
+        project: project?.name,
+        country: entity?.name,
+        dashboardItems: activeDashboard?.items.filter(item =>
+          selectedDashboardItems.includes(item.code),
+        ),
+      };
+      return post('openai', { data: { userPrompt, systemPrompt } });
+    },
+    {
+      onSuccess: data => {
+        if (data.message.content) {
+          setExportDescription(data.message.content);
+        }
+      },
+    },
+  );
+
   const showMaxCharsWarning = exportDescription.length >= MAX_CHARACTERS;
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setExportDescription(e.target.value);
+  };
+
+  const handleClick = async () => {
+    mutate(systemPrompt);
+  };
   return (
     <Wrapper>
       <ExportSettingLabel as="legend">Description</ExportSettingLabel>
@@ -63,7 +103,7 @@ export const ExportDescriptionInput = () => {
         multiline
         rows={6}
         value={exportDescription}
-        onChange={updateExportDescription}
+        onChange={handleChange}
         variant="outlined"
         error={showMaxCharsWarning}
         inputProps={{ maxLength: MAX_CHARACTERS }}
@@ -73,6 +113,7 @@ export const ExportDescriptionInput = () => {
         {showMaxCharsWarning && 'Character limit reached: '}
         {exportDescription.length}/{MAX_CHARACTERS}
       </ExportDescription>
+      <Button onClick={handleClick}>★ AI Autocomplete</Button>
     </Wrapper>
   );
 };

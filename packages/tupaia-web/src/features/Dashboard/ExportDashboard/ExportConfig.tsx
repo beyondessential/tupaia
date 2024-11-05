@@ -3,9 +3,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
+import { TextField } from '@material-ui/core';
 import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
@@ -28,11 +29,23 @@ const ButtonGroup = styled.div`
   justify-content: flex-end;
 `;
 
+const SystemPrompt = styled.div`
+  margin-top: 1rem;
+
+  button {
+    display: block;
+  }
+
+  .MuiTextField-root {
+    width: 100%;
+  }
+`;
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  width 100%;
+  width: 100%;
   align-items: start;
   section + section {
     margin-top: 1.5rem;
@@ -119,8 +132,14 @@ interface ExportDashboardProps {
   onClose: () => void;
   selectedDashboardItems: string[];
 }
+const defaultSystemPrompt =
+  'You are writing for a health software app that provides health data to a government department.' +
+  'The summary will be used for an exported PDF. Summarise the dashboard in a sentence using up to 250' +
+  'characters and include the title of the dashboard, the project, country and a summary the dashboard items.';
 
 export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboardProps) => {
+  const [showSystemPrompt, setShowSystemPrompt] = useState(false);
+  const [systemPrompt, setSystemPrompt] = useState(defaultSystemPrompt);
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
@@ -152,6 +171,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
     return item?.config?.type === DashboardItemVizTypes.Chart;
   });
 
+  const toggleSystemPrompt = () => setShowSystemPrompt(!showSystemPrompt);
   return (
     <LoadingContainer
       heading="Exporting charts to PDF"
@@ -168,7 +188,10 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
             <ExportSetting>
               <section>
                 <ExportSettingsWrapper>
-                  <ExportDescriptionInput />
+                  <ExportDescriptionInput
+                    systemPrompt={systemPrompt}
+                    selectedDashboardItems={selectedDashboardItems}
+                  />
                 </ExportSettingsWrapper>
                 <ExportSettingsWrapper>
                   <DisplayFormatSettings />
@@ -189,6 +212,23 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                 }}
               />
             </ExportSetting>
+            <SystemPrompt>
+              {showSystemPrompt && (
+                <TextField
+                  label="System prompt"
+                  helperText="The AI autocomplete uses chat gpt to generate an export description using provided dashboard data. The system prompt provides instructions on how to intepret the data and format the output. "
+                  style={{ margin: '1rem 0' }}
+                  rows={6}
+                  multiline
+                  variant="outlined"
+                  value={systemPrompt}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setSystemPrompt(e.target.value);
+                  }}
+                />
+              )}
+              <Button onClick={toggleSystemPrompt}>AI settings</Button>
+            </SystemPrompt>
           </ExportSettingsContainer>
           {!isLoading && (
             <Preview

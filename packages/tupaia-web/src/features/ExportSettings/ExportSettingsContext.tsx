@@ -70,10 +70,6 @@ export const useExportSettings = () => {
     setExportWithTable(e.target.checked);
   };
 
-  const updateExportDescription = (e: ChangeEvent<HTMLInputElement>) => {
-    setExportDescription(e.target.value);
-  };
-
   const updateSeparatePagePerItem = (e: ChangeEvent<HTMLInputElement>) => {
     setSeparatePagePerItem(e.target.value === 'true');
   };
@@ -95,7 +91,7 @@ export const useExportSettings = () => {
     updateExportFormat,
     updateExportWithLabels,
     updateExportWithTable,
-    updateExportDescription,
+    setExportDescription,
     resetExportSettings,
     separatePagePerItem,
     updateSeparatePagePerItem,
