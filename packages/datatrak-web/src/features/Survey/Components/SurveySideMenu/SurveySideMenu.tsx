@@ -12,6 +12,8 @@ import { getSurveyScreenNumber } from '../../utils';
 import { useSurveyRouting } from '../../useSurveyRouting';
 import { SideMenuButton } from './SideMenuButton';
 import { useSurveyForm } from '../../SurveyContext';
+import { StickyMobileHeader, MobileHeaderWrapper } from '../../../../layout';
+import { SurveyDisplayName } from '../SurveyDispalyName';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
@@ -30,6 +32,12 @@ const Drawer = styled(BaseDrawer).attrs({
     border-right: none;
     height: 100%;
   }
+
+  ${MobileHeaderWrapper} {
+    padding-inline-start: 1rem;
+    min-height: 4.375rem;
+    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+  }
   ${({ theme }) => theme.breakpoints.up('md')} {
     .MuiPaper-root {
       background-color: transparent;
@@ -39,6 +47,9 @@ const Drawer = styled(BaseDrawer).attrs({
 
 const SurveyMenuContent = styled(List)`
   padding: 0 0.5rem;
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    padding: 0;
+  }
 `;
 
 const SurveyMenuItem = styled(ListItem).attrs({
@@ -75,6 +86,14 @@ const SurveyMenuItem = styled(ListItem).attrs({
       line-clamp: ${({ $isInstructionOnly }) => ($isInstructionOnly ? 1 : 2)};
       -webkit-line-clamp: ${({ $isInstructionOnly }) => ($isInstructionOnly ? 1 : 2)};
       overflow: hidden;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+    ${({ $active }) => $active && `background-color: #f4f9ff;`}
+    &:hover {
+      background-color: initial;
     }
   }
 `;
@@ -131,12 +150,13 @@ export const SurveySideMenu = () => {
 
   return (
     <>
-      {!isMobile && <SideMenuButton />}
+      <SideMenuButton />
       <Drawer
         open={sideMenuOpen}
         onClose={toggleSideMenu}
         variant={isMobile ? 'temporary' : 'persistent'}
       >
+        <StickyMobileHeader onClose={toggleSideMenu} title={<SurveyDisplayName />} />
         <Header>
           <SideMenuButton />
         </Header>

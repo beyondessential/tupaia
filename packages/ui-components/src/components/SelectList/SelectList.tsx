@@ -44,7 +44,7 @@ const Subtitle = styled(Typography)`
   font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.secondary};
   font-weight: 400;
-  margin-inline-start: 0.3rem;
+  margin: 0 0 0.5rem 0.9rem;
 `;
 
 interface SelectListProps {

@@ -10,7 +10,7 @@ import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 import { Close } from '@material-ui/icons';
 
-const Wrapper = styled.div`
+export const MobileHeaderWrapper = styled.div`
   position: sticky;
   top: 0;
   left: 0;
@@ -45,19 +45,21 @@ const ButtonContainer = styled.div`
 `;
 
 interface StickyMobileHeaderProps {
-  onBack: () => void;
   title: string | React.ReactNode;
+  onBack?: () => void;
   onClose?: () => void;
 }
 
 export const StickyMobileHeader = ({ onBack, title, onClose }: StickyMobileHeaderProps) => {
   return (
-    <Wrapper>
-      <ButtonContainer>
-        <Button onClick={onBack}>
-          <BackIcon />
-        </Button>
-      </ButtonContainer>
+    <MobileHeaderWrapper>
+      {onBack && (
+        <ButtonContainer>
+          <Button onClick={onBack}>
+            <BackIcon />
+          </Button>
+        </ButtonContainer>
+      )}
       <Title>{title}</Title>
       <ButtonContainer>
         {onClose && (
@@ -66,6 +68,6 @@ export const StickyMobileHeader = ({ onBack, title, onClose }: StickyMobileHeade
           </Button>
         )}
       </ButtonContainer>
-    </Wrapper>
+    </MobileHeaderWrapper>
   );
 };

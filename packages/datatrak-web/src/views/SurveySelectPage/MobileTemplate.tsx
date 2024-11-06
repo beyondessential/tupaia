@@ -54,7 +54,7 @@ export const MobileTemplate = ({
   });
   const navigate = useNavigate();
   const onClose = () => {
-    navigate(-1);
+    navigate('/');
   };
   const onNavigateToSurvey = survey => {
     handleSelectSurvey(selectedCountry, survey.value);

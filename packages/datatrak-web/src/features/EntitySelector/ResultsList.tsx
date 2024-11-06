@@ -21,10 +21,7 @@ const ListWrapper = styled.div`
   overflow: auto;
   margin-top: 0.9rem;
   li > div {
-    left: -0.5rem;
-  }
-  li .MuiSvgIcon-root {
-    color: ${DARK_BLUE};
+    //left: -0.5rem;
   }
 `;
 
@@ -64,7 +61,8 @@ export const ResultItem = ({ name, parentName }) => {
 const Icon = styled(RoomIcon)`
   ${({ theme }) => theme.breakpoints.down('sm')} {
     &.MuiSvgIcon-root {
-      font-size: 1.8rem !important;
+      color: ${DARK_BLUE};
+      font-size: 1.8rem;
     }
   }
 `;
@@ -101,7 +99,6 @@ export const ResultsList = ({
   showRecentEntities,
   noResultsMessage,
 }: ResultsListProps) => {
-  console.log('value', value);
   const getEntitiesList = (returnRecentEntities?: boolean) => {
     const entities = searchResults?.filter(({ isRecent }) =>
       returnRecentEntities ? isRecent : !isRecent,
