@@ -9,7 +9,7 @@ import { useParams, generatePath } from 'react-router-dom';
 import { Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { CopyIcon } from '../../../components';
-import { successToast } from '../../../utils';
+import { infoToast, useIsMobile } from '../../../utils';
 import { ROUTES } from '../../../constants';
 
 const StyledTooltip = styled(Tooltip)`
@@ -32,12 +32,27 @@ const Button = styled(IconButton)`
 
 export const useCopySurveyUrl = () => {
   const params = useParams();
+  const isMobile = useIsMobile();
   const path = generatePath(ROUTES.SURVEY, params);
   const link = `${window.location.origin}${path}`;
+
   return () => {
     try {
       navigator.clipboard.writeText(link);
-      successToast('Page URL copied to clipboard');
+      infoToast('Page URL copied to clipboard', {
+        persist: false,
+        anchorOrigin: isMobile
+          ? {
+              horizontal: 'center',
+              vertical: 'bottom',
+            }
+          : {
+              vertical: 'top',
+              horizontal: 'right',
+            },
+        TransitionProps: { appear: true },
+        hideCloseButton: true,
+      });
     } catch (err) {
       console.warn('Failed to copy page url: ', err);
     }

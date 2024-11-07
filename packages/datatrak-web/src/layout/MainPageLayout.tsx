@@ -20,6 +20,10 @@ const PageWrapper = styled.div`
 
   + .notistack-SnackbarContainer {
     top: calc(1rem + ${HEADER_HEIGHT});
+
+    ${({ theme }) => theme.breakpoints.down('md')} {
+      bottom: 3.5rem;
+    }
   }
 `;
 

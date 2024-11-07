@@ -30,6 +30,10 @@ export const theme = createMuiTheme({
       main: '#25D366',
       light: '#25D36622',
     },
+    info: {
+      main: '#004167',
+      light: '#E6ECF0',
+    },
     error: {
       main: '#F76853',
       light: '#F7685333',
