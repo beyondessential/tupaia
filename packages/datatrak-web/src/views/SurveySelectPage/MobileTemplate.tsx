@@ -19,7 +19,7 @@ const MobileContainer = styled.div`
   // parent selector - targets the parents of this container
   div:has(&) {
     padding: 0;
-    height: calc(100vh);
+    height: 100vh;
   }
 `;
 

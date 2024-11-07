@@ -21,12 +21,6 @@ const Container = styled(Paper).attrs({
     max-height: 100%;
     height: 35rem;
   }
-
-  div:has(&) {
-    padding: 0;
-    align-items: start;
-    height: calc(100vh);
-  }
 `;
 
 const LoadingContainer = styled.div`
