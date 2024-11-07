@@ -14,7 +14,6 @@ export {
   SurveySideMenu,
   useValidationResolver,
   SurveyResubmitSuccessScreen,
-  SurveyToolbar,
 } from './Survey';
 export { RequestProjectAccess } from './RequestProjectAccess';
 export { MobileAppPrompt } from './MobileAppPrompt';
