@@ -48,7 +48,7 @@ const MobileContainer = styled(Paper).attrs({
     margin-bottom: 1.5rem;
   }
   a.MuiButtonBase-root {
-    width: 90%;
+    width: 100%;
   }
 `;
 
