@@ -77,6 +77,12 @@ const IconWrapper = styled.div`
   }
 `;
 
+const CheckIcon = styled(Check)`
+  &.MuiSvgIcon-root {
+    font-size: 1.5rem;
+  }
+`;
+
 interface ListItemProps {
   item: ListItemType;
   children?: ReactNode;
@@ -132,7 +138,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
         </Wrapper>
-        {selected && <Check color="primary" fontSize="medium" />}
+        {selected && <CheckIcon color="primary" />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </li>
