@@ -37,11 +37,6 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
-
-    optimizeDeps: {
-      exclude: ['@sqlite.org/sqlite-wasm'],
-    },
-
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),

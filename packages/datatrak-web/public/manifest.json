@@ -1,19 +1,20 @@
 {
-  "name": "Tupaia",
-  "short_name": "Tupaia",
-  "theme_color": "#ffcbe4",
-  "background_color": "#fa99ca",
+  "id": "datatrak",
+  "name": "Tupaia DataTrak",
+  "short_name": "Tupaia DataTrak",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "description": "Pacific Health Information System",
+  "description": "Data collection and visualisation for the most remote settings in the world",
   "screenshots": [
     {
       "src": "screenshots/login.png",
       "sizes": "2000x1000",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Login"
+      "label": "Login screen"
     },
     {
       "src": "screenshots/dashboard.png",
@@ -27,7 +28,7 @@
       "sizes": "381x667",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Login Mobile"
+      "label": "Mobile login screen"
     }
   ],
   "icons": [
@@ -54,6 +55,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tasks",
+      "url": "/tasks"
     }
   ]
 }
