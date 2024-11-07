@@ -7,9 +7,8 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useGroupedSurveyList } from '../../features/useGroupedSurveyList';
+import { useGroupedSurveyList, MobileSelectList } from '../../features';
 import { StickyMobileHeader } from '../../layout';
-import { MobileSelectList } from '../../features/MobileSelectList';
 
 const MobileContainer = styled.div`
   max-height: 100%;
