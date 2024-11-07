@@ -4,6 +4,7 @@
  */
 
 export {
+  DesktopSurveyHeader,
   SurveyScreen,
   SurveySuccessScreen,
   SurveyReviewScreen,
