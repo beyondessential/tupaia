@@ -42,10 +42,10 @@ const MobileContainer = styled(Paper).attrs({
   padding: 0.5rem 0.5rem 0;
 
   h1.MuiTypography-root {
-    margin-bottom: 1rem;
+    margin-block-end: 1rem;
   }
   p.MuiTypography-root {
-    margin-bottom: 1.5rem;
+    margin-block-end: 1.5rem;
   }
   a.MuiButtonBase-root {
     width: 100%;
