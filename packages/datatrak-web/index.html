@@ -67,7 +67,7 @@
 
     <!-- Temporarily disable PWA on production environments -->
     <% if (process.env.REACT_APP_DEPLOYMENT_NAME !== 'master' &&
-    process.env.REACT_APP_DEPLOYMENT_NAME === 'main' && process.env.REACT_APP_DEPLOYMENT_NAME !==
+    process.env.REACT_APP_DEPLOYMENT_NAME !== 'main' && process.env.REACT_APP_DEPLOYMENT_NAME !==
     'production') { %>
       <link rel="manifest" id="manifest" href="/manifest.json"/>
     <% } %>
