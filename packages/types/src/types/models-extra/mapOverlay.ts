@@ -46,7 +46,7 @@ export type InlineValue = {
 
 type MeasureConfig = {
   /**
-   * @description How to display this series (use popup-only to just show in the popup/tooltip)
+   * @description How to display this series (popup-only is deprecated)
    */
   type: `${MeasureType}` | 'popup-only';
 
@@ -69,6 +69,16 @@ type MeasureConfig = {
    * @description Whether to include this series in the legend
    */
   hideFromLegend?: boolean;
+
+  /**
+   * @description Whether to include this series in the popup/tooltip
+   */
+  hideFromPopup?: boolean;
+
+  /**
+   * @description Whether to include this series in the table
+   */
+  hideFromTable?: boolean;
 
   /**
    * @description Display name of this series
