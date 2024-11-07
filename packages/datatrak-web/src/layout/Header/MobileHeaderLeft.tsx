@@ -30,7 +30,7 @@ const Logo = styled(IconButton)<{
   padding: 0;
 
   img {
-    max-height: 33px;
+    max-height: 2rem;
   }
 `;
 

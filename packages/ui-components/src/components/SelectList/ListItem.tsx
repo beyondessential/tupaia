@@ -37,6 +37,10 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
     }
   }
 
+  .MuiSvgIcon-root {
+    font-size: 1rem;
+  }
+
   &.Mui-disabled {
     opacity: 1; // still have the icon as the full opacity
     color: ${({ theme }) => theme.palette.text.disabled};
