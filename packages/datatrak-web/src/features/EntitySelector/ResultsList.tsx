@@ -20,8 +20,12 @@ const ListWrapper = styled.div`
   flex-direction: column;
   overflow: auto;
   margin-top: 0.9rem;
-  li > div {
-    //left: -0.5rem;
+
+  li .MuiSvgIcon-root:not(.MuiSvgIcon-colorPrimary) {
+    color: ${DARK_BLUE};
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      font-size: 1.8rem;
+    }
   }
 `;
 
@@ -57,15 +61,6 @@ export const ResultItem = ({ name, parentName }) => {
     </>
   );
 };
-
-const Icon = styled(RoomIcon)`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    &.MuiSvgIcon-root {
-      color: ${DARK_BLUE};
-      font-size: 1.8rem;
-    }
-  }
-`;
 
 type ListItemType = Record<string, unknown> & {
   children?: ListItemType[];
@@ -109,7 +104,7 @@ export const ResultsList = ({
         value: id,
         code,
         selected: id === value,
-        icon: <Icon />,
+        icon: <RoomIcon />,
         button: true,
       })) ?? []
     );
@@ -121,16 +116,21 @@ export const ResultsList = ({
     <ListWrapper>
       {recentEntities?.length > 0 && (
         <SubListWrapper>
-          <SelectList items={recentEntities} onSelect={onSelect} subTitle="Recent entities" />
+          <SelectList
+            items={recentEntities}
+            onSelect={onSelect}
+            subTitle="Recent entities"
+            variant="borderless"
+          />
         </SubListWrapper>
       )}
       <SubListWrapper>
         <SelectList
           items={displayResults}
           onSelect={onSelect}
-          variant="fullPage"
+          variant="borderless"
           noResultsMessage={noResultsMessage}
-          subTitle={!searchValue && 'All entities'}
+          subTitle={!searchValue ? 'All entities' : undefined}
         />
       </SubListWrapper>
     </ListWrapper>
