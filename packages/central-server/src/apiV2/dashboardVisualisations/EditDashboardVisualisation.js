@@ -16,6 +16,7 @@ import {
   assertBESAdminAccess,
   assertAdminPanelAccess,
   assertPermissionGroupAccess,
+  assertVizBuilderAccess,
 } from '../../permissions';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
@@ -36,8 +37,8 @@ export class EditDashboardVisualisation extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Tupaia Admin Panel or BES Admin permission to edit visualisations.',
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to edit visualisations.',
       ),
     );
   }
