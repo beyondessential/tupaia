@@ -9,6 +9,7 @@ import { CreateActionButton } from '../../editor';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { getPluralForm } from '../../pages/resources/resourceName';
+import { useUser } from '../../api/queries';
 
 const RESOURCE_NAME = { singular: 'map overlay' };
 
@@ -128,6 +129,7 @@ const extraEditFields = [
         path: '/viz-builder/map-overlay/:id',
         parameters: { id: 'id' },
       },
+      needsVizBuilderAccess: true,
       visibilityCriteria: {
         legacy: false,
       },
@@ -187,11 +189,17 @@ const IMPORT_CONFIG = {
   ),
 };
 
-const LinksComponent = () => (
-  <CreateActionButton to="/viz-builder/map-overlay/new" component={Link}>
-    Add map overlay
-  </CreateActionButton>
-);
+const LinksComponent = () => {
+  const { hasVizBuilderAccess } = useUser();
+  if (!hasVizBuilderAccess) {
+    return null;
+  }
+  return (
+    <CreateActionButton to="/viz-builder/map-overlay/new" component={Link}>
+      Add map overlay
+    </CreateActionButton>
+  );
+};
 
 export const mapOverlays = {
   resourceName: RESOURCE_NAME,

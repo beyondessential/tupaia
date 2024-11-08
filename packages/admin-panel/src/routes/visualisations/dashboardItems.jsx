@@ -6,6 +6,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CreateActionButton } from '../../editor';
+import { useUser } from '../../api/queries';
 
 const RESOURCE_NAME = { singular: 'dashboard item' };
 
@@ -52,6 +53,7 @@ const extraEditFields = [
         path: '/viz-builder/dashboard-item/:id',
         parameters: { id: 'id' },
       },
+      needsVizBuilderAccess: true,
       visibilityCriteria: {
         legacy: false,
       },
@@ -111,11 +113,18 @@ const IMPORT_CONFIG = {
   ),
 };
 
-const LinksComponent = () => (
-  <CreateActionButton to="/viz-builder/dashboard-item/new" component={Link}>
-    Add dashboard item
-  </CreateActionButton>
-);
+const LinksComponent = () => {
+  const { hasVizBuilderAccess } = useUser();
+  if (!hasVizBuilderAccess) {
+    return null;
+  }
+
+  return (
+    <CreateActionButton to="/viz-builder/dashboard-item/new" component={Link}>
+      Add dashboard item
+    </CreateActionButton>
+  );
+};
 
 export const dashboardItems = {
   resourceName: RESOURCE_NAME,
