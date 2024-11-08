@@ -14,7 +14,6 @@ import { EditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
   assertPermissionGroupAccess,
   assertVizBuilderAccess,
 } from '../../permissions';

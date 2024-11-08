@@ -9,7 +9,6 @@ import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
   assertPermissionGroupsAccess,
   assertVizBuilderAccess,
 } from '../../permissions';

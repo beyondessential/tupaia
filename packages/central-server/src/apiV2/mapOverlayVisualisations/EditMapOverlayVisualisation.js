@@ -10,8 +10,8 @@ import { EditHandler } from '../EditHandler';
 import {
   assertBESAdminAccess,
   assertAnyPermissions,
-  assertAdminPanelAccess,
   assertPermissionGroupsAccess,
+  assertVizBuilderAccess,
 } from '../../permissions';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
@@ -32,8 +32,8 @@ export class EditMapOverlayVisualisation extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Tupaia Admin Panel or BES Admin permission to create visualisations.',
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to create visualisations.',
       ),
     );
   }
@@ -89,8 +89,8 @@ export class EditMapOverlayVisualisation extends EditHandler {
   async editRecord() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Viz Builder User or BES Admin permission to create visualisations.',
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You require Viz Builder User or BES Admin permission to edit visualisations.',
       ),
     );
 
