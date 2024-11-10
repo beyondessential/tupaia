@@ -23,8 +23,10 @@ const TooltipWrapper = styled.span`
   }
   &:hover,
   &:focus {
-    svg {
-      fill: ${props => props.theme.palette.primary.main};
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      svg {
+        fill: ${props => props.theme.palette.primary.main};
+      }
     }
   }
 `;
@@ -48,7 +50,7 @@ interface TooltipIconButtonProps {
 
 export const TooltipIconButton = ({ tooltip, Icon = InfoOutlined }: TooltipIconButtonProps) => {
   return (
-    <Tooltip title={tooltip} placement="top">
+    <Tooltip title={tooltip} placement="top" enterTouchDelay={500}>
       <TooltipWrapper tabIndex={0} className="tooltip-icon">
         <Icon />
       </TooltipWrapper>
