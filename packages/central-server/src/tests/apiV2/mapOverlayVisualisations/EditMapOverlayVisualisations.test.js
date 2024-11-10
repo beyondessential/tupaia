@@ -6,7 +6,10 @@
 import { setupTest } from '@tupaia/database';
 import { expect } from 'chai';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
+} from '../../../permissions';
 import { TEST_SETUP, findTestRecordByCode } from './mapOverlayVisualisations.fixtures';
 
 describe('PUT map overlay visualisations', async () => {
@@ -17,11 +20,15 @@ describe('PUT map overlay visualisations', async () => {
   const modernReport = findTestRecordByCode('report', 'Modern_Report');
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions', 'Test Permission Group'],
+    DL: [
+      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+      VIZ_BUILDER_PERMISSION_GROUP,
+      'Test Permission Group',
+    ],
   };
 
   const unacceptedPolicy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const modernVisualisation = {
