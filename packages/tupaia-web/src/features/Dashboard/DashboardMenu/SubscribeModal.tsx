@@ -7,11 +7,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
-import { Button, Typography } from '@material-ui/core';
-import { SpinningLoader } from '@tupaia/ui-components';
-import { useDashboards, useUser } from '../../../api/queries';
-import { Modal, Form, TextField, Title, ModalParagraph } from '../../../components';
-import { FORM_FIELD_VALIDATION, MOBILE_BREAKPOINT } from '../../../constants';
+import { DialogActions, Typography } from '@material-ui/core';
+import { SpinningLoader, Button as UIButton } from '@tupaia/ui-components';
+import { useUser } from '../../../api/queries';
+import { Modal, Form, TextField, ModalParagraph } from '../../../components';
+import { FORM_FIELD_VALIDATION } from '../../../constants';
 import { useSubscribeDashboard, useUnsubscribeDashboard } from '../../../api/mutations';
 import { useDashboardMailingList, useDashboard } from '../utils';
 import {
@@ -21,60 +21,23 @@ import {
   MODAL_UNSUBSCRIBE_TITLE,
 } from './constants';
 
-const Wrapper = styled.div`
-  width: 45rem;
+const ModalBody = styled.div`
+  width: 42rem;
   max-width: 100%;
-  padding: 2.5rem 1.875rem 0rem 1.875rem;
-  display: flex;
-  justify-content: center;
+  padding: 3rem 1.5rem 0.5rem;
+  text-align: left;
 `;
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-basis: 83.3333%;
-  button {
-    text-transform: none;
-    padding: 0.5em 1.75em;
-    font-size: 1rem;
-  }
-  .loading-screen {
-    background-color: ${props => props.theme.palette.background.default};
-    border: 0;
-    button {
-      padding: 0.5em 1.75em;
-      font-size: 1rem;
-    }
-  }
-`;
-
-export const ErrorMessageText = styled(Typography)`
-  font-size: 0.9rem;
-  line-height: 1.3;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-`;
-
-const ButtonGroup = styled.div`
-  padding-top: 2.5rem;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const SubscribeButton = styled(Button)`
-  margin-left: 1.2rem;
+const Button = styled(UIButton)`
+  text-transform: none;
+  font-size: 0.875rem;
+  padding: 0.3rem 1rem;
 `;
 
 const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
-  width: 50%;
-  margin: auto;
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    width: 100%;
-  }
-
+  width: 21rem;
+  max-width: 100%;
+  margin: 0 auto 2rem;
   ${({ $disabled, theme }) =>
     $disabled
       ? `
@@ -90,30 +53,32 @@ const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
       : ''};
 `;
 
+export const ErrorMessageText = styled(Typography)`
+  font-size: 0.9rem;
+  line-height: 1.3;
+  margin-top: 1rem;
+`;
+
 export const SubscribeModal = () => {
   const { activeDashboard, subscribeModalOpen, toggleSubscribeModal } = useDashboard();
   const { entityCode, projectCode } = useParams();
-  const { refetch: refetchDashboards } = useDashboards(projectCode, entityCode);
-  const { data: user, isLoggedIn, isLoading } = useUser();
+  const { data: user, isLoggedIn, isSuccess } = useUser();
   const mailingList = useDashboardMailingList();
   const isSubscribed = mailingList ? mailingList.isSubscribed : false;
   const defaultEmail = isLoggedIn ? user.email : '';
   const formContext = useForm({
     mode: 'onChange',
-    defaultValues: {
-      email: defaultEmail,
-    },
   });
-  const {
-    mutateAsync: subscribe,
-    error: subscribeError,
-    reset: resetSubscribe,
-  } = useSubscribeDashboard(projectCode, entityCode, activeDashboard?.code);
-  const {
-    mutateAsync: unsubscribe,
-    error: unsubscribeError,
-    reset: resetUnsubscribe,
-  } = useUnsubscribeDashboard(projectCode, entityCode, activeDashboard?.code);
+  const { mutateAsync: subscribe, error: subscribeError } = useSubscribeDashboard(
+    projectCode,
+    entityCode,
+    activeDashboard?.code,
+  );
+  const { mutateAsync: unsubscribe, error: unsubscribeError } = useUnsubscribeDashboard(
+    projectCode,
+    entityCode,
+    activeDashboard?.code,
+  );
 
   const handleSubmit = async data => {
     if (isSubscribed) {
@@ -121,67 +86,65 @@ export const SubscribeModal = () => {
     } else {
       await subscribe(data);
     }
-    refetchDashboards();
-    toggleSubscribeModal();
-  };
-
-  const handleClose = () => {
-    if (isSubscribed) {
-      resetUnsubscribe();
-    } else {
-      resetSubscribe();
-    }
     toggleSubscribeModal();
   };
 
   const isMutateError = !!subscribeError || !!unsubscribeError;
 
+  let ModalContent = <SpinningLoader m={5} />;
+
+  if (isSuccess) {
+    ModalContent = (
+      <Form formContext={formContext} onSubmit={handleSubmit}>
+        <ModalParagraph>
+          {isSubscribed ? MODAL_UNSUBSCRIBE_TEXT : MODAL_SUBSCRIBE_TEXT}
+        </ModalParagraph>
+        <EmailInput
+          defaultValue={defaultEmail}
+          name="email"
+          label="Email"
+          required
+          type="email"
+          options={{ ...FORM_FIELD_VALIDATION.EMAIL }}
+          inputProps={{ readOnly: isLoggedIn }}
+          $disabled={isLoggedIn}
+        />
+      </Form>
+    );
+  }
+
+  if (isMutateError) {
+    ModalContent = (
+      <ErrorMessageText color="error">
+        {isSubscribed ? unsubscribeError?.message : subscribeError?.message}
+      </ErrorMessageText>
+    );
+  }
+
+  if (!activeDashboard && mailingList) {
+    ModalContent = (
+      <Typography color="error" gutterBottom>
+        Something went wrong.
+      </Typography>
+    );
+  }
+
   return (
-    <Modal isOpen={subscribeModalOpen} onClose={handleClose}>
-      <Wrapper>
-        {activeDashboard && mailingList ? (
-          <Container>
-            <Form formContext={formContext} onSubmit={handleSubmit}>
-              <Title align="left" variant="h5">
-                {isSubscribed ? MODAL_UNSUBSCRIBE_TITLE : MODAL_SUBSCRIBE_TITLE}
-              </Title>
-              <ModalParagraph align="left" gutterBottom>
-                {isSubscribed ? MODAL_UNSUBSCRIBE_TEXT : MODAL_SUBSCRIBE_TEXT}
-              </ModalParagraph>
-              {isLoading && <SpinningLoader mt={5} />}
-              <EmailInput
-                name="email"
-                label="Email"
-                required
-                defaultValue={defaultEmail}
-                type="email"
-                options={{ ...FORM_FIELD_VALIDATION.EMAIL }}
-                inputProps={{ readOnly: isLoggedIn }}
-                $disabled={isLoggedIn}
-              />
-              {isMutateError && (
-                <ErrorMessageText color="error">
-                  {isSubscribed ? unsubscribeError?.message : subscribeError?.message}
-                </ErrorMessageText>
-              )}
-              <ButtonGroup>
-                <Button variant="outlined" color="default" onClick={handleClose}>
-                  Cancel
-                </Button>
-                <SubscribeButton type="submit" variant="contained" color="primary">
-                  {isSubscribed ? 'Remove' : 'Subscribe'}
-                </SubscribeButton>
-              </ButtonGroup>
-            </Form>
-          </Container>
-        ) : (
-          <Container>
-            <Typography color="error" gutterBottom>
-              Something went wrong.
-            </Typography>
-          </Container>
-        )}
-      </Wrapper>
+    <Modal isOpen={subscribeModalOpen} onClose={toggleSubscribeModal}>
+      <ModalBody>
+        <Typography variant="h1">
+          {isSubscribed ? MODAL_UNSUBSCRIBE_TITLE : MODAL_SUBSCRIBE_TITLE}
+        </Typography>
+        {ModalContent}
+        <DialogActions>
+          <Button onClick={toggleSubscribeModal} variant="text" color="default">
+            Cancel
+          </Button>
+          <Button type="submit" variant="contained" color="primary">
+            {isSubscribed ? 'Remove' : 'Join'}
+          </Button>
+        </DialogActions>
+      </ModalBody>
     </Modal>
   );
 };
