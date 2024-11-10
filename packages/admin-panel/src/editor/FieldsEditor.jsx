@@ -69,6 +69,7 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
     return allFields.filter(({ show = true, editConfig = {} }) => {
       const { visibilityCriteria, needsVizBuilderAccess } = editConfig;
 
+      // hide the field (edit visual button) if the user does not have Viz Builder access
       if (needsVizBuilderAccess && !hasVizBuilderAccess) {
         return false;
       }
