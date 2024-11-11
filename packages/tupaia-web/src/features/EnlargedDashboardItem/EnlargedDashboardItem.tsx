@@ -167,7 +167,11 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
         </FullScreenButton>
         <ContentWrapper>
           <ExportDashboardItem entityName={entityName} />
-          <EnlargedDashboardVisual entityName={entityName} isFullScreen={isFullScreen} />
+          <EnlargedDashboardVisual
+            entityName={entityName}
+            isFullScreen={isFullScreen}
+            key={isFullScreen ? 'full-screen' : 'normal'}
+          />
         </ContentWrapper>
       </ExportDashboardItemContextProvider>
     </StyledModal>
