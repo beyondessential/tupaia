@@ -60,7 +60,7 @@ const MobileTemplate = () => {
       <MobileContainer>
         <Typography variant="h1">Reports not available on mobile</Typography>
         <Typography>
-          The reports feature is only available on desktop. Please visit Tupaia Datatrak on desktop
+          The reports feature is only available on desktop. Please visit Tupaia DataTrak on desktop
           to proceed.
         </Typography>
         <Button to="/">Close</Button>
