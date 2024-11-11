@@ -143,7 +143,7 @@ const ContentWrapper = styled.div<{
     $isExporting ? 'auto' : '15rem'}; // to stop charts from shrinking to nothing at mobile size
   min-height: ${({ $isEnlarged, $isExporting, $isFullScreen }) => {
     if ($isExporting) return '5rem'; // mainly for the 'no data' message
-    if ($isFullScreen) return 'calc(100vh - 12rem)'; // 10rem is the height of the header
+    if ($isFullScreen) return 'calc(100vh - 14rem)'; // the height of the header
     if ($isEnlarged) return '24rem';
     return 0; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
   }};

@@ -57,7 +57,13 @@ const Wrapper = styled.div<{
 `;
 
 // needs to be separate from EnlargedDashboardItem to allow use of hook inside ExportDashboardItemContextProvider
-const ContentWrapper = ({ children }: { children: React.ReactNode }) => {
+const ContentWrapper = ({
+  children,
+  isFullScreen,
+}: {
+  children: React.ReactNode;
+  isFullScreen: boolean;
+}) => {
   const { isExportMode } = useContext(ExportDashboardItemContext);
 
   const { currentDashboardItem, reportData } = useEnlargedDashboardItem();
@@ -86,7 +92,7 @@ const ContentWrapper = ({ children }: { children: React.ReactNode }) => {
   const hasBigData = getHasBigData();
 
   return (
-    <Wrapper $isExpanding={isExpandingSize} $hasBigData={hasBigData}>
+    <Wrapper $isExpanding={isExpandingSize} $hasBigData={hasBigData || isFullScreen}>
       {children}
     </Wrapper>
   );
@@ -165,7 +171,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
         <FullScreenButton onClick={toggleFullScreen}>
           <ExpandIcon />
         </FullScreenButton>
-        <ContentWrapper>
+        <ContentWrapper isFullScreen={isFullScreen}>
           <ExportDashboardItem entityName={entityName} />
           <EnlargedDashboardVisual
             entityName={entityName}
