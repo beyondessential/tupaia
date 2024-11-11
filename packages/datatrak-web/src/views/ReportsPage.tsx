@@ -20,8 +20,8 @@ const Wrapper = styled.div`
 const Container = styled(Paper).attrs({
   elevation: 0,
 })`
-  width: 100%;
-  max-width: 38rem;
+  inline-size: 100%;
+  max-inline-size: 38rem;
   border-radius: 0.625rem;
   padding: 1.81rem 3.12rem;
 `;
