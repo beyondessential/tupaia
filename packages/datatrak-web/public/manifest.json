@@ -59,8 +59,8 @@
   ],
   "shortcuts": [
     {
-      "name": "Datatrak Tasks",
-      "description": "Tupaia Datatrak tasks",
+      "name": "DataTrak Tasks",
+      "description": "Tupaia DataTrak tasks",
       "url": "/tasks",
       "icons":[
         {
