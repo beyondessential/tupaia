@@ -38,18 +38,13 @@ const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
   max-width: 100%;
   margin: 0 auto 2rem;
   ${({ $disabled, theme }) =>
-    $disabled
-      ? `
-
-      .MuiInput-input {
-        color: ${theme.palette.text.secondary}; 
-      }
-        
-      .MuiInput-underline:before { border-bottom: 1px outset rgba(255, 255, 255, 0.7); transition: none;  }
-      .MuiInput-underline:hover:before { border-bottom: 1px outset rgba(255, 255, 255, 0.7); }
-      .MuiInput-underline:after { border-bottom-style: none; }  
-      `
-      : ''};
+    $disabled &&
+    `.MuiInput-input {
+    color: ${theme.palette.text.secondary};
+  }
+  .MuiInput-root:before,.MuiInput-root:hover:before, .MuiInput-root:after {
+    border-bottom: 1px solid ${theme.palette.divider};
+  }`}
 `;
 
 export const SubscribeModal = () => {
@@ -57,7 +52,7 @@ export const SubscribeModal = () => {
   const { activeDashboard, subscribeModalOpen, toggleSubscribeModal } = useDashboard();
   const queryClient = useQueryClient();
   const { entityCode, projectCode } = useParams();
-  const { data: user, isLoggedIn, isSuccess } = useUser();
+  const { data: user, isLoggedIn, isLoading } = useUser();
   const mailingList = useDashboardMailingList();
   const isSubscribed = mailingList ? mailingList.isSubscribed : false;
   const defaultEmail = isLoggedIn ? user.email : '';
@@ -87,12 +82,24 @@ export const SubscribeModal = () => {
     queryClient.invalidateQueries(['dashboards']);
   };
 
-  const isMutateError = !!subscribeError || !!unsubscribeError;
+  const getModalContent = () => {
+    if (isLoading) {
+      return <SpinningLoader m={5} />;
+    }
 
-  let ModalContent = <SpinningLoader m={5} />;
+    if (!activeDashboard && mailingList) {
+      return <Typography color="error">Something went wrong</Typography>;
+    }
 
-  if (isSuccess) {
-    ModalContent = (
+    if (!!subscribeError || !!unsubscribeError) {
+      return (
+        <Typography color="error">
+          {isSubscribed ? unsubscribeError?.message : subscribeError?.message}
+        </Typography>
+      );
+    }
+
+    return (
       <>
         <ModalParagraph>
           {isSubscribed
@@ -111,19 +118,7 @@ export const SubscribeModal = () => {
         />
       </>
     );
-  }
-
-  if (isMutateError) {
-    ModalContent = (
-      <Typography color="error">
-        {isSubscribed ? unsubscribeError?.message : subscribeError?.message}
-      </Typography>
-    );
-  }
-
-  if (!activeDashboard && mailingList) {
-    ModalContent = <Typography color="error">Something went wrong</Typography>;
-  }
+  };
 
   return (
     <Modal isOpen={subscribeModalOpen} onClose={toggleSubscribeModal}>
@@ -133,7 +128,7 @@ export const SubscribeModal = () => {
             ? "You're subscribed! Would you like to unsubscribe from the dashboard mailing list?"
             : 'Subscribe to dashboard mailing group'}
         </Typography>
-        {ModalContent}
+        {getModalContent()}
         <DialogActions>
           <Button onClick={toggleSubscribeModal} variant="text" color="default">
             Cancel
