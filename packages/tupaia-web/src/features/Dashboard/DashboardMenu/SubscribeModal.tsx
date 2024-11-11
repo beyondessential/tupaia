@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useParams } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -20,11 +20,12 @@ const ModalForm = styled(Form)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 42rem;
-  max-width: 100%;
-  min-height: 18rem;
-  padding: 3rem 1.5rem 0.5rem;
-  text-align: left;
+  inline-size: 42rem;
+  max-inline-size: 100%;
+  min-block-size: 18rem;
+  padding-block: 3rem 0.5rem;
+  padding-inline: 1.5rem;
+  text-align: start;
 `;
 
 const Button = styled(UIButton)`
@@ -39,12 +40,16 @@ const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
   margin: 0 auto 2rem;
   ${({ $disabled, theme }) =>
     $disabled &&
-    `.MuiInput-input {
-    color: ${theme.palette.text.secondary};
-  }
-  .MuiInput-root:before,.MuiInput-root:hover:before, .MuiInput-root:after {
-    border-bottom: 1px solid ${theme.palette.divider};
-  }`}
+    css`
+      .MuiInput-input {
+        color: ${theme.palette.text.secondary};
+      }
+      .MuiInput-root:before,
+      .MuiInput-root:hover:before,
+      .MuiInput-root:after {
+        border-bottom: 1px solid ${theme.palette.divider};
+      }
+    `}
 `;
 
 export const SubscribeModal = () => {
@@ -91,7 +96,7 @@ export const SubscribeModal = () => {
       return <Typography color="error">Something went wrong</Typography>;
     }
 
-    if (!!subscribeError || !!unsubscribeError) {
+    if (subscribeError || unsubscribeError) {
       return (
         <Typography color="error">
           {isSubscribed ? unsubscribeError?.message : subscribeError?.message}
@@ -104,7 +109,7 @@ export const SubscribeModal = () => {
         <ModalParagraph>
           {isSubscribed
             ? 'You have already joined this dashboards mailing list. If you would like to remove yourself from dashboard updates, please confirm your email below and click ‘Remove’.'
-            : 'By entering your email address you will receive an email export of this dashboard from the admin. This export will include a PDF report with the details of this dashboard. This will allow you to be notified via email when import things are happening!'}
+            : 'By entering your email address you will receive an email export of this dashboard from the admin. This export will include a PDF report with the details of this dashboard. This will allow you to be notified via email when important things are happening!'}
         </ModalParagraph>
         <EmailInput
           defaultValue={defaultEmail}
@@ -125,7 +130,7 @@ export const SubscribeModal = () => {
       <ModalForm formContext={formContext} onSubmit={handleSubmit}>
         <Typography variant="h1">
           {isSubscribed
-            ? "You're subscribed! Would you like to unsubscribe from the dashboard mailing list?"
+            ? 'You’re subscribed! Would you like to unsubscribe from the dashboard mailing list?'
             : 'Subscribe to dashboard mailing group'}
         </Typography>
         {getModalContent()}
