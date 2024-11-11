@@ -3,9 +3,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { DialogActions, Typography } from '@material-ui/core';
 import { SpinningLoader, Button as UIButton } from '@tupaia/ui-components';
@@ -14,16 +15,14 @@ import { Modal, Form, TextField, ModalParagraph } from '../../../components';
 import { FORM_FIELD_VALIDATION } from '../../../constants';
 import { useSubscribeDashboard, useUnsubscribeDashboard } from '../../../api/mutations';
 import { useDashboardMailingList, useDashboard } from '../utils';
-import {
-  MODAL_SUBSCRIBE_TEXT,
-  MODAL_SUBSCRIBE_TITLE,
-  MODAL_UNSUBSCRIBE_TEXT,
-  MODAL_UNSUBSCRIBE_TITLE,
-} from './constants';
 
-const ModalBody = styled.div`
+const ModalForm = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 42rem;
   max-width: 100%;
+  min-height: 18rem;
   padding: 3rem 1.5rem 0.5rem;
   text-align: left;
 `;
@@ -31,7 +30,7 @@ const ModalBody = styled.div`
 const Button = styled(UIButton)`
   text-transform: none;
   font-size: 0.875rem;
-  padding: 0.3rem 1rem;
+  padding: 0.3rem 1.1rem;
 `;
 
 const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
@@ -53,14 +52,10 @@ const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
       : ''};
 `;
 
-export const ErrorMessageText = styled(Typography)`
-  font-size: 0.9rem;
-  line-height: 1.3;
-  margin-top: 1rem;
-`;
-
 export const SubscribeModal = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { activeDashboard, subscribeModalOpen, toggleSubscribeModal } = useDashboard();
+  const queryClient = useQueryClient();
   const { entityCode, projectCode } = useParams();
   const { data: user, isLoggedIn, isSuccess } = useUser();
   const mailingList = useDashboardMailingList();
@@ -81,12 +76,15 @@ export const SubscribeModal = () => {
   );
 
   const handleSubmit = async data => {
+    setIsSubmitting(true);
     if (isSubscribed) {
       await unsubscribe(data);
     } else {
       await subscribe(data);
     }
+    setIsSubmitting(false);
     toggleSubscribeModal();
+    queryClient.invalidateQueries(['dashboards']);
   };
 
   const isMutateError = !!subscribeError || !!unsubscribeError;
@@ -95,9 +93,11 @@ export const SubscribeModal = () => {
 
   if (isSuccess) {
     ModalContent = (
-      <Form formContext={formContext} onSubmit={handleSubmit}>
+      <>
         <ModalParagraph>
-          {isSubscribed ? MODAL_UNSUBSCRIBE_TEXT : MODAL_SUBSCRIBE_TEXT}
+          {isSubscribed
+            ? 'You have already joined this dashboards mailing list. If you would like to remove yourself from dashboard updates, please confirm your email below and click ‘Remove’.'
+            : 'By entering your email address you will receive an email export of this dashboard from the admin. This export will include a PDF report with the details of this dashboard. This will allow you to be notified via email when import things are happening!'}
         </ModalParagraph>
         <EmailInput
           defaultValue={defaultEmail}
@@ -109,42 +109,40 @@ export const SubscribeModal = () => {
           inputProps={{ readOnly: isLoggedIn }}
           $disabled={isLoggedIn}
         />
-      </Form>
+      </>
     );
   }
 
   if (isMutateError) {
     ModalContent = (
-      <ErrorMessageText color="error">
+      <Typography color="error">
         {isSubscribed ? unsubscribeError?.message : subscribeError?.message}
-      </ErrorMessageText>
-    );
-  }
-
-  if (!activeDashboard && mailingList) {
-    ModalContent = (
-      <Typography color="error" gutterBottom>
-        Something went wrong.
       </Typography>
     );
   }
 
+  if (!activeDashboard && mailingList) {
+    ModalContent = <Typography color="error">Something went wrong</Typography>;
+  }
+
   return (
     <Modal isOpen={subscribeModalOpen} onClose={toggleSubscribeModal}>
-      <ModalBody>
+      <ModalForm formContext={formContext} onSubmit={handleSubmit}>
         <Typography variant="h1">
-          {isSubscribed ? MODAL_UNSUBSCRIBE_TITLE : MODAL_SUBSCRIBE_TITLE}
+          {isSubscribed
+            ? "You're subscribed! Would you like to unsubscribe from the dashboard mailing list?"
+            : 'Subscribe to dashboard mailing group'}
         </Typography>
         {ModalContent}
         <DialogActions>
           <Button onClick={toggleSubscribeModal} variant="text" color="default">
             Cancel
           </Button>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary" isLoading={isSubmitting}>
             {isSubscribed ? 'Remove' : 'Join'}
           </Button>
         </DialogActions>
-      </ModalBody>
+      </ModalForm>
     </Modal>
   );
 };
