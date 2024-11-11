@@ -3,10 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { BaseReport, ChartPresentationOptions } from '@tupaia/types';
+import { IconButton } from '@tupaia/ui-components';
+import ExpandIcon from '@material-ui/icons/OpenWith';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
 import { Entity } from '../../types';
@@ -90,10 +92,24 @@ const ContentWrapper = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+const FullScreenButton = styled(IconButton).attrs({
+  color: 'default',
+})`
+  position: absolute;
+  top: 0.2rem;
+  right: 5rem;
+  z-index: 1;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
+`;
+
 /**
  * EnlargedDashboardItem is the dashboard item modal. It is visible when there is a reportCode in the URL which is valid, and the dashboard item is loaded.
  */
 export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['name'] }) => {
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const { reportCode, currentDashboardItem, isLoadingDashboards } = useEnlargedDashboardItem();
 
@@ -128,10 +144,15 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_PERIOD);
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
     setUrlSearchParams(urlSearchParams);
+    setIsFullScreen(false);
+  };
+
+  const toggleFullScreen = () => {
+    setIsFullScreen(prevState => !prevState);
   };
 
   return (
-    <StyledModal isOpen onClose={handleCloseModal}>
+    <StyledModal isOpen onClose={handleCloseModal} fullScreen={isFullScreen}>
       <ExportDashboardItemContextProvider
         defaultSettings={{
           exportWithLabels,
@@ -141,9 +162,12 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
         }}
       >
         <ExportButton />
+        <FullScreenButton onClick={toggleFullScreen}>
+          <ExpandIcon />
+        </FullScreenButton>
         <ContentWrapper>
           <ExportDashboardItem entityName={entityName} />
-          <EnlargedDashboardVisual entityName={entityName} />
+          <EnlargedDashboardVisual entityName={entityName} isFullScreen={isFullScreen} />
         </ContentWrapper>
       </ExportDashboardItemContextProvider>
     </StyledModal>

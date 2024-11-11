@@ -73,6 +73,7 @@ const ExportDate = styled(Typography)`
 interface EnlargedDashboardVisualProps {
   entityName?: Entity['name'];
   isPreview?: boolean;
+  isFullScreen?: boolean;
 }
 
 /*
@@ -81,6 +82,7 @@ interface EnlargedDashboardVisualProps {
 export const EnlargedDashboardVisual = ({
   entityName,
   isPreview,
+  isFullScreen,
 }: EnlargedDashboardVisualProps) => {
   const { exportWithLabels, exportWithTable } = useExportSettings();
   const { isExportMode } = useContext(ExportDashboardItemContext);
@@ -182,6 +184,7 @@ export const EnlargedDashboardVisual = ({
             reportCode: currentDashboardItem?.reportCode,
             config: mergedConfig,
             isEnabled: true,
+            isFullScreen,
           }}
         >
           <DashboardItemContent />

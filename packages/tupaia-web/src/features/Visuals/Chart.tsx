@@ -135,16 +135,19 @@ const TabButton = styled(Tab)`
 const ContentWrapper = styled.div<{
   $isEnlarged?: boolean;
   $isExporting?: boolean;
+  $isFullScreen?: boolean;
 }>`
   pointer-events: ${({ $isExporting }) => ($isExporting ? 'none' : 'initial')};
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
   height: ${({ $isExporting }) =>
     $isExporting ? 'auto' : '15rem'}; // to stop charts from shrinking to nothing at mobile size
-  min-height: ${({ $isEnlarged, $isExporting }) => {
+  min-height: ${({ $isEnlarged, $isExporting, $isFullScreen }) => {
     if ($isExporting) return '5rem'; // mainly for the 'no data' message
+    if ($isFullScreen) return 'calc(100vh - 12rem)'; // 10rem is the height of the header
     if ($isEnlarged) return '24rem';
     return 0; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
   }};
+
   ${A4Page} & {
     padding: 0;
     height: auto;
@@ -193,7 +196,7 @@ const EXPORT_DISPLAY_TYPE_VIEWS: View[] = [
 
 export const Chart = () => {
   const [displayType, setDisplayType] = useState(DISPLAY_TYPE_VIEWS[0].value);
-  const { report, config, isEnlarged, isExport } = useContext(DashboardItemContext);
+  const { report, config, isEnlarged, isExport, isFullScreen } = useContext(DashboardItemContext);
   const handleChangeDisplayType = (_event: ChangeEvent<{}>, value: 'chart' | 'table') => {
     setDisplayType(value);
   };
@@ -244,6 +247,7 @@ export const Chart = () => {
               as={shouldUseTabs ? TabPanel : 'div'}
               $isEnlarged={isEnlarged}
               $isExporting={isExport}
+              $isFullScreen={isFullScreen}
             >
               <Component
                 report={report}

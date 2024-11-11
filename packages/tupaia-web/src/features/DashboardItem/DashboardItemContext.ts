@@ -15,6 +15,7 @@ type DashboardItemState = {
   error?: UseQueryResult['error'] | null;
   refetch?: UseQueryResult['refetch'];
   isEnlarged?: boolean;
+  isFullScreen?: boolean;
   isExport?: boolean;
   reportCode?: DashboardItem['reportCode'];
   isEnabled?: boolean;
@@ -26,6 +27,7 @@ const defaultContext = {
   error: null,
   refetch: () => {},
   isEnabled: true,
+  isFullScreen: false,
 } as DashboardItemState;
 
 export const DashboardItemContext = createContext(defaultContext);

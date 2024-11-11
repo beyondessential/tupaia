@@ -12,6 +12,7 @@ interface ModalProps {
   onClose: () => void;
   isOpen: boolean;
   className?: string;
+  fullScreen?: boolean;
 }
 
 const CloseButton = styled(IconButton)`
@@ -40,17 +41,17 @@ const Paper = styled(MuiPaper)`
   transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 `;
 
-export const Modal = ({ children, isOpen, onClose, className }: ModalProps) => {
+export const Modal = ({ children, isOpen, onClose, className, fullScreen = false }: ModalProps) => {
   // make the modal full screen at small screen sizes
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // keep the className to modify any modal
   return (
     <Dialog
       open={isOpen}
       onClose={onClose}
       PaperComponent={Paper}
-      fullScreen={fullScreen}
+      fullScreen={fullScreen || isMobile}
       className={className}
       disablePortal
     >
