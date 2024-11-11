@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 1.5rem;
+  padding-block-start: 1.5rem;
 `;
 
 const Container = styled(Paper).attrs({
