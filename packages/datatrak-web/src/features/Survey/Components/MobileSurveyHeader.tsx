@@ -7,7 +7,7 @@ import { useOutletContext, useParams } from 'react-router-dom';
 import { TopProgressBar } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { StickyMobileHeader } from '../../../layout';
-import { SurveyDisplayName } from './SurveyDispalyName';
+import { SurveyDisplayName } from './SurveyDisplayName';
 
 type SurveyLayoutContextT = {
   isLoading: boolean;

@@ -2,10 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { useParams } from 'react-router-dom';
-import { useEntityByCode, useSurvey } from '../../../api';
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { useEntityByCode, useSurvey } from '../../../api';
 
 const CountryName = styled.span`
   padding-left: 0.3rem;
@@ -19,7 +19,7 @@ export const SurveyDisplayName = () => {
   const { data: survey } = useSurvey(surveyCode);
   const { data: country } = useEntityByCode(countryCode!);
 
-  if (!survey?.name) return <></>;
+  if (!survey?.name) return null;
 
   const surveyName =
     survey.name.length > maxSurveyNameLength

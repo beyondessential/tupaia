@@ -19,9 +19,12 @@ export const errorToast = (message: string) => {
   });
 };
 
-type Options = OptionsObject & { Icon?: OptionsObject['Icon']; hideCloseButton?: boolean };
+interface ToastOptions extends OptionsObject {
+  Icon?: OptionsObject['Icon'];
+  hideCloseButton?: boolean;
+}
 
-export const infoToast = (message: string, options?: Options) => {
+export const infoToast = (message: string, options?: ToastOptions) => {
   enqueueSnackbar(message, {
     variant: 'info',
     autoHideDuration: 2000,

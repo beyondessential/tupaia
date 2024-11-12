@@ -24,7 +24,7 @@ export const theme = createMuiTheme({
     text: {
       primary: '#2E2F33', // dark text color
       secondary: '#898989', // light grey text color
-      hint: '#B8B8B8', // light grey text color
+      hint: '#B8B8B8',
     },
     success: {
       main: '#25D366',

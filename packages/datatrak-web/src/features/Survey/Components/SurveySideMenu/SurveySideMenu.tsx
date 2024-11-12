@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { To, Link as RouterLink } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
@@ -13,7 +13,7 @@ import { useSurveyRouting } from '../../useSurveyRouting';
 import { SideMenuButton } from './SideMenuButton';
 import { useSurveyForm } from '../../SurveyContext';
 import { StickyMobileHeader, MobileHeaderWrapper } from '../../../../layout';
-import { SurveyDisplayName } from '../SurveyDispalyName';
+import { SurveyDisplayName } from '../SurveyDisplayName';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
@@ -91,7 +91,11 @@ const SurveyMenuItem = styled(ListItem).attrs({
 
   ${({ theme }) => theme.breakpoints.down('md')} {
     border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-    ${({ $active }) => $active && `background-color: #f4f9ff;`}
+    ${({ $active }) =>
+      $active &&
+      css`
+        background-color: #f4f9ff;
+      `}
     &:hover {
       background-color: initial;
     }

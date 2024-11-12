@@ -7,10 +7,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { KeyboardArrowRight, FormatListBulleted } from '@material-ui/icons';
 import { IconButton as MuiIconButton } from '@material-ui/core';
+import { generatePath, useParams } from 'react-router-dom';
 import { useSurveyForm } from '../SurveyContext';
 import { Button as UIButton, CopyIcon, ShareIcon } from '../../../components';
 import { useCopySurveyUrl } from './CopySurveyUrlButton';
-import { generatePath, useParams } from 'react-router-dom';
 import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api';
 
@@ -62,7 +62,14 @@ const useShare = () => {
 
 export const MobileSurveyMenu = () => {
   const { toggleSideMenu, isLast, isReviewScreen, isResubmitReviewScreen } = useSurveyForm();
-  const copyPageUrl = useCopySurveyUrl();
+  const copyPageUrl = useCopySurveyUrl({
+    toastOptions: {
+      anchorOrigin: {
+        horizontal: 'center',
+        vertical: 'bottom',
+      },
+    },
+  });
   const share = useShare();
 
   const getNextButtonText = () => {
