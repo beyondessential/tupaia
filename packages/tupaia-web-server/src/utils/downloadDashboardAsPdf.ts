@@ -18,6 +18,7 @@ export const downloadDashboardAsPdf = (
   settings: TupaiaWebExportDashboardRequest.ReqBody['settings'] = {
     exportWithLabels: false,
     exportWithTable: false,
+    exportDescription: null,
     separatePagePerItem: true,
   },
 ) => {
