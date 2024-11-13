@@ -1,12 +1,12 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FormLabel, FormLabelProps, Typography } from '@material-ui/core';
-import { ListItemType } from './ListItem';
+import { FormLabel, Typography, FormLabelProps } from '@material-ui/core';
+import { ListItemType } from './types';
 import { List } from './List';
 
 const Wrapper = styled.div`
@@ -51,9 +51,10 @@ const Label = styled(FormLabel)<{
 }>`
   margin-bottom: 1rem;
   font-size: 0.875rem;
-  font-weight: 400;
   color: ${({ theme, color }) => theme.palette.text[color!]};
+  font-weight: 400;
 `;
+
 interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
@@ -63,6 +64,7 @@ interface SelectListProps {
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
+  noResultsMessage?: string;
 }
 
 export const SelectList = ({
@@ -72,6 +74,7 @@ export const SelectList = ({
   ListItem,
   variant = 'inline',
   labelProps = {},
+  noResultsMessage = 'No items to display',
 }: SelectListProps) => {
   return (
     <Wrapper>
@@ -82,7 +85,7 @@ export const SelectList = ({
       )}
       <ListWrapper $variant={variant} className="list-wrapper">
         {items.length === 0 ? (
-          <NoResultsMessage>No items to display</NoResultsMessage>
+          <NoResultsMessage>{noResultsMessage}</NoResultsMessage>
         ) : (
           <List items={items} onSelect={onSelect} ListItem={ListItem} />
         )}

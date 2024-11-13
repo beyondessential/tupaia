@@ -140,6 +140,13 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   const isLoadingData = isLoadingCountries || isLoadingUser || isFetchingUser;
   const { mutate: createTask, isLoading: isSaving } = useCreateTask(onClose);
 
+  const handleCreateTask = data => {
+    createTask({
+      ...data,
+      country_code: selectedCountry?.code,
+    });
+  };
+
   const buttons: {
     text: string;
     onClick: () => void;
@@ -156,7 +163,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     },
     {
       text: 'Save',
-      onClick: handleSubmit(createTask),
+      onClick: handleSubmit(handleCreateTask),
       id: 'save',
       disabled: !isValid || isSaving || isLoadingData,
     },

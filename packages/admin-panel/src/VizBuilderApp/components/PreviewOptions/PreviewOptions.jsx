@@ -13,7 +13,7 @@ import { useUploadTestData } from '../../api';
 import { ProjectField } from './ProjectField';
 import { LocationField } from './LocationField';
 import { DateRangeField } from './DateRangeField';
-import { ImportModal } from '../../../importExport';
+import { ImportModal } from './ImportModal';
 
 const Container = styled(FlexSpaceBetween)`
   padding: 24px 0;
@@ -58,6 +58,7 @@ const UploadDataModal = ({ isOpen, onSubmit, onClose }) => (
     actionText="Upload"
     loadingText="Uploading"
     showLoadingContainer={false}
+    hasCustomButton={true}
   />
 );
 

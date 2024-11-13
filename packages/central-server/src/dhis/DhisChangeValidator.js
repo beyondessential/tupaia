@@ -220,15 +220,10 @@ export class DhisChangeValidator extends ChangeValidator {
     return entities.filter(e => e.allowsPushingToDhis()).map(e => e.id);
   };
 
-  // get associated answers for the survey responses that are being reinstated
+  // get associated answers for the survey responses that are being reinstated or updated
   getAnswersToUpdate = async allChanges => {
     const surveyResponseChanges = await allChanges.filter(
-      c =>
-        c.record_type === 'survey_response' &&
-        c.old_record &&
-        c.old_record.outdated === true &&
-        c.new_record &&
-        c.new_record.outdated === false,
+      c => c.record_type === 'survey_response' && c.new_record && c.new_record.outdated === false,
     );
 
     const surveyResponseIdsToUpdate = surveyResponseChanges.map(c => c.record_id);
@@ -252,9 +247,12 @@ export class DhisChangeValidator extends ChangeValidator {
     const updateChanges = this.getUpdateChanges(changes);
     const validEntityIds = await this.getValidEntityUpdates(updateChanges);
     const validAnswerIds = await this.getValidAnswerUpdates(updateChanges);
-    const validSurveyResponseIds = await this.getValidSurveyResponseUpdates(updateChanges);
+    const validSurveyResponseIds = await this.getValidSurveyResponseUpdates(updateChanges, {
+      outdated: false,
+    });
     const answersToUpdate = await this.getAnswersToUpdate(changes);
-    return [
+
+    const changesToBeMade = [
       ...this.filterChangesWithMatchingIds(changes, [
         ...validEntityIds,
         ...validAnswerIds,
@@ -263,5 +261,6 @@ export class DhisChangeValidator extends ChangeValidator {
       ]),
       ...answersToUpdate,
     ];
+    return changesToBeMade;
   };
 }

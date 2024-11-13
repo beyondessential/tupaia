@@ -17,6 +17,7 @@
   "scripts": {
     "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",
+    "build-watch": "rm -rf dist && npm run --prefix ../../ package:build:ts-watch",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "echo \"No tests specified\" && exit 0",

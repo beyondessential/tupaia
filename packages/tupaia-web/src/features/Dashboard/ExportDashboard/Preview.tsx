@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
+import { A4Page } from '@tupaia/ui-components';
 import { DashboardPDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 
@@ -46,6 +47,10 @@ const PreviewContainer = styled.div`
   min-width: 20rem;
   overflow-y: auto;
   overflow-x: hidden;
+  ${A4Page} {
+    // simulate the margins of the printed page
+    padding: 1cm 2.5cm 2cm;
+  }
 `;
 
 const PreviewTitle = styled(Typography).attrs({
@@ -57,24 +62,38 @@ const PreviewTitle = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
-export const Preview = ({ selectedDashboardItems }: { selectedDashboardItems: string[] }) => {
+export const Preview = ({
+  selectedDashboardItems,
+  separatePagePerItem,
+}: {
+  selectedDashboardItems: string[];
+  separatePagePerItem: boolean;
+}) => {
   const [page, setPage] = useState(1);
   const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
-  const visualisationToPreview = selectedDashboardItems[page - 1];
+  const visualisationToPreview = separatePagePerItem
+    ? [selectedDashboardItems[page - 1]]
+    : selectedDashboardItems;
 
   return (
     <PreviewPanelContainer>
       <PreviewHeaderContainer>
         <PreviewTitle>Preview</PreviewTitle>
-        <PreviewPagination
-          size="small"
-          siblingCount={0}
-          count={selectedDashboardItems.length}
-          onChange={onPageChange}
-        />
+        {separatePagePerItem && (
+          <PreviewPagination
+            size="small"
+            siblingCount={0}
+            count={selectedDashboardItems.length}
+            onChange={onPageChange}
+          />
+        )}
       </PreviewHeaderContainer>
       <PreviewContainer>
-        <DashboardPDFExport selectedDashboardItems={[visualisationToPreview]} isPreview={true} />
+        <DashboardPDFExport
+          selectedDashboardItems={visualisationToPreview}
+          isPreview={true}
+          pageIndex={page}
+        />
       </PreviewContainer>
     </PreviewPanelContainer>
   );

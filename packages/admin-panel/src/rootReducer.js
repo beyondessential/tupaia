@@ -11,7 +11,7 @@ import { reducer as logs } from './logsTable';
 import { reducer as dataChangeListener } from './dataChangeListener';
 import { reducer as usedBy } from './usedBy';
 import { reducer as qrCode } from './qrCode';
-import { reducer as resubmitSurveyResponse } from './surveyResponse';
+import { reducer as surveyResponse } from './surveyResponse';
 
 const appReducer = combineReducers({
   tables,
@@ -21,7 +21,7 @@ const appReducer = combineReducers({
   dataChangeListener,
   usedBy,
   qrCode,
-  resubmitSurveyResponse,
+  surveyResponse,
 });
 
 export const rootReducer = (state, action) => {

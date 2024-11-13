@@ -21,6 +21,9 @@ The [Tupaia Contributing Guidelines](/.github/CONTRIBUTING.md) and [BES Contribu
 
 It is set up using [Yarn workspaces](https://yarnpkg.com/features/workspaces), meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example, `yarn workspace @tupaia/central-server start-dev`.
 
+If you want to watch internal dependencies while running a server, run `yarn workspace @tupaia/package-name start-dev -i`. The `-i` command will listen to changes in the internal dependencies' `dist` folders and restart on changes.
+You can also run `build-watch` on these internal dependencies to watch changes and rebuild the package on change. This, combined with `-i` on the server start script will mean anytime you change something in your chosen package, the servers will restart. For example, you could run `yarn workspace @tupaia/central-server start-dev` and also `yarn workspace @tupaia/utils build-watch` which would mean the `central-server` would restart anytime you make a change in `utils`. By default, `central-server`, `datatrak-web-server`, and `tupaia-web-server` have `-i` enabled, for convenience.
+
 Use the `start-stack` command to start all servers needed to run a stack. Available for `admin-panel`, `datatrak`, `lesmis`, `psss` and `tupaia-web`. For example, `yarn start-stack tupaia-web`.
 
 > [!TIP]

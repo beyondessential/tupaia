@@ -114,6 +114,10 @@ const IMPORT_CONFIG = {
   title: `Import user ${getPluralForm(RESOURCE_NAME)}`,
   actionConfig: {
     importEndpoint: 'userPermissions',
+    accept: {
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    },
   },
 };
 

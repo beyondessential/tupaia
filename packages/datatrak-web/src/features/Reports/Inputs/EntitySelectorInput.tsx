@@ -72,7 +72,8 @@ export const EntitySelectorInput = ({ selectedEntityLevel }: EntitySelectorInput
             }
             getOptionLabel={option => option.label}
             placeholder={`Select ${label.toLowerCase()}...`}
-            onInputChange={throttle((_, newValue) => {
+            onInputChange={throttle((e, newValue) => {
+              if (!e?.target) return;
               setSearchText(newValue);
             }, 200)}
             required

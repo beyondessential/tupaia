@@ -203,7 +203,6 @@ const EditSurveyPageComponent = withConnectedEditor(
               accept={{
                 'application/vnd.ms-excel': ['.xls'],
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-                'text/csv': ['.csv'],
               }}
               fileName={initialFileName}
               label="Survey questions"

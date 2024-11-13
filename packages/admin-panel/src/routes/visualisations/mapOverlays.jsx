@@ -142,7 +142,7 @@ const COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'mapOverlayVisualisation',
-      fileName: '{code}',
+      fileName: '{code}.json',
     },
   },
   {
@@ -170,6 +170,9 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'mapOverlayVisualisations',
     multiple: true,
+    accept: {
+      'application/json': ['.json'],
+    },
   },
   getFinishedMessage: response => (
     <>

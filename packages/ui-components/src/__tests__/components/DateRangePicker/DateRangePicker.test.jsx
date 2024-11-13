@@ -97,11 +97,56 @@ describe('dateRangePicker', () => {
       }
     });
   });
-});
+  it('can display set start and end dates for year granularity when there is an offset', () => {
+    const initialEndDate = '2019-06-30';
+    const initialStartDate = '2017-07-01';
+    render(
+      <DateRangePicker
+        startDate={initialStartDate}
+        endDate={initialEndDate}
+        granularity="year"
+        dateOffset={{
+          offset: 2,
+          unit: 'quarter',
+        }}
+      />,
+    );
 
-const ControlledDateRangePicker = ({ granularity }) => {
-  const [startDate, setStartDate] = React.useState(START_DATE);
-  const [endDate, setEndDate] = React.useState(END_DATE);
+    const labelText = screen.getByLabelText('active-date');
+
+    expect(labelText).toHaveTextContent('Q3 2017 – Q2 2019');
+  });
+
+  it('can display set start and end dates for single year granularity when there is an offset and a date range delimiter', () => {
+    const initialEndDate = '2018-06-30';
+    const initialStartDate = '2017-07-01';
+    render(
+      <DateRangePicker
+        startDate={initialStartDate}
+        endDate={initialEndDate}
+        granularity="one_year_at_a_time"
+        dateOffset={{
+          offset: 2,
+          unit: 'quarter',
+        }}
+        dateRangeDelimiter="/"
+      />,
+    );
+
+    const labelText = screen.getByLabelText('active-date');
+
+    expect(labelText).toHaveTextContent('Q3 2017/Q2 2018');
+  });
+});
+// make this the same by default because this is always going to be a single date type
+const ControlledDateRangePicker = ({
+  granularity,
+  initialEndDate = END_DATE,
+  initialStartDate = END_DATE,
+  dateOffset,
+}) => {
+  const [startDate, setStartDate] = React.useState(initialStartDate);
+  const [endDate, setEndDate] = React.useState(initialEndDate);
 
   const handleUpdate = (start, end) => {
     setStartDate(start);
@@ -114,6 +159,7 @@ const ControlledDateRangePicker = ({ granularity }) => {
       endDate={endDate}
       granularity={granularity}
       onSetDates={handleUpdate}
+      dateOffset={dateOffset}
     />
   );
 };
@@ -130,10 +176,12 @@ describe('controlled dateRangePicker', () => {
 
         userEvent.click(prev);
 
-        const prevEndDate = moment(END_DATE)
-          .add(-1, value.momentShorthand)
-          .startOf(value.momentUnit)
-          .format(value.rangeFormat);
+        const prevEndDate = momentToDateDisplayString(
+          moment(END_DATE).add(-1, value.momentShorthand).endOf(value.momentUnit),
+          key,
+          value.rangeFormat,
+          value.modifier,
+        );
 
         expect(labelText).toHaveTextContent(prevEndDate);
 
@@ -148,5 +196,33 @@ describe('controlled dateRangePicker', () => {
         expect(labelText).toHaveTextContent(nextEndDate);
       });
     }
+  });
+  it('can click to increase and decrease dates for single year granularity when an offset is applied', () => {
+    const initialEndDate = '2018-06-30';
+    const initialStartDate = '2017-07-01';
+    render(
+      <ControlledDateRangePicker
+        granularity="one_year_at_a_time"
+        initialEndDate={initialEndDate}
+        initialStartDate={initialStartDate}
+        dateOffset={{
+          offset: 6,
+          unit: 'month',
+        }}
+      />,
+    );
+
+    const labelText = screen.getByLabelText('active-date');
+    const prev = screen.getByRole('button', { name: 'prev' });
+    const next = screen.getByRole('button', { name: 'next' });
+
+    userEvent.click(prev);
+
+    expect(labelText).toHaveTextContent('Jul 2016 – Jun 2017');
+
+    userEvent.click(next);
+    userEvent.click(next);
+
+    expect(labelText).toHaveTextContent('Jul 2018 – Jun 2019');
   });
 });

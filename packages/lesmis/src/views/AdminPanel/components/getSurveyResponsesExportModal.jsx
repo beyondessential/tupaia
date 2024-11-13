@@ -45,7 +45,7 @@ export const getSurveyResponsesExportModal = translate => {
         />
         <RadioGroup
           name="survey responses mode"
-          label="Mode"
+          label="Level"
           onChange={event => setMode(event.currentTarget.value)}
           options={[
             {

@@ -45,7 +45,10 @@ const FilterWrapper = styled.div`
     padding-block: 0.5rem;
   }
   .MuiInputBase-input::-webkit-input-placeholder {
-    color: ${({ theme }) => theme.palette.text.secondary};
+    color: #b8b8b8;
+  }
+  .MuiInputBase-adornedStart .MuiSvgIcon-root {
+    color: #b8b8b8;
   }
 `;
 

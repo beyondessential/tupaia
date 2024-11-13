@@ -13,6 +13,7 @@ import { ActivityFeedSection } from './ActivityFeedSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
 import { TasksSection } from './TasksSection';
 import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
+import { useCurrentUserRecentSurveys } from '../../api';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -34,7 +35,9 @@ const PageBody = styled.div`
   }
 `;
 
-const Grid = styled.div`
+const Grid = styled.div<{
+  $hasMoreThanOneSurvey: boolean;
+}>`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -74,12 +77,24 @@ const Grid = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    grid-template-rows: 10.5rem auto auto;
+    grid-template-rows: ${({ $hasMoreThanOneSurvey }) =>
+      $hasMoreThanOneSurvey ? '10.5rem auto auto' : '10.5rem 7rem auto'};
     grid-template-columns: 23% 1fr 1fr 30%;
-    grid-template-areas:
-      'surveySelect surveySelect surveySelect tasks'
-      'recentSurveys recentSurveys recentSurveys tasks'
-      'recentResponses activityFeed activityFeed leaderboard';
+    grid-template-areas: ${({ $hasMoreThanOneSurvey }) => {
+      //If there is < 2 surveys, the recentSurveys section will be smaller and the activity feed will shift upwards on larger screens
+      if ($hasMoreThanOneSurvey) {
+        return `
+          'surveySelect surveySelect surveySelect tasks'
+          'recentSurveys recentSurveys recentSurveys tasks'
+          'recentResponses activityFeed activityFeed leaderboard'
+        `;
+      }
+      return `'surveySelect surveySelect surveySelect tasks'
+        'recentSurveys activityFeed activityFeed tasks'
+        'recentResponses activityFeed activityFeed leaderboard'
+        `;
+    }};
+
     > div {
       min-height: auto;
     }
@@ -91,15 +106,15 @@ const Grid = styled.div`
 `;
 
 export const LandingPage = () => {
-  // Todo: Remove this feature flag once the feature is complete
-  const showTasks = process.env.REACT_APP_TUPAIA_TASKS !== 'false';
+  const { data: recentSurveys = [] } = useCurrentUserRecentSurveys();
+  const hasMoreThanOneSurvey = recentSurveys.length > 1;
 
   return (
     <PageContainer>
       <PageBody>
-        <Grid>
+        <Grid $hasMoreThanOneSurvey={hasMoreThanOneSurvey}>
           <SurveySelectSection />
-          {showTasks && <TasksSection />}
+          <TasksSection />
           <LeaderboardSection />
           <RecentSurveysSection />
           <SurveyResponsesSection />

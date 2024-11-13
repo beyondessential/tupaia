@@ -82,7 +82,7 @@ export const OutdatedFilter = ({ filter, onChange, column }) => {
       id={column.id}
       options={[
         { label: 'Show All', value: '' },
-        { label: 'Outdated', value: true },
+        { label: 'Archived', value: true },
         { label: 'Current', value: false },
       ]}
       onChange={e => onChange(e.target.value)}

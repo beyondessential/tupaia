@@ -94,6 +94,8 @@ export const useDateRanges = (
   // this only applies to dashboard items, not map overlays
   const weekDisplayFormat =
     'weekDisplayFormat' in selectedItem ? selectedItem.weekDisplayFormat : undefined;
+  // this only applies to dashboard items, not map overlays
+  const dateOffset = 'dateOffset' in selectedItem ? selectedItem.dateOffset : undefined;
 
   // this only applies to map overlays
   const isTimePeriodEditable =
@@ -137,10 +139,13 @@ export const useDateRanges = (
   const endDate = urlEndDate || itemEndDate || defaultEndDate;
 
   const setDates = (_startDate: string, _endDate: string) => {
-    const period = GRANULARITY_CONFIG[periodGranularity as keyof typeof GRANULARITY_CONFIG]
+    const selectedGranularity = dateOffset ? dateOffset.unit : periodGranularity;
+    const period = GRANULARITY_CONFIG[selectedGranularity as keyof typeof GRANULARITY_CONFIG]
       .momentUnit as moment.unitOfTime.StartOf;
+
     const periodStartDate = moment(_startDate).startOf(period);
     const periodEndDate = moment(_endDate).endOf(period);
+
     const urlPeriodString = convertDateRangeToUrlPeriodString({
       startDate: periodStartDate,
       endDate: periodEndDate,

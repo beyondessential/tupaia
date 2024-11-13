@@ -35,7 +35,6 @@ export class TaskAssigneeEmailer extends ChangeHandler {
   }
 
   async handleChanges(models, changedTasks) {
-    const start = Date.now();
     // if there are no changed tasks, we don't need to do anything
     if (changedTasks.length === 0) return;
 
@@ -78,7 +77,5 @@ export class TaskAssigneeEmailer extends ChangeHandler {
         },
       });
     }
-    const end = Date.now();
-    winston.info(`Sending assignee emails completed, took: ${end - start}ms`);
   }
 }

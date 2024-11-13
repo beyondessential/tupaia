@@ -28,6 +28,9 @@ export type SurveyFormContextType = {
   cancelModalOpen: boolean;
   countryCode: string;
   primaryEntityQuestion?: SurveyScreenComponent | null;
+  isResubmitScreen: boolean;
+  isResubmitReviewScreen: boolean;
+  isResubmit: boolean;
 };
 
 export const surveyReducer = (

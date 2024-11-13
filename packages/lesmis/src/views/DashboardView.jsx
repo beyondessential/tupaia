@@ -68,7 +68,7 @@ const getTabComponent = tabViewType => {
 };
 
 export const DashboardView = React.memo(({ isOpen, setIsOpen }) => {
-  const isFetching = useIsFetching('dashboardReport');
+  const isFetching = useIsFetching(['dashboardReport']);
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
   // eslint-disable-next-line no-unused-vars

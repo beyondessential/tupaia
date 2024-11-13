@@ -6,7 +6,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useApiContext } from '../../utilities/ApiProvider';
 
-export const useEditSurveyResponse = (surveyResponseId, updatedSurveyResponse) => {
+export const useEditSurveyResponse = (surveyResponseId, updatedSurveyResponse, onSuccess) => {
   const queryClient = useQueryClient();
   const api = useApiContext();
   return useMutation(
@@ -19,7 +19,10 @@ export const useEditSurveyResponse = (surveyResponseId, updatedSurveyResponse) =
       onSuccess: async () => {
         // invalidate the survey response data
         await queryClient.invalidateQueries(['surveyResubmitData', surveyResponseId]);
-        return 'completed';
+        if (onSuccess) {
+          onSuccess();
+        }
+        return true;
       },
     },
   );

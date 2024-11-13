@@ -2,11 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 import { FormHelperText, FormLabelProps } from '@material-ui/core';
 import { Country } from '@tupaia/types';
-import { ListItemType, SelectList, SurveyFolderIcon, SurveyIcon } from '../components';
+import { SelectList } from '@tupaia/ui-components';
+import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
 
@@ -20,6 +21,20 @@ const ListWrapper = styled.div`
     max-height: 100%;
   }
 `;
+
+type ListItemType = Record<string, unknown> & {
+  children?: ListItemType[];
+  content: string | ReactNode;
+  value: string;
+  selected?: boolean;
+  icon?: ReactNode;
+  tooltip?: string;
+  button?: boolean;
+  disabled?: boolean;
+  labelProps?: FormLabelProps & {
+    component?: React.ElementType;
+  };
+};
 
 const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
   return (a.content as string).trim()?.localeCompare((b.content as string).trim(), 'en', {

@@ -308,6 +308,7 @@ export class AggregateDataPusher extends DataPusher {
           comparator: '!=',
           comparisonValue: surveyResponse.id,
         },
+        outdated: false,
         survey_id: surveyResponse.survey_id,
         entity_id: surveyResponse.entity_id,
         data_time: {
@@ -386,6 +387,7 @@ export class AggregateDataPusher extends DataPusher {
         comparisonType: 'whereBetween',
         args: [periodBounds],
       },
+      outdated: false,
     };
     switch (this.recordType) {
       case this.models.surveyResponse.databaseRecord: {

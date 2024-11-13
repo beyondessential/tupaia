@@ -248,6 +248,17 @@ const updateDependentQuestions = (
   return formDataCopy;
 };
 
+const generateCodeAnswer = (question: SurveyScreenComponent, formData: Record<string, any>) => {
+  const { config, questionId } = question;
+  const { codeGenerator } = config as {
+    codeGenerator: CodeGeneratorQuestionConfig;
+  };
+  if (hasCodeGeneratorConfig(question) && !formData[questionId]) {
+    return codeGenerator.type === 'shortid' ? generateShortId(codeGenerator) : generateMongoId();
+  }
+  return formData[questionId];
+};
+
 export const generateCodeForCodeGeneratorQuestions = (
   screenComponents: SurveyScreenComponent[],
   formData: Record<string, any>,
@@ -255,15 +266,8 @@ export const generateCodeForCodeGeneratorQuestions = (
   const formDataCopy = { ...formData };
   screenComponents?.forEach(question => {
     if (!question.config) return;
-    const { config, questionId } = question;
-    const { codeGenerator } = config as {
-      codeGenerator: CodeGeneratorQuestionConfig;
-    };
-    if (hasCodeGeneratorConfig(question) && !formDataCopy[questionId]) {
-      const code =
-        codeGenerator.type === 'shortid' ? generateShortId(codeGenerator) : generateMongoId();
-      formDataCopy[questionId] = code;
-    }
+    const { questionId } = question;
+    formDataCopy[questionId] = generateCodeAnswer(question, formDataCopy);
   });
   return formDataCopy;
 };

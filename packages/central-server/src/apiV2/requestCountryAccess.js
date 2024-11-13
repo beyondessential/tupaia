@@ -32,10 +32,12 @@ const sendRequest = async (userId, models, countries, message, project) => {
       },
       countries,
       message,
-      project: {
-        code: project.code,
-        permissionGroups: project.permission_groups.join(', '),
-      },
+      project: project
+        ? {
+            code: project.code,
+            permissionGroups: project.permission_groups.join(', '),
+          }
+        : null,
       user,
     },
   });

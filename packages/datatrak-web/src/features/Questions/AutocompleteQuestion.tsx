@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import throttle from 'lodash.throttle';
 import { createFilterOptions } from '@material-ui/lab';
@@ -67,7 +67,7 @@ export const AutocompleteQuestion = ({
   config = {},
   controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(selectedValue?.value || selectedValue || '');
   const { autocomplete = {} } = config!;
   const { attributes, createNew } = autocomplete;
   const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(
@@ -75,6 +75,15 @@ export const AutocompleteQuestion = ({
     attributes,
     searchValue,
   );
+
+  //If we programmatically set the value of the input, we need to update the search value
+  useEffect(() => {
+    // if the selection is the same as the search value, do not update the search value
+    if (!selectedValue || typeof selectedValue !== 'string' || selectedValue === searchValue)
+      return;
+
+    setSearchValue(selectedValue);
+  }, [JSON.stringify(selectedValue)]);
 
   const canCreateNew = !!createNew;
 
@@ -130,7 +139,8 @@ export const AutocompleteQuestion = ({
         value={selectedValue?.value || selectedValue || null}
         required={required}
         onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
-        onInputChange={throttle((_, newValue) => {
+        onInputChange={throttle((e, newValue) => {
+          if (newValue === searchValue || !e || !e.target) return;
           setSearchValue(newValue);
         }, 200)}
         inputValue={searchValue}

@@ -24,7 +24,12 @@ export class TaskUpdateHandler extends ChangeHandler {
     const { type, new_record: newRecord, old_record: oldRecord } = changeDetails;
 
     // if the change is not a create, we don't need to do anything. This is because once a task is marked as complete, it will never be undone
-    if (type !== 'update' || !oldRecord || oldRecord.entity_id === newRecord.entity_id) {
+    if (
+      type !== 'update' ||
+      !oldRecord ||
+      oldRecord.entity_id === newRecord.entity_id ||
+      newRecord.outdated === true
+    ) {
       return [];
     }
     return [newRecord];

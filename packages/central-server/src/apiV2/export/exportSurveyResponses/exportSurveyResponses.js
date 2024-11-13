@@ -22,6 +22,7 @@ export async function exportSurveyResponses(req, res) {
     entityIds,
     entityCode,
     countryCode,
+    includeArchived = false,
     latest = false,
     startDate,
     endDate,
@@ -58,6 +59,7 @@ export async function exportSurveyResponses(req, res) {
     surveyResponse,
     surveys,
     timeZone,
+    includeArchived,
   });
   respondWithDownload(res, filePath);
 }

@@ -7,6 +7,7 @@ import { PascalCase } from '../../utils';
 import { CssColor } from '../css';
 import { EntityType } from './entityType';
 import { DateOffsetSpec, DefaultTimePeriod, ReferenceProps, VizPeriodGranularity } from './common';
+import { EntityTypeEnum } from '../models';
 
 /**
  * @description A key that can be used to reference a value in a measureConfig, or to reference all values
@@ -45,7 +46,7 @@ export type InlineValue = {
 
 type MeasureConfig = {
   /**
-   * @description How to display this series (use popup-only to just show in the popup/tooltip)
+   * @description How to display this series (popup-only is deprecated)
    */
   type: `${MeasureType}` | 'popup-only';
 
@@ -68,6 +69,16 @@ type MeasureConfig = {
    * @description Whether to include this series in the legend
    */
   hideFromLegend?: boolean;
+
+  /**
+   * @description Whether to include this series in the popup/tooltip
+   */
+  hideFromPopup?: boolean;
+
+  /**
+   * @description Whether to include this series in the table
+   */
+  hideFromTable?: boolean;
 
   /**
    * @description Display name of this series
@@ -123,7 +134,7 @@ enum DisplayedValueType {
   FACILITY_TYPE_NAME = 'facilityTypeName',
 }
 
-type EntityLevel = PascalCase<EntityType>;
+type EntityLevel = PascalCase<EntityTypeEnum> | EntityType;
 
 enum MeasureValueType {
   BOOLEAN = 'boolean',
