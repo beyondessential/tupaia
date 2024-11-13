@@ -21,7 +21,11 @@ describe('POST map overlay visualisations', async () => {
   const { models } = app;
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
+    DL: [
+      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+      VIZ_BUILDER_PERMISSION_GROUP,
+      'Test Permission Group',
+    ],
   };
 
   const vizBuilderOnlyPermission = {
@@ -72,7 +76,7 @@ describe('POST map overlay visualisations', async () => {
     app.revokeAccess();
   });
 
-  describe('POST /dashboardVisualisations/', () => {
+  describe.only('POST /dashboardVisualisations/', () => {
     it('Throws if body not provided', async () => {
       const response = await app.post('mapOverlayVisualisations/', {});
       expectError(
