@@ -27,10 +27,13 @@ const TooltipWrapper = styled.span`
     height: 100%;
     width: 100%;
   }
+
   &:hover,
   &:focus {
-    svg {
-      fill: ${props => props.theme.palette.primary.main};
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      svg {
+        fill: ${props => props.theme.palette.primary.main};
+      }
     }
   }
 `;
