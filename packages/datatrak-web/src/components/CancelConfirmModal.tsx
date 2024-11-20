@@ -22,6 +22,8 @@ const ButtonWrapper = styled.div`
   width: 100%;
   max-width: 20rem;
   margin: 1.5rem auto 0;
+  gap: 1rem;
+
   ${({ theme }) => theme.breakpoints.up('sm')} {
     flex-direction: row;
     justify-content: center;
@@ -36,11 +38,9 @@ const Heading = styled(Typography).attrs({
 `;
 
 const ModalButton = styled(Button)`
-  flex: 1;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    & + & {
-      margin: 0 0 1rem 0;
-    }
+  &.MuiButtonBase-root.MuiButton-root {
+    flex: 1;
+    margin: 0;
   }
 `;
 
