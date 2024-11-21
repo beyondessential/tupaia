@@ -15,8 +15,8 @@ import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertPermissionGroupAccess,
-  assertVizBuilderAccess,
 } from '../../permissions';
+import { assertDashboardItemEditPermissions } from '../dashboardItems/assertDashboardItemsPermissions';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
@@ -34,11 +34,11 @@ const buildReport = async (models, reportRecord) => {
 
 export class EditDashboardVisualisation extends EditHandler {
   async assertUserHasAccess() {
+    const dashboardItemChecker = accessPolicy =>
+      assertDashboardItemEditPermissions(accessPolicy, this.models, this.recordId);
+
     await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to edit visualisations.',
-      ),
+      assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
     );
   }
 
