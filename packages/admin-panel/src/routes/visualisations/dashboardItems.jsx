@@ -135,4 +135,5 @@ export const dashboardItems = {
   columns: COLUMNS,
   LinksComponent,
   needsBESAdminAccess: ['delete'],
+  needsVizBuilderAccess: ['import'],
 };

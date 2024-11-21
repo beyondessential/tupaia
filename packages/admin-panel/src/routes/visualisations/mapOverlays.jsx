@@ -209,4 +209,5 @@ export const mapOverlays = {
   importConfig: IMPORT_CONFIG,
   LinksComponent,
   needsBESAdminAccess: ['delete'],
+  needsVizBuilderAccess: ['import'],
 };
