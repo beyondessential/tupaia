@@ -73,7 +73,7 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
     ? { result: true }
     : {
         result: false,
-        errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to any of its countries (${mapOverlay.country_codes})`,
+        errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to all of its countries (${mapOverlay.country_codes})`,
       };
 };
 

@@ -71,10 +71,7 @@ describe('PUT map overlay visualisations', async () => {
       const response = await app.put(`mapOverlayVisualisations/${modernMapOverlay.id}`, {
         body: modernVisualisation,
       });
-      expectError(
-        response,
-        'Internal server error: You do not have access to all related permission groups',
-      );
+      expectError(response, 'Cannot edit map overlay', 403);
     });
 
     it('Makes change successfully', async () => {
