@@ -75,7 +75,7 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
   });
 
   describe('PUT /dashboardMailingLists/:id', async () => {
-    describe.only('Insufficient permission', async () => {
+    describe('Insufficient permission', async () => {
       it('Throw an exception when trying to edit a dashboard mailing list we do not have access to', async () => {
         await app.grantAccess({
           DL: ['Admin'],
