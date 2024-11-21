@@ -19,7 +19,7 @@ export class EditMapOverlays extends EditHandler {
     await this.assertPermissions(
       assertAnyPermissions([
         assertBESAdminAccess,
-        assertAllPermissions[(assertVizBuilderAccess, mapOverlayChecker)],
+        assertAllPermissions([assertVizBuilderAccess, mapOverlayChecker]),
       ]),
     );
   }

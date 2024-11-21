@@ -32,10 +32,13 @@ const buildReport = async (models, reportRecord) => {
 
 export class EditMapOverlayVisualisation extends EditHandler {
   async assertUserHasAccess() {
+    const mapOverlayChecker = accessPolicy =>
+      assertMapOverlaysEditPermissions(accessPolicy, this.models, this.recordId);
+
     await this.assertPermissions(
       assertAnyPermissions([
         assertBESAdminAccess,
-        assertAllPermissions([assertBESAdminAccess, assertVizBuilderAccess]),
+        assertAllPermissions([assertVizBuilderAccess, mapOverlayChecker]),
       ]),
     );
   }
@@ -89,15 +92,6 @@ export class EditMapOverlayVisualisation extends EditHandler {
   }
 
   async editRecord() {
-    const mapOverlayChecker = accessPolicy =>
-      assertMapOverlaysEditPermissions(accessPolicy, this.models, this.recordId);
-    await this.assertPermissions(
-      assertAnyPermissions([
-        assertBESAdminAccess,
-        assertAllPermissions[(assertVizBuilderAccess, mapOverlayChecker)],
-      ]),
-    );
-
     const mapOverlayRecord = this.getMapOverlayRecord();
     const reportRecord = this.getReportRecord();
 

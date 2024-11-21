@@ -40,10 +40,10 @@ export class EditDashboardVisualisation extends EditHandler {
       assertDashboardItemEditPermissions(accessPolicy, this.models, this.recordId);
 
     await this.assertPermissions(
-      assertAnyPermissions(
+      assertAnyPermissions([
         assertBESAdminAccess,
-        assertAllPermissions[(assertVizBuilderAccess, dashboardItemChecker)],
-      ),
+        assertAllPermissions([assertVizBuilderAccess, dashboardItemChecker]),
+      ]),
     );
   }
 
