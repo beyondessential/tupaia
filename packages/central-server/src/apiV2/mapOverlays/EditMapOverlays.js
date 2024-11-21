@@ -4,14 +4,24 @@
  */
 
 import { EditHandler } from '../EditHandler';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import {
+  assertAllPermissions,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertVizBuilderAccess,
+} from '../../permissions';
 import { assertMapOverlaysEditPermissions } from './assertMapOverlaysPermissions';
 
 export class EditMapOverlays extends EditHandler {
   async assertUserHasAccess() {
     const mapOverlayChecker = accessPolicy =>
       assertMapOverlaysEditPermissions(accessPolicy, this.models, this.recordId);
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
+    await this.assertPermissions(
+      assertAnyPermissions([
+        assertBESAdminAccess,
+        assertAllPermissions[(assertVizBuilderAccess, mapOverlayChecker)],
+      ]),
+    );
   }
 
   async editRecord() {

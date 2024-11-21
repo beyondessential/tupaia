@@ -78,10 +78,6 @@ export const assertDashboardItemGetPermissions = async (accessPolicy, models, da
 };
 
 export const assertDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
-  if (!hasVizBuilderAccess(accessPolicy)) {
-    throw new Error(`Viz Builder User access required`);
-  }
-
   if (!(await hasDashboardItemEditPermissions(accessPolicy, models, dashboardItemId))) {
     throw new Error(
       `Access to the dashboard item in all of the dashboards this dashboard item is in is required`,

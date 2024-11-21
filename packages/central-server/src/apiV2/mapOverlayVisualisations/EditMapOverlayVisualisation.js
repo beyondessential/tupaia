@@ -12,7 +12,9 @@ import {
   assertAnyPermissions,
   assertPermissionGroupsAccess,
   assertVizBuilderAccess,
+  assertAllPermissions,
 } from '../../permissions';
+import { assertMapOverlaysEditPermissions } from '../mapOverlays';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
@@ -31,10 +33,10 @@ const buildReport = async (models, reportRecord) => {
 export class EditMapOverlayVisualisation extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to create visualisations.',
-      ),
+      assertAnyPermissions([
+        assertBESAdminAccess,
+        assertAllPermissions([assertBESAdminAccess, assertVizBuilderAccess]),
+      ]),
     );
   }
 
@@ -87,11 +89,13 @@ export class EditMapOverlayVisualisation extends EditHandler {
   }
 
   async editRecord() {
+    const mapOverlayChecker = accessPolicy =>
+      assertMapOverlaysEditPermissions(accessPolicy, this.models, this.recordId);
     await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to edit visualisations.',
-      ),
+      assertAnyPermissions([
+        assertBESAdminAccess,
+        assertAllPermissions[(assertVizBuilderAccess, mapOverlayChecker)],
+      ]),
     );
 
     const mapOverlayRecord = this.getMapOverlayRecord();

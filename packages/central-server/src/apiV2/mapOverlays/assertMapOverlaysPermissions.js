@@ -54,38 +54,27 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
   }
 
   const entities = await models.entity.find({ code: mapOverlay.country_codes });
-  let hasPermissionGroupAccess = false;
 
-  // Check we have tupaia admin access to all countries the mapOverlay is in
-  // And permission group access to at least one of the countries
-  for (let i = 0; i < entities.length; i++) {
-    if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entities[i]))) {
-      return {
+  // Check we have permission group access to all countries the mapOverlay is in
+  const hasPermissionGroupAccess = (
+    await Promise.all(
+      entities.map(entity =>
+        hasAccessToEntityForVisualisation(
+          accessPolicy,
+          models,
+          entity,
+          mapOverlay.permission_group,
+        ),
+      ),
+    )
+  ).every(access => access);
+
+  return hasPermissionGroupAccess
+    ? { result: true }
+    : {
         result: false,
-        errorMessage: `Requires Tupaia Admin Panel access to all countries (${mapOverlay.country_codes}) for the map overlay "${mapOverlayId}"`,
+        errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to any of its countries (${mapOverlay.country_codes})`,
       };
-    }
-    if (
-      !hasPermissionGroupAccess &&
-      (await hasAccessToEntityForVisualisation(
-        accessPolicy,
-        models,
-        entities[i],
-        mapOverlay.permission_group,
-      ))
-    ) {
-      hasPermissionGroupAccess = true;
-    }
-  }
-
-  if (!hasPermissionGroupAccess) {
-    return {
-      result: false,
-      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to any of its countries (${mapOverlay.country_codes})`,
-    };
-  }
-
-  return { result: true };
 };
 
 export const assertMapOverlaysGetPermissions = async (accessPolicy, models, mapOverlayId) => {
