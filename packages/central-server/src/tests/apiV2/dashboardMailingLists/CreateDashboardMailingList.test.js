@@ -60,7 +60,12 @@ describe('Permissions checker for CreateDashboardMailingList', async () => {
   describe('POST /dashboardMailingLists', async () => {
     describe('Insufficient permission', async () => {
       it('Throw an exception when trying to create a dashboard mailing list to a dashboard we do not have access to', async () => {
-        await app.grantAccess(DEFAULT_POLICY);
+        await app.grantAccess({
+          DL: ['Public'],
+          KI: ['Public'],
+          LA: ['Public'],
+        });
+
         const { body: result } = await app.post(`dashboardMailingLists`, {
           body: {
             dashboard_id: nationalDashboard2.id,
