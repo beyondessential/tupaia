@@ -49,22 +49,20 @@ export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashb
 
 export const hasDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
-  // To edit a dashboard item, the user has to have access to the relation between the
-  // dashboard item and ALL the dashboards it is in
-  for (const dashboard of dashboards) {
-    if (
-      !(await hasDashboardRelationEditPermissions(
+  // To edit a dashboard item, the user has to have access to all relations between the dashboard and
+  // dashboard items in it
+  const allHavePermissions = await Promise.all(
+    dashboards.map(dashboard =>
+      hasDashboardRelationEditPermissions(
         accessPolicy,
         models,
         dashboard.permissionGroups,
         dashboard.rootEntityCode,
-      ))
-    ) {
-      return false;
-    }
-  }
+      ),
+    ),
+  );
 
-  return true;
+  return allHavePermissions.every(result => result);
 };
 
 export const assertDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
