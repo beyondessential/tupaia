@@ -76,7 +76,7 @@ describe('POST map overlay visualisations', async () => {
     app.revokeAccess();
   });
 
-  describe.only('POST /dashboardVisualisations/', () => {
+  describe('POST /dashboardVisualisations/', () => {
     it('Throws if body not provided', async () => {
       const response = await app.post('mapOverlayVisualisations/', {});
       expectError(
