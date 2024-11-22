@@ -14,14 +14,14 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 1.5rem;
+  padding-block-start: 1.5rem;
 `;
 
 const Container = styled(Paper).attrs({
   elevation: 0,
 })`
-  width: 100%;
-  max-width: 38rem;
+  inline-size: 100%;
+  max-inline-size: 38rem;
   border-radius: 0.625rem;
   padding: 1.81rem 3.12rem;
 `;
@@ -60,7 +60,7 @@ const MobileTemplate = () => {
       <MobileContainer>
         <Typography variant="h1">Reports not available on mobile</Typography>
         <Typography>
-          The reports feature is only available on desktop. Please visit Tupaia Datatrak on desktop
+          The reports feature is only available on desktop. Please visit Tupaia DataTrak on desktop
           to proceed.
         </Typography>
         <Button to="/">Close</Button>
