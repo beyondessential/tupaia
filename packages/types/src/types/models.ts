@@ -1881,6 +1881,7 @@ export enum EntityTypeEnum {
   'pacmossi_district' = 'pacmossi_district',
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
+  'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
