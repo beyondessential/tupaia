@@ -29,7 +29,7 @@ export const SurveyDisplayName = () => {
 
   return (
     <>
-      {surveyName}
+      <span aria-label="survey.name">{surveyName}</span>
       {<CountryName>| {countryName}</CountryName>}
     </>
   );
