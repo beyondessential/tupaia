@@ -71,6 +71,7 @@ export const CopySurveyUrlButton = () => {
       }
       arrow
       enterDelay={500}
+      enterTouchDelay={500}
     >
       <Button aria-label="copy url to clipboard" onClick={copyPageUrl}>
         <CopyIcon />
