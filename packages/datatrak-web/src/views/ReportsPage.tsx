@@ -39,7 +39,7 @@ const MobileContainer = styled(Paper).attrs({
 })`
   text-align: center;
   max-width: 19rem;
-  padding: 0.5rem 0.5rem 0;
+  padding: 0.5rem 0 0;
 
   h1.MuiTypography-root {
     margin-block-end: 1rem;
