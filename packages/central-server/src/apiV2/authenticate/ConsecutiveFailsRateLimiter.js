@@ -43,13 +43,12 @@ export class ConsecutiveFailsRateLimiter {
   }
 
   /**
-   * Generate a key for the postgresRateLimiter based on the username and ip
+   * Generate a key for the postgresRateLimiter based on the username
    * @returns {string}
    */
-  getUsernameIPkey(req) {
+  getUsernameKey(req) {
     const { body } = req;
-    const ip = req.ip;
-    return `${body.emailAddress}_${ip}`;
+    return body.emailAddress;
   }
 
   /**
@@ -58,7 +57,7 @@ export class ConsecutiveFailsRateLimiter {
    */
   async checkIsRateLimited(req) {
     const maxConsecutiveFailsResponder = await this.postgresRateLimiter.get(
-      this.getUsernameIPkey(req),
+      this.getUsernameKey(req),
     );
     return (
       maxConsecutiveFailsResponder !== null &&
@@ -72,7 +71,7 @@ export class ConsecutiveFailsRateLimiter {
    */
   async getRetryAfter(req) {
     try {
-      await this.postgresRateLimiter.consume(this.getUsernameIPkey(req));
+      await this.postgresRateLimiter.consume(this.getUsernameKey(req));
     } catch (rlRejected) {
       return rlRejected.msBeforeNext;
     }
@@ -81,7 +80,7 @@ export class ConsecutiveFailsRateLimiter {
   async addFailedAttempt(req) {
     try {
       // Add a failed attempt to the rate limiter. Gets stored in the login_attempts table
-      await this.postgresRateLimiter.consume(this.getUsernameIPkey(req));
+      await this.postgresRateLimiter.consume(this.getUsernameKey(req));
     } catch (rlRejected) {
       // node-rate-limiter is designed to reject the promise when saving failed attempts
       // We swallow the error here and let the original error bubble up
@@ -89,6 +88,6 @@ export class ConsecutiveFailsRateLimiter {
   }
 
   async resetFailedAttempts(req) {
-    await this.postgresRateLimiter.delete(this.getUsernameIPkey(req));
+    await this.postgresRateLimiter.delete(this.getUsernameKey(req));
   }
 }
