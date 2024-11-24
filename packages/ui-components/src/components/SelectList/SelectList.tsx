@@ -18,13 +18,13 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-const FullBorder = css`
+const fullBorder = css`
   border: 1px solid ${({ theme }) => theme.palette.divider};
   border-radius: 3px;
   padding: 0 1rem;
 `;
 
-const TopBorder = css`
+const topBorder = css`
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
   border-radius: 0;
   padding: 0.5rem 0;
@@ -35,9 +35,9 @@ const ListWrapper = styled.div<{
 }>`
   overflow-y: auto;
   max-height: 100%;
-  ${({ $variant }) => {
-    if ($variant === 'fullPage') return FullBorder;
-    if ($variant === 'inline') return TopBorder;
+  ${({ $variant = 'borderless' }) => {
+    if ($variant === 'fullPage') return fullBorder;
+    if ($variant === 'inline') return topBorder;
     return '';
   }}
   flex: 1;

@@ -12,7 +12,6 @@ import { EntitySelector } from '../EntitySelector';
 export const EntityQuestion = ({
   id,
   label,
-  detailLabel,
   name,
   required,
   controllerProps: { onChange, value, ref, invalid },
@@ -26,7 +25,6 @@ export const EntityQuestion = ({
     <EntitySelector
       id={id}
       label={label}
-      detailLabel={detailLabel}
       name={name}
       required={required}
       controllerProps={{

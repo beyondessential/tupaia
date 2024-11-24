@@ -23,7 +23,7 @@ export type ListItemType = Record<string, unknown> & {
   };
 };
 
-const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
+const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
   return (a.content as string).trim()?.localeCompare((b.content as string).trim(), 'en', {
     numeric: true,
   });
@@ -65,13 +65,13 @@ export const useGroupedSurveyList = ({ setSelectedSurvey, selectedSurvey, select
             return {
               ...item,
               // sort the folder items alphanumerically
-              children: [...(item.children || []), formattedSurvey].sort(sortAlphanumerically),
+              children: [...(item.children || []), formattedSurvey].sort(alphanumericCompare),
             };
           }
           return item;
         });
       }, [])
-      ?.sort(sortAlphanumerically) ?? [];
+      ?.sort(alphanumericCompare) ?? [];
 
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection

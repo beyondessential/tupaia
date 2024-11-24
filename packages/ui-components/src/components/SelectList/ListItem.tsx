@@ -77,7 +77,7 @@ const IconWrapper = styled.div`
   }
 `;
 
-const CheckIcon = styled(Check)`
+const CheckIcon = styled(Check).attrs({ color: 'primary' })`
   &.MuiSvgIcon-root {
     font-size: 1.5rem;
   }
@@ -138,7 +138,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
         </Wrapper>
-        {selected && <CheckIcon color="primary" />}
+        {selected && <CheckIcon />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </li>

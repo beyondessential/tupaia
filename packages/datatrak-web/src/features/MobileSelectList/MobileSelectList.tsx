@@ -78,7 +78,7 @@ export const MobileSelectList = ({ items = [], onSelect, CountrySelector }: Sele
       ) : (
         <BaseList>
           {CountrySelector}
-          {items?.map(item => (
+          {items.map(item => (
             <ListItem item={item} onSelect={onSelect} key={item.value}>
               {item?.children && (
                 <List
