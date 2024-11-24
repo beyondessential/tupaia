@@ -8,7 +8,10 @@ import { expect } from 'chai';
 
 import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
 import { findTestRecordByCode, TEST_SETUP } from './mapOverlayVisualisations.fixtures';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
+} from '../../../permissions';
 
 describe('GET map overlay visualisations', () => {
   const app = new TestableApp();
@@ -18,11 +21,11 @@ describe('GET map overlay visualisations', () => {
   const modernReport = findTestRecordByCode('report', 'Modern_Report');
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const publicPolicy = {
-    DL: ['Public', 'Viz_Permissions'],
+    DL: ['Public', VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   // const besAdminPolicy = {
@@ -82,7 +85,7 @@ describe('GET map overlay visualisations', () => {
           },
           report: {
             code: modernReport.code,
-            permissionGroup: 'Viz_Permissions',
+            permissionGroup: VIZ_BUILDER_PERMISSION_GROUP,
             config: modernReport.config,
             latestDataParameters: {},
           },

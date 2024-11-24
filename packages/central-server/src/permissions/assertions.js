@@ -3,7 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from './constants';
+import {
+  BES_ADMIN_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
+} from './constants';
 
 /**
  * Returns true all the time. This is for any route handlers that do not need permissions.
@@ -54,6 +58,9 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
 export const hasBESAdminAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 
+export const hasVizBuilderAccess = accessPolicy =>
+  accessPolicy.allowsSome(undefined, VIZ_BUILDER_PERMISSION_GROUP);
+
 export const hasPermissionGroupAccess = (accessPolicy, permissionGroup) =>
   accessPolicy.allowsSome(undefined, permissionGroup);
 
@@ -83,6 +90,14 @@ export const assertBESAdminAccess = accessPolicy => {
   }
 
   throw new Error(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
+};
+
+export const assertVizBuilderAccess = accessPolicy => {
+  if (hasVizBuilderAccess(accessPolicy)) {
+    return true;
+  }
+
+  throw new Error(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
 };
 
 export const hasTupaiaAdminPanelAccess = accessPolicy =>
