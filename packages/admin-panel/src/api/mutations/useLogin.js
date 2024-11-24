@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
+import { getBrowserTimeZone } from '@tupaia/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '../../VizBuilderApp/api';
@@ -19,6 +19,7 @@ export const useLogin = homeLink => {
         data: {
           emailAddress: email,
           password,
+          timezone: getBrowserTimeZone(),
         },
       });
     },

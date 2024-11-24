@@ -8,3 +8,4 @@ export {
   generateFrontendExcludedFilter,
   getTypesToExclude,
 } from './generateFrontendExcludedFilter';
+export { getProjectById } from './getProjectById';

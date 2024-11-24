@@ -10,17 +10,17 @@ import { useCountryAccessList, useProject, useRequestProjectAccess } from '../ap
 interface RequestProjectAccessProps {
   variant?: 'page' | 'modal';
   projectCode?: string;
-  onClose?: () => void;
+  onBack?: () => void;
 }
 
-export const RequestProjectAccess = ({ projectCode, onClose }: RequestProjectAccessProps) => {
+export const RequestProjectAccess = ({ projectCode, onBack }: RequestProjectAccessProps) => {
   const { data: project, isLoading: isLoadingProject, isFetched } = useProject(projectCode);
   const { mutate: requestProjectAccess, isLoading, isSuccess } = useRequestProjectAccess();
   const { data: countries } = useCountryAccessList(projectCode);
 
   return (
     <UIRequestProjectAccess
-      onClose={onClose}
+      onBack={onBack}
       project={project}
       onSubmit={requestProjectAccess}
       isLoading={isLoadingProject}

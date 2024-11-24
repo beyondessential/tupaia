@@ -10,16 +10,35 @@ import { GetApp } from '@material-ui/icons';
 import { IconButton } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS, DashboardItemVizTypes, ViewVizTypes } from '../../constants';
 import { ExportDashboardItemContext, useEnlargedDashboardItem } from './utils';
+import { CircularProgress } from '@material-ui/core';
 
 const Button = styled(IconButton).attrs({
   color: 'default',
-  title: 'Export visualisation',
 })`
   position: absolute;
   top: 0.2rem;
   right: 2.7rem;
   z-index: 1;
+  svg {
+    color: ${({ theme }) => theme.palette.text.primary};
+  }
 `;
+
+export const ExportIconButton = ({
+  onClick,
+  title = 'Export visualisation',
+  isLoading = false,
+}: {
+  onClick: () => void;
+  title?: string;
+  isLoading?: boolean;
+}) => {
+  return (
+    <Button onClick={onClick} title={title} disabled={isLoading}>
+      {isLoading ? <CircularProgress size="1.2rem" /> : <GetApp />}
+    </Button>
+  );
+};
 
 const EXPORTABLE_TYPES = [
   DashboardItemVizTypes.Chart,
@@ -54,9 +73,5 @@ export const ExportButton = () => {
 
   if (!canExport || isExportMode) return null;
 
-  return (
-    <Button onClick={onClickExportButton}>
-      <GetApp />
-    </Button>
-  );
+  return <ExportIconButton onClick={onClickExportButton} />;
 };

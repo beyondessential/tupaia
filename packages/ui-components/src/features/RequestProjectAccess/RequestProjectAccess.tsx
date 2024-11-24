@@ -60,26 +60,26 @@ const ProjectDescription = styled(Typography)`
 `;
 
 interface RequestProjectAccessProps {
-  onClose?: () => void;
+  onBack?: () => void;
   project?: WebServerProjectRequest.ResBody;
   isLoading?: boolean;
   countries: ProjectCountryAccessListRequest.ResBody[number][];
   onSubmit: (data: { entityIds: string[]; message: string; projectCode: string }) => void;
   isSubmitting: boolean;
   isSuccess: boolean;
-  closeButtonText?: string;
+  backButtonText?: string;
   errorMessage?: string;
 }
 
 export const RequestProjectAccess = ({
-  onClose,
   project,
   isLoading,
   countries,
   onSubmit,
+  onBack,
   isSuccess,
   isSubmitting,
-  closeButtonText,
+  backButtonText,
   errorMessage,
 }: RequestProjectAccessProps) => {
   return (
@@ -99,15 +99,14 @@ export const RequestProjectAccess = ({
               )}
             </ProjectDetails>
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-
             <ProjectAccessForm
               project={project}
-              onClose={onClose}
+              onBack={onBack}
               onSubmit={onSubmit}
               isSubmitting={isSubmitting}
               isSuccess={isSuccess}
               countries={countries}
-              closeButtonText={closeButtonText}
+              backButtonText={backButtonText}
             />
           </>
         )}

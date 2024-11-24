@@ -11,7 +11,7 @@ import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { useDashboards, useEntity, useProject } from '../../api/queries';
+import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
@@ -23,6 +23,7 @@ import { StaticMap } from './StaticMap';
 import { ExportDashboard } from './ExportDashboard';
 import { DashboardContextProvider, useDashboard } from './utils';
 import { SubscribeModal, DashboardMenu } from './DashboardMenu';
+import { useEditUser } from '../../api/mutations';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
@@ -34,7 +35,9 @@ const Panel = styled.div<{
 }>`
   position: relative;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  transition: width 0.3s ease, max-width 0.3s ease;
+  transition:
+    width 0.3s ease,
+    max-width 0.3s ease;
   width: 100%;
   overflow: visible;
   min-height: 100%;
@@ -110,6 +113,14 @@ export const Dashboard = () => {
   const location = useLocation();
   const { projectCode, entityCode } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const { data: user } = useUser();
+  const { mutate: updateUser } = useEditUser();
+
+  useEffect(() => {
+    if (project?.code !== user?.project?.code) {
+      updateUser({ projectId: project?.id });
+    }
+  }, [project?.code, user?.project?.code]);
 
   const { activeDashboard } = useDashboard();
   const {
@@ -203,7 +214,7 @@ export const Dashboard = () => {
           </ScrollBody>
           <EnlargedDashboardItem entityName={entity?.name} />
           <ExportDashboard />
-          <SubscribeModal />
+          <SubscribeModal key={activeDashboard?.code} />
         </Panel>
       </DashboardContextProvider>
     </ErrorBoundary>

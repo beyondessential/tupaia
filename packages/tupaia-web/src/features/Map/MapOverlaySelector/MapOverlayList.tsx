@@ -7,7 +7,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { ICON_STYLES, ReferenceTooltip } from '@tupaia/ui-components';
+import { ICON_STYLES, ReferenceTooltip, Tooltip } from '@tupaia/ui-components';
 import {
   Accordion,
   AccordionDetails,
@@ -16,10 +16,11 @@ import {
   Radio,
   RadioGroup,
 } from '@material-ui/core';
-import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
+import { EntityType, TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
-import { useMapOverlays } from '../../../api/queries';
+import { useEntity, useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
+import { getFriendlyEntityType } from '../../../utils';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -61,7 +62,7 @@ const AccordionHeader = styled(AccordionSummary)`
   }
 `;
 
-const Wrapper = styled.div`
+const RadioItemWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
@@ -90,18 +91,29 @@ const AccordionContent = styled(AccordionDetails)`
 const FormLabel = styled(FormControlLabel)`
   border-radius: 3px;
 
+  &.Mui-disabled .MuiSvgIcon-root {
+    color: rgba(255, 255, 255, 0.5);
+  }
   &:hover {
     background: rgba(153, 153, 153, 0.2);
   }
 `;
+const MapOverlayItemWrapper = ({ disabled, entityType, children }) => {
+  if (!disabled) {
+    return children;
+  }
+  return <Tooltip title={`Not available at ${entityType} level`}>{children}</Tooltip>;
+};
 
 /**
  * A recursive component that renders a list of map overlays in an accordion.
  */
 const MapOverlayAccordion = ({
-  mapOverlayGroup,
+  mapOverlayListItem,
+  entityType,
 }: {
-  mapOverlayGroup: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+  mapOverlayListItem: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+  entityType?: EntityType;
 }) => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
@@ -111,10 +123,10 @@ const MapOverlayAccordion = ({
   return (
     <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
       <AccordionHeader expandIcon={<KeyboardArrowRight />}>
-        {mapOverlayGroup.name}
-        {mapOverlayGroup.info?.reference && (
+        {mapOverlayListItem.name}
+        {mapOverlayListItem.info?.reference && (
           <ReferenceTooltip
-            reference={mapOverlayGroup.info.reference}
+            reference={mapOverlayListItem.info.reference}
             iconStyle={ICON_STYLES.MAP_OVERLAY}
           />
         )}
@@ -122,21 +134,28 @@ const MapOverlayAccordion = ({
       <AccordionContent>
         {/* Map through the children, and if there are more nested children, render another
         accordion. Otherwise, render radio input for the overlay */}
-        {mapOverlayGroup.children.map(mapOverlay =>
-          'children' in mapOverlay ? (
-            <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
+        {mapOverlayListItem.children.map(child =>
+          'children' in child ? (
+            <MapOverlayAccordion
+              mapOverlayListItem={child}
+              key={child.name}
+              entityType={entityType}
+            />
           ) : (
-            <Wrapper>
-              <FormLabel
-                value={mapOverlay.code}
-                control={<Radio />}
-                label={mapOverlay.name}
-                key={mapOverlay.code}
-              />
-              {mapOverlay.info?.reference && (
-                <ReferenceTooltip reference={mapOverlay.info.reference} iconStyle="mapOverlay" />
-              )}
-            </Wrapper>
+            <MapOverlayItemWrapper disabled={child.disabled} entityType={entityType}>
+              <RadioItemWrapper>
+                <FormLabel
+                  value={child.code}
+                  control={<Radio />}
+                  label={child.name}
+                  key={child.code}
+                  disabled={child.disabled}
+                />
+                {child.info?.reference && (
+                  <ReferenceTooltip reference={child.info.reference} iconStyle="mapOverlay" />
+                )}
+              </RadioItemWrapper>
+            </MapOverlayItemWrapper>
           ),
         )}
       </AccordionContent>
@@ -196,6 +215,7 @@ const useSavedMapOverlayDates = () => {
 export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: () => void }) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
+  const { data: entity } = useEntity(projectCode, entityCode, true);
   const { getSavedMapOverlayDateRange } = useSavedMapOverlayDates();
   const {
     mapOverlayGroups = [],
@@ -219,6 +239,7 @@ export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?
 
   if (isLoadingMapOverlays) return null;
 
+  const friendlyEntityType = getFriendlyEntityType(entity?.type);
   return (
     <RadioGroupContainer
       aria-label="Map overlays"
@@ -229,7 +250,11 @@ export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?
       {mapOverlayGroups
         .filter(item => item.name)
         .map(group => (
-          <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
+          <MapOverlayAccordion
+            mapOverlayListItem={group}
+            key={group.name}
+            entityType={friendlyEntityType}
+          />
         ))}
     </RadioGroupContainer>
   );

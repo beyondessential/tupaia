@@ -77,7 +77,7 @@ export const ChangeProjectButton = ({ className }: { className?: string }) => {
       <ProjectButton onClick={openProjectModal} tooltip="Change project">
         {projectName ?? 'Select project'}
       </ProjectButton>
-      {projectModalIsOpen && <ProjectSelectModal onClose={closeProjectModal} />}
+      {projectModalIsOpen && <ProjectSelectModal onBack={closeProjectModal} />}
     </Container>
   );
 };

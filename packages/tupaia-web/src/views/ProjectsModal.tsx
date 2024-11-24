@@ -169,7 +169,7 @@ export const ProjectsModal = () => {
     value: string;
   } | null>(null);
   const { closeModal } = useModal();
-  const { data, isFetching } = useProjects();
+  const { data: projects = [], isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
   const { data: countries, isLoading } = useCountries();
@@ -220,14 +220,15 @@ export const ProjectsModal = () => {
             <ProjectsGrid>
               <ProjectCardList
                 selectedCountry={selectedCountry?.value}
-                projects={data?.projects ?? []}
+                projects={projects}
                 actions={{
                   [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                    project: { code, homeEntityCode, dashboardGroupName },
+                    project: { id, code, homeEntityCode, dashboardGroupName },
                   }: {
                     project: SingleProject;
                   }) => (
                     <ProjectAllowedLink
+                      projectId={id}
                       url={`/${code}/${homeEntityCode}${
                         dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
                       }`}

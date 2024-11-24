@@ -64,7 +64,6 @@ export const DateOffsetSpecSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"offset",
 		"unit"
 	]
 } 
@@ -130,7 +129,6 @@ export const DefaultTimePeriodSchema = {
 			},
 			"additionalProperties": false,
 			"required": [
-				"offset",
 				"unit"
 			]
 		},
@@ -180,7 +178,6 @@ export const DefaultTimePeriodSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -232,7 +229,6 @@ export const DefaultTimePeriodSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -452,7 +448,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -502,7 +497,6 @@ export const BaseConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -554,7 +548,6 @@ export const BaseConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -612,7 +605,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -656,7 +648,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -913,7 +904,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -963,7 +953,6 @@ export const MatrixConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1015,7 +1004,6 @@ export const MatrixConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1073,7 +1061,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1117,7 +1104,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -1639,7 +1625,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1689,7 +1674,6 @@ export const MatrixVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1741,7 +1725,6 @@ export const MatrixVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1799,7 +1782,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1843,7 +1825,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -2860,7 +2841,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -2910,7 +2890,6 @@ export const ComponentConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -2962,7 +2941,6 @@ export const ComponentConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3020,7 +2998,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3064,7 +3041,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -3407,7 +3383,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3457,7 +3432,6 @@ export const BaseChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3509,7 +3483,6 @@ export const BaseChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3567,7 +3540,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3611,7 +3583,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -4297,7 +4268,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4347,7 +4317,6 @@ export const CartesianChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -4399,7 +4368,6 @@ export const CartesianChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -4457,7 +4425,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4501,7 +4468,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -5132,7 +5098,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5182,7 +5147,6 @@ export const PieChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5234,7 +5198,6 @@ export const PieChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5292,7 +5255,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5336,7 +5298,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -5707,7 +5668,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5757,7 +5717,6 @@ export const BarChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5809,7 +5768,6 @@ export const BarChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5867,7 +5825,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5911,7 +5868,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -6678,7 +6634,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -6728,7 +6683,6 @@ export const LineChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -6780,7 +6734,6 @@ export const LineChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -6838,7 +6791,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -6882,7 +6834,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -7641,7 +7592,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -7691,7 +7641,6 @@ export const ComposedChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -7743,7 +7692,6 @@ export const ComposedChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -7801,7 +7749,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -7845,7 +7792,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -8420,7 +8366,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -8470,7 +8415,6 @@ export const GaugeChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -8522,7 +8466,6 @@ export const GaugeChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -8580,7 +8523,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -8624,7 +8566,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -8902,7 +8843,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -8952,7 +8892,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9004,7 +8943,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9062,7 +9000,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9106,7 +9043,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -9417,7 +9353,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9467,7 +9402,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9519,7 +9453,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9577,7 +9510,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9621,7 +9553,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -10212,7 +10143,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10262,7 +10192,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10314,7 +10243,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10372,7 +10300,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10416,7 +10343,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -11001,7 +10927,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11051,7 +10976,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11103,7 +11027,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11161,7 +11084,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11205,7 +11127,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -11779,7 +11700,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11829,7 +11749,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11881,7 +11800,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11939,7 +11857,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11983,7 +11900,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -12391,7 +12307,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12441,7 +12356,6 @@ export const BaseViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12493,7 +12407,6 @@ export const BaseViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12551,7 +12464,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12595,7 +12507,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -12868,7 +12779,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12918,7 +12828,6 @@ export const MultiValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12970,7 +12879,6 @@ export const MultiValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13028,7 +12936,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13072,7 +12979,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -13453,7 +13359,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13503,7 +13408,6 @@ export const MultiValueRowViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13555,7 +13459,6 @@ export const MultiValueRowViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13613,7 +13516,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13657,7 +13559,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -13989,7 +13890,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14039,7 +13939,6 @@ export const SingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14091,7 +13990,6 @@ export const SingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14149,7 +14047,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14193,7 +14090,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -14439,7 +14335,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14489,7 +14384,6 @@ export const MultiPhotographViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14541,7 +14435,6 @@ export const MultiPhotographViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14599,7 +14492,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14643,7 +14535,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -14885,7 +14776,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14935,7 +14825,6 @@ export const MultiSingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14987,7 +14876,6 @@ export const MultiSingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15045,7 +14933,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15089,7 +14976,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15331,7 +15217,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15381,7 +15266,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15433,7 +15317,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15491,7 +15374,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15535,7 +15417,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15777,7 +15658,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15827,7 +15707,6 @@ export const DataDownloadViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15879,7 +15758,6 @@ export const DataDownloadViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15937,7 +15815,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15981,7 +15858,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -16223,7 +16099,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16273,7 +16148,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16325,7 +16199,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16383,7 +16256,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16427,7 +16299,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -16685,7 +16556,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16735,7 +16605,6 @@ export const SingleDateViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16787,7 +16656,6 @@ export const SingleDateViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16845,7 +16713,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16889,7 +16756,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -17131,7 +16997,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17181,7 +17046,6 @@ export const DownloadFilesViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17233,7 +17097,6 @@ export const DownloadFilesViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17291,7 +17154,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17335,7 +17197,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -17577,7 +17438,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17627,7 +17487,6 @@ export const QRCodeViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17679,7 +17538,6 @@ export const QRCodeViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17737,7 +17595,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17781,7 +17638,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -18025,7 +17881,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18075,7 +17930,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18127,7 +17981,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18185,7 +18038,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18229,7 +18081,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -18483,7 +18334,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18533,7 +18383,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18585,7 +18434,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18643,7 +18491,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18687,7 +18534,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19018,7 +18864,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19068,7 +18913,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19120,7 +18964,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19178,7 +19021,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19222,7 +19064,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19467,7 +19308,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19517,7 +19357,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19569,7 +19408,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19627,7 +19465,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19671,7 +19508,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19912,7 +19748,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19962,7 +19797,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20014,7 +19848,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20072,7 +19905,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20116,7 +19948,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -20357,7 +20188,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20407,7 +20237,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20459,7 +20288,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20517,7 +20345,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20561,7 +20388,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -20802,7 +20628,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20852,7 +20677,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20904,7 +20728,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20962,7 +20785,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21006,7 +20828,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -21247,7 +21068,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21297,7 +21117,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21349,7 +21168,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21407,7 +21225,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21451,7 +21268,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -21692,7 +21508,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21742,7 +21557,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21794,7 +21608,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21852,7 +21665,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21896,7 +21708,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -22137,7 +21948,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22187,7 +21997,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22239,7 +22048,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22297,7 +22105,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22341,7 +22148,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -22697,7 +22503,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22747,7 +22552,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22799,7 +22603,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22857,7 +22660,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22901,7 +22703,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -23423,7 +23224,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23473,7 +23273,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23525,7 +23324,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23583,7 +23381,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23627,7 +23424,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -23852,7 +23648,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23902,7 +23697,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23954,7 +23748,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24012,7 +23805,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24056,7 +23848,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -24367,7 +24158,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24417,7 +24207,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24469,7 +24258,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24527,7 +24315,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24571,7 +24358,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -25162,7 +24948,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25212,7 +24997,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25264,7 +25048,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25322,7 +25105,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25366,7 +25148,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -25951,7 +25732,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26001,7 +25781,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26053,7 +25832,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26111,7 +25889,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26155,7 +25932,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -26729,7 +26505,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26779,7 +26554,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26831,7 +26605,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26889,7 +26662,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26933,7 +26705,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -27207,7 +26978,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27257,7 +27027,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27309,7 +27078,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27367,7 +27135,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27411,7 +27178,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -27665,7 +27431,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27715,7 +27480,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27767,7 +27531,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27825,7 +27588,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27869,7 +27631,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28200,7 +27961,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28250,7 +28010,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28302,7 +28061,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28360,7 +28118,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28404,7 +28161,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28649,7 +28405,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28699,7 +28454,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28751,7 +28505,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28809,7 +28562,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28853,7 +28605,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29094,7 +28845,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29144,7 +28894,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29196,7 +28945,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29254,7 +29002,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29298,7 +29045,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29539,7 +29285,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29589,7 +29334,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29641,7 +29385,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29699,7 +29442,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29743,7 +29485,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29984,7 +29725,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30034,7 +29774,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30086,7 +29825,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30144,7 +29882,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30188,7 +29925,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -30429,7 +30165,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30479,7 +30214,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30531,7 +30265,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30589,7 +30322,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30633,7 +30365,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -30874,7 +30605,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30924,7 +30654,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30976,7 +30705,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -31034,7 +30762,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -31078,7 +30805,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -31319,7 +31045,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -31369,7 +31094,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -31421,7 +31145,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -31479,7 +31202,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -31523,7 +31245,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -32863,7 +32584,7 @@ export const MeasureConfigSchema = {
 	"type": "object",
 	"properties": {
 		"type": {
-			"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+			"description": "How to display this series (popup-only is deprecated)",
 			"enum": [
 				"color",
 				"icon",
@@ -32946,6 +32667,14 @@ export const MeasureConfigSchema = {
 		},
 		"hideFromLegend": {
 			"description": "Whether to include this series in the legend",
+			"type": "boolean"
+		},
+		"hideFromPopup": {
+			"description": "Whether to include this series in the popup/tooltip",
+			"type": "boolean"
+		},
+		"hideFromTable": {
+			"description": "Whether to include this series in the table",
 			"type": "boolean"
 		},
 		"name": {
@@ -33102,7 +32831,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33146,7 +32874,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -33196,7 +32923,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33246,7 +32972,6 @@ export const BaseMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33298,7 +33023,6 @@ export const BaseMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33402,7 +33126,7 @@ export const BaseMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -33485,6 +33209,14 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -33667,7 +33399,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33711,7 +33442,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -33761,7 +33491,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33811,7 +33540,6 @@ export const SpectrumMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33863,7 +33591,6 @@ export const SpectrumMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33967,7 +33694,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -34050,6 +33777,14 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -34337,7 +34072,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34381,7 +34115,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -34431,7 +34164,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34481,7 +34213,6 @@ export const IconMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34533,7 +34264,6 @@ export const IconMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34637,7 +34367,7 @@ export const IconMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -34720,6 +34450,14 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -34932,7 +34670,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34976,7 +34713,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -35026,7 +34762,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35076,7 +34811,6 @@ export const RadiusMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35128,7 +34862,6 @@ export const RadiusMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35232,7 +34965,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -35315,6 +35048,14 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -35501,7 +35242,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35545,7 +35285,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -35595,7 +35334,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35645,7 +35383,6 @@ export const ColorMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35697,7 +35434,6 @@ export const ColorMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35801,7 +35537,7 @@ export const ColorMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -35884,6 +35620,14 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -36084,7 +35828,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -36128,7 +35871,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -36178,7 +35920,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -36228,7 +35969,6 @@ export const ShadingMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -36280,7 +36020,6 @@ export const ShadingMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -36384,7 +36123,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -36467,6 +36206,14 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"hideFromLegend": {
 						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
 						"type": "boolean"
 					},
 					"name": {
@@ -36659,7 +36406,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36703,7 +36449,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -36753,7 +36498,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36803,7 +36547,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36855,7 +36598,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36959,7 +36701,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -37042,6 +36784,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -37328,7 +37078,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37372,7 +37121,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -37422,7 +37170,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37472,7 +37219,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37524,7 +37270,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37628,7 +37373,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -37711,6 +37456,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -37922,7 +37675,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37966,7 +37718,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -38016,7 +37767,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38066,7 +37816,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38118,7 +37867,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38222,7 +37970,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -38305,6 +38053,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -38490,7 +38246,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38534,7 +38289,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -38584,7 +38338,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38634,7 +38387,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38686,7 +38438,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38790,7 +38541,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -38873,6 +38624,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -39072,7 +38831,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -39116,7 +38874,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -39166,7 +38923,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -39216,7 +38972,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -39268,7 +39023,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -39372,7 +39126,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -39455,6 +39209,14 @@ export const MapOverlayConfigSchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -42363,7 +42125,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42413,7 +42174,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42465,7 +42225,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42523,7 +42282,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42567,7 +42325,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -43089,7 +42846,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43139,7 +42895,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43191,7 +42946,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43249,7 +43003,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43293,7 +43046,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -43518,7 +43270,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43568,7 +43319,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43620,7 +43370,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43678,7 +43427,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43722,7 +43470,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -44033,7 +43780,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44083,7 +43829,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44135,7 +43880,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44193,7 +43937,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44237,7 +43980,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -44828,7 +44570,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44878,7 +44619,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44930,7 +44670,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44988,7 +44727,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45032,7 +44770,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -45617,7 +45354,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45667,7 +45403,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45719,7 +45454,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45777,7 +45511,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45821,7 +45554,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -46395,7 +46127,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46445,7 +46176,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46497,7 +46227,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46555,7 +46284,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46599,7 +46327,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -46873,7 +46600,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46923,7 +46649,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46975,7 +46700,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47033,7 +46757,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47077,7 +46800,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47331,7 +47053,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47381,7 +47102,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47433,7 +47153,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47491,7 +47210,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47535,7 +47253,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47866,7 +47583,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47916,7 +47632,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47968,7 +47683,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48026,7 +47740,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48070,7 +47783,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -48315,7 +48027,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48365,7 +48076,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48417,7 +48127,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48475,7 +48184,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48519,7 +48227,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -48760,7 +48467,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48810,7 +48516,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48862,7 +48567,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48920,7 +48624,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48964,7 +48667,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -49205,7 +48907,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49255,7 +48956,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49307,7 +49007,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49365,7 +49064,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49409,7 +49107,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -49650,7 +49347,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49700,7 +49396,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49752,7 +49447,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49810,7 +49504,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49854,7 +49547,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50095,7 +49787,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50145,7 +49836,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50197,7 +49887,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50255,7 +49944,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50299,7 +49987,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50540,7 +50227,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50590,7 +50276,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50642,7 +50327,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50700,7 +50384,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50744,7 +50427,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50985,7 +50667,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51035,7 +50716,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51087,7 +50767,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51145,7 +50824,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51189,7 +50867,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -51467,7 +51144,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51517,7 +51193,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51569,7 +51244,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51627,7 +51301,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51671,7 +51344,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -52193,7 +51865,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52243,7 +51914,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52295,7 +51965,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52353,7 +52022,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52397,7 +52065,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -52622,7 +52289,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52672,7 +52338,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52724,7 +52389,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52782,7 +52446,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52826,7 +52489,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -53137,7 +52799,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53187,7 +52848,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53239,7 +52899,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53297,7 +52956,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53341,7 +52999,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -53932,7 +53589,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53982,7 +53638,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54034,7 +53689,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54092,7 +53746,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54136,7 +53789,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -54721,7 +54373,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54771,7 +54422,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54823,7 +54473,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54881,7 +54530,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54925,7 +54573,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -55499,7 +55146,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55549,7 +55195,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55601,7 +55246,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55659,7 +55303,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55703,7 +55346,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -55977,7 +55619,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56027,7 +55668,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56079,7 +55719,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56137,7 +55776,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56181,7 +55819,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56435,7 +56072,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56485,7 +56121,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56537,7 +56172,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56595,7 +56229,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56639,7 +56272,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56970,7 +56602,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57020,7 +56651,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57072,7 +56702,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57130,7 +56759,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57174,7 +56802,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57419,7 +57046,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57469,7 +57095,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57521,7 +57146,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57579,7 +57203,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57623,7 +57246,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57864,7 +57486,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57914,7 +57535,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57966,7 +57586,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58024,7 +57643,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58068,7 +57686,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -58309,7 +57926,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58359,7 +57975,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58411,7 +58026,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58469,7 +58083,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58513,7 +58126,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -58754,7 +58366,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58804,7 +58415,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58856,7 +58466,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58914,7 +58523,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58958,7 +58566,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -59199,7 +58806,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59249,7 +58855,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59301,7 +58906,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59359,7 +58963,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59403,7 +59006,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -59644,7 +59246,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59694,7 +59295,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59746,7 +59346,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59804,7 +59403,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59848,7 +59446,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -60089,7 +59686,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60139,7 +59735,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60191,7 +59786,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60249,7 +59843,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60293,7 +59886,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -60565,7 +60157,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60615,7 +60206,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60667,7 +60257,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60725,7 +60314,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60769,7 +60357,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -61291,7 +60878,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61341,7 +60927,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61393,7 +60978,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61451,7 +61035,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61495,7 +61078,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -61720,7 +61302,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61770,7 +61351,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61822,7 +61402,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61880,7 +61459,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61924,7 +61502,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -62235,7 +61812,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62285,7 +61861,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62337,7 +61912,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62395,7 +61969,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62439,7 +62012,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -63030,7 +62602,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63080,7 +62651,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63132,7 +62702,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63190,7 +62759,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63234,7 +62802,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -63819,7 +63386,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63869,7 +63435,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63921,7 +63486,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63979,7 +63543,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64023,7 +63586,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -64597,7 +64159,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64647,7 +64208,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64699,7 +64259,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64757,7 +64316,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64801,7 +64359,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -65075,7 +64632,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65125,7 +64681,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65177,7 +64732,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65235,7 +64789,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65279,7 +64832,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -65533,7 +65085,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65583,7 +65134,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65635,7 +65185,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65693,7 +65242,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65737,7 +65285,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66068,7 +65615,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66118,7 +65664,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66170,7 +65715,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66228,7 +65772,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66272,7 +65815,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66517,7 +66059,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66567,7 +66108,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66619,7 +66159,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66677,7 +66216,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66721,7 +66259,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66962,7 +66499,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67012,7 +66548,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67064,7 +66599,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67122,7 +66656,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67166,7 +66699,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -67407,7 +66939,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67457,7 +66988,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67509,7 +67039,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67567,7 +67096,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67611,7 +67139,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -67852,7 +67379,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67902,7 +67428,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67954,7 +67479,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68012,7 +67536,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68056,7 +67579,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -68297,7 +67819,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68347,7 +67868,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68399,7 +67919,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68457,7 +67976,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68501,7 +68019,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -68742,7 +68259,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68792,7 +68308,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68844,7 +68359,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68902,7 +68416,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68946,7 +68459,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -69187,7 +68699,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -69237,7 +68748,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -69289,7 +68799,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -69347,7 +68856,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -69391,7 +68899,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72069,7 +71576,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72113,7 +71619,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72163,7 +71668,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72213,7 +71717,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72265,7 +71768,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72369,7 +71871,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -72452,6 +71954,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -72738,7 +72248,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72782,7 +72291,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72832,7 +72340,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72882,7 +72389,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72934,7 +72440,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73038,7 +72543,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -73121,6 +72626,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -73332,7 +72845,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73376,7 +72888,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -73426,7 +72937,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73476,7 +72986,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73528,7 +73037,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73632,7 +73140,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -73715,6 +73223,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -73900,7 +73416,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73944,7 +73459,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -73994,7 +73508,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74044,7 +73557,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74096,7 +73608,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74200,7 +73711,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -74283,6 +73794,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -74482,7 +74001,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74526,7 +74044,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -74576,7 +74093,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74626,7 +74142,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74678,7 +74193,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74782,7 +74296,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -74865,6 +74379,14 @@ export const MapOverlaySchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -75118,7 +74640,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75162,7 +74683,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -75212,7 +74732,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75262,7 +74781,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75314,7 +74832,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75418,7 +74935,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -75501,6 +75018,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -75787,7 +75312,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75831,7 +75355,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -75881,7 +75404,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75931,7 +75453,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75983,7 +75504,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76087,7 +75607,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -76170,6 +75690,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -76381,7 +75909,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76425,7 +75952,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -76475,7 +76001,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76525,7 +76050,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76577,7 +76101,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76681,7 +76204,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -76764,6 +76287,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -76949,7 +76480,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76993,7 +76523,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -77043,7 +76572,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77093,7 +76621,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77145,7 +76672,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77249,7 +76775,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -77332,6 +76858,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -77531,7 +77065,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77575,7 +77108,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -77625,7 +77157,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77675,7 +77206,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77727,7 +77257,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77831,7 +77360,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -77914,6 +77443,14 @@ export const MapOverlayCreateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -78160,7 +77697,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78204,7 +77740,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -78254,7 +77789,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78304,7 +77838,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -78356,7 +77889,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -78460,7 +77992,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -78543,6 +78075,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -78829,7 +78369,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78873,7 +78412,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -78923,7 +78461,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78973,7 +78510,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79025,7 +78561,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79129,7 +78664,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -79212,6 +78747,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -79423,7 +78966,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -79467,7 +79009,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -79517,7 +79058,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -79567,7 +79107,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79619,7 +79158,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79723,7 +79261,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -79806,6 +79344,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -79991,7 +79537,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80035,7 +79580,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -80085,7 +79629,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80135,7 +79678,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80187,7 +79729,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80291,7 +79832,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -80374,6 +79915,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -80573,7 +80122,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80617,7 +80165,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -80667,7 +80214,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80717,7 +80263,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80769,7 +80314,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80873,7 +80417,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -80956,6 +80500,14 @@ export const MapOverlayUpdateSchema = {
 									},
 									"hideFromLegend": {
 										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
 										"type": "boolean"
 									},
 									"name": {
@@ -84630,6 +84182,60 @@ export const UserAccountUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const UserCountryAccessAttemptSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"id",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const UserEntityPermissionSchema = {
 	"type": "object",
 	"properties": {
@@ -84968,6 +84574,7 @@ export const EntityTypeEnumSchema = {
 		"msupply_store",
 		"nursing_zone",
 		"pacmossi_district",
+		"pacmossi_insecticide_test",
 		"pacmossi_spraying_site",
 		"pacmossi_village",
 		"postcode",
@@ -86558,7 +86165,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -86608,7 +86214,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -86660,7 +86265,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -86718,7 +86322,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -86762,7 +86365,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -87284,7 +86886,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87334,7 +86935,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87386,7 +86986,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87444,7 +87043,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87488,7 +87086,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -87713,7 +87310,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87763,7 +87359,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87815,7 +87410,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87873,7 +87467,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87917,7 +87510,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -88228,7 +87820,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88278,7 +87869,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88330,7 +87920,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88388,7 +87977,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88432,7 +88020,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -89023,7 +88610,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89073,7 +88659,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89125,7 +88710,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89183,7 +88767,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89227,7 +88810,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -89812,7 +89394,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89862,7 +89443,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89914,7 +89494,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89972,7 +89551,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90016,7 +89594,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -90590,7 +90167,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90640,7 +90216,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90692,7 +90267,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90750,7 +90324,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90794,7 +90367,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -91068,7 +90640,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91118,7 +90689,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91170,7 +90740,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91228,7 +90797,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91272,7 +90840,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -91526,7 +91093,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91576,7 +91142,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91628,7 +91193,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91686,7 +91250,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91730,7 +91293,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92061,7 +91623,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92111,7 +91672,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92163,7 +91723,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92221,7 +91780,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92265,7 +91823,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92510,7 +92067,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92560,7 +92116,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92612,7 +92167,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92670,7 +92224,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92714,7 +92267,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92955,7 +92507,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93005,7 +92556,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93057,7 +92607,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93115,7 +92664,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93159,7 +92707,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -93400,7 +92947,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93450,7 +92996,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93502,7 +93047,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93560,7 +93104,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93604,7 +93147,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -93845,7 +93387,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93895,7 +93436,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93947,7 +93487,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94005,7 +93544,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94049,7 +93587,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -94290,7 +93827,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94340,7 +93876,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94392,7 +93927,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94450,7 +93984,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94494,7 +94027,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -94735,7 +94267,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94785,7 +94316,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94837,7 +94367,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94895,7 +94424,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94939,7 +94467,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -95180,7 +94707,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95230,7 +94756,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95282,7 +94807,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95340,7 +94864,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95384,7 +94907,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -95680,7 +95202,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -95724,7 +95245,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -95774,7 +95294,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -95824,7 +95343,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -95876,7 +95394,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -95980,7 +95497,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -96063,6 +95580,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -96293,6 +95818,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -96372,7 +95900,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -96416,7 +95943,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -96466,7 +95992,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -96516,7 +96041,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -96568,7 +96092,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -96672,7 +96195,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -96755,6 +96278,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -96910,6 +96441,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -96989,7 +96523,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97033,7 +96566,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -97083,7 +96615,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97133,7 +96664,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97185,7 +96715,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97289,7 +96818,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -97372,6 +96901,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -97502,6 +97039,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -97580,7 +97120,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97624,7 +97163,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -97674,7 +97212,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97724,7 +97261,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97776,7 +97312,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97880,7 +97415,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -97963,6 +97498,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -98107,6 +97650,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -98185,7 +97731,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -98229,7 +97774,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -98279,7 +97823,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -98329,7 +97872,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -98381,7 +97923,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -98485,7 +98026,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -98568,6 +98109,14 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"hideFromLegend": {
 								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
 								"type": "boolean"
 							},
 							"name": {
@@ -98702,6 +98251,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
