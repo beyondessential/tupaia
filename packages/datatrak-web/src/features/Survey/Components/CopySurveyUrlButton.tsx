@@ -8,8 +8,9 @@ import IconButton from '@material-ui/core/IconButton';
 import { useParams, generatePath } from 'react-router-dom';
 import { Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import { OptionsObject } from 'notistack';
 import { CopyIcon } from '../../../components';
-import { successToast } from '../../../utils';
+import { infoToast } from '../../../utils';
 import { ROUTES } from '../../../constants';
 
 const StyledTooltip = styled(Tooltip)`
@@ -30,19 +31,35 @@ const Button = styled(IconButton)`
   }
 `;
 
-export const CopySurveyUrlButton = () => {
+export const useCopySurveyUrl = ({ toastOptions = {} }: { toastOptions: OptionsObject }) => {
   const params = useParams();
   const path = generatePath(ROUTES.SURVEY, params);
   const link = `${window.location.origin}${path}`;
 
-  const copyPageUrl = () => {
+  return () => {
     try {
       navigator.clipboard.writeText(link);
-      successToast('Page URL copied to clipboard');
+      infoToast('Page URL copied to clipboard', {
+        persist: false,
+        TransitionProps: { appear: true },
+        hideCloseButton: true,
+        ...toastOptions,
+      });
     } catch (err) {
       console.warn('Failed to copy page url: ', err);
     }
   };
+};
+
+export const CopySurveyUrlButton = () => {
+  const copyPageUrl = useCopySurveyUrl({
+    toastOptions: {
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'right',
+      },
+    },
+  });
   return (
     <StyledTooltip
       title={
@@ -54,6 +71,7 @@ export const CopySurveyUrlButton = () => {
       }
       arrow
       enterDelay={500}
+      enterTouchDelay={500}
     >
       <Button aria-label="copy url to clipboard" onClick={copyPageUrl}>
         <CopyIcon />

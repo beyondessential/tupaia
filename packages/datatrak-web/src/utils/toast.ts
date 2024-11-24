@@ -18,3 +18,17 @@ export const errorToast = (message: string) => {
     hideIconVariant: true,
   });
 };
+
+interface ToastOptions extends OptionsObject {
+  Icon?: OptionsObject['Icon'];
+  hideCloseButton?: boolean;
+}
+
+export const infoToast = (message: string, options?: ToastOptions) => {
+  enqueueSnackbar(message, {
+    variant: 'info',
+    autoHideDuration: 2000,
+    hideIconVariant: true,
+    ...options,
+  });
+};
