@@ -18,6 +18,7 @@ export type ReqBody = {
   settings?: {
     exportWithTable: boolean;
     exportWithLabels: boolean;
+    exportDescription: string | null;
     separatePagePerItem: boolean;
   };
 };
