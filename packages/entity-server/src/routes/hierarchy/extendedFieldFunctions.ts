@@ -17,16 +17,6 @@ const getParentCode = async (
   return (await entity.getParent(hierarchyId))?.code;
 };
 
-const getGrandParentCode = async (
-  entity: EntityRecord,
-  context: {
-    hierarchyId: string;
-  },
-) => {
-  const { hierarchyId } = context;
-  return (await entity.getGrandParent(hierarchyId))?.code;
-};
-
 const getChildrenCodes = async (
   entity: EntityRecord,
   context: {
@@ -54,16 +44,6 @@ const getParentName = async (
 ) => {
   const { hierarchyId } = context;
   return (await entity.getParent(hierarchyId))?.name;
-};
-
-const getGrandParentName = async (
-  entity: EntityRecord,
-  context: {
-    hierarchyId: string;
-  },
-) => {
-  const { hierarchyId } = context;
-  return (await entity.getGrandParent(hierarchyId))?.name;
 };
 
 const getPoint = (entity: EntityRecord) => {
@@ -112,8 +92,6 @@ export const extendedFieldFunctions = {
   bounds: getBounds,
   qualified_name: getQualifiedName,
   parent_name: getParentName,
-  grandparent_name: getGrandParentName,
-  grandparent_code: getGrandParentCode,
 };
 
 export const isExtendedField = (field: string): field is keyof typeof extendedFieldFunctions =>

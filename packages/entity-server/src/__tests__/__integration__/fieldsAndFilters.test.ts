@@ -186,20 +186,6 @@ describe('fieldsAndFilters', () => {
 
       expect(gsEntity).toEqual({ code: 'LAVENDER', child_codes: ['LAVENDER_RADIO_TOWER'] });
     });
-
-    it('grand_parent_code depends on hierarchy used', async () => {
-      const { body: rbEntity } = await app.get('hierarchy/redblue/LAVENDER', {
-        query: { fields: 'code,grandparent_code' },
-      });
-
-      expect(rbEntity).toEqual({ code: 'LAVENDER', grandparent_code: 'redblue' });
-
-      const { body: gsEntity } = await app.get('hierarchy/goldsilver/LAVENDER', {
-        query: { fields: 'code,grandparent_code' },
-      });
-
-      expect(gsEntity).toEqual({ code: 'LAVENDER', grandparent_code: 'goldsilver' });
-    });
   });
 
   describe('filter', () => {

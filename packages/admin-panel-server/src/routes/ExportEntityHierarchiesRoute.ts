@@ -5,6 +5,7 @@
 
 import { Request } from 'express';
 import xlsx from 'xlsx';
+import { keyBy } from 'lodash';
 import { Route } from '@tupaia/server-boilerplate';
 
 export type ExportEntityHierarchiesRequest = Request<
@@ -15,8 +16,6 @@ export type ExportEntityHierarchiesRequest = Request<
 >;
 
 type ExportEntityHierarchiesData = {
-  grandparent_name: string;
-  grandparent_code: string;
   parent_name: string;
   parent_code: string;
   name: string;
@@ -41,33 +40,41 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
         hierarchy,
         hierarchy,
         {
-          fields: [
-            'grandparent_name',
-            'grandparent_code',
-            'parent_name',
-            'parent_code',
-            'name',
-            'code',
-            'type',
-            'attributes',
-          ],
+          fields: ['parent_code', 'name', 'code', 'type', 'attributes'],
         },
-        false,
+        true,
         false,
       );
 
-      const data = descendants.map((row: ExportEntityHierarchiesData) => ({
-        'grandparent name': row.grandparent_name,
-        'grandparent code': row.grandparent_code,
-        'parent name': row.parent_name,
-        'parent code': row.parent_code,
-        name: row.name,
-        code: row.code,
-        type: row.type,
-        attributes: Object.entries(row.attributes)
-          .map(([key, value]) => `${key}: ${value}`)
-          .join('\n'),
-      }));
+      const descendantsByCode = keyBy(descendants, 'code');
+
+      const data = descendants.map((row: ExportEntityHierarchiesData) => {
+        const record = {
+          'grandparent name': undefined,
+          'grandparent code': undefined,
+          'parent name': undefined,
+          'parent code': row.parent_code,
+          name: row.name,
+          code: row.code,
+          type: row.type,
+          attributes: Object.entries(row.attributes)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join('\n'),
+        };
+
+        if (row.parent_code) {
+          const parent = descendantsByCode[row.parent_code];
+          record['parent name'] = parent?.name;
+
+          if (parent?.parent_code) {
+            const grandparent = descendantsByCode[parent.parent_code];
+            record['grandparent name'] = grandparent?.name;
+            record['grandparent code'] = grandparent?.code;
+          }
+        }
+
+        return record;
+      });
 
       const projectEntity = await entityApi.getEntity(hierarchy, hierarchy, {
         fields: ['name'],

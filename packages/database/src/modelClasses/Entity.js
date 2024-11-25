@@ -179,11 +179,6 @@ export class EntityRecord extends DatabaseRecord {
     return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
   }
 
-  async getGrandParent(hierarchyId) {
-    const ancestors = await this.getAncestors(hierarchyId, { generational_distance: 2 });
-    return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
-  }
-
   async getAncestors(hierarchyId, criteria) {
     return this.model.getAncestorsOfEntities(hierarchyId, [this.id], criteria);
   }
