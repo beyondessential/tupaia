@@ -45,7 +45,7 @@ export function createApp(database, models) {
    * because it's possible for the server's IP address to change while server is running
    */
   setTrustedProxies(app); // Call it once immediately
-  setInterval(setTrustedProxies, TRUSTED_PROXIES_INTERVAL);
+  setInterval(() => setTrustedProxies(app), TRUSTED_PROXIES_INTERVAL);
 
   /**
    * Add middleware
