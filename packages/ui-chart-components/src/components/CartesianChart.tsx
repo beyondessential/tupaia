@@ -23,7 +23,8 @@ import {
   LineChart as LineChartComponent,
   AreaChart as AreaChartComponent,
 } from './Charts';
-import { getCartesianLegend, ReferenceLines, ChartTooltip as CustomTooltip } from './Reference';
+import { ReferenceLines, ChartTooltip as CustomTooltip } from './Reference';
+import { getCartesianChartLegend } from './Legend';
 import { XAxis as XAxisComponent, YAxes } from './Axes';
 
 const { Area, Bar, Composed, Line } = ChartType;
@@ -252,7 +253,7 @@ export const CartesianChart = ({
           <Legend
             verticalAlign={verticalAlign}
             align={align}
-            content={getCartesianLegend({
+            content={getCartesianChartLegend({
               chartConfig,
               getIsActiveKey,
               isExporting,
