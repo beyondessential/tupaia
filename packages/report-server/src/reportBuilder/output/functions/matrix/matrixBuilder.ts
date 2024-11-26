@@ -71,7 +71,15 @@ export class MatrixBuilder {
       });
     };
 
-    const { includeFields, excludeFields } = this.params.columns;
+    const { includeFields: originalIncludeFields, excludeFields } = this.params.columns;
+
+    // If the include fields are a matrix entity cell not in the table columns, don't include them
+    const includeFields = originalIncludeFields.filter(field => {
+      if (isMatrixEntityCell(field)) {
+        return this.table.getColumns().includes(field.entityLabel);
+      }
+      return true;
+    });
 
     const remainingFields = includeFields.includes('*')
       ? getRemainingFieldsFromRows(includeFields, excludeFields)
