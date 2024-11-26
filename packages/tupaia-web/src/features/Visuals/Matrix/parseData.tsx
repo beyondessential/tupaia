@@ -2,11 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { generatePath } from 'react-router-dom';
 import { MatrixColumnType, MatrixRowType, SearchFilter } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MatrixConfig, MatrixReportColumn, MatrixReportRow, MatrixEntityCell } from '@tupaia/types';
-import { ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../../../constants';
+import { URL_SEARCH_PARAMS } from '../../../constants';
 
 function isMatrixEntityCell(cell: unknown): cell is MatrixEntityCell {
   return typeof cell === 'object' && cell !== null && 'entityLabel' in cell && 'entityCode' in cell;
@@ -142,10 +141,7 @@ export const parseRows = (
 
     // if the row is a matrix entity cell, then we need to add the entityLink to the row
     if (isMatrixEntityCell(dataElement)) {
-      const entityLink = generatePath(ROUTE_STRUCTURE, {
-        projectCode: projectCode,
-        entityCode: dataElement.entityCode,
-      });
+      const entityLink = `/${projectCode}/${dataElement.entityCode}`;
       newResult.title = dataElement.entityLabel;
       newResult.entityLink = entityLink;
     }
@@ -172,14 +168,10 @@ export const parseColumns = (
     }
 
     if (entityCode) {
-      const entityLink = generatePath(ROUTE_STRUCTURE, {
-        projectCode: projectCode,
-        entityCode: entityCode,
-      });
       return {
         title,
         key,
-        entityLink,
+        entityLink: `/${projectCode}/${entityCode}`,
       };
     }
     // otherwise, handle as a regular column
