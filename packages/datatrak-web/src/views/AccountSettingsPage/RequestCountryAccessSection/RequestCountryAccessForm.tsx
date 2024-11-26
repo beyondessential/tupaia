@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { UseQueryResult } from '@tanstack/react-query';
-import { FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
+import { FormLabel, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import { Entity, ProjectCountryAccessListRequest, ProjectResponse } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useRequestProjectAccess } from '../../../api';
@@ -87,6 +87,23 @@ const StyledFormInput = styled(FormInput).attrs({
   }
 `;
 
+const Message = styled(Typography)`
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-align: left;
+  margin-block-end: 1rem;
+  width: 100%;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    text-align: center;
+    margin: 0;
+    font-weight: 500;
+    font-size: 1.1125rem;
+    flex: 1;
+    align-self: center;
+  }
+`;
+
 interface RequestCountryAccessFormProps {
   countryAccessList: UseQueryResult<ProjectCountryAccessListRequest.ResBody>;
   project?: ProjectResponse | null;
@@ -155,6 +172,10 @@ export const RequestCountryAccessForm = ({
       message,
       projectCode, // Should not be undefined by this point, but TS can’t pick up that form is disabled if project is undefined
     });
+  }
+
+  if (hasAccessToEveryCountry) {
+    return <Message>You have access to all available countries within this project.</Message>;
   }
 
   return (

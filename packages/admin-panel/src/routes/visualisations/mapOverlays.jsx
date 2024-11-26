@@ -142,7 +142,7 @@ const COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'mapOverlayVisualisation',
-      fileName: '{code}',
+      fileName: '{code}.json',
     },
   },
   {

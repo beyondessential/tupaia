@@ -84670,6 +84670,7 @@ export const EntityTypeEnumSchema = {
 		"msupply_store",
 		"nursing_zone",
 		"pacmossi_district",
+		"pacmossi_insecticide_test",
 		"pacmossi_spraying_site",
 		"pacmossi_village",
 		"postcode",
