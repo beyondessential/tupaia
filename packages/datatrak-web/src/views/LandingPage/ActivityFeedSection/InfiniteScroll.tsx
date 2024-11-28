@@ -40,37 +40,35 @@ interface InfiniteScrollProps {
   isFetchingNextPage?: boolean;
 }
 
-export const InfiniteScroll = ({
-  children,
-  onScroll,
-  hasNextPage,
-  isFetchingNextPage,
-}: InfiniteScrollProps) => {
-  const loader = useRef<HTMLDivElement | null>(null);
-  const container = useRef<HTMLDivElement | null>(null);
+export const InfiniteScroll = React.forwardRef<HTMLDivElement, InfiniteScrollProps>(
+  ({ children, onScroll, hasNextPage, isFetchingNextPage }: InfiniteScrollProps, containerRef) => {
+    const loader = useRef<HTMLDivElement | null>(null);
 
-  const handleScroll = () => {
-    if (!container.current || !loader.current || !hasNextPage) return;
-    const isVisible = getIsAtEndOfList(container.current, loader?.current);
-    if (isVisible && !isFetchingNextPage) onScroll();
-  };
-
-  useEffect(() => {
-    if (!container?.current || !loader?.current) return;
-
-    // add scroll listener
-    container?.current?.addEventListener('scroll', handleScroll);
-
-    // remove scroll listener on unmount
-    return () => {
-      container?.current?.removeEventListener('scroll', handleScroll);
+    const handleScroll = () => {
+      const refElement = (containerRef as React.MutableRefObject<HTMLDivElement | null>)?.current;
+      if (!refElement || !loader.current || !hasNextPage) return;
+      const isVisible = getIsAtEndOfList(refElement, loader.current);
+      if (isVisible && !isFetchingNextPage) onScroll();
     };
-  }, [loader?.current, container?.current, hasNextPage, isFetchingNextPage]);
 
-  return (
-    <ScrollBody ref={container}>
-      {children}
-      {hasNextPage && <Loading ref={loader}>Loading more items</Loading>}
-    </ScrollBody>
-  );
-};
+    useEffect(() => {
+      const refElement = (containerRef as React.MutableRefObject<HTMLDivElement | null>)?.current;
+      if (!refElement || !loader.current) return;
+
+      // add scroll listener
+      refElement.addEventListener('scroll', handleScroll);
+
+      // remove scroll listener on unmount
+      return () => {
+        refElement.removeEventListener('scroll', handleScroll);
+      };
+    }, [loader, containerRef, hasNextPage, isFetchingNextPage]);
+
+    return (
+      <ScrollBody ref={containerRef}>
+        {children}
+        {hasNextPage && <Loading ref={loader}>Loading more items</Loading>}
+      </ScrollBody>
+    );
+  },
+);

@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { HEADER_HEIGHT } from '../../../constants';
 import { ActivityFeedList } from './ActivityFeedList';
@@ -49,6 +49,14 @@ const Transition = React.forwardRef(function Transition(
 });
 
 const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () => void }) => {
+  const feedRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToTop = () => {
+    if (feedRef.current) {
+      feedRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Dialog
       open={expanded}
@@ -58,18 +66,20 @@ const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () =>
       fullScreen
     >
       <ExpandedWrapper>
-        <StickyMobileHeader onBack={onClose} title="Activity feed" />
+        <StickyMobileHeader onBack={onClose} title="Activity feed" onClick={scrollToTop} />
         <InfiniteListWrapper>
-          <InfiniteActivityFeed />
+          <InfiniteActivityFeed ref={feedRef} />
         </InfiniteListWrapper>
       </ExpandedWrapper>
     </Dialog>
   );
 };
 
+const MOBILE_PAGE_LIMIT = 6;
+
 export const MobileActivityFeed = () => {
   const [expanded, setExpanded] = useState(false);
-  const { data: activityFeed, hasNextPage } = useCurrentProjectActivityFeed();
+  const { data: activityFeed, hasNextPage } = useCurrentProjectActivityFeed(MOBILE_PAGE_LIMIT);
   // Only show first page of items on mobile when not expanded
   const firstPageItems = activityFeed?.pages[0]?.items ?? [];
   return (

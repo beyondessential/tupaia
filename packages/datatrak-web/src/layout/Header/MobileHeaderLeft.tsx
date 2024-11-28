@@ -28,8 +28,12 @@ const Logo = styled(IconButton)<{
   to: string;
 }>`
   padding: 0;
-  height: 1.5rem;
+
+  img {
+    max-height: 2rem;
+  }
 `;
+
 const UserDetailsContainer = styled.div`
   margin-inline-start: 0.5rem;
   height: 100%;
@@ -48,17 +52,28 @@ const UserName = styled(Typography)`
 
 export const MobileHeaderLeft = ({ onClickLogo }) => {
   const { isLoggedIn, projectId, fullName } = useCurrentUserContext();
+
+  if (isLoggedIn) {
+    return (
+      <Wrapper>
+        <Logo onClick={onClickLogo} component={RouterLink} to="/">
+          <img src="/mobile-logo.svg" alt="Tupaia Datatrak logo" width="100%" height="100%" />
+        </Logo>
+        {isLoggedIn && (
+          <UserDetailsContainer>
+            <UserName>{fullName}</UserName>
+            {projectId && <ChangeProjectButton />}
+          </UserDetailsContainer>
+        )}
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper>
       <Logo onClick={onClickLogo} component={RouterLink} to="/">
-        <img src="/mobile-logo.svg" alt="Tupaia Datatrak logo" width="100%" height="100%" />
+        <img src="/datatrak-logo-black.svg" alt="Tupaia Datatrak logo" width="100%" height="100%" />
       </Logo>
-      {isLoggedIn && (
-        <UserDetailsContainer>
-          <UserName>{fullName}</UserName>
-          {projectId && <ChangeProjectButton />}
-        </UserDetailsContainer>
-      )}
     </Wrapper>
   );
 };

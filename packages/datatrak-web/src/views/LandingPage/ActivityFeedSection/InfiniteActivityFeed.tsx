@@ -22,7 +22,7 @@ const Body = styled.div`
   }
 `;
 
-export const InfiniteActivityFeed = () => {
+export const InfiniteActivityFeed = React.forwardRef<HTMLDivElement, {}>((_props, ref) => {
   const {
     data: activityFeed,
     fetchNextPage,
@@ -36,6 +36,7 @@ export const InfiniteActivityFeed = () => {
         <SkeletonFeed />
       ) : (
         <InfiniteScroll
+          ref={ref}
           onScroll={fetchNextPage}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetching}
@@ -45,4 +46,4 @@ export const InfiniteActivityFeed = () => {
       )}
     </Body>
   );
-};
+});
