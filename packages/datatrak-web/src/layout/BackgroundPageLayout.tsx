@@ -27,11 +27,13 @@ export const Background = styled.div<{
   display: flex;
   margin-top: ${props => (props.$hideBorder ? '-1px' : 0)};
   ${({ theme, $mobileBackgroundImage }) =>
-    theme.breakpoints.down('sm') &&
     $mobileBackgroundImage &&
     css`
-      background-image: url(${$mobileBackgroundImage});
+      ${theme.breakpoints.down('sm')} {
+        background-image: url(${$mobileBackgroundImage});
+      }
     `}
+  }
 `;
 
 export const BackgroundPageLayout = ({

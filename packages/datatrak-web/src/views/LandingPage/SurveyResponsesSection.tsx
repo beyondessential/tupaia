@@ -10,7 +10,6 @@ import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api'
 import { displayDate } from '../../utils';
 import { LoadingTile, SurveyTickIcon, Tile } from '../../components';
 import { SectionHeading } from './SectionHeading';
-import { ResponsiveScrollBody } from './ResponsiveScrollBody';
 
 const Container = styled.section`
   grid-area: recentResponses;
@@ -18,9 +17,21 @@ const Container = styled.section`
   flex-direction: column;
 `;
 
-const ScrollBody = styled(ResponsiveScrollBody)`
+const ScrollBody = styled.div`
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  column-gap: 1rem;
+  row-gap: 0.6rem;
+
+  > span {
+    width: 18rem;
+    max-width: 100%;
+    //Reset flex grow and shrink
+    flex: 0 0 auto;
+  }
+
   ${({ theme }) => theme.breakpoints.up('md')} {
-    display: flex;
     flex-direction: column;
     overflow: auto;
   }

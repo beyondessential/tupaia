@@ -9,7 +9,6 @@ import { Typography } from '@material-ui/core';
 import { SurveyIcon, Tile, LoadingTile } from '../../components';
 import { useCurrentUserRecentSurveys } from '../../api';
 import { SectionHeading } from './SectionHeading';
-import { ResponsiveScrollBody } from './ResponsiveScrollBody';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -17,11 +16,24 @@ const RecentSurveys = styled.section`
   flex-direction: column;
 `;
 
-const ScrollBody = styled(ResponsiveScrollBody)<{
+const ScrollBody = styled.div<{
   $hasMoreThanOneSurvey: boolean;
 }>`
+  display: flex;
+  overflow-x: auto;
+  column-gap: 1rem;
+  row-gap: 0.6rem;
+
+  > span {
+    width: 18rem;
+    max-width: 100%;
+    //Reset flex grow and shrink
+    flex: 0 0 auto;
+  }
   // make the 2 row grid on desktop
   ${({ theme }) => theme.breakpoints.up('md')} {
+    display: grid;
+    grid-template-rows: 1fr;
     grid-auto-flow: row;
     grid-template-columns: ${({ $hasMoreThanOneSurvey }) =>
       $hasMoreThanOneSurvey ? ' repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr))' : '1fr'};
