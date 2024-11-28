@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useMapOverlays, useProject } from '../../../api/queries';
 import {
   DEFAULT_MAP_OVERLAY_ID,
@@ -18,6 +18,7 @@ import { EntityCode, ProjectCode } from '../../../types';
 export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { dashboardName } = useParams();
   const location = useLocation();
   const [urlSearchParams] = useSearchParams();
   const { data: project } = useProject(projectCode);
@@ -27,7 +28,8 @@ export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: Ent
   const selectedMapOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
   const selectedMapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
 
-  const isValidMapOverlayId = !!mapOverlaysByCode[selectedMapOverlay!];
+  const isValidMapOverlayId =
+    !!mapOverlaysByCode[selectedMapOverlay!] && !mapOverlaysByCode[selectedMapOverlay!].disabled;
   const overlayCodes = mapOverlaysByCode ? Object.keys(mapOverlaysByCode) : [];
 
   const getDefaultOverlayCode = () => {
@@ -36,18 +38,26 @@ export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: Ent
       const { defaultMeasure } = project;
 
       // if the defaultMeasure exists, use this
-      if (mapOverlaysByCode[defaultMeasure as string]) {
+      if (
+        defaultMeasure &&
+        mapOverlaysByCode[defaultMeasure] &&
+        !mapOverlaysByCode[defaultMeasure].disabled
+      ) {
         return defaultMeasure;
       }
 
       // if the generic default overlay exists, use this
-      if (mapOverlaysByCode[DEFAULT_MAP_OVERLAY_ID]) {
+      if (
+        mapOverlaysByCode[DEFAULT_MAP_OVERLAY_ID] &&
+        !mapOverlaysByCode[DEFAULT_MAP_OVERLAY_ID].disabled
+      ) {
         return DEFAULT_MAP_OVERLAY_ID;
       }
 
       // otherwise use the first overlay in the list
       if (allMapOverlays.length > 0) {
-        return allMapOverlays[0].code;
+        const firstNonDisabledOverlay = allMapOverlays.find(overlay => !overlay.disabled);
+        return firstNonDisabledOverlay?.code;
       }
     }
   };
@@ -62,6 +72,7 @@ export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: Ent
     }
 
     const defaultOverlayCode = getDefaultOverlayCode();
+
     if (defaultOverlayCode) {
       urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, defaultOverlayCode as string);
     }
@@ -74,5 +85,6 @@ export const useDefaultMapOverlay = (projectCode?: ProjectCode, entityCode?: Ent
       ...location,
       search: urlSearchParams.toString(),
     });
-  }, [JSON.stringify(mapOverlaysByCode), project, selectedMapOverlay]);
+  }, [JSON.stringify(mapOverlaysByCode), project, selectedMapOverlay, dashboardName]);
+  // include dashboardName in the dependencies to ensure that the default overlay is updated when the dashboard changes
 };

@@ -13,6 +13,7 @@ export interface Credentials {
   emailAddress: string;
   password: string;
   deviceName: string;
+  timezone: string;
 }
 
 export interface OneTimeCredentials {

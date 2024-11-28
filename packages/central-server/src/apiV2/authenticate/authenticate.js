@@ -1,13 +1,15 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import winston from 'winston';
-
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
-import { allowNoPermissions } from '../permissions';
+import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
+import { BruteForceRateLimiter } from './BruteForceRateLimiter';
+import { allowNoPermissions } from '../../permissions';
+import { checkUserLocationAccess } from './checkUserLocationAccess';
+import { respondToRateLimitedUser } from './respondToRateLimitedUser';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -110,21 +112,53 @@ const checkApiClientAuthentication = async req => {
  */
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
+  const { grantType } = req.query;
+  const consecutiveFailsRateLimiter = new ConsecutiveFailsRateLimiter(req.database);
+  const bruteForceRateLimiter = new BruteForceRateLimiter(req.database);
 
-  const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
-  const { user: apiClientUser } = await checkApiClientAuthentication(req);
+  if (await bruteForceRateLimiter.checkIsRateLimited(req)) {
+    const msBeforeNext = await bruteForceRateLimiter.getRetryAfter(req);
+    return respondToRateLimitedUser(msBeforeNext, res);
+  }
 
-  const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
-    req.models,
-    accessPolicy,
-  );
-  const authorizationObject = await getAuthorizationObject({
-    refreshToken,
-    user,
-    accessPolicy,
-    apiClientUser,
-    permissionGroups: permissionGroupsByCountryId,
-  });
+  if (await consecutiveFailsRateLimiter.checkIsRateLimited(req)) {
+    const msBeforeNext = await consecutiveFailsRateLimiter.getRetryAfter(req);
+    return respondToRateLimitedUser(msBeforeNext, res);
+  }
 
-  respond(res, authorizationObject);
+  // Check if the user is authorised
+  try {
+    const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
+    const { user: apiClientUser } = await checkApiClientAuthentication(req);
+    const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
+      req.models,
+      accessPolicy,
+    );
+
+    const authorizationObject = await getAuthorizationObject({
+      refreshToken,
+      user,
+      accessPolicy,
+      apiClientUser,
+      permissionGroups: permissionGroupsByCountryId,
+    });
+
+    await checkUserLocationAccess(req, user);
+
+    // Reset rate limiting on successful authorisation
+    await consecutiveFailsRateLimiter.resetFailedAttempts(req);
+    await bruteForceRateLimiter.resetFailedAttempts(req);
+
+    respond(res, authorizationObject, 200);
+  } catch (authError) {
+    if (authError.statusCode === 401) {
+      // Record failed login attempt to rate limiter
+      await bruteForceRateLimiter.addFailedAttempt(req);
+      if (grantType === GRANT_TYPES.PASSWORD || grantType === undefined) {
+        await consecutiveFailsRateLimiter.addFailedAttempt(req);
+      }
+    }
+
+    throw authError;
+  }
 }

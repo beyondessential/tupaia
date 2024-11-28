@@ -60,6 +60,7 @@ import { DhisInstanceModel } from './DhisInstance';
 import { DataElementDataServiceModel } from './DataElementDataService';
 import { SupersetInstanceModel } from './SupersetInstance';
 import { TaskModel } from './Task';
+import { UserCountryAccessAttemptModel } from './UserCountryAccessAttempt';
 import { TaskCommentModel } from './TaskComment';
 
 // export all models to be used in constructing a ModelRegistry
@@ -122,6 +123,7 @@ export const modelClasses = {
   UserEntityPermission: UserEntityPermissionModel,
   UserFavouriteDashboardItem: UserFavouriteDashboardItemModel,
   UserSession: UserSessionModel,
+  UserCountryAccessAttempt: UserCountryAccessAttemptModel,
 };
 
 // export any models and types that are extended in other packages
@@ -186,4 +188,8 @@ export { DashboardRelationRecord, DashboardRelationModel } from './DashboardRela
 export { OneTimeLoginRecord, OneTimeLoginModel } from './OneTimeLogin';
 export { AnswerModel, AnswerRecord } from './Answer';
 export { TaskModel, TaskRecord } from './Task';
+export {
+  UserCountryAccessAttemptModel,
+  UserCountryAccessAttemptRecord,
+} from './UserCountryAccessAttempt';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';

@@ -22,7 +22,7 @@ const OPTION_SET_COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'optionSets',
-      fileName: '{name}',
+      fileName: '{name}.xlsx',
     },
   },
   {

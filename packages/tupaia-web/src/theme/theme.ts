@@ -1,13 +1,24 @@
 import { createMuiTheme } from '@material-ui/core';
+import { MOBILE_BREAKPOINT } from '../constants';
 
 // MUI v4 doesn't support callbacks for theme overrides, so since these shades get used in multiple places, we need to define them here
 const LIGHT_BLACK = '#2e2f33';
 const DARK_BLACK = '#202124';
 const LIGHT_GREY = '#9BA0A6';
+const ERROR_ORANGE = '#f76853';
+
+const overMobileBreakpoint = `@media (min-width: ${MOBILE_BREAKPOINT})`;
 
 export const theme = createMuiTheme({
   typography: {
     fontSize: 16, // this needs to be 16 to correctly calculate the axis labels in recharts
+    h1: {
+      fontSize: '1rem', // page titles
+      fontWeight: 500,
+      [overMobileBreakpoint]: {
+        fontSize: '1.125rem',
+      },
+    },
     body1: {
       fontSize: '1rem',
     },
@@ -29,12 +40,16 @@ export const theme = createMuiTheme({
     text: {
       secondary: LIGHT_GREY,
     },
+    error: {
+      main: ERROR_ORANGE,
+    },
     success: {
       main: '#25d366',
     },
     form: {
       border: '#d9d9d9',
     },
+    tooltip: '#606368',
     overlaySelector: {
       overlayNameBackground: '#072849',
       menuBackground: '#203e5c', // Dark blue used for button and header background in mobile overlay selector, as well as the background of the menu list on desktop

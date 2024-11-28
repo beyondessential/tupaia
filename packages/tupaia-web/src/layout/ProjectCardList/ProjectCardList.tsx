@@ -54,7 +54,6 @@ export const ProjectCardList = ({
         .filter(project => {
           return project.names.includes(selectedCountry);
         })
-        .sort((a, b) => a.name.localeCompare(b.name))
         .map(project => ({
           ...project,
           ActionButton: getActionButton(project),

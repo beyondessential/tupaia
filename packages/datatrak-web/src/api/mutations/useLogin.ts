@@ -8,6 +8,7 @@ import { gaEvent, useFromLocation } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { ROUTES } from '../../constants';
+import { getBrowserTimeZone } from '@tupaia/utils';
 
 type LoginCredentials = {
   email: string;
@@ -26,6 +27,7 @@ export const useLogin = () => {
           emailAddress: email,
           password,
           deviceName: window.navigator.userAgent,
+          timezone: getBrowserTimeZone(),
         },
       });
     },

@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import { FormLabelProps, Typography } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
-import { ListItemType, SelectList } from '../../components';
+import { SelectList } from '@tupaia/ui-components';
 
 const DARK_BLUE = '#004975';
 
@@ -41,6 +41,20 @@ export const ResultItem = ({ name, parentName }) => {
       {name} | <span className="text-secondary">{parentName}</span>
     </>
   );
+};
+
+type ListItemType = Record<string, unknown> & {
+  children?: ListItemType[];
+  content: string | ReactNode;
+  value: string;
+  selected?: boolean;
+  icon?: ReactNode;
+  tooltip?: string;
+  button?: boolean;
+  disabled?: boolean;
+  labelProps?: FormLabelProps & {
+    component?: React.ElementType;
+  };
 };
 
 type SearchResults = DatatrakWebEntityDescendantsRequest.ResBody;

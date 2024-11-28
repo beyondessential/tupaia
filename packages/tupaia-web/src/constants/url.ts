@@ -16,6 +16,7 @@ export const URL_SEARCH_PARAMS = {
 
 export enum MODAL_ROUTES {
   PROJECTS = 'projects',
+  PROJECT_SELECT = 'project-select',
   LOGIN = 'login',
   REGISTER = 'register',
   FORGOT_PASSWORD = 'forgot-password',

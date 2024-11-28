@@ -58,7 +58,7 @@ export const UserMenu = () => {
         onCloseMenu={onCloseMenu}
         openProjectModal={openProjectModal}
       />
-      {projectModalOpen && <ProjectSelectModal onClose={closeProjectModal} />}
+      {projectModalOpen && <ProjectSelectModal onBack={closeProjectModal} />}
     </Wrapper>
   );
 };
