@@ -911,6 +911,21 @@ export interface LesmisSessionUpdate {
   'id'?: string;
   'refresh_token'?: string;
 }
+export interface LoginAttempts {
+  'expire'?: string | null;
+  'key': string;
+  'points': number;
+}
+export interface LoginAttemptsCreate {
+  'expire'?: string | null;
+  'key': string;
+  'points'?: number;
+}
+export interface LoginAttemptsUpdate {
+  'expire'?: string | null;
+  'key'?: string;
+  'points'?: number;
+}
 export interface MapOverlay {
   'code': string;
   'config': MapOverlayConfig;
@@ -1866,6 +1881,7 @@ export enum EntityTypeEnum {
   'pacmossi_district' = 'pacmossi_district',
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
+  'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
