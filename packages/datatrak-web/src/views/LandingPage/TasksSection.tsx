@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import { FlexSpaceBetween, Button as UIButton } from '@tupaia/ui-components';
@@ -23,15 +23,22 @@ const SectionContainer = styled.section`
   }
 `;
 
-const Paper = styled.div`
-  text-align: center;
-
+const Paper = styled.div<{ $hasTasks?: boolean }>`
   flex: 1;
+  text-align: center;
   overflow: auto;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    background: ${({ theme }) => theme.palette.background.paper};
-    padding: 1rem 1.25rem;
-    border-radius: 10px;
+  background: ${({ theme }) => theme.palette.background.paper};
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+
+  ${({ theme, $hasTasks }) =>
+    $hasTasks &&
+    css`
+      ${theme.breakpoints.down('sm')} {
+        background: none;
+        padding: 0;
+      }
+    `}
   }
 `;
 
@@ -123,11 +130,15 @@ export const TasksSection = () => {
   const tasks = data.tasks;
   const hasTasks = isSuccess && tasks?.length > 0;
 
-  let Contents: React.ReactNode;
-  if (isLoading) {
-    Contents = <LoadingTile count={4} />;
-  } else if (hasTasks) {
-    Contents = (
+  const renderContents = () => {
+    if (isLoading) {
+      return <LoadingTile count={4} />;
+    }
+    if (!hasTasks) {
+      return <NoTasksSection />;
+    }
+
+    return (
       <>
         {tasks.map(task => (
           <TaskTile key={task.id} task={task} />
@@ -135,9 +146,9 @@ export const TasksSection = () => {
         <ViewMoreTasksButton numberOfPages={data.numberOfPages} />
       </>
     );
-  } else {
-    Contents = <NoTasksSection />;
-  }
+  };
+
+  console.log('hasTasks', hasTasks);
 
   return (
     <SectionContainer>
@@ -149,7 +160,7 @@ export const TasksSection = () => {
           </TopViewMoreButton>
         )}
       </FlexSpaceBetween>
-      <Paper>{Contents}</Paper>
+      <Paper $hasTasks={hasTasks}>{renderContents()}</Paper>
     </SectionContainer>
   );
 };
