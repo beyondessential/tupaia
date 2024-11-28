@@ -109,15 +109,20 @@ const SurveysImage = styled.img`
   align-items: center;
   top: 50%;
   transform: translateY(-50%);
-  right: 0rem;
+  right: 0;
   height: 130%;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    right: -1rem;
+    height: 120%;
+  }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     right: -1rem;
     height: 130%;
   }
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    height: 140%;
+    height: 150%;
   }
 `;
 
