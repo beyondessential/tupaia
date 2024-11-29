@@ -3,15 +3,21 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import fs from 'fs';
-import { respondWithDownload, ValidationError } from '@tupaia/utils';
+import { respondWithDownload, UnauthenticatedError, ValidationError } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';
 import { RouteHandler } from '../RouteHandler';
-import { allowNoPermissions } from '../../permissions';
 
 export class DownloadHandler extends RouteHandler {
+  // The user must be logged in to download an export
   async assertUserHasAccess() {
-    // This is a special case where we don't need to check permissions, as the user must be logged in anyway and the user can't generate an export without specific permissions
-    await this.assertPermissions(allowNoPermissions);
+    await this.assertPermissions(async () => {
+      const apiClient = await this.models.apiClient.findOne({ user_account_id: this.req.userId });
+
+      if (apiClient) {
+        throw new UnauthenticatedError('Session not found or has expired. Please log in again.');
+      }
+      return true;
+    });
   }
 
   async handleRequest() {
