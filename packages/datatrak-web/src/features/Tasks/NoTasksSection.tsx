@@ -9,7 +9,7 @@ import { Button as UIButton } from '@tupaia/ui-components';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 
-const Container = styled.div`
+const DesktopContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,7 +48,7 @@ const Button = styled(UIButton)`
 `;
 
 const Desktop = () => (
-  <Container>
+  <DesktopContainer>
     <Image />
     <Text>
       Congratulations, you have no tasks to complete! You can view all other tasks for your project
@@ -57,7 +57,7 @@ const Desktop = () => (
     <Button to={ROUTES.TASKS} component={Link}>
       View all tasks
     </Button>
-  </Container>
+  </DesktopContainer>
 );
 
 const MobileContainer = styled.div`
@@ -78,10 +78,11 @@ const MobileContainer = styled.div`
     margin-block-end: 0;
   }
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
 `;
+
 const Mobile = () => (
   <MobileContainer>
     <Text>You have no tasks to complete.</Text>

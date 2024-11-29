@@ -48,11 +48,22 @@ interface StickyMobileHeaderProps {
   title: string | React.ReactNode;
   onBack?: () => void;
   onClose?: () => void;
+  onClick?: () => void;
 }
 
-export const StickyMobileHeader = ({ onBack, title, onClose }: StickyMobileHeaderProps) => {
+export const StickyMobileHeader = ({
+  onBack,
+  title,
+  onClose,
+  onClick,
+}: StickyMobileHeaderProps) => {
   return (
-    <MobileHeaderWrapper>
+    <MobileHeaderWrapper
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? 'Header, click to scroll list back to top' : undefined}
+    >
       {onBack && (
         <ButtonContainer>
           <Button onClick={onBack}>
