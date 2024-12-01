@@ -30,6 +30,7 @@ const CellLink = styled(RouterLink)`
   text-decoration: none;
   &:hover {
     text-decoration: underline;
+    font-weight: 700;
   }
 `;
 
