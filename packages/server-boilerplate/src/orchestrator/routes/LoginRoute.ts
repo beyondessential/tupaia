@@ -30,8 +30,8 @@ export class LoginRoute extends Route<LoginRequest> {
   public async buildResponse() {
     const { apiName } = this.req.ctx;
     const credentials = this.req.body;
-
-    const response = await this.authConnection.login(credentials, apiName);
+    const clientIp = this.req.ip;
+    const response = await this.authConnection.login(credentials, apiName, clientIp);
 
     if (this.req.ctx.verifyLogin) {
       this.req.ctx.verifyLogin(new AccessPolicy(response.accessPolicy));
