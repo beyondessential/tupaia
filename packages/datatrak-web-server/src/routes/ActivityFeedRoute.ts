@@ -52,9 +52,10 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
 
   public async buildResponse() {
     const { query, models, accessPolicy } = this.req;
-    const { page: queryPage, projectId } = query;
+    const { page: queryPage, pageLimit: queryPageLimit, projectId } = query;
 
     const page = queryPage ? parseInt(queryPage, 10) : 0;
+    const pageLimit = queryPageLimit ? parseInt(queryPageLimit, 10) : NUMBER_PER_PAGE;
 
     const pinned = page === 0 ? await this.getPinnedItem() : undefined;
 
@@ -87,7 +88,7 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
       conditions,
       {
         page,
-        pageLimit: NUMBER_PER_PAGE,
+        pageLimit,
         joinWith: RECORDS.SURVEY_RESPONSE,
         joinCondition: [`${RECORDS.FEED_ITEM}.record_id`, `${RECORDS.SURVEY_RESPONSE}.id`],
         joinType: JOIN_TYPES.LEFT,

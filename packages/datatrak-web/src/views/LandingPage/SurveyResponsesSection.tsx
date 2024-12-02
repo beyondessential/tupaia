@@ -18,18 +18,22 @@ const Container = styled.section`
 `;
 
 const ScrollBody = styled.div`
-  overflow: auto;
-  > span {
-    margin-bottom: 0.6rem;
-  }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  column-gap: 1rem;
+  row-gap: 0.6rem;
 
-    > span {
-      min-width: 15rem;
-      margin-right: 1rem;
-    }
+  > span {
+    width: 18rem;
+    max-width: 100%;
+    //Reset flex grow and shrink
+    flex: 0 0 auto;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: column;
+    overflow: auto;
   }
 `;
 
