@@ -77,6 +77,7 @@ const IconWrapper = styled.div<{ $hasIcon?: boolean }>`
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 1.3rem;
     display: ${({ $hasIcon }) => ($hasIcon ? 'flex' : 'none')};
   }
 `;

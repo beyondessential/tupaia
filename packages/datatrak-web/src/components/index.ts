@@ -15,6 +15,7 @@ export { InputHelperText } from './InputHelperText';
 export { Modal } from './Modal';
 export { PageTitleBar } from './PageTitleBar';
 export { SmallModal } from './SmallModal';
+export { SlideTransition } from './SlideTransition';
 export { TextInput } from './TextInput';
 export { Tile, LoadingTile } from './Tile';
 export { Toast } from './Toast';

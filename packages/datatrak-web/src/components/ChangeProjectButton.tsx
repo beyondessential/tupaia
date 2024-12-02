@@ -30,7 +30,7 @@ const Container = styled.div`
     }
 
     :before {
-      color: ${({ theme }) => theme.palette.text.secondary};
+      color: ${({ theme }) => theme.palette.text.primary};
       content: '|';
       margin-inline: 0.25rem;
     }
@@ -56,11 +56,15 @@ const ProjectButton = styled(Button).attrs({
   .MuiButton-root,
   .MuiButton-label {
     font-size: inherit;
-    font-weight: inherit;
+    font-weight: 500;
     line-height: inherit;
     inline-size: fit-content;
     margin: 0;
     padding: 0;
+  }
+
+  .MuiTypography-root & .MuiButton-label {
+    font-weight: 400;
   }
 `;
 
