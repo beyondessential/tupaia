@@ -13,6 +13,8 @@ import type {
   RangePresentationOptions,
   ConditionalPresentationOptions,
   PresentationOptionRange,
+  MatrixVizBuilderConfig,
+  MatrixEntityCell,
 } from './matricies';
 import type { ComponentConfig } from './components';
 import type { ChartConfig, ChartPresentationOptions } from './charts';
@@ -62,6 +64,8 @@ export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig |
 export { ValueType, ExportPresentationOptions, DatePickerOffsetSpec } from './common';
 export type {
   MatrixConfig,
+  MatrixEntityCell,
+  MatrixVizBuilderConfig,
   PresentationOptionCondition,
   MatrixPresentationOptions,
   ConditionsObject,
