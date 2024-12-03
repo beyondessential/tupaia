@@ -63,7 +63,7 @@ const Panel = styled.div`
 `;
 
 const SelectList = styled.div`
-    h100%;
+  height: 100%;
   border: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
@@ -118,7 +118,7 @@ export const MobileTaskFilters = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_event, newValue) => {
     setValue(newValue);
   };
 
