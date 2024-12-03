@@ -24,11 +24,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: self-start;
   padding-inline-end: 2.7rem;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    flex-direction: column;
-    align-items: flex-start;
-    padding-inline-end: 0;
-  }
 `;
 
 const HeadingContainer = styled.div`

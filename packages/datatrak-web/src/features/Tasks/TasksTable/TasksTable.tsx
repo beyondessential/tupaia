@@ -33,6 +33,12 @@ const Container = styled.div`
     border-radius: 3px;
     max-height: 100%;
   }
+
+  ${({ theme }) => theme.breakpoints.down('xs')} {
+    table .MuiTableRow-head:nth-child(2) {
+      display: none;
+    }
+  }
 `;
 
 const ActionCellContent = styled.div`
