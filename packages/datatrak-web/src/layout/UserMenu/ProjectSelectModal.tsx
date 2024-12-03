@@ -8,7 +8,8 @@ import { Paper } from '@material-ui/core';
 import { ProjectSelectForm } from '@tupaia/ui-components';
 import { RequestProjectAccess } from '../../features';
 import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
-import { Modal, SlideTransition } from '../../components';
+import { Modal } from '../../components/Modal';
+import { SlideTransition } from '../../components/SlideTransition';
 
 const StyledModal = styled(Modal)`
   //  The mobile styles are specific to the project select modal in datatrak-web so they are included here
@@ -22,10 +23,10 @@ const StyledModal = styled(Modal)`
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 100%;
+        block-size: 100%;
 
         > div {
-          max-height: 100%;
+          max-block-size: 100%;
         }
       }
     }
@@ -52,7 +53,7 @@ const StyledModal = styled(Modal)`
       padding-block: 0.3rem;
 
       > li {
-        border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+        border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
 
         .MuiButtonBase-root {
           font-size: 0.75rem;
