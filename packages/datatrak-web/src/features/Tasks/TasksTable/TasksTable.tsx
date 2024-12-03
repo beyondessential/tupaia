@@ -20,6 +20,7 @@ import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
 import { RepeatScheduleFilter } from './RepeatScheduleFilter';
+import { MobileTaskFilters } from './MobileTaskFilters';
 
 const Container = styled.div`
   display: flex;
@@ -259,6 +260,7 @@ export const TasksTable = () => {
         noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
       />
+      <MobileTaskFilters />
     </Container>
   );
 };

@@ -1,0 +1,176 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { TransitionProps } from '@material-ui/core/transitions';
+import Slide from '@material-ui/core/Slide';
+import { Tabs, Tab, Fab, Typography } from '@material-ui/core';
+import { FiltersIcon, Modal, Button } from '../../../components';
+
+const FilterButton = styled(Fab).attrs({ color: 'primary' })`
+  position: absolute;
+  bottom: 1rem;
+  right: 2rem;
+`;
+
+const StyledModal = styled(Modal)`
+  .MuiDialog-scrollPaper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .MuiPaper-root {
+    max-height: 600px;
+
+    > div {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+`;
+
+const StyledTabs = styled(Tabs)`
+  border: 1px solid ${({ theme }) => theme.palette.primary.main};
+  border-radius: 5px;
+  margin-block-start: 1.5rem;
+
+  .MuiTabs-indicator {
+    display: none;
+  }
+
+  .MuiTab-root {
+    border-right: 1px solid ${({ theme }) => theme.palette.primary.main};
+    color: ${({ theme }) => theme.palette.text.primary};
+
+    &.Mui-selected {
+      background: rgba(50, 141, 229, 0.1);
+    }
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+`;
+
+const Panel = styled.div`
+  padding: 1rem 0;
+  flex: 1;
+`;
+
+const SelectList = styled.div`
+    h100%;
+  border: 1px solid ${({ theme }) => theme.palette.divider};
+`;
+
+const DialogActions = styled.div`
+  display: flex;
+  padding: 8px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Title = styled(Typography).attrs({
+  variant: 'h2',
+})`
+  font-size: 1.125rem;
+`;
+
+/**
+ * Taken from [Material UI's example](https://v4.mui.com/components/dialogs/#full-screen-dialogs) to make the dialog slide up from the bottom
+ */
+export const SlideTransition = React.forwardRef(function Transition(
+  props: TransitionProps & { children?: React.ReactElement },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const TabPanel = ({ children, value, index, ...props }) => {
+  if (value !== index) {
+    return null;
+  }
+
+  return (
+    <Panel
+      role="tabpanel"
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...props}
+    >
+      {children}
+    </Panel>
+  );
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+export const MobileTaskFilters = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const openFilters = () => {
+    setIsOpen(true);
+  };
+
+  const onClose = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      <FilterButton onClick={openFilters}>
+        <FiltersIcon />
+      </FilterButton>
+      <StyledModal
+        open={isOpen}
+        onClose={onClose}
+        disablePortal={false}
+        fullScreen
+        TransitionComponent={SlideTransition}
+      >
+        <Title>Filter by</Title>
+        <StyledTabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+          <Tab label="Survey" {...a11yProps(0)} />
+          <Tab label="Entity" {...a11yProps(1)} />
+          <Tab label="Assignee" {...a11yProps(2)} />
+        </StyledTabs>
+        <TabPanel value={value} index={0}>
+          <SelectList>Survey options</SelectList>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <SelectList>Entity options</SelectList>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <SelectList>Assignee options</SelectList>
+        </TabPanel>
+        <DialogActions>
+          <Button variant="text" color="default">
+            Clear filters
+          </Button>
+          <Button>Apply</Button>
+        </DialogActions>
+      </StyledModal>
+    </>
+  );
+};
