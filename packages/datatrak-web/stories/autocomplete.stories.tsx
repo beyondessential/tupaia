@@ -2,12 +2,11 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { Autocomplete } from '../src/components/Autocomplete';
-import throttle from 'lodash.throttle';
+import { MobileAutocomplete } from '../src/features/Tasks/TasksTable/MobileAutocomplete';
 
 const Container = styled.div`
   position: relative;
@@ -23,9 +22,9 @@ const Container = styled.div`
 
 const queryClient = new QueryClient();
 
-const meta: Meta<typeof Autocomplete> = {
-  title: 'components/Autocomplete',
-  component: Autocomplete,
+const meta: Meta<typeof MobileAutocomplete> = {
+  title: 'components/MobileAutocomplete',
+  component: MobileAutocomplete,
   decorators: [
     Story => (
       <QueryClientProvider client={queryClient}>
@@ -38,13 +37,7 @@ const meta: Meta<typeof Autocomplete> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Autocomplete>;
-
-const StyledAutocomplete = styled(Autocomplete)`
-  .MuiAutocomplete-popper {
-    position: relative;
-  }
-`;
+type Story = StoryObj<typeof MobileAutocomplete>;
 
 const useData = () => {
   const records = [
@@ -83,18 +76,7 @@ const useData = () => {
 
 export const Simple: Story = {
   render: () => {
-    const [selectedValue, setSelectedValue] = useState('');
-    const [searchValue, setSearchValue] = useState('');
-
-    const onChange = (newSelection: string | null) => {
-      setSelectedValue(newSelection ?? '');
-    };
-
     const { data = [], isLoading } = useData();
-
-    const onChangeAssignee = (_e, newSelection: any | null) => {
-      onChange(newSelection ?? null);
-    };
 
     const options =
       data?.map(user => ({
@@ -104,28 +86,11 @@ export const Simple: Story = {
       })) ?? [];
 
     return (
-      <StyledAutocomplete
-        label="Assignee"
+      <MobileAutocomplete
         options={options}
-        value={selectedValue}
-        onChange={onChangeAssignee}
+        isLoading={isLoading}
+        label="Assignee"
         name="assignee"
-        onInputChange={throttle((e, newValue) => {
-          if (!e) return;
-          setSearchValue(newValue);
-        }, 100)}
-        inputValue={searchValue}
-        getOptionLabel={option => option.label}
-        getOptionSelected={(option, selected) => option.id === selected?.id}
-        placeholder="Search..."
-        loading={isLoading}
-        muiProps={{
-          debug: true,
-          disableCloseOnSelect: true,
-          freeSolo: true,
-          disableClearable: true,
-          disablePortal: true,
-        }}
       />
     );
   },

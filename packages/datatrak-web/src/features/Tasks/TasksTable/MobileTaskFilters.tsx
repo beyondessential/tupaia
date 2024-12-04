@@ -9,6 +9,8 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import Slide from '@material-ui/core/Slide';
 import { Tabs, Tab, Fab, Typography } from '@material-ui/core';
 import { FiltersIcon, Modal, Button } from '../../../components';
+import { MobileAutocomplete } from './MobileAutocomplete.tsx';
+import { useSurveys } from '../../../api';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   position: absolute;
@@ -21,15 +23,16 @@ const StyledModal = styled(Modal)`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-  }
-  .MuiPaper-root {
-    max-height: 600px;
 
-    > div {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    > .MuiPaper-root {
+      max-height: 600px;
+
+      > div {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
     }
   }
 `;
@@ -60,6 +63,7 @@ const StyledTabs = styled(Tabs)`
 const Panel = styled.div`
   padding: 1rem 0;
   flex: 1;
+  overflow: auto;
 `;
 
 const SelectList = styled.div`
@@ -114,6 +118,17 @@ function a11yProps(index) {
   };
 }
 
+const SurveyFilter = () => {
+  const { data = [], isLoading } = useSurveys();
+  const options =
+    data?.map(item => ({
+      ...item,
+      value: item.id,
+      label: item.name,
+    })) ?? [];
+  return <MobileAutocomplete label="" options={options} isLoading={isLoading} />;
+};
+
 export const MobileTaskFilters = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(0);
@@ -156,7 +171,7 @@ export const MobileTaskFilters = () => {
           <Tab label="Assignee" {...a11yProps(2)} />
         </StyledTabs>
         <TabPanel value={value} index={0}>
-          <SelectList>Survey options</SelectList>
+          <SurveyFilter />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <SelectList>Entity options</SelectList>
