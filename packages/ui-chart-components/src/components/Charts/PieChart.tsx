@@ -21,7 +21,8 @@ import { ChartReport, PieChartConfig, PieChartSegmentConfig } from '@tupaia/type
 import { CHART_COLOR_PALETTE, OFF_WHITE } from '../../constants';
 import { isMobile } from '../../utils';
 import { LegendPosition } from '../../types';
-import { getPieLegend, TooltipContainer } from '../Reference';
+import { TooltipContainer } from '../Reference';
+import { getPieChartLegend } from '../Legend';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -202,7 +203,7 @@ export const PieChart = ({
           layout={layout as LegendProps['layout']}
           verticalAlign={verticalAlign as LegendProps['verticalAlign']}
           align={align as LegendProps['align']}
-          content={getPieLegend({
+          content={getPieChartLegend({
             isEnlarged,
             isExporting,
             legendPosition,

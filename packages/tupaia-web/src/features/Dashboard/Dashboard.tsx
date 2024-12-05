@@ -181,7 +181,7 @@ export const Dashboard = () => {
           </ScrollBody>
           <EnlargedDashboardItem entityName={entity?.name} />
           <ExportDashboard />
-          <SubscribeModal />
+          <SubscribeModal key={activeDashboard?.code} />
         </Panel>
       </DashboardContextProvider>
     </ErrorBoundary>

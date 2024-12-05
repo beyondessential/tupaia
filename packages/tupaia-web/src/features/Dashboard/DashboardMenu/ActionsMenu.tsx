@@ -49,8 +49,8 @@ export const ActionsMenu = () => {
         label: 'Subscribed',
         ActionIcon: StyledCheckCircleIcon,
         color: 'primary',
-        toolTipTitle: 'Remove yourself from email updates',
         action: toggleSubscribeModal,
+        toolTipTitle: 'Unsubscribe from email updates',
       });
     } else {
       menuOptions.push({
