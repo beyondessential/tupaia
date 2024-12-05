@@ -10,7 +10,12 @@ import Slide from '@material-ui/core/Slide';
 import { Tabs, Tab, Fab, Typography } from '@material-ui/core';
 import { FiltersIcon, Modal, Button } from '../../../components';
 import { MobileAutocomplete } from './MobileAutocomplete.tsx';
-import { useSurveys } from '../../../api';
+import {
+  useCurrentUserContext,
+  useProjectEntities,
+  useProjectSurveys,
+  useSurveys,
+} from '../../../api';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   position: absolute;
@@ -119,16 +124,33 @@ function a11yProps(index) {
 }
 
 const SurveyFilter = ({ onChange }) => {
-  const { data = [], isLoading } = useSurveys();
+  const user = useCurrentUserContext();
+  console.log('user', user);
+  const { data = [], isLoading } = useProjectSurveys(user.projectId);
   const options =
     data?.map(item => ({
       ...item,
       value: item.id,
       label: item.name,
     })) ?? [];
-
   const handleChange = newValue => {
     onChange({ id: 'survey.name', value: newValue.name });
+  };
+
+  return <MobileAutocomplete options={options} isLoading={isLoading} onChange={handleChange} />;
+};
+
+const EntityFilter = ({ onChange }) => {
+  const user = useCurrentUserContext();
+  const { data = [], isLoading } = useProjectEntities(user.project?.code);
+  const options =
+    data?.map(item => ({
+      ...item,
+      value: item.id,
+      label: item.name,
+    })) ?? [];
+  const handleChange = newValue => {
+    onChange({ id: 'entity.name', value: newValue.name });
   };
 
   return <MobileAutocomplete options={options} isLoading={isLoading} onChange={handleChange} />;
@@ -143,7 +165,6 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
   };
 
   const handleChangeFilters = newEntry => {
-    console.log('filters changed', filters, newEntry);
     const originalFilters = [...filters];
     const index = originalFilters.findIndex(filter => filter.id === newEntry.id);
 
@@ -195,7 +216,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           <SurveyFilter onChange={handleChangeFilters} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <SelectList>Entity options</SelectList>
+          <EntityFilter onChange={handleChangeFilters} />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <SelectList>Assignee options</SelectList>

@@ -10,7 +10,6 @@ import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { TasksContentWrapper } from '../../layout';
 import { TaskMetrics } from '../../components/TaskMetrics';
-import { useIsMobile } from '../../utils';
 
 const ButtonContainer = styled.div`
   padding-block-end: 0.5rem;
@@ -47,25 +46,16 @@ const ContentWrapper = styled(TasksContentWrapper)`
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
-  const isMobile = useIsMobile();
   return (
     <>
-      {isMobile ? (
+      <TaskPageHeader title="Tasks" backTo="/">
+        <TaskMetrics />
         <ButtonContainer>
           <CreateButton onClick={toggleCreateModal}>
             <AddIcon /> Create task
           </CreateButton>
         </ButtonContainer>
-      ) : (
-        <TaskPageHeader title="Tasks" backTo="/">
-          <TaskMetrics />
-          <ButtonContainer>
-            <CreateButton onClick={toggleCreateModal}>
-              <AddIcon /> Create task
-            </CreateButton>
-          </ButtonContainer>
-        </TaskPageHeader>
-      )}
+      </TaskPageHeader>
       <ContentWrapper>
         <TasksTable />
         {createModalOpen && <CreateTaskModal onClose={toggleCreateModal} />}

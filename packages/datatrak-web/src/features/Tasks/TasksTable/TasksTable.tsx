@@ -35,7 +35,7 @@ const Container = styled.div`
     max-height: 100%;
   }
 
-  ${({ theme }) => theme.breakpoints.down('xs')} {
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     table .MuiTableRow-head:nth-child(2) {
       display: none;
     }
@@ -82,13 +82,9 @@ export const useTasksTable = () => {
       ({ value }) => value !== null && value !== undefined && value !== '',
     );
 
-    console.log('nonEmptyFilters', nonEmptyFilters);
-    console.log('filters', filters);
-
     if (JSON.stringify(nonEmptyFilters) === JSON.stringify(filters)) return;
 
     if (nonEmptyFilters.length === 0) {
-      console.log('set');
       searchParams.delete('filters');
       setSearchParams(searchParams);
       return;

@@ -14,16 +14,17 @@ export const useProjectSurveys = (
 ) => {
   return useQuery(
     ['surveys', projectId, selectedCountryCode],
-    (): Promise<DatatrakWebSurveyRequest.ResBody[]> =>
-      get('surveys', {
+    (): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
+      return get('surveys', {
         params: {
           fields: ['name', 'code', 'id', 'survey_group.name'],
           projectId,
-          countryCode: selectedCountryCode,
+          ...(selectedCountryCode && { countryCode: selectedCountryCode }),
         },
-      }),
+      });
+    },
     {
-      enabled: !!projectId && !!selectedCountryCode,
+      enabled: !!projectId,
     },
   );
 };

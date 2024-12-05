@@ -17,6 +17,9 @@ const BackButton = styled(Button)`
   .MuiSvgIcon-root {
     font-size: 1.3rem;
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -30,8 +33,8 @@ const HeadingContainer = styled.div`
   display: flex;
   align-items: center;
   margin-inline-end: 1.2rem;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    margin-inline-end: 0;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 
@@ -56,7 +59,6 @@ const ContentWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   width: 100%;
-  flex: 1;
   ${({ theme }) => theme.breakpoints.down('xs')} {
     padding-inline-start: 1rem;
     flex-direction: column;
