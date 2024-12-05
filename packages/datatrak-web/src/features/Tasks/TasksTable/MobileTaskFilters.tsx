@@ -118,7 +118,7 @@ function a11yProps(index) {
   };
 }
 
-const SurveyFilter = () => {
+const SurveyFilter = ({ onChange }) => {
   const { data = [], isLoading } = useSurveys();
   const options =
     data?.map(item => ({
@@ -126,15 +126,36 @@ const SurveyFilter = () => {
       value: item.id,
       label: item.name,
     })) ?? [];
-  return <MobileAutocomplete label="" options={options} isLoading={isLoading} />;
+
+  const handleChange = newValue => {
+    onChange({ id: 'survey.name', value: newValue.name });
+  };
+
+  return <MobileAutocomplete options={options} isLoading={isLoading} onChange={handleChange} />;
 };
 
-export const MobileTaskFilters = () => {
+export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(0);
 
-  const handleChange = (_event, newValue) => {
+  const onChangeTab = (_event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleChangeFilters = newEntry => {
+    console.log('filters changed', filters, newEntry);
+    const originalFilters = [...filters];
+    const index = originalFilters.findIndex(filter => filter.id === newEntry.id);
+
+    if (index !== -1) {
+      // If it exists, overwrite the existing entry
+      originalFilters[index] = newEntry;
+    } else {
+      // Otherwise, add the new entry to the array
+      originalFilters.push(newEntry);
+    }
+
+    onChangeFilters(originalFilters);
   };
 
   const openFilters = () => {
@@ -160,7 +181,7 @@ export const MobileTaskFilters = () => {
         <Title>Filter by</Title>
         <StyledTabs
           value={value}
-          onChange={handleChange}
+          onChange={onChangeTab}
           indicatorColor="primary"
           textColor="primary"
           variant="fullWidth"
@@ -171,7 +192,7 @@ export const MobileTaskFilters = () => {
           <Tab label="Assignee" {...a11yProps(2)} />
         </StyledTabs>
         <TabPanel value={value} index={0}>
-          <SurveyFilter />
+          <SurveyFilter onChange={handleChangeFilters} />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <SelectList>Entity options</SelectList>
@@ -183,7 +204,7 @@ export const MobileTaskFilters = () => {
           <Button variant="text" color="default">
             Clear filters
           </Button>
-          <Button>Apply</Button>
+          <Button onClick={() => onClose()}>Apply</Button>
         </DialogActions>
       </StyledModal>
     </>

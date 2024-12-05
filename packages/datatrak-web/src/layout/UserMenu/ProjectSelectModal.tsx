@@ -10,6 +10,7 @@ import { RequestProjectAccess } from '../../features';
 import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
 import { Modal } from '../../components/Modal';
 import { SlideTransition } from '../../components/SlideTransition';
+import { useIsMobile } from '../../utils';
 
 const StyledModal = styled(Modal)`
   //  The mobile styles are specific to the project select modal in datatrak-web so they are included here
@@ -99,6 +100,7 @@ export const ProjectSelectModal = ({ onBack }: ModalProps) => {
   const [requestAccessProjectCode, setRequestAccessProjectCode] = useState<string | null>(null);
   const { data: projects, isLoading } = useProjects();
   const { mutate: onConfirm, isLoading: isConfirming } = useEditUser(onBack);
+  const isMobile = useIsMobile();
 
   return (
     // Enable the portal so it displays over any other content and we don't get z-index issues
@@ -107,8 +109,8 @@ export const ProjectSelectModal = ({ onBack }: ModalProps) => {
       onClose={onBack}
       PaperComponent={PaperComponent}
       disablePortal={false}
-      fullScreen
-      TransitionComponent={SlideTransition}
+      fullScreen={isMobile}
+      TransitionComponent={isMobile ? SlideTransition : undefined}
     >
       {requestAccessProjectCode ? (
         <RequestProjectAccess

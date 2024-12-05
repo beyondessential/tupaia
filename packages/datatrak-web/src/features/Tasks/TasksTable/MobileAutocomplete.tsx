@@ -24,23 +24,22 @@ const PopperComponent = ({ children }) => {
   return <>{children}</>;
 };
 
-export const MobileAutocomplete = props => {
+export const MobileAutocomplete = ({ options, isLoading, onChange }) => {
   const [selectedValue, setSelectedValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
 
-  const onChange = (newSelection: string | null) => {
-    setSelectedValue(newSelection ?? '');
-  };
-
-  const onChangeAssignee = (_e, newSelection: any | null) => {
-    onChange(newSelection ?? null);
+  const onChangeValue = (_e, newSelection: any | null) => {
+    if (newSelection) {
+      console.log(newSelection);
+      onChange(newSelection);
+    }
   };
 
   return (
     <Container>
       <Autocomplete
         value={selectedValue}
-        onChange={onChangeAssignee}
+        onChange={onChangeValue}
         onInputChange={throttle((e, newValue, reason) => {
           if (!e) return;
           if (reason === 'input') {
@@ -51,6 +50,8 @@ export const MobileAutocomplete = props => {
         getOptionLabel={option => option.label}
         getOptionSelected={(option, selected) => option.id === selected?.id}
         placeholder="Search..."
+        options={options}
+        isLoading={isLoading}
         muiProps={{
           open: true,
           disableCloseOnSelect: true,
@@ -59,7 +60,6 @@ export const MobileAutocomplete = props => {
           disablePortal: false,
           PopperComponent,
         }}
-        {...props}
       />
     </Container>
   );

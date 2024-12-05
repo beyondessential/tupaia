@@ -36,8 +36,8 @@ const ListWrapper = styled.div<{
   overflow-y: auto;
   max-height: 100%;
   ${({ $variant = 'borderless' }) => {
-    if ($variant === 'fullPage') return fullBorder;
-    if ($variant === 'inline') return topBorder;
+    if ($variant === 'fullPage') return topBorder;
+    if ($variant === 'inline') return fullBorder;
     return '';
   }}
   flex: 1;

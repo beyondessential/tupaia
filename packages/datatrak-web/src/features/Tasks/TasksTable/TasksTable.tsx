@@ -81,8 +81,14 @@ export const useTasksTable = () => {
     const nonEmptyFilters = newFilters.filter(
       ({ value }) => value !== null && value !== undefined && value !== '',
     );
+
+    console.log('nonEmptyFilters', nonEmptyFilters);
+    console.log('filters', filters);
+
     if (JSON.stringify(nonEmptyFilters) === JSON.stringify(filters)) return;
+
     if (nonEmptyFilters.length === 0) {
+      console.log('set');
       searchParams.delete('filters');
       setSearchParams(searchParams);
       return;
@@ -260,7 +266,7 @@ export const TasksTable = () => {
         noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
       />
-      <MobileTaskFilters />
+      <MobileTaskFilters onChangeFilters={updateFilters} filters={filters} />
     </Container>
   );
 };
