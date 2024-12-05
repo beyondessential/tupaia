@@ -16,7 +16,7 @@ export const useNavigateToEntity = () => {
   const navigate = useNavigate();
   const { data: project } = useProject(projectCode);
 
-  const dashboardNameParam = project?.dashboardGroupName
+  const projectDashboardName = project?.dashboardGroupName
     ? encodeURIComponent(project.dashboardGroupName)
     : '';
 
@@ -29,7 +29,7 @@ export const useNavigateToEntity = () => {
     const link = {
       ...location,
       search: urlSearchParams.toString(),
-      pathname: `/${projectCode}/${entityCode}/${dashboardNameParam}`,
+      pathname: `/${projectCode}/${entityCode}/${projectDashboardName}`,
     };
     navigate(link);
   };

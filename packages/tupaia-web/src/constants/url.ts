@@ -26,7 +26,7 @@ export enum MODAL_ROUTES {
 }
 
 export const DEFAULT_PROJECT_ENTITY = '/explore/explore';
-export const DEFAULT_URL = `${DEFAULT_PROJECT_ENTITY}/General`;
+export const DEFAULT_URL = `${DEFAULT_PROJECT_ENTITY}/explore_General`;
 
 export enum TABS {
   MAP = 'map',
@@ -36,6 +36,6 @@ export const DEFAULT_PERIOD_PARAM_STRING = 'DEFAULT_PERIOD';
 
 export const DEFAULT_MAP_OVERLAY_ID = '126'; // 'Operational Facilities'
 
-export const ROUTE_STRUCTURE = '/:projectCode/:entityCode/:dashboardName';
+export const ROUTE_STRUCTURE = '/:projectCode/:entityCode/:dashboardCode';
 
 export const MAP_OVERLAY_EXPORT_ROUTE = '/:projectCode/:entityCode/map-overlay-pdf-export';

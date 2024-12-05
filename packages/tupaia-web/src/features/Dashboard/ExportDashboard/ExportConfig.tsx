@@ -121,14 +121,14 @@ interface ExportDashboardProps {
 }
 
 export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboardProps) => {
-  const { projectCode, entityCode, dashboardName } = useParams();
+  const { projectCode, entityCode, dashboardCode } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
   const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
     useExportSettings();
 
-  const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
+  const exportFileName = `${project?.name}-${entity?.name}-${dashboardCode}-dashboard-export`;
 
   const { mutate: requestPdfExport, error, isLoading, reset } = useExportDashboard(exportFileName);
 
