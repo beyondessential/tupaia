@@ -9,13 +9,8 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import Slide from '@material-ui/core/Slide';
 import { Tabs, Tab, Fab, Typography } from '@material-ui/core';
 import { FiltersIcon, Modal, Button } from '../../../components';
-import { MobileAutocomplete } from './MobileAutocomplete.tsx';
-import {
-  useCurrentUserContext,
-  useProjectEntities,
-  useProjectSurveys,
-  useSurveys,
-} from '../../../api';
+import { MobileAutocomplete } from './MobileAutocomplete';
+import { useCurrentUserContext, useProjectEntities, useProjectSurveys } from '../../../api';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   position: absolute;
@@ -125,7 +120,6 @@ function a11yProps(index) {
 
 const SurveyFilter = ({ onChange }) => {
   const user = useCurrentUserContext();
-  console.log('user', user);
   const { data = [], isLoading } = useProjectSurveys(user.projectId);
   const options =
     data?.map(item => ({
@@ -154,6 +148,54 @@ const EntityFilter = ({ onChange }) => {
   };
 
   return <MobileAutocomplete options={options} isLoading={isLoading} onChange={handleChange} />;
+};
+
+// const UserFilter = ({ onChange }) => {
+//   const user = useCurrentUserContext();
+//   const { data = [], isLoading } = useProjectEntities(user.project?.code);
+//   const options =
+//     data?.map(item => ({
+//       ...item,
+//       value: item.id,
+//       label: item.name,
+//     })) ?? [];
+//   const handleChange = newValue => {
+//     onChange({ id: 'assignee_name', value: newValue.name });
+//   };
+//
+//   return <MobileAutocomplete options={options} isLoading={isLoading} onChange={handleChange} />;
+// };
+
+const FlexBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Dot = styled.div`
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-left: 0.5rem;
+  background: ${({ theme }) => theme.palette.primary.main};
+`;
+
+const GreenDot = styled.div`
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.palette.success.main};
+`;
+
+const TabLabel = ({ label, active }) => {
+  return (
+    <FlexBox>
+      <span>{label}</span>
+      {active && <Dot />}
+    </FlexBox>
+  );
 };
 
 export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
@@ -187,10 +229,18 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
     setIsOpen(false);
   };
 
+  const clearFilters = () => {
+    onChangeFilters([]);
+  };
+
+  const getHasFilter = key => filters.some(filter => filter.id === key);
+  const hasAnyFilters = filters.length > 0;
+
   return (
     <>
       <FilterButton onClick={openFilters}>
         <FiltersIcon />
+        {hasAnyFilters && <GreenDot />}
       </FilterButton>
       <StyledModal
         open={isOpen}
@@ -208,8 +258,14 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Survey" {...a11yProps(0)} />
-          <Tab label="Entity" {...a11yProps(1)} />
+          <Tab
+            label={<TabLabel label="Survey" active={getHasFilter('survey.name')} />}
+            {...a11yProps(0)}
+          />
+          <Tab
+            label={<TabLabel label="Entity" active={getHasFilter('entity.name')} />}
+            {...a11yProps(1)}
+          />
           <Tab label="Assignee" {...a11yProps(2)} />
         </StyledTabs>
         <TabPanel value={value} index={0}>
@@ -222,7 +278,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           <SelectList>Assignee options</SelectList>
         </TabPanel>
         <DialogActions>
-          <Button variant="text" color="default">
+          <Button variant="text" color="default" onClick={() => clearFilters()}>
             Clear filters
           </Button>
           <Button onClick={() => onClose()}>Apply</Button>

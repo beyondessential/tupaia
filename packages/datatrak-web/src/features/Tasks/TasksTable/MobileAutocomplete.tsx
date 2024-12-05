@@ -30,7 +30,7 @@ export const MobileAutocomplete = ({ options, isLoading, onChange }) => {
 
   const onChangeValue = (_e, newSelection: any | null) => {
     if (newSelection) {
-      console.log(newSelection);
+      setSelectedValue(newSelection);
       onChange(newSelection);
     }
   };
@@ -47,7 +47,7 @@ export const MobileAutocomplete = ({ options, isLoading, onChange }) => {
           }
         }, 100)}
         inputValue={searchValue}
-        getOptionLabel={option => option.label}
+        getOptionLabel={option => (option ? option.label : '')}
         getOptionSelected={(option, selected) => option.id === selected?.id}
         placeholder="Search..."
         options={options}
