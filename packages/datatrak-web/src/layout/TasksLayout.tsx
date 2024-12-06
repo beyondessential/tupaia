@@ -11,9 +11,12 @@ import { StickyMobileHeader } from './StickyMobileHeader.tsx';
 import { useIsMobile } from '../utils';
 
 const HeaderLessFullHeightContainer = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
   display: flex;
   flex-direction: column;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
+  }
 `;
 
 const PageContainer = styled(BasePageContainer)`

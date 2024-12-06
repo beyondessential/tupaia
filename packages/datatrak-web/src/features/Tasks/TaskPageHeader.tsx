@@ -27,6 +27,9 @@ const Wrapper = styled.div`
   display: flex;
   align-items: self-start;
   padding-inline-end: 2.7rem;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding-inline-end: 0.5rem;
+  }
 `;
 
 const HeadingContainer = styled.div`
@@ -59,11 +62,6 @@ const ContentWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   width: 100%;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline-start: 1rem;
-    flex-direction: column;
-    padding-inline-end: 0.6rem;
-  }
 `;
 
 export const TaskPageHeader = ({

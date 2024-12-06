@@ -36,6 +36,11 @@ const Container = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
+    border: none;
+    border-radius: 0;
+    th.MuiTableCell-root {
+      border: none;
+    }
     table .MuiTableRow-head:nth-child(2) {
       display: none;
     }
