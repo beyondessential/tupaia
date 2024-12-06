@@ -17,6 +17,9 @@ const BackButton = styled(Button)`
   .MuiSvgIcon-root {
     font-size: 1.3rem;
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -24,10 +27,8 @@ const Wrapper = styled.div`
   display: flex;
   align-items: self-start;
   padding-inline-end: 2.7rem;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    flex-direction: column;
-    align-items: flex-start;
-    padding-inline-end: 0;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding-inline-end: 0.5rem;
   }
 `;
 
@@ -35,8 +36,8 @@ const HeadingContainer = styled.div`
   display: flex;
   align-items: center;
   margin-inline-end: 1.2rem;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    margin-inline-end: 0;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 
@@ -61,12 +62,6 @@ const ContentWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   width: 100%;
-  flex: 1;
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline-start: 1rem;
-    flex-direction: column;
-    padding-inline-end: 0.6rem;
-  }
 `;
 
 export const TaskPageHeader = ({

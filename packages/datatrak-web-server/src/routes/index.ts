@@ -31,6 +31,7 @@ export { TaskMetricsRequest, TaskMetricsRoute } from './TaskMetricsRoute';
 export { TasksRequest, TasksRoute } from './TasksRoute';
 export { TaskRequest, TaskRoute } from './TaskRoute';
 export { SurveyUsersRequest, SurveyUsersRoute } from './SurveyUsersRoute';
+export { ProjectUsersRequest, ProjectUsersRoute } from './ProjectUsersRoute';
 export { CreateTaskRequest, CreateTaskRoute } from './CreateTaskRoute';
 export { EditTaskRequest, EditTaskRoute } from './EditTaskRoute';
 export {

@@ -38,6 +38,8 @@ const useHeaderVisibility = () => {
     `${ROUTES.SURVEY}/*`,
     ROUTES.SURVEY_SELECT,
     ROUTES.ACCOUNT_SETTINGS,
+    ROUTES.TASKS,
+    ROUTES.TASK_DETAILS,
   ];
 
   return !headerLessRoutePatterns.some(pathPattern => matchPath(pathPattern, pathname));

@@ -8,22 +8,29 @@ import { DatatrakWebSurveyRequest, Project } from '@tupaia/types';
 import { get } from '../api';
 import { Entity } from '../../types';
 
+interface QueryOptions {
+  countryCode?: Entity['code'];
+  searchTerm?: string;
+}
+
 export const useProjectSurveys = (
   projectId?: Project['id'],
-  selectedCountryCode?: Entity['code'],
+  { countryCode, searchTerm }: QueryOptions = {},
 ) => {
   return useQuery(
-    ['surveys', projectId, selectedCountryCode],
-    (): Promise<DatatrakWebSurveyRequest.ResBody[]> =>
-      get('surveys', {
+    ['surveys', projectId, countryCode, searchTerm],
+    (): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
+      return get('surveys', {
         params: {
           fields: ['name', 'code', 'id', 'survey_group.name'],
           projectId,
-          countryCode: selectedCountryCode,
+          ...(searchTerm && { searchTerm }),
+          ...(countryCode && { countryCode }),
         },
-      }),
+      });
+    },
     {
-      enabled: !!projectId && !!selectedCountryCode,
+      enabled: !!projectId,
     },
   );
 };
