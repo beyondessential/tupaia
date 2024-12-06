@@ -10,7 +10,12 @@ import Slide from '@material-ui/core/Slide';
 import { Tabs, Tab, Fab, Typography } from '@material-ui/core';
 import { FiltersIcon, Modal, Button } from '../../../components';
 import { MobileAutocomplete } from './MobileAutocomplete';
-import { useCurrentUserContext, useProjectEntities, useProjectSurveys } from '../../../api';
+import {
+  useCurrentUserContext,
+  useProjectEntities,
+  useProjectSurveys,
+  useProjectUsers,
+} from '../../../api';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   position: absolute;
@@ -119,6 +124,7 @@ function a11yProps(index) {
 }
 
 const SurveyFilter = ({ onChange }) => {
+  const [searchValue, setSearchValue] = useState('');
   const user = useCurrentUserContext();
   const { data = [], isLoading } = useProjectSurveys(user.projectId);
   const options =
@@ -131,10 +137,19 @@ const SurveyFilter = ({ onChange }) => {
     onChange({ id: 'survey.name', value: newValue.name });
   };
 
-  return <MobileAutocomplete options={options} isLoading={isLoading} onChange={handleChange} />;
+  return (
+    <MobileAutocomplete
+      options={options}
+      isLoading={isLoading}
+      onChange={handleChange}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+    />
+  );
 };
 
 const EntityFilter = ({ onChange }) => {
+  const [searchValue, setSearchValue] = useState('');
   const user = useCurrentUserContext();
   const { data = [], isLoading } = useProjectEntities(user.project?.code);
   const options =
@@ -147,24 +162,41 @@ const EntityFilter = ({ onChange }) => {
     onChange({ id: 'entity.name', value: newValue.name });
   };
 
-  return <MobileAutocomplete options={options} isLoading={isLoading} onChange={handleChange} />;
+  return (
+    <MobileAutocomplete
+      options={options}
+      isLoading={isLoading}
+      onChange={handleChange}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+    />
+  );
 };
 
-// const UserFilter = ({ onChange }) => {
-//   const user = useCurrentUserContext();
-//   const { data = [], isLoading } = useProjectEntities(user.project?.code);
-//   const options =
-//     data?.map(item => ({
-//       ...item,
-//       value: item.id,
-//       label: item.name,
-//     })) ?? [];
-//   const handleChange = newValue => {
-//     onChange({ id: 'assignee_name', value: newValue.name });
-//   };
-//
-//   return <MobileAutocomplete options={options} isLoading={isLoading} onChange={handleChange} />;
-// };
+const UserFilter = ({ onChange }) => {
+  const [searchValue, setSearchValue] = useState('');
+  const user = useCurrentUserContext();
+  const { data = [], isLoading } = useProjectUsers(user.project?.code, searchValue);
+  const options =
+    data?.map(item => ({
+      ...item,
+      value: item.id,
+      label: item.name,
+    })) ?? [];
+  const handleChange = newValue => {
+    onChange({ id: 'assignee_name', value: newValue.name });
+  };
+
+  return (
+    <MobileAutocomplete
+      options={options}
+      isLoading={isLoading}
+      onChange={handleChange}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+    />
+  );
+};
 
 const FlexBox = styled.div`
   display: flex;
@@ -275,7 +307,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           <EntityFilter onChange={handleChangeFilters} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <SelectList>Assignee options</SelectList>
+          <UserFilter onChange={handleChangeFilters} />
         </TabPanel>
         <DialogActions>
           <Button variant="text" color="default" onClick={() => clearFilters()}>

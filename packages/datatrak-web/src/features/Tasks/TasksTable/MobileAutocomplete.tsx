@@ -24,9 +24,14 @@ const PopperComponent = ({ children }) => {
   return <>{children}</>;
 };
 
-export const MobileAutocomplete = ({ options, isLoading, onChange }) => {
+export const MobileAutocomplete = ({
+  options,
+  isLoading,
+  onChange,
+  searchValue,
+  setSearchValue,
+}) => {
   const [selectedValue, setSelectedValue] = useState('');
-  const [searchValue, setSearchValue] = useState('');
 
   const onChangeValue = (_e, newSelection: any | null) => {
     if (newSelection) {
