@@ -6,7 +6,6 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { Project, DatatrakWebUsersRequest } from '@tupaia/types';
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { DatatrakWebServerModelRegistry } from '../types';
 
 export type ProjectUsersRequest = Request<
@@ -80,7 +79,7 @@ const getFilteredUsers = async (
       WHERE full_name LIKE ?;
       `;
 
-  const bindings = [projectCode, USERS_EXCLUDED_FROM_LIST, `${searchTerm}%`];
+  const bindings = [projectCode, USERS_EXCLUDED_FROM_LIST, `%${searchTerm}%`];
 
   type UserResponse = {
     id: string;

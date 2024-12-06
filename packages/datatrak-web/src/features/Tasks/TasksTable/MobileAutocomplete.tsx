@@ -5,7 +5,7 @@
 
 import styled from 'styled-components';
 import React, { useState } from 'react';
-import throttle from 'lodash.throttle';
+import debounce from 'lodash.debounce';
 import { Autocomplete } from '../../../components';
 
 const Container = styled.div`
@@ -45,7 +45,7 @@ export const MobileAutocomplete = ({
       <Autocomplete
         value={selectedValue}
         onChange={onChangeValue}
-        onInputChange={throttle((e, newValue, reason) => {
+        onInputChange={debounce((e, newValue, reason) => {
           if (!e) return;
           if (reason === 'input') {
             setSearchValue(newValue);
@@ -56,7 +56,7 @@ export const MobileAutocomplete = ({
         getOptionSelected={(option, selected) => option.id === selected?.id}
         placeholder="Search..."
         options={options}
-        isLoading={isLoading}
+        loading={isLoading}
         muiProps={{
           open: true,
           disableCloseOnSelect: true,

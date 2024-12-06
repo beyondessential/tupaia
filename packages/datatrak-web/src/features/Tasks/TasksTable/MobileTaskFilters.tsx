@@ -21,6 +21,10 @@ const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   position: absolute;
   bottom: 1rem;
   right: 2rem;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    display: none;
+  }
 `;
 
 const StyledModal = styled(Modal)`
@@ -69,11 +73,6 @@ const Panel = styled.div`
   padding: 1rem 0;
   flex: 1;
   overflow: auto;
-`;
-
-const SelectList = styled.div`
-  height: 100%;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
 const DialogActions = styled.div`
@@ -126,7 +125,7 @@ function a11yProps(index) {
 const SurveyFilter = ({ onChange }) => {
   const [searchValue, setSearchValue] = useState('');
   const user = useCurrentUserContext();
-  const { data = [], isLoading } = useProjectSurveys(user.projectId);
+  const { data = [], isLoading } = useProjectSurveys(user.projectId, { searchTerm: searchValue });
   const options =
     data?.map(item => ({
       ...item,
@@ -151,7 +150,10 @@ const SurveyFilter = ({ onChange }) => {
 const EntityFilter = ({ onChange }) => {
   const [searchValue, setSearchValue] = useState('');
   const user = useCurrentUserContext();
-  const { data = [], isLoading } = useProjectEntities(user.project?.code);
+  const { data = [], isLoading } = useProjectEntities(user.project?.code, {
+    searchString: searchValue,
+    filter: {},
+  });
   const options =
     data?.map(item => ({
       ...item,
@@ -298,7 +300,10 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
             label={<TabLabel label="Entity" active={getHasFilter('entity.name')} />}
             {...a11yProps(1)}
           />
-          <Tab label="Assignee" {...a11yProps(2)} />
+          <Tab
+            label={<TabLabel label="Assignee" active={getHasFilter('assignee_name')} />}
+            {...a11yProps(1)}
+          />
         </StyledTabs>
         <TabPanel value={value} index={0}>
           <SurveyFilter onChange={handleChangeFilters} />
