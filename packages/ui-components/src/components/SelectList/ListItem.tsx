@@ -33,15 +33,14 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
     &.Mui-selected:hover,
     &:focus,
     &.Mui-selected:focus {
-      background-color: ${({ theme }) =>
-        theme.palette.type === 'light'
-          ? `${theme.palette.primary.main}33`
-          : 'rgba(96, 99, 104, 0.50)'};
+      background: none;
     }
   }
+
   .MuiSvgIcon-root {
     font-size: 1rem;
   }
+
   &.Mui-disabled {
     opacity: 1; // still have the icon as the full opacity
     color: ${({ theme }) => theme.palette.text.disabled};
@@ -75,6 +74,12 @@ const IconWrapper = styled.div`
   svg {
     color: ${({ theme }) => theme.palette.primary.main};
     height: auto;
+  }
+`;
+
+const CheckIcon = styled(Check).attrs({ color: 'primary' })`
+  &.MuiSvgIcon-root {
+    font-size: 1.5rem;
   }
 `;
 
@@ -133,7 +138,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
         </Wrapper>
-        {selected && <Check color="primary" />}
+        {selected && <CheckIcon />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </li>

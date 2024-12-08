@@ -21,10 +21,8 @@ const MenuButton = styled(Button).attrs({
     background-color: ${({ theme }) => theme.palette.primary.dark};
     color: ${({ theme }) => theme.palette.background.paper};
   }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    position: absolute;
-    z-index: 1;
-    margin-top: 0.5rem;
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    display: none;
   }
 `;
 

@@ -18,13 +18,13 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-const FullBorder = css`
+const fullBorder = css`
   border: 1px solid ${({ theme }) => theme.palette.divider};
   border-radius: 3px;
   padding: 0 1rem;
 `;
 
-const TopBorder = css`
+const topBorder = css`
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
   border-radius: 0;
   padding: 0.5rem 0;
@@ -35,7 +35,11 @@ const ListWrapper = styled.div<{
 }>`
   overflow-y: auto;
   max-height: 100%;
-  ${({ $variant }) => ($variant === 'fullPage' ? TopBorder : FullBorder)};
+  ${({ $variant = 'borderless' }) => {
+    if ($variant === 'fullPage') return fullBorder;
+    if ($variant === 'inline') return topBorder;
+    return '';
+  }}
   flex: 1;
   height: 100%;
 `;
@@ -55,16 +59,24 @@ const Label = styled(FormLabel)<{
   font-weight: 400;
 `;
 
+const Subtitle = styled(Typography)`
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+  font-weight: 400;
+  margin: 0 0 0.5rem 0.9rem;
+`;
+
 interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ElementType;
-  variant?: 'fullPage' | 'inline';
+  variant?: 'fullPage' | 'inline' | 'borderless';
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
   noResultsMessage?: string;
+  subTitle?: string;
 }
 
 export const SelectList = ({
@@ -75,6 +87,7 @@ export const SelectList = ({
   variant = 'inline',
   labelProps = {},
   noResultsMessage = 'No items to display',
+  subTitle = '',
 }: SelectListProps) => {
   return (
     <Wrapper>
@@ -84,6 +97,7 @@ export const SelectList = ({
         </Label>
       )}
       <ListWrapper $variant={variant} className="list-wrapper">
+        {subTitle && <Subtitle>{subTitle}</Subtitle>}
         {items.length === 0 ? (
           <NoResultsMessage>{noResultsMessage}</NoResultsMessage>
         ) : (
