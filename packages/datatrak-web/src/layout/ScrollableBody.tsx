@@ -12,7 +12,7 @@ export const ScrollableBody = styled.div<{
   height: 100%;
   flex: 1;
   overflow-y: auto;
-  padding: ${({ $hasSidebar }) => ($hasSidebar ? '1rem 1rem 1rem 3rem' : '1rem')};
+  padding: 1rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: ${({ $hasSidebar }) => ($hasSidebar ? '1rem 1rem 1rem 5rem' : '1rem 2rem')};
   }

@@ -10,8 +10,8 @@ import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 import { Close } from '@material-ui/icons';
 
-const Wrapper = styled.div`
-  position: fixed;
+export const MobileHeaderWrapper = styled.div`
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -35,6 +35,7 @@ const BackIcon = styled(ArrowLeftIcon)`
 `;
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
+  text-align: center;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
 `;
@@ -44,8 +45,8 @@ const ButtonContainer = styled.div`
 `;
 
 interface StickyMobileHeaderProps {
-  onBack: () => void;
-  title: string;
+  title: string | React.ReactNode;
+  onBack?: () => void;
   onClose?: () => void;
   onClick?: () => void;
 }
@@ -57,17 +58,19 @@ export const StickyMobileHeader = ({
   onClick,
 }: StickyMobileHeaderProps) => {
   return (
-    <Wrapper
+    <MobileHeaderWrapper
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? 'Header, click to scroll list back to top' : undefined}
     >
-      <ButtonContainer>
-        <Button onClick={onBack}>
-          <BackIcon />
-        </Button>
-      </ButtonContainer>
+      {onBack && (
+        <ButtonContainer>
+          <Button onClick={onBack}>
+            <BackIcon />
+          </Button>
+        </ButtonContainer>
+      )}
       <Title>{title}</Title>
       <ButtonContainer>
         {onClose && (
@@ -76,6 +79,6 @@ export const StickyMobileHeader = ({
           </Button>
         )}
       </ButtonContainer>
-    </Wrapper>
+    </MobileHeaderWrapper>
   );
 };
