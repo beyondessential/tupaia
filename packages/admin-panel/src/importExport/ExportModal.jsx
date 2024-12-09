@@ -27,6 +27,7 @@ export const ExportModal = React.memo(
     exportButtonText,
     cancelButtonText,
     isExportingMessage,
+    extraQueryParameters,
     onCloseModal,
   }) => {
     const api = useApiContext();
@@ -60,6 +61,7 @@ export const ExportModal = React.memo(
         const queryParameters = {
           respondWithEmailTimeout: 10 * 1000, // if an export doesn't finish in 10 seconds, email results
           ...values,
+          ...extraQueryParameters,
         };
         const { body: response } = await api.download(endpoint, queryParameters, fileName);
         if (response?.emailTimeoutHit) {
@@ -157,6 +159,7 @@ ExportModal.propTypes = {
   cancelButtonText: PropTypes.string,
   isExportingMessage: PropTypes.string,
   onCloseModal: PropTypes.func,
+  extraQueryParameters: PropTypes.object,
 };
 
 ExportModal.defaultProps = {
@@ -168,4 +171,5 @@ ExportModal.defaultProps = {
     'Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.',
   values: {},
   onCloseModal: null,
+  extraQueryParameters: {},
 };
