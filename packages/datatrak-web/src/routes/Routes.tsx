@@ -97,7 +97,11 @@ export const Routes = () => {
         <Route
           path="/"
           element={
-            <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
+            <BackgroundPageLayout
+              backgroundImage="/auth-background.svg"
+              mobileBackgroundImage="/auth-background-mobile.svg"
+              headerBorderHidden
+            />
           }
         >
           <Route
