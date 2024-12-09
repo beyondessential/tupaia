@@ -8,9 +8,79 @@ import { Paper } from '@material-ui/core';
 import { ProjectSelectForm } from '@tupaia/ui-components';
 import { RequestProjectAccess } from '../../features';
 import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
-import { Modal } from '../../components';
+import { Modal } from '../../components/Modal';
+import { SlideTransition } from '../../components/SlideTransition';
 
-const Wrapper = styled(Paper)`
+const StyledModal = styled(Modal)`
+  //  The mobile styles are specific to the project select modal in datatrak-web so they are included here
+  //  instead of in the ui-components select list component
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    .MuiPaper-root {
+      height: 100%;
+      background: ${({ theme }) => theme.palette.background.default};
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        block-size: 100%;
+
+        > div {
+          max-block-size: 100%;
+        }
+      }
+    }
+
+    .list-wrapper {
+      border: none;
+      border-radius: 0.625rem;
+    }
+
+    h2.MuiFormLabel-root {
+      color: ${({ theme }) => theme.palette.text.secondary};
+    }
+
+    // Hide the close button on mobile
+    .MuiButtonBase-root.MuiIconButton-root {
+      display: none;
+    }
+
+    // Select list
+    .MuiList-root {
+      border-radius: 0.625rem;
+      background: ${({ theme }) => theme.palette.background.paper};
+      padding-inline: 1rem;
+      padding-block: 0.3rem;
+
+      > li {
+        border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
+
+        .MuiButtonBase-root {
+          font-size: 0.75rem;
+          padding-inline: 0;
+          padding-block: 0.75rem;
+
+          &.Mui-selected {
+            border: none;
+          }
+        }
+      }
+    }
+
+    // Modal Actions
+    .MuiDialogActions-root {
+      .MuiButton-root:first-child {
+        display: none;
+      }
+      .MuiButton-root {
+        flex: 1;
+        margin: 0;
+      }
+    }
+  }
+`;
+
+const PaperComponent = styled(Paper)`
   padding: 1rem 1.25rem;
   max-width: none;
   width: 48rem;
@@ -32,7 +102,14 @@ export const ProjectSelectModal = ({ onBack }: ModalProps) => {
 
   return (
     // Enable the portal so it displays over any other content and we don't get z-index issues
-    <Modal open onClose={onBack} PaperComponent={Wrapper} disablePortal={false}>
+    <StyledModal
+      open
+      onClose={onBack}
+      PaperComponent={PaperComponent}
+      disablePortal={false}
+      fullScreen
+      TransitionComponent={SlideTransition}
+    >
       {requestAccessProjectCode ? (
         <RequestProjectAccess
           projectCode={requestAccessProjectCode}
@@ -50,6 +127,6 @@ export const ProjectSelectModal = ({ onBack }: ModalProps) => {
           isConfirming={isConfirming}
         />
       )}
-    </Modal>
+    </StyledModal>
   );
 };

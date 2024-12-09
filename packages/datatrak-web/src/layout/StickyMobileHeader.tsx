@@ -35,6 +35,7 @@ const BackIcon = styled(ArrowLeftIcon)`
 `;
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
+  display: flex;
   text-align: center;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
