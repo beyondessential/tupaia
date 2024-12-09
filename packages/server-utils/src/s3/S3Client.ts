@@ -86,22 +86,16 @@ export class S3Client {
   }
 
   private getContentTypeFromBase64(base64String: string) {
-    const imageTypes = ['png', 'jpeg', 'jpg', 'gif', 'svg+xml'];
-
     let fileType =
-      base64String.includes('data:image') && base64String.includes(';base64')
-        ? base64String.substring('data:image/'.length, base64String.indexOf(';base64'))
-        : 'png';
+      base64String.includes('data:') && base64String.includes(';base64')
+        ? base64String.substring('data:'.length, base64String.indexOf(';base64'))
+        : 'image/png';
 
-    if (!imageTypes.includes(fileType)) {
-      throw new Error(`File type ${fileType} is not supported`);
+    if (fileType === 'image/jpeg') {
+      fileType = 'image/jpg';
     }
 
-    if (fileType === 'jpeg') {
-      fileType = 'jpg';
-    }
-
-    return `image/${fileType}`;
+    return fileType;
   }
 
   public async uploadFile(fileName: string, readable: Buffer | string) {
