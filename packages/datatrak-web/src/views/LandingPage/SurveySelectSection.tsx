@@ -90,14 +90,26 @@ const TextWrapper = styled.div`
 `;
 
 const Text = styled(Typography)`
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 0.9rem;
+  ${({ theme }) => theme.breakpoints.up('xs')} {
     line-height: 1.5;
+    font-size: 0.9rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    font-size: 1.2rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    font-size: 0.9rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('lg')} {
+    font-size: 1.06rem;
   }
 `;
 
 const DesktopText = styled.span`
-  ${({ theme }) => theme.breakpoints.down('xs')} {
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
   }
 `;
@@ -113,8 +125,8 @@ const SurveysImage = styled.img`
   height: 130%;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    right: -1rem;
-    height: 120%;
+    right: 0;
+    height: 125%;
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
