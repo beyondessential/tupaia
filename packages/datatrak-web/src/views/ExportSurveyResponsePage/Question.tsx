@@ -13,8 +13,8 @@ import { SurveyScreenComponent } from '../../types';
 
 type SurveyResponse = DatatrakWebSingleSurveyResponseRequest.ResBody;
 
-const QuestionWrapper = styled.div`
-  border-bottom: 1px solid #ccc;
+const QuestionWrapper = styled.div<{ $border: boolean }>`
+  ${({ $border = true }) => $border && 'border-bottom: 1px solid #ccc;'}
   page-break-inside: avoid;
   max-width: 500px;
 
@@ -28,7 +28,6 @@ const InstructionQuestionText = styled(Typography)`
   font-size: 0.875rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   line-height: 1.5;
-  margin-block: 1.5rem;
 `;
 
 const QuestionLabel = styled(Typography)`
@@ -108,7 +107,12 @@ export const Question = ({
   const displayAnswer = useDisplayAnswer(surveyScreenComponent, surveyResponse);
 
   if (type === QuestionType.Instruction) {
-    return <InstructionQuestionText>{text}</InstructionQuestionText>;
+    return (
+      <QuestionWrapper $border={false}>
+        <InstructionQuestionText>{text}</InstructionQuestionText>
+        {detailLabel && <SmallText>{detailLabel}</SmallText>}
+      </QuestionWrapper>
+    );
   }
 
   return (
