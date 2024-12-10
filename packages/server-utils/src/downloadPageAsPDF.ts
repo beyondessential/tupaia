@@ -32,7 +32,26 @@ const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: strin
   return { verifiedPDFPageUrl, cookies: finalisedCookieObjects };
 };
 
-const pageNumberHTML = `<div style="text-align: right;width: 297mm;font-size: 8px;font-family: Arial, Helvetica, sans-serif;"><span style="margin-right: 1cm"><span class="pageNumber"></span></span></div>`;
+const pageNumberHTML = `
+<div
+  style="
+    text-align: right;
+    width: 13.4cm;
+    font-size: 6px;
+    margin-left: 1.2cm;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #c1c1c1; 
+    border-top: 1px solid #888888; 
+    padding-top: 1mm;
+  "
+>   
+  <span>
+    <span class="pageNumber"></span> of <span class="totalPages"></span>
+  </span>
+</div> 
+
+
+`;
 
 /**
  * @param pdfPageUrl the url to visit and download as a pdf
@@ -65,7 +84,7 @@ export const downloadPageAsPDF = async (
       headerTemplate: `<div></div>`,
       footerTemplate: pageNumberHTML,
       //add a margin so the page number doesn't overlap with the content, and the top margin is set for overflow content
-      margin: includePageNumber ? { bottom: '10mm', top: '10mm' } : undefined,
+      margin: includePageNumber ? { bottom: '20mm', top: '10mm' } : undefined,
     });
   } catch (e) {
     throw new Error(`puppeteer error: ${(e as Error).message}`);
