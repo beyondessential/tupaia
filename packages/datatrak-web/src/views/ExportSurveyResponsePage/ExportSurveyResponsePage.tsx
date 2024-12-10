@@ -105,7 +105,7 @@ export const ExportSurveyResponsePage = () => {
             <Question
               key={index}
               surveyScreenComponent={surveyScreenComponent}
-              answer={surveyResponse.answers[surveyScreenComponent.id!]}
+              surveyResponse={surveyResponse}
             />
           ))}
         </ScreenWrapper>
