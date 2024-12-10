@@ -30,8 +30,8 @@ export class ExportDashboardRoute extends Route<ExportDashboardRequest> {
 
     const [dashboard] = (await this.req.ctx.services.central.fetchResources('dashboards', {
       filter: { code: dashboardCode },
-      columns: ['name'],
-    })) as Pick<Dashboard, 'name'>[];
+      columns: ['code'],
+    })) as Pick<Dashboard, 'code'>[];
 
     if (!dashboard) {
       throw new Error(`Cannot find dashboard with code: ${dashboardCode}`);
@@ -40,7 +40,7 @@ export class ExportDashboardRoute extends Route<ExportDashboardRequest> {
     const buffer = await downloadDashboardAsPdf(
       projectCode,
       entityCode,
-      dashboard.name,
+      dashboardCode,
       baseUrl,
       cookie,
       cookieDomain,

@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
@@ -13,7 +13,7 @@ import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
 import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent, getDefaultDashboard } from '../../utils';
+import { gaEvent } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { ExpandButton } from './ExpandButton';
@@ -109,10 +109,8 @@ const DashboardItemsWrapper = styled.div<{
 `;
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const { projectCode, entityCode } = useParams();
-  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const { data: project } = useProject(projectCode);
   const { data: user } = useUser();
   const { mutate: updateUser } = useEditUser();
 
@@ -123,47 +121,16 @@ export const Dashboard = () => {
   }, [project?.code, user?.project?.code]);
 
   const { activeDashboard } = useDashboard();
-  const {
-    data: dashboards,
-    isLoading: isLoadingDashboards,
-    isError,
-    isFetched,
-  } = useDashboards(projectCode, entityCode);
+  const { isLoading: isLoadingDashboards } = useDashboards(projectCode, entityCode);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
-  // we don't want useEntityLink to take care of this because useEntityLink gets called for all child entities on the map, meaning lots of extra queries when we don't need them. Instead the redirect will be taken care of in the useEffect below, as needed
-  const defaultDashboardName = getDefaultDashboard(
-    project,
-    dashboards,
-    isLoadingDashboards,
-    isError,
-  );
-
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
     gaEvent('Pages', 'Toggle Info Panel');
   };
-
-  // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
-  const dashboardNotFound =
-    isFetched &&
-    !isError &&
-    !isLoadingDashboards &&
-    !isLoadingProject &&
-    project?.code === projectCode &&
-    !activeDashboard;
-
-  useEffect(() => {
-    if (dashboardNotFound) {
-      navigate({
-        ...location,
-        pathname: `/${projectCode}/${entityCode}/${defaultDashboardName}`,
-      });
-    }
-  }, [dashboardNotFound, defaultDashboardName]);
 
   // Filter out drill down items from the dashboard items
   const visibleDashboards =
