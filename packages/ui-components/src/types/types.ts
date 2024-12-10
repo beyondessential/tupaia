@@ -11,6 +11,7 @@ export type OverrideableComponentProps<P = {}> = P &
 export type MatrixColumnType = {
   key: string;
   title: string;
+  entityLink?: string;
   children?: MatrixColumnType[];
 };
 

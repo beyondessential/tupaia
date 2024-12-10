@@ -55,6 +55,7 @@ export const useExportSurveyResponses = () => {
             countryCode,
             startDate,
             endDate,
+            platform: 'datatrak',
           },
         });
 

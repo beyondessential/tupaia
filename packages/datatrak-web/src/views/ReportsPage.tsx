@@ -5,28 +5,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Paper, Typography, Link } from '@material-ui/core';
-import { PageContainer, PageTitleBar, ReportsIcon } from '../components';
+import { Button, PageContainer, PageTitleBar, ReportsIcon, Modal } from '../components';
 import { Reports } from '../features';
+import { useIsMobile } from '../utils';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding-top: 1.5rem;
-  }
+  padding-block-start: 1.5rem;
 `;
 
 const Container = styled(Paper).attrs({
   elevation: 0,
 })`
-  width: 100%;
-  max-width: 38rem;
-  padding: 1rem;
+  inline-size: 100%;
+  max-inline-size: 38rem;
   border-radius: 0.625rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1.81rem 3.12rem;
-  }
+  padding: 1.81rem 3.12rem;
 `;
 
 const InlineLink = styled(Link)`
@@ -37,7 +34,47 @@ const Text = styled(Typography)`
   line-height: 1.56;
 `;
 
+const MobileContainer = styled(Paper).attrs({
+  elevation: 0,
+})`
+  text-align: center;
+  max-width: 19rem;
+  padding: 0.5rem 0 0;
+
+  h1.MuiTypography-root {
+    margin-block-end: 1rem;
+  }
+  p.MuiTypography-root {
+    margin-block-end: 1.5rem;
+  }
+  a.MuiButtonBase-root {
+    width: 100%;
+  }
+`;
+
+const MobileTemplate = () => {
+  const navigate = useNavigate();
+  const onClose = () => navigate('/');
+  return (
+    <Modal open={true} onClose={onClose}>
+      <MobileContainer>
+        <Typography variant="h1">Reports not available on mobile</Typography>
+        <Typography>
+          The reports feature is only available on desktop. Please visit Tupaia DataTrak on desktop
+          to proceed.
+        </Typography>
+        <Button to="/">Close</Button>
+      </MobileContainer>
+    </Modal>
+  );
+};
+
 export const ReportsPage = () => {
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    return <MobileTemplate />;
+  }
+
   return (
     <PageContainer>
       <PageTitleBar title="Reports" Icon={ReportsIcon} isTransparent />

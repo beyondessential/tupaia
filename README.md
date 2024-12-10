@@ -165,4 +165,4 @@ In order to automatically format code in VS Code according to our style guide:
 1. Install [Prettier for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).
 2. Enable the **Editor: Format on Save** setting: `"editor.formatOnSave": true`.
 
-Your files will now be formatted automatically when you save them.
+Your files will now be formatted automatically when you save them

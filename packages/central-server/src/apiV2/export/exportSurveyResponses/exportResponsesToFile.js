@@ -15,11 +15,11 @@ import {
   truncateString,
   toFilename,
 } from '@tupaia/utils';
+import { getExportPathForUser } from '@tupaia/server-utils';
 import { RECORDS } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { hasBESAdminAccess } from '../../../permissions';
-import { getExportPathForUser } from '../getExportPathForUser';
 import { zipMultipleFiles } from '../../utilities';
 
 const FILE_PREFIX = 'survey_response_export';
