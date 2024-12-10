@@ -5,13 +5,12 @@
 
 import xlsx from 'xlsx';
 import { DatabaseError } from '@tupaia/utils';
-
+import { getExportPathForUser } from '@tupaia/server-utils';
 import { findQuestionsInSurvey } from '../../../dataAccessors';
 import { RowBuilder } from './RowBuilder';
 import { SurveyMetadataConfigCellBuilder } from './cellBuilders';
 import { assertCanExportSurveys } from './assertCanExportSurveys';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
-import { getExportPathForUser } from '../getExportPathForUser';
 
 const FILE_PREFIX = 'survey_export';
 
