@@ -13,7 +13,7 @@ import { SurveyScreenComponent } from '../../types';
 
 type SurveyResponse = DatatrakWebSingleSurveyResponseRequest.ResBody;
 
-const QuestionWrapper = styled.div<{ $border: boolean }>`
+const QuestionWrapper = styled.div<{ $border?: boolean }>`
   ${({ $border = true }) => $border && 'border-bottom: 1px solid #ccc;'}
   page-break-inside: avoid;
   max-width: 500px;
@@ -90,6 +90,13 @@ const useDisplayAnswer = (
     case QuestionType.Geolocate: {
       const { latitude, longitude } = JSON.parse(answer);
       return `${latitude}, ${longitude} (latitude, longitude)`;
+    }
+    case QuestionType.File: {
+      // If the value is a file, split the value to get the file name
+      const withoutPrefix = answer.split('files/');
+      const fileNameParts = withoutPrefix[withoutPrefix.length - 1].split('_');
+      // remove first element of the array as it is the file id
+      return fileNameParts.slice(1).join('_');
     }
     default:
       return answer;

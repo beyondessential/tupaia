@@ -70,7 +70,7 @@ export const ExportSurveyResponsePage = () => {
 
   if (isLoading || !surveyResponse) return null;
 
-  const { answers, dataTime, entityParentName, entityName, assessorName } = surveyResponse;
+  const { answers, endTime, entityParentName, entityName, assessorName } = surveyResponse;
 
   const visibleScreens =
     survey?.screens
@@ -80,7 +80,7 @@ export const ExportSurveyResponsePage = () => {
       ?.filter(screenComponents => screenComponents.length > 0) ?? [];
 
   // Format the date and time in the timezone provided in the URL because the server is in UTC
-  const formattedDataTime = displayDate(dataTime, locale);
+  const formattedDataTime = displayDate(endTime, locale);
 
   return (
     <Page>
