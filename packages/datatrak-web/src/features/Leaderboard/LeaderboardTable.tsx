@@ -53,6 +53,9 @@ const TableContainer = styled(MuiTableContainer)`
     padding-inline: 0.5rem;
     font-size: 0.75rem;
   }
+  th:first-child {
+    width: 1rem;
+  }
   tfoot td {
     padding-block-end: 0;
   }
