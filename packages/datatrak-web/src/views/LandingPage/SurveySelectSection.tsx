@@ -14,17 +14,15 @@ const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https:
 const SectionContainer = styled.section`
   grid-area: surveySelect;
   background-color: ${({ theme }) => theme.palette.background.paper};
-
   padding: 1rem;
   display: flex;
   position: relative;
   align-items: flex-start;
   justify-content: space-between;
   overflow: visible !important;
-  height: max-content;
+  border-radius: 0.625rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-block-start: 1.3rem !important;
-    border-radius: 0.625rem;
+    margin-block-start: 1.3rem;
   }
   ${({ theme }) => theme.breakpoints.up('lg')} {
     padding: 1rem 3rem 1rem 2.2rem;
@@ -36,7 +34,11 @@ const SectionContent = styled.div`
   flex-direction: column-reverse;
   width: 70%;
   padding-inline-end: 2rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    margin-inline-start: 10%;
+  }
   ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-inline-start: 0;
     flex-direction: row;
     width: 100%;
     align-items: center;
@@ -94,17 +96,11 @@ const Text = styled(Typography)`
     line-height: 1.5;
     font-size: 0.9rem;
   }
-
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
-
   ${({ theme }) => theme.breakpoints.up('md')} {
     font-size: 0.9rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    font-size: 1.06rem;
   }
 `;
 
@@ -123,12 +119,10 @@ const SurveysImage = styled.img`
   transform: translateY(-50%);
   right: 0;
   height: 130%;
-
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    right: 0;
+    right: 10%;
     height: 125%;
   }
-
   ${({ theme }) => theme.breakpoints.up('md')} {
     right: -1rem;
     height: 130%;
