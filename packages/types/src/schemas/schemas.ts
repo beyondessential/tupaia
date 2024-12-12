@@ -2284,16 +2284,10 @@ export const MatrixVizBuilderConfigSchema = {
 				},
 				"columns": {
 					"description": "The columns of the data-table that should be included as columns in the matrix.\nCan be either:\na list of column names,\n'*' to indicate all columns\nor a list of objects with an entityCode and entityLabel to generate entity links",
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
-						},
-						{
-							"type": "array",
-							"items": {
+					"type": "array",
+					"items": {
+						"anyOf": [
+							{
 								"type": "object",
 								"properties": {
 									"entityCode": {
@@ -2308,12 +2302,12 @@ export const MatrixVizBuilderConfigSchema = {
 									"entityCode",
 									"entityLabel"
 								]
+							},
+							{
+								"type": "string"
 							}
-						},
-						{
-							"type": "string"
-						}
-					]
+						]
+					}
 				}
 			},
 			"additionalProperties": false,
