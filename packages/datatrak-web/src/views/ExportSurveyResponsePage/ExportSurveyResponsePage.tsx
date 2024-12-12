@@ -47,7 +47,7 @@ const SurveyResponseDetailsWrapper = styled.div`
 `;
 const SurveyTitle = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
-  line-height: 2;
+  line-height: 1.8;
   color: ${DARK_GREY};
 `;
 
