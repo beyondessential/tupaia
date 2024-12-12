@@ -64,7 +64,9 @@ const useDisplayAnswer = (
   const { data: optionSet } = useAutocompleteOptions(optionSetId);
 
   if (type === QuestionType.Instruction) return null;
-  if (type === QuestionType.DateOfData) return displayDate(surveyResponse.dataTime, locale);
+  if (type === QuestionType.DateOfData || type === QuestionType.SubmissionDate) {
+    return displayDate(surveyResponse.dataTime, locale);
+  }
   if (type === QuestionType.PrimaryEntity) {
     return surveyResponse?.entityName;
   }
@@ -87,7 +89,6 @@ const useDisplayAnswer = (
       return entity?.name;
     // If the question is a date question, display the date in a readable format
     case QuestionType.Date:
-    case QuestionType.SubmissionDate:
       return displayDate(answer, locale);
     case QuestionType.DateTime:
       return displayDateTime(answer, locale);
