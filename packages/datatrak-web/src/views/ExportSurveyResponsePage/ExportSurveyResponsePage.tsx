@@ -14,6 +14,8 @@ import { getIsQuestionVisible } from '../../features/Survey/SurveyContext/utils'
 import { useSearchParams } from 'react-router-dom';
 import { displayDate } from '../../utils';
 
+const DARK_GREY = '#444';
+
 const Page = styled(A4Page)`
   background-color: white;
   padding-block-start: 0;
@@ -27,8 +29,8 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   padding-block-end: 0.75rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #444;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid ${DARK_GREY};
 `;
 
 const ScreenWrapper = styled.div`
@@ -46,10 +48,12 @@ const SurveyResponseDetailsWrapper = styled.div`
 const SurveyTitle = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
   line-height: 2;
+  color: ${DARK_GREY};
 `;
 
 const SurveyResponseDetails = styled(Typography)`
   line-height: 1.5;
+  color: ${DARK_GREY};
 `;
 
 const ProjectLogo = styled.img`
