@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
-import { Typography } from '@material-ui/core';
+import { Typography, Avatar } from '@material-ui/core';
 import { useAutocompleteOptions, useEntityById } from '../../api';
 import { displayDate, displayDateTime } from '../../utils';
 import { SurveyScreenComponent } from '../../types';
@@ -41,6 +41,11 @@ const SmallText = styled(Typography)`
 
 const Answer = styled(SmallText)`
   margin-block: 0.75rem 0.3rem;
+`;
+
+const StyledAvatar = styled(Avatar)`
+  width: 8rem;
+  height: 8rem;
 `;
 
 const useDisplayAnswer = (
@@ -97,6 +102,9 @@ const useDisplayAnswer = (
       const fileNameParts = withoutPrefix[withoutPrefix.length - 1].split('_');
       // remove first element of the array as it is the file id
       return fileNameParts.slice(1).join('_');
+    }
+    case QuestionType.Photo: {
+      return <StyledAvatar variant="square" src={answer} />;
     }
     default:
       return answer;
