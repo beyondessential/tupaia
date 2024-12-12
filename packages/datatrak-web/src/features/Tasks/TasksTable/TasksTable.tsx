@@ -20,6 +20,7 @@ import { StatusFilter } from './StatusFilter';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
 import { RepeatScheduleFilter } from './RepeatScheduleFilter';
+import { MobileTaskFilters } from './MobileTaskFilters';
 
 const Container = styled.div`
   display: flex;
@@ -32,6 +33,17 @@ const Container = styled.div`
   .MuiTableContainer-root {
     border-radius: 3px;
     max-height: 100%;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    border: none;
+    border-radius: 0;
+    th.MuiTableCell-root {
+      border: none;
+    }
+    table .MuiTableRow-head:nth-child(2) {
+      display: none;
+    }
   }
 `;
 
@@ -74,7 +86,9 @@ export const useTasksTable = () => {
     const nonEmptyFilters = newFilters.filter(
       ({ value }) => value !== null && value !== undefined && value !== '',
     );
+
     if (JSON.stringify(nonEmptyFilters) === JSON.stringify(filters)) return;
+
     if (nonEmptyFilters.length === 0) {
       searchParams.delete('filters');
       setSearchParams(searchParams);
@@ -253,6 +267,7 @@ export const TasksTable = () => {
         noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
       />
+      <MobileTaskFilters onChangeFilters={updateFilters} filters={filters} />
     </Container>
   );
 };

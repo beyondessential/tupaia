@@ -3,15 +3,20 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { PageContainer as BasePageContainer } from '../components';
 import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
+import { StickyMobileHeader } from './StickyMobileHeader.tsx';
+import { useIsMobile } from '../utils';
 
 const HeaderLessFullHeightContainer = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
   display: flex;
   flex-direction: column;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
+  }
 `;
 
 const PageContainer = styled(BasePageContainer)`
@@ -39,8 +44,14 @@ export const TasksContentWrapper = styled.div`
 `;
 
 export const TasksLayout = () => {
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const onClose = () => {
+    navigate('/');
+  };
   return (
     <HeaderLessFullHeightContainer>
+      {isMobile && <StickyMobileHeader onBack={onClose} title="View all tasks" />}
       <PageContainer>
         <Outlet />
       </PageContainer>

@@ -12,16 +12,11 @@ import { TasksContentWrapper } from '../../layout';
 import { TaskMetrics } from '../../components/TaskMetrics';
 
 const ButtonContainer = styled.div`
-  padding-block-end: 0.5rem;
-  margin-block-start: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    margin-inline-start: auto;
-    margin-block-start: 0;
-    padding-block-end: 0;
-  }
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    align-self: self-end;
-  }
+  //padding-block-end: 0.5rem;
+  //margin-block-start: 1rem;
+  //margin-inline-start: auto;
+  //margin-block-start: 0;
+  //padding-block-end: 0;
 `;
 
 const CreateButton = styled(Button).attrs({

@@ -4,10 +4,13 @@ import { TaskMetric } from './TaskMetric';
 import { useCurrentUserContext, useTaskMetrics } from '../../api';
 
 const TaskMetricsContainer = styled.div`
+  margin-block-end: 0;
+  gap: 0.2rem;
   flex: 1;
   display: flex;
-  justify-content: space-between;
-  max-width: 800px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: 1rem;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
   }
