@@ -34,7 +34,11 @@ const useHeaderVisibility = () => {
     return true;
   }
   // Some routes on mobile don't have header
-  const headerLessRoutePatterns = [`${ROUTES.SURVEY}/*`, ROUTES.SURVEY_SELECT];
+  const headerLessRoutePatterns = [
+    `${ROUTES.SURVEY}/*`,
+    ROUTES.SURVEY_SELECT,
+    ROUTES.ACCOUNT_SETTINGS,
+  ];
 
   return !headerLessRoutePatterns.some(pathPattern => matchPath(pathPattern, pathname));
 };

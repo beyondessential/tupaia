@@ -66,7 +66,7 @@ const ButtonContainer = styled.div<{
   width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<{ $hasIcon?: boolean }>`
   padding-right: 0.5rem;
   display: flex;
   align-items: center;
@@ -74,6 +74,11 @@ const IconWrapper = styled.div`
   svg {
     color: ${({ theme }) => theme.palette.primary.main};
     height: auto;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 1.3rem;
+    display: ${({ $hasIcon }) => ($hasIcon ? 'flex' : 'none')};
   }
 `;
 
@@ -133,7 +138,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
       >
         <Wrapper tooltip={tooltip}>
           <ButtonContainer $fullWidth={button}>
-            <IconWrapper>{icon}</IconWrapper>
+            <IconWrapper $hasIcon={!!icon}>{icon}</IconWrapper>
             {content}
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
