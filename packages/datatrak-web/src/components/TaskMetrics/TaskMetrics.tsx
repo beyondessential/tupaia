@@ -7,7 +7,7 @@ const TaskMetricsContainer = styled.div`
   flex: 1;
   display: flex;
   justify-content: space-between;
-  max-width: 800px;
+  max-width: 60rem;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
   }
