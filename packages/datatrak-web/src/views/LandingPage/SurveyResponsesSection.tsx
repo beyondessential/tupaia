@@ -7,7 +7,7 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api';
-import { displayDate } from '../../utils';
+import { displayDate, useIsMobile } from '../../utils';
 import { LoadingTile, SurveyTickIcon, Tile } from '../../components';
 import { SectionHeading } from './SectionHeading';
 
@@ -24,7 +24,8 @@ const ScrollBody = styled.div`
   column-gap: 1rem;
   row-gap: 0.6rem;
 
-  > span {
+  > span,
+  > a {
     width: 18rem;
     max-width: 100%;
     //Reset flex grow and shrink
@@ -39,6 +40,7 @@ const ScrollBody = styled.div`
 
 export const SurveyResponsesSection = () => {
   const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
+  const isMobile = useIsMobile();
   const { project } = useCurrentUserContext();
 
   return (
@@ -56,11 +58,13 @@ export const SurveyResponsesSection = () => {
                   text={entityName}
                   to={`?responseId=${id}`}
                   tooltip={
-                    <>
-                      {surveyName}
-                      <br />
-                      {entityName}
-                    </>
+                    !isMobile ? (
+                      <>
+                        {surveyName}
+                        <br />
+                        {entityName}
+                      </>
+                    ) : null
                   }
                   Icon={SurveyTickIcon}
                 >
