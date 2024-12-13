@@ -53,7 +53,6 @@ export const AccountSettingsPage = () => {
       {isMobile && (
         <StickyMobileHeader
           onBack={onClose}
-          onClose={onClose}
           title={
             <>
               <SettingsIcon />
