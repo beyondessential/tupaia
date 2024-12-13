@@ -19,6 +19,7 @@ export const MobileHeaderWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: ${({ theme }) => theme.palette.background.paper};
+  min-height: ${HEADER_HEIGHT};
   height: ${HEADER_HEIGHT};
   z-index: 1000;
 `;
@@ -35,7 +36,7 @@ const BackIcon = styled(ArrowLeftIcon)`
 `;
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
-  display: flex;
+  display: inline;
   text-align: center;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
