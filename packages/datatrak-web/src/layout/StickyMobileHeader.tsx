@@ -37,9 +37,10 @@ const BackIcon = styled(ArrowLeftIcon)`
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
   display: inline;
-  text-align: center;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 `;
 
 const ButtonContainer = styled.div`
@@ -51,6 +52,7 @@ interface StickyMobileHeaderProps {
   onBack?: () => void;
   onClose?: () => void;
   onClick?: () => void;
+  className?: string;
 }
 
 export const StickyMobileHeader = ({
@@ -58,6 +60,7 @@ export const StickyMobileHeader = ({
   title,
   onClose,
   onClick,
+  className,
 }: StickyMobileHeaderProps) => {
   return (
     <MobileHeaderWrapper
@@ -65,6 +68,7 @@ export const StickyMobileHeader = ({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? 'Header, click to scroll list back to top' : undefined}
+      className={className}
     >
       {onBack && (
         <ButtonContainer>

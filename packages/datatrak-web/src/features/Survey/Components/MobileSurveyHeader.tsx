@@ -8,6 +8,13 @@ import { TopProgressBar } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { StickyMobileHeader } from '../../../layout';
 import { SurveyDisplayName } from './SurveyDisplayName';
+import styled from 'styled-components';
+
+const StickyHeader = styled(StickyMobileHeader)`
+  h2 {
+    text-align: center;
+  }
+`;
 
 type SurveyLayoutContextT = {
   isLoading: boolean;
@@ -27,7 +34,7 @@ export const MobileSurveyHeader = () => {
 
   return (
     <>
-      <StickyMobileHeader
+      <StickyHeader
         title={<SurveyDisplayName />}
         onBack={onStepPrevious}
         onClose={openCancelConfirmation}
