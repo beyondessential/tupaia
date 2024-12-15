@@ -41,6 +41,9 @@ const Title = styled(Typography).attrs({ variant: 'h2' })`
   font-size: 1rem;
   margin-left: 1rem;
   margin-right: 1rem;
+  svg {
+    vertical-align: middle;
+  }
 `;
 
 const ButtonContainer = styled.div`

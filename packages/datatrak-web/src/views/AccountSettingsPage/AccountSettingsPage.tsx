@@ -29,13 +29,17 @@ const Wrapper = styled(PageContainer)`
 const PageTitle = styled(Typography).attrs({
   variant: 'h1',
 })`
-  font-size: 1.25rem;
   display: flex;
   align-items: center;
+  font-size: 1.5rem;
+`;
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    font-size: 1.5rem;
-  }
+const MobilePageTitle = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  display: inline;
+  vertical-align: middle;
+  font-size: 1.25rem;
 `;
 
 const SettingsIcon = styled(Settings).attrs({ color: 'primary' })`
@@ -45,18 +49,18 @@ const SettingsIcon = styled(Settings).attrs({ color: 'primary' })`
 export const AccountSettingsPage = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const onClose = () => {
-    navigate('/');
+  const onBack = () => {
+    navigate(-1);
   };
   return (
     <>
       {isMobile && (
         <StickyMobileHeader
-          onBack={onClose}
+          onBack={onBack}
           title={
             <>
               <SettingsIcon />
-              <PageTitle>Account settings</PageTitle>
+              <MobilePageTitle>Account settings</MobilePageTitle>
             </>
           }
         />
