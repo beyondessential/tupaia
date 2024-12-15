@@ -6,6 +6,7 @@
 import React, { useState, ReactNode } from 'react';
 import { TransitionProps } from '@material-ui/core/transitions';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
   ListItem as MuiListItem,
@@ -15,6 +16,7 @@ import {
 import { ArrowLeftIcon } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { ListItemType } from '../useGroupedSurveyList';
+import { ROUTES } from '../../constants';
 
 const Content = styled.div`
   flex: 1;
@@ -71,8 +73,13 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
   const [expanded, setExpanded] = useState(false);
   const { content, icon } = item;
   const isNested = !!item.children;
+  const navigate = useNavigate();
 
-  const onClose = () => setExpanded(false);
+  const onBack = () => setExpanded(false);
+
+  const onClose = () => {
+    navigate(ROUTES.HOME);
+  };
 
   const handleOnClick = () => {
     if (children) {
@@ -97,7 +104,7 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
           onClose={onClose}
           fullScreen
         >
-          <StickyMobileHeader onBack={onClose} onClose={onClose} title="Select a survey" />
+          <StickyMobileHeader onBack={onBack} onClose={onClose} title="Select a survey" />
           {children}
         </Dialog>
       )}
