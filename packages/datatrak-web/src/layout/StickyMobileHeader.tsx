@@ -53,7 +53,7 @@ const ButtonContainer = styled.div`
 interface StickyMobileHeaderProps {
   title: string | React.ReactNode;
   onBack?: () => void;
-  onClose?: () => void;
+  onClose?: (data: any) => void;
   onClick?: () => void;
   className?: string;
 }

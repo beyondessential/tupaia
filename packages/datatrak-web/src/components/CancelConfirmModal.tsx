@@ -44,6 +44,16 @@ const ModalButton = styled(Button)`
   }
 `;
 
+interface CancelConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  headingText?: string | null;
+  bodyText?: string | null;
+  confirmText?: string | null;
+  cancelText?: string | null;
+  confirmLink?: string | null;
+}
+
 export const CancelConfirmModal = ({
   isOpen,
   onClose,
@@ -52,7 +62,7 @@ export const CancelConfirmModal = ({
   confirmText = 'Exit survey',
   cancelText = 'Continue survey',
   confirmLink = '/',
-}) => {
+}: CancelConfirmModalProps) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Wrapper>

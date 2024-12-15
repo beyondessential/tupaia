@@ -4,11 +4,12 @@
  */
 import React from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import { TopProgressBar } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { StickyMobileHeader } from '../../../layout';
 import { SurveyDisplayName } from './SurveyDisplayName';
-import styled from 'styled-components';
+import { ROUTES } from '../../../constants';
 
 const StickyHeader = styled(StickyMobileHeader)`
   h2 {
@@ -28,6 +29,14 @@ export const MobileSurveyHeader = () => {
     useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
 
+  const handleBack = () => {
+    if (screenNumber === 1) {
+      openCancelConfirmation({ confirmLink: ROUTES.SURVEY_SELECT });
+    } else {
+      onStepPrevious();
+    }
+  };
+
   if (isResponseScreen) {
     return null;
   }
@@ -36,7 +45,7 @@ export const MobileSurveyHeader = () => {
     <>
       <StickyHeader
         title={<SurveyDisplayName />}
-        onBack={onStepPrevious}
+        onBack={handleBack}
         onClose={openCancelConfirmation}
       />
       {screenNumberParam && (

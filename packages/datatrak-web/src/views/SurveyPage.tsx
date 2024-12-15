@@ -60,6 +60,7 @@ const SurveyPageInner = () => {
     isSuccessScreen,
     isResponseScreen,
     cancelModalOpen,
+    cancelModalConfirmLink,
     closeCancelConfirmation,
     isResubmit,
     countryCode,
@@ -113,7 +114,11 @@ const SurveyPageInner = () => {
           <Outlet key={screenNumber} />
         </SurveyScreenContainer>
       </FormProvider>
-      <CancelConfirmModal isOpen={cancelModalOpen} onClose={closeCancelConfirmation} />
+      <CancelConfirmModal
+        isOpen={cancelModalOpen}
+        onClose={closeCancelConfirmation}
+        confirmLink={cancelModalConfirmLink}
+      />
     </PageWrapper>
   );
 };

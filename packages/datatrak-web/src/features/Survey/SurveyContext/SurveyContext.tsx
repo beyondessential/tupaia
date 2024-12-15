@@ -34,6 +34,7 @@ const defaultContext = {
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
+  cancelModalConfirmLink: null,
   countryCode: '',
   primaryEntityQuestion: null,
   isResubmitScreen: false,
@@ -197,8 +198,8 @@ export const useSurveyForm = () => {
     return surveyFormContext.formData[questionId];
   };
 
-  const openCancelConfirmation = () => {
-    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION });
+  const openCancelConfirmation = ({ confirmLink }: { confirmLink?: string }) => {
+    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION, payload: confirmLink });
   };
 
   const closeCancelConfirmation = () => {
