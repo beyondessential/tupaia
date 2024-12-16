@@ -148,8 +148,6 @@ export const TasksSection = () => {
     );
   };
 
-  console.log('hasTasks', hasTasks);
-
   return (
     <SectionContainer>
       <FlexSpaceBetween>

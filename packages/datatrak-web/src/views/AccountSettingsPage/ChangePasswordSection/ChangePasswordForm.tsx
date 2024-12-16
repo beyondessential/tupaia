@@ -75,7 +75,7 @@ export const ChangePasswordForm = () => {
     mode: 'onChange',
   });
   const {
-    formState: { isSubmitting, isValid, isValidating },
+    formState: { isDirty, isSubmitting, isValid, isValidating },
     getValues,
     reset,
   } = formContext;
@@ -127,7 +127,12 @@ export const ChangePasswordForm = () => {
           required
           type="password"
         />
-        <StyledButton type="submit" disabled={formIsInsubmissible} fullWidth>
+        <StyledButton
+          type="submit"
+          disabled={formIsInsubmissible}
+          fullWidth
+          tooltip={isDirty ? null : 'Change password to save changes'}
+        >
           {isSubmitting ? 'Changing' : 'Change password'}
         </StyledButton>
       </StyledFieldset>

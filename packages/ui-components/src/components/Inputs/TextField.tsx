@@ -93,7 +93,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   /* Override MaterialUI which hides the placeholder due to conflict with its floating labels */
   &&&& {
     .MuiInputBase-input::placeholder {
-      opacity: 1 !important;
+      opacity: 0.4 !important;
     }
   }
 

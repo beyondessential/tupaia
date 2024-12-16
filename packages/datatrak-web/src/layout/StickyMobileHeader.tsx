@@ -10,8 +10,8 @@ import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 import { Close } from '@material-ui/icons';
 
-const Wrapper = styled.div`
-  position: fixed;
+export const MobileHeaderWrapper = styled.div`
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -19,6 +19,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: ${({ theme }) => theme.palette.background.paper};
+  min-height: ${HEADER_HEIGHT};
   height: ${HEADER_HEIGHT};
   z-index: 1000;
 `;
@@ -35,8 +36,14 @@ const BackIcon = styled(ArrowLeftIcon)`
 `;
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
+  display: inline;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  svg {
+    vertical-align: middle;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -44,10 +51,11 @@ const ButtonContainer = styled.div`
 `;
 
 interface StickyMobileHeaderProps {
-  onBack: () => void;
-  title: string;
-  onClose?: () => void;
+  title: string | React.ReactNode;
+  onBack?: () => void;
+  onClose?: (data: any) => void;
   onClick?: () => void;
+  className?: string;
 }
 
 export const StickyMobileHeader = ({
@@ -55,19 +63,23 @@ export const StickyMobileHeader = ({
   title,
   onClose,
   onClick,
+  className,
 }: StickyMobileHeaderProps) => {
   return (
-    <Wrapper
+    <MobileHeaderWrapper
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? 'Header, click to scroll list back to top' : undefined}
+      className={className}
     >
-      <ButtonContainer>
-        <Button onClick={onBack}>
-          <BackIcon />
-        </Button>
-      </ButtonContainer>
+      {onBack && (
+        <ButtonContainer>
+          <Button onClick={onBack}>
+            <BackIcon />
+          </Button>
+        </ButtonContainer>
+      )}
       <Title>{title}</Title>
       <ButtonContainer>
         {onClose && (
@@ -76,6 +88,6 @@ export const StickyMobileHeader = ({
           </Button>
         )}
       </ButtonContainer>
-    </Wrapper>
+    </MobileHeaderWrapper>
   );
 };

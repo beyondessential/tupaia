@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { To, Link as RouterLink } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
@@ -12,6 +12,8 @@ import { getSurveyScreenNumber } from '../../utils';
 import { useSurveyRouting } from '../../useSurveyRouting';
 import { SideMenuButton } from './SideMenuButton';
 import { useSurveyForm } from '../../SurveyContext';
+import { StickyMobileHeader } from '../../../../layout';
+import { SurveyDisplayName } from '../SurveyDisplayName';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
@@ -23,14 +25,16 @@ const Drawer = styled(BaseDrawer).attrs({
   position: relative;
   height: 100%;
   width: 100%;
-  max-width: ${SIDE_MENU_WIDTH};
+
   .MuiPaper-root {
     width: 100%;
     position: absolute;
     border-right: none;
     height: 100%;
   }
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    max-width: ${SIDE_MENU_WIDTH};
     .MuiPaper-root {
       background-color: transparent;
     }
@@ -39,6 +43,10 @@ const Drawer = styled(BaseDrawer).attrs({
 
 const SurveyMenuContent = styled(List)`
   padding: 0 0.5rem;
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    padding: 0;
+    border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  }
 `;
 
 const SurveyMenuItem = styled(ListItem).attrs({
@@ -75,6 +83,20 @@ const SurveyMenuItem = styled(ListItem).attrs({
       line-clamp: ${({ $isInstructionOnly }) => ($isInstructionOnly ? 1 : 2)};
       -webkit-line-clamp: ${({ $isInstructionOnly }) => ($isInstructionOnly ? 1 : 2)};
       overflow: hidden;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+    padding: 0.8rem;
+
+    ${({ $active }) =>
+      $active &&
+      css`
+        background-color: #f4f9ff;
+      `}
+    &:hover {
+      background-color: initial;
     }
   }
 `;
@@ -137,6 +159,7 @@ export const SurveySideMenu = () => {
         onClose={toggleSideMenu}
         variant={isMobile ? 'temporary' : 'persistent'}
       >
+        {isMobile && <StickyMobileHeader onClose={toggleSideMenu} title={<SurveyDisplayName />} />}
         <Header>
           <SideMenuButton />
         </Header>
