@@ -7,12 +7,13 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { UseQueryResult } from '@tanstack/react-query';
-import { FormLabel, Typography, useMediaQuery, useTheme } from '@material-ui/core';
+import { FormLabel, Typography, Button as MuiButton, Collapse } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Entity, ProjectCountryAccessListRequest, ProjectResponse } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useRequestProjectAccess } from '../../../api';
-import { Button } from '../../../components';
-import { errorToast, successToast } from '../../../utils';
+import { Button, ArrowLeftIcon } from '../../../components';
+import { errorToast, successToast, useIsMobile } from '../../../utils';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
 const StyledForm = styled(Form)`
@@ -24,12 +25,14 @@ const StyledForm = styled(Form)`
 `;
 
 const StyledFieldset = styled.fieldset`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1.25rem;
-  grid-auto-flow: column;
-  grid-template: auto auto / auto;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template: auto auto / auto;
     block-size: 18.32rem;
     grid-template: auto / 1fr 1fr;
   }
@@ -65,12 +68,24 @@ const Flexbox = styled.div`
   gap: 1.25rem;
 `;
 
+const ExpandButton = styled(MuiButton)<{ $active: false }>`
+  width: 100%;
+  .MuiButton-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  svg {
+    transform: rotate(${props => (props.$active ? '-90deg' : '-270deg')});
+    font-size: 1rem;
+  }
+`;
+
 // Usage of this component has inline styling. See there for explanation.
 const StyledFormInput = styled(FormInput).attrs({
   fullWidth: true,
   multiline: true,
 })`
-  block-size: 100%;
   margin: 0;
 
   .MuiInputBase-root {
@@ -84,6 +99,9 @@ const StyledFormInput = styled(FormInput).attrs({
   }
   .MuiOutlinedInput-inputMultiline {
     padding: 1rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    block-size: 100%;
   }
 `;
 
@@ -104,6 +122,30 @@ const Message = styled(Typography)`
   }
 `;
 
+const ReasonForAccessField = () => {
+  return (
+    <StyledFormInput
+      id="message"
+      Input={TextField}
+      rows={6}
+      inputProps={{
+        enterKeyHint: 'done',
+        /*
+         * Make `<textarea>` scroll upon overflow.
+         *
+         * MUI uses inline styling (element.style) to resize `<textarea>`s to fit an integer
+         * number of lines. This behaviour is desirable in single-column layouts, which we use
+         * in smaller size classes. In a multi-column grid it causes misalignment, so we
+         * override it, also with inline styling.
+         */
+        style: { height: '100%', overflow: 'auto' },
+      }}
+      label="Reason for access"
+      name="message"
+    />
+  );
+};
+
 interface RequestCountryAccessFormProps {
   countryAccessList: UseQueryResult<ProjectCountryAccessListRequest.ResBody>;
   project?: ProjectResponse | null;
@@ -118,6 +160,8 @@ export const RequestCountryAccessForm = ({
   countryAccessList,
   project,
 }: RequestCountryAccessFormProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useIsMobile();
   const { data: countries, isLoading: accessListIsLoading } = countryAccessList;
   const projectCode = project?.code;
 
@@ -152,14 +196,6 @@ export const RequestCountryAccessForm = ({
     onSuccess: response => successToast(response.message),
   });
 
-  const { breakpoints } = useTheme();
-  const sizeClassIsMdOrLarger = useMediaQuery(breakpoints.up('sm'));
-
-  const getTooltip = () => {
-    if (!project) return 'Select a project to request country access';
-    return isValid ? undefined : 'Select countries to request access';
-  };
-
   const hasAccessToEveryCountry = (countries ?? []).every(c => c.hasAccess);
   const noRequestableCountries = !project || hasAccessToEveryCountry;
 
@@ -174,8 +210,45 @@ export const RequestCountryAccessForm = ({
     });
   }
 
+  const toggleOpen = () => setIsOpen(!isOpen);
+
+  const getTooltip = () => {
+    if (!project) return 'Select a project to request country access';
+    return isValid ? undefined : 'Select countries to request access';
+  };
+
   if (hasAccessToEveryCountry) {
     return <Message>You have access to all available countries within this project.</Message>;
+  }
+
+  if (isMobile) {
+    return (
+      <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
+        <ExpandButton onClick={toggleOpen} $active={isOpen}>
+          <StyledFormLabel>Select countries</StyledFormLabel>
+          <ArrowLeftIcon />
+        </ExpandButton>
+        <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
+          <Collapse in={isOpen}>
+            <RequestableCountryChecklist
+              projectCode={projectCode}
+              countries={countries}
+              disabled={formIsSubmitting}
+              selectedCountries={selectedCountries}
+              setSelectedCountries={setSelectedCountries}
+            />
+            <ReasonForAccessField />
+          </Collapse>
+          <Button
+            disabled={noRequestableCountries || formIsInsubmissible}
+            tooltip={getTooltip()}
+            type="submit"
+          >
+            {formIsSubmitting ? 'Submitting request' : 'Request access'}
+          </Button>
+        </StyledFieldset>
+      </StyledForm>
+    );
   }
 
   return (
@@ -192,24 +265,7 @@ export const RequestCountryAccessForm = ({
           />
         </CountryChecklistWrapper>
         <Flexbox>
-          <StyledFormInput
-            id="message"
-            Input={TextField}
-            inputProps={{
-              enterKeyHint: 'done',
-              /*
-               * Make `<textarea>` scroll upon overflow.
-               *
-               * MUI uses inline styling (element.style) to resize `<textarea>`s to fit an integer
-               * number of lines. This behaviour is desirable in single-column layouts, which we use
-               * in smaller size classes. In a multi-column grid it causes misalignment, so we
-               * override it, also with inline styling.
-               */
-              style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : undefined,
-            }}
-            label="Reason for access"
-            name="message"
-          />
+          <ReasonForAccessField />
           <Button
             disabled={noRequestableCountries || formIsInsubmissible}
             tooltip={getTooltip()}
