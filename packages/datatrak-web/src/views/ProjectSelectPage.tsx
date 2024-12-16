@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { ProjectSelectForm } from '@tupaia/ui-components';
 import { useFromLocation } from '../utils';
@@ -17,6 +17,12 @@ const Container = styled(Paper).attrs({
   width: 48rem;
   display: flex;
   flex-direction: column;
+`;
+
+const Title = styled(Typography).attrs({
+  variant: 'h1',
+})`
+  font-size: 1.125rem;
 `;
 
 export const ProjectSelectPage = () => {
@@ -41,6 +47,7 @@ export const ProjectSelectPage = () => {
 
   return (
     <Container>
+      <Title>Select project</Title>
       <ProjectSelectForm
         onRequestAccess={onRequestAccess}
         onClose={onSuccess}

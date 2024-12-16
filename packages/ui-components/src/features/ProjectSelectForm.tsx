@@ -6,15 +6,9 @@
 import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';
-import { DialogActions, Typography, useTheme } from '@material-ui/core';
+import { DialogActions, useTheme } from '@material-ui/core';
 import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
 import { SelectList, SpinningLoader, Button as UIButton } from '../components';
-
-const Title = styled(Typography).attrs({
-  variant: 'h1',
-})`
-  font-size: 1.125rem;
-`;
 
 const Button = styled(UIButton)`
   text-transform: none;
@@ -139,7 +133,6 @@ export const ProjectSelectForm = ({
 
   return (
     <>
-      <Title>Select project</Title>
       {isLoading ? (
         <LoadingContainer>
           <SpinningLoader />

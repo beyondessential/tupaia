@@ -11,6 +11,7 @@ import { useEditUser } from '../api/mutations';
 import { Modal } from '../components';
 import { useModal } from '../utils';
 import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../constants';
+import { Typography } from '@material-ui/core';
 
 const ModalBody = styled.div`
   text-align: left;
@@ -27,6 +28,12 @@ const ModalBody = styled.div`
     position: relative;
     top: 1rem;
   }
+`;
+
+const Title = styled(Typography).attrs({
+  variant: 'h1',
+})`
+  font-size: 1.125rem;
 `;
 
 const projectSort = (a, b) => {
@@ -86,6 +93,7 @@ export const ProjectSelectModal = () => {
   return (
     <Modal isOpen={true} onClose={closeModal}>
       <ModalBody>
+        <Title>Select project</Title>
         <ProjectSelectForm
           variant="modal"
           projectId={projectId}
