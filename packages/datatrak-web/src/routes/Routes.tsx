@@ -23,6 +23,7 @@ import {
   TaskDetailsPage,
   NotAuthorisedPage,
 } from '../views';
+import { WelcomeScreens } from '../features/WelcomeScreens';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
@@ -55,13 +56,16 @@ const AuthViewLoggedInRedirect = ({ children }) => {
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
  **/
+
 export const Routes = () => {
+  const welcomeScreensCompleted = false;
+  const LandingPageView = welcomeScreensCompleted ? LandingPage : WelcomeScreens;
   return (
     <RouterRoutes>
       <Route path="/" element={<MainPageLayout />}>
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
-          <Route index element={<LandingPage />} />
+          <Route index element={<LandingPageView />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
           <Route element={<TasksLayout />}>
             <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />
