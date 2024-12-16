@@ -35,19 +35,14 @@ export const hasDashboardRelationEditPermissions = async (
 ) => {
   const entity = await models.entity.findOne({ code: entityCode });
 
-  // users should all the permission group access (that's why using every() here)
+  // users should all the permission group access (that's why using every() below)
   const permissionGroupAccessResults = await Promise.all(
     permissionGroups.map(async pg =>
       hasAccessToEntityForVisualisation(accessPolicy, models, entity, pg),
     ),
   );
-  const hasTupaiaAdminAccess = await hasTupaiaAdminAccessToEntityForVisualisation(
-    accessPolicy,
-    models,
-    entity,
-  );
 
-  return permissionGroupAccessResults.every(pg => pg === true) && hasTupaiaAdminAccess;
+  return permissionGroupAccessResults.every(pg => pg === true);
 };
 
 export const assertDashboardRelationGetPermissions = async (

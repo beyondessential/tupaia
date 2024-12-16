@@ -9,7 +9,11 @@ import {
   hasDashboardRelationEditPermissions,
   createDashboardRelationsDBFilter,
 } from '../dashboardRelations';
-import { hasBESAdminAccess, hasSomePermissionGroupsAccess } from '../../permissions';
+import {
+  hasBESAdminAccess,
+  hasSomePermissionGroupsAccess,
+  hasVizBuilderAccess,
+} from '../../permissions';
 
 import { mergeFilter } from '../utilities';
 
@@ -45,30 +49,20 @@ export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashb
 
 export const hasDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
-  const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
-
-  // To edit a dashboard item, the user has to have access to the relation between the
-  // dashboard item and ALL of the dashboards it is in
-  // OR user's access policy covers the dashboard item's permission_group_ids column
-
-  if (permittedDashboardItems.includes(dashboardItemId)) {
-    return true;
-  }
-
-  for (const dashboard of dashboards) {
-    if (
-      !(await hasDashboardRelationEditPermissions(
+  // To edit a dashboard item, the user has to have access to all relations between the dashboard and
+  // dashboard items in it
+  const allHavePermissions = await Promise.all(
+    dashboards.map(dashboard =>
+      hasDashboardRelationEditPermissions(
         accessPolicy,
         models,
         dashboard.permissionGroups,
         dashboard.rootEntityCode,
-      ))
-    ) {
-      return false;
-    }
-  }
+      ),
+    ),
+  );
 
-  return true;
+  return allHavePermissions.every(result => result);
 };
 
 export const assertDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
@@ -82,13 +76,13 @@ export const assertDashboardItemGetPermissions = async (accessPolicy, models, da
 };
 
 export const assertDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
-  if (await hasDashboardItemEditPermissions(accessPolicy, models, dashboardItemId)) {
-    return true;
+  if (!(await hasDashboardItemEditPermissions(accessPolicy, models, dashboardItemId))) {
+    throw new Error(
+      `Access to the dashboard item in all of the dashboards this dashboard item is in is required`,
+    );
   }
 
-  throw new Error(
-    `Requires access to the dashboard item in all of the dashboards this dashboard item is in, and Tupaia Admin Panel access to the connected dashboard's root_entity_code`,
-  );
+  return true;
 };
 
 export const createDashboardItemsDBFilter = async (accessPolicy, models, criteria) => {
@@ -135,11 +129,13 @@ const getPermittedDashboardItems = async (accessPolicy, models) => {
       if (!item.permission_group_ids) {
         return false;
       }
+
       const permissionGroupNames = item.permission_group_ids.map(
         permissionGroupId => permissionGroupIdToName[permissionGroupId],
       );
 
       const hasPermission = hasSomePermissionGroupsAccess(accessPolicy, permissionGroupNames);
+
       return !!hasPermission;
     })
     .map(item => item.id);
