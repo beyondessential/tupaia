@@ -12,7 +12,7 @@ import { getSurveyScreenNumber } from '../../utils';
 import { useSurveyRouting } from '../../useSurveyRouting';
 import { SideMenuButton } from './SideMenuButton';
 import { useSurveyForm } from '../../SurveyContext';
-import { StickyMobileHeader, MobileHeaderWrapper } from '../../../../layout';
+import { StickyMobileHeader } from '../../../../layout';
 import { SurveyDisplayName } from '../SurveyDisplayName';
 
 export const SIDE_MENU_WIDTH = '20rem';
