@@ -65,7 +65,14 @@
     <!-- End of bes-support Zendesk Widget script -->
     <% } %>
 
-    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <!-- Temporarily disable PWA on production environments -->
+    <% if (process.env.REACT_APP_DEPLOYMENT_NAME !== 'master' &&
+    process.env.REACT_APP_DEPLOYMENT_NAME !== 'main' && process.env.REACT_APP_DEPLOYMENT_NAME !==
+    'production') { %>
+      <link rel="manifest" id="manifest" href="/manifest.json"/>
+    <% } %>
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <!-- Add media='print' and onload="this.media='all'" to stop the resource being render-blocking on load: see https://pagespeedchecklist.com/asynchronous-google-fonts -->
     <link
       rel="stylesheet"
