@@ -3,22 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import path from 'path';
-import fs from 'fs';
+import { requireEnv } from '@tupaia/utils';
 
-enum EmailExportFileModes {
-  ATTACHMENT = 'attachment',
-  DOWNLOAD_LINK = 'downloadLink',
-}
-
-const createDownloadLink = (filePath: string) => {
+const createDownloadLink = (filePath: string, url: string) => {
   const fileName = path.basename(filePath);
-  return `${process.env.ADMIN_PANEL_SERVER_URL}/v1/export/download/${encodeURIComponent(fileName)}`;
-};
-
-const generateAttachments = async (filePath: string) => {
-  const fileName = path.basename(filePath);
-  const buffer = await fs.readFileSync(filePath);
-  return [{ filename: fileName, content: buffer }];
+  return `${url}/export/download/${encodeURIComponent(fileName)}`;
 };
 
 type ResponseBody = {
@@ -28,14 +17,45 @@ type ResponseBody = {
 
 type Req = {
   query: {
-    emailExportFileMode?: EmailExportFileModes;
+    platform?: 'tupaia' | 'adminPanel' | 'datatrak' | 'lesmisAdminPanel';
   };
 };
 
 export const constructExportEmail = async (responseBody: ResponseBody, req: Req) => {
-  const { emailExportFileMode = EmailExportFileModes.DOWNLOAD_LINK } = req.query;
   const { error, filePath } = responseBody;
-  const subject = 'Your export from Tupaia';
+  const { platform } = req.query;
+
+  const platformKey = platform || 'adminPanel';
+
+  /**
+   * We don't yet have single sign-on across all platforms, so we need to know which platform the user is on so the correct session is used, from where they requested the export. We also can't use central-server api url for this directly because there needs to be an auth header in the request.
+   */
+  const PLATFORM_SETTINGS = {
+    tupaia: {
+      url: requireEnv('TUPAIA_WEB_SERVER_API_URL'),
+      friendlyName: 'Tupaia',
+    },
+    adminPanel: {
+      url: requireEnv('ADMIN_PANEL_SERVER_API_URL'),
+      friendlyName: 'the Tupaia Admin Panel',
+    },
+    datatrak: {
+      url: requireEnv('DATATRAK_WEB_SERVER_API_URL'),
+      friendlyName: 'DataTrak',
+    },
+    lesmisAdminPanel: {
+      url: requireEnv('ADMIN_PANEL_SERVER_API_URL'),
+      friendlyName: 'the Lesmis Admin Panel',
+    },
+  };
+
+  if (!PLATFORM_SETTINGS[platformKey]) {
+    throw new Error(`No API config found for platform: ${platformKey}`);
+  }
+
+  const { friendlyName, url } = PLATFORM_SETTINGS[platformKey];
+
+  const subject = `Your export from ${friendlyName}`;
   if (error) {
     return {
       subject,
@@ -51,24 +71,12 @@ export const constructExportEmail = async (responseBody: ResponseBody, req: Req)
     throw new Error('No filePath in export response body');
   }
 
-  if (emailExportFileMode === EmailExportFileModes.ATTACHMENT) {
-    return {
-      subject,
-      attachments: await generateAttachments(filePath),
-      templateContext: {
-        title: 'Your export is ready',
-        message: 'Please find your requested export attached to this email.',
-      },
-    };
-  }
-
-  const downloadLink = createDownloadLink(filePath);
+  const downloadLink = createDownloadLink(filePath, url);
   return {
     subject,
     templateContext: {
       title: 'Your export is ready',
-      message:
-        "Here is your one time link to access your requested export.\nNote that you need to be logged in to the admin panel for it to work, and after clicking it once, you won't be able to download the file again.",
+      message: `Here is your one time link to access your requested export.\nPlease note that you need to be logged in to ${friendlyName} for it to work, and after clicking it once, you won't be able to download the file again.`,
       cta: {
         url: downloadLink,
         text: 'Download export',

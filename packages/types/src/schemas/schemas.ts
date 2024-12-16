@@ -84700,6 +84700,8 @@ export const EntityTypeEnumSchema = {
 		"disaster",
 		"district",
 		"district_operational",
+		"document",
+		"document_group",
 		"enumeration_area",
 		"facility",
 		"facility_building",
