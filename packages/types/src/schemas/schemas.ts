@@ -82747,6 +82747,7 @@ export const SurveySchema = {
 		"code",
 		"id",
 		"name",
+		"permission_group_id",
 		"project_id"
 	]
 } 
@@ -82803,6 +82804,7 @@ export const SurveyCreateSchema = {
 	"required": [
 		"code",
 		"name",
+		"permission_group_id",
 		"project_id"
 	]
 } 
