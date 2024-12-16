@@ -52,7 +52,6 @@ export const GroupedSurveyList = ({
         onSelect={onSelectSurvey}
         label={label}
         labelProps={labelProps}
-        variant="fullPage"
       />
       {error && <FormHelperText error>{error}</FormHelperText>}
     </ListWrapper>

@@ -35,9 +35,9 @@ const ListWrapper = styled.div<{
 }>`
   overflow-y: auto;
   max-height: 100%;
-  ${({ $variant = 'borderless' }) => {
-    if ($variant === 'fullPage') return fullBorder;
-    if ($variant === 'inline') return topBorder;
+  ${({ $variant = 'fullBorder' }) => {
+    if ($variant === 'fullBorder') return fullBorder;
+    if ($variant === 'topBorder') return topBorder;
     return '';
   }}
   flex: 1;
@@ -71,7 +71,7 @@ interface SelectListProps {
   onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ElementType;
-  variant?: 'fullPage' | 'inline' | 'borderless';
+  variant?: 'fullBorder' | 'topBorder' | 'borderless';
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
@@ -84,7 +84,7 @@ export const SelectList = ({
   onSelect,
   label,
   ListItem,
-  variant = 'inline',
+  variant = 'fullBorder',
   labelProps = {},
   noResultsMessage = 'No items to display',
   subTitle = '',
