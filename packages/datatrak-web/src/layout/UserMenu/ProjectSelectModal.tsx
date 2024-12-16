@@ -35,6 +35,7 @@ const StyledModal = styled(Modal)`
     .list-wrapper {
       border: none;
       border-radius: 0.625rem;
+      padding: 0;
     }
 
     h2.MuiFormLabel-root {
