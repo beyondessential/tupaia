@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { UseQueryResult } from '@tanstack/react-query';
 import { FormLabel, Typography, Button as MuiButton, Collapse } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Entity, ProjectCountryAccessListRequest, ProjectResponse } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useRequestProjectAccess } from '../../../api';
@@ -68,7 +67,7 @@ const Flexbox = styled.div`
   gap: 1.25rem;
 `;
 
-const ExpandButton = styled(MuiButton)<{ $active: false }>`
+const ExpandButton = styled(MuiButton)<{ $active: boolean }>`
   width: 100%;
   .MuiButton-label {
     display: flex;
