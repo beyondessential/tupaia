@@ -4,8 +4,12 @@
  */
 import { MatrixColumnType, MatrixRowType, SearchFilter } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { MatrixConfig, MatrixReportColumn, MatrixReportRow } from '@tupaia/types';
+import { MatrixConfig, MatrixReportColumn, MatrixReportRow, MatrixEntityCell } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../../constants';
+
+function isMatrixEntityCell(cell: unknown): cell is MatrixEntityCell {
+  return typeof cell === 'object' && cell !== null && 'entityLabel' in cell && 'entityCode' in cell;
+}
 
 const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value']) => {
   if (typeof value !== 'string' && typeof value !== 'number') return false;
@@ -24,7 +28,8 @@ const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value
 const getRowMatchesSearchFilter = (row: MatrixReportRow, searchFilters: SearchFilter[]) => {
   return searchFilters.every(filter => {
     const rowValue = row[filter.key];
-    return getValueMatchesSearchFilter(rowValue, filter.value);
+    const parsedRowValue = isMatrixEntityCell(rowValue) ? rowValue.entityLabel : rowValue;
+    return getValueMatchesSearchFilter(parsedRowValue, filter.value);
   });
 };
 
@@ -33,11 +38,13 @@ export const parseRows = (
   rows: MatrixReportRow[],
   categoryId: MatrixReportRow['categoryId'] | undefined,
   searchFilters: SearchFilter[],
-  drillDown: MatrixConfig['drillDown'] | undefined,
-  valueType: MatrixConfig['valueType'] | undefined,
+  config: MatrixConfig,
   urlSearchParams: URLSearchParams,
   setUrlSearchParams: (searchParams: URLSearchParams) => void,
+  projectCode: string,
 ): MatrixRowType[] => {
+  const { drillDown, valueType } = config;
+
   const onDrillDown = row => {
     if (!drillDown) return;
     const { itemCode, parameterLink } = drillDown;
@@ -60,18 +67,19 @@ export const parseRows = (
   }
   // loop through the topLevelRows, and parse them into the format that the Matrix component can use
   return topLevelRows.reduce((result: MatrixRowType[], row: MatrixReportRow) => {
-    const { dataElement = '', category, valueType: rowValueType, ...rest } = row;
+    const { dataElement, category, valueType: rowValueType, ...rest } = row;
     const valueTypeToUse = rowValueType || valueType;
     // if the row has a category, then it has children, so we need to parse them using this same function
+
     if (category) {
       const children = parseRows(
         rows,
         category,
         searchFilters,
-        drillDown,
-        valueTypeToUse,
+        { ...config, valueType: valueTypeToUse },
         urlSearchParams,
         setUrlSearchParams,
+        projectCode,
       );
 
       if (searchFilters.length > 0) {
@@ -97,6 +105,7 @@ export const parseRows = (
       // some items are objects, and we need to parse them to get the value
       if (typeof item === 'object' && item !== null) {
         const { value, metadata } = item as { value: any; metadata?: any };
+
         acc[key] = formatDataValueByType(
           {
             value,
@@ -104,11 +113,13 @@ export const parseRows = (
           },
           valueTypeToUse,
         );
+
         return acc;
       }
       acc[key] = formatDataValueByType({ value: item }, valueTypeToUse);
       return acc;
     }, {});
+
     // if the row is a regular row, and there is a search filter, then we need to check if the row matches the search filter, and ignore this row if it doesn't. This filter only applies to standard rows, not category rows.
     if (searchFilters?.length > 0) {
       const matchesSearchFilter = getRowMatchesSearchFilter(
@@ -121,27 +132,48 @@ export const parseRows = (
 
       if (!matchesSearchFilter) return result;
     }
-    // otherwise, handle as a regular row
-    result.push({
-      title: dataElement,
+
+    const newResult = {
+      title: dataElement || '',
       onClick: drillDown ? () => onDrillDown(row) : undefined,
       ...formattedRowValues,
-    });
+    } as MatrixRowType;
+
+    // if the row is a matrix entity cell, then we need to add the entityLink to the row
+    if (isMatrixEntityCell(dataElement)) {
+      const entityLink = `/${projectCode}/${dataElement.entityCode}`;
+      newResult.title = dataElement.entityLabel;
+      newResult.entityLink = entityLink;
+    }
+
+    result.push(newResult);
     return result;
   }, []);
 };
 
 // This is a recursive function that parses the columns of the matrix into a format that the Matrix component can use.
-export const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
+export const parseColumns = (
+  columns: MatrixReportColumn[],
+  projectCode: string,
+): MatrixColumnType[] => {
   return columns.map(column => {
-    const { category, key, title, columns: children } = column;
+    const { category, key, title, columns: children, entityCode } = column;
     // if a column has a category, then it has children, so we need to parse them using this same function
-    if (category)
+    if (category) {
       return {
         title: category,
         key: category,
-        children: parseColumns(children!),
+        children: parseColumns(children!, projectCode),
       };
+    }
+
+    if (entityCode) {
+      return {
+        title,
+        key,
+        entityLink: `/${projectCode}/${entityCode}`,
+      };
+    }
     // otherwise, handle as a regular column
     return {
       title,

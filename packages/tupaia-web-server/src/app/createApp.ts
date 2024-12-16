@@ -103,6 +103,7 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .use('me/countries', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .use('me', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
+    .use('export/download/:fileName', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('dashboards', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('export/chart', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
