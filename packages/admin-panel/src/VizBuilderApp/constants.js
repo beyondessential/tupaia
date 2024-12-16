@@ -171,7 +171,7 @@ export const DASHBOARD_ITEM_VIZ_TYPES = {
   // Matrix
   MATRIX: {
     name: 'Matrix',
-    // schema: MatrixVizBuilderConfigSchema,
+    schema: MatrixVizBuilderConfigSchema,
     vizMatchesType: viz => viz.type === 'matrix',
     initialConfig: {
       type: 'matrix',

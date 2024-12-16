@@ -72,7 +72,7 @@ export type MatrixVizBuilderConfig = MatrixConfig & {
      * '*' to indicate all columns
      * or a list of objects with an entityCode and entityLabel to generate entity links
      */
-    columns?: string | string[] | MatrixEntityCell[];
+    columns?: (string | { entityCode: string; entityLabel: string })[];
   };
 };
 
