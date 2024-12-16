@@ -5,7 +5,7 @@
 
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Matrix as MatrixComponent, NoData, SearchFilter } from '@tupaia/ui-components';
 import { DashboardItemType, isMatrixReport } from '@tupaia/types';
@@ -39,6 +39,7 @@ const NoResultsMessage = styled(Typography)`
 
 const MatrixVisual = () => {
   const context = useContext(DashboardItemContext);
+  const { projectCode } = useParams();
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
   const reportPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_PERIOD);
@@ -50,8 +51,6 @@ const MatrixVisual = () => {
   const { columns = [], rows = [] } = report;
   const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
 
-  const { drillDown, valueType } = config;
-
   // memoise the parsed rows and columns so that they don't get recalculated on every render, for performance reasons
   const parsedRows = useMemo(
     () =>
@@ -59,21 +58,24 @@ const MatrixVisual = () => {
         rows,
         undefined,
         searchFilters,
-        drillDown,
-        valueType,
+        config,
         urlSearchParams,
         setUrlSearchParams,
+        projectCode!,
       ),
     [
       JSON.stringify(rows),
       JSON.stringify(searchFilters),
-      JSON.stringify(drillDown),
-      valueType,
+      JSON.stringify(config),
       JSON.stringify(urlSearchParams),
       setUrlSearchParams,
+      projectCode,
     ],
   );
-  const parsedColumns = useMemo(() => parseColumns(columns), [JSON.stringify(columns)]);
+  const parsedColumns = useMemo(
+    () => parseColumns(columns, projectCode!),
+    [JSON.stringify(columns), projectCode],
+  );
 
   const updateSearchFilter = ({ key, value }: SearchFilter) => {
     const filtersWithoutKey = searchFilters.filter(filter => filter.key !== key);
