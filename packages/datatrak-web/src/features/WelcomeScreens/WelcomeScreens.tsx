@@ -3,13 +3,15 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { Typography, Button as MuiButton } from '@material-ui/core';
-import { Button as BaseButton } from '../../components';
-import SwipeableViews from 'react-swipeable-views';
-import { CarouselDots } from './CarouselDots';
+import { Button as MuiButton } from '@material-ui/core';
+import { Button as UIButton } from '@tupaia/ui-components';
+import { Carousel } from './Carousel';
+import { useEditUser } from '../../api';
+import { UserAccountDetails } from '../../types';
 
-const tutorialSteps = [
+const steps = [
   {
     title: 'Welcome to Tupaia DataTrak!',
     text: "If you're here from MediTrak, welcome! Rest assured that you have all the same functionality as MediTrak, only better. Come for a quick tour of what's new.",
@@ -55,82 +57,54 @@ const Body = styled.div`
   padding: 0 1.8rem;
 `;
 
-const Inner = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-`;
-
 const Footer = styled.div`
   height: 6rem;
   padding: 0 2rem 1rem;
 `;
 
-const ImageContainer = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 0.5rem;
-  width: 100%;
-  max-width: 100%;
-`;
-
-const Title = styled(Typography).attrs({
-  variant: 'h1',
-})`
-  font-size: 1rem;
-  margin-bottom: 1rem;
-`;
-
-const Text = styled(Typography)`
-  font-size: 0.875rem;
-  height: 5rem;
-`;
-
-const Button = styled(BaseButton)`
-  width: 100%;
+const TextButton = styled(MuiButton)`
+  font-weight: 400;
+  font-size: 0.75rem;
 `;
 
 export const WelcomeScreens = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  const handleStepChange = step => {
+  // Optimistically update the user data to hide the welcome screen. This is done to avoid a
+  // long wait time while the getUser request updates the user data.
+  const queryClient = useQueryClient();
+  const optimisticallyUpdateUserPreference = () => {
+    queryClient.setQueryData(['getUser'], userData => ({
+      ...(userData as UserAccountDetails),
+      hideWelcomeScreen: true,
+    }));
+  };
+  const { mutate, isLoading } = useEditUser(optimisticallyUpdateUserPreference);
+
+  const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
 
-  const handleSkip = () => {
-    console.log('skip');
+  const onComplete = () => {
+    mutate({ hideWelcomeScreen: true });
   };
+
+  const isLastStep = activeStep === steps.length - 1;
 
   return (
     <Container>
       <Header>
-        <MuiButton onClick={handleSkip}>Skip</MuiButton>
+        <TextButton onClick={onComplete}>Skip</TextButton>
       </Header>
       <Body>
-        <SwipeableViews index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
-          {tutorialSteps.map(step => (
-            <Inner key={step.title}>
-              <ImageContainer>
-                <img src={step.imgPath} alt={step.title} />
-              </ImageContainer>
-              <Title>{tutorialSteps[activeStep].title}</Title>
-              <Text>{tutorialSteps[activeStep].text}</Text>
-            </Inner>
-          ))}
-        </SwipeableViews>
-        <CarouselDots
-          maxSteps={tutorialSteps.length}
-          activeStep={activeStep}
-          onClick={handleStepChange}
-        />
+        <Carousel steps={steps} activeStep={activeStep} handleStepChange={handleStepChange} />
       </Body>
       <Footer>
-        <Button color="primary" variant="contained">
-          Go to Tupaia DataTrak
-        </Button>
+        {isLastStep && (
+          <UIButton onClick={onComplete} isLoading={isLoading} fullWidth>
+            Go to Tupaia DataTrak
+          </UIButton>
+        )}
       </Footer>
     </Container>
   );

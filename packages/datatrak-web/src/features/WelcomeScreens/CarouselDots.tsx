@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   padding-bottom: 1rem;
 `;
 
@@ -29,7 +29,7 @@ interface CarouselDotsProps {
   onClick: (index: number) => void;
 }
 
-export const CarouselDots: React.FC<CarouselDotsProps> = ({ maxSteps, activeStep, onClick }) => {
+export const CarouselDots = ({ maxSteps, activeStep, onClick }: CarouselDotsProps) => {
   return (
     <Container>
       {Array.from({ length: maxSteps }, (_, i) => (

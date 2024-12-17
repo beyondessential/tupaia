@@ -41,7 +41,12 @@ export class UserRoute extends Route<UserRequest> {
     const hasAdminPanelAccess =
       accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
 
-    const { project_id: projectId, country_id: countryId, delete_account_requested } = preferences;
+    const {
+      project_id: projectId,
+      country_id: countryId,
+      delete_account_requested,
+      hide_welcome_screen,
+    } = preferences;
 
     let project = null;
     let country = null;
@@ -69,6 +74,7 @@ export class UserRoute extends Route<UserRequest> {
       project,
       country,
       deleteAccountRequested: delete_account_requested === true,
+      hideWelcomeScreen: hide_welcome_screen === true,
       hasAdminPanelAccess,
     };
   }
