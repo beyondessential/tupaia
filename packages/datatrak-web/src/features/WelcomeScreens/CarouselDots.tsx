@@ -9,6 +9,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+  padding-bottom: 1rem;
 `;
 
 const Dot = styled.button<{ $active: boolean }>`

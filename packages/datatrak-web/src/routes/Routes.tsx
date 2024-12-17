@@ -59,12 +59,14 @@ const AuthViewLoggedInRedirect = ({ children }) => {
 
 export const Routes = () => {
   const welcomeScreensCompleted = false;
-  const LandingPageView = welcomeScreensCompleted ? LandingPage : WelcomeScreens;
+  if (!welcomeScreensCompleted) {
+    return <WelcomeScreens />;
+  }
   return (
     <RouterRoutes>
       <Route path="/" element={<MainPageLayout />}>
         {/* PRIVATE ROUTES */}
-        <Route path="/" element={<PrivateRoute />}>
+        <Route path="/" element={<LandingPage />}>
           <Route index element={<LandingPageView />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
           <Route element={<TasksLayout />}>
