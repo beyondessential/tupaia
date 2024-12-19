@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { InfiniteActivityFeed } from './InfiniteActivityFeed';
 
@@ -18,9 +18,10 @@ const Wrapper = styled.div`
 `;
 
 export const DesktopActivityFeed = () => {
+  const feedRef = useRef<HTMLDivElement | null>(null);
   return (
     <Wrapper>
-      <InfiniteActivityFeed />
+      <InfiniteActivityFeed ref={feedRef} />
     </Wrapper>
   );
 };
