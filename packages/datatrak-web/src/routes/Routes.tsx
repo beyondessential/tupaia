@@ -26,7 +26,7 @@ import {
 import { WelcomeScreens } from '../views/WelcomeScreens';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
-import { isPWA, useFromLocation } from '../utils';
+import { useFromLocation } from '../utils';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
@@ -35,26 +35,15 @@ import { SurveyRoutes } from './SurveyRoutes';
  * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
  */
 const AuthViewLoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, projectId, hideWelcomeScreen } = useCurrentUserContext();
+  const { isLoggedIn, ...user } = useCurrentUserContext();
   const from = useFromLocation();
 
   if (!isLoggedIn) {
     return children;
   }
-
-  const getRedirectPath = React.useCallback(() => {
-    if (!hideWelcomeScreen && isPWA()) {
-      return ROUTES.WELCOME;
-    }
-    if (projectId) {
-      return ROUTES.HOME;
-    }
-    return ROUTES.PROJECT_SELECT;
-  }, [projectId, hideWelcomeScreen]);
-
   return (
     <Navigate
-      to={getRedirectPath()}
+      to={user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT}
       replace={true}
       state={{
         from,
