@@ -14,3 +14,4 @@ export {
   removeTaskFilterSetting,
 } from './taskFilterSettings';
 export { useFromLocation } from './useLocationState';
+export { isPWA } from './pwa';

@@ -23,10 +23,10 @@ import {
   TaskDetailsPage,
   NotAuthorisedPage,
 } from '../views';
-import { WelcomeScreens } from '../features/WelcomeScreens';
+import { WelcomeScreens } from '../views/WelcomeScreens';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
-import { useFromLocation } from '../utils';
+import { isPWA, useFromLocation } from '../utils';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
@@ -35,15 +35,26 @@ import { SurveyRoutes } from './SurveyRoutes';
  * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
  */
 const AuthViewLoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, ...user } = useCurrentUserContext();
+  const { isLoggedIn, projectId, hideWelcomeScreen } = useCurrentUserContext();
   const from = useFromLocation();
 
   if (!isLoggedIn) {
     return children;
   }
+
+  const getRedirectPath = React.useCallback(() => {
+    if (!hideWelcomeScreen && isPWA()) {
+      return ROUTES.WELCOME;
+    }
+    if (projectId) {
+      return ROUTES.HOME;
+    }
+    return ROUTES.PROJECT_SELECT;
+  }, [projectId, hideWelcomeScreen]);
+
   return (
     <Navigate
-      to={user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT}
+      to={getRedirectPath()}
       replace={true}
       state={{
         from,
@@ -56,19 +67,14 @@ const AuthViewLoggedInRedirect = ({ children }) => {
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
  **/
-
 export const Routes = () => {
-  const user = useCurrentUserContext();
-
-  if (!user.hideWelcomeScreen) {
-    return <WelcomeScreens />;
-  }
   return (
     <RouterRoutes>
       <Route path="/" element={<MainPageLayout />}>
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<LandingPage />} />
+          <Route path={ROUTES.WELCOME} element={<WelcomeScreens />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
           <Route element={<TasksLayout />}>
             <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />

@@ -2,14 +2,14 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button as MuiButton } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom';
 import { Button as UIButton } from '@tupaia/ui-components';
 import { Carousel } from './Carousel';
-import { useEditUser } from '../../api';
-import { UserAccountDetails } from '../../types';
+import { useCurrentUserContext, useEditUser } from '../../api';
+import { ROUTES } from '../../constants';
 
 const steps = [
   {
@@ -69,24 +69,21 @@ const TextButton = styled(MuiButton)`
 
 export const WelcomeScreens = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const navigate = useNavigate();
+  const user = useCurrentUserContext();
+  const { mutate: updateUser } = useEditUser();
 
-  // Optimistically update the user data to hide the welcome screen. This is done to avoid a
-  // long wait time while the getUser request updates the user data.
-  const queryClient = useQueryClient();
-  const optimisticallyUpdateUserPreference = () => {
-    queryClient.setQueryData(['getUser'], userData => ({
-      ...(userData as UserAccountDetails),
-      hideWelcomeScreen: true,
-    }));
-  };
-  const { mutate, isLoading } = useEditUser(optimisticallyUpdateUserPreference);
+  useEffect(() => {
+    updateUser({ hideWelcomeScreen: true });
+  }, []);
 
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
 
   const onComplete = () => {
-    mutate({ hideWelcomeScreen: true });
+    const route = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
+    navigate(route);
   };
 
   const isLastStep = activeStep === steps.length - 1;
@@ -101,7 +98,7 @@ export const WelcomeScreens = () => {
       </Body>
       <Footer>
         {isLastStep && (
-          <UIButton onClick={onComplete} isLoading={isLoading} fullWidth>
+          <UIButton onClick={onComplete} fullWidth>
             Go to Tupaia DataTrak
           </UIButton>
         )}
