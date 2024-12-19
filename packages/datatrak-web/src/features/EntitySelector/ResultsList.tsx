@@ -9,16 +9,23 @@ import { FormLabelProps, Typography } from '@material-ui/core';
 import RoomIcon from '@material-ui/icons/Room';
 import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { SelectList } from '@tupaia/ui-components';
+import { useIsMobile } from '../../utils';
 
 const DARK_BLUE = '#004975';
 
 const ListWrapper = styled.div`
+  padding-top: 1rem;
+  border-top: 1px solid ${({ theme }) => theme.palette.divider};
   display: flex;
   flex-direction: column;
   overflow: auto;
   margin-top: 0.9rem;
-  li .MuiSvgIcon-root {
+
+  li .MuiSvgIcon-root:not(.MuiSvgIcon-colorPrimary) {
     color: ${DARK_BLUE};
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      font-size: 1.8rem;
+    }
   }
 `;
 
@@ -28,14 +35,26 @@ const SubListWrapper = styled.div`
   }
 `;
 
-const Subtitle = styled(Typography).attrs({
-  variant: 'h3',
-})`
-  font-size: 0.9375rem;
-  margin-block-end: 0.2rem;
+const MobileResultItem = styled(Typography)`
+  font-size: 0.875rem;
+  line-height: 1.3;
+  margin-left: 0.5rem;
+
+  > div:last-child {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
 `;
 
 export const ResultItem = ({ name, parentName }) => {
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    return (
+      <MobileResultItem>
+        <div>{name}</div>
+        <div>{parentName}</div>
+      </MobileResultItem>
+    );
+  }
   return (
     <>
       {name} | <span className="text-secondary">{parentName}</span>
@@ -59,7 +78,8 @@ type ListItemType = Record<string, unknown> & {
 
 type SearchResults = DatatrakWebEntityDescendantsRequest.ResBody;
 interface ResultsListProps {
-  value: string;
+  value?: string;
+  searchValue?: string;
   searchResults?: SearchResults;
   onSelect: (value: ListItemType) => void;
   showRecentEntities?: boolean;
@@ -68,6 +88,7 @@ interface ResultsListProps {
 
 export const ResultsList = ({
   value,
+  searchValue,
   searchResults,
   onSelect,
   showRecentEntities,
@@ -95,17 +116,21 @@ export const ResultsList = ({
     <ListWrapper>
       {recentEntities?.length > 0 && (
         <SubListWrapper>
-          <Subtitle>Recent entities</Subtitle>
-          <SelectList items={recentEntities} onSelect={onSelect} variant="fullPage" />
+          <SelectList
+            items={recentEntities}
+            onSelect={onSelect}
+            subTitle="Recent entities"
+            variant="borderless"
+          />
         </SubListWrapper>
       )}
       <SubListWrapper>
-        {showRecentEntities && <Subtitle>All entities</Subtitle>}
         <SelectList
           items={displayResults}
           onSelect={onSelect}
-          variant="fullPage"
+          variant="borderless"
           noResultsMessage={noResultsMessage}
+          subTitle={!searchValue ? 'All entities' : undefined}
         />
       </SubListWrapper>
     </ListWrapper>

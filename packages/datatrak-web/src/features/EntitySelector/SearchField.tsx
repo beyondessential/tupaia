@@ -41,9 +41,22 @@ const StyledField = styled(TextField)<TextFieldProps>`
     font-size: 1.2em;
   }
 
+  .MuiInputAdornment-positionStart {
+    margin-right: 0.2rem;
+  }
+
   &&&& {
     .MuiInputBase-input::placeholder {
-      color: ${({ theme }) => theme.palette.text.tertiary};
+      color: ${({ theme }) => theme.palette.text.hint};
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
+    .MuiInputBase-root {
+      border-radius: 6.25rem;
     }
   }
 `;
@@ -59,23 +72,11 @@ type SearchFieldProps = TextFieldProps & {
   onChangeSearch: (value: string) => void;
   isDirty: boolean;
   invalid: boolean;
-  detailLabel?: string;
   required?: boolean;
 };
 
 export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((props, ref) => {
-  const {
-    name,
-    label,
-    id,
-    searchValue,
-    onChangeSearch,
-    isDirty,
-    invalid,
-    detailLabel,
-    required,
-    inputProps,
-  } = props;
+  const { name, id, searchValue, onChangeSearch, isDirty, invalid, required, inputProps } = props;
 
   const displayValue = isDirty ? searchValue : '';
 
@@ -90,14 +91,13 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
   return (
     <StyledField
       id={id}
-      label={label}
       name={name}
       inputRef={ref}
       required={required}
       onChange={handleChange}
       value={displayValue}
       error={invalid}
-      helperText={detailLabel}
+      helperText={`Select an entity from the list below ${required && '*'}`}
       FormHelperTextProps={{
         component: InputHelperText,
       }}

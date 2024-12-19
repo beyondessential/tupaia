@@ -8,7 +8,6 @@ import { useParams } from 'react-router-dom';
 import { PageTitleBar, SurveyIcon, TopProgressBar } from '../../../components';
 import { useEntityByCode, useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
-import { useIsMobile } from '../../../utils';
 import { CopySurveyUrlButton } from './CopySurveyUrlButton';
 
 const CountryName = styled.span`
@@ -16,32 +15,17 @@ const CountryName = styled.span`
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
 `;
 
-export const SurveyToolbar = () => {
+export const DesktopSurveyHeader = () => {
   const { surveyCode, screenNumber: screenNumberParam, countryCode } = useParams();
   const { screenNumber, numberOfScreens, isResponseScreen } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
   const { data: country } = useEntityByCode(countryCode!);
-  const isMobile = useIsMobile();
-
-  const getDisplaySurveyName = () => {
-    const maxSurveyNameLength = 50;
-    if (!survey?.name) return '';
-
-    const surveyName = survey.name;
-
-    if (isMobile) {
-      return surveyName.length > maxSurveyNameLength
-        ? `${surveyName.slice(0, maxSurveyNameLength)}...`
-        : surveyName;
-    }
-    return surveyName;
-  };
-  const surveyName = getDisplaySurveyName();
 
   if (isResponseScreen) {
     return null;
   }
 
+  const surveyName = survey?.name || '';
   const Title = () => (
     <>
       {surveyName}
