@@ -22,8 +22,8 @@ const ImageContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 0 0.5rem;
-  width: 100%;
-  max-width: 100%;
+  inline-size: 100%;
+  max-inline-size: 100%;
 `;
 
 const Title = styled(Typography).attrs({
@@ -35,7 +35,7 @@ const Title = styled(Typography).attrs({
 
 const Text = styled(Typography)`
   font-size: 0.875rem;
-  height: 5rem;
+  block-size: 5rem;
 `;
 
 interface CarouselStep {

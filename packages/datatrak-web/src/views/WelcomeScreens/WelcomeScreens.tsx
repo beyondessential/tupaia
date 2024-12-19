@@ -38,8 +38,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
-  height: 100vh;
-  max-width: 30rem;
+  block-size: 100vh;
+  max-inline-size: 30rem;
   margin: 0 auto;
 `;
 
@@ -58,7 +58,7 @@ const Body = styled.div`
 `;
 
 const Footer = styled.div`
-  height: 6rem;
+  block-size: 6rem;
   padding: 0 2rem 1rem;
 `;
 
