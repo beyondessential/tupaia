@@ -31,4 +31,5 @@ export type ReqBody = Record<string, any>;
 export type ReqQuery = {
   projectId: string;
   page?: string;
+  pageLimit?: string;
 };
