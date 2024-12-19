@@ -33,6 +33,7 @@ export const ROUTES = {
   TASKS: '/tasks',
   TASK_DETAILS: '/tasks/:taskId',
   NOT_AUTHORISED: '/not-authorised',
+  WELCOME: '/welcome',
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
