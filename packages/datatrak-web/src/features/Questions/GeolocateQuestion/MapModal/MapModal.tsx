@@ -10,6 +10,7 @@ import { OutlinedButton } from '@tupaia/ui-components';
 import { getAutoTileSet, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
 import { Button, Modal } from '../../../../components';
 import { Map } from './Map';
+import { useIsMobile } from '../../../../utils';
 
 const Heading = styled(Typography).attrs({
   variant: 'h2',
@@ -65,6 +66,8 @@ export const MapModal = ({
     lng: geolocation?.longitude,
   });
 
+  const isMobile = useIsMobile();
+
   const onSubmit = () => {
     // set geolocation to new coordinates
     setGeolocation({
@@ -79,7 +82,7 @@ export const MapModal = ({
   };
 
   return (
-    <Modal open={mapModalOpen} onClose={closeModal}>
+    <Modal open={mapModalOpen} onClose={closeModal} fullScreen={isMobile}>
       <Container>
         <Heading>Drop pin on map</Heading>
         <Typography color="textSecondary">

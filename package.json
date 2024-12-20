@@ -45,7 +45,7 @@
     "package:test": "cd $INIT_CWD && jest --maxWorkers=50%",
     "package:test:withdb": "cd $INIT_CWD && yarn workspace @tupaia/database check-test-database-exists && jest --runInBand",
     "package:start:backend-start-dev": "cd $INIT_CWD && LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh",
-    "package:start:vite": "cd $INIT_CWD && vite --config \"../../vite.config.js\"",
+    "package:start:vite": "cd $INIT_CWD && vite --host --config \"../../vite.config.js\"",
     "package:start-stack": "scripts/bash/pm2startInline.sh",
     "package:storybook:start": "cd $INIT_CWD && storybook dev -p 6006 -c ../../.storybook",
     "package:storybook:build": "cd $INIT_CWD && storybook build -c .storybook"
