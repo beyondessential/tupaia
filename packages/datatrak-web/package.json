@@ -65,7 +65,8 @@
     "start-dev": "npm run --prefix ../../ package:start:vite",
     "start-stack": "yarn package:start-stack datatrak",
     "test": "yarn test:jest",
-    "test:jest": "yarn package:test --env=jsdom"
+    "test:jest": "yarn package:test --env=jsdom",
+    "storybook": "yarn package:storybook:start"
   },
   "msw": {
     "workerDirectory": "public"
