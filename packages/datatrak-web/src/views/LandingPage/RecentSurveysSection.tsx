@@ -9,6 +9,7 @@ import { Typography } from '@material-ui/core';
 import { SurveyIcon, Tile, LoadingTile } from '../../components';
 import { useCurrentUserRecentSurveys } from '../../api';
 import { SectionHeading } from './SectionHeading';
+import { useIsMobile } from '../../utils';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -19,30 +20,30 @@ const RecentSurveys = styled.section`
 const ScrollBody = styled.div<{
   $hasMoreThanOneSurvey: boolean;
 }>`
-  border-radius: 10px;
-  display: grid;
-  grid-template-columns: ${({ $hasMoreThanOneSurvey }) =>
-    $hasMoreThanOneSurvey ? ' repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr))' : '1fr'};
-  grid-column-gap: 1rem;
-  grid-row-gap: 0.6rem;
+  display: flex;
+  overflow-x: auto;
+  column-gap: 1rem;
+  row-gap: 0.6rem;
 
-  // make a vertical scrollable container for medium screens (tablet)
-  ${({ theme }) => theme.breakpoints.down('md')} {
-    grid-template-columns: 1fr;
-    overflow: auto;
+  > span,
+  > a {
+    width: 18rem;
+    max-width: 100%;
+    //Reset flex grow and shrink
+    flex: 0 0 auto;
   }
-  // make a horizontal scrollable container for small screens
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    grid-auto-flow: column;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    overflow: auto;
-    > .MuiButton-root {
-      min-width: 15rem;
-    }
+  // make the 2 row grid on desktop
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-auto-flow: row;
+    grid-template-columns: ${({ $hasMoreThanOneSurvey }) =>
+      $hasMoreThanOneSurvey ? ' repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr))' : '1fr'};
   }
 `;
 
 export const RecentSurveysSection = () => {
+  const isMobile = useIsMobile();
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
 
@@ -60,11 +61,13 @@ export const RecentSurveysSection = () => {
                   title={surveyName}
                   text={countryName}
                   tooltip={
-                    <>
-                      {surveyName}
-                      <br />
-                      {countryName}
-                    </>
+                    !isMobile ? (
+                      <>
+                        {surveyName}
+                        <br />
+                        {countryName}
+                      </>
+                    ) : null
                   }
                   Icon={SurveyIcon}
                   to={`/survey/${countryCode}/${surveyCode}/1`}
