@@ -25,3 +25,4 @@ export { AccountSettingsPage } from './AccountSettingsPage';
 export { ReportsPage } from './ReportsPage';
 export { TasksDashboardPage, TaskDetailsPage } from './Tasks';
 export { NotAuthorisedPage } from './NotAuthorisedPage';
+export { OfflinePage } from './OfflinePage';
