@@ -51,7 +51,7 @@ const StyledField = styled(TextField)<TextFieldProps>`
     }
   }
 
-  ${({ theme }) => theme.breakpoints.down('md')} {
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiOutlinedInput-notchedOutline {
       border: none;
     }

@@ -84,7 +84,7 @@ const IconWrapper = styled.div<{ $hasIcon?: boolean }>`
 
 const CheckIcon = styled(Check).attrs({ color: 'primary' })`
   &.MuiSvgIcon-root {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 `;
 
