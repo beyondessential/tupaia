@@ -58,9 +58,11 @@ const Title = styled(Typography)`
 
 const Subtitle = styled(Typography)`
   font-size: 0.875rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
   line-height: 1.3;
   margin-top: 0.32rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+  text-align: center;
+  text-wrap: balance;
 `;
 
 interface AuthViewWrapperProps {
