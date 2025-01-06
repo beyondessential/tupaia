@@ -8,6 +8,7 @@ import { HEADER_HEIGHT } from '../constants';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100vh;
 `;
 
 const HeaderContainer = styled.div`
@@ -58,10 +59,11 @@ const Body = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 5% 1.5rem 1rem;
+  padding: 1rem 1.5rem 1rem;
   inline-size: 45rem;
   max-inline-size: 100%;
   margin: 0 auto;
+  max-height: 80%;
 `;
 
 const Button = styled(UIButton)`
