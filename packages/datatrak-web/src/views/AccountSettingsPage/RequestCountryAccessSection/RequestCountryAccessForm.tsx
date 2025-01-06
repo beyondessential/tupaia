@@ -7,7 +7,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { UseQueryResult } from '@tanstack/react-query';
-import { FormLabel, Typography, Button as MuiButton, Collapse } from '@material-ui/core';
+import {
+  FormLabel,
+  Typography,
+  Button as MuiButton,
+  Collapse as UICollapse,
+} from '@material-ui/core';
 import { Entity, ProjectCountryAccessListRequest, ProjectResponse } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useRequestProjectAccess } from '../../../api';
@@ -64,6 +69,13 @@ const Flexbox = styled.div`
   display: block flex;
   flex-direction: column;
   gap: 1.25rem;
+`;
+
+const Collapse = styled(UICollapse)`
+  padding-bottom: 2rem;
+  .MuiCollapse-wrapper {
+    width: 100%;
+  }
 `;
 
 const ExpandButton = styled(MuiButton)<{ $active: boolean }>`
@@ -226,8 +238,8 @@ export const RequestCountryAccessForm = ({
           <StyledFormLabel>Select countries</StyledFormLabel>
           <ArrowLeftIcon />
         </ExpandButton>
-        <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
-          <Collapse in={isOpen}>
+        <Collapse in={isOpen}>
+          <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
             <RequestableCountryChecklist
               projectCode={projectCode}
               countries={countries}
@@ -236,15 +248,15 @@ export const RequestCountryAccessForm = ({
               setSelectedCountries={setSelectedCountries}
             />
             <ReasonForAccessField />
-          </Collapse>
-          <Button
-            disabled={noRequestableCountries || formIsInsubmissible}
-            tooltip={getTooltip()}
-            type="submit"
-          >
-            {formIsSubmitting ? 'Submitting request' : 'Request access'}
-          </Button>
-        </StyledFieldset>
+          </StyledFieldset>
+        </Collapse>
+        <Button
+          disabled={noRequestableCountries || formIsInsubmissible}
+          tooltip={getTooltip()}
+          type="submit"
+        >
+          {formIsSubmitting ? 'Submitting request' : 'Request access'}
+        </Button>
       </StyledForm>
     );
   }
