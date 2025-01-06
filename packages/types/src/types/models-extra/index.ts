@@ -8,6 +8,9 @@ export {
   PlaintextReferenceProps,
   LinkReferenceProps,
   EntityAttributes,
+  DateOffsetSpec,
+  VizPeriodGranularity,
+  DashboardItemType,
 } from './common';
 export type {
   ReportConfig,
@@ -40,6 +43,8 @@ export {
   CartesianChartConfig,
   ValueType,
   MatrixConfig,
+  MatrixVizBuilderConfig,
+  MatrixEntityCell,
   PresentationOptionCondition,
   MatrixPresentationOptions,
   ConditionsObject,
@@ -72,6 +77,7 @@ export {
   ComponentConfig,
   LineChartChartConfig,
   ExportPresentationOptions,
+  DatePickerOffsetSpec,
 } from './dashboard-item';
 export {
   MapOverlayConfig,
@@ -96,6 +102,8 @@ export {
   EntityQuestionConfigFields,
   EntityQuestionConfigFieldValue,
   EntityQuestionConfigFieldKey,
+  TaskQuestionConfig,
+  UserQuestionConfig,
 } from './survey';
 export { LeaderboardItem } from './leaderboard';
 export {
@@ -104,7 +112,8 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
-export { VizPeriodGranularity, DashboardItemType } from './common';
 export { isChartReport, isViewReport, isMatrixReport } from './report';
 export { UserAccountPreferences } from './user';
 export { ProjectConfig } from './project';
+export { RepeatSchedule, TaskCommentTemplateVariables, SystemCommentSubType } from './task';
+export { EntityType } from './entityType';

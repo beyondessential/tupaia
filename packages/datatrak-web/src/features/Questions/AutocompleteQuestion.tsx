@@ -3,14 +3,14 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import throttle from 'lodash.throttle';
 import { createFilterOptions } from '@material-ui/lab';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { DESKTOP_BREAKPOINT } from '../../constants';
 import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
 
 const Autocomplete = styled(BaseAutocomplete)`
@@ -24,7 +24,7 @@ const Autocomplete = styled(BaseAutocomplete)`
   .MuiFormLabel-root {
     font-size: 0.875rem;
     line-height: 1.2;
-    @media (min-width: ${MOBILE_BREAKPOINT}) {
+    @media (min-width: ${DESKTOP_BREAKPOINT}) {
       font-size: 1rem;
     }
   }
@@ -67,7 +67,7 @@ export const AutocompleteQuestion = ({
   config = {},
   controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(selectedValue?.value || selectedValue || '');
   const { autocomplete = {} } = config!;
   const { attributes, createNew } = autocomplete;
   const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(
@@ -75,6 +75,17 @@ export const AutocompleteQuestion = ({
     attributes,
     searchValue,
   );
+
+  //If we programmatically set the value of the input, we need to update the search value
+  useEffect(() => {
+    // if the selection is the same as the search value, do not update the search value
+    if (!selectedValue || typeof selectedValue !== 'string' || selectedValue === searchValue)
+      return;
+
+    setSearchValue(selectedValue);
+  }, [JSON.stringify(selectedValue)]);
+
+  const canCreateNew = !!createNew;
 
   const getOptionSelected = (option: Option, selectedOption?: string | null) => {
     const value = typeof option === 'string' ? option : option?.value;
@@ -84,7 +95,7 @@ export const AutocompleteQuestion = ({
   const getOptions = () => {
     const options = data || [];
     // If we can't create a new option, or there is no input value, or the input value is already in the options, or the value is already added, return the options as they are
-    if (!createNew || !searchValue || options.find(option => option.value === searchValue))
+    if (!canCreateNew || !searchValue || options.find(option => option.value === searchValue))
       return options;
     // if we have selected a newly created option, add it to the list of options
     if (selectedValue?.value === searchValue)
@@ -128,7 +139,8 @@ export const AutocompleteQuestion = ({
         value={selectedValue?.value || selectedValue || null}
         required={required}
         onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
-        onInputChange={throttle((_, newValue) => {
+        onInputChange={throttle((e, newValue) => {
+          if (newValue === searchValue || !e || !e.target) return;
           setSearchValue(newValue);
         }, 200)}
         inputValue={searchValue}

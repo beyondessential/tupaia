@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import moment, { Moment } from 'moment';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { momentToDateString } from '@tupaia/utils';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {

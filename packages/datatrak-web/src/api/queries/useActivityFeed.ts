@@ -3,21 +3,32 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { DatatrakWebActivityFeedRequest, Project } from '@tupaia/types';
 import { get } from '../api';
 import { useCurrentUserContext } from '..';
 
-export const useActivityFeed = (projectId?: Project['id']) => {
+interface UseActivityFeedProps {
+  projectId?: Project['id'];
+  pageLimit?: number;
+}
+
+export const useActivityFeed = ({ projectId, pageLimit }: UseActivityFeedProps) => {
   return useInfiniteQuery(
-    ['activityFeed', projectId],
-    ({ pageParam = 0 }): Promise<DatatrakWebActivityFeedRequest.ResBody> =>
-      get('activityFeed', {
-        params: {
-          page: pageParam,
-          projectId,
-        },
-      }),
+    ['activityFeed', projectId, pageLimit],
+    ({ pageParam = 0 }): Promise<DatatrakWebActivityFeedRequest.ResBody> => {
+      const params = {
+        page: pageParam,
+        projectId,
+        pageLimit,
+      };
+      if (pageLimit) {
+        params.pageLimit = pageLimit;
+      }
+      return get('activityFeed', {
+        params,
+      });
+    },
     {
       getNextPageParam: (data, pages) => {
         if (!data) return 0;
@@ -28,7 +39,7 @@ export const useActivityFeed = (projectId?: Project['id']) => {
   );
 };
 
-export const useCurrentProjectActivityFeed = () => {
+export const useCurrentProjectActivityFeed = (pageLimit?: number) => {
   const { projectId } = useCurrentUserContext();
-  return useActivityFeed(projectId);
+  return useActivityFeed({ projectId, pageLimit });
 };

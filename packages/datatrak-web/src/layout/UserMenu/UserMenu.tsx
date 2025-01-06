@@ -15,11 +15,6 @@ import { ProjectSelectModal } from './ProjectSelectModal';
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    justify-content: space-between;
-    width: 100%;
-  }
 `;
 
 const MenuButton = styled(IconButton).attrs({
@@ -58,7 +53,7 @@ export const UserMenu = () => {
         onCloseMenu={onCloseMenu}
         openProjectModal={openProjectModal}
       />
-      {projectModalOpen && <ProjectSelectModal onClose={closeProjectModal} />}
+      {projectModalOpen && <ProjectSelectModal onBack={closeProjectModal} />}
     </Wrapper>
   );
 };

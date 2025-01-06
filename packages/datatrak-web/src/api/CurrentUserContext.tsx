@@ -22,7 +22,7 @@ export const useCurrentUserContext = (): CurrentUserContextType => {
 export const CurrentUserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const currentUserQuery = useUser();
 
-  if (currentUserQuery.isLoading) {
+  if (currentUserQuery.isInitialLoading) {
     return <FullPageLoader />;
   }
 

@@ -121,6 +121,11 @@ export const createAnswerViaSurveyResponseDBFilter = async (
           [`${RECORDS.SURVEY_SCREEN}.id`, `${RECORDS.SURVEY_SCREEN_COMPONENT}.screen_id`],
         ],
       },
+      {
+        joinWith: RECORDS.USER_ACCOUNT,
+        joinCondition: [`${RECORDS.USER_ACCOUNT}.id`, `${RECORDS.ANSWER}.text`],
+        joinType: JOIN_TYPES.LEFT,
+      },
     ],
     dbOptions.multiJoin,
   );

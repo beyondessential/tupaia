@@ -25,7 +25,7 @@
   "dependencies": {
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "jsonwebtoken": "^7.4.3",
+    "jsonwebtoken": "^9.0.0",
     "rand-token": "^1.0.1",
     "randomatic": "^3.1.1",
     "semver-compare": "^1.0.0",

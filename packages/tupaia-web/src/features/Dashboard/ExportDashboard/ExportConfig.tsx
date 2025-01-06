@@ -6,19 +6,23 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import downloadJs from 'downloadjs';
 import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { DashboardItemVizTypes, MOBILE_BREAKPOINT } from '../../../constants';
-import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
+import {
+  DisplayFormatSettings,
+  DisplayOptionsSettings,
+  useExportSettings,
+} from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
 import { Preview } from './Preview';
+import { ExportDescriptionInput } from '../../ExportSettings/ExportDescriptionInput';
 
 const ButtonGroup = styled.div`
-  padding-top: 2.5rem;
+  padding: 1rem 0;
   width: 100%;
   display: flex;
   justify-content: flex-end;
@@ -28,7 +32,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  width 100%;
+  width: 100%;
   align-items: start;
   section + section {
     margin-top: 1.5rem;
@@ -100,6 +104,17 @@ const ExportSettingsInstructionsContainer = styled.div`
   padding-bottom: 1.4rem;
 `;
 
+const ExportSettingsWrapper = styled.div`
+  padding-block-end: 0.8rem;
+  & + & {
+    padding-block-start: 1rem;
+    border-top: 0.1rem solid ${({ theme }) => theme.palette.text.secondary};
+  }
+  &:last-child {
+    padding-block-end: 0;
+  }
+`;
+
 interface ExportDashboardProps {
   onClose: () => void;
   selectedDashboardItems: string[];
@@ -110,22 +125,12 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
-  const { exportWithLabels, exportWithTable } = useExportSettings();
-
-  const handleExportSuccess = (data: Blob) => {
-    downloadJs(data, `${exportFileName}.pdf`);
-  };
-
-  const {
-    mutate: requestPdfExport,
-    error,
-    isLoading,
-    reset,
-  } = useExportDashboard({
-    onSuccess: handleExportSuccess,
-  });
+  const { exportWithLabels, exportWithTable, exportDescription, separatePagePerItem } =
+    useExportSettings();
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
+
+  const { mutate: requestPdfExport, error, isLoading, reset } = useExportDashboard(exportFileName);
 
   const handleExport = () =>
     requestPdfExport({
@@ -136,6 +141,8 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
       settings: {
         exportWithLabels,
         exportWithTable,
+        exportDescription,
+        separatePagePerItem,
       },
     });
 
@@ -159,21 +166,36 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
               <ExportSubtitle>Edit export settings and click 'Download'.</ExportSubtitle>
             </ExportSettingsInstructionsContainer>
             <ExportSetting>
-              {hasChartItems && (
-                <section>
-                  <DisplayOptionsSettings />
-                </section>
-              )}
+              <section>
+                <ExportSettingsWrapper>
+                  <ExportDescriptionInput />
+                </ExportSettingsWrapper>
+                <ExportSettingsWrapper>
+                  <DisplayFormatSettings />
+                </ExportSettingsWrapper>
+                {hasChartItems && (
+                  <ExportSettingsWrapper>
+                    <DisplayOptionsSettings />
+                  </ExportSettingsWrapper>
+                )}
+              </section>
               <MailingListSection
                 selectedDashboardItems={selectedDashboardItems}
                 settings={{
                   exportWithTable,
                   exportWithLabels,
+                  exportDescription,
+                  separatePagePerItem,
                 }}
               />
             </ExportSetting>
           </ExportSettingsContainer>
-          {!isLoading && <Preview selectedDashboardItems={selectedDashboardItems} />}
+          {!isLoading && (
+            <Preview
+              selectedDashboardItems={selectedDashboardItems}
+              separatePagePerItem={separatePagePerItem}
+            />
+          )}
         </Container>
       </Wrapper>
       <ButtonGroup>

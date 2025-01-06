@@ -70,7 +70,7 @@ export const MapOverlaySelectorTitle = () => {
     projectCode,
     entityCode,
   );
-  const { isLoading: isLoadingOverlayData, error, refetch } = useMapOverlayMapData();
+  const { isInitialLoading: isLoadingOverlayData, error, refetch } = useMapOverlayMapData();
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const isLoading =

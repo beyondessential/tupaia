@@ -60,13 +60,13 @@ const AuthButtons = styled.div`
  * This is the displayed user name OR the login/register buttons on desktop
  */
 export const UserInfo = () => {
-  const { isLoggedIn, projectId, userName } = useCurrentUserContext();
+  const { isLoggedIn, projectId, fullName } = useCurrentUserContext();
 
   return (
     <Wrapper>
       {isLoggedIn ? (
         <UserDetails>
-          <UserName>{userName}</UserName>
+          <UserName>{fullName}</UserName>
           {projectId && <ChangeProjectButton />}
         </UserDetails>
       ) : (

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { get } from '../api';
 import { QUERY_OPTIONS } from './constants';
 

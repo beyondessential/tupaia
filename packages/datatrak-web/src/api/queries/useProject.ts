@@ -4,7 +4,7 @@
  *
  */
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { WebServerProjectRequest } from '@tupaia/types';
 import { get } from '../api';
 

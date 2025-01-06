@@ -10,7 +10,7 @@ import { ChangeHandler } from '@tupaia/database';
 import { MeditrakSyncRecordUpdater } from './MeditrakSyncRecordUpdater';
 
 const modelValidator = model => {
-  if (!model.meditrakConfig.minAppVersion) {
+  if (!model.meditrakConfig?.minAppVersion) {
     throw new Error(
       `Model for ${model.databaseRecord} must have a meditrakConfig.minAppVersion property`,
     );
@@ -33,6 +33,7 @@ export class MeditrakSyncQueue extends ChangeHandler {
     super(models, 'meditrak-sync-queue');
 
     const typesToSync = models.getTypesToSyncWithMeditrak();
+
     const modelNamesToSync = Object.entries(models)
       .filter(([, model]) => typesToSync.includes(model.databaseRecord))
       .map(([modelName]) => modelName);
@@ -50,16 +51,9 @@ export class MeditrakSyncQueue extends ChangeHandler {
    * @private
    */
   async refreshPermissionsBasedView(database) {
-    try {
-      const start = Date.now();
-      await database.executeSql(
-        `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
-      );
-      const end = Date.now();
-      winston.info(`permissions_based_meditrak_sync_queue refresh took: ${end - start}ms`);
-    } catch (error) {
-      winston.error(`permissions_based_meditrak_sync_queue refresh failed: ${error.message}`);
-    }
+    await database.executeSql(
+      `REFRESH MATERIALIZED VIEW CONCURRENTLY permissions_based_meditrak_sync_queue;`,
+    );
   }
 
   /**

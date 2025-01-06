@@ -13,6 +13,7 @@ PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 # Install external dependencies and build internal dependencies
 cd ${TUPAIA_DIR}
 yarn install --immutable
+chmod 755 node_modules/@babel/cli/bin/babel.js
 
 # "postinstall" hook may only fire if the dependency tree changes. This may not happen on feature branches based off dev,
 # because our AMI performs a yarn install already. In this case we can end up in a situation where "internal-depenednecies"

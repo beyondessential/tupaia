@@ -12,6 +12,12 @@ import { ValueOf } from '../../src/types';
 const meta: Meta<typeof DateRangePicker> = {
   title: 'components/DateRangePicker',
   component: DateRangePicker,
+  parameters: {
+    backgrounds: {
+      default: 'dark',
+    },
+    theme: 'dark',
+  },
   decorators: [
     Story => (
       <div style={{ margin: '1rem', maxWidth: '20rem' }}>

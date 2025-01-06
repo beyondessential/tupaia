@@ -30,6 +30,10 @@ const ButtonWrapper = styled(Wrapper).attrs({
   flex-direction: row;
   position: relative;
   justify-content: flex-start;
+  align-items: flex-start;
+  padding-block-start: 0.8rem;
+  padding-block-end: 0;
+  padding-inline: 0;
 
   svg {
     margin-right: 0.4rem;
@@ -39,18 +43,11 @@ const ButtonWrapper = styled(Wrapper).attrs({
   &:hover {
     background-color: ${({ theme }) => theme.palette.primaryHover};
   }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-inline: 1rem;
+    padding-block: 0.8rem;
+  }
 ` as typeof Button;
-
-const Heading = styled(Typography)`
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.palette.text.primary};
-  margin-bottom: 0.2rem;
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
 
 const Text = styled(Typography)`
   font-size: 0.75rem;
@@ -60,9 +57,30 @@ const Text = styled(Typography)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-inline: 0.8rem;
   &:not(:last-child) {
     margin-bottom: 0.2rem;
   }
+  &:last-child {
+    border-top: 1px solid ${({ theme }) => theme.palette.divider};
+    padding-block: 0.5rem;
+    margin-block-start: 0.4rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-inline: 0;
+    &:last-child {
+      border-top: none;
+      padding-block: 0;
+      margin-block-start: 0;
+    }
+  }
+`;
+
+const Heading = styled(Text)`
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.palette.text.primary};
+  margin-bottom: 0.2rem;
 `;
 
 const LoadingContainer = styled.div`
@@ -72,6 +90,35 @@ const LoadingContainer = styled.div`
     &:not(:last-child) {
       margin-bottom: 0.6rem;
     }
+  }
+`;
+
+const ButtonContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+    // To make ellipsis work on the text, we need to set a max-width, and by adding calc(90%) we can make it responsive as well because calc converts the percentage to pixels
+    max-width: calc(90%);
+  }
+`;
+
+const TextWrapper = styled(Box)`
+  margin-block-start: 0.2rem;
+  width: 100%;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-block-start: 0;
+  }
+`;
+
+const ContentItem = styled.div`
+  width: 100%;
+  padding-inline: 1rem;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    width: auto;
+    padding-inline: 0;
   }
 `;
 
@@ -86,14 +133,22 @@ interface TileProps {
 }
 
 export const Tile = ({ title, text, children, to, tooltip, Icon, onClick }: TileProps) => {
+  const content = [text, children].filter(Boolean);
   return (
     <ButtonWrapper to={to} tooltip={tooltip} onClick={onClick}>
-      {Icon && <Icon />}
-      <Box maxWidth="100%" pr={5}>
-        {title && <Heading>{title}</Heading>}
-        {text && <Text>{text}</Text>}
-        {children && <Text>{children}</Text>}
-      </Box>
+      <ButtonContent>
+        {Icon && (
+          <ContentItem>
+            <Icon />
+          </ContentItem>
+        )}
+        <TextWrapper maxWidth="100%">
+          {title && <Heading>{title}</Heading>}
+          {content.map((content, index) => (
+            <Text key={index}>{content}</Text>
+          ))}
+        </TextWrapper>
+      </ButtonContent>
     </ButtonWrapper>
   );
 };

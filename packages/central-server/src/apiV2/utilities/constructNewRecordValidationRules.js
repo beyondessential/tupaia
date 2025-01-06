@@ -30,7 +30,7 @@ import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
-  const { SURVEY_RESPONSE, COMMENT } = RECORDS;
+  const { SURVEY_RESPONSE, COMMENT, TASK, TASK_COMMENT } = RECORDS;
 
   switch (combinedRecordType) {
     case `${SURVEY_RESPONSE}/${COMMENT}`:
@@ -38,6 +38,11 @@ export const constructForParent = (models, recordType, parentRecordType) => {
         survey_response_id: [constructRecordExistsWithId(models.surveyResponse)],
         user_id: [constructRecordExistsWithId(models.user)],
         text: [hasContent],
+      };
+    case `${TASK}/${TASK_COMMENT}`:
+      return {
+        message: [hasContent, isAString],
+        type: [constructIsOneOf(['user', 'system'])],
       };
     default:
       throw new ValidationError(
@@ -445,32 +450,10 @@ export const constructForSingle = (models, recordType) => {
         entity_id: [constructRecordExistsWithId(models.entity)],
         survey_id: [constructRecordExistsWithId(models.survey)],
         assignee_id: [constructIsEmptyOr(constructRecordExistsWithId(models.user))],
-        due_date: [
-          (value, { status }) => {
-            if (status !== 'repeating' && !value) {
-              throw new Error('Due date is required for non-recurring tasks');
-            }
-            return true;
-          },
-        ],
-        repeat_schedule: [
-          (value, { status }) => {
-            if (status === 'repeating' && !value) {
-              throw new Error('Repeat frequency is required for recurring tasks');
-            }
-            return true;
-          },
-        ],
-        status: [
-          (value, { repeat_schedule: repeatSchedule }) => {
-            if (repeatSchedule) return true;
-            if (!value) {
-              throw new Error('Status is required');
-            }
-            return true;
-          },
-        ],
+        due_date: [hasContent],
+        status: [hasContent],
       };
+
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }

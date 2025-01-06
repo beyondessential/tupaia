@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { ComponentType } from 'react';
@@ -27,10 +27,13 @@ const TooltipWrapper = styled.span`
     height: 100%;
     width: 100%;
   }
+
   &:hover,
   &:focus {
-    svg {
-      fill: ${props => props.theme.palette.primary.main};
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      svg {
+        fill: ${props => props.theme.palette.primary.main};
+      }
     }
   }
 `;
@@ -38,6 +41,7 @@ const TooltipWrapper = styled.span`
 const Tooltip = styled(BaseTooltip)`
   & .MuiTooltip-tooltip {
     background-color: ${props => props.theme.palette.text.primary};
+    color: ${props => props.theme.palette.background.paper};
     border-radius: 3px;
     font-weight: ${props => props.theme.typography.fontWeightRegular};
     font-size: 0.69rem;
@@ -54,14 +58,14 @@ const LabelWrapper = styled(FlexCenter)`
 `;
 
 interface InputLabelProps {
-  label?: string | React.ReactNode;
+  label?: React.ReactNode;
   tooltip?: string;
   as?: string | ComponentType<any>;
   className?: string;
   htmlFor?: string;
   TooltipIcon?: ComponentType<any>;
   applyWrapper?: boolean;
-  labelProps?: Record<string, any>;
+  labelProps?: Record<string, unknown>;
 }
 
 export const InputLabel = ({
@@ -77,10 +81,12 @@ export const InputLabel = ({
   // If no label, don't render anything, so there isn't an empty label tag in the DOM
   if (!label) return null;
 
-  // wrapper won't work correctly when using TextField, so we need to conditionally apply it
+  // Wrapper won’t work correctly when using TextField, so we need to conditionally apply it
   const Wrapper = applyWrapper ? LabelWrapper : React.Fragment;
   return (
-    // allows us to pass in a custom element to render as, e.g. a span if it is going to be contained in a label element, for example when using MUI's TextField component. Otherwise defaults to a label element so that it can be a standalone label
+    // Allows us to pass in a custom element to render as, e.g. a span if it is going to be
+    // contained in a label element, for example when using MUI's TextField component. Otherwise
+    // defaults to a label element so that it can be a standalone label
     <Wrapper>
       <Label as={as} className={className} htmlFor={htmlFor} {...labelProps}>
         {label}
@@ -88,7 +94,7 @@ export const InputLabel = ({
       {tooltip && (
         <Tooltip title={tooltip} placement="top">
           <TooltipWrapper tabIndex={0}>
-            <TooltipIcon />
+            <TooltipIcon className="tooltip" />
           </TooltipWrapper>
         </Tooltip>
       )}

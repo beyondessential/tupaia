@@ -5,20 +5,30 @@
 
 import React from 'react';
 import {
+  IconButton as MuiIconButton,
   ListItemIcon,
-  MenuItem as MuiMenuItem,
   Menu as MuiMenu,
-  IconButton,
-  Typography,
+  MenuItem as MuiMenuItem,
   Tooltip,
+  Typography,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import styled from 'styled-components';
 import { ActionsMenuOptionType } from '../types';
 
+const StyledMenu = styled(MuiMenu)`
+  .MuiPaper-root {
+    border: 1px solid ${props => props.theme.palette.divider};
+  }
+  .MuiList-root {
+    padding: 0.2rem;
+  }
+`;
+
 const StyledMenuItem = styled(MuiMenuItem)`
-  padding-top: 0.625rem;
-  padding-bottom: 0.625rem;
+  padding: 0.3rem 0.3rem;
+  font-size: 0.75rem;
+  min-width: 5rem;
 `;
 
 const StyledMenuIcon = styled(MoreVertIcon)`
@@ -40,6 +50,7 @@ type ActionMenuProps = {
     vertical?: 'top' | 'bottom';
     horizontal?: 'left' | 'right';
   };
+  IconButton?: typeof MuiIconButton;
 };
 
 export const ActionsMenu = ({
@@ -47,14 +58,15 @@ export const ActionsMenu = ({
   includesIcons = false,
   anchorOrigin = {},
   transformOrigin = {},
+  IconButton = MuiIconButton,
 }: ActionMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   return (
     <>
-      <IconButton aria-label="open" onClick={event => setAnchorEl(event.currentTarget)}>
+      <IconButton aria-label="Open menu" onClick={event => setAnchorEl(event.currentTarget)}>
         <StyledMenuIcon />
       </IconButton>
-      <MuiMenu
+      <StyledMenu
         keepMounted
         disablePortal
         getContentAnchorEl={null}
@@ -62,8 +74,8 @@ export const ActionsMenu = ({
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: 'top',
+          horizontal: 'right',
           ...anchorOrigin,
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top', ...transformOrigin }}
@@ -104,7 +116,7 @@ export const ActionsMenu = ({
             </StyledMenuItem>
           ),
         )}
-      </MuiMenu>
+      </StyledMenu>
     </>
   );
 };

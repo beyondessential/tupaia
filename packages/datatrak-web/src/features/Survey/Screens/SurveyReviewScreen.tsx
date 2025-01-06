@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import { Typography } from '@material-ui/core';
@@ -41,7 +41,7 @@ export const SurveyReviewScreen = () => {
         <PageHeading>Review and submit</PageHeading>
         <PageDescription>
           Please review your survey answers below. To edit any answers, please navigate back using
-          the 'Back' button below. Once submitted, your survey answers will be uploaded to Tupaia.{' '}
+          the ‘Back’ button below. Once submitted, your survey answers will be uploaded to Tupaia.
         </PageDescription>
       </Header>
       <ScrollableBody>

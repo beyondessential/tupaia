@@ -13,7 +13,7 @@ const paramsValidator = yup.object().shape(
   {
     columns: yup.lazy((value: unknown) =>
       Array.isArray(value)
-        ? yup.array().of(yup.string().required())
+        ? yup.array()
         : yup.mixed<'*'>().oneOf(['*'], "columns must be either '*' or an array"),
     ),
     rowField: yup

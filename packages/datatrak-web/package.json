@@ -14,7 +14,9 @@
     "@material-ui/core": "^4.9.11",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.10",
+    "@tanstack/react-query": "4.36.1",
     "@testing-library/react-hooks": "^8.0.1",
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/types": "workspace:*",
@@ -23,7 +25,9 @@
     "@tupaia/utils": "workspace:*",
     "axios": "^1.6.8",
     "bson-objectid": "^1.2.2",
+    "date-fns": "^2.29.2",
     "downloadjs": "1.4.7",
+    "js-cookie": "^3.0.5",
     "leaflet": "^1.7.1",
     "lodash.throttle": "^4.1.1",
     "markdown-to-jsx": "^6.4.1",
@@ -33,18 +37,21 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",
     "react-leaflet": "^3.2.1",
-    "react-query": "^3.39.3",
     "react-router": "6.3.0",
     "react-router-dom": "6.3.0",
+    "react-table": "^7.8.0",
     "styled-components": "^5.1.0",
     "yup": "^1.3.2"
   },
   "devDependencies": {
     "@mui/types": "^7.2.4",
     "@testing-library/react": "12.1.2",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/user-event": "^13.5.0",
     "@types/leaflet": "^1.7.1",
     "@types/material-ui": "^0.21.12",
     "@types/react": "16.8.6",
+    "@types/react-table": "^7.7.14",
     "@vitejs/plugin-react": "^4.0.0",
     "msw": "^1.3.1",
     "npm-run-all": "^4.1.5",
@@ -58,7 +65,8 @@
     "start-dev": "npm run --prefix ../../ package:start:vite",
     "start-stack": "yarn package:start-stack datatrak",
     "test": "yarn test:jest",
-    "test:jest": "yarn package:test --env=jsdom"
+    "test:jest": "yarn package:test --env=jsdom",
+    "storybook": "yarn package:storybook:start"
   },
   "msw": {
     "workerDirectory": "public"

@@ -184,10 +184,10 @@ describe('Reports', () => {
     );
     renderComponent(<Reports />);
     await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
-    await userEvent.click(screen.getByText('Basic clinic data - Demo Land'));
+    await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));
-    await userEvent.click(screen.getByPlaceholderText('Select country...'));
-    await userEvent.click(screen.getByText('Demo Land'));
+    await userEvent.click(await screen.getByPlaceholderText('Select country...'));
+    await userEvent.click(await screen.findByText('Demo Land'));
 
     const submitButton = await screen.findByRole('button', { name: 'Export' });
 
@@ -217,10 +217,10 @@ describe('Reports', () => {
     );
     renderComponent(<Reports />);
     await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
-    await userEvent.click(screen.getByText('Basic clinic data - Demo Land'));
+    await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));
-    await userEvent.click(screen.getByPlaceholderText('Select country...'));
-    await userEvent.click(screen.getByText('Demo Land'));
+    await userEvent.click(await screen.getByPlaceholderText('Select country...'));
+    await userEvent.click(await screen.findByText('Demo Land'));
 
     const submitButton = await screen.findByRole('button', { name: 'Export' });
 
@@ -244,10 +244,10 @@ describe('Reports', () => {
     );
     renderComponent(<Reports />);
     await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
-    await userEvent.click(screen.getByText('Basic clinic data - Demo Land'));
+    await userEvent.click(await screen.findByText('Basic clinic data - Demo Land'));
     await userEvent.click(await screen.findByLabelText('Country'));
-    await userEvent.click(screen.getByPlaceholderText('Select country...'));
-    await userEvent.click(screen.getByText('Demo Land'));
+    await userEvent.click(await screen.getByPlaceholderText('Select country...'));
+    await userEvent.click(await screen.findByText('Demo Land'));
 
     const submitButton = await screen.findByRole('button', { name: 'Export' });
 

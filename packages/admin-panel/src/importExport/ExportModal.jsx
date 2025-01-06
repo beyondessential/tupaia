@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal } from '../widgets';
+import { Modal } from '@tupaia/ui-components';
 import { useApiContext } from '../utilities/ApiProvider';
 import { ActionButton } from '../editor';
 import { ExportIcon } from '../icons';
@@ -27,6 +27,8 @@ export const ExportModal = React.memo(
     exportButtonText,
     cancelButtonText,
     isExportingMessage,
+    extraQueryParameters,
+    onCloseModal,
   }) => {
     const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
@@ -44,6 +46,9 @@ export const ExportModal = React.memo(
       setStatus(STATUS.IDLE);
       setError(null);
       setIsOpen(false);
+      if (onCloseModal) {
+        onCloseModal();
+      }
     };
 
     const handleSubmit = async event => {
@@ -56,6 +61,7 @@ export const ExportModal = React.memo(
         const queryParameters = {
           respondWithEmailTimeout: 10 * 1000, // if an export doesn't finish in 10 seconds, email results
           ...values,
+          ...extraQueryParameters,
         };
         const { body: response } = await api.download(endpoint, queryParameters, fileName);
         if (response?.emailTimeoutHit) {
@@ -152,6 +158,8 @@ ExportModal.propTypes = {
   exportButtonText: PropTypes.string,
   cancelButtonText: PropTypes.string,
   isExportingMessage: PropTypes.string,
+  onCloseModal: PropTypes.func,
+  extraQueryParameters: PropTypes.object,
 };
 
 ExportModal.defaultProps = {
@@ -162,4 +170,6 @@ ExportModal.defaultProps = {
   isExportingMessage:
     'Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.',
   values: {},
+  onCloseModal: null,
+  extraQueryParameters: {},
 };

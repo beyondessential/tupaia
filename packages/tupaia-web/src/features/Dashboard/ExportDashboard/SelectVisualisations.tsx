@@ -85,7 +85,7 @@ export const SelectVisualisation = ({
         name: config?.name,
         code,
         disabled: !isSupported,
-        tooltip: !isSupported ? 'PDF export coming soon' : undefined,
+        tooltip: !isSupported ? 'PDF export unavailable' : undefined,
       };
     }) ?? [];
 

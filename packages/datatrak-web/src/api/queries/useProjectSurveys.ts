@@ -3,29 +3,27 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { DatatrakWebSurveyRequest, Project } from '@tupaia/types';
 import { get } from '../api';
 import { Entity } from '../../types';
 
 export const useProjectSurveys = (
   projectId?: Project['id'],
-  selectedCountryName?: Entity['name'],
+  selectedCountryCode?: Entity['code'],
 ) => {
   return useQuery(
-    ['surveys', projectId],
+    ['surveys', projectId, selectedCountryCode],
     (): Promise<DatatrakWebSurveyRequest.ResBody[]> =>
       get('surveys', {
         params: {
-          fields: ['name', 'code', 'id', 'survey_group.name', 'countryNames'],
+          fields: ['name', 'code', 'id', 'survey_group.name'],
           projectId,
+          countryCode: selectedCountryCode,
         },
       }),
     {
-      select: data => {
-        return data.filter(survey => survey.countryNames?.includes(selectedCountryName!));
-      },
-      enabled: !!projectId,
+      enabled: !!projectId && !!selectedCountryCode,
     },
   );
 };

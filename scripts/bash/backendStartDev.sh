@@ -11,7 +11,6 @@ DIR=$(dirname "$0")
 
 USAGE="Usage: ${BOLD}backendStartDev babel_port_inspector${RESET} [${BOLD}-i${RESET}|${BOLD}--include-internal${RESET}] [${BOLD}-ts${RESET}|${BOLD}--typescript${RESET}]"
 CONCURRENTLY_BIN="${DIR}/../../node_modules/.bin/concurrently"
-watch_flags=""
 watch_flags=''
 include_internal=false
 type_script=false
@@ -43,21 +42,22 @@ done
 
 # Start server command for TS
 if [[ $type_script = true ]]; then
-    start_server="nodemon --watch src -e ts,json --exec node --inspect=${inspect_port} -r ts-node/register src/index.ts"
+    start_server="nodemon --watch src -e ts,json,js --exec node --inspect=${inspect_port} -r ts-node/register src/index.ts"
 fi
 
 echo -e "${BOLD}Starting server...${RESET}"
 
+# If internal dependencies are included, add them to the watch list. This will watch for changes to the dist folder of each internal dependency. If the internal dependency then gets rebuilt, the server will restart.
 if [[ $include_internal = true ]]; then
     echo 'Internal dependencies are under watch for hot reload'
-    for PACKAGE in $("$DIR/getInternalDependencies.sh" .); do
+    for PACKAGE in $("$DIR/getInternalDependencies.sh"); do
         watch_flags+=" --watch ../$PACKAGE/dist"
     done
     # add the watch flags to the server start process, as well as a 1 second delay to debounce the
     # many restarts that otherwise happen during the initial build of internal dependencies
     start_server+=" --delay 1 $watch_flags"
-    "$CONCURRENTLY_BIN" "${DIR}/buildInternalDependencies.sh --watch --packagePath ." "eval ${start_server}"
 else
     echo -e "Starting server without internal dependency build and watch. To include internal dependencies, add the ${BOLD}-i${RESET} flag - it’s much faster than it used to be!"
-    eval "$start_server"
 fi
+
+eval "$start_server"

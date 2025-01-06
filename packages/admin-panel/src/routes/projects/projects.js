@@ -78,6 +78,30 @@ const DEFAULT_FIELDS = [
       maxWidth: 480,
     },
   },
+];
+
+const CREATE_FIELDS = [
+  {
+    Header: 'Code',
+    source: 'code',
+    required: true,
+  },
+  ...DEFAULT_FIELDS,
+  {
+    Header: 'Sort',
+    source: 'sort_order',
+    width: 80,
+  },
+];
+
+const EDIT_FIELDS = [
+  {
+    Header: 'Code',
+    source: 'code',
+    editable: false,
+    required: true,
+  },
+  ...DEFAULT_FIELDS,
   {
     Header: 'Config',
     source: 'config',
@@ -92,25 +116,6 @@ const DEFAULT_FIELDS = [
     source: 'sort_order',
     width: 80,
   },
-];
-
-const CREATE_FIELDS = [
-  {
-    Header: 'Code',
-    source: 'code',
-    required: true,
-  },
-  ...DEFAULT_FIELDS,
-];
-
-const EDIT_FIELDS = [
-  {
-    Header: 'Code',
-    source: 'code',
-    editable: false,
-    required: true,
-  },
-  ...DEFAULT_FIELDS,
 ];
 
 const NEW_PROJECT_COLUMNS = [

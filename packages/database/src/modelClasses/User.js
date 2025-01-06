@@ -53,6 +53,14 @@ export class UserModel extends DatabaseModel {
     return user;
   }
 
+  customColumnSelectors = {
+    full_name: () =>
+      `CASE 
+        WHEN last_name IS NULL THEN first_name 
+        ELSE first_name || ' ' || last_name 
+      END`,
+  };
+
   emailVerifiedStatuses = {
     UNVERIFIED: 'unverified',
     VERIFIED: 'verified',

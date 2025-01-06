@@ -14,6 +14,7 @@ export class JsonFieldValidator extends BaseValidator {
 
     const fieldValidators = this.getFieldValidators(rowIndex);
     const otherFieldValidators = this.getOtherFieldValidators();
+
     await new ObjectValidator(fieldValidators, otherFieldValidators).validate(
       config,
       constructError,

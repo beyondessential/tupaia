@@ -4,13 +4,11 @@
  */
 
 import React, { useState } from 'react';
-
 import PropTypes from 'prop-types';
-
+import { useDebounce } from '@tupaia/ui-components';
 import { ParameterType } from '../../editing';
 import { useEntities } from '../../../../VizBuilderApp/api';
 import { Autocomplete } from '../../../../autocomplete';
-import { useDebounce } from '../../../../utilities';
 import { getArrayFieldValue } from './utils';
 
 export const OrganisationUnitCodesField = ({ name, onChange }) => {

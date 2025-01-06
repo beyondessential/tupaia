@@ -64,7 +64,6 @@ export const DateOffsetSpecSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"offset",
 		"unit"
 	]
 } 
@@ -130,7 +129,6 @@ export const DefaultTimePeriodSchema = {
 			},
 			"additionalProperties": false,
 			"required": [
-				"offset",
 				"unit"
 			]
 		},
@@ -180,7 +178,6 @@ export const DefaultTimePeriodSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -232,7 +229,6 @@ export const DefaultTimePeriodSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -340,6 +336,27 @@ export const CssColorSchema = {
 	"type": "string"
 } 
 
+export const DatePickerOffsetSpecSchema = {
+	"type": "object",
+	"properties": {
+		"unit": {
+			"enum": [
+				"month",
+				"quarter"
+			],
+			"type": "string"
+		},
+		"offset": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"offset",
+		"unit"
+	]
+} 
+
 export const BaseConfigSchema = {
 	"type": "object",
 	"properties": {
@@ -366,6 +383,27 @@ export const BaseConfigSchema = {
 				"year"
 			],
 			"type": "string"
+		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
 		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
@@ -410,7 +448,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -460,7 +497,6 @@ export const BaseConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -512,7 +548,6 @@ export const BaseConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -570,7 +605,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -614,7 +648,6 @@ export const BaseConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -719,6 +752,10 @@ export const BaseConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		}
 	},
@@ -803,6 +840,27 @@ export const MatrixConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -846,7 +904,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -896,7 +953,6 @@ export const MatrixConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -948,7 +1004,6 @@ export const MatrixConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1006,7 +1061,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1050,7 +1104,6 @@ export const MatrixConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -1155,6 +1208,10 @@ export const MatrixConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -1476,6 +1533,23 @@ export const MatrixConfigSchema = {
 	]
 } 
 
+export const MatrixEntityCellSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"entityLabel": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entityCode",
+		"entityLabel"
+	]
+} 
+
 export const MatrixVizBuilderConfigSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -1503,6 +1577,27 @@ export const MatrixVizBuilderConfigSchema = {
 				"year"
 			],
 			"type": "string"
+		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
 		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
@@ -1547,7 +1642,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1597,7 +1691,6 @@ export const MatrixVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1649,7 +1742,6 @@ export const MatrixVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -1707,7 +1799,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -1751,7 +1842,6 @@ export const MatrixVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -1856,6 +1946,10 @@ export const MatrixVizBuilderConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -2189,12 +2283,31 @@ export const MatrixVizBuilderConfigSchema = {
 					"type": "string"
 				},
 				"columns": {
-					"description": "The columns of the data-table that should be included as columns in the matrix.\nCan be either a list of column names, or '*' to indicate all columns",
+					"description": "The columns of the data-table that should be included as columns in the matrix.\nCan be either:\na list of column names,\n'*' to indicate all columns\nor a list of objects with an entityCode and entityLabel to generate entity links",
 					"anyOf": [
 						{
 							"type": "array",
 							"items": {
 								"type": "string"
+							}
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"entityCode": {
+										"type": "string"
+									},
+									"entityLabel": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"entityCode",
+									"entityLabel"
+								]
 							}
 						},
 						{
@@ -2700,6 +2813,27 @@ export const ComponentConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -2743,7 +2877,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -2793,7 +2926,6 @@ export const ComponentConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -2845,7 +2977,6 @@ export const ComponentConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -2903,7 +3034,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -2947,7 +3077,6 @@ export const ComponentConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -3052,6 +3181,10 @@ export const ComponentConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -3222,6 +3355,27 @@ export const BaseChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -3265,7 +3419,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3315,7 +3468,6 @@ export const BaseChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3367,7 +3519,6 @@ export const BaseChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -3425,7 +3576,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -3469,7 +3619,6 @@ export const BaseChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -3574,6 +3723,10 @@ export const BaseChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -4087,6 +4240,27 @@ export const CartesianChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -4130,7 +4304,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4180,7 +4353,6 @@ export const CartesianChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -4232,7 +4404,6 @@ export const CartesianChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -4290,7 +4461,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4334,7 +4504,6 @@ export const CartesianChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -4439,6 +4608,10 @@ export const CartesianChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -4897,6 +5070,27 @@ export const PieChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -4940,7 +5134,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -4990,7 +5183,6 @@ export const PieChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5042,7 +5234,6 @@ export const PieChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5100,7 +5291,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5144,7 +5334,6 @@ export const PieChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -5249,6 +5438,10 @@ export const PieChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -5447,6 +5640,27 @@ export const BarChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -5490,7 +5704,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5540,7 +5753,6 @@ export const BarChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5592,7 +5804,6 @@ export const BarChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -5650,7 +5861,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -5694,7 +5904,6 @@ export const BarChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -5799,6 +6008,10 @@ export const BarChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -6393,6 +6606,27 @@ export const LineChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -6436,7 +6670,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -6486,7 +6719,6 @@ export const LineChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -6538,7 +6770,6 @@ export const LineChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -6596,7 +6827,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -6640,7 +6870,6 @@ export const LineChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -6741,6 +6970,10 @@ export const LineChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -7331,6 +7564,27 @@ export const ComposedChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -7374,7 +7628,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -7424,7 +7677,6 @@ export const ComposedChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -7476,7 +7728,6 @@ export const ComposedChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -7534,7 +7785,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -7578,7 +7828,6 @@ export const ComposedChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -7679,6 +7928,10 @@ export const ComposedChartConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -8085,6 +8338,27 @@ export const GaugeChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -8128,7 +8402,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -8178,7 +8451,6 @@ export const GaugeChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -8230,7 +8502,6 @@ export const GaugeChartConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -8288,7 +8559,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -8332,7 +8602,6 @@ export const GaugeChartConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -8439,6 +8708,10 @@ export const GaugeChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
+			"type": "string"
+		},
 		"type": {
 			"type": "string",
 			"enum": [
@@ -8542,6 +8815,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -8585,7 +8879,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -8635,7 +8928,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -8687,7 +8979,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -8745,7 +9036,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -8789,7 +9079,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -8894,6 +9183,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -9032,6 +9325,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -9075,7 +9389,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9125,7 +9438,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9177,7 +9489,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9235,7 +9546,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9279,7 +9589,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -9384,6 +9693,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -9802,6 +10115,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -9845,7 +10179,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -9895,7 +10228,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -9947,7 +10279,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10005,7 +10336,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10049,7 +10379,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -10150,6 +10479,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -10566,6 +10899,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -10609,7 +10963,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10659,7 +11012,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10711,7 +11063,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -10769,7 +11120,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -10813,7 +11163,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -10914,6 +11263,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -11319,6 +11672,27 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -11362,7 +11736,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11412,7 +11785,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11464,7 +11836,6 @@ export const ChartConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -11522,7 +11893,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -11566,7 +11936,6 @@ export const ChartConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -11671,6 +12040,10 @@ export const ChartConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -11906,6 +12279,27 @@ export const BaseViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -11949,7 +12343,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -11999,7 +12392,6 @@ export const BaseViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12051,7 +12443,6 @@ export const BaseViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12109,7 +12500,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12153,7 +12543,6 @@ export const BaseViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -12258,6 +12647,10 @@ export const BaseViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -12358,6 +12751,27 @@ export const MultiValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -12401,7 +12815,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12451,7 +12864,6 @@ export const MultiValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12503,7 +12915,6 @@ export const MultiValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -12561,7 +12972,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -12605,7 +13015,6 @@ export const MultiValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -12710,6 +13119,10 @@ export const MultiValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -12918,6 +13331,27 @@ export const MultiValueRowViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -12961,7 +13395,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13011,7 +13444,6 @@ export const MultiValueRowViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13063,7 +13495,6 @@ export const MultiValueRowViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13121,7 +13552,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13165,7 +13595,6 @@ export const MultiValueRowViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -13270,6 +13699,10 @@ export const MultiValueRowViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -13429,6 +13862,27 @@ export const SingleValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -13472,7 +13926,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13522,7 +13975,6 @@ export const SingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13574,7 +14026,6 @@ export const SingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13632,7 +14083,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13676,7 +14126,6 @@ export const SingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -13781,6 +14230,10 @@ export const SingleValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -13854,6 +14307,27 @@ export const MultiPhotographViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -13897,7 +14371,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -13947,7 +14420,6 @@ export const MultiPhotographViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -13999,7 +14471,6 @@ export const MultiPhotographViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14057,7 +14528,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14101,7 +14571,6 @@ export const MultiPhotographViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -14206,6 +14675,10 @@ export const MultiPhotographViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -14275,6 +14748,27 @@ export const MultiSingleValueViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -14318,7 +14812,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14368,7 +14861,6 @@ export const MultiSingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14420,7 +14912,6 @@ export const MultiSingleValueViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14478,7 +14969,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14522,7 +15012,6 @@ export const MultiSingleValueViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -14627,6 +15116,10 @@ export const MultiSingleValueViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -14696,6 +15189,27 @@ export const SingleDownloadLinkViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -14739,7 +15253,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14789,7 +15302,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14841,7 +15353,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -14899,7 +15410,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -14943,7 +15453,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15048,6 +15557,10 @@ export const SingleDownloadLinkViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -15117,6 +15630,27 @@ export const DataDownloadViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -15160,7 +15694,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15210,7 +15743,6 @@ export const DataDownloadViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15262,7 +15794,6 @@ export const DataDownloadViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15320,7 +15851,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15364,7 +15894,6 @@ export const DataDownloadViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15469,6 +15998,10 @@ export const DataDownloadViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -15538,6 +16071,27 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -15581,7 +16135,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15631,7 +16184,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15683,7 +16235,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -15741,7 +16292,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -15785,7 +16335,6 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -15890,6 +16439,10 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -15975,6 +16528,27 @@ export const SingleDateViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -16018,7 +16592,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16068,7 +16641,6 @@ export const SingleDateViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16120,7 +16692,6 @@ export const SingleDateViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16178,7 +16749,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16222,7 +16792,6 @@ export const SingleDateViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -16327,6 +16896,10 @@ export const SingleDateViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -16396,6 +16969,27 @@ export const DownloadFilesViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -16439,7 +17033,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16489,7 +17082,6 @@ export const DownloadFilesViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16541,7 +17133,6 @@ export const DownloadFilesViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16599,7 +17190,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16643,7 +17233,6 @@ export const DownloadFilesViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -16748,6 +17337,10 @@ export const DownloadFilesViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -16817,6 +17410,27 @@ export const QRCodeViewConfigSchema = {
 			],
 			"type": "string"
 		},
+		"dateOffset": {
+			"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+			"type": "object",
+			"properties": {
+				"unit": {
+					"enum": [
+						"month",
+						"quarter"
+					],
+					"type": "string"
+				},
+				"offset": {
+					"type": "number"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"offset",
+				"unit"
+			]
+		},
 		"defaultTimePeriod": {
 			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 			"anyOf": [
@@ -16860,7 +17474,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -16910,7 +17523,6 @@ export const QRCodeViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -16962,7 +17574,6 @@ export const QRCodeViewConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -17020,7 +17631,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -17064,7 +17674,6 @@ export const QRCodeViewConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -17169,6 +17778,10 @@ export const QRCodeViewConfigSchema = {
 				"WEEK_ENDING",
 				"WEEK_ENDING_ABBR"
 			],
+			"type": "string"
+		},
+		"dateRangeDelimiter": {
+			"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 			"type": "string"
 		},
 		"type": {
@@ -17240,6 +17853,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -17283,7 +17917,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -17333,7 +17966,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -17385,7 +18017,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -17443,7 +18074,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -17487,7 +18117,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -17592,6 +18221,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -17673,6 +18306,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -17716,7 +18370,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -17766,7 +18419,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -17818,7 +18470,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -17876,7 +18527,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -17920,7 +18570,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -18025,6 +18674,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -18183,6 +18836,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -18226,7 +18900,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18276,7 +18949,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18328,7 +19000,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18386,7 +19057,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18430,7 +19100,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -18535,6 +19204,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -18607,6 +19280,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -18650,7 +19344,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18700,7 +19393,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18752,7 +19444,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -18810,7 +19501,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -18854,7 +19544,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -18959,6 +19648,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -19027,6 +19720,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -19070,7 +19784,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19120,7 +19833,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19172,7 +19884,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19230,7 +19941,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19274,7 +19984,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19379,6 +20088,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -19447,6 +20160,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -19490,7 +20224,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19540,7 +20273,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19592,7 +20324,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -19650,7 +20381,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19694,7 +20424,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -19799,6 +20528,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -19867,6 +20600,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -19910,7 +20664,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -19960,7 +20713,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20012,7 +20764,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20070,7 +20821,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20114,7 +20864,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -20219,6 +20968,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -20287,6 +21040,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -20330,7 +21104,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20380,7 +21153,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20432,7 +21204,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20490,7 +21261,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20534,7 +21304,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -20639,6 +21408,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -20707,6 +21480,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -20750,7 +21544,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20800,7 +21593,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20852,7 +21644,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -20910,7 +21701,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -20954,7 +21744,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -21059,6 +21848,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -21127,6 +21920,27 @@ export const ViewConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -21170,7 +21984,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21220,7 +22033,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21272,7 +22084,6 @@ export const ViewConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21330,7 +22141,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21374,7 +22184,6 @@ export const ViewConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -21479,6 +22288,10 @@ export const ViewConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -21662,6 +22475,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -21705,7 +22539,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21755,7 +22588,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21807,7 +22639,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -21865,7 +22696,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -21909,7 +22739,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -22014,6 +22843,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -22363,6 +23196,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -22406,7 +23260,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22456,7 +23309,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22508,7 +23360,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22566,7 +23417,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22610,7 +23460,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -22715,6 +23564,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -22767,6 +23620,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -22810,7 +23684,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -22860,7 +23733,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22912,7 +23784,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -22970,7 +23841,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23014,7 +23884,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -23119,6 +23988,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -23257,6 +24130,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -23300,7 +24194,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23350,7 +24243,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23402,7 +24294,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -23460,7 +24351,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -23504,7 +24394,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -23609,6 +24498,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -24027,6 +24920,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -24070,7 +24984,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24120,7 +25033,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24172,7 +25084,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24230,7 +25141,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24274,7 +25184,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -24375,6 +25284,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -24791,6 +25704,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -24834,7 +25768,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -24884,7 +25817,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24936,7 +25868,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -24994,7 +25925,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25038,7 +25968,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -25139,6 +26068,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -25544,6 +26477,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -25587,7 +26541,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25637,7 +26590,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25689,7 +26641,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -25747,7 +26698,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -25791,7 +26741,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -25896,6 +26845,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -25997,6 +26950,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -26040,7 +27014,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26090,7 +27063,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26142,7 +27114,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26200,7 +27171,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26244,7 +27214,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -26349,6 +27318,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -26430,6 +27403,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -26473,7 +27467,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26523,7 +27516,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26575,7 +27567,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -26633,7 +27624,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -26677,7 +27667,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -26782,6 +27771,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -26940,6 +27933,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -26983,7 +27997,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27033,7 +28046,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27085,7 +28097,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27143,7 +28154,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27187,7 +28197,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -27292,6 +28301,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -27364,6 +28377,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -27407,7 +28441,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27457,7 +28490,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27509,7 +28541,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27567,7 +28598,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27611,7 +28641,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -27716,6 +28745,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -27784,6 +28817,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -27827,7 +28881,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -27877,7 +28930,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27929,7 +28981,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -27987,7 +29038,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28031,7 +29081,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28136,6 +29185,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -28204,6 +29257,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -28247,7 +29321,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28297,7 +29370,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28349,7 +29421,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28407,7 +29478,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28451,7 +29521,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28556,6 +29625,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -28624,6 +29697,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -28667,7 +29761,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28717,7 +29810,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28769,7 +29861,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -28827,7 +29918,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -28871,7 +29961,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -28976,6 +30065,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -29044,6 +30137,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -29087,7 +30201,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29137,7 +30250,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29189,7 +30301,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29247,7 +30358,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29291,7 +30401,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29396,6 +30505,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -29464,6 +30577,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -29507,7 +30641,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29557,7 +30690,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29609,7 +30741,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -29667,7 +30798,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29711,7 +30841,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -29816,6 +30945,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -29884,6 +31017,27 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"dateOffset": {
+					"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"month",
+								"quarter"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
 				"defaultTimePeriod": {
 					"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 					"anyOf": [
@@ -29927,7 +31081,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -29977,7 +31130,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30029,7 +31181,6 @@ export const DashboardItemConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -30087,7 +31238,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -30131,7 +31281,6 @@ export const DashboardItemConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -30236,6 +31385,10 @@ export const DashboardItemConfigSchema = {
 						"WEEK_ENDING",
 						"WEEK_ENDING_ABBR"
 					],
+					"type": "string"
+				},
+				"dateRangeDelimiter": {
+					"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 					"type": "string"
 				},
 				"type": {
@@ -30767,7 +31920,27 @@ export const MatrixReportRowSchema = {
 	"type": "object",
 	"properties": {
 		"dataElement": {
-			"type": "string"
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"entityCode": {
+							"type": "string"
+						},
+						"entityLabel": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"entityCode",
+						"entityLabel"
+					]
+				},
+				{
+					"type": "string"
+				}
+			]
 		},
 		"categoryId": {
 			"type": "string"
@@ -30896,6 +32069,9 @@ export const ViewDataItemSchema = {
 						"singleValue"
 					],
 					"type": "string"
+				},
+				"label": {
+					"type": "string"
 				}
 			}
 		}
@@ -30976,6 +32152,9 @@ export const ViewReportSchema = {
 									"singleValue"
 								],
 								"type": "string"
+							},
+							"label": {
+								"type": "string"
 							}
 						}
 					}
@@ -31036,7 +32215,27 @@ export const MatrixReportSchema = {
 				"type": "object",
 				"properties": {
 					"dataElement": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "object",
+								"properties": {
+									"entityCode": {
+										"type": "string"
+									},
+									"entityLabel": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"entityCode",
+									"entityLabel"
+								]
+							},
+							{
+								"type": "string"
+							}
+						]
 					},
 					"categoryId": {
 						"type": "string"
@@ -31231,6 +32430,9 @@ export const DashboardItemReportSchema = {
 											"singleValue"
 										],
 										"type": "string"
+									},
+									"label": {
+										"type": "string"
 									}
 								}
 							}
@@ -31290,7 +32492,27 @@ export const DashboardItemReportSchema = {
 						"type": "object",
 						"properties": {
 							"dataElement": {
-								"type": "string"
+								"anyOf": [
+									{
+										"type": "object",
+										"properties": {
+											"entityCode": {
+												"type": "string"
+											},
+											"entityLabel": {
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"entityCode",
+											"entityLabel"
+										]
+									},
+									{
+										"type": "string"
+									}
+								]
 							},
 							"categoryId": {
 								"type": "string"
@@ -31387,6 +32609,10 @@ export const DashboardItemReportSchema = {
 	]
 } 
 
+export const EntityTypeSchema = {
+	"type": "string"
+} 
+
 export const ValueKeySchema = {
 	"description": "A key that can be used to reference a value in a measureConfig, or to reference all values",
 	"type": "string"
@@ -31454,7 +32680,7 @@ export const MeasureConfigSchema = {
 	"type": "object",
 	"properties": {
 		"type": {
-			"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+			"description": "How to display this series (popup-only is deprecated)",
 			"enum": [
 				"color",
 				"icon",
@@ -31468,57 +32694,6 @@ export const MeasureConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"values": {
@@ -31588,6 +32763,14 @@ export const MeasureConfigSchema = {
 		},
 		"hideFromLegend": {
 			"description": "Whether to include this series in the legend",
+			"type": "boolean"
+		},
+		"hideFromPopup": {
+			"description": "Whether to include this series in the popup/tooltip",
+			"type": "boolean"
+		},
+		"hideFromTable": {
+			"description": "Whether to include this series in the table",
 			"type": "boolean"
 		},
 		"name": {
@@ -31664,57 +32847,6 @@ export const DisplayedValueTypeSchema = {
 } 
 
 export const EntityLevelSchema = {
-	"enum": [
-		"Asset",
-		"Business",
-		"Case",
-		"CaseContact",
-		"Catchment",
-		"City",
-		"Commune",
-		"Complaint",
-		"Country",
-		"Disaster",
-		"District",
-		"DistrictOperational",
-		"EnumerationArea",
-		"Facility",
-		"FacilityBuilding",
-		"FacilityDivision",
-		"FacilitySection",
-		"Farm",
-		"FetpGraduate",
-		"FieldStation",
-		"FijiAspenFacility",
-		"HealthClinicBoundary",
-		"HospitalArea",
-		"HospitalWard",
-		"Household",
-		"Incident",
-		"IncidentReported",
-		"Individual",
-		"Institute",
-		"LarvalHabitat",
-		"LarvalSample",
-		"LocalGovernment",
-		"Maintenance",
-		"MedicalArea",
-		"MsupplyStore",
-		"NursingZone",
-		"Postcode",
-		"Project",
-		"RepairRequest",
-		"School",
-		"SubCatchment",
-		"SubDistrict",
-		"SubFacility",
-		"Transfer",
-		"Trap",
-		"Village",
-		"WaterSample",
-		"WishSubDistrict",
-		"World"
-	],
 	"type": "string"
 } 
 
@@ -31795,7 +32927,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -31839,7 +32970,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -31889,7 +33019,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -31939,7 +33068,6 @@ export const BaseMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -31991,7 +33119,6 @@ export const BaseMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -32011,57 +33138,6 @@ export const BaseMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"displayedValueKey": {
@@ -32146,7 +33222,7 @@ export const BaseMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -32160,57 +33236,6 @@ export const BaseMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"enum": [
-							"Asset",
-							"Business",
-							"Case",
-							"CaseContact",
-							"Catchment",
-							"City",
-							"Commune",
-							"Complaint",
-							"Country",
-							"Disaster",
-							"District",
-							"DistrictOperational",
-							"EnumerationArea",
-							"Facility",
-							"FacilityBuilding",
-							"FacilityDivision",
-							"FacilitySection",
-							"Farm",
-							"FetpGraduate",
-							"FieldStation",
-							"FijiAspenFacility",
-							"HealthClinicBoundary",
-							"HospitalArea",
-							"HospitalWard",
-							"Household",
-							"Incident",
-							"IncidentReported",
-							"Individual",
-							"Institute",
-							"LarvalHabitat",
-							"LarvalSample",
-							"LocalGovernment",
-							"Maintenance",
-							"MedicalArea",
-							"MsupplyStore",
-							"NursingZone",
-							"Postcode",
-							"Project",
-							"RepairRequest",
-							"School",
-							"SubCatchment",
-							"SubDistrict",
-							"SubFacility",
-							"Transfer",
-							"Trap",
-							"Village",
-							"WaterSample",
-							"WishSubDistrict",
-							"World"
-						],
 						"type": "string"
 					},
 					"values": {
@@ -32282,6 +33307,14 @@ export const BaseMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the legend",
 						"type": "boolean"
 					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
+						"type": "boolean"
+					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -32299,57 +33332,6 @@ export const BaseMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"noDataColour": {
@@ -32513,7 +33495,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -32557,7 +33538,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -32607,7 +33587,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -32657,7 +33636,6 @@ export const SpectrumMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -32709,7 +33687,6 @@ export const SpectrumMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -32729,57 +33706,6 @@ export const SpectrumMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"displayedValueKey": {
@@ -32864,7 +33790,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -32878,57 +33804,6 @@ export const SpectrumMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"enum": [
-							"Asset",
-							"Business",
-							"Case",
-							"CaseContact",
-							"Catchment",
-							"City",
-							"Commune",
-							"Complaint",
-							"Country",
-							"Disaster",
-							"District",
-							"DistrictOperational",
-							"EnumerationArea",
-							"Facility",
-							"FacilityBuilding",
-							"FacilityDivision",
-							"FacilitySection",
-							"Farm",
-							"FetpGraduate",
-							"FieldStation",
-							"FijiAspenFacility",
-							"HealthClinicBoundary",
-							"HospitalArea",
-							"HospitalWard",
-							"Household",
-							"Incident",
-							"IncidentReported",
-							"Individual",
-							"Institute",
-							"LarvalHabitat",
-							"LarvalSample",
-							"LocalGovernment",
-							"Maintenance",
-							"MedicalArea",
-							"MsupplyStore",
-							"NursingZone",
-							"Postcode",
-							"Project",
-							"RepairRequest",
-							"School",
-							"SubCatchment",
-							"SubDistrict",
-							"SubFacility",
-							"Transfer",
-							"Trap",
-							"Village",
-							"WaterSample",
-							"WishSubDistrict",
-							"World"
-						],
 						"type": "string"
 					},
 					"values": {
@@ -33000,6 +33875,14 @@ export const SpectrumMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the legend",
 						"type": "boolean"
 					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
+						"type": "boolean"
+					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -33017,57 +33900,6 @@ export const SpectrumMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"noDataColour": {
@@ -33336,7 +34168,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33380,7 +34211,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -33430,7 +34260,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -33480,7 +34309,6 @@ export const IconMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33532,7 +34360,6 @@ export const IconMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -33552,57 +34379,6 @@ export const IconMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"displayedValueKey": {
@@ -33687,7 +34463,7 @@ export const IconMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -33701,57 +34477,6 @@ export const IconMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"enum": [
-							"Asset",
-							"Business",
-							"Case",
-							"CaseContact",
-							"Catchment",
-							"City",
-							"Commune",
-							"Complaint",
-							"Country",
-							"Disaster",
-							"District",
-							"DistrictOperational",
-							"EnumerationArea",
-							"Facility",
-							"FacilityBuilding",
-							"FacilityDivision",
-							"FacilitySection",
-							"Farm",
-							"FetpGraduate",
-							"FieldStation",
-							"FijiAspenFacility",
-							"HealthClinicBoundary",
-							"HospitalArea",
-							"HospitalWard",
-							"Household",
-							"Incident",
-							"IncidentReported",
-							"Individual",
-							"Institute",
-							"LarvalHabitat",
-							"LarvalSample",
-							"LocalGovernment",
-							"Maintenance",
-							"MedicalArea",
-							"MsupplyStore",
-							"NursingZone",
-							"Postcode",
-							"Project",
-							"RepairRequest",
-							"School",
-							"SubCatchment",
-							"SubDistrict",
-							"SubFacility",
-							"Transfer",
-							"Trap",
-							"Village",
-							"WaterSample",
-							"WishSubDistrict",
-							"World"
-						],
 						"type": "string"
 					},
 					"values": {
@@ -33823,6 +34548,14 @@ export const IconMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the legend",
 						"type": "boolean"
 					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
+						"type": "boolean"
+					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -33840,57 +34573,6 @@ export const IconMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"noDataColour": {
@@ -34084,7 +34766,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34128,7 +34809,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -34178,7 +34858,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34228,7 +34907,6 @@ export const RadiusMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34280,7 +34958,6 @@ export const RadiusMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -34300,57 +34977,6 @@ export const RadiusMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"displayedValueKey": {
@@ -34435,7 +35061,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -34449,57 +35075,6 @@ export const RadiusMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"enum": [
-							"Asset",
-							"Business",
-							"Case",
-							"CaseContact",
-							"Catchment",
-							"City",
-							"Commune",
-							"Complaint",
-							"Country",
-							"Disaster",
-							"District",
-							"DistrictOperational",
-							"EnumerationArea",
-							"Facility",
-							"FacilityBuilding",
-							"FacilityDivision",
-							"FacilitySection",
-							"Farm",
-							"FetpGraduate",
-							"FieldStation",
-							"FijiAspenFacility",
-							"HealthClinicBoundary",
-							"HospitalArea",
-							"HospitalWard",
-							"Household",
-							"Incident",
-							"IncidentReported",
-							"Individual",
-							"Institute",
-							"LarvalHabitat",
-							"LarvalSample",
-							"LocalGovernment",
-							"Maintenance",
-							"MedicalArea",
-							"MsupplyStore",
-							"NursingZone",
-							"Postcode",
-							"Project",
-							"RepairRequest",
-							"School",
-							"SubCatchment",
-							"SubDistrict",
-							"SubFacility",
-							"Transfer",
-							"Trap",
-							"Village",
-							"WaterSample",
-							"WishSubDistrict",
-							"World"
-						],
 						"type": "string"
 					},
 					"values": {
@@ -34571,6 +35146,14 @@ export const RadiusMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the legend",
 						"type": "boolean"
 					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
+						"type": "boolean"
+					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -34588,57 +35171,6 @@ export const RadiusMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"noDataColour": {
@@ -34806,7 +35338,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34850,7 +35381,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -34900,7 +35430,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -34950,7 +35479,6 @@ export const ColorMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35002,7 +35530,6 @@ export const ColorMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35022,57 +35549,6 @@ export const ColorMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"displayedValueKey": {
@@ -35157,7 +35633,7 @@ export const ColorMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -35171,57 +35647,6 @@ export const ColorMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"enum": [
-							"Asset",
-							"Business",
-							"Case",
-							"CaseContact",
-							"Catchment",
-							"City",
-							"Commune",
-							"Complaint",
-							"Country",
-							"Disaster",
-							"District",
-							"DistrictOperational",
-							"EnumerationArea",
-							"Facility",
-							"FacilityBuilding",
-							"FacilityDivision",
-							"FacilitySection",
-							"Farm",
-							"FetpGraduate",
-							"FieldStation",
-							"FijiAspenFacility",
-							"HealthClinicBoundary",
-							"HospitalArea",
-							"HospitalWard",
-							"Household",
-							"Incident",
-							"IncidentReported",
-							"Individual",
-							"Institute",
-							"LarvalHabitat",
-							"LarvalSample",
-							"LocalGovernment",
-							"Maintenance",
-							"MedicalArea",
-							"MsupplyStore",
-							"NursingZone",
-							"Postcode",
-							"Project",
-							"RepairRequest",
-							"School",
-							"SubCatchment",
-							"SubDistrict",
-							"SubFacility",
-							"Transfer",
-							"Trap",
-							"Village",
-							"WaterSample",
-							"WishSubDistrict",
-							"World"
-						],
 						"type": "string"
 					},
 					"values": {
@@ -35293,6 +35718,14 @@ export const ColorMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the legend",
 						"type": "boolean"
 					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
+						"type": "boolean"
+					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -35310,57 +35743,6 @@ export const ColorMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"noDataColour": {
@@ -35542,7 +35924,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35586,7 +35967,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				}
@@ -35636,7 +36016,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"additionalProperties": false,
 					"required": [
-						"offset",
 						"unit"
 					]
 				},
@@ -35686,7 +36065,6 @@ export const ShadingMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35738,7 +36116,6 @@ export const ShadingMapOverlayConfigSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -35758,57 +36135,6 @@ export const ShadingMapOverlayConfigSchema = {
 		},
 		"displayOnLevel": {
 			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"displayedValueKey": {
@@ -35893,7 +36219,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"type": "object",
 				"properties": {
 					"type": {
-						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"description": "How to display this series (popup-only is deprecated)",
 						"enum": [
 							"color",
 							"icon",
@@ -35907,57 +36233,6 @@ export const ShadingMapOverlayConfigSchema = {
 					},
 					"measureLevel": {
 						"description": "Level of the entity hierarchy that this map overlay has data for",
-						"enum": [
-							"Asset",
-							"Business",
-							"Case",
-							"CaseContact",
-							"Catchment",
-							"City",
-							"Commune",
-							"Complaint",
-							"Country",
-							"Disaster",
-							"District",
-							"DistrictOperational",
-							"EnumerationArea",
-							"Facility",
-							"FacilityBuilding",
-							"FacilityDivision",
-							"FacilitySection",
-							"Farm",
-							"FetpGraduate",
-							"FieldStation",
-							"FijiAspenFacility",
-							"HealthClinicBoundary",
-							"HospitalArea",
-							"HospitalWard",
-							"Household",
-							"Incident",
-							"IncidentReported",
-							"Individual",
-							"Institute",
-							"LarvalHabitat",
-							"LarvalSample",
-							"LocalGovernment",
-							"Maintenance",
-							"MedicalArea",
-							"MsupplyStore",
-							"NursingZone",
-							"Postcode",
-							"Project",
-							"RepairRequest",
-							"School",
-							"SubCatchment",
-							"SubDistrict",
-							"SubFacility",
-							"Transfer",
-							"Trap",
-							"Village",
-							"WaterSample",
-							"WishSubDistrict",
-							"World"
-						],
 						"type": "string"
 					},
 					"values": {
@@ -36029,6 +36304,14 @@ export const ShadingMapOverlayConfigSchema = {
 						"description": "Whether to include this series in the legend",
 						"type": "boolean"
 					},
+					"hideFromPopup": {
+						"description": "Whether to include this series in the popup/tooltip",
+						"type": "boolean"
+					},
+					"hideFromTable": {
+						"description": "Whether to include this series in the table",
+						"type": "boolean"
+					},
 					"name": {
 						"description": "Display name of this series",
 						"type": "string"
@@ -36046,57 +36329,6 @@ export const ShadingMapOverlayConfigSchema = {
 		},
 		"measureLevel": {
 			"description": "Level of the entity hierarchy that this map overlay has data for",
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Commune",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"DistrictOperational",
-				"EnumerationArea",
-				"Facility",
-				"FacilityBuilding",
-				"FacilityDivision",
-				"FacilitySection",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"HealthClinicBoundary",
-				"HospitalArea",
-				"HospitalWard",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LarvalSample",
-				"LocalGovernment",
-				"Maintenance",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Transfer",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
 			"type": "string"
 		},
 		"noDataColour": {
@@ -36270,7 +36502,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36314,7 +36545,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -36364,7 +36594,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -36414,7 +36643,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36466,7 +36694,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -36486,57 +36713,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -36621,7 +36797,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -36635,57 +36811,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -36757,6 +36882,14 @@ export const MapOverlayConfigSchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -36774,57 +36907,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -37092,7 +37174,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37136,7 +37217,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -37186,7 +37266,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37236,7 +37315,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37288,7 +37366,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -37308,57 +37385,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -37443,7 +37469,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -37457,57 +37483,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -37579,6 +37554,14 @@ export const MapOverlayConfigSchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -37596,57 +37579,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -37839,7 +37771,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37883,7 +37814,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -37933,7 +37863,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -37983,7 +37912,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38035,7 +37963,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38055,57 +37982,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -38190,7 +38066,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -38204,57 +38080,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -38326,6 +38151,14 @@ export const MapOverlayConfigSchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -38343,57 +38176,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -38560,7 +38342,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38604,7 +38385,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -38654,7 +38434,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -38704,7 +38483,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38756,7 +38534,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -38776,57 +38553,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -38911,7 +38637,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -38925,57 +38651,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -39047,6 +38722,14 @@ export const MapOverlayConfigSchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -39064,57 +38747,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -39295,7 +38927,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -39339,7 +38970,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -39389,7 +39019,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -39439,7 +39068,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -39491,7 +39119,6 @@ export const MapOverlayConfigSchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -39511,57 +39138,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -39646,7 +39222,7 @@ export const MapOverlayConfigSchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -39660,57 +39236,6 @@ export const MapOverlayConfigSchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -39782,6 +39307,14 @@ export const MapOverlayConfigSchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -39799,57 +39332,6 @@ export const MapOverlayConfigSchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -40439,112 +39921,10 @@ export const EntityQuestionConfigSchema = {
 						{
 							"type": "array",
 							"items": {
-								"enum": [
-									"asset",
-									"business",
-									"case",
-									"case_contact",
-									"catchment",
-									"city",
-									"commune",
-									"complaint",
-									"country",
-									"disaster",
-									"district",
-									"district_operational",
-									"enumeration_area",
-									"facility",
-									"facility_building",
-									"facility_division",
-									"facility_section",
-									"farm",
-									"fetp_graduate",
-									"field_station",
-									"fiji_aspen_facility",
-									"health_clinic_boundary",
-									"hospital_area",
-									"hospital_ward",
-									"household",
-									"incident",
-									"incident_reported",
-									"individual",
-									"institute",
-									"larval_habitat",
-									"larval_sample",
-									"local_government",
-									"maintenance",
-									"medical_area",
-									"msupply_store",
-									"nursing_zone",
-									"postcode",
-									"project",
-									"repair_request",
-									"school",
-									"sub_catchment",
-									"sub_district",
-									"sub_facility",
-									"transfer",
-									"trap",
-									"village",
-									"water_sample",
-									"wish_sub_district",
-									"world"
-								],
 								"type": "string"
 							}
 						},
 						{
-							"enum": [
-								"asset",
-								"business",
-								"case",
-								"case_contact",
-								"catchment",
-								"city",
-								"commune",
-								"complaint",
-								"country",
-								"disaster",
-								"district",
-								"district_operational",
-								"enumeration_area",
-								"facility",
-								"facility_building",
-								"facility_division",
-								"facility_section",
-								"farm",
-								"fetp_graduate",
-								"field_station",
-								"fiji_aspen_facility",
-								"health_clinic_boundary",
-								"hospital_area",
-								"hospital_ward",
-								"household",
-								"incident",
-								"incident_reported",
-								"individual",
-								"institute",
-								"larval_habitat",
-								"larval_sample",
-								"local_government",
-								"maintenance",
-								"medical_area",
-								"msupply_store",
-								"nursing_zone",
-								"postcode",
-								"project",
-								"repair_request",
-								"school",
-								"sub_catchment",
-								"sub_district",
-								"sub_facility",
-								"transfer",
-								"trap",
-								"village",
-								"water_sample",
-								"wish_sub_district",
-								"world"
-							],
 							"type": "string"
 						}
 					]
@@ -40604,6 +39984,90 @@ export const ArithmeticQuestionConfigSchema = {
 	"additionalProperties": false,
 	"required": [
 		"formula"
+	]
+} 
+
+export const UserQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"permissionGroup": {
+			"description": "Filters the users by permission group.",
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"permissionGroup"
+	]
+} 
+
+export const TaskQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"shouldCreateTask": {
+			"description": "Determines if a task should be created.",
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
+		"entityId": {
+			"description": "Determines the entity that the task will be created for.",
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
+		"surveyCode": {
+			"description": "Determines the survey that the task will be created for.",
+			"type": "string"
+		},
+		"dueDate": {
+			"description": "Determines the due date of the task.",
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
+		"assignee": {
+			"description": "Determines the assignee of the task.",
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"assignee",
+		"dueDate",
+		"entityId",
+		"shouldCreateTask",
+		"surveyCode"
 	]
 } 
 
@@ -40971,112 +40435,10 @@ export const SurveyScreenComponentConfigSchema = {
 								{
 									"type": "array",
 									"items": {
-										"enum": [
-											"asset",
-											"business",
-											"case",
-											"case_contact",
-											"catchment",
-											"city",
-											"commune",
-											"complaint",
-											"country",
-											"disaster",
-											"district",
-											"district_operational",
-											"enumeration_area",
-											"facility",
-											"facility_building",
-											"facility_division",
-											"facility_section",
-											"farm",
-											"fetp_graduate",
-											"field_station",
-											"fiji_aspen_facility",
-											"health_clinic_boundary",
-											"hospital_area",
-											"hospital_ward",
-											"household",
-											"incident",
-											"incident_reported",
-											"individual",
-											"institute",
-											"larval_habitat",
-											"larval_sample",
-											"local_government",
-											"maintenance",
-											"medical_area",
-											"msupply_store",
-											"nursing_zone",
-											"postcode",
-											"project",
-											"repair_request",
-											"school",
-											"sub_catchment",
-											"sub_district",
-											"sub_facility",
-											"transfer",
-											"trap",
-											"village",
-											"water_sample",
-											"wish_sub_district",
-											"world"
-										],
 										"type": "string"
 									}
 								},
 								{
-									"enum": [
-										"asset",
-										"business",
-										"case",
-										"case_contact",
-										"catchment",
-										"city",
-										"commune",
-										"complaint",
-										"country",
-										"disaster",
-										"district",
-										"district_operational",
-										"enumeration_area",
-										"facility",
-										"facility_building",
-										"facility_division",
-										"facility_section",
-										"farm",
-										"fetp_graduate",
-										"field_station",
-										"fiji_aspen_facility",
-										"health_clinic_boundary",
-										"hospital_area",
-										"hospital_ward",
-										"household",
-										"incident",
-										"incident_reported",
-										"individual",
-										"institute",
-										"larval_habitat",
-										"larval_sample",
-										"local_government",
-										"maintenance",
-										"medical_area",
-										"msupply_store",
-										"nursing_zone",
-										"postcode",
-										"project",
-										"repair_request",
-										"school",
-										"sub_catchment",
-										"sub_district",
-										"sub_facility",
-										"transfer",
-										"trap",
-										"village",
-										"water_sample",
-										"wish_sub_district",
-										"world"
-									],
 									"type": "string"
 								}
 							]
@@ -41163,6 +40525,88 @@ export const SurveyScreenComponentConfigSchema = {
 			"additionalProperties": false,
 			"required": [
 				"formula"
+			]
+		},
+		"user": {
+			"type": "object",
+			"properties": {
+				"permissionGroup": {
+					"description": "Filters the users by permission group.",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"permissionGroup"
+			]
+		},
+		"task": {
+			"type": "object",
+			"properties": {
+				"shouldCreateTask": {
+					"description": "Determines if a task should be created.",
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"entityId": {
+					"description": "Determines the entity that the task will be created for.",
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"surveyCode": {
+					"description": "Determines the survey that the task will be created for.",
+					"type": "string"
+				},
+				"dueDate": {
+					"description": "Determines the due date of the task.",
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"assignee": {
+					"description": "Determines the assignee of the task.",
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"assignee",
+				"dueDate",
+				"entityId",
+				"shouldCreateTask",
+				"surveyCode"
 			]
 		}
 	},
@@ -41301,302 +40745,6 @@ export const FeedItemTemplateVariablesSchema = {
 
 export const RecentEntitiesForCountrySchema = {
 	"type": "object",
-	"properties": {
-		"world": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"project": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"country": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"district": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"sub_district": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"facility": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"village": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"case": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"case_contact": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"disaster": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"school": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"catchment": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"sub_catchment": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"field_station": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"city": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"individual": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"sub_facility": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"postcode": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"household": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"larval_habitat": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"local_government": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"medical_area": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"nursing_zone": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"fetp_graduate": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"incident": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"incident_reported": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"fiji_aspen_facility": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"wish_sub_district": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"trap": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"asset": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"institute": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"msupply_store": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"complaint": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"water_sample": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"facility_building": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"facility_division": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"facility_section": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"hospital_ward": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"farm": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"repair_request": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"district_operational": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"commune": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"business": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"health_clinic_boundary": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"enumeration_area": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"maintenance": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"larval_sample": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"transfer": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"hospital_area": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		}
-	},
 	"additionalProperties": false
 } 
 
@@ -41714,6 +40862,193 @@ export const ProjectConfigSchema = {
 		}
 	},
 	"additionalProperties": false
+} 
+
+export const SystemCommentSubTypeSchema = {
+	"enum": [
+		"complete",
+		"create",
+		"overdue",
+		"update"
+	],
+	"type": "string"
+} 
+
+export const TaskUpdateCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"update"
+			]
+		},
+		"originalValue": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"newValue": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"field": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCreateCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"create"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCompletedCommentTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"complete"
+			]
+		},
+		"taskId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const TaskCommentTemplateVariablesSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"update"
+					]
+				},
+				"originalValue": {
+					"type": [
+						"string",
+						"number"
+					]
+				},
+				"newValue": {
+					"type": [
+						"string",
+						"number"
+					]
+				},
+				"field": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"create"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		{
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"complete"
+					]
+				},
+				"taskId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		}
+	]
+} 
+
+export const RepeatScheduleSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"freq": {
+			"type": "number"
+		},
+		"interval": {
+			"type": "number"
+		},
+		"bymonthday": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "number"
+					}
+				},
+				{
+					"type": "number"
+				}
+			]
+		},
+		"bysetpos": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "number"
+					}
+				},
+				{
+					"type": "number"
+				}
+			]
+		},
+		"dtstart": {
+			"type": "string",
+			"format": "date-time"
+		}
+	}
 } 
 
 export const AccessRequestSchema = {
@@ -41981,7 +41316,9 @@ export const AnalyticsSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -42046,7 +41383,9 @@ export const AnalyticsCreateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -42111,7 +41450,9 @@ export const AnalyticsUpdateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -42816,6 +42157,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -42859,7 +42221,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -42909,7 +42270,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -42961,7 +42321,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43019,7 +42378,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43063,7 +42421,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -43168,6 +42525,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -43517,6 +42878,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -43560,7 +42942,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43610,7 +42991,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43662,7 +43042,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -43720,7 +43099,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -43764,7 +43142,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -43869,6 +43246,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -43921,6 +43302,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -43964,7 +43366,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44014,7 +43415,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44066,7 +43466,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44124,7 +43523,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44168,7 +43566,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -44273,6 +43670,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -44411,6 +43812,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -44454,7 +43876,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44504,7 +43925,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44556,7 +43976,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -44614,7 +44033,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -44658,7 +44076,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -44763,6 +44180,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -45181,6 +44602,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -45224,7 +44666,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45274,7 +44715,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45326,7 +44766,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -45384,7 +44823,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -45428,7 +44866,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -45529,6 +44966,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -45945,6 +45386,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -45988,7 +45450,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46038,7 +45499,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46090,7 +45550,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46148,7 +45607,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46192,7 +45650,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -46293,6 +45750,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -46698,6 +46159,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -46741,7 +46223,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46791,7 +46272,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46843,7 +46323,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -46901,7 +46380,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -46945,7 +46423,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47050,6 +46527,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -47151,6 +46632,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -47194,7 +46696,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47244,7 +46745,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47296,7 +46796,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47354,7 +46853,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47398,7 +46896,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47503,6 +47000,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -47584,6 +47085,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -47627,7 +47149,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47677,7 +47198,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47729,7 +47249,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -47787,7 +47306,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -47831,7 +47349,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -47936,6 +47453,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -48094,6 +47615,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -48137,7 +47679,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48187,7 +47728,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48239,7 +47779,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48297,7 +47836,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48341,7 +47879,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -48446,6 +47983,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -48518,6 +48059,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -48561,7 +48123,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48611,7 +48172,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48663,7 +48223,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -48721,7 +48280,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -48765,7 +48323,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -48870,6 +48427,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -48938,6 +48499,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -48981,7 +48563,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49031,7 +48612,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49083,7 +48663,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49141,7 +48720,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49185,7 +48763,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -49290,6 +48867,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -49358,6 +48939,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -49401,7 +49003,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49451,7 +49052,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49503,7 +49103,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49561,7 +49160,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49605,7 +49203,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -49710,6 +49307,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -49778,6 +49379,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -49821,7 +49443,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -49871,7 +49492,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49923,7 +49543,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -49981,7 +49600,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50025,7 +49643,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50130,6 +49747,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -50198,6 +49819,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -50241,7 +49883,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50291,7 +49932,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50343,7 +49983,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50401,7 +50040,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50445,7 +50083,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50550,6 +50187,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -50618,6 +50259,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -50661,7 +50323,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50711,7 +50372,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50763,7 +50423,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -50821,7 +50480,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -50865,7 +50523,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -50970,6 +50627,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -51038,6 +50699,27 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -51081,7 +50763,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51131,7 +50812,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51183,7 +50863,6 @@ export const DashboardItemSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51241,7 +50920,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51285,7 +50963,6 @@ export const DashboardItemSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -51390,6 +51067,10 @@ export const DashboardItemSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -51495,6 +51176,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -51538,7 +51240,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51588,7 +51289,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51640,7 +51340,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -51698,7 +51397,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -51742,7 +51440,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -51847,6 +51544,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -52196,6 +51897,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -52239,7 +51961,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52289,7 +52010,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52341,7 +52061,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52399,7 +52118,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52443,7 +52161,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -52548,6 +52265,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -52600,6 +52321,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -52643,7 +52385,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52693,7 +52434,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52745,7 +52485,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -52803,7 +52542,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -52847,7 +52585,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -52952,6 +52689,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -53090,6 +52831,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -53133,7 +52895,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53183,7 +52944,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53235,7 +52995,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -53293,7 +53052,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53337,7 +53095,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -53442,6 +53199,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -53860,6 +53621,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -53903,7 +53685,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -53953,7 +53734,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54005,7 +53785,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54063,7 +53842,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54107,7 +53885,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -54208,6 +53985,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -54624,6 +54405,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -54667,7 +54469,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54717,7 +54518,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54769,7 +54569,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -54827,7 +54626,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -54871,7 +54669,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -54972,6 +54769,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -55377,6 +55178,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -55420,7 +55242,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55470,7 +55291,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55522,7 +55342,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55580,7 +55399,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55624,7 +55442,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -55729,6 +55546,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -55830,6 +55651,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -55873,7 +55715,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -55923,7 +55764,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -55975,7 +55815,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56033,7 +55872,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56077,7 +55915,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56182,6 +56019,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -56263,6 +56104,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -56306,7 +56168,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56356,7 +56217,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56408,7 +56268,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56466,7 +56325,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56510,7 +56368,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -56615,6 +56472,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -56773,6 +56634,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -56816,7 +56698,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -56866,7 +56747,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56918,7 +56798,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -56976,7 +56855,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57020,7 +56898,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57125,6 +57002,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -57197,6 +57078,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -57240,7 +57142,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57290,7 +57191,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57342,7 +57242,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57400,7 +57299,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57444,7 +57342,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57549,6 +57446,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -57617,6 +57518,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -57660,7 +57582,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57710,7 +57631,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57762,7 +57682,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -57820,7 +57739,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -57864,7 +57782,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -57969,6 +57886,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -58037,6 +57958,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -58080,7 +58022,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58130,7 +58071,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58182,7 +58122,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58240,7 +58179,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58284,7 +58222,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -58389,6 +58326,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -58457,6 +58398,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -58500,7 +58462,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58550,7 +58511,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58602,7 +58562,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -58660,7 +58619,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58704,7 +58662,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -58809,6 +58766,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -58877,6 +58838,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -58920,7 +58902,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -58970,7 +58951,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59022,7 +59002,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59080,7 +59059,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59124,7 +59102,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -59229,6 +59206,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -59297,6 +59278,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -59340,7 +59342,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59390,7 +59391,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59442,7 +59442,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59500,7 +59499,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59544,7 +59542,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -59649,6 +59646,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -59717,6 +59718,27 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -59760,7 +59782,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59810,7 +59831,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59862,7 +59882,6 @@ export const DashboardItemCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -59920,7 +59939,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -59964,7 +59982,6 @@ export const DashboardItemCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -60069,6 +60086,10 @@ export const DashboardItemCreateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -60168,6 +60189,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -60211,7 +60253,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60261,7 +60302,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60313,7 +60353,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -60371,7 +60410,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60415,7 +60453,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -60520,6 +60557,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -60869,6 +60910,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -60912,7 +60974,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -60962,7 +61023,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61014,7 +61074,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61072,7 +61131,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61116,7 +61174,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -61221,6 +61278,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -61273,6 +61334,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -61316,7 +61398,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61366,7 +61447,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61418,7 +61498,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61476,7 +61555,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61520,7 +61598,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -61625,6 +61702,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -61763,6 +61844,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -61806,7 +61908,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -61856,7 +61957,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61908,7 +62008,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -61966,7 +62065,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62010,7 +62108,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -62115,6 +62212,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -62533,6 +62634,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -62576,7 +62698,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62626,7 +62747,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62678,7 +62798,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -62736,7 +62855,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -62780,7 +62898,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -62881,6 +62998,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -63297,6 +63418,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -63340,7 +63482,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63390,7 +63531,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63442,7 +63582,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -63500,7 +63639,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -63544,7 +63682,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -63645,6 +63782,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -64050,6 +64191,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -64093,7 +64255,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64143,7 +64304,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64195,7 +64355,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64253,7 +64412,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64297,7 +64455,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -64402,6 +64559,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -64503,6 +64664,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -64546,7 +64728,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64596,7 +64777,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64648,7 +64828,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -64706,7 +64885,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -64750,7 +64928,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -64855,6 +65032,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -64936,6 +65117,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -64979,7 +65181,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65029,7 +65230,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65081,7 +65281,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65139,7 +65338,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65183,7 +65381,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -65288,6 +65485,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -65446,6 +65647,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -65489,7 +65711,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65539,7 +65760,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65591,7 +65811,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -65649,7 +65868,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65693,7 +65911,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -65798,6 +66015,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -65870,6 +66091,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -65913,7 +66155,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -65963,7 +66204,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66015,7 +66255,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66073,7 +66312,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66117,7 +66355,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66222,6 +66459,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -66290,6 +66531,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -66333,7 +66595,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66383,7 +66644,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66435,7 +66695,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66493,7 +66752,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66537,7 +66795,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -66642,6 +66899,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -66710,6 +66971,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -66753,7 +67035,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66803,7 +67084,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66855,7 +67135,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -66913,7 +67192,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -66957,7 +67235,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -67062,6 +67339,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -67130,6 +67411,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -67173,7 +67475,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67223,7 +67524,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67275,7 +67575,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67333,7 +67632,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67377,7 +67675,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -67482,6 +67779,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -67550,6 +67851,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -67593,7 +67915,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67643,7 +67964,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67695,7 +68015,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -67753,7 +68072,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -67797,7 +68115,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -67902,6 +68219,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -67970,6 +68291,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -68013,7 +68355,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68063,7 +68404,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68115,7 +68455,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68173,7 +68512,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68217,7 +68555,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -68322,6 +68659,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -68390,6 +68731,27 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"dateOffset": {
+							"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"month",
+										"quarter"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
 						"defaultTimePeriod": {
 							"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 							"anyOf": [
@@ -68433,7 +68795,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68483,7 +68844,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68535,7 +68895,6 @@ export const DashboardItemUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -68593,7 +68952,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -68637,7 +68995,6 @@ export const DashboardItemUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -68742,6 +69099,10 @@ export const DashboardItemUpdateSchema = {
 								"WEEK_ENDING",
 								"WEEK_ENDING_ABBR"
 							],
+							"type": "string"
+						},
+						"dateRangeDelimiter": {
+							"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 							"type": "string"
 						},
 						"type": {
@@ -68979,57 +69340,6 @@ export const DashboardRelationSchema = {
 		"entity_types": {
 			"type": "array",
 			"items": {
-				"enum": [
-					"asset",
-					"business",
-					"case",
-					"case_contact",
-					"catchment",
-					"city",
-					"commune",
-					"complaint",
-					"country",
-					"disaster",
-					"district",
-					"district_operational",
-					"enumeration_area",
-					"facility",
-					"facility_building",
-					"facility_division",
-					"facility_section",
-					"farm",
-					"fetp_graduate",
-					"field_station",
-					"fiji_aspen_facility",
-					"health_clinic_boundary",
-					"hospital_area",
-					"hospital_ward",
-					"household",
-					"incident",
-					"incident_reported",
-					"individual",
-					"institute",
-					"larval_habitat",
-					"larval_sample",
-					"local_government",
-					"maintenance",
-					"medical_area",
-					"msupply_store",
-					"nursing_zone",
-					"postcode",
-					"project",
-					"repair_request",
-					"school",
-					"sub_catchment",
-					"sub_district",
-					"sub_facility",
-					"transfer",
-					"trap",
-					"village",
-					"water_sample",
-					"wish_sub_district",
-					"world"
-				],
 				"type": "string"
 			}
 		},
@@ -69080,57 +69390,6 @@ export const DashboardRelationCreateSchema = {
 		"entity_types": {
 			"type": "array",
 			"items": {
-				"enum": [
-					"asset",
-					"business",
-					"case",
-					"case_contact",
-					"catchment",
-					"city",
-					"commune",
-					"complaint",
-					"country",
-					"disaster",
-					"district",
-					"district_operational",
-					"enumeration_area",
-					"facility",
-					"facility_building",
-					"facility_division",
-					"facility_section",
-					"farm",
-					"fetp_graduate",
-					"field_station",
-					"fiji_aspen_facility",
-					"health_clinic_boundary",
-					"hospital_area",
-					"hospital_ward",
-					"household",
-					"incident",
-					"incident_reported",
-					"individual",
-					"institute",
-					"larval_habitat",
-					"larval_sample",
-					"local_government",
-					"maintenance",
-					"medical_area",
-					"msupply_store",
-					"nursing_zone",
-					"postcode",
-					"project",
-					"repair_request",
-					"school",
-					"sub_catchment",
-					"sub_district",
-					"sub_facility",
-					"transfer",
-					"trap",
-					"village",
-					"water_sample",
-					"wish_sub_district",
-					"world"
-				],
 				"type": "string"
 			}
 		},
@@ -69176,57 +69435,6 @@ export const DashboardRelationUpdateSchema = {
 		"entity_types": {
 			"type": "array",
 			"items": {
-				"enum": [
-					"asset",
-					"business",
-					"case",
-					"case_contact",
-					"catchment",
-					"city",
-					"commune",
-					"complaint",
-					"country",
-					"disaster",
-					"district",
-					"district_operational",
-					"enumeration_area",
-					"facility",
-					"facility_building",
-					"facility_division",
-					"facility_section",
-					"farm",
-					"fetp_graduate",
-					"field_station",
-					"fiji_aspen_facility",
-					"health_clinic_boundary",
-					"hospital_area",
-					"hospital_ward",
-					"household",
-					"incident",
-					"incident_reported",
-					"individual",
-					"institute",
-					"larval_habitat",
-					"larval_sample",
-					"local_government",
-					"maintenance",
-					"medical_area",
-					"msupply_store",
-					"nursing_zone",
-					"postcode",
-					"project",
-					"repair_request",
-					"school",
-					"sub_catchment",
-					"sub_district",
-					"sub_facility",
-					"transfer",
-					"trap",
-					"village",
-					"water_sample",
-					"wish_sub_district",
-					"world"
-				],
 				"type": "string"
 			}
 		},
@@ -70381,57 +70589,6 @@ export const EntitySchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"asset",
-				"business",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"commune",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"district_operational",
-				"enumeration_area",
-				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"health_clinic_boundary",
-				"hospital_area",
-				"hospital_ward",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"larval_sample",
-				"local_government",
-				"maintenance",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"transfer",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
 			"type": "string"
 		}
 	},
@@ -70487,57 +70644,6 @@ export const EntityCreateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"asset",
-				"business",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"commune",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"district_operational",
-				"enumeration_area",
-				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"health_clinic_boundary",
-				"hospital_area",
-				"hospital_ward",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"larval_sample",
-				"local_government",
-				"maintenance",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"transfer",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
 			"type": "string"
 		}
 	},
@@ -70593,57 +70699,6 @@ export const EntityUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"asset",
-				"business",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"commune",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"district_operational",
-				"enumeration_area",
-				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"health_clinic_boundary",
-				"hospital_area",
-				"hospital_ward",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"larval_sample",
-				"local_government",
-				"maintenance",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"transfer",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
 			"type": "string"
 		}
 	},
@@ -71557,6 +71612,61 @@ export const LesmisSessionUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const LoginAttemptsSchema = {
+	"type": "object",
+	"properties": {
+		"expire": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"points": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"key",
+		"points"
+	]
+} 
+
+export const LoginAttemptsCreateSchema = {
+	"type": "object",
+	"properties": {
+		"expire": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"points": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"key"
+	]
+} 
+
+export const LoginAttemptsUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"expire": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"points": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const MapOverlaySchema = {
 	"type": "object",
 	"properties": {
@@ -71617,7 +71727,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -71661,7 +71770,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -71711,7 +71819,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -71761,7 +71868,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -71813,7 +71919,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -71833,57 +71938,6 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -71968,7 +72022,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -71982,57 +72036,6 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -72104,6 +72107,14 @@ export const MapOverlaySchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -72121,57 +72132,6 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -72439,7 +72399,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72483,7 +72442,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -72533,7 +72491,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -72583,7 +72540,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72635,7 +72591,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -72655,57 +72610,6 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -72790,7 +72694,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -72804,57 +72708,6 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -72926,6 +72779,14 @@ export const MapOverlaySchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -72943,57 +72804,6 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -73186,7 +72996,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73230,7 +73039,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -73280,7 +73088,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73330,7 +73137,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73382,7 +73188,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -73402,57 +73207,6 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -73537,7 +73291,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -73551,57 +73305,6 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -73673,6 +73376,14 @@ export const MapOverlaySchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -73690,57 +73401,6 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -73907,7 +73567,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -73951,7 +73610,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -74001,7 +73659,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74051,7 +73708,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74103,7 +73759,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74123,57 +73778,6 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -74258,7 +73862,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -74272,57 +73876,6 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -74394,6 +73947,14 @@ export const MapOverlaySchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -74411,57 +73972,6 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -74642,7 +74152,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74686,7 +74195,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -74736,7 +74244,6 @@ export const MapOverlaySchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -74786,7 +74293,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74838,7 +74344,6 @@ export const MapOverlaySchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -74858,57 +74363,6 @@ export const MapOverlaySchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -74993,7 +74447,7 @@ export const MapOverlaySchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -75007,57 +74461,6 @@ export const MapOverlaySchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -75129,6 +74532,14 @@ export const MapOverlaySchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -75146,57 +74557,6 @@ export const MapOverlaySchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -75431,7 +74791,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75475,7 +74834,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -75525,7 +74883,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -75575,7 +74932,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75627,7 +74983,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -75647,57 +75002,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -75782,7 +75086,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -75796,57 +75100,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -75918,6 +75171,14 @@ export const MapOverlayCreateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -75935,57 +75196,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -76253,7 +75463,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76297,7 +75506,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -76347,7 +75555,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -76397,7 +75604,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76449,7 +75655,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -76469,57 +75674,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -76604,7 +75758,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -76618,57 +75772,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -76740,6 +75843,14 @@ export const MapOverlayCreateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -76757,57 +75868,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -77000,7 +76060,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77044,7 +76103,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -77094,7 +76152,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77144,7 +76201,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77196,7 +76252,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77216,57 +76271,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -77351,7 +76355,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -77365,57 +76369,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -77487,6 +76440,14 @@ export const MapOverlayCreateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -77504,57 +76465,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -77721,7 +76631,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77765,7 +76674,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -77815,7 +76723,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -77865,7 +76772,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77917,7 +76823,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -77937,57 +76842,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -78072,7 +76926,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -78086,57 +76940,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -78208,6 +77011,14 @@ export const MapOverlayCreateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -78225,57 +77036,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -78456,7 +77216,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78500,7 +77259,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -78550,7 +77308,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -78600,7 +77357,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -78652,7 +77408,6 @@ export const MapOverlayCreateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -78672,57 +77427,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -78807,7 +77511,7 @@ export const MapOverlayCreateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -78821,57 +77525,6 @@ export const MapOverlayCreateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -78943,6 +77596,14 @@ export const MapOverlayCreateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -78960,57 +77621,6 @@ export const MapOverlayCreateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -79238,7 +77848,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -79282,7 +77891,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -79332,7 +77940,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -79382,7 +77989,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79434,7 +78040,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -79454,57 +78059,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -79589,7 +78143,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -79603,57 +78157,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -79725,6 +78228,14 @@ export const MapOverlayUpdateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -79742,57 +78253,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -80060,7 +78520,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80104,7 +78563,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -80154,7 +78612,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80204,7 +78661,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80256,7 +78712,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -80276,57 +78731,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -80411,7 +78815,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -80425,57 +78829,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -80547,6 +78900,14 @@ export const MapOverlayUpdateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -80564,57 +78925,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -80807,7 +79117,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80851,7 +79160,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -80901,7 +79209,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -80951,7 +79258,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -81003,7 +79309,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -81023,57 +79328,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -81158,7 +79412,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -81172,57 +79426,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -81294,6 +79497,14 @@ export const MapOverlayUpdateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -81311,57 +79522,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -81528,7 +79688,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -81572,7 +79731,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -81622,7 +79780,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -81672,7 +79829,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -81724,7 +79880,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -81744,57 +79899,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -81879,7 +79983,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -81893,57 +79997,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -82015,6 +80068,14 @@ export const MapOverlayUpdateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -82032,57 +80093,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -82263,7 +80273,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -82307,7 +80316,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								}
@@ -82357,7 +80365,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"additionalProperties": false,
 									"required": [
-										"offset",
 										"unit"
 									]
 								},
@@ -82407,7 +80414,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -82459,7 +80465,6 @@ export const MapOverlayUpdateSchema = {
 													},
 													"additionalProperties": false,
 													"required": [
-														"offset",
 														"unit"
 													]
 												},
@@ -82479,57 +80484,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"displayOnLevel": {
 							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"displayedValueKey": {
@@ -82614,7 +80568,7 @@ export const MapOverlayUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"type": {
-										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"description": "How to display this series (popup-only is deprecated)",
 										"enum": [
 											"color",
 											"icon",
@@ -82628,57 +80582,6 @@ export const MapOverlayUpdateSchema = {
 									},
 									"measureLevel": {
 										"description": "Level of the entity hierarchy that this map overlay has data for",
-										"enum": [
-											"Asset",
-											"Business",
-											"Case",
-											"CaseContact",
-											"Catchment",
-											"City",
-											"Commune",
-											"Complaint",
-											"Country",
-											"Disaster",
-											"District",
-											"DistrictOperational",
-											"EnumerationArea",
-											"Facility",
-											"FacilityBuilding",
-											"FacilityDivision",
-											"FacilitySection",
-											"Farm",
-											"FetpGraduate",
-											"FieldStation",
-											"FijiAspenFacility",
-											"HealthClinicBoundary",
-											"HospitalArea",
-											"HospitalWard",
-											"Household",
-											"Incident",
-											"IncidentReported",
-											"Individual",
-											"Institute",
-											"LarvalHabitat",
-											"LarvalSample",
-											"LocalGovernment",
-											"Maintenance",
-											"MedicalArea",
-											"MsupplyStore",
-											"NursingZone",
-											"Postcode",
-											"Project",
-											"RepairRequest",
-											"School",
-											"SubCatchment",
-											"SubDistrict",
-											"SubFacility",
-											"Transfer",
-											"Trap",
-											"Village",
-											"WaterSample",
-											"WishSubDistrict",
-											"World"
-										],
 										"type": "string"
 									},
 									"values": {
@@ -82750,6 +80653,14 @@ export const MapOverlayUpdateSchema = {
 										"description": "Whether to include this series in the legend",
 										"type": "boolean"
 									},
+									"hideFromPopup": {
+										"description": "Whether to include this series in the popup/tooltip",
+										"type": "boolean"
+									},
+									"hideFromTable": {
+										"description": "Whether to include this series in the table",
+										"type": "boolean"
+									},
 									"name": {
 										"description": "Display name of this series",
 										"type": "string"
@@ -82767,57 +80678,6 @@ export const MapOverlayUpdateSchema = {
 						},
 						"measureLevel": {
 							"description": "Level of the entity hierarchy that this map overlay has data for",
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Commune",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"DistrictOperational",
-								"EnumerationArea",
-								"Facility",
-								"FacilityBuilding",
-								"FacilityDivision",
-								"FacilitySection",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"HealthClinicBoundary",
-								"HospitalArea",
-								"HospitalWard",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LarvalSample",
-								"LocalGovernment",
-								"Maintenance",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Transfer",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
 							"type": "string"
 						},
 						"noDataColour": {
@@ -83127,6 +80987,10 @@ export const MeditrakDeviceSchema = {
 		"install_id": {
 			"type": "string"
 		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
 			"type": "string"
 		},
@@ -83154,6 +81018,10 @@ export const MeditrakDeviceCreateSchema = {
 		},
 		"install_id": {
 			"type": "string"
+		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"platform": {
 			"type": "string"
@@ -83184,6 +81052,10 @@ export const MeditrakDeviceUpdateSchema = {
 		},
 		"install_id": {
 			"type": "string"
+		},
+		"last_login": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"platform": {
 			"type": "string"
@@ -83748,57 +81620,6 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 			}
 		},
 		"entity_type": {
-			"enum": [
-				"asset",
-				"business",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"commune",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"district_operational",
-				"enumeration_area",
-				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"health_clinic_boundary",
-				"hospital_area",
-				"hospital_ward",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"larval_sample",
-				"local_government",
-				"maintenance",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"transfer",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
 			"type": "string"
 		},
 		"id": {
@@ -83836,57 +81657,6 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 			}
 		},
 		"entity_type": {
-			"enum": [
-				"asset",
-				"business",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"commune",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"district_operational",
-				"enumeration_area",
-				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"health_clinic_boundary",
-				"hospital_area",
-				"hospital_ward",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"larval_sample",
-				"local_government",
-				"maintenance",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"transfer",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
 			"type": "string"
 		},
 		"permission_groups": {
@@ -83921,57 +81691,6 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 			}
 		},
 		"entity_type": {
-			"enum": [
-				"asset",
-				"business",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"commune",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"district_operational",
-				"enumeration_area",
-				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"health_clinic_boundary",
-				"hospital_area",
-				"hospital_ward",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"larval_sample",
-				"local_government",
-				"maintenance",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"transfer",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
 			"type": "string"
 		},
 		"id": {
@@ -84427,7 +82146,9 @@ export const QuestionSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -84490,7 +82211,9 @@ export const QuestionCreateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -84555,7 +82278,9 @@ export const QuestionUpdateSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		}
@@ -85704,9 +83429,12 @@ export const TaskSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
-		"due_date": {
+		"created_at": {
 			"type": "string",
 			"format": "date-time"
+		},
+		"due_date": {
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
@@ -85714,9 +83442,57 @@ export const TaskSchema = {
 		"id": {
 			"type": "string"
 		},
+		"initial_request_id": {
+			"type": "string"
+		},
+		"overdue_email_sent": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"parent_task_id": {
+			"type": "string"
+		},
 		"repeat_schedule": {
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
@@ -85728,10 +83504,14 @@ export const TaskSchema = {
 		},
 		"survey_id": {
 			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
+		"created_at",
 		"entity_id",
 		"id",
 		"survey_id"
@@ -85744,16 +83524,67 @@ export const TaskCreateSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
-		"due_date": {
+		"created_at": {
 			"type": "string",
 			"format": "date-time"
+		},
+		"due_date": {
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
 		},
+		"initial_request_id": {
+			"type": "string"
+		},
+		"overdue_email_sent": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"parent_task_id": {
+			"type": "string"
+		},
 		"repeat_schedule": {
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
@@ -85764,6 +83595,9 @@ export const TaskCreateSchema = {
 			"type": "string"
 		},
 		"survey_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
 			"type": "string"
 		}
 	},
@@ -85780,9 +83614,12 @@ export const TaskUpdateSchema = {
 		"assignee_id": {
 			"type": "string"
 		},
-		"due_date": {
+		"created_at": {
 			"type": "string",
 			"format": "date-time"
+		},
+		"due_date": {
+			"type": "number"
 		},
 		"entity_id": {
 			"type": "string"
@@ -85790,9 +83627,57 @@ export const TaskUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
+		"initial_request_id": {
+			"type": "string"
+		},
+		"overdue_email_sent": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"parent_task_id": {
+			"type": "string"
+		},
 		"repeat_schedule": {
+			"additionalProperties": false,
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"freq": {
+					"type": "number"
+				},
+				"interval": {
+					"type": "number"
+				},
+				"bymonthday": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"bysetpos": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "number"
+							}
+						},
+						{
+							"type": "number"
+						}
+					]
+				},
+				"dtstart": {
+					"type": "string",
+					"format": "date-time"
+				}
+			}
 		},
 		"status": {
 			"enum": [
@@ -85803,6 +83688,318 @@ export const TaskUpdateSchema = {
 			"type": "string"
 		},
 		"survey_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const TaskCommentSchema = {
+	"type": "object",
+	"properties": {
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"created_at",
+		"id",
+		"task_id",
+		"template_variables",
+		"type",
+		"user_name"
+	]
+} 
+
+export const TaskCommentCreateSchema = {
+	"type": "object",
+	"properties": {
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"message": {
+			"type": "string"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"task_id",
+		"user_name"
+	]
+} 
+
+export const TaskCommentUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"created_at": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"task_id": {
+			"type": "string"
+		},
+		"template_variables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"user_name": {
 			"type": "string"
 		}
 	},
@@ -86136,6 +84333,60 @@ export const UserAccountUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const UserCountryAccessAttemptSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"id",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"user_id"
+	]
+} 
+
+export const UserCountryAccessAttemptUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const UserEntityPermissionSchema = {
 	"type": "object",
 	"properties": {
@@ -86358,6 +84609,14 @@ export const TaskStatusSchema = {
 	"type": "string"
 } 
 
+export const TaskCommentTypeSchema = {
+	"enum": [
+		"system",
+		"user"
+	],
+	"type": "string"
+} 
+
 export const SyncGroupSyncStatusSchema = {
 	"enum": [
 		"ERROR",
@@ -86400,7 +84659,9 @@ export const QuestionTypeSchema = {
 		"Photo",
 		"PrimaryEntity",
 		"Radio",
-		"SubmissionDate"
+		"SubmissionDate",
+		"Task",
+		"User"
 	],
 	"type": "string"
 } 
@@ -86425,7 +84686,7 @@ export const PeriodGranularitySchema = {
 	"type": "string"
 } 
 
-export const EntityTypeSchema = {
+export const EntityTypeEnumSchema = {
 	"enum": [
 		"asset",
 		"business",
@@ -86439,6 +84700,8 @@ export const EntityTypeSchema = {
 		"disaster",
 		"district",
 		"district_operational",
+		"document",
+		"document_group",
 		"enumeration_area",
 		"facility",
 		"facility_building",
@@ -86463,6 +84726,10 @@ export const EntityTypeSchema = {
 		"medical_area",
 		"msupply_store",
 		"nursing_zone",
+		"pacmossi_district",
+		"pacmossi_insecticide_test",
+		"pacmossi_spraying_site",
+		"pacmossi_village",
 		"postcode",
 		"project",
 		"repair_request",
@@ -86759,57 +85026,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"type": {
-						"enum": [
-							"asset",
-							"business",
-							"case",
-							"case_contact",
-							"catchment",
-							"city",
-							"commune",
-							"complaint",
-							"country",
-							"disaster",
-							"district",
-							"district_operational",
-							"enumeration_area",
-							"facility",
-							"facility_building",
-							"facility_division",
-							"facility_section",
-							"farm",
-							"fetp_graduate",
-							"field_station",
-							"fiji_aspen_facility",
-							"health_clinic_boundary",
-							"hospital_area",
-							"hospital_ward",
-							"household",
-							"incident",
-							"incident_reported",
-							"individual",
-							"institute",
-							"larval_habitat",
-							"larval_sample",
-							"local_government",
-							"maintenance",
-							"medical_area",
-							"msupply_store",
-							"nursing_zone",
-							"postcode",
-							"project",
-							"repair_request",
-							"school",
-							"sub_catchment",
-							"sub_district",
-							"sub_facility",
-							"transfer",
-							"trap",
-							"village",
-							"water_sample",
-							"wish_sub_district",
-							"world"
-						],
 						"type": "string"
 					}
 				},
@@ -87095,7 +85311,9 @@ export const CamelCasedQuestionSchema = {
 				"Photo",
 				"PrimaryEntity",
 				"Radio",
-				"SubmissionDate"
+				"SubmissionDate",
+				"Task",
+				"User"
 			],
 			"type": "string"
 		},
@@ -87179,6 +85397,23 @@ export const FileUploadAnswerSchema = {
 	"required": [
 		"name",
 		"value"
+	]
+} 
+
+export const UserAnswerSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name"
 	]
 } 
 
@@ -87566,61 +85801,13 @@ export const EntityResponseSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"asset",
-				"business",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"commune",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"district_operational",
-				"enumeration_area",
-				"facility",
-				"facility_building",
-				"facility_division",
-				"facility_section",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"health_clinic_boundary",
-				"hospital_area",
-				"hospital_ward",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"larval_sample",
-				"local_government",
-				"maintenance",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"transfer",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
 			"type": "string"
 		},
 		"isRecent": {
 			"type": "boolean"
+		},
+		"parent_name": {
+			"type": "string"
 		}
 	},
 	"required": [
@@ -87630,6 +85817,376 @@ export const EntityResponseSchema = {
 		"metadata",
 		"name",
 		"type"
+	]
+} 
+
+export const AssigneeSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const TaskResponseSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"assigneeId": {
+			"type": "string"
+		},
+		"initialRequestId": {
+			"type": "string"
+		},
+		"overdueEmailSent": {
+			"type": "object",
+			"properties": {
+				"toString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toDateString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toTimeString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleDateString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleTimeString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"valueOf": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getTime": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getDay": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCDay": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getTimezoneOffset": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setTime": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toUTCString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toISOString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toJSON": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getVarDate": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"getDate",
+				"getDay",
+				"getFullYear",
+				"getHours",
+				"getMilliseconds",
+				"getMinutes",
+				"getMonth",
+				"getSeconds",
+				"getTime",
+				"getTimezoneOffset",
+				"getUTCDate",
+				"getUTCDay",
+				"getUTCFullYear",
+				"getUTCHours",
+				"getUTCMilliseconds",
+				"getUTCMinutes",
+				"getUTCMonth",
+				"getUTCSeconds",
+				"getVarDate",
+				"setDate",
+				"setFullYear",
+				"setHours",
+				"setMilliseconds",
+				"setMinutes",
+				"setMonth",
+				"setSeconds",
+				"setTime",
+				"setUTCDate",
+				"setUTCFullYear",
+				"setUTCHours",
+				"setUTCMilliseconds",
+				"setUTCMinutes",
+				"setUTCMonth",
+				"setUTCSeconds",
+				"toDateString",
+				"toISOString",
+				"toJSON",
+				"toLocaleDateString",
+				"toLocaleString",
+				"toLocaleTimeString",
+				"toString",
+				"toTimeString",
+				"toUTCString",
+				"valueOf"
+			]
+		},
+		"parentTaskId": {
+			"type": "string"
+		},
+		"status": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"surveyResponseId": {
+			"type": "string"
+		},
+		"assignee": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"taskStatus": {
+			"enum": [
+				"cancelled",
+				"completed",
+				"overdue",
+				"repeating",
+				"to_do"
+			],
+			"type": "string"
+		},
+		"survey": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				},
+				"code": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"code",
+				"id",
+				"name"
+			]
+		},
+		"entity": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				},
+				"code": {
+					"type": "string"
+				},
+				"countryCode": {
+					"type": "string"
+				},
+				"parentName": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"code",
+				"countryCode",
+				"id",
+				"name"
+			]
+		},
+		"repeatSchedule": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"taskDueDate": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"required": [
+		"entity",
+		"survey",
+		"taskStatus"
+	]
+} 
+
+export const UserResponseSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name"
 	]
 } 
 
@@ -87697,6 +86254,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -87740,7 +86318,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87790,7 +86367,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87842,7 +86418,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -87900,7 +86475,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -87944,7 +86518,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -88049,6 +86622,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -88398,6 +86975,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -88441,7 +87039,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88491,7 +87088,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88543,7 +87139,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88601,7 +87196,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88645,7 +87239,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -88750,6 +87343,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -88802,6 +87399,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -88845,7 +87463,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -88895,7 +87512,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -88947,7 +87563,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89005,7 +87620,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89049,7 +87663,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -89154,6 +87767,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -89292,6 +87909,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -89335,7 +87973,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89385,7 +88022,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89437,7 +88073,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -89495,7 +88130,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -89539,7 +88173,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -89644,6 +88277,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -90062,6 +88699,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -90105,7 +88763,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90155,7 +88812,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90207,7 +88863,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90265,7 +88920,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90309,7 +88963,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -90410,6 +89063,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -90826,6 +89483,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -90869,7 +89547,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -90919,7 +89596,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -90971,7 +89647,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91029,7 +89704,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91073,7 +89747,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -91174,6 +89847,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -91579,6 +90256,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -91622,7 +90320,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91672,7 +90369,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91724,7 +90420,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -91782,7 +90477,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -91826,7 +90520,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -91931,6 +90624,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -92032,6 +90729,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -92075,7 +90793,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92125,7 +90842,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92177,7 +90893,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92235,7 +90950,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92279,7 +90993,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92384,6 +91097,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -92465,6 +91182,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -92508,7 +91246,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92558,7 +91295,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92610,7 +91346,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -92668,7 +91403,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -92712,7 +91446,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -92817,6 +91550,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -92975,6 +91712,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -93018,7 +91776,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93068,7 +91825,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93120,7 +91876,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93178,7 +91933,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93222,7 +91976,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -93327,6 +92080,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -93399,6 +92156,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -93442,7 +92220,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93492,7 +92269,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93544,7 +92320,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93602,7 +92377,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93646,7 +92420,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -93751,6 +92524,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -93819,6 +92596,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -93862,7 +92660,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -93912,7 +92709,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -93964,7 +92760,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94022,7 +92817,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94066,7 +92860,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -94171,6 +92964,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -94239,6 +93036,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -94282,7 +93100,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94332,7 +93149,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94384,7 +93200,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94442,7 +93257,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94486,7 +93300,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -94591,6 +93404,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -94659,6 +93476,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -94702,7 +93540,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94752,7 +93589,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94804,7 +93640,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -94862,7 +93697,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -94906,7 +93740,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -95011,6 +93844,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -95079,6 +93916,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -95122,7 +93980,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95172,7 +94029,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95224,7 +94080,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95282,7 +94137,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95326,7 +94180,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -95431,6 +94284,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -95499,6 +94356,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -95542,7 +94420,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95592,7 +94469,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95644,7 +94520,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -95702,7 +94577,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -95746,7 +94620,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -95851,6 +94724,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -95919,6 +94796,27 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"dateOffset": {
+										"description": "The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June. Only months and quarter offsets are supported.\nCurrently only works for 'one_year_at_a_time' and 'year' granularities -  assume that any other granularities used with this will not work as expected.",
+										"type": "object",
+										"properties": {
+											"unit": {
+												"enum": [
+													"month",
+													"quarter"
+												],
+												"type": "string"
+											},
+											"offset": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"offset",
+											"unit"
+										]
+									},
 									"defaultTimePeriod": {
 										"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
 										"anyOf": [
@@ -95962,7 +94860,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -96012,7 +94909,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -96064,7 +94960,6 @@ export const DashboardWithMetadataSchema = {
 																},
 																"additionalProperties": false,
 																"required": [
-																	"offset",
 																	"unit"
 																]
 															},
@@ -96122,7 +95017,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											},
@@ -96166,7 +95060,6 @@ export const DashboardWithMetadataSchema = {
 												},
 												"additionalProperties": false,
 												"required": [
-													"offset",
 													"unit"
 												]
 											}
@@ -96271,6 +95164,10 @@ export const DashboardWithMetadataSchema = {
 											"WEEK_ENDING",
 											"WEEK_ENDING_ABBR"
 										],
+										"type": "string"
+									},
+									"dateRangeDelimiter": {
+										"description": "If specified, this delimiter will be used to separate the start and end dates in the date range picker. Defaults to '-'. This only applies to dates when the type is a single date but has an offset. E.g. offset of 6 months with a date range delimiter of '/' will show 'Jul 2022/June 2023'",
 										"type": "string"
 									},
 									"type": {
@@ -96458,7 +95355,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -96502,7 +95398,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -96552,7 +95447,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -96602,7 +95496,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -96654,7 +95547,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -96674,57 +95566,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -96809,7 +95650,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -96823,57 +95664,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -96945,6 +95735,14 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -96962,57 +95760,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -97224,6 +95971,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -97303,7 +96053,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97347,7 +96096,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -97397,7 +96145,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -97447,7 +96194,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97499,7 +96245,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -97519,57 +96264,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -97654,7 +96348,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -97668,57 +96362,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -97790,6 +96433,14 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -97807,57 +96458,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -97994,6 +96594,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -98073,7 +96676,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -98117,7 +96719,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -98167,7 +96768,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -98217,7 +96817,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -98269,7 +96868,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -98289,57 +96887,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -98424,7 +96971,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -98438,57 +96985,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -98560,6 +97056,14 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -98577,57 +97081,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -98739,6 +97192,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -98817,7 +97273,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -98861,7 +97316,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -98911,7 +97365,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -98961,7 +97414,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -99013,7 +97465,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -99033,57 +97484,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -99168,7 +97568,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -99182,57 +97582,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -99304,6 +97653,14 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -99321,57 +97678,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -99497,6 +97803,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [
@@ -99575,7 +97884,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -99619,7 +97927,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						}
@@ -99669,7 +97976,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"additionalProperties": false,
 							"required": [
-								"offset",
 								"unit"
 							]
 						},
@@ -99719,7 +98025,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -99771,7 +98076,6 @@ export const TranslatedMapOverlaySchema = {
 											},
 											"additionalProperties": false,
 											"required": [
-												"offset",
 												"unit"
 											]
 										},
@@ -99791,57 +98095,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"displayOnLevel": {
 					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"displayedValueKey": {
@@ -99926,7 +98179,7 @@ export const TranslatedMapOverlaySchema = {
 						"type": "object",
 						"properties": {
 							"type": {
-								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"description": "How to display this series (popup-only is deprecated)",
 								"enum": [
 									"color",
 									"icon",
@@ -99940,57 +98193,6 @@ export const TranslatedMapOverlaySchema = {
 							},
 							"measureLevel": {
 								"description": "Level of the entity hierarchy that this map overlay has data for",
-								"enum": [
-									"Asset",
-									"Business",
-									"Case",
-									"CaseContact",
-									"Catchment",
-									"City",
-									"Commune",
-									"Complaint",
-									"Country",
-									"Disaster",
-									"District",
-									"DistrictOperational",
-									"EnumerationArea",
-									"Facility",
-									"FacilityBuilding",
-									"FacilityDivision",
-									"FacilitySection",
-									"Farm",
-									"FetpGraduate",
-									"FieldStation",
-									"FijiAspenFacility",
-									"HealthClinicBoundary",
-									"HospitalArea",
-									"HospitalWard",
-									"Household",
-									"Incident",
-									"IncidentReported",
-									"Individual",
-									"Institute",
-									"LarvalHabitat",
-									"LarvalSample",
-									"LocalGovernment",
-									"Maintenance",
-									"MedicalArea",
-									"MsupplyStore",
-									"NursingZone",
-									"Postcode",
-									"Project",
-									"RepairRequest",
-									"School",
-									"SubCatchment",
-									"SubDistrict",
-									"SubFacility",
-									"Transfer",
-									"Trap",
-									"Village",
-									"WaterSample",
-									"WishSubDistrict",
-									"World"
-								],
 								"type": "string"
 							},
 							"values": {
@@ -100062,6 +98264,14 @@ export const TranslatedMapOverlaySchema = {
 								"description": "Whether to include this series in the legend",
 								"type": "boolean"
 							},
+							"hideFromPopup": {
+								"description": "Whether to include this series in the popup/tooltip",
+								"type": "boolean"
+							},
+							"hideFromTable": {
+								"description": "Whether to include this series in the table",
+								"type": "boolean"
+							},
 							"name": {
 								"description": "Display name of this series",
 								"type": "string"
@@ -100079,57 +98289,6 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"measureLevel": {
 					"description": "Level of the entity hierarchy that this map overlay has data for",
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Commune",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"DistrictOperational",
-						"EnumerationArea",
-						"Facility",
-						"FacilityBuilding",
-						"FacilityDivision",
-						"FacilitySection",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"HealthClinicBoundary",
-						"HospitalArea",
-						"HospitalWard",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LarvalSample",
-						"LocalGovernment",
-						"Maintenance",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Transfer",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
 					"type": "string"
 				},
 				"noDataColour": {
@@ -100245,6 +98404,9 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"sortOrder": {
 					"type": "number"
+				},
+				"disabled": {
+					"type": "boolean"
 				}
 			},
 			"required": [

@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { PageHeader, PageBody } from '../../widgets';
 import { LogsModal } from '../../logsTable';
 import { get } from '../../VizBuilderApp/api';

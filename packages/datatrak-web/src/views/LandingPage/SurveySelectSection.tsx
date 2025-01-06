@@ -6,33 +6,53 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { DESKTOP_MEDIA_QUERY, ROUTES } from '../../constants';
+import { ROUTES } from '../../constants';
 import { Button, ButtonLink as BaseButtonLink } from '../../components';
 
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
-const SurveyAlert = styled.div`
+const SectionContainer = styled.section`
+  grid-area: surveySelect;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  border-radius: 0.625rem;
   padding: 1rem;
   display: flex;
   position: relative;
   align-items: flex-start;
   justify-content: space-between;
+  overflow: visible !important;
+  border-radius: 0.625rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-block-start: 1.3rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('lg')} {
+    padding: 1rem 3rem 1rem 2.2rem;
+  }
+`;
+
+const SectionContent = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  width: 70%;
+  padding-inline-end: 2rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2.3rem;
+    margin-inline-start: 10%;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-inline-start: 0;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
   }
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
   font-size: 1rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-inline: 0.5rem;
   & ~ .MuiButtonBase-root {
-    margin-left: 0; // override default margin from ui-components
+    margin-inline-start: 0; // override default margin from ui-components
   }
   &:last-child {
-    margin-top: 1rem;
+    margin-block-start: 1rem;
   }
 `;
 
@@ -50,31 +70,37 @@ const ButtonWrapper = styled.div`
     line-height: 1.1;
     padding: 0.75rem;
     &:last-child {
-      margin-top: 0.625rem;
+      margin-block-start: 0.5rem;
     }
   }
 `;
 
 const TextWrapper = styled.div`
-  margin: 0;
+  margin-block-end: 0.7rem;
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-right: 4rem;
+    margin-block-end: 0;
     max-width: 75%;
-    padding-left: 2rem;
+    padding-inline: 1rem 4rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-right: 1rem;
+    padding-inline: 2rem 1rem;
     max-width: 80%;
   }
 `;
 
 const Text = styled(Typography)`
+  ${({ theme }) => theme.breakpoints.up('xs')} {
+    line-height: 1.5;
+    font-size: 0.9rem;
+  }
   ${({ theme }) => theme.breakpoints.up('sm')} {
     font-size: 1rem;
-    line-height: 1.5;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    font-size: 0.9rem;
   }
 `;
 
@@ -85,41 +111,31 @@ const DesktopText = styled.span`
 `;
 
 const SurveysImage = styled.img`
-  width: auto;
-  height: calc(100% + 3rem);
   position: absolute;
+  width: auto;
   display: flex;
   align-items: center;
+  top: 50%;
+  transform: translateY(-50%);
   right: 0;
-  top: -1.5rem;
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    top: -20%;
-    right: 2rem;
-    height: 150%;
+  height: 130%;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    right: 10%;
+    height: 125%;
   }
-
-  ${DESKTOP_MEDIA_QUERY} {
-    top: -2rem;
-    height: calc(100% + 6rem);
-  }
-`;
-
-const SurveyAlertContent = styled.div`
-  display: flex;
-  flex-direction: column-reverse;
-  width: 70%;
-  padding-right: 2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
+    right: -1rem;
+    height: 130%;
+  }
+  ${({ theme }) => theme.breakpoints.up('lg')} {
+    height: 150%;
   }
 `;
 
 export const SurveySelectSection = () => {
   return (
-    <SurveyAlert>
-      <SurveyAlertContent>
+    <SectionContainer>
+      <SectionContent>
         <ButtonWrapper>
           <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
           <Button variant="outlined" onClick={() => window.open(TUPAIA_REDIRECT_URL)}>
@@ -137,8 +153,8 @@ export const SurveySelectSection = () => {
             </DesktopText>
           </Text>
         </TextWrapper>
-      </SurveyAlertContent>
+      </SectionContent>
       <SurveysImage src="/surveys.svg" alt="Illustration of woman holding a tablet" />
-    </SurveyAlert>
+    </SectionContainer>
   );
 };

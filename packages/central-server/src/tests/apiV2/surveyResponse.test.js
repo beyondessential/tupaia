@@ -510,7 +510,7 @@ describe('surveyResponse endpoint', () => {
       numberOfAnswersInSurveyResponse = await models.answer.count({
         survey_response_id: surveyResponseId,
       });
-      response = await app.post(`surveyResponse/${surveyResponseId}/resubmit`, {
+      response = await app.put(`surveyResponses/${surveyResponseId}`, {
         body: {
           entity_id: newEntityId,
         },

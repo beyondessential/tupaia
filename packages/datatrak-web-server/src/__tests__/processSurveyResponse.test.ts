@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { EntityType, QuestionType } from '@tupaia/types';
+import { QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurveyReponse/processSurveyResponse';
@@ -12,7 +12,7 @@ const mockFindEntityById = async (id: string) => ({
   id: 'theEntityId',
   code: 'theEntityCode',
   name: 'The Entity Name',
-  type: 'facility' as EntityType,
+  type: 'facility',
 });
 
 const optionSetId = 'optionSetId';
@@ -50,7 +50,7 @@ describe('processSurveyResponse', () => {
     surveyId: 'theSurveyId',
     countryId: 'theCountryId',
     startTime: 'theStartTime',
-    timezone: 'theTimezone',
+    timezone: 'Pacific/Auckland',
   };
 
   const processedResponseData = {
@@ -61,7 +61,7 @@ describe('processSurveyResponse', () => {
     entity_id: 'theCountryId',
     end_time: timestamp,
     timestamp: timestamp,
-    timezone: 'theTimezone',
+    timezone: 'Pacific/Auckland',
     options_created: [],
     entities_upserted: [],
     qr_codes_to_create: [],
@@ -86,10 +86,21 @@ describe('processSurveyResponse', () => {
           screenId: 'screen2',
           componentNumber: 2,
         },
+        {
+          questionId: 'question3',
+          type: QuestionType.User,
+          text: 'question3',
+          screenId: 'screen3',
+          componentNumber: 3,
+        },
       ],
       answers: {
         question1: 'answer1',
         question2: 'answer2',
+        question3: {
+          id: 'theUserId',
+          name: 'theUserName',
+        },
       },
     });
 
@@ -105,6 +116,11 @@ describe('processSurveyResponse', () => {
           question_id: 'question2',
           type: QuestionType.Number,
           body: 'answer2',
+        },
+        {
+          question_id: 'question3',
+          type: QuestionType.User,
+          body: 'theUserId',
         },
       ],
     });
@@ -148,13 +164,13 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: '2022-01-01',
+        question1: '2022-01-01T00:00',
       },
     });
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: new Date('2022-01-01').toISOString(),
+      data_time: '2022-01-01T00:00+13:00',
       answers: [],
     });
   });
@@ -172,13 +188,13 @@ describe('processSurveyResponse', () => {
         },
       ],
       answers: {
-        question1: '2022-01-01',
+        question1: '2022-01-01T00:00',
       },
     });
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: new Date('2022-01-01').toISOString(),
+      data_time: '2022-01-01T00:00+13:00',
       answers: [],
     });
   });
@@ -450,13 +466,13 @@ describe('processSurveyResponse', () => {
     });
   });
 
-  it('should not add to recent_entities when type is entity question is not filled in', async () => {
+  it('should not add to recent_entities when type is entity question and is not filled in', async () => {
     const result = await processSurveyResponse(mockModels, {
       ...responseData,
       questions: [
         {
           questionId: 'question1',
-          type: QuestionType.PrimaryEntity,
+          type: QuestionType.Entity,
           componentNumber: 1,
           text: 'question1',
           screenId: 'screen1',
@@ -467,6 +483,27 @@ describe('processSurveyResponse', () => {
     });
 
     expect(result.recent_entities).toEqual([]);
+  });
+
+  it('throw an error when type is primary entity question and is not filled in', async () => {
+    try {
+      const result = await processSurveyResponse(mockModels, {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.PrimaryEntity,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+            config: {},
+          },
+        ],
+        answers: {},
+      });
+    } catch (error: any) {
+      expect(error.message).toBe('Primary Entity Question is a required field');
+    }
   });
 
   it('should use the country id for new entities if parent id is not filled in', async () => {
@@ -523,7 +560,7 @@ describe('processSurveyResponse', () => {
       ],
       answers: {
         question1: {
-          value: 'theEncodedFile',
+          value: 'data://theEncodedFile',
           name: 'theFileName',
         },
       },
@@ -536,9 +573,99 @@ describe('processSurveyResponse', () => {
           question_id: 'question1',
           type: QuestionType.File,
           body: {
-            data: 'theEncodedFile',
+            data: 'data://theEncodedFile',
             uniqueFileName: getUniqueSurveyQuestionFileName('theFileName'),
           },
+        },
+      ],
+    });
+  });
+
+  it('should handle when question type is File and the file is not an encoded file', async () => {
+    const result = await processSurveyResponse(mockModels, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.File,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: {
+          value: 'filename.png',
+          name: 'theFileName',
+        },
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.File,
+          body: 'filename.png',
+        },
+      ],
+    });
+  });
+
+  it('should add the timezone offset when question type is Date', async () => {
+    const result = await processSurveyResponse(mockModels, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.Date,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: '2022-01-01T00:00',
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.Date,
+          body: '2022-01-01T00:00+13:00',
+        },
+      ],
+    });
+  });
+
+  it('should add the timezone offset when question type is DateTime', async () => {
+    const result = await processSurveyResponse(mockModels, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.DateTime,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: '2022-01-01T00:00',
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.DateTime,
+          body: '2022-01-01T00:00+13:00',
         },
       ],
     });

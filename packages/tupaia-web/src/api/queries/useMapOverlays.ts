@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useSearchParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { POLYGON_MEASURE_TYPES } from '@tupaia/ui-map-components';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { get } from '../api';
@@ -49,7 +49,12 @@ const mapOverlayByCode = (
  */
 export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
   const [urlSearchParams] = useSearchParams();
-  const { data, isLoading, error, isFetched } = useQuery(
+  const {
+    data,
+    isInitialLoading: isLoading,
+    error,
+    isFetched,
+  } = useQuery(
     ['mapOverlays', projectCode, entityCode],
     (): Promise<MapOverlaysResponse> => get(`mapOverlays/${projectCode}/${entityCode}`),
     {

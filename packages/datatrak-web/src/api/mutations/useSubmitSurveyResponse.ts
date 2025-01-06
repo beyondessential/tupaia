@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { Coconut } from '../../components';
@@ -35,14 +35,13 @@ export const useSurveyResponseData = () => {
   };
 };
 
-export const useSubmitSurveyResponse = () => {
+export const useSubmitSurveyResponse = (from: string | undefined) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
   const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
-
   const surveyResponseData = useSurveyResponseData();
 
   return useMutation<any, Error, AnswersT, unknown>(
@@ -64,11 +63,13 @@ export const useSubmitSurveyResponse = () => {
         gaEvent('submit_survey_by_user', user.id!);
       },
       onSuccess: data => {
-        queryClient.invalidateQueries('surveyResponses');
-        queryClient.invalidateQueries('recentSurveys');
-        queryClient.invalidateQueries('rewards');
-        queryClient.invalidateQueries('leaderboard');
-        queryClient.invalidateQueries('entityDescendants'); // Refresh recent entities
+        queryClient.invalidateQueries(['surveyResponses']);
+        queryClient.invalidateQueries(['recentSurveys']);
+        queryClient.invalidateQueries(['rewards']);
+        queryClient.invalidateQueries(['leaderboard']);
+        queryClient.invalidateQueries(['entityDescendants']); // Refresh recent entities
+        queryClient.invalidateQueries(['tasks']);
+        queryClient.invalidateQueries(['taskMetric', user.projectId]);
 
         const createNewAutocompleteQuestions = surveyResponseData?.questions?.filter(
           question => question?.config?.autocomplete?.createNew,
@@ -86,6 +87,7 @@ export const useSubmitSurveyResponse = () => {
         // include the survey response data in the location state, so that we can use it to generate QR codes
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
           state: {
+            ...(from && { from }),
             surveyResponse: JSON.stringify(data),
           },
         });

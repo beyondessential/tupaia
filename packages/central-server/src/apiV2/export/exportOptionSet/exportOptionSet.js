@@ -5,7 +5,7 @@
 
 import xlsx from 'xlsx';
 import { respondWithDownload, toFilename } from '@tupaia/utils';
-import { getExportPathForUser } from '../getExportPathForUser';
+import { getExportPathForUser } from '@tupaia/server-utils';
 
 const objectToHumanReadableKeyValuePairs = obj => {
   const entries = [];

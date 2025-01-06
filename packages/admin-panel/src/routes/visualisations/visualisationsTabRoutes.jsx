@@ -26,12 +26,12 @@ export const visualisationsTabRoutes = {
     dashboards,
     dashboardRelations,
     dashboardMailingLists,
+    dataTables,
     legacyReports,
     mapOverlays,
     mapOverlayGroups,
     mapOverlayGroupRelations,
     indicators,
-    dataTables,
     socialFeed,
   ],
 };

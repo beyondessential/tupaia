@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { utcMoment } from '@tupaia/utils';
 import { post } from '../api';
 import { useProjectEntitiesData } from './useEntitiesData';
@@ -84,7 +84,7 @@ const useEntityReport = entity =>
   );
 
 const useEntityVitals = entity => {
-  const { data: results, isLoading } = useEntityReport(entity);
+  const { data: results, isInitialLoading: isLoading } = useEntityReport(entity);
 
   return {
     data: results?.data?.[0],

@@ -7,7 +7,7 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
 
-const Container = styled.div`
+export const HeaderLessFullHeightContainer = styled.div`
   height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
   display: flex;
   flex-direction: column;
@@ -15,8 +15,8 @@ const Container = styled.div`
 
 export const ScrollableLayout = () => {
   return (
-    <Container>
+    <HeaderLessFullHeightContainer>
       <Outlet />
-    </Container>
+    </HeaderLessFullHeightContainer>
   );
 };

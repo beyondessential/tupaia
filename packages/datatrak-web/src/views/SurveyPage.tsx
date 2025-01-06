@@ -48,10 +48,53 @@ const SurveyScreenContainer = styled.div<{
 
 const SurveyPageInner = () => {
   const { screenNumber } = useParams<SurveyParams>();
-  const { formData, isSuccessScreen, isResponseScreen, cancelModalOpen, closeCancelConfirmation } =
-    useSurveyForm();
+  const {
+    formData,
+    isSuccessScreen,
+    isResponseScreen,
+    cancelModalOpen,
+    closeCancelConfirmation,
+    isResubmit,
+    countryCode,
+    surveyCode,
+  } = useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
+  const { mutateAsync: editUser } = useEditUser();
+  const user = useCurrentUserContext();
+  const { data: survey } = useSurvey(surveyCode);
+  const { data: surveyCountry } = useEntityByCode(countryCode!);
+
+  // Update the user's preferred country if they start a survey in a different country
+  useEffect(() => {
+    if (!surveyCountry?.code || !user.isLoggedIn || isResubmit) {
+      return;
+    }
+    if (user.country?.code !== countryCode) {
+      editUser(
+        {
+          countryId: surveyCountry?.id,
+        },
+        { onSuccess: () => successToast(`Preferred country updated to ${surveyCountry?.name}`) },
+      );
+    }
+  }, [surveyCountry?.code]);
+
+  // Update the user's preferred project if they start a survey in a different project to the saved project
+  useEffect(() => {
+    if (!survey?.projectId || !user.isLoggedIn || isResubmit) {
+      return;
+    }
+    const { projectId } = survey;
+    if (user?.projectId !== projectId) {
+      editUser(
+        {
+          projectId,
+        },
+        { onSuccess: () => successToast(`Preferred project updated to ${survey.project?.name}`) },
+      );
+    }
+  }, [survey?.id]);
 
   return (
     <PageWrapper>
@@ -71,44 +114,8 @@ const SurveyPageInner = () => {
 // The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
 export const SurveyPage = () => {
   const { countryCode, surveyCode } = useParams<SurveyParams>();
-  const { mutateAsync: editUser } = useEditUser();
-  const user = useCurrentUserContext();
-  const { data: survey } = useSurvey(surveyCode);
-  const { data: surveyCountry } = useEntityByCode(countryCode!);
-
-  // Update the user's preferred country if they start a survey in a different country
-  useEffect(() => {
-    if (!surveyCountry?.code || !user.isLoggedIn) {
-      return;
-    }
-    if (user.country?.code !== countryCode) {
-      editUser(
-        {
-          countryId: surveyCountry?.id,
-        },
-        { onSuccess: () => successToast(`Preferred country updated to ${surveyCountry?.name}`) },
-      );
-    }
-  }, [surveyCountry?.code]);
-
-  // Update the user's preferred project if they start a survey in a different project to the saved project
-  useEffect(() => {
-    if (!survey?.projectId || !user.isLoggedIn) {
-      return;
-    }
-    const { projectId } = survey;
-    if (user?.projectId !== projectId) {
-      editUser(
-        {
-          projectId,
-        },
-        { onSuccess: () => successToast(`Preferred project updated to ${survey.project?.name}`) },
-      );
-    }
-  }, [survey?.id]);
-
   return (
-    <SurveyContext>
+    <SurveyContext surveyCode={surveyCode} countryCode={countryCode}>
       <SurveyPageInner />
     </SurveyContext>
   );

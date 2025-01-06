@@ -2,16 +2,21 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { HeaderDisplayCell, HeaderDisplayCellProps } from './Cells';
-import { TextField } from '../Inputs';
 import { Search } from '@material-ui/icons';
+import { StandardTextFieldProps } from '@material-ui/core';
 import { ColumnInstance } from 'react-table';
+import { TextField } from '../Inputs';
+import { HeaderDisplayCell, HeaderDisplayCellProps } from './Cells';
+import { useDebounce } from '../../hooks';
 
 const FilterWrapper = styled.div`
   .MuiFormControl-root {
     margin-block-end: 0;
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.divider};
   }
   .MuiInputBase-input,
   .MuiOutlinedInput-root {
@@ -39,15 +44,15 @@ const FilterWrapper = styled.div`
   .MuiAutocomplete-option {
     padding-block: 0.5rem;
   }
+  .MuiInputBase-input::-webkit-input-placeholder {
+    color: #b8b8b8;
+  }
+  .MuiInputBase-adornedStart .MuiSvgIcon-root {
+    color: #b8b8b8;
+  }
 `;
 
-export const DefaultFilter = styled(TextField).attrs(props => ({
-  InputProps: {
-    ...props.InputProps,
-    startAdornment: <Search />,
-  },
-  placeholder: 'Search...',
-}))`
+const DefaultFilterInput = styled(TextField)`
   margin-block-end: 0;
   font-size: inherit;
   width: 100%;
@@ -64,9 +69,40 @@ export const DefaultFilter = styled(TextField).attrs(props => ({
     padding-inline-start: 0.3rem;
   }
   .MuiSvgIcon-root {
-    color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${({ theme }) => theme.palette.divider};
   }
 `;
+
+interface DefaultFilterProps extends Omit<StandardTextFieldProps, 'onChange' | 'value'> {
+  value?: string | null;
+  onChange: (value: string) => void;
+}
+
+const DefaultFilter = ({ value, onChange, ...props }: DefaultFilterProps) => {
+  const [stateValue, setStateValue] = useState<string>(value ?? '');
+  const debouncedSearchValue = useDebounce(stateValue, 500);
+
+  useEffect(() => {
+    if (debouncedSearchValue === value) return;
+    onChange(debouncedSearchValue);
+  }, [debouncedSearchValue]);
+
+  useEffect(() => {
+    if (value === stateValue) return;
+    setStateValue(value ?? '');
+  }, [value]);
+  return (
+    <DefaultFilterInput
+      {...props}
+      value={stateValue}
+      onChange={e => setStateValue(e.target.value)}
+      InputProps={{
+        startAdornment: <Search />,
+      }}
+      placeholder="Search..."
+    />
+  );
+};
 
 export type Filters = Record<string, any>[];
 
@@ -76,6 +112,7 @@ export interface FilterCellProps extends Partial<HeaderDisplayCellProps> {
       column: ColumnInstance<Record<string, any>>;
       filter?: any;
       onChange: (value: any) => void;
+      value: any;
     }>;
     filterable?: boolean;
   };
@@ -99,11 +136,16 @@ export const FilterCell = ({ column, filters, onChangeFilters, ...props }: Filte
     <HeaderDisplayCell {...props} maxWidth={column.maxWidth}>
       <FilterWrapper>
         {Filter ? (
-          <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
+          <Filter
+            column={column}
+            filter={existingFilter}
+            onChange={handleUpdate}
+            value={existingFilter?.value}
+          />
         ) : (
           <DefaultFilter
             value={existingFilter?.value || ''}
-            onChange={e => handleUpdate(e.target.value)}
+            onChange={handleUpdate}
             aria-label={`Search ${column.Header}`}
           />
         )}

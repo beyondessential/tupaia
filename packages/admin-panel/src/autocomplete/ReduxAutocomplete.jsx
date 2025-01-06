@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { getAutocompleteState } from './selectors';
 import { changeSelection, changeSearchTerm, clearState } from './actions';
 import { Autocomplete } from './Autocomplete';
+import { EntityOptionLabel } from '../widgets';
 
 const getPlaceholder = (placeholder, selection) => {
   if (selection && selection.length) {
@@ -41,6 +42,8 @@ const ReduxAutocompleteComponent = ({
   error,
   tooltip,
   optionValueKey,
+  renderOption,
+  optionFields,
 }) => {
   const [hasUpdated, setHasUpdated] = React.useState(false);
   React.useEffect(() => {
@@ -69,6 +72,12 @@ const ReduxAutocompleteComponent = ({
     selectedValue = [];
   }
 
+  const getOptionRendered = option => {
+    if (renderOption) return renderOption(option);
+    if (!option || !option[optionLabelKey]) return '';
+    return option[optionLabelKey];
+  };
+
   return (
     <Autocomplete
       value={selectedValue}
@@ -88,6 +97,7 @@ const ReduxAutocompleteComponent = ({
       required={required}
       error={error}
       tooltip={tooltip}
+      renderOption={getOptionRendered}
     />
   );
 };
@@ -111,6 +121,7 @@ ReduxAutocompleteComponent.propTypes = {
   required: PropTypes.bool,
   error: PropTypes.bool,
   optionValueKey: PropTypes.string.isRequired,
+  renderOption: PropTypes.func,
 };
 
 ReduxAutocompleteComponent.defaultProps = {
@@ -149,6 +160,7 @@ const mapDispatchToProps = (
     baseFilter,
     pageSize,
     distinct,
+    optionFields,
   },
 ) => ({
   programaticallyChangeSelection: initialValue => {
@@ -199,6 +211,7 @@ const mapDispatchToProps = (
         baseFilter,
         pageSize,
         distinct,
+        optionFields,
       ),
     ),
   onClearState: () => dispatch(clearState(reduxId)),

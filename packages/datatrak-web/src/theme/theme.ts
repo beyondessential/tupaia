@@ -4,9 +4,9 @@
  */
 
 import { createMuiTheme } from '@material-ui/core';
-import { MOBILE_BREAKPOINT } from '../constants';
+import { DESKTOP_BREAKPOINT } from '../constants';
 
-const overMobileBreakpoint = `@media (min-width: ${MOBILE_BREAKPOINT})`;
+const overMobileBreakpoint = `@media (min-width: ${DESKTOP_BREAKPOINT})`;
 export const theme = createMuiTheme({
   palette: {
     type: 'light',

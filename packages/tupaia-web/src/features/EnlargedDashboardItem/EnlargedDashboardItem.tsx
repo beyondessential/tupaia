@@ -26,21 +26,21 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-// MatrixWrapper is an expanding wrapper that allows the matrix to grow to the full width of the screen
-const MatrixWrapper = css`
+// ExpandingWrapper is an expanding wrapper that allows the viz to grow to the full width of the screen
+const ExpandingWrapper = css`
   max-width: 90vw;
   padding: 0 0.5rem;
   width: auto;
 `;
 
-// BigChartWrapper is a wrapper that sets the chart to be full width when there is a lot of data. This needs to be separate from MatrixWrapper because recharts needs a fixed width to expand because it calculates the svg width based on the width of the parent div
+// BigChartWrapper is a wrapper that sets the chart to be full width when there is a lot of data. This needs to be separate from ExpandingWrapper because recharts needs a fixed width to expand because it calculates the svg width based on the width of the parent div
 const BigChartWrapper = css`
   min-width: 90vw;
   width: 90%;
 `;
 
 const Wrapper = styled.div<{
-  $isMatrix?: boolean;
+  $isExpanding?: boolean;
   $hasBigData?: boolean;
 }>`
   min-height: 25rem;
@@ -50,7 +50,7 @@ const Wrapper = styled.div<{
   padding: 0 0.5rem;
   width: 45rem;
 
-  ${({ $isMatrix }) => $isMatrix && MatrixWrapper}
+  ${({ $isExpanding }) => $isExpanding && ExpandingWrapper}
   ${({ $hasBigData }) => $hasBigData && BigChartWrapper}
 `;
 
@@ -60,19 +60,31 @@ const ContentWrapper = ({ children }: { children: React.ReactNode }) => {
 
   const { currentDashboardItem, reportData } = useEnlargedDashboardItem();
 
-  const isMatrix = currentDashboardItem?.config?.type === 'matrix';
+  const getIsExpanding = () => {
+    if (!currentDashboardItem) return false;
+    if (currentDashboardItem?.config?.type === 'matrix') return true;
+    if (currentDashboardItem?.config?.type === 'view') {
+      const { viewType } = currentDashboardItem?.config;
+      return viewType === 'multiPhotograph';
+    }
+    return false;
+  };
+
+  const isExpandingSize = getIsExpanding();
 
   const getHasBigData = () => {
-    if (!reportData || isExportMode || currentDashboardItem?.config?.type !== 'chart') return false;
+    if (!reportData || isExportMode) return false;
     // only charts with more than 20 data points are considered big. Matrix will expand to fit the screen if there is a lot of data, and 'view' type dashboards are always fixed because the data is semi-static
-    const { data } = reportData as BaseReport;
-    return data ? data?.length > 20 : false;
+    const { data = [] } = reportData as BaseReport;
+
+    if (currentDashboardItem?.config?.type !== 'chart') return false;
+    return data?.length > 20;
   };
 
   const hasBigData = getHasBigData();
 
   return (
-    <Wrapper $isMatrix={isMatrix} $hasBigData={hasBigData}>
+    <Wrapper $isExpanding={isExpandingSize} $hasBigData={hasBigData}>
       {children}
     </Wrapper>
   );

@@ -17,7 +17,7 @@ import {
   supportsPermissionsBasedSync,
 } from './supportsPermissionsBasedSync';
 
-const recordTypesToAlwaysSync = ['country', 'permission_group'];
+const recordTypesToAlwaysSync = ['country', 'permission_group', 'user_account'];
 const entityTypesToAlwaysSync = ['world', 'country'];
 
 // TODO: Tidy this up as part of RN-502

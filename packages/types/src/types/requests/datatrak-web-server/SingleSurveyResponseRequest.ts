@@ -10,12 +10,16 @@ export type Params = {
   id: string;
 };
 
-export interface ResBody extends KeysToCamelCase<SurveyResponse> {
+export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'dataTime'>> {
   answers: Record<string, string>;
   countryName: Country['name'];
   entityName: Entity['name'];
+  entityId: Entity['id'];
   surveyName: Survey['name'];
   surveyCode: Survey['code'];
+  countryCode: Country['code'];
+  dataTime: Date;
+  entityParentName: Entity['name'];
 }
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;

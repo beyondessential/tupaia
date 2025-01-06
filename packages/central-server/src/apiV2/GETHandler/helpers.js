@@ -97,7 +97,7 @@ const constructJoinCondition = (recordType, baseRecordType, customJoinConditions
     joinType,
   };
   if (join?.through) {
-    if ('nearTableKey' in join !== true || 'farTableKey' in join !== true) {
+    if (!('nearTableKey' in join) || !('farTableKey' in join)) {
       throw new ValidationError(`Incorrect format for customJoinConditions: ${recordType}`);
     }
     const nearTable = join.nearTableKey.split('.');
@@ -144,6 +144,7 @@ export const getQueryOptionsForColumns = (
           customJoinConditions,
           joinType,
         );
+
         joinConditions.forEach(j => {
           if (!recordTypesInQuery.has(j.joinWith)) multiJoin.push(j);
           recordTypesInQuery.add(j.joinWith);

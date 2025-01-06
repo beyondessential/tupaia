@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ReactNode } from 'react';
-import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from 'react-query';
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
@@ -15,7 +15,7 @@ import { CurrentUserContextProvider } from './api';
 import { REDIRECT_ERROR_PARAM } from './constants';
 
 const handleError = (error: any, query: any) => {
-  if (error.responseData.redirectClient) {
+  if (error.responseData?.redirectClient) {
     // Redirect the browser to the specified URL and display the error
     window.location.href = `${error.responseData.redirectClient}?${REDIRECT_ERROR_PARAM}=${error.message}`;
   }

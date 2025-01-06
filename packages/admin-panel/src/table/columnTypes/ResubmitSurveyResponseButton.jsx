@@ -10,7 +10,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import { openResubmitSurveyResponseModal } from '../../surveyResponse/actions';
 import { ColumnActionButton } from './ColumnActionButton';
 
-export const ResubmitSurveyResponseButtonComponent = ({ openModal }) => {
+export const ResubmitSurveyResponseButtonComponent = ({ openModal, row }) => {
+  if (row.original.outdated) return null;
   return (
     <ColumnActionButton onClick={openModal}>
       <EditIcon />
@@ -20,6 +21,11 @@ export const ResubmitSurveyResponseButtonComponent = ({ openModal }) => {
 
 ResubmitSurveyResponseButtonComponent.propTypes = {
   openModal: PropTypes.func.isRequired,
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      outdated: PropTypes.bool.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {

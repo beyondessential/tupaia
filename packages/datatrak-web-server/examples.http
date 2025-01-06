@@ -52,3 +52,8 @@ content-type: {{contentType}}
 ### Get survey
 GET {{host}}/surveys/TAR HTTP/1.1
 content-type: {{contentType}}
+
+
+### Get survey users
+GET {{host}}/users/TAR HTTP/1.1
+content-type: {{contentType}}

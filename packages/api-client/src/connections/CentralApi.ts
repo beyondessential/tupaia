@@ -5,7 +5,7 @@
 
 import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
 import { ProjectCountryAccessListRequest } from '@tupaia/types';
-import { QueryParameters } from '../types';
+import { QueryParameters, SurveyResponseCreatedResponse } from '../types';
 import { RequestBody } from './ApiConnection';
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
@@ -61,6 +61,26 @@ export class CentralApi extends BaseApi {
       const chunk = responses.slice(i, i + BATCH_SIZE);
       await this.connection.post('surveyResponse', queryParameters, chunk);
     }
+  }
+
+  public async createSurveyResponse(
+    response: MeditrakSurveyResponseRequest,
+    queryParameters?: QueryParameters,
+  ): Promise<SurveyResponseCreatedResponse> {
+    const data = await this.connection.post('surveyResponse', queryParameters, response);
+    return data?.results[0];
+  }
+
+  public async resubmitSurveyResponse(
+    originalResponseId: string,
+    newResponse: MeditrakSurveyResponseRequest,
+    queryParameters?: QueryParameters,
+  ): Promise<void> {
+    return this.connection.post(
+      `surveyResponses/${originalResponseId}/resubmit`,
+      queryParameters,
+      newResponse,
+    );
   }
 
   public async fetchResources(endpoint: string, params?: Record<string, unknown>) {

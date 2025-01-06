@@ -42,98 +42,117 @@ const expectAccessibleExportDataHeaderRow = exportData => {
 describe('exportSurveyResponses(): GET export/surveysResponses', () => {
   const app = new TestableApp();
   const { models } = app;
+  let vanuatuCountry;
+  let kiribatiCountry;
+  let survey1;
+  let survey2;
+  let user;
+
+  before(async () => {
+    await resetTestData();
+
+    sinon.stub(xlsx.utils, 'aoa_to_sheet');
+
+    user = await findOrCreateDummyRecord(models.user, {
+      email: 'test_user@email.com',
+      first_name: 'Test',
+      last_name: 'User',
+      id: 'test_user',
+    });
+
+    const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Admin',
+    });
+    const donorPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Donor',
+    });
+    ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'VU',
+      name: 'Vanuatu',
+    }));
+    ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'KI',
+      name: 'Kiribati',
+    }));
+
+    [{ survey: survey1 }, { survey: survey2 }] = await buildAndInsertSurveys(models, [
+      {
+        code: TEST_SURVEY_1_CODE,
+        name: TEST_SURVEY_1_NAME,
+        country_ids: [vanuatuCountry.id],
+        permission_group_id: adminPermissionGroup.id,
+        questions: [
+          { code: 'question_1_test', text: 'Question 1 Test', type: 'FreeText' },
+          { code: 'question_2_test', text: 'Question 2 Test', type: 'FreeText' },
+          { code: 'question_3_test', text: 'Question 3 Test', type: 'FreeText' },
+          { code: 'question_4_test', text: 'Question 4 Test', type: 'User' },
+        ],
+      },
+      {
+        code: TEST_SURVEY_2_CODE,
+        name: TEST_SURVEY_2_NAME,
+        country_ids: [vanuatuCountry.id],
+        permission_group_id: donorPermissionGroup.id,
+        questions: [
+          { code: 'question_5_test', text: 'Question 5 Test', type: 'FreeText' },
+          { code: 'question_6_test', text: 'Question 6 Test', type: 'User' },
+          { code: 'question_7_test', text: 'Question 7 Test', type: 'FreeText' },
+          { code: 'question_8_test', text: 'Question 8 Test', type: 'FreeText' },
+        ],
+      },
+    ]);
+
+    await buildAndInsertSurveyResponses(models, [
+      {
+        surveyCode: survey1.code,
+        entityCode: vanuatuCountry.code,
+        data_time: new Date(),
+        answers: {
+          question_1_test: 'question_1_test answer',
+          question_2_test: 'question_2_test answer',
+        },
+      },
+      {
+        surveyCode: survey1.code,
+        entityCode: vanuatuCountry.code,
+        data_time: new Date(),
+        answers: {
+          question_3_test: 'question_3_test answer',
+          question_4_test: user.id,
+        },
+      },
+      {
+        surveyCode: survey2.code,
+        entityCode: vanuatuCountry.code,
+        data_time: new Date(),
+        answers: {
+          question_5_test: 'question_5_test answer',
+          question_6_test: 'unknown_user_id',
+        },
+      },
+      {
+        surveyCode: survey2.code,
+        entityCode: kiribatiCountry.code,
+        outdated: true,
+        data_time: new Date(),
+        answers: {
+          question_7_test: 'question_7_test answer',
+          question_8_test: 'question_8_test answer',
+        },
+      },
+    ]);
+  });
+
+  after(() => {
+    xlsx.utils.aoa_to_sheet.restore();
+  });
+
+  afterEach(() => {
+    app.revokeAccess();
+    xlsx.utils.aoa_to_sheet.resetHistory();
+  });
 
   describe('Test permissions when exporting survey responses', async () => {
-    let vanuatuCountry;
-    let kiribatiCountry;
-    let survey1;
-    let survey2;
-
-    before(async () => {
-      await resetTestData();
-
-      sinon.stub(xlsx.utils, 'aoa_to_sheet');
-
-      const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
-        name: 'Admin',
-      });
-      const donorPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
-        name: 'Donor',
-      });
-
-      ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
-        code: 'VU',
-        name: 'Vanuatu',
-      }));
-      ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
-        code: 'KI',
-        name: 'Kiribati',
-      }));
-
-      [{ survey: survey1 }, { survey: survey2 }] = await buildAndInsertSurveys(models, [
-        {
-          code: TEST_SURVEY_1_CODE,
-          name: TEST_SURVEY_1_NAME,
-          country_ids: [vanuatuCountry.id],
-          permission_group_id: adminPermissionGroup.id,
-        },
-        {
-          code: TEST_SURVEY_2_CODE,
-          name: TEST_SURVEY_2_NAME,
-          country_ids: [vanuatuCountry.id],
-          permission_group_id: donorPermissionGroup.id,
-        },
-      ]);
-
-      await buildAndInsertSurveyResponses(models, [
-        {
-          surveyCode: survey1.code,
-          entityCode: vanuatuCountry.code,
-          data_time: new Date(),
-          answers: {
-            question_1_test: 'question_1_test answer',
-            question_2_test: 'question_2_test answer',
-          },
-        },
-        {
-          surveyCode: survey1.code,
-          entityCode: vanuatuCountry.code,
-          data_time: new Date(),
-          answers: {
-            question_3_test: 'question_3_test answer',
-            question_4_test: 'question_4_test answer',
-          },
-        },
-        {
-          surveyCode: survey2.code,
-          entityCode: vanuatuCountry.code,
-          data_time: new Date(),
-          answers: {
-            question_5_test: 'question_5_test answer',
-            question_6_test: 'question_6_test answer',
-          },
-        },
-        {
-          surveyCode: survey2.code,
-          entityCode: kiribatiCountry.code,
-          data_time: new Date(),
-          answers: {
-            question_7_test: 'question_7_test answer',
-            question_8_test: 'question_8_test answer',
-          },
-        },
-      ]);
-    });
-
-    after(() => {
-      xlsx.utils.aoa_to_sheet.restore();
-    });
-
-    afterEach(() => {
-      app.revokeAccess();
-      xlsx.utils.aoa_to_sheet.resetHistory();
-    });
-
     describe('Should allow exporting a survey if users have Tupaia Admin Panel and survey permission group access to the corresponding countries', () => {
       it('one survey', async () => {
         await app.grantAccess(DEFAULT_POLICY);
@@ -160,6 +179,16 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           const exportData = xlsx.utils.aoa_to_sheet.getCall(i).args[0];
           expectAccessibleExportDataHeaderRow(exportData);
         }
+      });
+
+      it('ignores outdated survey responses', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.get(
+          `export/surveyResponses?surveyCodes=${survey2.code}&countryCode=${kiribatiCountry.code}`,
+        );
+
+        // Should not fetch outdated survey response so there should be no export data
+        expect(xlsx.utils.aoa_to_sheet).not.to.have.been.called;
       });
     });
 
@@ -221,6 +250,37 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         // Should have access to survey2
         expectAccessibleExportDataHeaderRow(survey2ExportData);
       });
+    });
+  });
+
+  describe('Test user answers get generated', async () => {
+    it('should export the user answers with name and id', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      await app.get(
+        `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
+      );
+
+      expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
+
+      const exportData = xlsx.utils.aoa_to_sheet.getCall(0).args[0];
+
+      const userAnswerRow = exportData.find(row => row[1] === 'User');
+      expect(userAnswerRow.includes('Test User (test_user)')).to.be.true;
+    });
+
+    it('should ignore the entry if the user id is invalid', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+      await app.get(
+        `export/surveyResponses?surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
+      );
+
+      expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
+
+      const exportData = xlsx.utils.aoa_to_sheet.getCall(0).args[0];
+
+      const userAnswerRow = exportData.find(row => row[1] === 'User');
+
+      expect(userAnswerRow.includes('Could not find user with id unknown_user_id')).to.be.true;
     });
   });
 });

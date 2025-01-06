@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Project, ProjectCountryAccessListRequest } from '@tupaia/types';
 import { get } from '../api';
 
-export const useCountryAccessList = (projectCode: Project['code']) => {
+export const useCountryAccessList = (projectCode?: Project['code']) => {
   return useQuery(
     ['me/countries', projectCode],
     (): Promise<ProjectCountryAccessListRequest.ResBody> =>

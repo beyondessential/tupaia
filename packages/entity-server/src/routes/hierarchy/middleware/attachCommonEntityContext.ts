@@ -4,8 +4,8 @@
  */
 import { NextFunction, Request, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { extractEntityFieldsFromQuery, extractEntityFieldFromQuery } from './fields';
 import { CommonContext } from '../types';
+import { extractEntityFieldsFromQuery, extractEntityFieldFromQuery } from './fields';
 
 const throwNoAccessError = (hierarchyName: string) => {
   throw new PermissionsError(`No access to requested hierarchy: ${hierarchyName}`);

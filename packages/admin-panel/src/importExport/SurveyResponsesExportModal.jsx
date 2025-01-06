@@ -9,6 +9,8 @@ import { DateTimePicker, RadioGroup } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { ReduxAutocomplete } from '../autocomplete';
 import { ExportModal } from './ExportModal';
+import { EntityOptionLabel } from '../widgets';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 const MODES = {
   COUNTRY: { value: 'country', formInput: 'countryCode' },
@@ -39,8 +41,20 @@ export const SurveyResponsesExportModal = () => {
     }));
   };
 
+  const clearValues = () => {
+    setValues({});
+    onChangeMode(MODES.COUNTRY.value);
+    setCountryCode(undefined);
+    setEntityIds(undefined);
+  };
+
   return (
-    <ExportModal title="Download survey responses" values={values} exportEndpoint="surveyResponses">
+    <ExportModal
+      title="Download survey responses"
+      values={values}
+      exportEndpoint="surveyResponses"
+      onCloseModal={clearValues}
+    >
       <ReduxAutocomplete
         label="Surveys to include"
         helperText="Please enter the names of the surveys to be exported."
@@ -53,7 +67,7 @@ export const SurveyResponsesExportModal = () => {
       />
       <RadioGroup
         name="survey responses mode"
-        label="Mode"
+        label="Level"
         onChange={event => onChangeMode(event.currentTarget.value)}
         options={[
           {
@@ -92,6 +106,8 @@ export const SurveyResponsesExportModal = () => {
           endpoint="entities"
           optionLabelKey="name"
           optionValueKey="id"
+          renderOption={option => <EntityOptionLabel {...option} />}
+          optionFields={['id', 'code', 'name']}
           allowMultipleValues
         />
       )}
@@ -122,6 +138,17 @@ export const SurveyResponsesExportModal = () => {
             handleValueChange('endDate', stripTimezoneFromDate(date));
           }
         }}
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={values.includeArchived}
+            onChange={event => handleValueChange('includeArchived', event.target.checked)}
+            name="include-archived"
+            color="primary"
+          />
+        }
+        label="Include archived survey responses"
       />
     </ExportModal>
   );

@@ -67,7 +67,7 @@ const COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'dataTable',
-      fileName: '{code}',
+      fileName: '{code}.json',
     },
   },
   {
@@ -113,6 +113,9 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'dataTables',
     multiple: true,
+    accept: {
+      'application/json': ['.json'],
+    },
   },
 };
 const EDITOR_CONFIG = { displayUsedBy: true };

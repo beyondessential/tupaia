@@ -7,6 +7,10 @@ import winston from 'winston';
 
 const MAX_RETRY_ATTEMPTS = 3;
 
+/**
+ * @description Base class for listen to changes to records in the database.
+ * IMPORTANT: Make sure the table has a trigger on it, otherwise this will not work.
+ */
 export class ChangeHandler {
   /**
    * A map of change translators by record type. Each translator can alter the change details that
@@ -79,7 +83,8 @@ export class ChangeHandler {
           // Translate changes and schedule their handling as a batch at a later stage
           const translatedChanges = await translator(changeDetails);
           this.changeQueue.push(...translatedChanges);
-          return this.scheduleChangeQueueHandler();
+          this.scheduleChangeQueueHandler();
+          return null; // Don't return the scheduled promise, so that it doesn't block processing other changes
         }),
     );
   }
@@ -128,8 +133,15 @@ export class ChangeHandler {
         await this.models.wrapInTransaction(async transactingModels => {
           // Acquire a database advisory lock for the transaction
           // Ensures no other server instance can execute its change handler at the same time
+          winston.info(`Acquiring lock for ${this.lockKey} change hander`);
           await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+          const start = Date.now();
+          winston.info(`Running ${this.lockKey} change hander with ${currentQueue.length} jobs`);
           await this.handleChanges(transactingModels, currentQueue);
+          const end = Date.now();
+          winston.info(
+            `Completed ${this.lockKey} change hander. ${currentQueue.length} jobs, took ${end - start}ms`,
+          );
         });
       } catch (error) {
         winston.warn(

@@ -11,10 +11,12 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  Typography,
 } from '@material-ui/core';
 import styled from 'styled-components';
 import { Column, useFlexLayout, useResizeColumns, useTable, SortingRule } from 'react-table';
 import { KeyboardArrowDown } from '@material-ui/icons';
+import { SpinningLoader } from '../Loaders';
 import { HeaderDisplayCell, TableCell } from './Cells';
 import { FilterCell, FilterCellProps, Filters } from './FilterCell';
 import { Pagination } from './Pagination';
@@ -23,6 +25,9 @@ const TableContainer = styled(MuiTableContainer)`
   position: relative;
   flex: 1;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: ${({ theme }) => theme.palette.background.paper};
   table {
     min-width: 45rem;
   }
@@ -31,14 +36,26 @@ const TableContainer = styled(MuiTableContainer)`
     position: sticky;
     top: 0;
     z-index: 2;
-    background-color: ${({ theme }) => theme.palette.background.paper};
   }
   tr {
     display: flex;
-    
+  }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: ${({ theme }) => theme.palette.primary.main};
   }
+`;
+
+const NoDataMessage = styled.div`
+  width: 100%;
+  text-align: center;
+  padding-block: 2.5rem;
+`;
+
+const LoadingContainer = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 type SortBy = {
@@ -46,8 +63,12 @@ type SortBy = {
   desc: boolean;
 };
 
+type ColumnInstance = Record<string, any> & {
+  CellContentComponent?: React.ComponentType<any>;
+};
+
 interface FilterableTableProps {
-  columns: Column<Record<string, any>>[];
+  columns: Column<ColumnInstance>[];
   data?: Record<string, any>[];
   pageIndex?: number;
   pageSize?: number;
@@ -57,12 +78,11 @@ interface FilterableTableProps {
   onChangePage: (pageIndex: number) => void;
   onChangePageSize: (pageSize: number) => void;
   onChangeSorting: (sorting: SortingRule<Record<string, any>>[]) => void;
-  refreshData: () => void;
-  isLoading: boolean;
-  errorMessage: string;
   onChangeFilters: FilterCellProps['onChangeFilters'];
   filters?: Filters;
   totalRecords: number;
+  noDataMessage?: string;
+  isLoading?: boolean;
 }
 
 export const FilterableTable = ({
@@ -79,6 +99,8 @@ export const FilterableTable = ({
   onChangeFilters,
   filters = [],
   totalRecords,
+  noDataMessage,
+  isLoading,
 }: FilterableTableProps) => {
   const memoisedData = useMemo(() => data ?? [], [data]);
   const {
@@ -189,13 +211,14 @@ export const FilterableTable = ({
               return (
                 <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
                   {row.cells.map(({ getCellProps, render }, i) => {
-                    const col = visibleColumns[i];
+                    const col = visibleColumns[i] as ColumnInstance;
                     return (
                       <TableCell
                         {...getCellProps()}
                         key={`table-row-${row.id}-cell-${col.id}`}
                         row={row.original}
                         maxWidth={col.maxWidth}
+                        column={col}
                       >
                         {render('Cell')}
                       </TableCell>
@@ -206,6 +229,16 @@ export const FilterableTable = ({
             })}
           </TableBody>
         </Table>
+        {rows.length === 0 && noDataMessage && !isLoading && (
+          <NoDataMessage>
+            <Typography variant="body2">{noDataMessage}</Typography>
+          </NoDataMessage>
+        )}
+        {isLoading && (
+          <LoadingContainer>
+            <SpinningLoader />
+          </LoadingContainer>
+        )}
       </TableContainer>
       <Pagination
         page={pageIndex}

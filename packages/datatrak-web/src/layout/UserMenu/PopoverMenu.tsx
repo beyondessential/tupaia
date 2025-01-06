@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Popover as MuiPopover, Paper as MuiPaper } from '@material-ui/core';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { DESKTOP_BREAKPOINT } from '../../constants';
 import { MenuList } from './MenuList';
 
 /**
@@ -14,7 +14,7 @@ import { MenuList } from './MenuList';
  */
 
 const Popover = styled(MuiPopover)`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+  @media screen and (max-width: ${DESKTOP_BREAKPOINT}) {
     display: none;
   }
 `;
@@ -35,7 +35,6 @@ export const PopoverMenu = ({ menuOpen, onCloseMenu }: PopoverMenuProps) => {
   return (
     <Popover
       open={menuOpen}
-      disablePortal
       PaperProps={{
         component: Paper,
       }}

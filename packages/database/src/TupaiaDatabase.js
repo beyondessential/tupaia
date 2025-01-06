@@ -70,6 +70,8 @@ const COMPARATORS = {
  */
 const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 
+const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
@@ -514,6 +516,7 @@ export class TupaiaDatabase {
  */
 function buildQuery(connection, queryConfig, where = {}, options = {}) {
   const { recordType, queryMethod, queryMethodParameter } = queryConfig;
+
   let query = connection(recordType); // Query starts as just the table, but will be built up
 
   // If an innerQuery is defined, make the outer query wrap it
@@ -560,9 +563,8 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
         }
       }
 
-      // Special case to handle CASE statements, otherwise they get interpreted as column names
-      const CASE_PATTERN = /^CASE/;
-      if (CASE_PATTERN.test(selector)) {
+      // Special case to handle raw input statements, otherwise they get interpreted as column names
+      if (RAW_INPUT_PATTERN.test(selector)) {
         return { [alias]: connection.raw(selector) };
       }
 
@@ -660,7 +662,8 @@ function addWhereClause(connection, baseQuery, where) {
       return querySoFar; // Ignore undefined criteria
     }
     if (value === null) {
-      return querySoFar.whereNull(key);
+      const columnKey = getColSelector(connection, key);
+      return querySoFar.whereNull(columnKey);
     }
     const {
       comparisonType = 'where',
@@ -676,6 +679,7 @@ function addWhereClause(connection, baseQuery, where) {
     }
 
     const columnKey = getColSelector(connection, key);
+
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
 
     const { args = [comparator, sanitizeComparisonValue(comparator, comparisonValue)] } = value;
@@ -739,9 +743,16 @@ function getColSelector(connection, inputColStr) {
 
     return connection.raw(`COALESCE(${identifiers})`, bindings);
   }
-  const casePattern = /^CASE/;
-  if (casePattern.test(inputColStr)) {
+
+  // Special handling of raw input statements
+  if (RAW_INPUT_PATTERN.test(inputColStr)) {
     return connection.raw(inputColStr);
+  }
+
+  const asGeoJsonPattern = /^ST_AsGeoJSON\((.+)\)$/;
+  if (asGeoJsonPattern.test(inputColStr)) {
+    const [, argsString] = inputColStr.match(asGeoJsonPattern);
+    return connection.raw(`ST_AsGeoJSON(${argsString})`);
   }
 
   return inputColStr;

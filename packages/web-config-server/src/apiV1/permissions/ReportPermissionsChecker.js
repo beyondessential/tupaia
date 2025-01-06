@@ -4,6 +4,18 @@
  */
 import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
+import { RECORDS } from '@tupaia/database';
+
+const getMergedProperties = (records, property) => {
+  return [
+    ...new Set(
+      records.reduce(
+        (combinedList, singleRecord) => [...combinedList, ...singleRecord[property]],
+        [],
+      ),
+    ),
+  ];
+};
 
 export class ReportPermissionsChecker extends PermissionsChecker {
   async fetchAndCacheDashboardItem(itemCode) {
@@ -21,12 +33,30 @@ export class ReportPermissionsChecker extends PermissionsChecker {
     if (!this.permissionObject) {
       const { reportCode } = this.params;
       const { itemCode, dashboardCode } = this.query;
-      const dashboardRelation = await this.models.dashboardRelation.findDashboardRelation(
-        dashboardCode,
-        itemCode,
+
+      // We want to ensure that we allow access to all the dashboard items that a user has permission to
+      // so get all the the dashboard relations for the dashboard code and item and combine their
+      // permission groups, entity types and project codes
+      const dashboardRelations = await this.models.dashboardRelation.find(
+        {
+          'dashboard.code': dashboardCode,
+          'dashboard_item.code': itemCode,
+        },
+        {
+          multiJoin: [
+            {
+              joinWith: RECORDS.DASHBOARD,
+              joinCondition: ['dashboard.id', 'dashboard_relation.dashboard_id'],
+            },
+            {
+              joinWith: RECORDS.DASHBOARD_ITEM,
+              joinCondition: ['dashboard_item.id', 'dashboard_relation.child_id'],
+            },
+          ],
+        },
       );
 
-      if (!dashboardRelation) {
+      if (dashboardRelations.length === 0) {
         throw new PermissionsError(
           `Cannot find relation between dashboard '${dashboardCode}' and dashboard item '${itemCode}'`,
         );
@@ -39,11 +69,9 @@ export class ReportPermissionsChecker extends PermissionsChecker {
         );
       }
 
-      const {
-        permission_groups: permissionGroups,
-        entity_types: entityTypes,
-        project_codes: projectCodes,
-      } = dashboardRelation;
+      const permissionGroups = getMergedProperties(dashboardRelations, 'permission_groups');
+      const entityTypes = getMergedProperties(dashboardRelations, 'entity_types');
+      const projectCodes = getMergedProperties(dashboardRelations, 'project_codes');
 
       this.permissionObject = {
         permissionGroups,

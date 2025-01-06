@@ -7,12 +7,17 @@ import styled from 'styled-components';
 import { PageContainer } from '../../components';
 import { HEADER_HEIGHT } from '../../constants';
 import { UserMenu } from '../UserMenu';
-import { LogoButton } from './LogoButton';
+import { HeaderLeft } from './HeaderLeft';
+import { TABLET_BREAKPOINT } from '../../constants';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
-  box-shadow: inset 0 0 1px #333;
+  z-index: 10;
+
+  @media (min-width: ${TABLET_BREAKPOINT}) {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
+  }
 `;
 
 const Container = styled(PageContainer).attrs({
@@ -30,7 +35,7 @@ export const Header = () => {
   return (
     <Wrapper>
       <Container>
-        <LogoButton />
+        <HeaderLeft />
         <UserMenu />
       </Container>
     </Wrapper>

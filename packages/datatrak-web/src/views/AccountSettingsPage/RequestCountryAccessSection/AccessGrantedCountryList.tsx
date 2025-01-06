@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { ProjectCountryAccessListRequest } from '@tupaia/types';
-import { UseQueryResult } from 'react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 
 const StyledTableContainer = styled(TableContainer).attrs({
   elevation: 0,

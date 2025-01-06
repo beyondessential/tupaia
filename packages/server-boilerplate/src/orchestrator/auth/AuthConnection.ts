@@ -14,6 +14,7 @@ const DEFAULT_NAME = 'TUPAIA-SERVER';
 export interface AuthResponse {
   accessToken?: string;
   refreshToken?: string;
+  preferences?: Record<string, unknown>;
   user?: {
     email: string;
     accessPolicy: AccessPolicyObject;
@@ -36,13 +37,17 @@ export class AuthConnection extends ApiConnection {
   }
 
   public async login(
-    { emailAddress, password, deviceName }: Credentials,
+    { emailAddress, password, deviceName, timezone }: Credentials,
     serverName: string = DEFAULT_NAME,
+    ip: string,
   ) {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
-      { emailAddress, password, deviceName: `${serverName}: ${deviceName}` },
+      { emailAddress, password, deviceName: `${serverName}: ${deviceName}`, timezone },
+      // forward the client's IP address to the auth server
+      { 'x-forwarded-for': ip },
+
     );
     return this.parseAuthResponse(response);
   }

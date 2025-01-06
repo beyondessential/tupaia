@@ -4,9 +4,13 @@
  */
 
 export { errorToast, successToast } from './toast';
-export { useDebounce } from './useDebounce';
 export { useIsMobileMediaQuery as useIsMobile } from './useIsMobileMediaQuery';
-export { useFromLocation } from './useFromLocation';
 export * from './date';
 export * from './detectDevice';
 export { gaEvent } from './ga';
+export {
+  setTaskFilterSetting,
+  getTaskFilterSetting,
+  removeTaskFilterSetting,
+} from './taskFilterSettings';
+export { useFromLocation } from './useLocationState';

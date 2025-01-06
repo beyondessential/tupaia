@@ -7,27 +7,23 @@ import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@t
 import { sendEmail } from '@tupaia/server-utils';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
+  meditrakConfig = {
+    minAppVersion: '1.14.144',
+  };
+
   notifiers = [onUpsertSendPermissionGrantEmail, expireAccess];
 }
 
 const EMAILS = {
   tupaia: {
     subject: 'Tupaia Permission Granted',
-    body: (userName, permissionGroupName, entityName) =>
-      `Hi ${userName},\n\n` +
-      `This is just to let you know that you've been added to the ${permissionGroupName} access group for ${entityName}. ` +
-      'This allows you to collect surveys through the Tupaia data collection app, and to see reports and map overlays on Tupaia.org.\n\n' +
-      "Please note that you'll need to log out and then log back in to get access to the new permissions.\n\n" +
-      'Have fun exploring Tupaia, and feel free to get in touch if you have any questions.\n',
+    description:
+      'This allows you to collect surveys through the Tupaia data collection app, and to see reports and map overlays on <a href="https://tupaia.org">Tupaia.org.</a>',
   },
   lesmis: {
     subject: 'LESMIS Permission Granted',
-    body: (userName, permissionGroupName, entityName) =>
-      `Hi ${userName},\n\n` +
-      `This is just to let you know that you've been added to the ${permissionGroupName} access group for ${entityName}. ` +
-      'This allows you to see reports and map overlays on lesmis.la.\n\n' +
-      "Please note that you'll need to log out and then log back in to get access to the new permissions.\n\n" +
-      'Feel free to get in touch if you have any questions.\n',
+    description:
+      'This allows you to see reports and map overlays on <a href="https://lesmis.la">lesmis.la.</a>',
     signOff: 'Best regards,\nThe LESMIS Team',
   },
 };
@@ -51,12 +47,19 @@ async function onUpsertSendPermissionGrantEmail(
   const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id);
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
 
-  const { subject, body, signOff } = EMAILS[platform];
+  const { subject, description, signOff } = EMAILS[platform];
 
   sendEmail(user.email, {
     subject,
-    text: body(user.first_name, permissionGroup.name, entity.name),
     signOff,
+    templateName: 'permissionGranted',
+    templateContext: {
+      title: 'Permission Granted',
+      description,
+      userName: user.first_name,
+      entityName: entity.name,
+      permissionGroupName: permissionGroup.name,
+    },
   });
 }
 

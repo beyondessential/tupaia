@@ -136,12 +136,16 @@ const DataFetchingTableComponent = memo(
       const buttonColumns = cols.filter(col => col.isButtonColumn);
       if (!buttonColumns.length) return nonButtonColumns;
 
-      const buttonWidths = buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0);
+      const buttonWidths =
+        buttonColumns.length === 1
+          ? 120
+          : buttonColumns.reduce((acc, { width }) => acc + (width || 60), 0);
       // Group all button columns into a single column so they can be displayed together under a single header
       const singleButtonColumn = {
         Header: actionLabel || 'Action',
         maxWidth: buttonWidths,
         width: buttonWidths,
+        disableSortBy: true,
         // eslint-disable-next-line react/prop-types
         Cell: ({ row }) => {
           return (
@@ -157,6 +161,7 @@ const DataFetchingTableComponent = memo(
           );
         },
       };
+
       return [...nonButtonColumns, singleButtonColumn];
     }, [JSON.stringify(columns)]);
 
@@ -217,7 +222,6 @@ const DataFetchingTableComponent = memo(
         <FilterableTable
           columns={formattedColumns}
           data={data}
-          isLoading={isChangingDataOnServer}
           pageIndex={pageIndex}
           pageSize={pageSize}
           sorting={sortingToUse}
@@ -230,8 +234,6 @@ const DataFetchingTableComponent = memo(
           onChangePage={onPageChange}
           onChangePageSize={onPageSizeChange}
           onChangeSorting={onSortedChange}
-          refreshData={onRefreshData}
-          errorMessage={errorMessage}
           totalRecords={totalRecords}
         />
 
@@ -240,7 +242,7 @@ const DataFetchingTableComponent = memo(
           onConfirm={onConfirmAction}
           onCancel={onCancelAction}
           title={deleteConfig?.title || `Delete ${singular}`}
-          heading={deleteConfig?.heading || `You are about to delete this ${singular}`}
+          heading={deleteConfig?.heading ?? `You are about to delete this ${singular}`}
           description={
             deleteConfig?.description ||
             `Are you sure you would like to delete this ${singular}? This cannot be undone.`

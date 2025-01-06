@@ -3,11 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getBrowserTimeZone } from '@tupaia/utils';
 import { get, put, post } from '../api';
 
 export const loginUser = credentials =>
   post('login', {
-    data: { ...credentials, deviceName: window.navigator.userAgent },
+    data: {
+      ...credentials,
+      deviceName: window.navigator.userAgent,
+      timezone: getBrowserTimeZone(),
+    },
   });
 
 export const logoutUser = async () => {

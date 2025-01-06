@@ -66,7 +66,7 @@ const COLUMNS = [
     type: 'export',
     actionConfig: {
       exportEndpoint: 'dashboardVisualisation',
-      fileName: '{code}',
+      fileName: '{code}.json',
     },
   },
   {
@@ -94,6 +94,9 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'dashboardVisualisations',
     multiple: true,
+    accept: {
+      'application/json': ['.json'],
+    },
   },
   getFinishedMessage: response => (
     <>

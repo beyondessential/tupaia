@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { calculateWeekStatus } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
 import { EMPTY_SYNDROME_DATA, getSyndromeData, useReport } from './helpers';

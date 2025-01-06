@@ -62,6 +62,10 @@ const IMPORT_CONFIG = {
   title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataElementDataServices',
+    accept: {
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    },
   },
 };
 

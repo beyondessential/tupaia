@@ -156,6 +156,9 @@ export const constructQuestionValidators = models => ({
           }
         } else {
           const question = await models.question.findOne({ code: questionCode });
+          if (!question) {
+            throw new Error(`Question with code ${questionCode} does not exist`);
+          }
           switch (question.type) {
             case 'Radio':
               if (

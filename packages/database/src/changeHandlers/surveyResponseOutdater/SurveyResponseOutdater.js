@@ -57,6 +57,11 @@ export class SurveyResponseOutdater extends ChangeHandler {
           return [newRecord];
         }
 
+        //If the new record is being changed to be outdated, no need to process it, as it already has the correct status
+        if (newRecord.outdated && !oldRecord.outdated) {
+          return [];
+        }
+
         const records = [];
         const fieldsOfInterest = ['data_time', 'end_time', 'survey_id', 'entity_id', 'id'];
         if (!haveSameFields([newRecord, oldRecord], fieldsOfInterest)) {

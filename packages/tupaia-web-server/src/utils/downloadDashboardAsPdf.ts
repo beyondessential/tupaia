@@ -18,13 +18,15 @@ export const downloadDashboardAsPdf = (
   settings: TupaiaWebExportDashboardRequest.ReqBody['settings'] = {
     exportWithLabels: false,
     exportWithTable: false,
+    exportDescription: null,
+    separatePagePerItem: true,
   },
 ) => {
-  const endpoint = `${projectCode}/${entityCode}/${dashboardName}/pdf-export`;
+  const endpoint = `${projectCode}/${entityCode}/${dashboardName}/dashboard-pdf-export`;
   const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
     selectedDashboardItems: selectedDashboardItems?.join(','),
     settings: JSON.stringify(settings),
   });
 
-  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain);
+  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, false, true);
 };

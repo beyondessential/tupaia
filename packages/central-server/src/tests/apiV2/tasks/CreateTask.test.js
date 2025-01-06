@@ -45,10 +45,12 @@ describe('Permissions checker for CreateTask', async () => {
     last_name: 'Pan',
   };
 
+  const dueDate = new Date('2021-12-31').getTime();
+
   const BASE_TASK = {
     assignee_id: assignee.id,
-    repeat_schedule: '{}',
-    due_date: new Date('2021-12-31'),
+    repeat_schedule: null,
+    due_date: dueDate,
     status: 'to_do',
   };
 
@@ -134,6 +136,25 @@ describe('Permissions checker for CreateTask', async () => {
         },
       });
       expect(result).to.have.keys('error');
+    });
+
+    it('Handles creating a task with a comment', async () => {
+      await app.grantAccess(BES_ADMIN_POLICY);
+      const { body: result } = await app.post('tasks', {
+        body: {
+          ...BASE_TASK,
+          entity_id: facilities[0].id,
+          survey_id: surveys[0].survey.id,
+          comment: 'This is a comment',
+        },
+      });
+
+      expect(result.message).to.equal('Successfully created tasks');
+      const comment = await models.taskComment.findOne({
+        task_id: result.id,
+        message: 'This is a comment',
+      });
+      expect(comment).not.to.be.undefined;
     });
   });
 });

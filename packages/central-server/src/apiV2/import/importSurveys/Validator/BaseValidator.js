@@ -1,4 +1,5 @@
 import { ValidationError } from '@tupaia/utils';
+import { convertCellToJson } from '../utilities';
 
 export class BaseValidator {
   constructor(questions) {

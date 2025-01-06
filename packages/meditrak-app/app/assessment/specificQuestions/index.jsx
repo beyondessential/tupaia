@@ -22,3 +22,5 @@ export { UnsupportedQuestion } from './UnsupportedQuestion';
 export { DaysSinceQuestion } from './TimeSinceQuestion';
 export { MonthsSinceQuestion } from './TimeSinceQuestion';
 export { YearsSinceQuestion } from './TimeSinceQuestion';
+
+export { UserQuestion } from './UserQuestion';

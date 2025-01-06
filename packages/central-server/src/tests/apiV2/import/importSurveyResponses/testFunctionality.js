@@ -11,6 +11,7 @@ import moment from 'moment';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
+  findOrCreateDummyRecord,
   findOrCreateRecords,
 } from '@tupaia/database';
 import { resetTestData, TestableApp } from '../../../testUtilities';
@@ -109,9 +110,28 @@ export const testFunctionality = async () => {
   before(async () => {
     await app.grantFullAccess();
 
+    await findOrCreateDummyRecord(models.user, {
+      email: 'test_email1@email.com',
+      first_name: 'Test',
+      last_name: 'User1',
+      id: 'test_user_id_1',
+    });
+
+    await findOrCreateDummyRecord(models.user, {
+      email: 'test_email2@email.com',
+      first_name: 'Test',
+      last_name: 'User2',
+      id: 'test_user_id_2',
+    });
+
     await findOrCreateDummyCountryEntity(models, { code: 'DL', name: 'Demo Land' });
-    const entities = ['DL_1', 'DL_5', 'DL_7', 'DL_9'].map(code => ({
-      code,
+    const entities = [
+      { code: 'DL_1', name: 'Port Douglas' },
+      { code: 'DL_5', name: 'Hawthorn East' },
+      { code: 'DL_7', name: 'Lake Charm' },
+      { code: 'DL_9', name: 'Thornbury' },
+    ].map(entity => ({
+      ...entity,
       country_code: 'DL',
     }));
     await findOrCreateRecords(models, { entity: entities });

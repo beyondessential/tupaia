@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { useQueryClient, useMutation } from 'react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { remove, put, post } from './api';
 
 export const useConfirmWeeklyReport = (countryCode, period) => {
@@ -16,15 +16,15 @@ export const useConfirmWeeklyReport = (countryCode, period) => {
     {
       onSuccess: response => {
         // Same as useSaveWeeklyReport, we need to invalidate all weekly data
-        queryClient.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
+        queryClient.invalidateQueries([`confirmedWeeklyReport/${countryCode}`]);
         // regional (multi-country) level
-        queryClient.invalidateQueries('confirmedWeeklyReport', { exact: true });
+        queryClient.invalidateQueries(['confirmedWeeklyReport', { exact: true }]);
 
         if (response?.alertData?.createdAlerts?.length > 0) {
-          queryClient.invalidateQueries(`alerts/active`);
+          queryClient.invalidateQueries([`alerts/active`]);
         }
         if (response?.alertData?.alertsArchived) {
-          queryClient.invalidateQueries(`alerts/archive`);
+          queryClient.invalidateQueries([`alerts/archive`]);
         }
       },
     },
@@ -41,10 +41,10 @@ export const useSaveWeeklyReport = ({ countryCode, siteCode = '', week }) => {
       }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(`weeklyReport/${countryCode}/sites`);
+        queryClient.invalidateQueries([`weeklyReport/${countryCode}/sites`]);
         // Even though we only changed one week of data, we need to re-fetch the complete list because
         // the data for a specific week is dependant on previous weeks, even across pages.
-        queryClient.invalidateQueries(`weeklyReport/${countryCode}`);
+        queryClient.invalidateQueries([`weeklyReport/${countryCode}`]);
       },
     },
   );
@@ -60,7 +60,7 @@ export const useDeleteWeeklyReport = ({ countryCode, week }) => {
     {
       onSuccess: () => {
         // Same as useSaveWeeklyReport, we need to invalidate all weekly data
-        queryClient.invalidateQueries(`weeklyReport/${countryCode}`);
+        queryClient.invalidateQueries([`weeklyReport/${countryCode}`]);
       },
     },
   );

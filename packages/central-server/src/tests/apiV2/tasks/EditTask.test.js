@@ -10,6 +10,7 @@ import {
   findOrCreateDummyRecord,
   generateId,
 } from '@tupaia/database';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TestableApp, resetTestData } from '../../testUtilities';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 
@@ -55,7 +56,7 @@ describe('Permissions checker for EditTask', async () => {
     last_name: 'Pan',
   };
 
-  const dueDate = new Date('2021-12-31');
+  const dueDate = new Date('2021-12-31').getTime();
 
   let tasks;
 
@@ -100,6 +101,7 @@ describe('Permissions checker for EditTask', async () => {
         survey_id: surveys[0].survey.id,
         entity_id: facilities[0].id,
         due_date: dueDate,
+        repeat_schedule: null,
         status: 'to_do',
       },
       {
@@ -108,6 +110,7 @@ describe('Permissions checker for EditTask', async () => {
         entity_id: facilities[1].id,
         assignee_id: assignee.id,
         due_date: dueDate,
+        repeat_schedule: null,
         status: 'to_do',
       },
     ];
@@ -129,83 +132,251 @@ describe('Permissions checker for EditTask', async () => {
   });
 
   describe('PUT /tasks/:id', async () => {
-    it('Sufficient permissions: allows a user to edit a task if they have BES Admin permission', async () => {
-      await app.grantAccess(BES_ADMIN_POLICY);
-      await app.put(`tasks/${tasks[1].id}`, {
-        body: {
-          entity_id: facilities[0].id,
-          survey_id: surveys[0].survey.id,
-        },
+    describe('Permissions', async () => {
+      it('Sufficient permissions: allows a user to edit a task if they have BES Admin permission', async () => {
+        await app.grantAccess(BES_ADMIN_POLICY);
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            entity_id: facilities[0].id,
+            survey_id: surveys[0].survey.id,
+          },
+        });
+        const result = await models.task.find({
+          id: tasks[1].id,
+        });
+        expect(result[0].entity_id).to.equal(facilities[0].id);
+        expect(result[0].survey_id).to.equal(surveys[0].survey.id);
       });
-      const result = await models.task.find({
-        id: tasks[1].id,
+
+      it('Sufficient permissions: allows a user to edit a task if they have access to the task, and entity and survey are not being updated', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            status: 'completed',
+          },
+        });
+        const result = await models.task.find({
+          id: tasks[1].id,
+        });
+        expect(result[0].status).to.equal('completed');
       });
-      expect(result[0].entity_id).to.equal(facilities[0].id);
-      expect(result[0].survey_id).to.equal(surveys[0].survey.id);
+
+      it('Sufficient permissions: allows a user to edit a task if they have access to the task, and the entity and survey that are being linked to the task', async () => {
+        await app.grantAccess({
+          DL: ['Donor'],
+          TO: ['Donor'],
+        });
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            survey_id: surveys[1].survey.id,
+            entity_id: facilities[1].id,
+          },
+        });
+        const result = await models.task.find({
+          id: tasks[1].id,
+        });
+        expect(result[0].entity_id).to.equal(facilities[1].id);
+        expect(result[0].survey_id).to.equal(surveys[1].survey.id);
+      });
+
+      it('Insufficient permissions: throws an error if the user does not have access to the task being edited', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        const { body: result } = await app.put(`tasks/${tasks[0].id}`, {
+          body: {
+            status: 'completed',
+          },
+        });
+        expect(result).to.have.keys('error');
+        expect(result.error).to.include('Need to have access to the country of the task');
+      });
+
+      it('Insufficient permissions: throws an error if the user does not have access to the survey being linked to the task', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        const { body: result } = await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            survey_id: surveys[0].survey.id,
+          },
+        });
+        expect(result).to.have.keys('error');
+        expect(result.error).to.include('Need to have access to the new survey of the task');
+      });
+
+      it('Insufficient permissions: throws an error if the user does not have access to the entity being linked to the task', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        const { body: result } = await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            entity_id: facilities[0].id,
+          },
+        });
+        expect(result).to.have.keys('error');
+        expect(result.error).to.include('Need to have access to the new entity of the task');
+      });
     });
 
-    it('Sufficient permissions: allows a user to edit a task if they have access to the task, and entity and survey are not being updated', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
-      await app.put(`tasks/${tasks[1].id}`, {
-        body: {
-          status: 'completed',
-        },
-      });
-      const result = await models.task.find({
-        id: tasks[1].id,
-      });
-      expect(result[0].status).to.equal('completed');
-    });
+    describe('System generated comments', () => {
+      it('Adds a comment when the due date changes on a task', async () => {
+        const newDate = new Date('2025-11-30').getTime();
+        await app.grantAccess({
+          DL: ['Donor'],
+          TO: ['Donor'],
+        });
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            due_date: newDate,
+          },
+        });
 
-    it('Sufficient permissions: allows a user to edit a task if they have access to the task, and the entity and survey that are being linked to the task', async () => {
-      await app.grantAccess({
-        DL: ['Donor'],
-        TO: ['Donor'],
+        const comment = await models.taskComment.findOne({
+          task_id: tasks[1].id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'due_date',
+        });
+        expect(comment).not.to.be.null;
       });
-      await app.put(`tasks/${tasks[1].id}`, {
-        body: {
-          survey_id: surveys[1].survey.id,
-          entity_id: facilities[1].id,
-        },
-      });
-      const result = await models.task.find({
-        id: tasks[1].id,
-      });
-      expect(result[0].entity_id).to.equal(facilities[1].id);
-      expect(result[0].survey_id).to.equal(surveys[1].survey.id);
-    });
 
-    it('Insufficient permissions: throws an error if the user does not have access to the task being edited', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.put(`tasks/${tasks[0].id}`, {
-        body: {
-          status: 'completed',
-        },
-      });
-      expect(result).to.have.keys('error');
-      expect(result.error).to.include('Need to have access to the country of the task');
-    });
+      it('Adds a comment when the repeat schedule changes from not repeating to repeating on a task', async () => {
+        await app.grantAccess({
+          DL: ['Donor'],
+          TO: ['Donor'],
+        });
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            repeat_schedule: {
+              freq: RRULE_FREQUENCIES.DAILY,
+            },
+          },
+        });
 
-    it('Insufficient permissions: throws an error if the user does not have access to the survey being linked to the task', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.put(`tasks/${tasks[1].id}`, {
-        body: {
-          survey_id: surveys[0].survey.id,
-        },
-      });
-      expect(result).to.have.keys('error');
-      expect(result.error).to.include('Need to have access to the new survey of the task');
-    });
+        const repeatComment = await models.taskComment.findOne({
+          task_id: tasks[1].id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'repeat_schedule',
+        });
 
-    it('Insufficient permissions: throws an error if the user does not have access to the entity being linked to the task', async () => {
-      await app.grantAccess(DEFAULT_POLICY);
-      const { body: result } = await app.put(`tasks/${tasks[1].id}`, {
-        body: {
-          entity_id: facilities[0].id,
-        },
+        expect(repeatComment).not.to.be.null;
       });
-      expect(result).to.have.keys('error');
-      expect(result.error).to.include('Need to have access to the new entity of the task');
+
+      it('Does not add a comment when the due date changes but the repeat frequency stays the same', async () => {
+        await app.grantAccess({
+          DL: ['Donor'],
+          TO: ['Donor'],
+        });
+
+        const repeatingTask = await findOrCreateDummyRecord(models.task, {
+          ...tasks[1],
+          id: generateId(),
+          due_date: new Date('2025-11-30').getTime(),
+          repeat_schedule: {
+            freq: RRULE_FREQUENCIES.DAILY,
+            dtstart: new Date('2025-11-30'),
+          },
+        });
+        await app.put(`tasks/${repeatingTask.id}`, {
+          body: {
+            due_date: new Date('2025-12-30').getTime(),
+            repeat_schedule: {
+              freq: RRULE_FREQUENCIES.DAILY,
+              dtstart: new Date('2025-12-30'),
+            },
+          },
+        });
+
+        const repeatComment = await models.taskComment.findOne({
+          task_id: repeatingTask.id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'repeat_schedule',
+        });
+
+        const dueDateComment = await models.taskComment.findOne({
+          task_id: repeatingTask.id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'due_date',
+        });
+
+        expect(repeatComment).to.be.null;
+        expect(dueDateComment).to.be.null;
+      });
+
+      it('Adds a comment when the repeat schedule changes from repeating to not repeating on a task', async () => {
+        await app.grantAccess({
+          DL: ['Donor'],
+          TO: ['Donor'],
+        });
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            repeat_schedule: {
+              freq: RRULE_FREQUENCIES.DAILY,
+            },
+          },
+        });
+
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            repeat_schedule: null,
+          },
+        });
+
+        const comment = await models.taskComment.findOne({
+          task_id: tasks[1].id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'repeat_schedule',
+        });
+        expect(comment).not.to.be.null;
+      });
+
+      it('Adds a comment when the status changes on a task', async () => {
+        await app.grantAccess({
+          DL: ['Donor'],
+          TO: ['Donor'],
+        });
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            status: 'completed',
+          },
+        });
+
+        const comment = await models.taskComment.findOne({
+          task_id: tasks[1].id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'status',
+        });
+        expect(comment).not.to.be.null;
+      });
+
+      it('Adds a comment when the assignee changes to Unassigned on a task', async () => {
+        await app.grantAccess({
+          DL: ['Donor'],
+          TO: ['Donor'],
+        });
+        await app.put(`tasks/${tasks[1].id}`, {
+          body: {
+            assignee_id: null,
+          },
+        });
+
+        const comment = await models.taskComment.findOne({
+          task_id: tasks[1].id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'assignee_id',
+        });
+        expect(comment).not.to.be.null;
+      });
+
+      it('Adds a comment when the assignee changes from unassigned to assigned on a task', async () => {
+        await app.grantAccess(BES_ADMIN_POLICY);
+        await app.put(`tasks/${tasks[0].id}`, {
+          body: {
+            assignee_id: assignee.id,
+          },
+        });
+
+        const comment = await models.taskComment.findOne({
+          task_id: tasks[0].id,
+          type: models.taskComment.types.System,
+          'template_variables->>field': 'assignee_id',
+        });
+        expect(comment).not.to.be.null;
+      });
     });
   });
 });

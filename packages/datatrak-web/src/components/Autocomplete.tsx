@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import { Check } from '@material-ui/icons';
 import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { Paper } from '@material-ui/core';
+import { DESKTOP_BREAKPOINT } from '../constants';
+import { InputHelperText } from './InputHelperText';
 
 const OptionWrapper = styled.div`
   width: 100%;
@@ -39,10 +41,8 @@ const SelectedOption = styled(OptionWrapper)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 0.425rem;
-  padding-right: 0.425rem;
-  margin-left: 0.45rem;
-  margin-right: 0.45rem;
+  padding-inline: 0.425rem;
+  margin-inline: 0.45rem;
   border-radius: 3px;
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   .MuiSvgIcon-root {
@@ -50,9 +50,30 @@ const SelectedOption = styled(OptionWrapper)`
   }
 `;
 
+const Label = styled.span`
+  font-style: ${props => props.theme.typography.fontWeightBold};
+  color: ${props => props.theme.palette.text.primary};
+`;
+
+const Code = styled.span`
+  margin-inline: 0.45rem;
+  padding-left: 0.45rem;
+  border-left: 1px solid ${props => props.theme.palette.text.secondary};
+  color: ${props => props.theme.palette.text.secondary};
+  flex: 1;
+`;
+
 const DisplayOption = ({ option, state }) => {
   const { selected } = state;
-  const label = typeof option === 'string' ? option : option.label || option.value;
+  const label =
+    typeof option === 'string' ? (
+      option
+    ) : (
+      <>
+        <Label>{option.label || option.value}</Label>
+        {option.secondaryLabel ? <Code>{option.secondaryLabel}</Code> : null}
+      </>
+    );
 
   if (selected)
     return (
@@ -66,9 +87,9 @@ const DisplayOption = ({ option, state }) => {
 
 export const Autocomplete = styled(BaseAutocomplete).attrs(props => ({
   muiProps: {
-    ...(props.muiProps || {}),
     renderOption: (option, state) => <DisplayOption option={option} state={state} />,
     PaperComponent: StyledPaper,
+    ...(props.muiProps || {}),
   },
 }))`
   width: 100%;
@@ -82,5 +103,54 @@ export const Autocomplete = styled(BaseAutocomplete).attrs(props => ({
   }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     box-shadow: none;
+  }
+`;
+
+export const QuestionAutocomplete = styled(Autocomplete).attrs({
+  textFieldProps: {
+    FormHelperTextProps: {
+      component: InputHelperText,
+    },
+  },
+  placeholder: 'Search...',
+})`
+  .MuiFormControl-root {
+    margin-bottom: 0;
+  }
+
+  .MuiFormLabel-root {
+    font-size: 0.875rem;
+    line-height: 1.2;
+    @media (min-width: ${DESKTOP_BREAKPOINT}) {
+      font-size: 1rem;
+    }
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+
+  .MuiInputBase-root {
+    max-width: 25rem;
+    border-bottom: 1px solid ${({ theme }) => theme.palette.text.secondary};
+    border-radius: 0;
+    order: 2; // make the helper text appear above the input
+    &.Mui-focused {
+      border-bottom-color: ${({ theme }) => theme.palette.primary.main};
+    }
+  }
+
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+  .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
+    padding: 0.6rem 0;
+    font-size: 0.875rem;
+  }
+
+  .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
+    right: 0;
+  }
+  .MuiIconButton-root {
+    color: ${({ theme }) => theme.palette.text.secondary};
   }
 `;

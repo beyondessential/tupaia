@@ -20,7 +20,7 @@
     "lint": "yarn package:lint:ts",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",
-    "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
+    "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts -i",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "test": "yarn package:test"
   },
@@ -33,6 +33,9 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "camelcase-keys": "^6.2.2",
+    "cookie": "^0.6.0",
+    "date-fns": "^2.29.2",
+    "date-fns-tz": "^2.0.1",
     "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",

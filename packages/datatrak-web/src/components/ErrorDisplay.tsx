@@ -33,11 +33,11 @@ const Container = styled(Paper).attrs({
 `;
 
 export const ErrorDisplay = ({
-  error,
+  errorMessage,
   children,
   title,
 }: {
-  error?: Error | null;
+  errorMessage?: string | null;
   children?: ReactNode;
   title: ReactNode;
 }) => {
@@ -45,7 +45,7 @@ export const ErrorDisplay = ({
     <Wrapper>
       <Container>
         <Typography variant="h1">{title}</Typography>
-        {error && <Typography variant="body1">{error.message}</Typography>}
+        {errorMessage && <Typography variant="body1">{errorMessage}</Typography>}
         {children}
       </Container>
     </Wrapper>

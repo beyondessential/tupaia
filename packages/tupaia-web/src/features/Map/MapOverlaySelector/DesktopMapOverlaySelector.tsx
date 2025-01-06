@@ -4,27 +4,45 @@
  */
 
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import moment from 'moment';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
-import { periodToMoment } from '@tupaia/utils';
-import { Tooltip } from '@tupaia/ui-components';
-import { IconButton } from '@tupaia/ui-components';
-import { ArrowDropDown, Layers, Assignment } from '@material-ui/icons';
-import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { useMapOverlayMapData } from '../utils';
+import { GRANULARITY_CONFIG, periodToMoment } from '@tupaia/utils';
+import { Tooltip, IconButton, SmallAlert } from '@tupaia/ui-components';
+import { LegendProps } from '@tupaia/ui-map-components';
+import { ArrowDropDown, Layers, Assignment, GetApp, Close } from '@material-ui/icons';
+import {
+  Accordion,
+  Typography,
+  AccordionSummary,
+  AccordionDetails,
+  CircularProgress,
+} from '@material-ui/core';
+import { useMapOverlayMapData, useMapContext } from '../utils';
 import { Entity } from '../../../types';
-import { useMapOverlays } from '../../../api/queries';
-import { MOBILE_BREAKPOINT } from '../../../constants';
-import { useGAEffect } from '../../../utils';
+import { useExportMapOverlay } from '../../../api/mutations';
+import { useEntity, useMapOverlays, useProject, useUser } from '../../../api/queries';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
+import {
+  convertDateRangeToUrlPeriodString,
+  getFriendlyEntityType,
+  useDateRanges,
+  useGAEffect,
+} from '../../../utils';
 import { MapTableModal } from './MapTableModal';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 
-const MapTableButton = styled(IconButton)`
-  margin: -0.625rem -0.625rem -0.625rem 0;
-  padding: 0.5rem 0.325rem 0.5rem 0.75rem;
-  color: white;
+const MapButton = styled(IconButton)`
+  color: ${({ theme }) => theme.palette.text.primary};
+  padding: 0.1rem;
+  & + & {
+    margin-inline-start: 0.5rem;
+  }
+  .MuiSvgIcon-root {
+    font-size: 1.3rem;
+  }
 `;
 
 const MaxHeightContainer = styled.div`
@@ -47,7 +65,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.9rem 1rem;
+  padding: 0.8rem 1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   border-radius: 5px 5px 0 0;
   pointer-events: auto;
@@ -59,12 +77,6 @@ const Heading = styled(Typography).attrs({
   font-size: 0.75rem;
   text-transform: uppercase;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-`;
-
-const TableAssignmentIcon = styled(Assignment)`
-  margin-right: 0.5rem;
-  width: 1.2rem;
-  cursor: pointer;
 `;
 
 const Container = styled(MaxHeightContainer)`
@@ -153,19 +165,69 @@ const LatestDataText = styled(Typography)`
   line-height: 1.3;
 `;
 
+const LoadingSpinner = styled(CircularProgress).attrs({
+  size: 16,
+})`
+  color: ${({ theme }) => theme.palette.text.primary};
+`;
+
+const ErrorAlert = styled(SmallAlert)`
+  padding-inline-end: 0.5rem;
+  .MuiAlert-message {
+    display: flex;
+    position: relative;
+    span {
+      width: 85%;
+    }
+  }
+`;
+
+const ErrorCloseButton = styled(IconButton)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.2rem;
+  color: ${({ theme }) => theme.palette.text.primary};
+`;
+
 interface DesktopMapOverlaySelectorProps {
   entityName?: Entity['name'];
   overlayLibraryOpen: boolean;
   toggleOverlayLibrary: () => void;
+  hiddenValues: LegendProps['hiddenValues'];
+  activeTileSet: {
+    key: string;
+    label: string;
+    thumbnail: string;
+    url: string;
+  };
 }
 
 export const DesktopMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
+  hiddenValues,
+  activeTileSet,
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
   const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { data: project } = useProject(projectCode);
+  const { data: entity } = useEntity(projectCode, entityCode);
   const { period } = useMapOverlayMapData();
+  const { map } = useMapContext();
+  const { isLoggedIn } = useUser();
+  const exportFileName = `${project?.name}-${entity?.name}-${selectedOverlay?.code}-map-overlay-export`;
+  const {
+    mutate: exportMapOverlay,
+    isLoading: isExporting,
+    error,
+    reset,
+  } = useExportMapOverlay(exportFileName);
+  const { startDate, endDate } = useDateRanges(
+    URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
+    selectedOverlay,
+  );
+
   const [mapModalOpen, setMapModalOpen] = useState(false);
   // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
   useGAEffect('MapOverlays', 'Change', selectedOverlay?.name);
@@ -173,22 +235,86 @@ export const DesktopMapOverlaySelector = ({
     setMapModalOpen(!mapModalOpen);
   };
 
+  // Pass the explicit date range to the export function, because the server may not have the correct time zone when the default date range is used
+  const getMapOverlayPeriodForExport = (): string | undefined => {
+    const periodGranularity = GRANULARITY_CONFIG[
+      selectedOverlay?.periodGranularity as keyof typeof GRANULARITY_CONFIG
+    ]?.momentUnit as moment.unitOfTime.StartOf;
+    // if the overlay has no period granularity, return undefined
+    if (!periodGranularity) return undefined;
+    const periodStartDate = moment(startDate).startOf(periodGranularity);
+    const periodEndDate = moment(endDate).endOf(periodGranularity);
+    const urlPeriodString = convertDateRangeToUrlPeriodString({
+      startDate: periodStartDate,
+      endDate: periodEndDate,
+    });
+    return urlPeriodString;
+  };
+
+  const onExportMapOverlay = () => {
+    if (!map) throw new Error('Map is not ready');
+    const urlPeriodString = getMapOverlayPeriodForExport();
+    exportMapOverlay({
+      projectCode,
+      entityCode,
+      mapOverlayCode: selectedOverlay?.code,
+      center: map.getCenter(),
+      zoom: map.getZoom(),
+      hiddenValues,
+      tileset: activeTileSet.url,
+      mapOverlayPeriod: urlPeriodString,
+    });
+  };
+
+  const getExportTooltip = () => {
+    if (isExporting) {
+      return '';
+    }
+
+    return 'Export map overlay as PDF';
+  };
+
+  const exportTooltip = getExportTooltip();
+
+  const friendlyEntityType = getFriendlyEntityType(entity?.type);
+
   return (
     <>
       {mapModalOpen && <MapTableModal onClose={toggleMapTableModal} />}
       <Wrapper>
         <Header>
-          <Heading>Map Overlays</Heading>
+          <Heading>Map Overlays {friendlyEntityType && `(${friendlyEntityType})`}</Heading>
           {selectedOverlay && (
-            <Tooltip arrow interactive placement="top" title="Generate Report">
-              <MapTableButton onClick={toggleMapTableModal}>
-                <TableAssignmentIcon />
-              </MapTableButton>
-            </Tooltip>
+            <div>
+              {isLoggedIn && (
+                <MapButton onClick={onExportMapOverlay} disabled={isExporting || !map}>
+                  {isExporting ? (
+                    <LoadingSpinner />
+                  ) : (
+                    <Tooltip arrow placement="top" title={exportTooltip}>
+                      <GetApp />
+                    </Tooltip>
+                  )}
+                </MapButton>
+              )}
+              <Tooltip arrow interactive placement="top" title="Generate report">
+                <MapButton onClick={toggleMapTableModal}>
+                  <Assignment />
+                </MapButton>
+              </Tooltip>
+            </div>
           )}
         </Header>
         <Container>
           <TitleWrapper>
+            {error && (
+              <ErrorAlert severity="error">
+                <span>{error.message}</span>
+                <ErrorCloseButton onClick={reset} title="Clear error">
+                  <Close />
+                </ErrorCloseButton>
+              </ErrorAlert>
+            )}
             <MapOverlaySelectorTitle />
             <MapOverlayDatePicker />
           </TitleWrapper>

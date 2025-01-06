@@ -6,6 +6,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUserRequest, WebServerProjectRequest } from '@tupaia/types';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 
 export type UserRequest = Request<
   DatatrakWebUserRequest.Params,
@@ -13,8 +14,6 @@ export type UserRequest = Request<
   DatatrakWebUserRequest.ReqBody,
   DatatrakWebUserRequest.ReqQuery
 >;
-
-const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
 
 export class UserRoute extends Route<UserRequest> {
   public async buildResponse() {
@@ -28,6 +27,7 @@ export class UserRoute extends Route<UserRequest> {
 
     const {
       id,
+      full_name: fullName,
       first_name: firstName,
       last_name: lastName,
       email,
@@ -57,7 +57,7 @@ export class UserRoute extends Route<UserRequest> {
     }
 
     return {
-      userName: `${firstName} ${lastName}`,
+      fullName,
       firstName,
       lastName,
       email,

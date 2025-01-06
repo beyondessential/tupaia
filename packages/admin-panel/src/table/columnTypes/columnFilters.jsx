@@ -72,6 +72,41 @@ BooleanSelectFilter.defaultProps = {
   filter: {},
 };
 
+/*
+ * Makes outdated field work with the database filter
+ */
+
+export const OutdatedFilter = ({ filter, onChange, column }) => {
+  return (
+    <Select
+      id={column.id}
+      options={[
+        { label: 'Show All', value: '' },
+        { label: 'Archived', value: true },
+        { label: 'Current', value: false },
+      ]}
+      onChange={e => onChange(e.target.value)}
+      value={filter?.value ?? ''}
+    />
+  );
+};
+
+OutdatedFilter.propTypes = {
+  column: PropTypes.PropTypes.shape({
+    id: PropTypes.string,
+  }),
+  filter: PropTypes.shape({
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+  }),
+  onChange: PropTypes.func,
+};
+
+OutdatedFilter.defaultProps = {
+  onChange: null,
+  column: {},
+  filter: {},
+};
+
 export const VerifiedFilter = ({ filter, onChange, column }) => {
   return (
     <Select

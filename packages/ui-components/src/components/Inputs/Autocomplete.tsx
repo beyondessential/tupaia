@@ -56,6 +56,7 @@ export interface BaseAutocompleteProps {
   onChange?: (event: Event, newValue: any) => void;
   getOptionSelected?: (option: any, value: any) => boolean;
   getOptionLabel?: (option: any) => string;
+  renderOption?: (option: any) => JSX.Element;
   placeholder?: string;
   muiProps?: any;
 }
@@ -79,6 +80,7 @@ export const Autocomplete = ({
   label = '',
   getOptionSelected,
   getOptionLabel,
+  renderOption,
   value,
   onChange,
   loading = false,
@@ -111,8 +113,10 @@ export const Autocomplete = ({
     inputValue={inputValue}
     getOptionSelected={getOptionSelected}
     getOptionLabel={getOptionLabel}
+    renderOption={renderOption}
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
+    blurOnSelect
     renderInput={params => (
       <TextField
         {...(params as any)}

@@ -5,24 +5,28 @@
 
 import '@babel/polyfill';
 import http from 'http';
+import nodeSchedule from 'node-schedule';
 import {
   AnalyticsRefresher,
   EntityHierarchyCacher,
   ModelRegistry,
   SurveyResponseOutdater,
+  TaskCompletionHandler,
+  TaskCreationHandler,
   TupaiaDatabase,
   getDbMigrator,
+  TaskAssigneeEmailer,
+  TaskUpdateHandler,
 } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
-
-import { MeditrakSyncQueue } from './database';
+import { createPermissionsBasedMeditrakSyncQueue, MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startSyncWithKoBo } from './kobo';
 import { startFeedScraper } from './social';
 import { createApp } from './createApp';
-
+import { TaskOverdueChecker, RepeatingTaskDueDateHandler } from './scheduledTasks';
 import winston from './log';
 import { configureEnv } from './configureEnv';
 
@@ -54,6 +58,28 @@ configureEnv();
   // Add listener to handle survey response changes
   const surveyResponseOutdater = new SurveyResponseOutdater(models);
   surveyResponseOutdater.listenForChanges();
+
+  // Add listener to handle survey response changes for tasks
+  const taskCompletionHandler = new TaskCompletionHandler(models);
+  taskCompletionHandler.listenForChanges();
+
+  // Add listener to handle creating tasks when submitting survey responses
+  const taskCreationHandler = new TaskCreationHandler(models);
+  taskCreationHandler.listenForChanges();
+
+  // Add listener to handle assignee changes for tasks
+  const taskAssigneeEmailer = new TaskAssigneeEmailer(models);
+  taskAssigneeEmailer.listenForChanges();
+
+  // Add listener to handle survey response entity changes for tasks
+  const taskUpdateHandler = new TaskUpdateHandler(models);
+  taskUpdateHandler.listenForChanges();
+
+  /**
+   * Scheduled tasks
+   */
+  new TaskOverdueChecker(models).init();
+  new RepeatingTaskDueDateHandler(models).init();
 
   /**
    * Set up actual app with routes etc.
@@ -99,8 +125,21 @@ configureEnv();
       const dbMigrator = getDbMigrator();
       await dbMigrator.up();
       winston.info('Database migrations complete');
+
+      if (isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
+        winston.info('Creating permissions based meditrak sync queue');
+        // don't await this as it's not critical, and will hold up the process if it fails
+        createPermissionsBasedMeditrakSyncQueue(database);
+      }
     } catch (error) {
       winston.error(error.message);
     }
   }
+
+  /**
+   * Gracefully handle shutdown of ScheduledTasks
+   */
+  process.on('SIGINT', function () {
+    nodeSchedule.gracefulShutdown().then(() => process.exit(0));
+  });
 })();

@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+export { useEntityAncestors } from './useEntityAncestors';
 export { useUser } from './useUser';
 export { useProjects } from './useProjects';
 export { useSurveys } from './useSurveys';
@@ -20,3 +21,8 @@ export { useUserRewards } from './useUserRewards';
 export { useActivityFeed, useCurrentProjectActivityFeed } from './useActivityFeed';
 export { useProjectSurveys } from './useProjectSurveys';
 export { useEntities } from './useEntities';
+export { useTaskMetrics } from './useTaskMetrics';
+export { useTasks } from './useTasks';
+export { useTask } from './useTask';
+export { useSurveyUsers } from './useSurveyUsers';
+export { usePermissionGroupUsers } from './usePermissionGroupUsers';

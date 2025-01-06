@@ -11,7 +11,7 @@ import { useSurveyForm } from '../SurveyContext';
 import { SurveyPaginator, SurveyQuestionGroup } from '../Components';
 import { ScrollableBody } from '../../../layout';
 
-const ScreenHeader = styled(Typography)<{
+const ScreenHeader = styled.div<{
   $centered?: boolean;
 }>`
   margin-block-end: 1rem;

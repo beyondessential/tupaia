@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import keyBy from 'lodash.keyby';
 import { get } from '../api';
 import { PROJECT_CODE } from '../../constants';
@@ -41,7 +41,7 @@ const PROJECT_PARAMS = {
 
 export const useProjectEntitiesData = () => {
   const query = useQuery(
-    'entities',
+    ['entities'],
     () => get(`entities/${PROJECT_CODE}`, { params: PROJECT_PARAMS }),
     {
       staleTime: 1000 * 60 * 60 * 1,

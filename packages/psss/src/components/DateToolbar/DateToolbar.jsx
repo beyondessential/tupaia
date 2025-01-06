@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useIsFetching } from 'react-query';
+import { useIsFetching } from '@tanstack/react-query';
 import { comparePeriods } from '@tupaia/utils';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -13,7 +13,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import styled from 'styled-components';
-import { BaseToolbar, LightIconButton, SmallButton } from '@tupaia/ui-components';
+import { LightIconButton, SmallButton } from '@tupaia/ui-components';
 import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
 import { MIN_DATE } from '../../constants';
@@ -28,6 +28,7 @@ import {
   subtractWeeksFromPeriod,
 } from '../../utils';
 import { getLatestViewableWeek, setLatestViewableWeek } from '../../store';
+import { BaseToolbar } from '../Toolbar';
 
 const Container = styled(FlexSpaceBetween)`
   width: 66%;
@@ -42,7 +43,9 @@ const Container = styled(FlexSpaceBetween)`
 const StyledButton = styled(SmallButton)`
   background-color: rgba(0, 0, 0, 0.15);
   color: rgba(255, 255, 255, 0.8);
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 
   &.Mui-disabled {
     opacity: 0.8;

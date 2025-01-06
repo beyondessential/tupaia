@@ -19,11 +19,14 @@ import {
   ResetPasswordPage,
   AccountSettingsPage,
   ReportsPage,
+  TasksDashboardPage,
+  TaskDetailsPage,
+  NotAuthorisedPage,
 } from '../views';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
 
@@ -60,6 +63,10 @@ export const Routes = () => {
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<LandingPage />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
+          <Route element={<TasksLayout />}>
+            <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />
+            <Route path={ROUTES.TASK_DETAILS} element={<TaskDetailsPage />} />
+          </Route>
           <Route
             path="/"
             element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}
@@ -90,7 +97,11 @@ export const Routes = () => {
         <Route
           path="/"
           element={
-            <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
+            <BackgroundPageLayout
+              backgroundImage="/auth-background.svg"
+              mobileBackgroundImage="/auth-background-mobile.svg"
+              headerBorderHidden
+            />
           }
         >
           <Route
@@ -109,6 +120,7 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
           </Route>
         </Route>
+        <Route path={ROUTES.NOT_AUTHORISED} element={<NotAuthorisedPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </RouterRoutes>

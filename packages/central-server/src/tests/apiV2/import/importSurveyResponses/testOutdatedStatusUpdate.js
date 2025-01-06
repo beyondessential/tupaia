@@ -79,8 +79,8 @@ export const testOutdatedStatusUpdate = () => {
   before(async () => {
     await app.grantFullAccess();
     await buildAndInsertSurveys(models, Object.values(SURVEYS));
-    await findOrCreateDummyCountryEntity(models, { code: 'TO' });
-    await findOrCreateDummyCountryEntity(models, { code: 'VU' });
+    await findOrCreateDummyCountryEntity(models, { code: 'TO', name: 'Tonga' });
+    await findOrCreateDummyCountryEntity(models, { code: 'VU', name: 'Vanuatu' });
   });
 
   beforeEach(async () => {

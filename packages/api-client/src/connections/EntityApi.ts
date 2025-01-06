@@ -160,15 +160,28 @@ export class EntityApi extends BaseApi {
       field?: string;
       fields?: string[];
       filter?: any;
+      pageSize?: number;
     },
     includeRootEntity = false,
     isPublic = false,
   ) {
-    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, {
-      ...this.stringifyQueryParameters(queryOptions),
+    const { pageSize, ...otherQueryOptions } = queryOptions || {};
+    const params: {
+      pageSize?: number;
+      includeRootEntity: string;
+      isPublic: string;
+      field?: string;
+      fields?: string;
+      filter?: string;
+    } = {
+      ...this.stringifyQueryParameters(otherQueryOptions),
       includeRootEntity: `${includeRootEntity}`,
       isPublic: `${isPublic}`,
-    });
+    };
+    if (pageSize) {
+      params.pageSize = pageSize;
+    }
+    return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, params);
   }
 
   public async getDescendantsOfEntities(

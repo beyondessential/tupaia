@@ -11,3 +11,4 @@ export { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 export { validateSurveyResponses } from './validateSurveyResponses';
 export { ResubmitSurveyResponse } from './ResubmitSurveyResponse';
 export { SubmitSurveyResponses } from './SubmitSurveyResponses';
+export { EditSurveyResponse } from './EditSurveyResponse';

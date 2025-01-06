@@ -8,6 +8,7 @@ import { KeysToCamelCase } from '../../../utils/casing';
 
 type EntityResponse = Entity & {
   isRecent?: boolean;
+  parent_name?: Entity['name'];
 };
 
 export type Params = Record<string, never>;
@@ -27,4 +28,5 @@ export type ReqQuery = {
     type?: string;
   };
   searchString?: string;
+  pageSize?: number;
 };

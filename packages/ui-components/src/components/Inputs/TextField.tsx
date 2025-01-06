@@ -22,7 +22,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
-    line-height: 1.2rem;
     border-radius: 3px;
   }
 

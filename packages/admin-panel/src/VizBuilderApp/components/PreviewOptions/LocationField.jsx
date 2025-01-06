@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Autocomplete } from './Autocomplete';
 import { useVizConfigContext } from '../../context';
 import { useEntityByCode, useLocations } from '../../api';
+import { EntityOptionLabel } from '../../../widgets';
 
 export const LocationField = () => {
   const [locationSearch, setLocationSearch] = useState('');
@@ -39,7 +40,9 @@ export const LocationField = () => {
         setLocationSearch(newValue);
       }}
       getOptionLabel={option => option.name}
-      renderOption={option => <span>{option.name}</span>}
+      renderOption={option => {
+        return <EntityOptionLabel {...option} />;
+      }}
       onChange={(_, newLocation) => {
         setLocation(newLocation);
       }}

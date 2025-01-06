@@ -1,8 +1,9 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { useMutation } from 'react-query';
+
+import { useMutation } from '@tanstack/react-query';
 import downloadJs from 'downloadjs';
 import { getUniqueFileNameParts } from '@tupaia/utils';
 import { get } from '../api';
@@ -28,7 +29,7 @@ export const useDownloadFiles = () => {
       }),
     {
       onSuccess: async (data: any, uniqueFileNames: string[]) => {
-        let fileName =
+        const fileName =
           uniqueFileNames.length === 1
             ? getUniqueFileNameParts(uniqueFileNames[0]).fileName
             : getMultiFileDownloadFileName();

@@ -20,6 +20,7 @@ export class ModelRegistry {
       ...baseModelClasses,
       ...extraModelClasses,
     };
+
     this.generateModels(schemata);
     if (useNotifiers) {
       this.initialiseNotifiers();

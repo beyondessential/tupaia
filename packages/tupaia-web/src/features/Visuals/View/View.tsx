@@ -12,8 +12,7 @@ import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
 import { MultiValueRow } from './MultiValueRow';
-import { DataDownload } from './DataDownload';
-import { DownloadFiles } from './DownloadFiles';
+import { DataDownload, DownloadFiles } from './Download';
 import { QRCode } from './QRCode';
 import { MultiPhotograph } from './MultiPhotograph';
 

@@ -73,6 +73,7 @@ import {
   GETSurveyResponses,
   SubmitSurveyResponses,
   ResubmitSurveyResponse,
+  EditSurveyResponse,
 } from './surveyResponses';
 import {
   DeleteSurveyScreenComponents,
@@ -145,6 +146,7 @@ import {
 } from './dashboardMailingListEntries';
 import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
 import { CreateTask, EditTask, GETTasks } from './tasks';
+import { CreateTaskComment, GETTaskComments } from './taskComments';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -269,6 +271,7 @@ apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(GETEntityHierarchy));
 apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 apiV2.get('/tasks/:recordId?', useRouteHandler(GETTasks));
+apiV2.get('/tasks/:parentRecordId/taskComments', useRouteHandler(GETTaskComments));
 /**
  * POST routes
  */
@@ -286,7 +289,7 @@ apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
 apiV2.post('/surveyResponse', useRouteHandler(SubmitSurveyResponses)); // used by mSupply to directly submit data
 apiV2.post('/surveyResponses', useRouteHandler(SubmitSurveyResponses));
 apiV2.post(
-  '/surveyResponse/:recordId/resubmit',
+  '/surveyResponses/:recordId/resubmit',
   multipartJson(false),
   useRouteHandler(ResubmitSurveyResponse),
 );
@@ -316,6 +319,7 @@ apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/tasks', useRouteHandler(CreateTask));
+apiV2.post('/tasks/:parentRecordId/taskComments', useRouteHandler(CreateTaskComment));
 /**
  * PUT routes
  */
@@ -354,6 +358,7 @@ apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/supersetInstances/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/tasks/:recordId', useRouteHandler(EditTask));
+apiV2.put('/surveyResponses/:recordId', useRouteHandler(EditSurveyResponse));
 
 /**
  * DELETE routes

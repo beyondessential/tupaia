@@ -76,6 +76,8 @@ export const registerInputFields = () => {
       endpoint={props.optionsEndpoint}
       optionLabelKey={props.optionLabelKey}
       optionValueKey={props.optionValueKey}
+      optionFields={props.optionFields}
+      renderOption={props.renderOption}
       reduxId={props.inputKey}
       onChange={inputValue => props.onChange(props.inputKey, inputValue)}
       canCreateNewOptions={props.canCreateNewOptions}
@@ -379,6 +381,7 @@ export const registerInputFields = () => {
     <FileUploadField
       name={props.name}
       label={props.label}
+      accept={props.accept}
       required={props.required}
       onChange={({ fileName, file }) => props.onSetFormFile(props.inputKey, { fileName, file })}
     />

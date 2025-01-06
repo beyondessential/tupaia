@@ -34,6 +34,17 @@ export class PermissionGroupRecord extends DatabaseRecord {
       permissionGroupTree.map(treeItemFields => this.model.generateInstance(treeItemFields)),
     );
   }
+
+  async getAncestors() {
+    const permissionGroupTree = await this.model.database.findWithParents(
+      this.constructor.databaseRecord,
+      this.id,
+    );
+
+    return Promise.all(
+      permissionGroupTree.map(treeItemFields => this.model.generateInstance(treeItemFields)),
+    );
+  }
 }
 
 export class PermissionGroupModel extends DatabaseModel {

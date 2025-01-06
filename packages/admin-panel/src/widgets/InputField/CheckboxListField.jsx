@@ -5,7 +5,7 @@
 
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 import {
   FormControl as MuiFormControl,
@@ -16,10 +16,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
-import { InputLabel } from '@tupaia/ui-components';
+import { InputLabel, useDebounce } from '@tupaia/ui-components';
 import { get } from '../../VizBuilderApp/api/api';
 import { Checkbox } from '../Checkbox';
-import { convertSearchTermToFilter, useDebounce } from '../../utilities';
+import { convertSearchTermToFilter } from '../../utilities';
 
 const useOptions = (
   endpoint,
@@ -181,15 +181,7 @@ export const CheckboxListField = ({
   return (
     <FormControl component="fieldset" required={required} error={error}>
       <LegendWrapper>
-        <InputLabel
-          label={label}
-          as={Legend}
-          tooltip={tooltip}
-          labelProps={{
-            error,
-            required,
-          }}
-        />
+        <InputLabel label={label} as={Legend} tooltip={tooltip} error={error} required={required} />
       </LegendWrapper>
 
       <Container $invalid={error}>

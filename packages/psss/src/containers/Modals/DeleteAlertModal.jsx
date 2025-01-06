@@ -5,11 +5,9 @@
 
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-
-import { ConfirmModal } from '@tupaia/ui-components';
-
 import { useDeleteAlert } from '../../api/queries';
 import { SuccessModal } from './SuccessModal';
+import { ConfirmModal } from '../../components';
 
 const STATUS = {
   INITIAL: 'initial',

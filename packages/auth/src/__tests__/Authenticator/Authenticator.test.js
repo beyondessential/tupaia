@@ -11,6 +11,15 @@ import { testAuthenticateRefreshToken } from './testAuthenticateRefreshToken';
 jest.mock('rand-token');
 randomToken.generate.mockReturnValue(refreshToken);
 
+beforeAll(() => {
+  jest.useFakeTimers('modern');
+  jest.setSystemTime(new Date(2020, 3, 1));
+});
+
+afterAll(() => {
+  jest.useRealTimers();
+});
+
 describe('Authenticator', () => {
   describe('authenticatePassword', testAuthenticatePassword);
 

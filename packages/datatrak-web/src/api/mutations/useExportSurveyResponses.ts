@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import downloadJs from 'downloadjs';
 import { API_URL, timeout } from '../api';
@@ -55,6 +55,7 @@ export const useExportSurveyResponses = () => {
             countryCode,
             startDate,
             endDate,
+            platform: 'datatrak',
           },
         });
 

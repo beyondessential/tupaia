@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Dialog } from '@material-ui/core';
 import styled from 'styled-components';
-import { ModalHeader } from '../../../../widgets';
+import { ModalHeader } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   height: 80vh;

@@ -21,6 +21,7 @@ import {
   ReadOnlyQuestion,
   PhotoQuestion,
   FileQuestion,
+  UserQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
@@ -60,6 +61,7 @@ export enum QUESTION_TYPES {
   Arithmetic = ReadOnlyQuestion,
   Condition = ReadOnlyQuestion,
   File = FileQuestion,
+  User = UserQuestion,
 }
 
 /**
@@ -73,7 +75,7 @@ export const SurveyQuestion = ({
   ...props
 }: SurveyQuestionFieldProps) => {
   const { control, errors } = useFormContext();
-  const { updateFormData, formData } = useSurveyForm();
+  const { updateFormData, formData, isResubmit } = useSurveyForm();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
@@ -90,18 +92,19 @@ export const SurveyQuestion = ({
   const getDefaultValue = () => {
     if (formData[name] !== undefined) return formData[name];
     // This is so that the default value gets carried through to the component, and dates that have a visible value of 'today' have that value recognised when validating
-    if (type?.includes('Date')) return new Date();
+    if (type?.includes('Date')) return isResubmit ? null : new Date();
     return undefined;
   };
 
   const defaultValue = getDefaultValue();
 
-  // display the entity error in it's own component because otherwise it will end up at the bottom of the big list of entities
-  const displayError = errors[name] && errors[name].message && !type.includes('Entity');
-  // Use a Controller so that the fields that require change handlers, values, etc work with react-hook-form, which is uncontrolled by default
+  // Display the entity error in its own component because otherwise it will end up at the bottom of the big list of entities
+  const displayError = errors[name]?.message && !type.includes('Entity');
 
   return (
     <QuestionWrapper>
+      {/* Use a Controller so that the fields that require change handlers, values, etc. work with
+          react-hook-form, which is uncontrolled by default */}
       <Controller
         name={name}
         control={control}

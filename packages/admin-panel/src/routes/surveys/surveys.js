@@ -6,6 +6,8 @@ import { SurveyEditFields } from '../../surveys/SurveyEditFields';
 import { QUESTION_FIELDS as BASE_QUESTION_FIELDS } from './questions';
 import { EditSurveyPage } from '../../pages/resources';
 
+const { REACT_APP_DATATRAK_WEB_URL } = import.meta.env;
+
 const RESOURCE_NAME = { singular: 'survey' };
 
 const PERIOD_GRANULARITIES = [
@@ -129,7 +131,7 @@ const SURVEY_FIELDS = {
       options: SERVICE_TYPES,
       setFieldsOnChange: (newValue, currentRecord = null) => {
         const { dhisInstanceCode = 'regional' } = currentRecord
-          ? currentRecord['data_group.config'] ?? {}
+          ? (currentRecord['data_group.config'] ?? {})
           : {};
         const config = newValue === 'dhis' ? { dhisInstanceCode } : {};
         return { 'data_group.config': config };
@@ -167,6 +169,10 @@ const SURVEY_FIELDS = {
       name: 'surveyQuestions',
       labelTooltip:
         'Import a questions spreadsheet to update the questions and screens of this survey.',
+      accept: {
+        'application/vnd.ms-excel': ['.xls'],
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      },
     },
   },
 };
@@ -176,6 +182,16 @@ const SURVEY_COLUMNS = [
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {
+    Header: 'Project ID',
+    source: 'project.id',
+    show: false,
+  },
+  {
+    Header: 'countries',
+    source: 'countryCodes',
+    show: false,
+  },
+  {
     Header: 'Permission group',
     source: 'permission_group.name',
   },
@@ -184,11 +200,24 @@ const SURVEY_COLUMNS = [
     source: 'survey_group.name',
   },
   {
+    Header: 'View',
+    type: 'externalLink',
+    actionConfig: {
+      generateUrl: row => {
+        const { code, countryCodes } = row;
+        if (!countryCodes || !countryCodes.some(countryCode => !!countryCode)) return null;
+        const countryCodeToUse = countryCodes.includes('DL') ? 'DL' : countryCodes[0];
+        return `${REACT_APP_DATATRAK_WEB_URL}/survey/${countryCodeToUse}/${code}/1`;
+      },
+      title: 'View in DataTrak',
+    },
+  },
+  {
     Header: 'Export',
     type: 'export',
     actionConfig: {
       exportEndpoint: 'surveys',
-      fileName: '{name}',
+      fileName: '{name}.xlsx',
     },
   },
   {
@@ -221,6 +250,7 @@ const CREATE_CONFIG = {
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
     fields: [
+      SURVEY_FIELDS.surveyQuestions,
       SURVEY_FIELDS.project,
       SURVEY_FIELDS.name,
       SURVEY_FIELDS.code,
@@ -232,7 +262,6 @@ const CREATE_CONFIG = {
       SURVEY_FIELDS.requires_approval,
       SURVEY_FIELDS['data_group.service_type'],
       SURVEY_FIELDS['data_group.config'],
-      SURVEY_FIELDS.surveyQuestions,
     ],
     // Custom component needed because on create we suggest the code
     FieldsComponent: SurveyEditFields,
@@ -462,6 +491,62 @@ const QUESTION_COLUMNS = [
                         ],
                       },
                     ],
+                  },
+                ],
+              },
+              {
+                label: 'Task',
+                fieldName: 'task',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Should create task',
+                    fieldName: 'shouldCreateTask',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
+                    label: 'Entity ID',
+                    fieldName: 'entityId',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+
+                  {
+                    label: 'Survey code',
+                    fieldName: 'surveyCode',
+                    optionsEndpoint: 'surveys',
+                    optionLabelKey: 'name',
+                    optionValueKey: 'code',
+                    labelTooltip: 'Select the survey this task should be assigned for',
+                  },
+                  {
+                    label: 'Due date',
+                    fieldName: 'dueDate',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+
+                  {
+                    label: 'Assignee',
+                    fieldName: 'assignee',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                ],
+              },
+              {
+                label: 'User',
+                fieldName: 'user',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Permission group name',
+                    fieldName: 'permissionGroup',
+                    optionsEndpoint: 'permissionGroups',
+                    optionLabelKey: 'name',
+                    optionValueKey: 'id',
+                    labelTooltip: 'Select the permission group the user list should be filtered by',
                   },
                 ],
               },

@@ -8,9 +8,9 @@ import { IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import { Tooltip } from '@tupaia/ui-components';
 
-const Button = styled(IconButton).attrs({
-  color: 'primary',
-})`
+const Button = styled(IconButton).attrs(props => ({
+  color: props.color || 'primary',
+}))`
   padding: 0.3rem;
 `;
 
