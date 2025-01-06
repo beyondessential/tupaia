@@ -16,12 +16,13 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 1.5rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
   }
 `;
 
-const Container = styled.div`
+const Container = styled.div<{ $showQrCode?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -29,7 +30,7 @@ const Container = styled.div`
   width: 100%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-right: 15rem;
+    padding-right: ${props => (props.$showQrCode ? '15rem' : '0')};
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
@@ -78,7 +79,7 @@ export const SurveySuccess = ({ text, title, showQrCode, children }: SurveySucce
 
   return (
     <Wrapper>
-      <Container>
+      <Container $showQrCode={showQrCode}>
         <StyledImg src="/tupaia-high-five.svg" alt="Survey submit success" />
         <Title>{title}</Title>
         {isLoggedIn && (

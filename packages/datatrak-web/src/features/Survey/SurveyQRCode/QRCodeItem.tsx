@@ -57,7 +57,9 @@ const QrCodeContainer = styled.div`
 `;
 
 const EntityName = styled(Typography)`
-  width: 50%;
+  padding: 0 !important;
+  text-align: center;
+  flex: 1;
   font-size: 1.125rem;
   font-weight: ${props => props.theme.typography.fontWeightBold};
 `;
@@ -72,6 +74,16 @@ const DownloadIcon = styled(BaseDownloadIcon)<{
 const ShareIcon = styled(BaseShareIcon)`
   font-size: 1.1rem;
   margin-right: 0.5rem;
+`;
+
+const StyledQRCodeImage = styled(QrCodeImage)`
+  flex: 1;
+`;
+
+const ShareButton = styled(Button)`
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    display: none;
+  }
 `;
 
 interface QrCodeImageProps {
@@ -94,7 +106,7 @@ export const QRCodeItem = ({ entity, listVariant }: QrCodeImageProps) => {
   return (
     <Wrapper $listVariant={listVariant}>
       <QrCodeContainer>
-        <QrCodeImage qrCodeContents={id} />
+        <StyledQRCodeImage qrCodeContents={id} />
         <EntityName>{name}</EntityName>
       </QrCodeContainer>
       <Button
@@ -105,9 +117,9 @@ export const QRCodeItem = ({ entity, listVariant }: QrCodeImageProps) => {
       >
         <DownloadIcon $listVariant={listVariant} /> Download QR Code
       </Button>
-      <Button onClick={share} variant="outlined" color="primary">
+      <ShareButton onClick={share} variant="outlined" color="primary">
         <ShareIcon /> Share QR Code
-      </Button>
+      </ShareButton>
     </Wrapper>
   );
 };
