@@ -18,12 +18,13 @@ const HeaderInner = styled.div`
   display: flex;
   align-items: center;
   block-size: ${HEADER_HEIGHT};
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   margin: 0 auto;
   max-inline-size: 75rem;
 `;
 
 const Logo = styled(UIButton)`
+  padding: 0;
   .MuiButton-label {
     block-size: 2.1rem;
 
