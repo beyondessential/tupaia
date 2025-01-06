@@ -1,13 +1,9 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
+import { Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { FormHelperText, Typography } from '@material-ui/core';
+import { getArithmeticDisplayAnswer, useSurveyForm } from '../Survey';
 import { SurveyQuestionInputProps } from '../../types';
-import { useSurveyForm } from '..';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -21,8 +17,7 @@ const Wrapper = styled.div`
   justify-content: center;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding-top: 0;
-    border-width: 0 0 1px;
+    padding: 1rem 0;
   }
 `;
 
@@ -41,13 +36,17 @@ const InputHelperText = styled(FormHelperText)`
   font-size: 0.875rem;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    color: ${props => props.theme.palette.text.primary};
+    font-size: 0.75rem;
   }
 `;
 
 const ValueWrapper = styled.div`
   margin-top: 1rem;
   min-height: 1rem; // so that the space is reserved even when there is no value
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: 0.5rem;
+  }
 `;
 
 const Value = styled(Typography)`
@@ -58,15 +57,23 @@ const Value = styled(Typography)`
   }
 `;
 
-export const ReadOnlyQuestion = ({ label, name, detailLabel }: SurveyQuestionInputProps) => {
+export const ArithmeticQuestion = ({
+  label,
+  name,
+  detailLabel,
+  config,
+}: SurveyQuestionInputProps) => {
   const { formData } = useSurveyForm();
   const value = formData[name!];
+  const displayValue = getArithmeticDisplayAnswer(config, value, formData);
   return (
     <Wrapper>
-      <Label>{label}</Label>
+      <Tooltip title="Complete questions above to calculate" enterDelay={1000}>
+        <Label>{label}</Label>
+      </Tooltip>
       {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       <ValueWrapper>
-        <Value>{value}</Value>
+        <Value>{displayValue}</Value>
       </ValueWrapper>
     </Wrapper>
   );
