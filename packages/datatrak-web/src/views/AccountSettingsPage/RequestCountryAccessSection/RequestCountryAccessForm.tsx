@@ -31,7 +31,6 @@ const StyledFieldset = styled.fieldset`
   ${({ theme }) => theme.breakpoints.up('sm')} {
     display: grid;
     grid-auto-flow: column;
-    grid-template: auto auto / auto;
     block-size: 18.32rem;
     grid-template: auto / 1fr 1fr;
   }
@@ -75,7 +74,7 @@ const ExpandButton = styled(MuiButton)<{ $active: boolean }>`
     justify-content: space-between;
   }
   svg {
-    transform: rotate(${props => (props.$active ? '-90deg' : '-270deg')});
+    transform: rotate(${props => (props.$active ? '-270deg' : '-90deg')});
     font-size: 1rem;
   }
 `;
