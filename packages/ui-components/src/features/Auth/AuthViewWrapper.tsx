@@ -3,9 +3,9 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { Paper, PaperProps, Typography } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Paper, Typography } from '@material-ui/core';
 
 const Wrapper = styled(Paper)`
   display: flex;
@@ -60,21 +60,20 @@ const Subtitle = styled(Typography)`
   font-size: 0.875rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
   line-height: 1.3;
-  margin-top: 0.32rem;
+  margin-block-start: 0.32rem;
   text-align: center;
   text-wrap: balance;
 `;
 
-interface AuthViewWrapperProps {
+interface AuthViewWrapperProps extends PaperProps {
   children?: ReactNode;
   title?: string;
   subtitle?: string;
-  className?: string;
 }
 
-export const AuthViewWrapper = ({ children, title, subtitle, className }: AuthViewWrapperProps) => {
+export const AuthViewWrapper = ({ children, title, subtitle, ...props }: AuthViewWrapperProps) => {
   return (
-    <Wrapper className={className}>
+    <Wrapper {...props}>
       {title && <Title variant="h2">{title}</Title>}
       {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}
       {children}
