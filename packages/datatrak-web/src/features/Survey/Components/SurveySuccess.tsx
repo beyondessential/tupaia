@@ -13,14 +13,26 @@ const Wrapper = styled.div`
   display: flex;
   flex: 1;
   height: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    flex-direction: row;
+  }
 `;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-right: 15rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('lg')} {
     flex: 1;
   }
 `;
@@ -40,7 +52,8 @@ const Title = styled(Typography).attrs({
   font-weight: 600;
   text-align: center;
   margin-block-end: 1rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
     font-size: 1.9rem;
     margin-block-end: 1.19rem;
   }
