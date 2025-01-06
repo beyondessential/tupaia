@@ -10,7 +10,6 @@ DIR=$(dirname "$0")
 . "$DIR/ansiControlSequences.sh"
 
 USAGE="Usage: ${BOLD}backendStartDev babel_port_inspector${RESET} [${BOLD}-i${RESET}|${BOLD}--include-internal${RESET}] [${BOLD}-ts${RESET}|${BOLD}--typescript${RESET}]"
-CONCURRENTLY_BIN="${DIR}/../../node_modules/.bin/concurrently"
 watch_flags=''
 include_internal=false
 type_script=false
