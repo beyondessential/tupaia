@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button as UIButton } from '@tupaia/ui-components';
 import { Link as RouterLink } from 'react-router-dom';
-import { Typography, Button as MUIButton } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { HEADER_HEIGHT } from '../constants';
 
 const Container = styled.div`
@@ -17,18 +17,18 @@ const HeaderContainer = styled.div`
 const HeaderInner = styled.div`
   display: flex;
   align-items: center;
-  height: ${HEADER_HEIGHT};
+  block-size: ${HEADER_HEIGHT};
   padding: 0 1rem;
   margin: 0 auto;
-  max-width: 75rem;
+  max-inline-size: 75rem;
 `;
 
-const Logo = styled(MUIButton)`
+const Logo = styled(UIButton)`
   .MuiButton-label {
-    height: 2.1rem;
+    block-size: 2.1rem;
 
     ${({ theme }) => theme.breakpoints.up('md')} {
-      height: 2.6rem;
+      block-size: 2.6rem;
     }
   }
 `;
@@ -37,7 +37,7 @@ const Header = () => {
   return (
     <HeaderContainer>
       <HeaderInner>
-        <Logo component={RouterLink} to="/" title="Home">
+        <Logo component={RouterLink} to="/" title="Home" variant="text">
           <img
             src="/datatrak-logo-black.svg"
             alt="Tupaia Datatrak logo"
@@ -57,26 +57,26 @@ const Body = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 5% 1rem 1rem;
-  width: 37.5rem;
-  max-width: 100%;
+  padding: 5% 1.5rem 1rem;
+  inline-size: 45rem;
+  max-inline-size: 100%;
   margin: 0 auto;
 `;
 
 const Button = styled(UIButton)`
-  width: 23rem;
-  max-width: 100%;
+  inline-size: 23rem;
+  max-inline-size: 100%;
 `;
 
 const Heading = styled(Typography).attrs({ variant: 'h1' })`
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 5%;
+  margin-block-end: 3%;
 `;
 
 const Text = styled(Typography)`
   font-size: 1rem;
-  margin-bottom: 5%;
+  margin-block-end: 5%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     font-size: 22px;
@@ -91,7 +91,7 @@ const ImageContainer = styled.div`
   padding: 0 0.5rem;
   inline-size: 25rem;
   max-inline-size: 100%;
-  margin-bottom: 5%;
+  margin-block-end: 7%;
 `;
 
 export const OfflinePage = () => {
