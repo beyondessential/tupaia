@@ -12,7 +12,7 @@ export { DateTimeQuestion } from './DateTimeQuestion';
 export { GeolocateQuestion } from './GeolocateQuestion';
 export { EntityQuestion } from './EntityQuestion';
 export { AutocompleteQuestion } from './AutocompleteQuestion';
-export { ReadOnlyQuestion } from './ReadOnlyQuestion';
+export { ReadOnlyQuestion, ArithmeticQuestion } from './ReadOnlyQuestion';
 export { PhotoQuestion } from './PhotoQuestion';
 export { FileQuestion } from './FileQuestion';
 export { UserQuestion } from './UserQuestion';

@@ -22,6 +22,7 @@ import {
   PhotoQuestion,
   FileQuestion,
   UserQuestion,
+  ArithmeticQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
@@ -58,7 +59,7 @@ export enum QUESTION_TYPES {
   DateOfData = DateQuestion,
   PrimaryEntity = EntityQuestion,
   CodeGenerator = ReadOnlyQuestion,
-  Arithmetic = ReadOnlyQuestion,
+  Arithmetic = ArithmeticQuestion,
   Condition = ReadOnlyQuestion,
   File = FileQuestion,
   User = UserQuestion,
