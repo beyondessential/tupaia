@@ -18,10 +18,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
     background: ${props => props.theme.palette.common.white};
   }
 
-  .MuiInputBase-input::placeholder {
-    color: ${props => props.theme.palette.grey[400]};
-  }
-
   // The actual input field
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
@@ -86,6 +82,10 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   .MuiInputBase-inputAdornedStart,
   .MuiInputBase-adornedStart {
     padding-left: 5px;
+  }
+
+  .MuiInputBase-input::placeholder {
+    color: ${props => props.theme.palette.grey[400]};
   }
 
   /* Override MaterialUI which hides the placeholder due to conflict with its floating labels */
