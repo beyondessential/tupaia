@@ -167,7 +167,7 @@
     {
       "name": "web-config-server",
       "path": "packages/web-config-server"
-    }
+    },
     {
       "name": "viz-test-tool",
       "path": "packages/viz-test-tool"
@@ -233,6 +233,7 @@
       "singularise",
       "spec",
       "specs",
+      "swipeable",
       "Syncable",
       "testid",
       "Tongatapu",
