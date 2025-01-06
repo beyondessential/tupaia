@@ -54,7 +54,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   // Focused state
-  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  .muioutlinedinput-root: (.Mui-focused, .Mui-focusVisible) .MuiOutlinedInput-notchedOutline {
     border-color: ${props => props.theme.palette.primary.main};
   }
 
