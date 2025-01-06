@@ -10,7 +10,7 @@ import { Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { OptionsObject } from 'notistack';
 import { CopyIcon } from '../../../components';
-import { infoToast } from '../../../utils';
+import { getAndroidVersion, infoToast, isAndroidDevice } from '../../../utils';
 import { ROUTES } from '../../../constants';
 
 const StyledTooltip = styled(Tooltip)`
@@ -39,12 +39,19 @@ export const useCopySurveyUrl = ({ toastOptions = {} }: { toastOptions: OptionsO
   return () => {
     try {
       navigator.clipboard.writeText(link);
-      infoToast('Page URL copied to clipboard', {
-        persist: false,
-        TransitionProps: { appear: true },
-        hideCloseButton: true,
-        ...toastOptions,
-      });
+
+      const androidVersion = getAndroidVersion();
+
+      // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#Feedback
+      // Android 13 and above will automatically show a toast message when the page URL is copied to the clipboard
+      if (!androidVersion || androidVersion < 13) {
+        infoToast('Page URL copied to clipboard', {
+          persist: false,
+          TransitionProps: { appear: true },
+          hideCloseButton: true,
+          ...toastOptions,
+        });
+      }
     } catch (err) {
       console.warn('Failed to copy page url: ', err);
     }

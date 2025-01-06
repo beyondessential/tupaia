@@ -37,3 +37,23 @@ export const getBrowser = () => {
   }
   return null;
 };
+
+export const isAndroidDevice = () => {
+  return /Android/i.test(navigator.userAgent);
+};
+
+export const getAndroidVersion = () => {
+  const userAgent = navigator.userAgent;
+
+  // Check if the device is Android
+  if (!isAndroidDevice()) {
+    return null;
+  }
+
+  // Extract Android version from the User-Agent string
+  const match = userAgent.match(/Android\s([0-9.]+)/);
+  if (!match || !match[1]) {
+    return null;
+  }
+  return parseFloat(match[1]); // e.g., "13.0" => 13
+};
