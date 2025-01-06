@@ -56,7 +56,7 @@ if [[ $include_internal = true ]]; then
     # many restarts that otherwise happen during the initial build of internal dependencies
     start_server+=" --delay 1 $watch_flags"
 else
-    echo -e "Starting server without internal dependency build and watch. To include internal dependencies, add the ${BOLD}-i${RESET} flag - it’s much faster than it used to be!"
+    echo -e "Starting server without internal dependency build and watch. To include internal dependencies, add the ${BOLD}-i${RESET} flag. (It’s much faster than it used to be!)"
 fi
 
 eval "$start_server"
