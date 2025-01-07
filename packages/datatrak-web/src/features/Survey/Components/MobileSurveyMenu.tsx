@@ -36,6 +36,7 @@ const Button = styled(UIButton).attrs({
   flex: 1;
   border-radius: 0;
   border-left: 1px solid ${props => props.theme.palette.divider};
+  padding-block: 1.2rem;
 `;
 
 export const MobileSurveyMenu = () => {
