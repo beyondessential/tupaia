@@ -66,7 +66,9 @@ export const MobileTemplate = ({
 
   return (
     <MobileContainer>
-      <StickyMobileHeader onBack={onClose} onClose={onClose} title="Select a survey" />
+      <StickyMobileHeader onBack={onClose} onClose={onClose}>
+        Select a survey
+      </StickyMobileHeader>
       <MobileSelectList
         items={groupedSurveys}
         onSelect={onNavigateToSurvey}

@@ -159,7 +159,11 @@ export const SurveySideMenu = () => {
         onClose={toggleSideMenu}
         variant={isMobile ? 'temporary' : 'persistent'}
       >
-        {isMobile && <StickyMobileHeader onClose={toggleSideMenu} title={<SurveyDisplayName />} />}
+        {isMobile && (
+          <StickyMobileHeader onClose={toggleSideMenu}>
+            <SurveyDisplayName />
+          </StickyMobileHeader>
+        )}
         <Header>
           <SideMenuButton />
         </Header>

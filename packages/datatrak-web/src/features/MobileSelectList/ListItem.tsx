@@ -104,7 +104,9 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
           onClose={onClose}
           fullScreen
         >
-          <StickyMobileHeader onBack={onBack} onClose={onClose} title="Select a survey" />
+          <StickyMobileHeader onBack={onBack} onClose={onClose}>
+            Select a survey
+          </StickyMobileHeader>
           {children}
         </Dialog>
       )}
