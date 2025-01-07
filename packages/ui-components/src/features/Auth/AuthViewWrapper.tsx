@@ -16,18 +16,13 @@ const Wrapper = styled(Paper)`
   &.MuiPaper-rounded.MuiPaper-root {
     padding: 2.5rem 1rem 4.2rem 1rem;
   }
-  form a {
-    &:hover,
-    &:focus {
-      color: ${({ theme }) => theme.palette.primary.main};
-    }
+  form a:is(:hover, :focus-visible) {
+    color: ${({ theme }) => theme.palette.primary.main};
   }
   .MuiFormControl-root {
     margin-bottom: 1rem;
   }
-  .MuiTypography-root.MuiFormControlLabel-label {
-    font-size: 0.6875rem;
-  }
+  .MuiTypography-root.MuiFormControlLabel-label,
   .MuiTypography-root.MuiFormControlLabel-label a {
     font-size: 0.6875rem;
   }
@@ -42,7 +37,7 @@ const Wrapper = styled(Paper)`
     text-decoration: none;
     color: ${({ theme }) => theme.palette.text.primary};
     &:hover,
-    &:focus {
+    &:focus-visible {
       text-decoration: underline;
     }
   }
