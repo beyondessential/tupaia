@@ -43,11 +43,9 @@ export const MobileSurveyHeader = () => {
 
   return (
     <>
-      <StickyHeader
-        title={<SurveyDisplayName />}
-        onBack={handleBack}
-        onClose={openCancelConfirmation}
-      />
+      <StickyHeader onBack={handleBack} onClose={openCancelConfirmation}>
+        <SurveyDisplayName />
+      </StickyHeader>
       {screenNumberParam && (
         <TopProgressBar
           currentSurveyQuestion={screenNumber}
