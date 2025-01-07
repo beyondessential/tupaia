@@ -3,15 +3,17 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import { useParams, generatePath } from 'react-router-dom';
-import { Tooltip } from '@tupaia/ui-components';
-import styled from 'styled-components';
 import { OptionsObject } from 'notistack';
+import React from 'react';
+import { generatePath, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { Tooltip } from '@tupaia/ui-components';
+
 import { CopyIcon } from '../../../components';
-import { getAndroidVersion, infoToast, isAndroidDevice } from '../../../utils';
 import { ROUTES } from '../../../constants';
+import { getAndroidVersion, infoToast } from '../../../utils';
 
 const StyledTooltip = styled(Tooltip)`
   text-align: center;
@@ -80,7 +82,7 @@ export const CopySurveyUrlButton = () => {
       enterDelay={500}
       enterTouchDelay={500}
     >
-      <Button aria-label="copy url to clipboard" onClick={copyPageUrl}>
+      <Button aria-label="Copy URL to clipboard" onClick={copyPageUrl}>
         <CopyIcon />
       </Button>
     </StyledTooltip>
