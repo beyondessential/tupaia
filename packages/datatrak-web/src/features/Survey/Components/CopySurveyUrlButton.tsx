@@ -55,7 +55,7 @@ export const useCopySurveyUrl = ({ toastOptions = {} }: { toastOptions: OptionsO
         });
       }
     } catch (err) {
-      console.warn('Failed to copy page url: ', err);
+      console.warn('Failed to copy page URL: ', err);
     }
   };
 };
