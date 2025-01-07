@@ -6,7 +6,7 @@ import { SyncProgress } from './SyncProgress';
 import { HEADER_HEIGHT } from '../../constants';
 
 const Wrapper = styled.div`
-  block-size: calc(100vb - ${HEADER_HEIGHT} - 1px);
+  block-size: calc(100vb - ${HEADER_HEIGHT} - 1px); // TODO: Refactor main page layout to grid
   display: grid;
   grid-template-rows: 2fr auto 3fr;
 `;
