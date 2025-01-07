@@ -10,7 +10,7 @@ import { Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { OptionsObject } from 'notistack';
 import { CopyIcon } from '../../../components';
-import { getAndroidVersion, infoToast, isAndroidDevice } from '../../../utils';
+import { getAndroidVersion, infoToast } from '../../../utils';
 import { ROUTES } from '../../../constants';
 
 const StyledTooltip = styled(Tooltip)`
