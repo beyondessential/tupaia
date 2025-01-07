@@ -26,6 +26,7 @@ import {
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
+import { SyncPage } from '../views/Sync/SyncPage';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
@@ -87,6 +88,7 @@ export const Routes = () => {
             </Route>
           </Route>
           <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
+          <Route path={ROUTES.SYNC} element={<SyncPage />} />
         </Route>
         {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 
