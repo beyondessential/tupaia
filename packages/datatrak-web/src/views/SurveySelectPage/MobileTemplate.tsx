@@ -53,16 +53,17 @@ export const MobileTemplate = ({
     selectedCountry,
   });
   const navigate = useNavigate();
+
+  if (showLoader) {
+    return <Loader />;
+  }
+
   const onClose = () => {
     navigate(ROUTES.HOME);
   };
   const onNavigateToSurvey = survey => {
     handleSelectSurvey(selectedCountry, survey.value);
   };
-
-  if (showLoader) {
-    return <Loader />;
-  }
 
   return (
     <MobileContainer>
