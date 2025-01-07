@@ -2,18 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
 import { Typography } from '@material-ui/core';
-import styled from 'styled-components';
+import React from 'react';
 import { useOutletContext } from 'react-router-dom';
-import {
-  MobileSurveyMenu,
-  SurveyPaginator,
-  SurveyReviewSection,
-  SurveySideMenu,
-} from '../Components';
+import styled from 'styled-components';
+
 import { ScrollableBody, StickyMobileHeader } from '../../../layout';
 import { useIsMobile } from '../../../utils';
+import { MobileSurveyMenu, SurveyPaginator, SurveyReviewSection } from '../Components';
 import { useSurveyForm } from '../SurveyContext';
 
 const Header = styled.div`
@@ -48,11 +44,11 @@ const StickyHeader = styled(StickyMobileHeader)`
   }
 `;
 
-type SurveyLayoutContext = {
+interface SurveyLayoutContext {
   isLoading: boolean;
   onStepPrevious: () => void;
   hasBackButton: boolean;
-};
+}
 
 const MobileHeader = () => {
   const { openCancelConfirmation } = useSurveyForm();
@@ -61,8 +57,11 @@ const MobileHeader = () => {
   const handleBack = () => {
     onStepPrevious();
   };
+
   return (
-    <StickyHeader title="Review & submit" onBack={handleBack} onClose={openCancelConfirmation} />
+    <StickyHeader onBack={handleBack} onClose={openCancelConfirmation}>
+      Review & submit
+    </StickyHeader>
   );
 };
 
