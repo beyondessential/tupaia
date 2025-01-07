@@ -55,15 +55,10 @@ export const AccountSettingsPage = () => {
   return (
     <>
       {isMobile && (
-        <StickyMobileHeader
-          onBack={onBack}
-          title={
-            <>
-              <SettingsIcon />
-              <MobilePageTitle>Account settings</MobilePageTitle>
-            </>
-          }
-        />
+        <StickyMobileHeader onBack={onBack}>
+          <SettingsIcon />
+          <MobilePageTitle>Account settings</MobilePageTitle>
+        </StickyMobileHeader>
       )}
       <Wrapper>
         {!isMobile && (

@@ -66,7 +66,9 @@ const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () =>
       fullScreen
     >
       <ExpandedWrapper>
-        <StickyMobileHeader onBack={onClose} title="Activity feed" onClick={scrollToTop} />
+        <StickyMobileHeader onBack={onClose} onClick={scrollToTop}>
+          Activity feed
+        </StickyMobileHeader>
         <InfiniteListWrapper>
           <InfiniteActivityFeed ref={feedRef} />
         </InfiniteListWrapper>

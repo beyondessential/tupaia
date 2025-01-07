@@ -53,6 +53,11 @@ export const MobileTemplate = ({
     selectedCountry,
   });
   const navigate = useNavigate();
+
+  if (showLoader) {
+    return <Loader />;
+  }
+
   const onClose = () => {
     navigate(ROUTES.HOME);
   };
@@ -60,13 +65,11 @@ export const MobileTemplate = ({
     handleSelectSurvey(selectedCountry, survey.value);
   };
 
-  if (showLoader) {
-    return <Loader />;
-  }
-
   return (
     <MobileContainer>
-      <StickyMobileHeader onBack={onClose} onClose={onClose} title="Select a survey" />
+      <StickyMobileHeader onBack={onClose} onClose={onClose}>
+        Select a survey
+      </StickyMobileHeader>
       <MobileSelectList
         items={groupedSurveys}
         onSelect={onNavigateToSurvey}
