@@ -249,6 +249,8 @@
       "packages/": true
     },
     "search.exclude": {
+      ".yarn/": true,
+      "*.lock": true,
       "**/lib": true,
       "**/logfile*.log": true,
       "**/yarn-1.18.0.js": true
