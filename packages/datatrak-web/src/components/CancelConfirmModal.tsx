@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button } from './Button';
 import { Modal } from './Modal';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   max-width: 28rem;
@@ -51,7 +52,7 @@ interface CancelConfirmModalProps {
   bodyText?: string | null;
   confirmText?: string | null;
   cancelText?: string | null;
-  confirmLink?: string | null;
+  confirmLink?: string | (() => void);
 }
 
 export const CancelConfirmModal = ({
@@ -63,6 +64,15 @@ export const CancelConfirmModal = ({
   cancelText = 'Continue survey',
   confirmLink = '/',
 }: CancelConfirmModalProps) => {
+  const navigate = useNavigate();
+  const onConfirm = () => {
+    onClose();
+    if (typeof confirmLink === 'function') {
+      confirmLink();
+    } else if (typeof confirmLink === 'string') {
+      navigate(confirmLink);
+    }
+  };
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Wrapper>
@@ -72,9 +82,7 @@ export const CancelConfirmModal = ({
           <ModalButton onClick={onClose} variant="outlined">
             {cancelText}
           </ModalButton>
-          <ModalButton to={confirmLink} onClick={onClose}>
-            {confirmText}
-          </ModalButton>
+          <ModalButton onClick={onConfirm}>{confirmText}</ModalButton>
         </ButtonWrapper>
       </Wrapper>
     </Modal>

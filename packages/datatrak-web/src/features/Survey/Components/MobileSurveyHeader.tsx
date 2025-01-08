@@ -3,13 +3,12 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useOutletContext, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { TopProgressBar } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { StickyMobileHeader } from '../../../layout';
 import { SurveyDisplayName } from './SurveyDisplayName';
-import { ROUTES } from '../../../constants';
 
 const StickyHeader = styled(StickyMobileHeader)`
   h2 {
@@ -25,13 +24,18 @@ type SurveyLayoutContextT = {
 
 export const MobileSurveyHeader = () => {
   const { screenNumber: screenNumberParam } = useParams();
+  const navigate = useNavigate();
   const { screenNumber, numberOfScreens, isResponseScreen, openCancelConfirmation } =
     useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
 
   const handleBack = () => {
     if (screenNumber === 1) {
-      openCancelConfirmation({ confirmLink: ROUTES.SURVEY_SELECT });
+      openCancelConfirmation({
+        confirmLink: () => {
+          navigate(-1);
+        },
+      });
     } else {
       onStepPrevious();
     }
