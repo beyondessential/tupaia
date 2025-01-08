@@ -140,7 +140,7 @@ export const MenuList = ({
       <CancelConfirmModal
         isOpen={surveyCancelModalIsOpen}
         onClose={() => setIsOpen(false)}
-        confirmLink={confirmModalLink}
+        confirmPath={confirmModalLink}
       />
     </>
   );

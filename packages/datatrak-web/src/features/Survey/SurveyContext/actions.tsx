@@ -14,5 +14,5 @@ export enum ACTION_TYPES {
 
 export type SurveyFormAction = {
   type: ACTION_TYPES;
-  payload?: Record<string, any> | string | null;
+  payload?: Record<string, any> | string | number | null;
 };

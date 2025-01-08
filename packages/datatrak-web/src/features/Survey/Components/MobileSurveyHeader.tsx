@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useOutletContext, useParams, useNavigate } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { TopProgressBar } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
@@ -24,7 +24,6 @@ type SurveyLayoutContextT = {
 
 export const MobileSurveyHeader = () => {
   const { screenNumber: screenNumberParam } = useParams();
-  const navigate = useNavigate();
   const { screenNumber, numberOfScreens, isResponseScreen, openCancelConfirmation } =
     useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
@@ -32,9 +31,7 @@ export const MobileSurveyHeader = () => {
   const handleBack = () => {
     if (screenNumber === 1) {
       openCancelConfirmation({
-        confirmLink: () => {
-          navigate(-1);
-        },
+        confirmPath: -1,
       });
     } else {
       onStepPrevious();
