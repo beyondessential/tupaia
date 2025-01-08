@@ -34,7 +34,7 @@ const defaultContext = {
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
-  cancelModalConfirmLink: null,
+  cancelModalConfirmLink: '/',
   countryCode: '',
   primaryEntityQuestion: null,
   isResubmitScreen: false,
