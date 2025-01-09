@@ -61,7 +61,7 @@ export const SyncPage = () => {
   return (
     <Wrapper>
       {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
-      <LayoutManager id="layout-manager">
+      <LayoutManager>
         <Content>
           <picture>
             <source srcSet="/tupaia-pin.svg" />
