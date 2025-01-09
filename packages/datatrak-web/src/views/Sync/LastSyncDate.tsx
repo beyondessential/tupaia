@@ -19,8 +19,8 @@ interface LastSyncDateProps extends HTMLAttributes<HTMLDivElement> {
 
 /**
  * Customising {@link formatRelative} is done on a locale-by-locale basis. Hard-coding a local
- * isn’t ideal, and the choice of {@link enAU} is arbitrary; but this saves us from supporting many
- * locales.
+ * isn’t ideal, and the choice of {@link enAU} is arbitrary; but this saves us from trying to
+ * figure out what locale date-fns is currently defaulting to.
  *
  * @see https://github.com/search?q=repo%3Adate-fns%2Fdate-fns%20formatrelativelocale&type=code
  */
