@@ -97,7 +97,7 @@ const Header = styled.div`
   align-items: center;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-top: -1rem;
+    margin-block-start: -1rem;
   }
 `;
 
