@@ -13,10 +13,6 @@ const Paragraph = styled.p`
   margin-block: 0;
 `;
 
-interface LastSyncDateProps extends HTMLAttributes<HTMLDivElement> {
-  date: Date | null;
-}
-
 /**
  * Customising {@link formatRelative} is done on a locale-by-locale basis. Hard-coding a local
  * isn’t ideal, and the choice of {@link enAU} is arbitrary; but this saves us from trying to
@@ -43,6 +39,10 @@ const customFormatRelative = (date: Date, baseDate: Date = new Date()): string =
     weekStartsOn: 1,
   });
 };
+
+interface LastSyncDateProps extends HTMLAttributes<HTMLDivElement> {
+  date: Date | null;
+}
 
 export const LastSyncDate = ({ date, ...props }: LastSyncDateProps) => {
   return (
