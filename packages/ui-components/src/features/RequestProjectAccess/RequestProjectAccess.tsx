@@ -23,10 +23,6 @@ const BodyText = styled(Typography).attrs({
   margin: 1rem 0 2rem;
 `;
 
-const Container = styled.div`
-  padding-top: 1.75rem;
-`;
-
 const Logo = styled.img`
   max-width: 8rem;
   width: 100%;
@@ -86,7 +82,7 @@ export const RequestProjectAccess = ({
     <Wrapper>
       <Title>Request project access</Title>
       <BodyText>Complete the form below to request access to this project</BodyText>
-      <Container>
+      <div>
         {isLoading ? (
           <SpinningLoader />
         ) : (
@@ -110,7 +106,7 @@ export const RequestProjectAccess = ({
             />
           </>
         )}
-      </Container>
+      </div>
     </Wrapper>
   );
 };
