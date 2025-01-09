@@ -3,15 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
-import { TextField, Button } from '@tupaia/ui-components';
-import styled from 'styled-components';
+
 import Typography from '@material-ui/core/Typography';
+import { Button } from '@tupaia/ui-components';
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import * as COLORS from '../../constants';
-import { useLogin } from '../../api/mutations';
-import { I18n, useI18n } from '../../utils';
+import styled from 'styled-components';
+
 import { useEmailVerification } from '../../api';
+import { useLogin } from '../../api/mutations';
+import * as COLORS from '../../constants';
+import { I18n, useI18n } from '../../utils';
+import { TextField } from '../TextField';
 
 const ErrorMessage = styled(Typography)`
   text-align: center;
