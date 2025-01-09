@@ -1,7 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { useNavigate } from 'react-router';
 import { Button } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { useIsMobile } from '../../utils';

@@ -1,8 +1,9 @@
 import { LinearProgress, Typography } from '@material-ui/core';
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
-import { CheckCircleIcon } from '../../components/Icons/CheckCircleIcon';
 import { useTheme } from '@material-ui/core';
+
+import { CheckCircleIcon } from '../../components/Icons/CheckCircleIcon';
 
 /** Maps [0.0, 1.0] to [0, 100], but won’t round up to 100. Returns 100 if and only if given 1.0 */
 const clamp = value => Math.min(Math.max(value, 0.0), 1.0);
