@@ -54,7 +54,7 @@ export const SyncPage = () => {
   const navigate = useNavigate();
 
   // <PLACEHOLDERS> TODO: Replace with queries
-  const lastSyncDate: Date | null = new Date(new Date().valueOf() - Math.random() * 6e8);
+  const lastSyncDate: Date | null = new Date(new Date().valueOf() - Math.random() * 1e9);
   const syncProgress: number | null = 0.77;
   // </PLACEHOLDERS>
 
