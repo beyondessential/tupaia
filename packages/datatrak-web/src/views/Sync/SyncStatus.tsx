@@ -48,8 +48,8 @@ interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const SyncStatus = ({ value, ...props }: SyncStatusProps) => {
-  const isSyncing = value === null;
-  const percentage = isSyncing ? undefined : floatToPercentage(value);
+  const isSyncing = value !== null;
+  const percentage = isSyncing ? floatToPercentage(value) : undefined;
   const successColor = useTheme().palette.success.main;
 
   return (
