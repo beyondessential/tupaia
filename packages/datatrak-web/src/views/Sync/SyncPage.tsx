@@ -55,6 +55,7 @@ export const SyncPage = () => {
 
   // <PLACEHOLDERS> TODO: Replace with queries
   const lastSyncDate: Date | null = new Date(new Date().valueOf() - Math.random() * 6e8);
+  const syncProgress: number | null = 0.77;
   // </PLACEHOLDERS>
 
   return (
@@ -66,7 +67,7 @@ export const SyncPage = () => {
             <source srcSet="/tupaia-pin.svg" />
             <img aria-hidden src="/tupaia-pin.svg" height={52} width={37} />
           </picture>
-          <StyledSyncStatus value={0.77} />
+          <StyledSyncStatus value={syncProgress} />
           <StyledLastSyncDate date={lastSyncDate} />
           <StyledButton>Sync now</StyledButton>
         </Content>
