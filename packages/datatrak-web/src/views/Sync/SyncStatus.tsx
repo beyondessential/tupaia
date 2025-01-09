@@ -1,6 +1,8 @@
-import { LinearProgress } from '@material-ui/core';
-import React from 'react';
+import { LinearProgress, Typography } from '@material-ui/core';
+import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
+import { CheckCircleIcon } from '../../components/Icons/CheckCircleIcon';
+import { useTheme } from '@material-ui/core';
 
 /** Maps [0.0, 1.0] to [0, 100], but won’t round up to 100. Returns 100 if and only if given 1.0 */
 const clamp = value => Math.min(Math.max(value, 0.0), 1.0);
@@ -10,6 +12,19 @@ const floatToPercentage = (float: number) => {
   if (clamped < 0.99) return float * 100;
   return 99;
 };
+
+const Wrapper = styled.div`
+  inline-size: 100%;
+
+  > * + * {
+    margin-block-start: 1rem;
+  }
+`;
+
+const Heading = styled(Typography).attrs({ variant: 'h2' })`
+  font-size: inherit;
+  letter-spacing: initial;
+`;
 
 const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
   background-color: transparent;
@@ -26,18 +41,20 @@ const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
   }
 `;
 
-interface SyncProgressProps {
+interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
   isSyncing: boolean;
   /** A number the closed interval [0.0, 1.0] */
   value: number;
 }
 
-export const SyncProgress = ({ isSyncing, value }: SyncProgressProps) => {
+export const SyncStatus = ({ isSyncing, value, ...props }: SyncStatusProps) => {
   const percentage = floatToPercentage(value);
+  const successColor = useTheme().palette.success.main;
+
   return (
-    <>
-      <h2>{isSyncing ? `Syncing ${percentage}%` : 'Sync complete'}</h2>
-      <Progress value={percentage} />
-    </>
+    <Wrapper {...props}>
+      <Heading>{isSyncing ? `Syncing ${percentage}%` : 'Sync complete'}</Heading>
+      {isSyncing ? <Progress value={percentage} /> : <CheckCircleIcon htmlColor={successColor} />}
+    </Wrapper>
   );
 };
