@@ -9,7 +9,6 @@ import { TopProgressBar } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { StickyMobileHeader } from '../../../layout';
 import { SurveyDisplayName } from './SurveyDisplayName';
-import { ROUTES } from '../../../constants';
 
 const StickyHeader = styled(StickyMobileHeader)`
   h2 {
@@ -31,7 +30,9 @@ export const MobileSurveyHeader = () => {
 
   const handleBack = () => {
     if (screenNumber === 1) {
-      openCancelConfirmation({ confirmLink: ROUTES.SURVEY_SELECT });
+      openCancelConfirmation({
+        confirmPath: -1,
+      });
     } else {
       onStepPrevious();
     }
