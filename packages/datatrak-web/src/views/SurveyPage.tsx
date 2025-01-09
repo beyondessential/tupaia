@@ -117,7 +117,7 @@ const SurveyPageInner = () => {
       <CancelConfirmModal
         isOpen={cancelModalOpen}
         onClose={closeCancelConfirmation}
-        confirmLink={cancelModalConfirmLink}
+        confirmPath={cancelModalConfirmLink}
       />
     </PageWrapper>
   );
