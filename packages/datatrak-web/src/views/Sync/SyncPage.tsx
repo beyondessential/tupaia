@@ -53,7 +53,7 @@ export const SyncPage = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
-  // <PLACEHOLDERS> TODO: Replace with queries
+  // <PLACEHOLDERS> TODO: Replace with queries or props
   const lastSyncDate: Date | null = new Date(new Date().valueOf() - Math.random() * 1e9);
   const syncProgress: number | null = 0.77;
   // </PLACEHOLDERS>
