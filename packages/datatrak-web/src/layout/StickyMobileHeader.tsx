@@ -11,22 +11,26 @@ import styled from 'styled-components';
 import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
-export const MobileHeaderWrapper = styled.div`
-  position: sticky;
+export const MobileHeaderWrapper = styled.header`
+  align-items: center;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  block-size: ${HEADER_HEIGHT};
+  display: flex;
+  gap: 1rem;
+  inline-size: 100%;
   inset-block-start: 0;
   inset-inline-start: 0;
-  inline-size: 100%;
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme.palette.background.paper};
   min-block-size: ${HEADER_HEIGHT};
-  block-size: ${HEADER_HEIGHT};
+  padding-left: max(env(safe-area-inset-left, 0), 1rem);
+  padding-right: max(env(safe-area-inset-right, 0), 1rem);
+  padding-top: env(safe-area-inset-top, 0);
+  position: sticky;
   z-index: 1000;
 `;
 
 const Button = styled(IconButton)`
-  svg {
+  .MuiSvgIcon-root {
     color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
@@ -40,14 +44,9 @@ const Title = styled(Typography).attrs({ variant: 'h2' })`
   display: inline;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
-  margin-inline: 1rem;
   svg {
     vertical-align: middle;
   }
-`;
-
-const ButtonContainer = styled.div`
-  inline-size: 3.5rem;
 `;
 
 interface StickyMobileHeaderProps extends HTMLAttributes<HTMLDivElement> {
@@ -71,20 +70,16 @@ export const StickyMobileHeader = ({
       {...props}
     >
       {onBack && (
-        <ButtonContainer>
-          <Button onClick={onBack}>
-            <BackIcon />
-          </Button>
-        </ButtonContainer>
+        <Button onClick={onBack}>
+          <BackIcon />
+        </Button>
       )}
       <Title>{children}</Title>
-      <ButtonContainer>
-        {onClose && (
-          <Button onClick={onClose}>
-            <Close />
-          </Button>
-        )}
-      </ButtonContainer>
+      {onClose && (
+        <Button aria-label="Close sync view" onClick={onClose}>
+          <Close />
+        </Button>
+      )}
     </MobileHeaderWrapper>
   );
 };
