@@ -6,13 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-  DialogActions,
-  FormControl as BaseFormControl,
-  FormGroup,
-  Typography,
-} from '@material-ui/core';
-import { CheckCircle } from '@material-ui/icons';
+import { DialogActions, FormControl as BaseFormControl, FormGroup } from '@material-ui/core';
 import { ProjectCountryAccessListRequest, WebServerProjectRequest } from '@tupaia/types';
 import {
   Checkbox as BaseCheckbox,
@@ -22,6 +16,7 @@ import {
   Alert,
 } from '../../components';
 import { Form, FormInput } from '../Form';
+import { RequestProjectAccessSuccessMessage } from './RequestProjectAccessSuccessMessage';
 
 const FormControl = styled(BaseFormControl).attrs({
   component: 'fieldset',
@@ -71,24 +66,6 @@ const TextArea = styled(TextField).attrs({
     box-shadow: none;
     border-color: ${({ theme }) => theme.palette.primary.main};
   }
-`;
-
-const SuccessWrapper = styled.div`
-  display: flex;
-  margin-block: 1.5rem 7rem;
-  p:first-child {
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    margin-bottom: 0.5rem;
-  }
-  p:last-child {
-    font-size: 0.875rem;
-  }
-`;
-
-const SuccessIcon = styled(CheckCircle)`
-  color: ${({ theme }) => theme.palette.success.main};
-  font-size: 2rem;
-  margin-inline-end: 1rem;
 `;
 
 const LoaderWrapper = styled.div`
@@ -181,16 +158,7 @@ export const ProjectAccessForm = ({
   if (isSuccess)
     return (
       <>
-        <SuccessWrapper>
-          <SuccessIcon />
-          <div>
-            <Typography>Thank you for your request to {project?.name}</Typography>
-            <Typography>
-              We will review your application and respond by email shortly. Please note, this can
-              take some time to process as requests require formal permission to be granted
-            </Typography>
-          </div>
-        </SuccessWrapper>
+        <RequestProjectAccessSuccessMessage projectName={project?.name} />
         <DialogActions>
           <FormButton onClick={onBack}>{backButtonText}</FormButton>
         </DialogActions>

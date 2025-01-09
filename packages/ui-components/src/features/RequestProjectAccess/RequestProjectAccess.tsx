@@ -23,9 +23,7 @@ const BodyText = styled(Typography).attrs({
   margin: 1rem 0 2rem;
 `;
 
-const Container = styled.div`
-  padding-top: 1.75rem;
-`;
+const Container = styled.div``;
 
 const Logo = styled.img`
   max-width: 8rem;
