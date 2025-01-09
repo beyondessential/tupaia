@@ -14,12 +14,6 @@ const Wrapper = styled.div`
   grid-template-rows: auto 1fr;
 `;
 
-const MobileHeader = styled(StickyMobileHeader)`
-  /* position: initial;
-  inset-block-start: initial;
-  inset-inline-start: initial; */
-`;
-
 const LayoutManager = styled.div`
   display: grid;
   grid-template-rows: 3fr auto 4fr;
@@ -66,7 +60,7 @@ export const SyncPage = () => {
 
   return (
     <Wrapper>
-      {isMobile && <MobileHeader onClose={() => navigate(-1)}>Sync</MobileHeader>}
+      {isMobile && <StickyMobileHeader onClose={() => navigate(-1)}>Sync</StickyMobileHeader>}
       <LayoutManager id="layout-manager">
         <Content>
           <picture>

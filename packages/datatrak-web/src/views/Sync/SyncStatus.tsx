@@ -42,13 +42,13 @@ const Progress = styled(LinearProgress).attrs({ variant: 'determinate' })`
 `;
 
 interface SyncStatusProps extends HTMLAttributes<HTMLDivElement> {
-  isSyncing: boolean;
-  /** A number the closed interval [0.0, 1.0] */
-  value: number;
+  /** A number the closed interval [0.0, 1.0], or null if not actively syncing */
+  value: number | null;
 }
 
-export const SyncStatus = ({ isSyncing, value, ...props }: SyncStatusProps) => {
-  const percentage = floatToPercentage(value);
+export const SyncStatus = ({ value, ...props }: SyncStatusProps) => {
+  const isSyncing = value === null;
+  const percentage = isSyncing ? undefined : floatToPercentage(value);
   const successColor = useTheme().palette.success.main;
 
   return (
