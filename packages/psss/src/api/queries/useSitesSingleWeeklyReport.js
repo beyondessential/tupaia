@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 import { combineQueries, getSyndromeData, useData, useReport } from './helpers';
 

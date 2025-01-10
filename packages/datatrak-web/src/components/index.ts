@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export { PageContainer } from './PageContainer';
 export * from './Icons';
 export { Autocomplete, QuestionAutocomplete } from './Autocomplete';

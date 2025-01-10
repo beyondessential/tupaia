@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { DataTable, NoData } from '@tupaia/ui-components';
 import { ChartConfig, ChartReport } from '@tupaia/types';

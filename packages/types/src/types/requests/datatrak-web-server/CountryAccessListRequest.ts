@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { Entity, Project } from '../../models';
 
 export type Params = Record<string, never>;

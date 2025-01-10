@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { connect } from 'react-redux';
 import MuiContainer from '@material-ui/core/Container';

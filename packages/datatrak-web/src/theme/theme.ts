@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { createMuiTheme } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 

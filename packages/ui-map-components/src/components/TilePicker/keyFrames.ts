@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
 function ease(v: number, pow = 3) {
   return 1 - Math.pow(1 - v, pow);
 }

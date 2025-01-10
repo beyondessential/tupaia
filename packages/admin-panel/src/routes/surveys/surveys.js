@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
 import { QUESTION_FIELDS as BASE_QUESTION_FIELDS } from './questions';
 import { EditSurveyPage } from '../../pages/resources';

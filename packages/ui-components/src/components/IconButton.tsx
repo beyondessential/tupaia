@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import styled from 'styled-components';
 import MuiIconButton, { IconButtonProps } from '@material-ui/core/IconButton';
 import { OverrideableComponentProps } from '../types';

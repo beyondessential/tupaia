@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import styled, { css } from 'styled-components';
 import { TableRow } from '@tupaia/ui-components';
 import * as COLORS from '../../constants/colors';

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 import { blue, red, green, lightGreen, yellow, orange } from '@material-ui/core/colors';
 
 export const BREWER_PALETTE = {

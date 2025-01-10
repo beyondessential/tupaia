@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { SURVEY_RESPONSE_COLUMNS } from '../surveys/surveyResponses';
 import { getPluralForm } from '../../pages/resources/resourceName';
 
