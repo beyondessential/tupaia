@@ -4,13 +4,15 @@
  */
 
 import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
+import { Property } from 'csstype';
 import React from 'react';
 import styled from 'styled-components';
+
 import { InputLabel } from './InputLabel';
 
 const ADORNMENT_COLOUR = '#c4c4c7';
 
-const StyledTextField = styled(MuiTextField)<TextFieldProps>`
+const StyledTextField = styled(MuiTextField)<{ $focusColor?: Property.Color }>`
   margin-block-end: 1.2rem;
   cursor: auto;
 
@@ -51,7 +53,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
 
   // Focused state
   .MuiOutlinedInput-root:is(.Mui-focused, .Mui-focusVisible) .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.theme.palette.primary.main};
+    border-color: ${({ $focusColor, theme }) => $focusColor ?? theme.palette.primary.main};
   }
 
   .MuiFormLabel-root.Mui-focused {
@@ -111,15 +113,18 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
 `;
 
 export const TextField = ({
+  focusColor,
   label = '',
   tooltip,
   error,
   required,
   ...props
 }: Partial<TextFieldProps> & {
+  focusColor?: Property.Color;
   tooltip?: string;
 }) => (
   <StyledTextField
+    $focusColor={focusColor}
     fullWidth
     {...props}
     variant="outlined"

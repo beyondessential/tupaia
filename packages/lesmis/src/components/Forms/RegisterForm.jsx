@@ -3,16 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { lazy } from 'react';
-import { TextField, Button, Checkbox, PasswordStrengthBar } from '@tupaia/ui-components';
-import styled from 'styled-components';
+
 import MuiBox from '@material-ui/core/Box';
 import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
+import React, { lazy } from 'react';
 import { useForm } from 'react-hook-form';
-import * as COLORS from '../../constants';
+import styled from 'styled-components';
+
+import { Button, Checkbox, PasswordStrengthBar } from '@tupaia/ui-components';
+
 import { useRegisterUser } from '../../api';
+import * as COLORS from '../../constants';
 import { I18n, useI18n } from '../../utils/I18n';
+import { TextField } from '../TextField';
 
 // Lazy load the password strength library as it uses zxcvbn which is a large dependency.
 // For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
