@@ -12,7 +12,7 @@ import { InputLabel } from './InputLabel';
 
 const ADORNMENT_COLOUR = '#c4c4c7';
 
-const StyledTextField = styled(MuiTextField)<TextFieldProps & { $focusColor?: Property.Color }>`
+const StyledTextField = styled(MuiTextField)<{ $focusColor?: Property.Color }>`
   margin-block-end: 1.2rem;
   cursor: auto;
 
