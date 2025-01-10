@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { generateQrCodeCanvas } from './utils';

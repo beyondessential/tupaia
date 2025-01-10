@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import styled from 'styled-components';

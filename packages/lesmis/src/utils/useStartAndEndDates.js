@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { yearToApiDates } from '../api/queries/utils';
 import { DEFAULT_DATA_YEAR } from '../constants';
 import { useUrlSearchParams } from './useUrlSearchParams';

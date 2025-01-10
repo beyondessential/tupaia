@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request, NextFunction } from 'express';
 import { TranslatableResponse, TranslatableRoute } from '@tupaia/server-boilerplate';
 import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
