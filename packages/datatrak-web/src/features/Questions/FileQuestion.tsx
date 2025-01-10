@@ -9,6 +9,7 @@ import { FileUploadField } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { InputHelperText } from '../../components';
 import { useSurveyForm } from '../Survey';
+import { useIsMobile } from '../../utils';
 
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
@@ -49,6 +50,7 @@ export const FileQuestion = ({
   controllerProps: { onChange, value: selectedFile, name },
 }: SurveyQuestionInputProps) => {
   const { isResponseScreen, isReviewScreen } = useSurveyForm();
+  const isMobile = useIsMobile();
 
   const handleChange = async (files: File[] | FileList | null) => {
     if (!files || files.length === 0) {
@@ -72,6 +74,7 @@ export const FileQuestion = ({
   };
 
   const initialFiles = getInitialFiles();
+  const dropzoneLabel = isMobile ? 'Choose file to upload' : undefined;
   return (
     <Wrapper>
       <FileUploadField
@@ -79,6 +82,7 @@ export const FileQuestion = ({
         fileName={selectedFile?.name}
         onChange={handleChange}
         label={label!}
+        dropzoneLabel={dropzoneLabel}
         helperText={detailLabel!}
         maxSizeInBytes={MAX_FILE_SIZE_BYTES}
         FormHelperTextComponent={InputHelperText}
