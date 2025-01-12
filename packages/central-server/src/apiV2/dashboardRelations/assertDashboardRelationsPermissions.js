@@ -8,6 +8,7 @@ import {
   hasAccessToEntityForVisualisation,
   hasTupaiaAdminAccessToEntityForVisualisation,
   hasVizBuilderAccessToEntityForVisualisation,
+  hasVizBuilderAccessToEntityForVisualisation2,
   mergeMultiJoin,
 } from '../utilities';
 
@@ -114,7 +115,7 @@ export const assertDashboardRelationCreatePermissions = async (
 
   const entity = await models.entity.findOne({ code: dashboard.root_entity_code });
 
-  if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entity))) {
+  if (!(await hasVizBuilderAccessToEntityForVisualisation2(accessPolicy, models, entity))) {
     throw new Error(
       `Requires Tupaia Admin Panel access to the dashboard root entity code '${dashboard.root_entity_code}'`,
     );

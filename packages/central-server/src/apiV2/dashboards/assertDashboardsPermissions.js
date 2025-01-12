@@ -10,7 +10,7 @@ import {
   hasDashboardRelationEditPermissions,
 } from '../dashboardRelations';
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
-import { hasTupaiaAdminAccessToEntityForVisualisation, mergeFilter } from '../utilities';
+import { hasVizBuilderAccessToEntityForVisualisation2, mergeFilter } from '../utilities';
 
 export const assertDashboardGetPermissions = async (accessPolicy, models, dashboardId) => {
   const dashboard = await models.dashboard.findById(dashboardId);
@@ -41,7 +41,7 @@ export const assertDashboardCreatePermissions = async (
 ) => {
   const entity = await models.entity.findOne({ code: rootEntityCode });
 
-  if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entity))) {
+  if (!(await hasVizBuilderAccessToEntityForVisualisation2(accessPolicy, models, entity))) {
     throw new Error(`Requires Tupaia Admin Panel access to the entity code: '${rootEntityCode}'`);
   }
 
