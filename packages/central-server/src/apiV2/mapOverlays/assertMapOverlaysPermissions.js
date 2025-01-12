@@ -6,9 +6,8 @@ import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import {
   hasAccessToEntityForVisualisation,
-  hasTupaiaAdminAccessToEntityForVisualisation,
+  hasVizBuilderAccessToEntityForVisualisation,
 } from '../utilities';
-
 const { RAW } = QUERY_CONJUNCTIONS;
 
 export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverlayId) => {
@@ -59,7 +58,7 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
   const hasPermissionGroupAccess = (
     await Promise.all(
       entities.map(entity =>
-        hasAccessToEntityForVisualisation(
+        hasVizBuilderAccessToEntityForVisualisation(
           accessPolicy,
           models,
           entity,

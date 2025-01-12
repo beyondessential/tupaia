@@ -11,8 +11,6 @@ import {
   assertBESAdminAccess,
   assertAnyPermissions,
   assertPermissionGroupsAccess,
-  assertVizBuilderAccess,
-  assertAllPermissions,
 } from '../../permissions';
 import { assertMapOverlaysEditPermissions } from '../mapOverlays';
 
@@ -35,12 +33,7 @@ export class EditMapOverlayVisualisation extends EditHandler {
     const mapOverlayChecker = accessPolicy =>
       assertMapOverlaysEditPermissions(accessPolicy, this.models, this.recordId);
 
-    await this.assertPermissions(
-      assertAnyPermissions([
-        assertBESAdminAccess,
-        assertAllPermissions([assertVizBuilderAccess, mapOverlayChecker]),
-      ]),
-    );
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
   }
 
   getMapOverlayRecord() {
