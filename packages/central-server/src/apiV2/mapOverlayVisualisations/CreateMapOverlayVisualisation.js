@@ -24,7 +24,7 @@ export class CreateMapOverlayVisualisation extends CreateHandler {
     await this.assertPermissions(
       assertAnyPermissions(
         [assertBESAdminAccess, assertVizBuilderAccess],
-        'You require Viz Builder User or BES Admin permission to create visualisations.',
+        'You need either BES Admin or Viz Builder User access to create visualisations.',
       ),
     );
   }

@@ -6,16 +6,16 @@
 import { CreateHandler } from '../CreateHandler';
 import {
   assertAnyPermissions,
-  assertAdminPanelAccess,
   assertBESAdminAccess,
+  assertVizBuilderAccess,
 } from '../../permissions';
 
 export class CreateMapOverlayGroups extends CreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You need either BES Admin or Tupaia Admin Panel access to create a map overlay group',
+        [assertBESAdminAccess, assertVizBuilderAccess],
+        'You need either BES Admin or Viz Builder User access to create a map overlay group',
       ),
     );
   }
