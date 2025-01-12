@@ -9,11 +9,7 @@ import {
   hasDashboardRelationEditPermissions,
   createDashboardRelationsDBFilter,
 } from '../dashboardRelations';
-import {
-  hasBESAdminAccess,
-  hasSomePermissionGroupsAccess,
-  hasVizBuilderAccess,
-} from '../../permissions';
+import { hasBESAdminAccess, hasSomePermissionGroupsAccess } from '../../permissions';
 
 import { mergeFilter } from '../utilities';
 
@@ -49,9 +45,16 @@ export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashb
 
 export const hasDashboardItemEditPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
-  // To edit a dashboard item, the user has to have access to all relations between the dashboard and
-  // dashboard items in it
-  const allHavePermissions = await Promise.all(
+  const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
+
+  // To edit a dashboard item, the user has to have access to the relation between the
+  // dashboard item and ALL of the dashboards it is in
+  // OR user's access policy covers the dashboard item's permission_group_ids column
+  if (permittedDashboardItems.includes(dashboardItemId)) {
+    return true;
+  }
+
+  const permissionChecks = await Promise.all(
     dashboards.map(dashboard =>
       hasDashboardRelationEditPermissions(
         accessPolicy,
@@ -61,8 +64,7 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
       ),
     ),
   );
-
-  return allHavePermissions.every(result => result);
+  return permissionChecks.every(result => result);
 };
 
 export const assertDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {

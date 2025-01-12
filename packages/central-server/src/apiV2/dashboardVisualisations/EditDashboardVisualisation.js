@@ -12,11 +12,9 @@ import {
 
 import { EditHandler } from '../EditHandler';
 import {
-  assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
   assertPermissionGroupAccess,
-  assertVizBuilderAccess,
 } from '../../permissions';
 import { assertDashboardItemEditPermissions } from '../dashboardItems/assertDashboardItemsPermissions';
 
@@ -40,10 +38,7 @@ export class EditDashboardVisualisation extends EditHandler {
       assertDashboardItemEditPermissions(accessPolicy, this.models, this.recordId);
 
     await this.assertPermissions(
-      assertAnyPermissions([
-        assertBESAdminAccess,
-        assertAllPermissions([assertVizBuilderAccess, dashboardItemChecker]),
-      ]),
+      assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
     );
   }
 

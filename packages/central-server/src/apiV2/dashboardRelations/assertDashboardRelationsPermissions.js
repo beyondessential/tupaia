@@ -7,6 +7,7 @@ import { hasBESAdminAccess } from '../../permissions';
 import {
   hasAccessToEntityForVisualisation,
   hasTupaiaAdminAccessToEntityForVisualisation,
+  hasVizBuilderAccessToEntityForVisualisation,
   mergeMultiJoin,
 } from '../utilities';
 
@@ -38,7 +39,7 @@ export const hasDashboardRelationEditPermissions = async (
   // users should all the permission group access (that's why using every() below)
   const permissionGroupAccessResults = await Promise.all(
     permissionGroups.map(async pg =>
-      hasAccessToEntityForVisualisation(accessPolicy, models, entity, pg),
+      hasVizBuilderAccessToEntityForVisualisation(accessPolicy, models, entity, pg),
     ),
   );
 

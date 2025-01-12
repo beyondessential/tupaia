@@ -4,12 +4,7 @@
  */
 import { ObjectValidator, constructIsEmptyOr, constructRecordExistsWithCode } from '@tupaia/utils';
 import { EditHandler } from '../EditHandler';
-import {
-  assertAllPermissions,
-  assertAnyPermissions,
-  assertBESAdminAccess,
-  assertVizBuilderAccess,
-} from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardItemEditPermissions } from './assertDashboardItemsPermissions';
 
 export class EditDashboardItem extends EditHandler {
@@ -18,10 +13,7 @@ export class EditDashboardItem extends EditHandler {
       assertDashboardItemEditPermissions(accessPolicy, this.models, this.recordId);
 
     await this.assertPermissions(
-      assertAnyPermissions([
-        assertBESAdminAccess,
-        assertAllPermissions([assertVizBuilderAccess, dashboardItemChecker]),
-      ]),
+      assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
     );
   }
 
