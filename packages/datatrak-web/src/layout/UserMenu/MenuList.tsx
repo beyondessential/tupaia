@@ -39,6 +39,12 @@ export const MenuButton = styled(Button).attrs({
   & ~ .MuiButtonBase-root {
     margin-left: 0;
   }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    .MuiButton-label {
+      font-size: 1.125rem;
+    }
+  }
 `;
 
 /**

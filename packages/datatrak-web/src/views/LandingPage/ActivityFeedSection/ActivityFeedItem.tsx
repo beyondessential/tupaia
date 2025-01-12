@@ -18,14 +18,14 @@ export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
     margin-bottom: 0.5rem;
   }
   p {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     margin-top: 0;
     &:last-child {
       margin-bottom: 0;
     }
   }
   .MuiTypography-colorTextSecondary {
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     margin-top: 0.2rem;
   }
 
@@ -35,6 +35,13 @@ export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
   }
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1.12rem 0.6rem 0.75rem 0;
+
+    p {
+      font-size: 0.75rem;
+    }
+    .MuiTypography-colorTextSecondary {
+      font-size: 0.625rem;
+    }
     &:not(:last-child) {
       border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
     }
