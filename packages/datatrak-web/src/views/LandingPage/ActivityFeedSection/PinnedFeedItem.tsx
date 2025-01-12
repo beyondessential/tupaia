@@ -13,9 +13,12 @@ import { ActivityFeedItem } from './ActivityFeedItem';
 
 const PinIcon = styled(BasePinIcon)`
   position: absolute;
-  top: 1.7rem;
-  left: -1.2rem;
+  top: 1.5rem;
+  left: 1.3rem;
   font-size: 1rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    left: -1.3rem;
+  }
 `;
 
 export const PinnedFeedItem = () => {
@@ -35,7 +38,7 @@ export const PinnedFeedItem = () => {
       target="_blank"
     >
       <PinIcon />
-      <ActivityFeedMarkdownItem feedItem={pinned} />
+      <ActivityFeedMarkdownItem feedItem={pinned} isPinned />
     </ActivityFeedItem>
   );
 };

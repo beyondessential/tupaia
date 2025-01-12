@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { formatDataValueByType } from '@tupaia/utils';
 import { IconMapOverlayConfig } from '@tupaia/types';
 import { YES_COLOR, NO_COLOR, BREWER_AUTO, UNKNOWN_COLOR, MAP_COLORS } from '../constants';

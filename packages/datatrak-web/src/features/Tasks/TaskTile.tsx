@@ -18,7 +18,8 @@ const TileContainer = styled(Link)`
   justify-content: space-between;
   text-decoration: none;
   border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
+  background-color: ${({ theme }) => theme.palette.background.paper};
+
   width: 100%;
   padding: 0.4rem 0.7rem;
   margin-block-end: 0.5rem;
@@ -31,17 +32,15 @@ const TileContainer = styled(Link)`
     font-size: 0.75rem;
   }
 
-  @media screen and (max-width: 30rem) {
-    .MuiButtonBase-root {
-      padding-inline: 0.8rem;
-    }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 
-  @media screen and (max-width: 24rem) {
-    flex-direction: column;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiButtonBase-root {
       margin-block-end: 0.4rem;
       margin-block-start: 0.8rem;
+      padding-inline: 0.8rem;
     }
   }
 
@@ -71,7 +70,9 @@ const TileLeft = styled.div`
 
 const TileContent = styled.div`
   display: flex;
+  flex-wrap: wrap;
   font-size: 0.75rem;
+  gap: 0.25rem;
   color: ${({ theme }) => theme.palette.text.secondary};
   align-items: center;
 

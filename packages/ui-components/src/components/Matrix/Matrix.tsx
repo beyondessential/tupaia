@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody, TableContainer } from '@material-ui/core';

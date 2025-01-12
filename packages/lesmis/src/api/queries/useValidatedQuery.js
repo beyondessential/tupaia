@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import { useNavigate } from 'react-router-dom';
 import { useHomeUrl } from '../../utils/useHomeUrl';
 

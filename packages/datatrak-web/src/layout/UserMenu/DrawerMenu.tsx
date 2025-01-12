@@ -7,13 +7,13 @@ import styled from 'styled-components';
 import { Drawer as MuiDrawer, Paper as MuiPaper, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { IconButton, RouterLink } from '@tupaia/ui-components';
-import { MOBILE_BREAKPOINT, ROUTES } from '../../constants';
+import { DESKTOP_BREAKPOINT, ROUTES } from '../../constants';
 import { useCurrentUserContext } from '../../api';
 import { Button } from '../../components';
 import { MenuButton, MenuList } from './MenuList';
 
 const Drawer = styled(MuiDrawer)`
-  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+  @media screen and (min-width: ${DESKTOP_BREAKPOINT}) {
     display: none;
   }
 `;

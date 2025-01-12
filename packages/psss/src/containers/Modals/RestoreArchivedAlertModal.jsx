@@ -1,14 +1,8 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-
-import { ConfirmModal } from '@tupaia/ui-components';
+import React, { useState, useCallback } from 'react';
 
 import { useRestoreArchivedAlert } from '../../api/queries';
+import { ConfirmModal } from '../../components/Modal/ConfirmModal';
 import { SuccessModal } from './SuccessModal';
 
 const STATUS = {
@@ -36,7 +30,7 @@ export const RestoreArchivedAlertModal = ({ isOpen, onClose, alertId }) => {
   const handleClose = useCallback(async () => {
     setStatus(STATUS.INITIAL);
     onClose();
-  }, [setStatus, onClose]);
+  }, [onClose]);
 
   if (status === STATUS.SUCCESS) {
     return (
@@ -57,7 +51,7 @@ export const RestoreArchivedAlertModal = ({ isOpen, onClose, alertId }) => {
       title="Archive Alert"
       mainText="Are you sure you want to restore this alert?"
       description="This alert will be moved to the Alert or Outbreak tab"
-      error={error && error.message}
+      error={error?.message}
       actionText="Restore"
       loadingText="Restoring"
       handleAction={handleArchive}
