@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TaskMetric } from './TaskMetric';
-import { useCurrentUserContext, useTaskMetrics } from '../../api';
+import { TaskMetric } from './TaskMetric.tsx';
+import { useCurrentUserContext, useTaskMetrics } from '../../../api';
 
 const TaskMetricsContainer = styled.div`
   flex: 1;

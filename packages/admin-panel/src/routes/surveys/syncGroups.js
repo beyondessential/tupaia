@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 const RESOURCE_NAME = { singular: 'sync group' };
 
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];

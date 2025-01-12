@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { FormHelperText, useTheme } from '@material-ui/core';

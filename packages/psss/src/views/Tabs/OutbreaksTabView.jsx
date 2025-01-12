@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MuiContainer from '@material-ui/core/Container';

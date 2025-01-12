@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import styled from 'styled-components';
 
 export const A4_PAGE_WIDTH_MM = 210;

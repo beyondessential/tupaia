@@ -1,12 +1,7 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
-
 import { ScrollableBody, StickyMobileHeader } from '../../../layout';
 import { useIsMobile } from '../../../utils';
 import { MobileSurveyMenu, SurveyPaginator, SurveyReviewSection } from '../Components';

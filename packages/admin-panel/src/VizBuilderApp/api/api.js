@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import FetchError from './fetchError';

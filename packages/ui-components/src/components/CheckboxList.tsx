@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import React, { Key, ReactElement } from 'react';
 import {
   FormControl as BaseFormControl,

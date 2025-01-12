@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import axios from 'axios';
 
 const PSSS_API_URL = process.env.REACT_APP_PSSS_API_URL || 'http://localhost:8040/v1';

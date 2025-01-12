@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';

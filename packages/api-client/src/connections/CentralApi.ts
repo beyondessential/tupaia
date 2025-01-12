@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
 import { ProjectCountryAccessListRequest } from '@tupaia/types';
 import { QueryParameters, SurveyResponseCreatedResponse } from '../types';

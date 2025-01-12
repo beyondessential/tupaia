@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { createBasicHeader, requireEnv } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
 import { Credentials, OneTimeCredentials, RequestResetPasswordCredentials } from '../types';

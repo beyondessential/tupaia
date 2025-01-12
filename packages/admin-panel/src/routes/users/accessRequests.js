@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export const ACCESS_REQUESTS_ENDPOINT = 'accessRequests';
 
 const RESOURCE_NAME = { singular: 'access request' };
