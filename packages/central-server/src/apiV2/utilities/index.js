@@ -20,10 +20,7 @@ export {
   hasAccessToEntityForVisualisation,
   hasVizBuilderAccessToEntityForVisualisation,
 } from './hasAccessToEntityForVisualisation';
-export {
-  hasTupaiaAdminAccessToEntityForVisualisation,
-  hasVizBuilderAccessToEntityForVisualisation2,
-} from './hasTupaiaAdminAccessToEntityForVisualisation';
+export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';

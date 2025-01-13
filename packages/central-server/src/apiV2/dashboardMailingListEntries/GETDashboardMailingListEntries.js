@@ -6,10 +6,8 @@
 import { RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import {
-  assertDashboardEditPermissions,
-  getDashboardsDBFilter,
-} from '../dashboards/assertDashboardsPermissions';
+import { assertDashboardEditPermissions } from '../dashboards/assertDashboardsPermissions';
+import { getDashboardsDBFilter } from '../dashboards/getDashboardsDBFilter';
 import { mergeMultiJoin } from '../utilities';
 
 /**

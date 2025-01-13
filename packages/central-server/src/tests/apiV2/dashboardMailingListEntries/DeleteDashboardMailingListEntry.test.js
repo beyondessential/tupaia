@@ -125,7 +125,7 @@ describe('Permissions checker for DeleteDashboardMailingListEntry', async () => 
       });
     });
 
-    describe('Sufficient permission', async () => {
+    describe.only('Sufficient permission', async () => {
       it('Allow deleting a dashboard mailing list entry for a dashboard for our own email', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.delete(`dashboardMailingListEntries/${mailingListEntryWithAccess.id}`);
