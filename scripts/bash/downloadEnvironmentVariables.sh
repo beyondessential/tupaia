@@ -3,6 +3,7 @@ set -e +x # Do not output commands in this script, as some would show credential
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
+REPO_ROOT="$DIR/../.."
 . "$DIR/ansiControlSequences.sh"
 
 # Collection in BitWarden where .env vars are kept
@@ -26,8 +27,7 @@ else
     echo -e "${BLUE}==>️${RESET} ${BOLD}Fetching environment variables for ${PACKAGES[*]}${RESET}"
 fi
 
-
-load_env_file_from_bw () {
+load_env_file_from_bw() {
     FILE_NAME=$1
     BASE_FILE_PATH=$2
     NEW_FILE_NAME=$3
@@ -39,10 +39,10 @@ load_env_file_from_bw () {
     DEPLOYMENT_ENV_VARS=$(bw list items --search "$FILE_NAME.$DEPLOYMENT_NAME.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
 
     if [[ -n $DEPLOYMENT_ENV_VARS ]]; then
-        echo "$DEPLOYMENT_ENV_VARS" > "$ENV_FILE_PATH"
+        echo "$DEPLOYMENT_ENV_VARS" >"$ENV_FILE_PATH"
     else
         DEV_ENV_VARS=$(bw list items --search "$FILE_NAME.dev.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
-        echo "$DEV_ENV_VARS" > "$ENV_FILE_PATH"
+        echo "$DEV_ENV_VARS" >"$ENV_FILE_PATH"
     fi
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual
@@ -75,24 +75,20 @@ load_env_file_from_bw () {
 for PACKAGE in "${PACKAGES[@]}"; do
     # Only download the env file if there is an example file in the package. If there isn’t, this
     # means it is a package that doesn’t need env vars
-    has_example_env_in_package=$(find "$DIR/../../packages/$PACKAGE" -type f -name '*.env.example' | wc -l)
-    if (( has_example_env_in_package > 0 )); then
-        load_env_file_from_bw "$PACKAGE" "$DIR/../../packages/$PACKAGE" ''
+    if [[ -f $REPO_ROOT/packages/$PACKAGE/.env.example ]]; then
+        load_env_file_from_bw "$PACKAGE" "$REPO_ROOT/packages/$PACKAGE" ''
     fi
 done
 
-
-for file_name in *.env.example; do
-    env_name="${file_name%.env.example}" # Get its basename without the .env.example extension
-    load_env_file_from_bw "$env_name" "$DIR/../../env" "$env_name"
+for file_name in "$REPO_ROOT"/env/*.env.example; do
+    package_name=$(basename "$file_name" '.env.example')
+    load_env_file_from_bw "$package_name" "$REPO_ROOT/env" "$package_name"
 done
-
 
 # Log out of Bitwarden
 echo
 echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
 bw logout
-
 
 # Clean up detritus on macOS
 # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
