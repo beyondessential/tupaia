@@ -12,6 +12,7 @@ export const FIELDS = {
       optionLabelKey: 'map_overlay_group.code',
       optionValueKey: 'map_overlay_group.id',
       sourceKey: 'map_overlay_group_id',
+      accessor: record => record['map_overlay_group.code'],
     },
   },
   CHILD_TYPE: {
@@ -46,6 +47,7 @@ export const FIELDS = {
       optionValueKey: 'mapOverlay.id',
       sourceKey: 'child_id',
       visibilityCriteria: { child_type: 'mapOverlay' },
+      accessor: record => record['mapOverlay.code'],
     },
   },
   CHILD_MAP_OVERLAY_GROUP_CODE: {
