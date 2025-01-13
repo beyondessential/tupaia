@@ -1,7 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';

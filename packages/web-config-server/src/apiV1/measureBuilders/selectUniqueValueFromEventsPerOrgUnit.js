@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
 import { SelectUniqueValueFromEventsBuilder } from '/apiV1/dataBuilders/generic/unique/selectUniqueValueFromEvents';
 
