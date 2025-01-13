@@ -18,7 +18,8 @@ export {
 export { getArrayQueryParameter } from './getArrayQueryParameter';
 export {
   hasAccessToEntityForVisualisation,
-  hasVizBuilderAccessToEntityForVisualisation,
+  hasVizBuilderAccessToEntity,
+  hasVizBuilderAccessToEntityCode,
 } from './hasAccessToEntityForVisualisation';
 export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
 export { mergeFilter } from './mergeFilter';

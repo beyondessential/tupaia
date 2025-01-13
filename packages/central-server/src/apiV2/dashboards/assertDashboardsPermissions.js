@@ -6,7 +6,7 @@ import {
   hasDashboardRelationGetPermissions,
   hasDashboardRelationEditPermissions,
 } from '../dashboardRelations';
-import { hasVizBuilderAccessToEntityForVisualisation } from '../utilities';
+import { hasVizBuilderAccessToEntity, hasVizBuilderAccessToEntityCode } from '../utilities';
 
 export const assertDashboardGetPermissions = async (accessPolicy, models, dashboardId) => {
   const dashboard = await models.dashboard.findById(dashboardId);
@@ -37,7 +37,7 @@ export const assertDashboardCreatePermissions = async (
 ) => {
   const entity = await models.entity.findOne({ code: rootEntityCode });
 
-  if (!(await hasVizBuilderAccessToEntityForVisualisation(accessPolicy, models, entity))) {
+  if (!(await hasVizBuilderAccessToEntity(accessPolicy, models, entity))) {
     throw new Error(`Requires Tupaia Admin Panel access to the entity code: '${rootEntityCode}'`);
   }
 
@@ -63,7 +63,20 @@ export const assertDashboardEditPermissions = async (accessPolicy, models, dashb
 
   if (!hasAllPermissions.every(permission => permission)) {
     throw new Error(
-      `Requires access to all of the dashboard items in this dashboard and Tupaia Admin Access to ${dashboard.root_entity_code}`,
+      `Requires access to all of the dashboard items in this dashboard for ${dashboard.root_entity_code}`,
+    );
+  }
+
+  // And access to the Viz Builder User Group for the entity
+  const hasVizBuilderPermissions = await hasVizBuilderAccessToEntityCode(
+    accessPolicy,
+    models,
+    dashboard.root_entity_code,
+  );
+
+  if (!hasVizBuilderPermissions) {
+    throw new Error(
+      `Requires Viz Builder User to all of the dashboard items in this dashboard for ${dashboard.root_entity_code}`,
     );
   }
 

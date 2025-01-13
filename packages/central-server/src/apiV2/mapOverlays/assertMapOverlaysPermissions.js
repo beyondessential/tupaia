@@ -4,10 +4,7 @@
  */
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import {
-  hasAccessToEntityForVisualisation,
-  hasVizBuilderAccessToEntityForVisualisation,
-} from '../utilities';
+import { hasAccessToEntityForVisualisation, hasVizBuilderAccessToEntity } from '../utilities';
 const { RAW } = QUERY_CONJUNCTIONS;
 
 export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverlayId) => {
@@ -58,17 +55,19 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
   const hasPermissionGroupAccess = (
     await Promise.all(
       entities.map(entity =>
-        hasVizBuilderAccessToEntityForVisualisation(
-          accessPolicy,
-          models,
-          entity,
-          mapOverlay.permission_group,
-        ),
+        hasVizBuilderAccessToEntity(accessPolicy, models, entity, mapOverlay.permission_group),
       ),
     )
   ).every(access => access);
 
-  return hasPermissionGroupAccess
+  // Check we have permission group access to all countries the mapOverlay is in
+  const hasVizBuilderAccess = (
+    await Promise.all(
+      entities.map(entity => hasVizBuilderAccessToEntity(accessPolicy, models, entity)),
+    )
+  ).every(access => access);
+
+  return hasPermissionGroupAccess && hasVizBuilderAccess
     ? { result: true }
     : {
         result: false,

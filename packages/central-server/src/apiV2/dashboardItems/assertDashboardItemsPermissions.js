@@ -6,6 +6,7 @@ import {
   hasDashboardRelationGetPermissions,
   hasDashboardRelationEditPermissions,
 } from '../dashboardRelations';
+import { hasVizBuilderAccessToEntityCode } from '../utilities';
 
 export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
@@ -58,7 +59,17 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
       ),
     ),
   );
-  return permissionChecks.every(result => result);
+
+  const vizBuilderUserPermissionChecks = await Promise.all(
+    dashboards.map(dashboard =>
+      hasVizBuilderAccessToEntityCode(accessPolicy, models, dashboard.rootEntityCode),
+    ),
+  );
+
+  return (
+    permissionChecks.every(result => result) &&
+    vizBuilderUserPermissionChecks.every(result => result)
+  );
 };
 
 export const assertDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {

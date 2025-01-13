@@ -20,7 +20,7 @@ export class CreateDashboardRelation extends CreateHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess],
+        [assertBESAdminAccess, assertAdminPanelAccess],
         'You need either BES Admin or Tupaia Admin Panel access to create user entity permissions',
       ),
     );
