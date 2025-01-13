@@ -15,7 +15,7 @@ import { TestableApp } from '../../testUtilities';
 describe('EditDashboardItems', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
-    KI: ['Admin'],
+    KI: ['Admin', VIZ_BUILDER_PERMISSION_GROUP],
     SB: ['Royal Australasian College of Surgeons'],
     VU: ['Admin'],
     LA: ['Admin'],
