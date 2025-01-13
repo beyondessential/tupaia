@@ -7,13 +7,14 @@ import { expect } from 'chai';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for creating Map Overlay Groups', async () => {
   const SUFFICIENT_TUPAIA_ADMIN_PANEL_PERMISSION_GROUP_POLICY = {
     DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const INSUFFICIENT_POLICY = {
