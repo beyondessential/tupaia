@@ -38,46 +38,47 @@ const ScrollBody = styled.div`
   }
 `;
 
+const SurveyResponseTile = ({ id, surveyName, dataTime, entityName, countryName }) => {
+  const isMobile = useIsMobile();
+  const tooltip = isMobile && (
+    <>
+      {surveyName}
+      <br />
+      {entityName}
+    </>
+  );
+
+  return (
+    <Tile
+      Icon={SurveyTickIcon}
+      key={id}
+      text={entityName}
+      title={surveyName}
+      to={`?responseId=${id}`}
+      tooltip={tooltip}
+    >
+      {countryName}, {displayDate(dataTime)}
+    </Tile>
+  );
+};
+
 export const SurveyResponsesSection = () => {
   const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
-  const isMobile = useIsMobile();
   const { project } = useCurrentUserContext();
 
   return (
     <Container>
       <SectionHeading>Submission history</SectionHeading>
       <ScrollBody>
-        {isLoading && <LoadingTile count={15} />}
-        {isSuccess && (
-          <>
-            {recentSurveyResponses?.length > 0 ? (
-              recentSurveyResponses.map(({ id, surveyName, dataTime, entityName, countryName }) => (
-                <Tile
-                  key={id}
-                  title={surveyName}
-                  text={entityName}
-                  to={`?responseId=${id}`}
-                  tooltip={
-                    !isMobile ? (
-                      <>
-                        {surveyName}
-                        <br />
-                        {entityName}
-                      </>
-                    ) : null
-                  }
-                  Icon={SurveyTickIcon}
-                >
-                  {countryName}, {displayDate(dataTime)}
-                </Tile>
-              ))
-            ) : (
-              <Typography variant="body2" color="textSecondary">
-                No recent surveys responses to display for {project?.name || 'project'}
-              </Typography>
-            )}{' '}
-          </>
-        )}
+        {isLoading && <LoadingTile />}
+        {isSuccess &&
+          (recentSurveyResponses?.length > 0 ? (
+            recentSurveyResponses.map(SurveyResponseTile)
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No recent surveys responses to display for {project?.name || 'project'}
+            </Typography>
+          ))}
       </ScrollBody>
     </Container>
   );
