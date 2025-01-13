@@ -42,8 +42,29 @@ const ScrollBody = styled.div<{
   }
 `;
 
-export const RecentSurveysSection = () => {
+const RecentSurveyTile = ({ surveyName, surveyCode, countryName, countryCode }) => {
   const isMobile = useIsMobile();
+  const tooltip = isMobile ? (
+    <>
+      {surveyName}
+      <br />
+      {countryName}
+    </>
+  ) : null;
+
+  return (
+    <Tile
+      key={`${surveyCode}-${countryName}`}
+      title={surveyName}
+      text={countryName}
+      tooltip={tooltip}
+      Icon={SurveyIcon}
+      to={`/survey/${countryCode}/${surveyCode}/1`}
+    />
+  );
+};
+
+export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
 
@@ -52,34 +73,14 @@ export const RecentSurveysSection = () => {
       <SectionHeading>Top surveys</SectionHeading>
       <ScrollBody $hasMoreThanOneSurvey={hasMoreThanOneSurvey}>
         {isLoading && <LoadingTile />}
-        {isSuccess && (
-          <>
-            {recentSurveys?.length ? (
-              recentSurveys.map(({ surveyName, surveyCode, countryName, countryCode }) => (
-                <Tile
-                  key={`${surveyCode}-${countryName}`}
-                  title={surveyName}
-                  text={countryName}
-                  tooltip={
-                    !isMobile ? (
-                      <>
-                        {surveyName}
-                        <br />
-                        {countryName}
-                      </>
-                    ) : null
-                  }
-                  Icon={SurveyIcon}
-                  to={`/survey/${countryCode}/${surveyCode}/1`}
-                />
-              ))
-            ) : (
-              <Typography variant="body2" color="textSecondary">
-                No recent surveys to display
-              </Typography>
-            )}
-          </>
-        )}
+        {isSuccess &&
+          (recentSurveys?.length > 0 ? (
+            recentSurveys.map(RecentSurveyTile)
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No recent surveys to display
+            </Typography>
+          ))}
       </ScrollBody>
     </RecentSurveys>
   );
