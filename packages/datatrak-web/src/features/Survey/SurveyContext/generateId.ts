@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import generate from 'nanoid/non-secure/generate';
 import generateUUID from 'bson-objectid';
 import { CodeGeneratorQuestionConfig } from '@tupaia/types';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Aggregator } from '@tupaia/aggregator';
 import { getSortByKey } from '@tupaia/utils';
 import { Builder, createBuilder } from './Builder';

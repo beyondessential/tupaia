@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export const SINGLE_ANALYTIC = [
   { period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1', value: 4 },
 ];

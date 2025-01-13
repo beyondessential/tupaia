@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { IndicatorApi } from '../IndicatorApi';
 import { Indicator } from '../types';
 import { Builder } from './Builder';

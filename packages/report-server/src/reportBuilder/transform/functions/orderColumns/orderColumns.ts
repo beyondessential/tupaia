@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { isDefined, yupTsUtils } from '@tupaia/tsutils';
 import { yup } from '@tupaia/utils';
 import { TransformTable } from '../../table';

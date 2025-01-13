@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { isNotNullish } from '@tupaia/tsutils';
 import { EditHandler } from '../EditHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';

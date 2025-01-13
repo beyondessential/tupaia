@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * SQL for dropping the analytics log tables. If changes need to be made how to the analytics table is built
  * then please create a NEW file with a higher version.
  *

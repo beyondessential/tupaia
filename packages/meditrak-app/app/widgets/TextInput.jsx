@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { View, Text, StyleSheet, TextInput as RNTextInput, ViewPropTypes } from 'react-native';
 import PropTypes from 'prop-types';

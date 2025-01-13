@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 export { ChangePasswordRequest, ChangePasswordRoute } from './ChangePasswordRoute';
 export { DashboardsRequest, DashboardsRoute } from './DashboardsRoute';
 export { EntityRequest, EntityRoute } from './EntityRoute';

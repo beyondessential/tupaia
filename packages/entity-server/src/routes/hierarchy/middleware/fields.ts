@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { Entity } from '@tupaia/types';
 import { ExtendedEntityFieldName, FlattableEntityFieldName } from '../types';
 import { extendedFieldFunctions } from '../extendedFieldFunctions';

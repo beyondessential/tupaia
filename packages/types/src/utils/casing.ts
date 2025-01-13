@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 // Converts a string to PascalCase (splitting on '_')
 export type PascalCase<S extends string> = S extends `${infer T}_${infer U}`
   ? `${Capitalize<T>}${Capitalize<PascalCase<U>>}`

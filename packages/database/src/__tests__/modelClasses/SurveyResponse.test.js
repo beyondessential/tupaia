@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { getLeaderboard } from '../../modelClasses/SurveyResponse';
 
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [

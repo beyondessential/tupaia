@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import keyBy from 'lodash.keyby';
 import { formatInTimeZone } from 'date-fns-tz';
 import { ChangeHandler } from './ChangeHandler';
