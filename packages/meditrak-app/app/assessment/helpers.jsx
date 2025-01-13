@@ -1,9 +1,4 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Checks whether all prior questions had the relevant answers enabling this question to be visible,
  * based on visibity criteria object in the format:
  * {

@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
 import { fetchWithTimeout, HttpError, createBearerHeader, requireEnv } from '@tupaia/utils';
 
 export class Ms1Api {

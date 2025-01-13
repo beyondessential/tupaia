@@ -1,9 +1,4 @@
 /* eslint-disable camelcase */
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { JOIN_TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {

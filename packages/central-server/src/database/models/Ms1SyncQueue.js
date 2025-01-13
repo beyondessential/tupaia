@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
 
 class Ms1SyncQueueRecord extends DatabaseRecord {

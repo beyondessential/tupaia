@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * { user_email: "user@beyondessential.com.au" } => { user_id: "5fbb27d061f76a22920130a1", assessor_name: "User One" }
  */
 export const translateUserEmailToIdAndAssessorName = async (userModel, email) => {

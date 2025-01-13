@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 // eslint-disable-next-line no-unused-vars
 import nodeFetch, { Response as NodeFetchResponse } from 'node-fetch';
 import { CustomError } from './errors';

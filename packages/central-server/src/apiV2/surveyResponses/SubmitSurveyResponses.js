@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { AnalyticsRefresher } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
 import { assertCanSubmitSurveyResponses } from '../import/importSurveyResponses/assertCanImportSurveyResponses';

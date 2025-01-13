@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
 import { mapOrgUnitIdsToGroupIds } from '/apiV1/utils/mapOrgUnitIdsToGroupIds';
 
 const organisationUnits = [

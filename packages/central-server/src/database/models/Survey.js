@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { SurveyModel as BaseSurveyModel, SurveyRecord as BaseSurveyRecord } from '@tupaia/database';
 
 class SurveyRecord extends BaseSurveyRecord {

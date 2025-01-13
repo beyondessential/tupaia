@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { KeyValueCellBuilder } from '../KeyValueCellBuilder';
 import {
   replaceQuestionIdsWithCodes,

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { SupersetApi } from '@tupaia/superset-api';
 import { createJestMockInstance } from '@tupaia/utils';

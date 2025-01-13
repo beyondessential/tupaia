@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { useQuery } from '@tanstack/react-query';
 import { TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { EntityCode, ProjectCode } from '../../types';

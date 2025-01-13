@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { EditHandler } from '../EditHandler';
 import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import jwt from 'jsonwebtoken';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { getJwtToken } from './security';

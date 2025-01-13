@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import React, { Component, ReactNode } from 'react';
 import { SmallAlert } from './Alert';
 import { FlexCenter } from './Layout';

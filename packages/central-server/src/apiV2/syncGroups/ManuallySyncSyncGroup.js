@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { DataBroker } from '@tupaia/data-broker';
 import { respond, ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
 import { CRUDHandler } from '../CRUDHandler';

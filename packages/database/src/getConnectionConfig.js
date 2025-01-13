@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { requireEnv, getEnvVarOrDefault } from '@tupaia/utils';
 
 const getServerConfig = ({ userEnv = 'DB_USER', passEnv = 'DB_PASSWORD' }) => ({

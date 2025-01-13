@@ -1,7 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
 import { PERIOD_TYPES } from '@tupaia/tsutils';
 import { convertToPeriod, periodToDisplayString } from '@tupaia/utils';
 

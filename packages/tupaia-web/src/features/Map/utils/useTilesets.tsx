@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { DEFAULT_TILESETS, getAutoTileSet } from '@tupaia/ui-map-components';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { KoBoTranslator } from '../../../services/kobo/KoBoTranslator';
 import { createModelsStub } from './KoBoService.stubs';
 import {
