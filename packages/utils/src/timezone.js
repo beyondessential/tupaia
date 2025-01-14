@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { formatInTimeZone, getTimezoneOffset } from 'date-fns-tz';
 
 export const formatDateInTimezone = (date, timezone, format = "yyyy-MM-dd'T'HH:mm:ssXXX") => {

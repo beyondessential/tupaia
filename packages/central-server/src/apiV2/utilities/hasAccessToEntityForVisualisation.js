@@ -1,9 +1,5 @@
 import { VIZ_BUILDER_PERMISSION_GROUP } from '../../permissions';
 
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 export const hasAccessToEntityForVisualisation = async (
   accessPolicy,
   models,

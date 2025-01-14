@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { addMetadataToEvents } from '/apiV1/dataBuilders/helpers/eventMetadata';
 import { EVENTS, ORG_UNITS } from './eventMetadata.fixtures';
 

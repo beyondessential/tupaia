@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
 import { SURVEY_SCREEN } from './constants';
 
 const getCurrentRoute = ({ nav }) => (nav.routes ? nav.routes[nav.index] : {});

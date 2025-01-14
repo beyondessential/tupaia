@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { useMutation } from '@tanstack/react-query';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { DashboardItem, EntityCode, ProjectCode } from '../../types';

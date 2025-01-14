@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { parsePeriodType, periodToDisplayString, getPeriodsInRange } from '@tupaia/utils';
 import flatten from 'lodash.flatten';

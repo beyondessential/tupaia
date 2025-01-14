@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { respond, DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 import { LegacyCountChangesHandler } from './LegacyCountChangesHandler';
 import { allowNoPermissions } from '../../../permissions';

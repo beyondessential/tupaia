@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import { ErrorBoundary } from '@tupaia/ui-components';
 import { LegendProps } from '@tupaia/ui-map-components';

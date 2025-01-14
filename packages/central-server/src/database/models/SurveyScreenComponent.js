@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { SurveyScreenComponentModel as CommonSurveyScreenComponentModel } from '@tupaia/database';
 import { compare } from 'compare-versions';
 import { SURVEY_SCREEN_COMPONENT_ENTITY_CONFIG_SCHEMA_CHANGE_APP_VERSION } from '../constants';

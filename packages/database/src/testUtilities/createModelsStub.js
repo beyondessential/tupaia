@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * @typedef MockData
  * @type {Object.<string, MockModelSpec>}
  * Map of model name to spec, e.g.

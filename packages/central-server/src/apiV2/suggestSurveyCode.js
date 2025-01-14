@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { allowNoPermissions } from '../permissions';
 
 /**
@@ -21,11 +16,6 @@ export const suggestSurveyCode = async (req, res) => {
 
   res.status(200).type('json').send(JSON.stringify({ suggestedCode }));
 };
-
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
 
 const MAX_SURVEY_CODE_GENERATION_ATTEMPTS = 20;
 

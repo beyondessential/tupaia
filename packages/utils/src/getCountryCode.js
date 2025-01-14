@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import { ImportValidationError } from './errors';
 
 // We sometimes use non-official names for countries. The most obvious example is Demo Land, but

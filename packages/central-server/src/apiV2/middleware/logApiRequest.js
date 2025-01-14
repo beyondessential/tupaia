@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { extractRefreshTokenFromReq } from '@tupaia/auth';
 
 export const logApiRequest = async (req, res, next) => {

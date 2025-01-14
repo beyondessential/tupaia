@@ -1,7 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export const limitRange = (datum, [floor, ceiling]) => {

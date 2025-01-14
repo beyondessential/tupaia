@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { ObjectValidator, constructIsEmptyOr, constructRecordExistsWithCode } from '@tupaia/utils';
 import { EditHandler } from '../EditHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
