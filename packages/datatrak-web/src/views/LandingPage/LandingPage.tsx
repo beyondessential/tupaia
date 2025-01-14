@@ -47,7 +47,7 @@ const PageBody = styled.div`
 `;
 
 const Grid = styled.div<{
-  $hasMoreThanOneSurvey: boolean;
+  $hasMultiple: boolean;
 }>`
   flex: 1;
   display: flex;
@@ -72,12 +72,12 @@ const Grid = styled.div<{
     gap: 1.5rem;
     display: grid;
     margin-block: 0.5rem;
-    grid-template-rows: ${({ $hasMoreThanOneSurvey }) =>
-      $hasMoreThanOneSurvey ? 'auto auto auto' : 'auto 7rem auto'};
+    grid-template-rows: ${({ $hasMultiple }) =>
+      $hasMultiple ? 'auto auto auto' : 'auto 7rem auto'};
     grid-template-columns: 23% 1fr 1fr 30%;
-    grid-template-areas: ${({ $hasMoreThanOneSurvey }) => {
+    grid-template-areas: ${({ $hasMultiple }) => {
       //If there is < 2 surveys, the recentSurveys section will be smaller and the activity feed will shift upwards on larger screens
-      if ($hasMoreThanOneSurvey) {
+      if ($hasMultiple) {
         return `
           'surveySelect surveySelect surveySelect tasks'
           'recentSurveys recentSurveys recentSurveys tasks'
@@ -112,7 +112,7 @@ export const LandingPage = () => {
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMoreThanOneSurvey={hasMoreThanOneSurvey}>
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
           <SurveySelectSection />
           <TasksSection />
           <LeaderboardSection />

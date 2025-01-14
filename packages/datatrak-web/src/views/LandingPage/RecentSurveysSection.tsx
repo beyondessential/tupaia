@@ -18,7 +18,7 @@ const RecentSurveys = styled.section`
 `;
 
 const ScrollBody = styled.div<{
-  $hasMoreThanOneSurvey: boolean;
+  $hasMultiple: boolean;
 }>`
   display: flex;
   overflow-x: auto;
@@ -37,8 +37,10 @@ const ScrollBody = styled.div<{
     display: grid;
     grid-template-rows: 1fr;
     grid-auto-flow: row;
-    grid-template-columns: ${({ $hasMoreThanOneSurvey }) =>
-      $hasMoreThanOneSurvey ? ' repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr))' : '1fr'};
+    grid-template-columns: ${({ $hasMultiple }) =>
+      $hasMultiple
+        ? 'repeat(auto-fill, minmax(calc(33.3% - var(--_column-gap)), 1fr))'
+        : 'initial'};
   }
 `;
 
@@ -66,13 +68,12 @@ const RecentSurveyTile = ({ surveyName, surveyCode, countryName, countryCode }) 
 
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
-  const hasMoreThanOneSurvey = recentSurveys.length > 1;
 
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      <ScrollBody $hasMoreThanOneSurvey={hasMoreThanOneSurvey}>
-        {isLoading && <LoadingTile />}
+      <ScrollBody $hasMultiple={recentSurveys.length > 1}>
+        {isLoading && <TileSkeleton />}
         {isSuccess &&
           (recentSurveys?.length > 0 ? (
             recentSurveys.map(RecentSurveyTile)
