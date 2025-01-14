@@ -206,7 +206,7 @@ describe('EditDashboardItems', async () => {
       });
     });
 
-    describe.only('Sufficient permissions', async () => {
+    describe('Sufficient permissions', async () => {
       it('Allow editing of dashboard items if we have access to all the countries the user we are editing has access to', async () => {
         const newName = 'My all time favourite pokemon';
         await app.grantAccess(DEFAULT_POLICY);
