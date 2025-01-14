@@ -19,3 +19,4 @@ export { TaskPageHeader, TasksTable, TaskDetails, CreateTaskModal, TaskActionsMe
 export { useUserCountries, CountrySelector } from './CountrySelector';
 export { GroupedSurveyList } from './GroupedSurveyList';
 export { SurveyResponseModal } from './SurveyResponseModal';
+export { WebAppPrompt } from './WebAppPrompt';
