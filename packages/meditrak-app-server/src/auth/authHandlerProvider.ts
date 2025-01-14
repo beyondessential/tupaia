@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { BasicAuthHandler, ForwardingAuthHandler } from '@tupaia/api-client';
 import { requireEnv } from '@tupaia/utils';
 import { Request } from 'express';

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import IconButton from '@material-ui/core/IconButton';
 import { OptionsObject } from 'notistack';
 import React from 'react';

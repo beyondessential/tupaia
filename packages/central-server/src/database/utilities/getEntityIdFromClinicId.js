@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 // Required for backwards compatibility for meditrak instances
 // that use clinic_id against SurveyResponse
 export async function getEntityIdFromClinicId(models, clinicId) {

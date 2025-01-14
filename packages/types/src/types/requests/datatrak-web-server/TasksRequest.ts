@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { KeysToCamelCase } from '../../../utils/casing';
 import { Entity, Survey, Task, TaskStatus } from '../../models';
 

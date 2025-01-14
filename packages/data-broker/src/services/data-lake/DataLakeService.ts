@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import type { DataLakeApi } from '@tupaia/data-lake-api';
 import { DataBrokerModelRegistry, DataElement, DataGroup } from '../../types';
 import { DataServiceMapping } from '../DataServiceMapping';

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { ValidationError } from '@tupaia/utils';
 
 /**

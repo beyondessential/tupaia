@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 // TODO: re-enable after S3Client is properly mocked after RN-982
 // describe('uploadImage', async () => {
 //   let uploadImageStub;

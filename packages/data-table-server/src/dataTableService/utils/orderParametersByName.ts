@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { DataTableParameter } from '../types';
 
 export const orderParametersByName = (parameters: DataTableParameter[], namesOrder: string[]) => {

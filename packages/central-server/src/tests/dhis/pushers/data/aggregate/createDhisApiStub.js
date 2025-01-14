@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
 import sinon from 'sinon';
 import { DhisApi } from '@tupaia/dhis-api';
 import { ORGANISATION_UNIT_ID } from './AggregateDataPusher.fixtures';

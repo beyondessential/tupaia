@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import '@babel/polyfill';
 import { configureEnv } from '../src/configureEnv';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';

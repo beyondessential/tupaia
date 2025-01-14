@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { VALUE_TYPES, formatDataValueByType } from '../formatDataValueByType';
 
 const { PERCENTAGE, FRACTION_AND_PERCENTAGE } = VALUE_TYPES;

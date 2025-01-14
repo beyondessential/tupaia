@@ -1,12 +1,9 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
-import styled from 'styled-components';
 import { FormHelperText, FormLabelProps } from '@material-ui/core';
 import { Country } from '@tupaia/types';
 import { SelectList } from '@tupaia/ui-components';
+import { default as React, default as React } from 'react';
+import styled from 'styled-components';
+
 import { Survey } from '../types';
 import { useGroupedSurveyList } from './useGroupedSurveyList';
 

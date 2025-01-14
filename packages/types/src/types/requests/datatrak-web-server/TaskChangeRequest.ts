@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { Survey, Task } from '../../models';
 import { RepeatSchedule } from '../../models-extra';
 

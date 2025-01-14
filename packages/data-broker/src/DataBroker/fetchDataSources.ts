@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { DataBrokerModelRegistry } from '../types';
 
 const checkRequestedVsFound = (requested: string[], found: string[], description: string) => {

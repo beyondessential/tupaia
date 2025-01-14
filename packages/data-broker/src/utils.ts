@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const DATA_ELEMENT = 'dataElement';
 const DATA_GROUP = 'dataGroup';
 const SYNC_GROUP = 'syncGroup';

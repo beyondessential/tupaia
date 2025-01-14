@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import { convertPeriodStringToDateRange, convertDateRangeToPeriodString } from '@tupaia/utils';
 import { getDefaultPeriod, EARLIEST_DATA_DATE } from '/utils';
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode, useRef } from 'react';
 import styled from 'styled-components';
 import { MenuItem as MuiMenuItem, Select as MuiSelect } from '@material-ui/core';

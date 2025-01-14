@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { hasContent, ValidationError } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 import { convertCellToJson } from '../../utilities';

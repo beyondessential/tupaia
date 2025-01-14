@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { transformValue } from 'apiV1/dataBuilders/transform';
 
 export const translateEventEntityIdsToNames = async (models, events, dataElementCodes) => {

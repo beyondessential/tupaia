@@ -1,9 +1,4 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Replace the org unit in each analytic with the org group from orgUnitMap
  *
  * @param {Array} analytics

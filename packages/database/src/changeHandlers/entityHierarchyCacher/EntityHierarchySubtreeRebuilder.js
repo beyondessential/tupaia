@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { reduceToDictionary } from '@tupaia/utils';
 import { ORG_UNIT_ENTITY_TYPES } from '../../modelClasses/Entity';
 

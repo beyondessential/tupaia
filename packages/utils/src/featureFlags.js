@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { requireEnv, getEnvVarOrDefault } from './requireEnv';
 
 export const FEATURE_FLAG_ON = 'on';

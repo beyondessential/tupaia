@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { Database as RNDB, Settings } from 'react-native-database';
 import generateUUID from 'bson-objectid';
 

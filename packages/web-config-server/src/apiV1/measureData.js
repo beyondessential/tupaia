@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import assert from 'assert';
 import { snake } from 'case';
 import { CustomError } from '@tupaia/utils';

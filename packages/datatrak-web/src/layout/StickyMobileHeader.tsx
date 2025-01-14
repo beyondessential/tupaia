@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import React, { HTMLAttributes } from 'react';
