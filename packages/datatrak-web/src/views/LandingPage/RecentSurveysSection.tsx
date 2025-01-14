@@ -3,13 +3,15 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
 import { SurveyIcon, Tile, LoadingTile } from '../../components';
+
 import { useCurrentUserRecentSurveys } from '../../api';
-import { SectionHeading } from './SectionHeading';
+import { TileProps } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
+import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -42,7 +44,19 @@ const ScrollBody = styled.div<{
   }
 `;
 
-const RecentSurveyTile = ({ surveyName, surveyCode, countryName, countryCode }) => {
+interface RecentSurveyTileProps extends TileProps {
+  surveyName: string;
+  surveyCode: string;
+  countryName: string;
+  countryCode: string;
+}
+const RecentSurveyTile = ({
+  surveyName,
+  surveyCode,
+  countryName,
+  countryCode,
+  ...props
+}: RecentSurveyTileProps) => {
   const isMobile = useIsMobile();
   const tooltip = isMobile ? (
     <>
@@ -54,12 +68,12 @@ const RecentSurveyTile = ({ surveyName, surveyCode, countryName, countryCode }) 
 
   return (
     <Tile
-      key={`${surveyCode}-${countryName}`}
-      title={surveyName}
-      text={countryName}
-      tooltip={tooltip}
       Icon={SurveyIcon}
+      text={countryName}
+      title={surveyName}
       to={`/survey/${countryCode}/${surveyCode}/1`}
+      tooltip={tooltip}
+      {...props}
     />
   );
 };
@@ -75,7 +89,9 @@ export const RecentSurveysSection = () => {
         {isLoading && <LoadingTile />}
         {isSuccess &&
           (recentSurveys?.length > 0 ? (
-            recentSurveys.map(RecentSurveyTile)
+            recentSurveys.map(props => (
+              <RecentSurveyTile key={`${props.surveyCode}-${props.countryName}`} {...props} />
+            ))
           ) : (
             <Typography variant="body2" color="textSecondary">
               No recent surveys to display

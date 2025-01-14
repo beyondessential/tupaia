@@ -51,7 +51,6 @@ const SurveyResponseTile = ({ id, surveyName, dataTime, entityName, countryName 
   return (
     <Tile
       Icon={SurveyTickIcon}
-      key={id}
       text={entityName}
       title={surveyName}
       to={`?responseId=${id}`}
@@ -73,7 +72,7 @@ export const SurveyResponsesSection = () => {
         {isLoading && <LoadingTile />}
         {isSuccess &&
           (recentSurveyResponses?.length > 0 ? (
-            recentSurveyResponses.map(SurveyResponseTile)
+            recentSurveyResponses.map(props => <SurveyResponseTile key={props.id} {...props} />)
           ) : (
             <Typography variant="body2" color="textSecondary">
               No recent surveys responses to display for {project?.name || 'project'}
