@@ -1,7 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
 import { AccessPolicy } from '@tupaia/access-policy';
 
 import { PUBLIC_USER_NAME, PUBLIC_COUNTRY_CODES } from './publicAccess';

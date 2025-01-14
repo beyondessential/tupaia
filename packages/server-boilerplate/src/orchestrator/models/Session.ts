@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { RespondingError, createBearerHeader, getTokenExpiry } from '@tupaia/utils';

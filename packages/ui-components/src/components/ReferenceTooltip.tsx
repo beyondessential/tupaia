@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ComponentType } from 'react';
 import { InfoOutlined } from '@material-ui/icons';
 import styled from 'styled-components';

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import { Chart } from '../src/components/Chart';
 import { LightThemeChartTemplate, DarkThemeTemplate } from './helpers';
 import mockData from './data/gaugeChartData.json';

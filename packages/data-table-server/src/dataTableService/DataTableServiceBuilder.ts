@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { DataTable } from '@tupaia/types';
 import { DataTableService, ClassOfDataTableService, ServiceContext } from './DataTableService';
 import {

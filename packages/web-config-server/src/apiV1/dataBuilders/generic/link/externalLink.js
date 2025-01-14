@@ -1,9 +1,4 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Returns a download link for a supplied url, with query parameters substitued in where replacement
  * placeholders are marked out
  */

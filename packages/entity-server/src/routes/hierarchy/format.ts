@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { EntityRecord } from '@tupaia/server-boilerplate';
 import { isNotNullish } from '@tupaia/tsutils';
 import { EntityServerModelRegistry } from '../../types';

@@ -1,10 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 require('dotenv').config({
   path: [
     require('path').resolve(__dirname, '../../../env/db.env'),

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import keyBy from 'lodash.keyby';
 import { REPORT_STATUSES } from '../constants';
 import { reportsAreEqual, calculateWeekStatus } from '../utils';

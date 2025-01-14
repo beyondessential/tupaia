@@ -1,10 +1,5 @@
 import { LATEST_SERVER_SYNC_TIMESTAMP } from '../settings';
 
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 const DATABASE_SYNC_MIGRATION_VERSION = 'DATABASE_SYNC_MIGRATION_VERSION';
 
 const migrations = {

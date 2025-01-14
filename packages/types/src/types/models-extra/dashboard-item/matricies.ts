@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import { CssColor } from '../../css';
 import { DashboardItemType } from '../common';
 import type { BaseConfig, ValueType } from './common';
@@ -72,7 +68,7 @@ export type MatrixVizBuilderConfig = MatrixConfig & {
      * '*' to indicate all columns
      * or a list of objects with an entityCode and entityLabel to generate entity links
      */
-    columns?: string | string[] | MatrixEntityCell[];
+    columns?: (string | { entityCode: string; entityLabel: string })[];
   };
 };
 

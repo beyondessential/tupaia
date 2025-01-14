@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, Link, ListItem, ListItemProps } from '@material-ui/core';

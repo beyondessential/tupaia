@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { visualisationsTabRoutes, dataTables } from '@tupaia/admin-panel';
 import { getDashboardItemsPageConfig } from './getDashboardItemsPageConfig';
 import { getDashboardsPageConfig } from './getDashboardsPageConfig';

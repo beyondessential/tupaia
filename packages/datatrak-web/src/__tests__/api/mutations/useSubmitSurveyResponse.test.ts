@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { act } from 'react-dom/test-utils';
 import { generatePath } from 'react-router';
 import { setupServer } from 'msw/node';

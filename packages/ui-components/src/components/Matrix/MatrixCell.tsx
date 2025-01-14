@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { PresentationOptionCondition, PresentationOptionRange } from '@tupaia/types';

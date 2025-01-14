@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * @typedef {Object} Description
  * @property {string} name
  * @property {string} [receives]

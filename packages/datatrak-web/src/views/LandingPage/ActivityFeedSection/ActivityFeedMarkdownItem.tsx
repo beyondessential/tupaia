@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -33,9 +28,15 @@ const Image = styled.img`
   margin-top: 0.75rem;
 `;
 
-const Header = styled.div`
+const Header = styled.div<{
+  $isPinned?: boolean;
+}>`
   margin-bottom: 0.6rem;
   display: flex;
+  padding-inline-start: ${({ $isPinned }) => ($isPinned ? '1rem' : '0')};
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-inline-start: 0;
+  }
 `;
 
 const Logo = styled.img.attrs({
@@ -47,12 +48,18 @@ const Logo = styled.img.attrs({
   margin-right: 0.5rem;
 `;
 
-export const ActivityFeedMarkdownItem = ({ feedItem }: { feedItem: MarkdownFeedItem }) => {
+export const ActivityFeedMarkdownItem = ({
+  feedItem,
+  isPinned,
+}: {
+  feedItem: MarkdownFeedItem;
+  isPinned?: boolean;
+}) => {
   const { templateVariables, creationDate } = feedItem;
   const formattedDate = displayDate(creationDate as Date);
   return (
     <Wrapper>
-      <Header>
+      <Header $isPinned={isPinned}>
         <Logo />
         <div>
           <Typography>BES</Typography>

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
 import {
@@ -97,7 +92,11 @@ export const Routes = () => {
         <Route
           path="/"
           element={
-            <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
+            <BackgroundPageLayout
+              backgroundImage="/auth-background.svg"
+              mobileBackgroundImage="/auth-background-mobile.svg"
+              headerBorderHidden
+            />
           }
         >
           <Route

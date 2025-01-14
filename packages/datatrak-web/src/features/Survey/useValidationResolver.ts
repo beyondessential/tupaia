@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { useCallback } from 'react';
 import * as yup from 'yup';
 import { QuestionType } from '@tupaia/types';

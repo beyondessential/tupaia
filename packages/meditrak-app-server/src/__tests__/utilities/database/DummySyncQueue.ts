@@ -1,10 +1,5 @@
 import { sleep } from '@tupaia/utils';
 
-/**
- * Tupaia MediTrak
- * Copyright (c) 2022 Beyond Essential Systems Pty Ltd
- */
-
 type ChangeRecord = { record_id: string; record_type: string; type: string };
 
 export class DummySyncQueue {

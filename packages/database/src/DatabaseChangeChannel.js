@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import PGPubSub from 'pg-pubsub';
 import winston from 'winston';
 import { generateId } from './utilities/generateId';

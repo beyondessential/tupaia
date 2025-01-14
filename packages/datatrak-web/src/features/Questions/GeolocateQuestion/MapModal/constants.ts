@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { LatLngBoundsLiteral } from 'leaflet';
 
 export const DEFAULT_ZOOM_LEVEL = 12;

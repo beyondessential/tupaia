@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { inspect } from 'util';
 import { periodToMoment } from '@tupaia/tsutils';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';

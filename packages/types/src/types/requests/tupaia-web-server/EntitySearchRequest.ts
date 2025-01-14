@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { ResBody as BaseResBody, ReqQuery as BaseReqQuery } from './EntitiesRequest';
 
 export interface Params {

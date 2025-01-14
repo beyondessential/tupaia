@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
 import RNFS from 'react-native-fs';
 
 export const getFileInDocumentsPath = fileName =>

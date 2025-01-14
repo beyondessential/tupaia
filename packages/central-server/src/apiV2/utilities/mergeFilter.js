@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export function mergeFilter(baseFilter, filterToMerge) {
   if (!filterToMerge) {
     return baseFilter;

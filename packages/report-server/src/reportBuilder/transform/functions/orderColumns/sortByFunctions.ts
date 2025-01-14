@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Moment } from 'moment';
 import { periodToMoment } from '@tupaia/tsutils';
 import { displayStringToMoment, isInvalidMoment } from '@tupaia/utils';

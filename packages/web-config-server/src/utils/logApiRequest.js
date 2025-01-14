@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 export const logApiRequest = (models, apiName, version) => async (req, res, next) => {
   const userId = req.session?.userJson?.userId;
   const { id: apiRequestLogId } = await models.apiRequestLog.create({

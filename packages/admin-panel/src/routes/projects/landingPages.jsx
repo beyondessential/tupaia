@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Link } from '@material-ui/core';
 import { SECTION_FIELD_TYPE } from '../../editor/constants';

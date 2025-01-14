@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Indicates whether a change notification was "marked" (manually triggered),
  * rather than a true database change
  */

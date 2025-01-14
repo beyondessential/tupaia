@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { MatrixColumnType, MatrixRowType, SearchFilter } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MatrixConfig, MatrixReportColumn, MatrixReportRow, MatrixEntityCell } from '@tupaia/types';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
 import { ExpressionParser } from '@tupaia/expression-parser';

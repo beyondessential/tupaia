@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 // From https://superset.apache.org/docs/api/
 export type ChartDataResponseSchema = {
   result: ChartDataResponseResult[];
