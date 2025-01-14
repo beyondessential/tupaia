@@ -40,7 +40,12 @@ export const assertDashboardCreatePermissions = async (
   return true;
 };
 
-export const assertDashboardEditPermissions = async (accessPolicy, models, dashboardId) => {
+export const assertDashboardEditPermissions = async (
+  accessPolicy,
+  models,
+  dashboardId,
+  vizBuilder = true,
+) => {
   const dashboard = await models.dashboard.findById(dashboardId);
   const dashboardRelations = await models.dashboardRelation.find({ dashboard_id: dashboardId });
 
@@ -61,6 +66,10 @@ export const assertDashboardEditPermissions = async (accessPolicy, models, dashb
     throw new Error(
       `Requires access to all of the dashboard items in this dashboard for ${dashboard.root_entity_code}`,
     );
+  }
+
+  if (!vizBuilder) {
+    return true;
   }
 
   // And access to the Viz Builder User Group for the entity

@@ -24,7 +24,12 @@ export class GETDashboardMailingListEntries extends GETHandler {
 
     // Must have edit permissions to a dashboard to view its mailing list
     const dashboardChecker = accessPolicy =>
-      assertDashboardEditPermissions(accessPolicy, this.models, dashboardMailingList.dashboard_id);
+      assertDashboardEditPermissions(
+        accessPolicy,
+        this.models,
+        dashboardMailingList.dashboard_id,
+        false,
+      );
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, dashboardChecker]));
 
