@@ -51,7 +51,12 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
   const hasPermissionGroupAccess = (
     await Promise.all(
       entities.map(entity =>
-        hasVizBuilderAccessToEntity(accessPolicy, models, entity, mapOverlay.permission_group),
+        hasAccessToEntityForVisualisation(
+          accessPolicy,
+          models,
+          entity,
+          mapOverlay.permission_group,
+        ),
       ),
     )
   ).every(access => access);
