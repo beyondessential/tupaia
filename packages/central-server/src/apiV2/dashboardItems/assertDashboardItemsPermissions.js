@@ -3,6 +3,7 @@ import {
   hasDashboardRelationEditPermissions,
 } from '../dashboardRelations';
 import { hasVizBuilderAccessToEntityCode } from '../utilities';
+import { getPermittedDashboardItems } from './getPermittedDashboardItems';
 
 export const hasDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);

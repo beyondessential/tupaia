@@ -1,7 +1,8 @@
 import { RECORDS } from '@tupaia/database';
-import { hasBESAdminAccess, hasSomePermissionGroupsAccess } from '../../permissions';
+import { hasBESAdminAccess } from '../../permissions';
 import { createDashboardRelationsDBFilter } from '../dashboardRelations';
 import { mergeFilter } from '../utilities';
+import { getPermittedDashboardItems } from './getPermittedDashboardItems';
 
 export const createDashboardItemsDBFilter = async (accessPolicy, models, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
@@ -32,31 +33,4 @@ export const createDashboardItemsDBFilter = async (accessPolicy, models, criteri
   );
 
   return dbConditions;
-};
-
-const getPermittedDashboardItems = async (accessPolicy, models) => {
-  const allDashboardItems = await models.dashboardItem.all();
-  const allPermissionGroups = await models.permissionGroup.all();
-  const permissionGroupIdToName = {};
-  allPermissionGroups.forEach(permissionGroup => {
-    permissionGroupIdToName[permissionGroup.id] = permissionGroup.name;
-  });
-
-  const permittedItems = allDashboardItems
-    .filter(item => {
-      if (!item.permission_group_ids) {
-        return false;
-      }
-
-      const permissionGroupNames = item.permission_group_ids.map(
-        permissionGroupId => permissionGroupIdToName[permissionGroupId],
-      );
-
-      const hasPermission = hasSomePermissionGroupsAccess(accessPolicy, permissionGroupNames);
-
-      return !!hasPermission;
-    })
-    .map(item => item.id);
-
-  return permittedItems;
 };
