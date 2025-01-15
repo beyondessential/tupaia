@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import moment from 'moment';
 import { DHIS2_RESOURCE_TYPES, dhisToTupaiaPeriodType, combineDiagnostics } from '@tupaia/dhis-api';
 import {

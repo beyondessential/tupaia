@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { utcMoment } from '../datetime';
 import { PERIOD_TYPES, getPeriodsInRange, momentToPeriod } from './period';
 

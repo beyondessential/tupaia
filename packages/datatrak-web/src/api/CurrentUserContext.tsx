@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { createContext, useContext } from 'react';
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FullPageLoader } from '@tupaia/ui-components';

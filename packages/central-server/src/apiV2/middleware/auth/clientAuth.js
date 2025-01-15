@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { UnauthenticatedError, requireEnv } from '@tupaia/utils';
 import { encryptPassword, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import Geolocation from '@react-native-community/geolocation';
 import { GEOLOCATION_OPTIONS } from './constants';
 import { requestLocationPermission, noPermissionErrorMessage } from './permission';

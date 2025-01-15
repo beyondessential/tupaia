@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { useMutation } from '@tanstack/react-query';
 import { LatLng } from 'leaflet';
 import { MapOverlay } from '@tupaia/types';

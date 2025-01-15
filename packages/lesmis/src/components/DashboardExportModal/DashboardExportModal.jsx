@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import { useIsFetching } from '@tanstack/react-query';
 import PropTypes from 'prop-types';

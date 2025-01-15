@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 // limit the number of error messages to avoid busting payload
 const ERROR_MESSAGE_CAP = 5;
 

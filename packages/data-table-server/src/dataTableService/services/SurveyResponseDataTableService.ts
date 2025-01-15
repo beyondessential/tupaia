@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { yup } from '@tupaia/utils';
 import { Country, Entity, Survey, SurveyResponse } from '@tupaia/types';

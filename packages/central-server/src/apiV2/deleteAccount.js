@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
 import { requireEnv, respond } from '@tupaia/utils';
 import { sendEmail } from '@tupaia/server-utils';
 

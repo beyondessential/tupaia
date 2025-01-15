@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { DhisApi } from '@tupaia/dhis-api';
 import { DataGroupModel } from '../../../types';
 import { DhisTranslator } from '../translators';

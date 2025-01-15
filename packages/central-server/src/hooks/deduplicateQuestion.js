@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 // These questions were detected as having multiple questions under the same code during the
 // 20190626043217-MakeQuestionCodeUnique migration to add the question.code unique constraint
 const DUPLICATE_TO_MASTER_QUESTION_ID = {

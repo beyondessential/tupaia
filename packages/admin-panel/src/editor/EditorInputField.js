@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { connect } from 'react-redux';
 import { getEditorState } from './selectors';
 import { InputField } from '../widgets/InputField/InputField';

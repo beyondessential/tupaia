@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { arrayToDbString } from './utilities';
 
 const TABLES_REQUIRING_TRIGGER_CREATION = [

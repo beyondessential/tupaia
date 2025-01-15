@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 export const HEADER_HEIGHT = '4.375rem';
 export const TABLET_BREAKPOINT = '600px'; // mobile size
 export const DESKTOP_BREAKPOINT = '960px'; // matches material-ui's theme.breakpoints.values.md

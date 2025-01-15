@@ -1,12 +1,7 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { SurveyIcon, Tile, LoadingTile } from '../../components';
+import { LoadingTile, SurveyIcon, Tile } from '../../components';
 
 import { useCurrentUserRecentSurveys } from '../../api';
 import { TileProps } from '../../components/Tile';

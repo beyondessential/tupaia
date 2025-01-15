@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { getUpsertEntityQuestions } from '../../helpers';
 import { getAnswers } from '../../selectors';
 import { changeAnswer } from '../actions';

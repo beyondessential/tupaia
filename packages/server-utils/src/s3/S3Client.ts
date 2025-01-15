@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { Upload } from '@aws-sdk/lib-storage';
 import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './constants';
