@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import { formatRelative } from 'date-fns';
-import { enAU } from 'date-fns/esm/locale';
+import { enAU } from 'date-fns/locale';
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
