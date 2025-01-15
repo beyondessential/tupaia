@@ -122,7 +122,7 @@ const ContentItem = styled.div`
   }
 `;
 
-interface TileProps {
+export interface TileProps {
   title?: string;
   text?: string;
   to?: string;
