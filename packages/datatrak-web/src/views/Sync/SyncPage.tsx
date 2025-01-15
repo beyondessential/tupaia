@@ -16,19 +16,19 @@ const Wrapper = styled.div`
 
 const LayoutManager = styled.div`
   display: grid;
+  grid-row-start: 2;
   grid-template-rows: 3fr auto 4fr;
-  block-size: 100%;
 `;
 
 const Content = styled.div`
   align-items: center;
-  block-size: 100%;
   display: flex;
   flex-direction: column;
   grid-row-start: 2;
   padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);
   padding-left: max(env(safe-area-inset-left, 0), 1rem);
   padding-right: max(env(safe-area-inset-right, 0), 1rem);
+  padding-top: 1rem;
   text-align: center;
 
   > * {
