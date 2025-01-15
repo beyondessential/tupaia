@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import type { DhisApi } from '@tupaia/dhis-api';
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { DhisCodeToIdTranslator } from '../../../../services/dhis/translators/DhisCodeToIdTranslator';

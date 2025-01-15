@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 // @see https://react-query.tanstack.com/overview
 export const DEFAULT_REACT_QUERY_OPTIONS = {
   retry: false,

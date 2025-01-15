@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { capital as capitaliseFirstLetters } from 'case';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 

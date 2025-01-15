@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { buildAnalyticsFromDhisEventAnalytics } from '../../../../services/dhis/builders/buildAnalyticsFromDhisEventAnalytics';
 import { EVENT_ANALYTICS } from './buildAnalytics.fixtures';
 import { createModelsStub } from '../DhisService.stubs';

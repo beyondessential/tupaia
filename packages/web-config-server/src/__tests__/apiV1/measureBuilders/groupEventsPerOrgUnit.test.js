@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { when } from 'jest-when';
 
 import { groupEventsPerOrgUnit } from '/apiV1/measureBuilders/groupEventsPerOrgUnit';

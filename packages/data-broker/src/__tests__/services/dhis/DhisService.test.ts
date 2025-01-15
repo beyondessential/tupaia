@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import * as GetDhisApi from '../../../services/dhis/getDhisApi';
 import {
   DATA_ELEMENTS,

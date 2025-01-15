@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Data element value types, taken from
  * https://docs.dhis2.org/2.33/en/developer/html/dhis2_developer_manual_full.html#webapi_csv_data_elements
  */

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 const escapeClause = clause => `(${clause})`;
 
 const escapeValue = value => (typeof value === 'string' ? `"${value}"` : value);

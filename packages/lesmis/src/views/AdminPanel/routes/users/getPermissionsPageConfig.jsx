@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { permissions } from '@tupaia/admin-panel';
 import { getColumnFilter } from '../../table/columnTypes';
 import {

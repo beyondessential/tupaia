@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import sinon from 'sinon';
 import { DataBroker } from '@tupaia/data-broker';
 import { SERVER_NAME } from './AggregateDataPusher.fixtures';

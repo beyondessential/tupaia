@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { BASE_OPTION_FIELDS } from './optionSets';
 
 const RESOURCE_NAME = { singular: 'question' };

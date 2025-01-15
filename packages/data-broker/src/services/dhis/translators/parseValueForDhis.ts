@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { formatDateForDHIS2, formatDateTimeForDHIS2 } from './formatDateForDHIS2';
 import {
   INTEGER,

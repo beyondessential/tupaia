@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- * */
 import { PermissionsError } from '@tupaia/utils';
 
 const assertPermissions = async (req, assertion) => {

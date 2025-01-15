@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { DeleteButton } from './DeleteButton';
 import { ExportButton } from '../../importExport';

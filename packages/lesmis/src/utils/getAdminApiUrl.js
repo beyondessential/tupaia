@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 export const getAdminApiUrl = () => {
   const { REACT_APP_ADMIN_API_URL } = import.meta.env;
   if (REACT_APP_ADMIN_API_URL) {

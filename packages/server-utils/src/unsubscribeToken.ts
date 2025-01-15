@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { requireEnv } from '@tupaia/utils';
 import sha256 from 'sha256';
 

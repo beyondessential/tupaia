@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import { Autocomplete } from './Autocomplete';
 import { useVizConfigContext } from '../../context';

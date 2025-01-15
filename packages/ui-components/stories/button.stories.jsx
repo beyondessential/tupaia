@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import MuiBox from '@material-ui/core/Box';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';

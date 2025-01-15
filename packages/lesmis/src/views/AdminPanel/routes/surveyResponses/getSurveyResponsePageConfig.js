@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import moment from 'moment';
 import { surveyResponses } from '@tupaia/admin-panel';
 import { getBrowserTimeZone } from '@tupaia/utils';

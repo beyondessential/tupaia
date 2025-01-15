@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Authenticator } from '../../Authenticator';
 import { models, AccessPolicyBuilderStub, getPolicyForUserStub } from './Authenticator.stubs';
 import { accessPolicy, verifiedUser } from './Authenticator.fixtures';

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { NonExistingRecordPusher } from './NonExistingRecordPusher';
 import { OrganisationUnitPusher } from './OrganisationUnitPusher';
 import { TrackedEntityPusher } from './TrackedEntityPusher';

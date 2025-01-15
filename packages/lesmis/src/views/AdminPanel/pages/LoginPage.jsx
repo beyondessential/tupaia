@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { LoginPage as AdminLoginPage } from '@tupaia/admin-panel';
 import { useAdminPanelUrl, useI18n } from '../../../utils';

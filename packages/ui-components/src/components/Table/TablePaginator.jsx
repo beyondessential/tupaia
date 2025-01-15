@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { useCallback } from 'react';
 import MuiTableFooter from '@material-ui/core/TableFooter';
 import MuiTableRow from '@material-ui/core/TableRow';
