@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Default Value for event data values
  * 'undefined' can be passed in to treat the value as "optional"
  */

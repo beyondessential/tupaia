@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 const SYNC_QUEUE_KEY = 'dhisSyncQueue';
 const CHANGE_BATCH_SIZE = 1000;
 

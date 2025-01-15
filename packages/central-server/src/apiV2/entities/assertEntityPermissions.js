@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export const assertEntityPermissions = async (accessPolicy, models, entityId) => {
   const entity = await models.entity.findById(entityId);
   if (!entity) {

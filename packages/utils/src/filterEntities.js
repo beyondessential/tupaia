@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const FILTER_TYPE_TO_METHOD = {
   '=': (entity, field, filterValue) => entity[field] === filterValue,
   in: (entity, field, filterValue) => filterValue.includes(entity[field]),

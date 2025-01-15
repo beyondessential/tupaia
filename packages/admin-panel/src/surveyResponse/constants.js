@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export const RESUBMIT_SURVEY_RESPONSE_OPEN = 'RESUBMIT_SURVEY_RESPONSE_OPEN';
 export const RESUBMIT_SURVEY_DISMISS = 'RESUBMIT_SURVEY_DISMISS';
 export const EDIT_SURVEY_RESPONSE_START = 'RESUMIT_SURVEY_START';

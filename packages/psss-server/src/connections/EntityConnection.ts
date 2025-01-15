@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { removeAt } from '@tupaia/utils';
 import { PSSS_ENTITY, PSSS_HIERARCHY } from '../constants';
 import { TupaiaApiClient } from '@tupaia/api-client';

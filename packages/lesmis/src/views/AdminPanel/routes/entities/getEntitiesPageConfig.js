@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { entities, QRCodeColumn } from '@tupaia/admin-panel';
 import { getColumnFilter } from '../../table/columnTypes';
 import { getSurveyResponsePageConfig } from '../surveyResponses/getSurveyResponsePageConfig';

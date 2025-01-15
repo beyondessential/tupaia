@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';

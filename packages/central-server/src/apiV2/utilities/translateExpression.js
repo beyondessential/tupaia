@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Replace question code with question UUID in an expression.
  *
  * Important: This function also assumes that all the variables in an expression have prefix '$'

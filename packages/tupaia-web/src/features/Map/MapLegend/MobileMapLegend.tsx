@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ReactNode, useState } from 'react';
 import { Close, ExpandLess } from '@material-ui/icons';
 import { Button, IconButton } from '@tupaia/ui-components';

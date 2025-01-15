@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export const MULTIPLE_TRANSFORMED_DATA = [
   { FacilityType: 'hospital', Laos: 3, Tonga: 0 },
   { FacilityType: 'clinic', Laos: 4, Tonga: 9 },

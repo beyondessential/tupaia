@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const FILTER_TYPE_TO_METHOD = {
   // eslint-disable-next-line eqeqeq
   '=': (analytic, filterValue, filterProperty) => analytic[filterProperty] == filterValue,

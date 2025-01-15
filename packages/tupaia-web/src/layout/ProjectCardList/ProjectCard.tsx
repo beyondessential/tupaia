@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ComponentType } from 'react';
 import styled, { css } from 'styled-components';
 import Lock from '@material-ui/icons/Lock';

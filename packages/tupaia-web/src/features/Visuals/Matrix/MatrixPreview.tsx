@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
 import { getIsUsingPillCell } from '@tupaia/ui-components';

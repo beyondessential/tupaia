@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import sinon from 'sinon';
 import { expect } from 'chai';
 import { ConfigImporter } from '../../../../../apiV2/import/importSurveys/ConfigImporter';

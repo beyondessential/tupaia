@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { TransformParser } from '../../../../reportBuilder/transform/parser/TransformParser';
 
 describe('TransformParser', () => {

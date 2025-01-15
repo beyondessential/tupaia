@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 const RECORDS_PER_BULK_BATCH = 5000; // number of records (survey responses + answers) processed per bulk insert/delete
 
 export const CREATE = 'create';

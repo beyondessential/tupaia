@@ -1,10 +1,5 @@
 /* eslint jest/expect-expect: ["warn", { "assertFunctionNames": ["expect", "expectMatchingChangeRecords"] }] */
 
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { constructAccessToken } from '@tupaia/auth';
 import {
   clearTestData,

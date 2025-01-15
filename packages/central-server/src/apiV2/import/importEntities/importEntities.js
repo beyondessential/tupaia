@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { respond, DatabaseError, UploadError } from '@tupaia/utils';
 import { populateCoordinatesForCountry } from './populateCoordinatesForCountry';
 import { updateCountryEntities } from './updateCountryEntities';

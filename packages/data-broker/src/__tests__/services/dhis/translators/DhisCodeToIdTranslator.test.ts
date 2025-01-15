@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { DhisEventAnalytics } from '../../../../services/dhis/types';
 import { createApiProxyStub, createApiStub } from './DhisCodeToIdTranslator.stubs';

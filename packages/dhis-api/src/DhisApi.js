@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2019 Beyond Essential Systems Pty Ltd
- */
-
 import winston from 'winston';
 import { aggregateAnalytics } from '@tupaia/aggregator';
 import { utcMoment } from '@tupaia/tsutils';
