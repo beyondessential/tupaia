@@ -1,9 +1,13 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
+import { parseISO } from 'date-fns';
+import React from 'react';
 import styled from 'styled-components';
+
 import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api';
-import { displayDate, useIsMobile } from '../../utils';
 import { LoadingTile, SurveyTickIcon, Tile } from '../../components';
+import { DateTimeDisplay } from '../../components/DateTimeDisplay';
+import { TileProps } from '../../components/Tile';
+import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const Container = styled.section`
@@ -33,7 +37,20 @@ const ScrollBody = styled.div`
   }
 `;
 
-const SurveyResponseTile = ({ id, surveyName, dataTime, entityName, countryName }) => {
+interface SurveyResponseTileProps extends TileProps {
+  id: string;
+  surveyName: string;
+  dataTime: string;
+  entityName: string;
+  countryName: string;
+}
+const SurveyResponseTile = ({
+  id,
+  surveyName,
+  dataTime,
+  entityName,
+  countryName,
+}: SurveyResponseTileProps) => {
   const isMobile = useIsMobile();
   const tooltip = isMobile && (
     <>
@@ -51,7 +68,7 @@ const SurveyResponseTile = ({ id, surveyName, dataTime, entityName, countryName 
       to={`?responseId=${id}`}
       tooltip={tooltip}
     >
-      {countryName}, {displayDate(dataTime)}
+      {countryName}, <DateTimeDisplay date={parseISO(dataTime)} variant="date" />
     </Tile>
   );
 };
