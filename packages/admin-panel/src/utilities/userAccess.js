@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 const VIZ_BUILDER_PERMISSION_GROUP = 'Viz Builder User';
 

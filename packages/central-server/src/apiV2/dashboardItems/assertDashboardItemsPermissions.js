@@ -39,8 +39,20 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
   const dashboards = await models.dashboard.findDashboardsWithRelationsByItemId(dashboardItemId);
   const permittedDashboardItems = await getPermittedDashboardItems(accessPolicy, models);
 
+  const vizBuilderUserPermissionChecks = await Promise.all(
+    dashboards.map(dashboard =>
+      hasVizBuilderAccessToEntityCode(accessPolicy, models, dashboard.rootEntityCode),
+    ),
+  );
+
+  // If the user doesn't have viz builder access to the entity code of the dashboards,
+  // they can't edit the dashboard item
+  if (!vizBuilderUserPermissionChecks.every(result => result)) {
+    return false;
+  }
+
   // To edit a dashboard item, the user has to have access to the relation between the
-  // dashboard item and ALL of the dashboards it is in
+  // dashboard item and ALL the dashboards it is in
   // OR user's access policy covers the dashboard item's permission_group_ids column
   if (permittedDashboardItems.includes(dashboardItemId)) {
     return true;
@@ -57,16 +69,7 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
     ),
   );
 
-  const vizBuilderUserPermissionChecks = await Promise.all(
-    dashboards.map(dashboard =>
-      hasVizBuilderAccessToEntityCode(accessPolicy, models, dashboard.rootEntityCode),
-    ),
-  );
-
-  return (
-    permissionChecks.every(result => result) &&
-    vizBuilderUserPermissionChecks.every(result => result)
-  );
+  return permissionChecks.every(result => result);
 };
 
 export const assertDashboardItemGetPermissions = async (accessPolicy, models, dashboardItemId) => {
