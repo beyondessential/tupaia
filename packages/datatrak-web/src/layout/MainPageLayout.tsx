@@ -3,7 +3,7 @@ import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { HEADER_HEIGHT } from '../constants';
 import { Header } from '.';
-import { MobileAppPrompt, SurveyResponseModal, WebAppPrompt } from '../features';
+import { SurveyResponseModal, WebAppPrompt } from '../features';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -19,10 +19,9 @@ const PageWrapper = styled.div`
 export const MainPageLayout = () => {
   return (
     <PageWrapper>
+      <WebAppPrompt />
       <Header />
       <Outlet />
-      {/*<MobileAppPrompt />*/}
-      <WebAppPrompt />
       <SurveyResponseModal />
     </PageWrapper>
   );
