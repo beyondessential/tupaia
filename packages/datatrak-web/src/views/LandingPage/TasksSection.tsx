@@ -23,7 +23,8 @@ const Paper = styled.div<{ $hasTasks?: boolean }>`
   text-align: center;
   overflow: auto;
   background: ${({ theme }) => theme.palette.background.paper};
-  padding: 1rem 1.25rem;
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
   border-radius: 10px;
 
   ${({ theme, $hasTasks }) =>
@@ -39,7 +40,8 @@ const Paper = styled.div<{ $hasTasks?: boolean }>`
 const Button = styled(UIButton)`
   margin: 0.3rem auto 0;
   display: inline-block;
-  padding: 0.1rem 1rem 0.2rem;
+  padding-block: 0.1rem 0.2rem;
+  padding-inline: 1rem;
   .MuiButton-label {
     font-size: 0.75rem;
   }
