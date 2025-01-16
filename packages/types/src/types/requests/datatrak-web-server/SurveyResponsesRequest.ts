@@ -6,7 +6,8 @@ type SurveyResponse = {
   assessorName: SurveyResponseT['assessor_name'];
   countryName: Country['name'];
   countryCode: Country['code'];
-  dataTime: Date;
+  /** ISO9075 format */
+  dataTime: string;
   entityName: Entity['name'];
   id: SurveyResponseT['id'];
   surveyName: Survey['name'];
