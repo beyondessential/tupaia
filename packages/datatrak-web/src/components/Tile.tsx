@@ -11,7 +11,8 @@ const Wrapper = styled(Paper).attrs({
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: 0.8rem 1rem;
+  padding-block: 0.8rem;
+  padding-inline: 1rem;
   background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
   font-weight: 400;
@@ -48,7 +49,7 @@ const ButtonWrapper = styled(Wrapper).attrs({
 const Text = styled(Typography)`
   font-size: 0.75rem;
   color: ${({ theme }) => theme.palette.text.secondary};
-  text-align: left;
+  text-align: start;
   display: block;
   white-space: nowrap;
   overflow: hidden;
@@ -76,7 +77,7 @@ const Heading = styled(Text)`
   font-size: 0.875rem;
   font-weight: 500;
   color: ${({ theme }) => theme.palette.text.primary};
-  margin-bottom: 0.2rem;
+  margin-block-end: 0.2rem;
 `;
 
 const LoadingContainer = styled.div`
@@ -92,7 +93,7 @@ const LoadingContainer = styled.div`
 const ButtonContent = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  inline-size: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     // To make ellipsis work on the text, we need to set a max-width, and by adding calc(90%) we can make it responsive as well because calc converts the percentage to pixels

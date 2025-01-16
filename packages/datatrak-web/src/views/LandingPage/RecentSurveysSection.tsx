@@ -17,19 +17,17 @@ const RecentSurveys = styled.section`
 const ScrollBody = styled.div<{
   $hasMultiple: boolean;
 }>`
+  --_column-gap: 1rem;
   display: flex;
   overflow-x: auto;
-  column-gap: 1rem;
-  row-gap: 0.6rem;
+  gap: 0.6rem var(--_column-gap);
 
-  > span,
-  > a {
-    width: 18rem;
-    max-width: 100%;
-    //Reset flex grow and shrink
-    flex: 0 0 auto;
+  > :is(a, span) {
+    inline-size: 18rem;
+    max-inline-size: 100%;
+    flex: initial;
   }
-  // make the 2 row grid on desktop
+
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: grid;
     grid-template-rows: 1fr;
@@ -82,7 +80,7 @@ export const RecentSurveysSection = () => {
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
       <ScrollBody $hasMultiple={recentSurveys.length > 1}>
-        {isLoading && <TileSkeleton />}
+        {isLoading && <LoadingTile />}
         {isSuccess &&
           (recentSurveys?.length > 0 ? (
             recentSurveys.map(props => (

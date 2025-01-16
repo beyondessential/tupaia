@@ -84,14 +84,13 @@ const Grid = styled.div<{
         'recentResponses activityFeed activityFeed leaderboard'
         `;
     }};
-    > section {
-      &:not(:last-child) {
-        margin-bottom: 0;
-      }
+
+    > section &:not(:last-child) {
+      margin-block-end: 0;
     }
 
     > div {
-      min-height: auto;
+      min-block-size: auto;
     }
   }
 
