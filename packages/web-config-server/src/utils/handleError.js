@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import winston from 'winston';
 import { CustomError, InternalServerError } from '@tupaia/utils';
 

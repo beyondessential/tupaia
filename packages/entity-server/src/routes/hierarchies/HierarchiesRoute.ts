@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 import keyBy from 'lodash.keyby';
 import { isNotNullish } from '@tupaia/tsutils';

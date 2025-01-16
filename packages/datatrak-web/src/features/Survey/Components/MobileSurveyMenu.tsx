@@ -12,8 +12,14 @@ import { Button as UIButton, CopyIcon, ShareIcon } from '../../../components';
 import { useCopySurveyUrl } from './CopySurveyUrlButton';
 import { useShare } from '../utils/useShare';
 
+const MOBILE_SURVEY_MENU_HEIGHT = '3.5rem';
+
 const Container = styled.div`
+  position: fixed;
+  bottom: 0;
+  width: 100%;
   display: flex;
+  height: ${MOBILE_SURVEY_MENU_HEIGHT};
   justify-content: space-between;
   align-items: stretch;
   padding: 0 0.5rem;

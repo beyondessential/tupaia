@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import assert from 'assert';
 import groupBy from 'lodash.groupby';
 import orderBy from 'lodash.orderby';

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Paper, Typography } from '@material-ui/core';
@@ -29,7 +25,6 @@ const StyledModal = styled(Modal)`
       > div {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         block-size: 100%;
 
         > div {
@@ -96,6 +91,10 @@ const PaperComponent = styled(Paper)`
 const Header = styled.div`
   display: flex;
   align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-block-start: -1rem;
+  }
 `;
 
 const BackButton = styled(IconButton)`

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export enum VizPeriodGranularity {
   'DAY' = 'day',
   'SINGLE_DAY' = 'one_day_at_a_time',

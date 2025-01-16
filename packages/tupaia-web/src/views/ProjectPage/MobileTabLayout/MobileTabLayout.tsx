@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { Typography, Tabs as MuiTabs, Tab as MuiTab } from '@material-ui/core';

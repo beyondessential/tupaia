@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { ENV_BANNER_HEIGHT } from '@tupaia/ui-components';
 import { TOP_BAR_HEIGHT, TOP_BAR_HEIGHT_MOBILE } from '../constants';
 

@@ -1,13 +1,8 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
-
-import { ScrollableBody, StickyMobileHeader } from '../../../layout';
+import { StickyMobileHeader } from '../../../layout';
 import { useIsMobile } from '../../../utils';
 import { MobileSurveyMenu, SurveyPaginator, SurveyReviewSection } from '../Components';
 import { useSurveyForm } from '../SurveyContext';
@@ -64,6 +59,21 @@ const MobileHeader = () => {
     </StickyHeader>
   );
 };
+
+const ScrollableBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 1rem 2rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1rem 2.5rem;
+  }
+`;
 
 export const SurveyReviewScreen = () => {
   const isMobile = useIsMobile();

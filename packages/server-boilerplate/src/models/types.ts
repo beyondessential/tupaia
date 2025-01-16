@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
 import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/types';
 

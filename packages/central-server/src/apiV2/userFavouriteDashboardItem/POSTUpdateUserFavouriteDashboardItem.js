@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { respond } from '@tupaia/utils';
 import { assertAnyPermissions } from '../../permissions';
 import { CRUDHandler } from '../CRUDHandler';

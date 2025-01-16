@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -14,8 +9,23 @@ import {
   MobileSurveyHeader,
   MobileSurveyMenu,
 } from '../Components';
-import { ScrollableBody } from '../../../layout';
 import { useIsMobile } from '../../../utils';
+
+const ScrollableBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1rem 4rem;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 1rem 1rem 1rem 5rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1rem 2.5rem;
+  }
+`;
 
 const ScreenHeader = styled.div<{
   $centered?: boolean;
@@ -63,7 +73,7 @@ export const SurveyScreen = () => {
   return (
     <>
       {isMobile && <MobileSurveyHeader />}
-      <ScrollableBody $hasSidebar>
+      <ScrollableBody>
         {/*
          * If the first question on the active screen is an instruction, then display it in full
          * (heading and detail). Otherwise, display only its heading without its detail; any detail

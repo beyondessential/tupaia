@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 

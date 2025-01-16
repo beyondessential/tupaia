@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';

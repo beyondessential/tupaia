@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { convertPeriodStringToDateRange } from '@tupaia/utils';
 import { PSSS_HIERARCHY } from '../constants';
 import { TupaiaApiClient } from '@tupaia/api-client';

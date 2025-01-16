@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { PERIOD_TYPES, utcMoment } from '@tupaia/tsutils';
 
 const PERIOD_TYPE_TO_NAME_FORMAT = {

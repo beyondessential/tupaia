@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 // Generate lists of country codes we have access to per permission group id
 export const fetchCountryCodesByPermissionGroupId = async (accessPolicy, models) => {
   const allPermissionGroupsNames = accessPolicy.getPermissionGroups();

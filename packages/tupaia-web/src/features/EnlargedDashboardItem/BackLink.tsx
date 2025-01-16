@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ComponentType } from 'react';
 import styled from 'styled-components';
 import { useLocation, useSearchParams, Link, To } from 'react-router-dom';

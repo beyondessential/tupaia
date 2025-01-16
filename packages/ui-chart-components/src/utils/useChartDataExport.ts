@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 import { useDataTableExport } from '@tupaia/ui-components';
 import { DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
 import { getChartTableData } from './getChartTableData';

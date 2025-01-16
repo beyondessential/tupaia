@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
 import { Analytic, RawAnalyticResults } from '../../../types';
 import { AnalyticDimension, DhisAnalytics, ValueType } from '../types';

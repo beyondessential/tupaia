@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { RateLimiterPostgres } from 'rate-limiter-flexible';
 
 const MAX_CONSECUTIVE_FAILS_BY_USERNAME = 10;

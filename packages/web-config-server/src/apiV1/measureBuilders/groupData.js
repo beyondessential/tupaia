@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { mapMeasureValuesToGroups, mapMeasureDataToCountries } from './helpers';
 import { getMeasureBuilder } from './getMeasureBuilder';
 

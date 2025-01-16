@@ -1,15 +1,10 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { TasksContentWrapper } from '../../layout';
-import { TaskMetrics } from '../../components/TaskMetrics';
+import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
 
 const ButtonContainer = styled.div`
   padding-block-end: 0.5rem;

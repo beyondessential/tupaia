@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { ValidationError } from '@tupaia/utils';
 
 export const validateSurveyCountries = async (models, surveyId, countryIds, projectId) => {
