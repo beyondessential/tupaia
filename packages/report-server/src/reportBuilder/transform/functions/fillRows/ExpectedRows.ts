@@ -1,9 +1,4 @@
 /* eslint-disable no-param-reassign */
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { FieldValue } from '../../../types';
 
 /**

@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * All routes will be wrapped with an error catcher that simply passes the error to the next()
  * function, causing error handling middleware to be fired. Otherwise, async errors will be
  * swallowed.

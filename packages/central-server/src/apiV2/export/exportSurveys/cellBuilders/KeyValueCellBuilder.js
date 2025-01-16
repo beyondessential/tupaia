@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 export class KeyValueCellBuilder {
   constructor(models) {
     this.models = models;

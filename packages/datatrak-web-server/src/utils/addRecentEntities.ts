@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { DatatrakWebServerModelRegistry } from '../types';
 
 const MAX_RECENT_ENTITIES = 3;

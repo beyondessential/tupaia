@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { DEFAULT_AUTOCOMPLETE_STATE } from './constants';
 
 export const getAutocompleteState = (state, reduxId) =>

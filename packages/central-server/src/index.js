@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import '@babel/polyfill';
 import http from 'http';
 import nodeSchedule from 'node-schedule';

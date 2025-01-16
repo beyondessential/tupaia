@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import { useMatch } from 'react-router';
 import { ROUTES } from '../../constants';

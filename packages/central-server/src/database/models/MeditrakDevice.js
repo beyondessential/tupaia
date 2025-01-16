@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { MeditrakDeviceModel as CommonMeditrakDeviceModel } from '@tupaia/database';
 
 export class MeditrakDeviceModel extends CommonMeditrakDeviceModel {

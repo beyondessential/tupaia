@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { percentagesByNominatedPairs } from '/apiV1/dataBuilders/generic/percentage/percentagesByNominatedPairs';
 
 const dataBuilderConfig = {

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistance } from 'date-fns';

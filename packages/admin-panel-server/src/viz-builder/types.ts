@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { Report as BaseReportType, StandardReportConfig } from '@tupaia/types';
 
 export type VizData = {

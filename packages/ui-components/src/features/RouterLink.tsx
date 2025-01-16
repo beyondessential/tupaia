@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ReactNode } from 'react';
 import { Link, LinkProps } from 'react-router-dom-v6';
 

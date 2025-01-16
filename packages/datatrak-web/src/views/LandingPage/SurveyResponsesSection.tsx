@@ -1,14 +1,13 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
 import { Typography } from '@material-ui/core';
+import { parseISO } from 'date-fns';
+import React from 'react';
 import styled from 'styled-components';
+
 import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api';
-import { displayDate, useIsMobile } from '../../utils';
 import { LoadingTile, SurveyTickIcon, Tile } from '../../components';
+import { DateTimeDisplay } from '../../components/DateTimeDisplay';
+import { TileProps } from '../../components/Tile';
+import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const Container = styled.section`
@@ -38,7 +37,20 @@ const ScrollBody = styled.div`
   }
 `;
 
-const SurveyResponseTile = ({ id, surveyName, dataTime, entityName, countryName }) => {
+interface SurveyResponseTileProps extends TileProps {
+  id: string;
+  surveyName: string;
+  dataTime: string;
+  entityName: string;
+  countryName: string;
+}
+const SurveyResponseTile = ({
+  id,
+  surveyName,
+  dataTime,
+  entityName,
+  countryName,
+}: SurveyResponseTileProps) => {
   const isMobile = useIsMobile();
   const tooltip = isMobile && (
     <>
@@ -51,13 +63,12 @@ const SurveyResponseTile = ({ id, surveyName, dataTime, entityName, countryName 
   return (
     <Tile
       Icon={SurveyTickIcon}
-      key={id}
       text={entityName}
       title={surveyName}
       to={`?responseId=${id}`}
       tooltip={tooltip}
     >
-      {countryName}, {displayDate(dataTime)}
+      {countryName}, <DateTimeDisplay date={parseISO(dataTime)} variant="date" />
     </Tile>
   );
 };
@@ -73,7 +84,7 @@ export const SurveyResponsesSection = () => {
         {isLoading && <LoadingTile />}
         {isSuccess &&
           (recentSurveyResponses?.length > 0 ? (
-            recentSurveyResponses.map(SurveyResponseTile)
+            recentSurveyResponses.map(props => <SurveyResponseTile key={props.id} {...props} />)
           ) : (
             <Typography variant="body2" color="textSecondary">
               No recent surveys responses to display for {project?.name || 'project'}

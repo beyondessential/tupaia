@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { getSyncQueueChangeTime } from '@tupaia/tsutils';
 
 // TODO: Tidy this up as part of RN-502

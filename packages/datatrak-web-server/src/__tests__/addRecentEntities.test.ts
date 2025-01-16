@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { addRecentEntities } from '../utils';
 
 const NUM_MOCK_ENTITIES = 10;

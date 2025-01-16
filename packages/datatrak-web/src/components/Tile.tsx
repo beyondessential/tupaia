@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ComponentType, ReactNode } from 'react';
 import styled from 'styled-components';
 import { Typography, Box, Paper } from '@material-ui/core';
@@ -122,7 +118,7 @@ const ContentItem = styled.div`
   }
 `;
 
-interface TileProps {
+export interface TileProps {
   title?: string;
   text?: string;
   to?: string;

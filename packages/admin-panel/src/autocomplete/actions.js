@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import generateId from 'uuid/v1';
 import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
 import {

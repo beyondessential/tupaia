@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import IconButton from '@material-ui/core/IconButton';
 import { OptionsObject } from 'notistack';
 import React from 'react';
@@ -38,10 +33,9 @@ export const useCopySurveyUrl = ({ toastOptions = {} }: { toastOptions: OptionsO
   const path = generatePath(ROUTES.SURVEY, params);
   const link = `${window.location.origin}${path}`;
 
-  return () => {
+  return async () => {
     try {
-      navigator.clipboard.writeText(link);
-
+      await navigator.clipboard.writeText(link);
       const androidVersion = getAndroidVersion();
 
       // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#Feedback

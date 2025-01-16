@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import baseCamelFunction, { Options } from 'camelcase-keys';
 import { KeysToCamelCase } from '@tupaia/types';
 import { isObject } from './typeGuards';
