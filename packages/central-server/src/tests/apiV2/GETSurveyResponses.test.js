@@ -1,12 +1,14 @@
 import { expect } from 'chai';
+
 import {
-  buildAndInsertSurveys,
   buildAndInsertSurveyResponses,
+  buildAndInsertSurveys,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { resetTestData, TestableApp } from '../testUtilities';
+
+import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { getRewardsForUser } from '../../social/getRewardsForUser';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+import { TestableApp, resetTestData } from '../testUtilities';
 
 describe('Permissions checker for GETSurveyResponses', async () => {
   const DEFAULT_POLICY = {
