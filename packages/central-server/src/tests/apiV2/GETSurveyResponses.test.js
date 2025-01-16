@@ -194,7 +194,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     it('gets user rewards', async () => {
       await app.grantAccess(DEFAULT_POLICY);
 
-      const { body: results } = await app.get(`surveyResponses`);
+      const { body: results } = await app.get('surveyResponses');
 
       const userId = results[0].user_id;
       const rewards = await getRewardsForUser(app.database, userId);
@@ -205,7 +205,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     it('gets rewards with a project_id', async () => {
       await app.grantAccess(DEFAULT_POLICY);
 
-      const { body: results } = await app.get(`surveyResponses`);
+      const { body: results } = await app.get('surveyResponses');
 
       const userId = results[0].user_id;
       const projectId = 'testId';
