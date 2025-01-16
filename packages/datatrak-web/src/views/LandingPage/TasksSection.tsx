@@ -97,7 +97,7 @@ const ViewMoreTasksButton = ({ numberOfPages }) => {
         View more
       </DesktopButton>
       <MobileButton component={Link} to={ROUTES.TASKS}>
-        View more...
+        View more…
       </MobileButton>
     </>
   );
