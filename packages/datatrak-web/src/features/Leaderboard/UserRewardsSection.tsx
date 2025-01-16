@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   padding: 0.6rem 2rem;
-  border-bottom: 1px solid ${props => props.theme.palette.divider};
+  border-bottom: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1.5rem 2.2rem;
   }
@@ -36,10 +36,10 @@ const UserRewardCount = styled(Typography)`
 `;
 
 const AnimatedPig = styled(Pig)`
-  animation-name: wiggle;
+  animation-name: --wiggle;
   animation-duration: 5s;
   animation-iteration-count: infinite;
-  @keyframes wiggle {
+  @keyframes --wiggle {
     // do the wiggle animation within 15% and the rest will be the delay between the wiggles
     0% {
       transform: rotate(0deg);
@@ -70,16 +70,23 @@ const AnimatedPig = styled(Pig)`
   }
 `;
 
-export const UserRewardsSection = ({ pigs, coconuts }: UserRewards) => {
+export const UserRewardsSection = ({ pigs: pigCount, coconuts: coconutCount }: UserRewards) => {
+  console.log(typeof pigCount, typeof coconutCount);
+  const pigUnit = pigCount === 1 ? 'pig' : 'pigs';
+  const coconutUnit = coconutCount === 1 ? 'coconut' : 'coconuts';
   return (
     <Wrapper>
       <UserRewardItem>
         <Coconut />
-        <UserRewardCount>{coconuts}&nbsp;coconuts</UserRewardCount>
+        <UserRewardCount>
+          {coconutCount}&nbsp;{coconutUnit}
+        </UserRewardCount>
       </UserRewardItem>
       <UserRewardItem>
         <AnimatedPig />
-        <UserRewardCount>{pigs}&nbsp;pigs</UserRewardCount>
+        <UserRewardCount>
+          {pigCount}&nbsp;{pigUnit}
+        </UserRewardCount>
       </UserRewardItem>
     </Wrapper>
   );

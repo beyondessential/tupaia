@@ -5,9 +5,9 @@ import { UserRewards } from '../../types';
 import { useCurrentUserContext } from '../CurrentUserContext';
 
 const useRewards = (projectId?: Project['id']) => {
-  return useQuery(
+  return useQuery<UserRewards>(
     ['rewards', projectId],
-    (): Promise<UserRewards> =>
+    () =>
       get('me/rewards', {
         params: {
           projectId,
