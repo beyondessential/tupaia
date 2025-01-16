@@ -1,12 +1,12 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useMediaQuery, useTheme } from '@material-ui/core';
 import { FlexSpaceBetween, Button as UIButton } from '@tupaia/ui-components';
 import { useCurrentUserContext, useTasks } from '../../api';
 import { NoTasksSection, TaskTile } from '../../features/Tasks';
 import { ROUTES } from '../../constants';
 import { LoadingTile } from '../../components';
+import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const SectionContainer = styled.section`
@@ -115,8 +115,8 @@ export const TasksSection = () => {
       },
     },
   ];
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const isMobile = useIsMobile();
   const {
     data = { tasks: [], numberOfPages: 0 },
     isLoading,
