@@ -199,7 +199,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       const userId = results[0].user_id;
       const rewards = await getRewardsForUser(app.database, userId);
 
-      expect(rewards.coconuts).to.equal('4');
+      expect(rewards.coconuts).to.equal(4);
     });
 
     it('gets rewards with a project_id', async () => {
