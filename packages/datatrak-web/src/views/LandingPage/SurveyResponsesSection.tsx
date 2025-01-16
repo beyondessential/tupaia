@@ -16,7 +16,7 @@ const Container = styled.section`
   flex-direction: column;
 `;
 
-const ScrollBody = styled.div`
+const ScrollBody = styled.ul.attrs({ role: 'list' })`
   display: flex;
   flex-direction: row;
   overflow-x: auto;
