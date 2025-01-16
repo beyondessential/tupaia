@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
+import { useNavigate } from 'react-router';
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
-import { TasksContentWrapper } from '../../layout';
+import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
 import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
+import { useIsMobile } from '../../utils';
 
 const ButtonContainer = styled.div`
   //padding-block-end: 0.5rem;
@@ -35,9 +37,19 @@ const ContentWrapper = styled(TasksContentWrapper)`
 
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const onBack = () => {
+    navigate(-1);
+  };
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
     <>
+      {isMobile && (
+        <StickyMobileHeader title="Tasks" onBack={onBack}>
+          View all tasks
+        </StickyMobileHeader>
+      )}
       <TaskPageHeader title="Tasks" backTo="/">
         <TaskMetrics />
         <ButtonContainer>

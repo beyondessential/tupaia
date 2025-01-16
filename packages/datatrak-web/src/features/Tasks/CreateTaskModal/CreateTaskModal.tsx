@@ -13,6 +13,7 @@ import { AssigneeInput } from '../AssigneeInput';
 import { TaskForm } from '../TaskForm';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { EntityInput } from './EntityInput';
+import { useIsMobile } from '../../../utils';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -89,6 +90,8 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     navigate(ROUTES.PROJECT_SELECT);
   };
   const { mutate: editUser } = useEditUser(navigateToProjectScreen);
+
+  const isMobile = useIsMobile();
 
   const generateDefaultDueDate = () => {
     const now = new Date();
@@ -187,6 +190,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
       buttons={buttons}
       isLoading={isSaving}
       disablePortal
+      fullScreen={isMobile}
     >
       <Wrapper>
         <LoadingContainer isLoading={isLoadingData} heading="Loading data for project" text="">

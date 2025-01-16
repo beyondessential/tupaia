@@ -1,18 +1,20 @@
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { PageContainer as BasePageContainer } from '../components';
 import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
-import { StickyMobileHeader } from './StickyMobileHeader.tsx';
 import { useIsMobile } from '../utils';
 
-const HeaderLessFullHeightContainer = styled.div`
+const DesktopContainer = styled.div`
   display: flex;
   flex-direction: column;
+  height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
+`;
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
-  }
+const MobileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 60vh;
 `;
 
 const PageContainer = styled(BasePageContainer)`
@@ -41,16 +43,20 @@ export const TasksContentWrapper = styled.div`
 
 export const TasksLayout = () => {
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
-  const onClose = () => {
-    navigate('/');
-  };
+
+  if (isMobile) {
+    return (
+      <MobileContainer>
+        <Outlet />
+      </MobileContainer>
+    );
+  }
+
   return (
-    <HeaderLessFullHeightContainer>
-      {isMobile && <StickyMobileHeader onBack={onClose} title="View all tasks" />}
+    <DesktopContainer>
       <PageContainer>
         <Outlet />
       </PageContainer>
-    </HeaderLessFullHeightContainer>
+    </DesktopContainer>
   );
 };
