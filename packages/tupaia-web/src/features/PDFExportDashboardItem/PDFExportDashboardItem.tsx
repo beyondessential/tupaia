@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';

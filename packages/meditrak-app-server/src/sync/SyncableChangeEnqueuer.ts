@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import winston from 'winston';
 import { ChangeHandler, TupaiaDatabase } from '@tupaia/database';
 import { MeditrakAppServerModelRegistry } from '../types';

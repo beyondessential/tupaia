@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';

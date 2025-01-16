@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { Object as RealmObject } from 'realm';
 import { AccessPolicy } from '@tupaia/access-policy';
 

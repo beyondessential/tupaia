@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { InfiniteActivityFeed } from './InfiniteActivityFeed';

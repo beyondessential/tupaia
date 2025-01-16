@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LinkProps } from 'react-router-dom-v6';

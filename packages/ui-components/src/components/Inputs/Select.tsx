@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState, useCallback } from 'react';
 import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
 import { SvgIconProps, TextFieldProps, MenuItem as MuiMenuItem } from '@material-ui/core';

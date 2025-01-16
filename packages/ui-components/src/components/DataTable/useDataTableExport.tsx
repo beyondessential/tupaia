@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { toFilename } from '@tupaia/utils';
 import { useTable } from 'react-table';
 import moment, { Moment } from 'moment';

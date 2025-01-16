@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import keyBy from 'lodash.keyby';
 import { screen, within, fireEvent, waitForElementToBeRemoved } from '@testing-library/react';

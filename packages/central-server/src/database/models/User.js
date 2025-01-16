@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { UserRecord as CommonUserRecord, UserModel as CommonUserModel } from '@tupaia/database';
 
 // Internal users who should be flagged in the meditrak app to exclude from user lists

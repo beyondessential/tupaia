@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017-2020 Beyond Essential Systems Pty Ltd
- */
-
 // @ts-expect-error pg has no types
 import { types as pgTypes } from 'pg';
 import knex from 'knex';

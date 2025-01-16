@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { ReactNode } from 'react';
 import MuiCard from '@material-ui/core/Card';
 import MuiCardContent from '@material-ui/core/CardContent';

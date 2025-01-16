@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 // DHIS2 Resource Types
 const CATEGORY_OPTION_COMBO = 'categoryOptionCombos';
 const DATA_ELEMENT = 'dataElements';

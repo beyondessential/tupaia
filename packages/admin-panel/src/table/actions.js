@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import parseLinkHeader from 'parse-link-header';
 import generateId from 'uuid/v1';
 import debounce from 'lodash.debounce';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { sanitizeValue } from './sanitizeValue';
 import { Analytic, DataBrokerModelRegistry, Event, RequireKeys } from '../../../types';
 import { DhisEventAnalytics, ValueType } from '../types';

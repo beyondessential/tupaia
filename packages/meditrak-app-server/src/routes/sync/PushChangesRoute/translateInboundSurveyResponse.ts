@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import cloneDeep from 'lodash.clonedeep';
 import { QuestionModel, SurveyModel } from '@tupaia/database';
 import { EntityModel, UserModel } from '@tupaia/server-boilerplate';

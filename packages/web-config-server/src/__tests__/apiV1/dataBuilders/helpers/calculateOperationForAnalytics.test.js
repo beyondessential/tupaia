@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { arrayToAnalytics } from '@tupaia/tsutils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 

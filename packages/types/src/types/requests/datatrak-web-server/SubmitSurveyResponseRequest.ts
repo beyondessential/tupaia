@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { UserAccount, Survey, Entity } from '../../models';
 import { SurveyScreenComponent } from './SurveyRequest';
 

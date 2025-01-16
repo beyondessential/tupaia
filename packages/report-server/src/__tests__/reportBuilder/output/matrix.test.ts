@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { ReportServerAggregator } from '../../../aggregator';
 import { buildOutput } from '../../../reportBuilder/output';
 import { TransformTable } from '../../../reportBuilder/transform';

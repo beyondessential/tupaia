@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import {
   BarChartConfigSchema,
   ColorMapOverlayConfigSchema,
@@ -171,7 +166,7 @@ export const DASHBOARD_ITEM_VIZ_TYPES = {
   // Matrix
   MATRIX: {
     name: 'Matrix',
-    // schema: MatrixVizBuilderConfigSchema,
+    schema: MatrixVizBuilderConfigSchema,
     vizMatchesType: viz => viz.type === 'matrix',
     initialConfig: {
       type: 'matrix',

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { createContext, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
 import PropTypes from 'prop-types';

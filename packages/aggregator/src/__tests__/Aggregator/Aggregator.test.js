@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { Aggregator } from '../../Aggregator';
 import * as AggregateAnalytics from '../../analytics/aggregateAnalytics/aggregateAnalytics';
 import * as FilterAnalytics from '../../analytics/filterAnalytics';

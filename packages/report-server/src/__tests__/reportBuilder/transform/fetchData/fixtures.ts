@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { periodToMoment, utcMoment } from '@tupaia/tsutils';
 import { EARLIEST_DATA_DATE_STRING, getPeriodsInRange, yup } from '@tupaia/utils';
 import { CURRENT_DATE_STUB } from '../../../fixtures';

@@ -15,8 +15,8 @@ DEPLOYABLE_PACKAGES=(
     'meditrak-app-server'
     'psss-server'
     'report-server'
-    'tupaia-web-server' 
-    'web-config-server' 
+    'tupaia-web-server'
+    'web-config-server'
     'admin-panel-server' # admin-panel-server last as it depends on report-server
 )
 echo "${DEPLOYABLE_PACKAGES[@]}"

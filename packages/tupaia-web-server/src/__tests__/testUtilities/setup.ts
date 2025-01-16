@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { createBasicHeader, requireEnv } from '@tupaia/utils';
 import { TestableServer } from '@tupaia/server-boilerplate';

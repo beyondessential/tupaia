@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState, useCallback, ChangeEvent } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import { ListSubheader, SvgIconProps, TextFieldProps } from '@material-ui/core';

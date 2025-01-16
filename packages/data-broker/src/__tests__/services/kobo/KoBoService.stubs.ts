@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import type { KoBoApi } from '@tupaia/kobo-api';
 import { MOCK_DB_DATA, MOCK_KOBO_RESULT } from './KoBoService.fixtures';
