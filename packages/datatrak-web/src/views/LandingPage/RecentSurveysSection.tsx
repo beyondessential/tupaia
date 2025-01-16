@@ -39,12 +39,12 @@ const ScrollBody = styled.div<{
   }
 `;
 
-interface RecentSurveyTileProps extends TileProps {
-  surveyName: string;
-  surveyCode: string;
-  countryName: string;
-  countryCode: string;
-}
+type RecentSurveyTileProps = TileProps &
+  Pick<
+    DatatrakWebSurveyResponsesRequest.SurveyResponse,
+    'surveyName' | 'surveyCode' | 'countryName' | 'countryCode'
+  >;
+
 const RecentSurveyTile = ({
   surveyName,
   surveyCode,

@@ -2,7 +2,7 @@ import { SurveyResponse as SurveyResponseT, Country, Entity, Survey } from '../.
 
 export type Params = Record<string, never>;
 
-type SurveyResponse = {
+export type SurveyResponse = {
   assessorName: SurveyResponseT['assessor_name'];
   countryName: Country['name'];
   countryCode: Country['code'];
