@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import styled from 'styled-components';
 import { Paper, Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
+import { parseISO } from 'date-fns';
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import styled from 'styled-components';
+
 import { useEditTask, useSurveyResponse } from '../../../api';
-import { displayDate } from '../../../utils';
 import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
+import { DateTimeDisplay } from '../../../components/DateTimeDisplay';
 import { SingleTaskResponse } from '../../../types';
-import { RepeatScheduleInput } from '../RepeatScheduleInput';
-import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
+import { DueDatePicker } from '../DueDatePicker';
+import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { TaskForm } from '../TaskForm';
-import { TaskMetadata } from './TaskMetadata';
 import { TaskComments } from './TaskComments';
+import { TaskMetadata } from './TaskMetadata';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -130,7 +132,7 @@ const InitialRequest = ({ initialRequestId }) => {
       }
       Icon={SurveyTickIcon}
     >
-      {countryName}, {displayDate(dataTime as Date)}
+      {countryName}, <DateTimeDisplay date={parseISO(dataTime)} variant="date" />
     </Tile>
   );
 };
