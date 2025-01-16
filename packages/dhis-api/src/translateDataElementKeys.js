@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { mapKeys, reduceToDictionary } from '@tupaia/utils';
 import { DHIS2_RESOURCE_TYPES } from './types';
 

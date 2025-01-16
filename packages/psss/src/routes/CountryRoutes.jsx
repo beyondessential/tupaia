@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { useRouteMatch, Redirect, Route, Switch } from 'react-router-dom';
 import { EventBasedTabView } from '../views/Tabs/EventBasedTabView';

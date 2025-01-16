@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import MuiTextField, { TextFieldProps as MuiTextFieldProps } from '@material-ui/core/TextField';

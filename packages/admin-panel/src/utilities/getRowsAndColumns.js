@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2023 Beyond Essential Systems Pty Ltd
- */
-
 export const getColumns = ({ columns: columnKeys = [] }) => {
   const indexColumn = {
     field: 'id',

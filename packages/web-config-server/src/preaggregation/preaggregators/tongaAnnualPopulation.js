@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import get from 'lodash.get';
 import has from 'lodash.has';
 import setWith from 'lodash.setwith';

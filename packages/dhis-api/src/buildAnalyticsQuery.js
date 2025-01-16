@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { getUniqueEntries, convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 
 const DX_BATCH_SIZE = 400;

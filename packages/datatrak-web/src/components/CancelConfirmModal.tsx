@@ -1,10 +1,6 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Button } from './Button';
 import { Modal } from './Modal';
@@ -44,6 +40,16 @@ const ModalButton = styled(Button)`
   }
 `;
 
+interface CancelConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  headingText?: string | null;
+  bodyText?: string | null;
+  confirmText?: string | null;
+  cancelText?: string | null;
+  confirmPath?: string | number;
+}
+
 export const CancelConfirmModal = ({
   isOpen,
   onClose,
@@ -51,8 +57,17 @@ export const CancelConfirmModal = ({
   bodyText = "If you exit, you will lose the progress you've made on the current survey",
   confirmText = 'Exit survey',
   cancelText = 'Continue survey',
-  confirmLink = '/',
-}) => {
+  confirmPath = '/',
+}: CancelConfirmModalProps) => {
+  const navigate = useNavigate();
+  const onConfirm = () => {
+    onClose();
+    if (typeof confirmPath === 'string') {
+      navigate(confirmPath); // Navigate to the specified path
+    } else if (typeof confirmPath === 'number') {
+      navigate(confirmPath); // Navigate by delta
+    }
+  };
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Wrapper>
@@ -62,9 +77,7 @@ export const CancelConfirmModal = ({
           <ModalButton onClick={onClose} variant="outlined">
             {cancelText}
           </ModalButton>
-          <ModalButton to={confirmLink} onClick={onClose}>
-            {confirmText}
-          </ModalButton>
+          <ModalButton onClick={onConfirm}>{confirmText}</ModalButton>
         </ButtonWrapper>
       </Wrapper>
     </Modal>

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactElement, ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import {
@@ -84,7 +79,7 @@ const IconWrapper = styled.div<{ $hasIcon?: boolean }>`
 
 const CheckIcon = styled(Check).attrs({ color: 'primary' })`
   &.MuiSvgIcon-root {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 `;
 

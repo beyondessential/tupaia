@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { NextFunction, Request, Response } from 'express';
 
 export const checkAppVersion = async (req: Request, res: Response, next: NextFunction) => {

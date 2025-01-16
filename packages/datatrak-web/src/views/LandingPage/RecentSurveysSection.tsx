@@ -1,14 +1,10 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SurveyIcon, Tile, LoadingTile } from '../../components';
 import { useCurrentUserRecentSurveys } from '../../api';
 import { SectionHeading } from './SectionHeading';
+import { useIsMobile } from '../../utils';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -24,7 +20,8 @@ const ScrollBody = styled.div<{
   column-gap: 1rem;
   row-gap: 0.6rem;
 
-  > span {
+  > span,
+  > a {
     width: 18rem;
     max-width: 100%;
     //Reset flex grow and shrink
@@ -41,6 +38,7 @@ const ScrollBody = styled.div<{
 `;
 
 export const RecentSurveysSection = () => {
+  const isMobile = useIsMobile();
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
   const hasMoreThanOneSurvey = recentSurveys.length > 1;
 
@@ -58,11 +56,13 @@ export const RecentSurveysSection = () => {
                   title={surveyName}
                   text={countryName}
                   tooltip={
-                    <>
-                      {surveyName}
-                      <br />
-                      {countryName}
-                    </>
+                    !isMobile ? (
+                      <>
+                        {surveyName}
+                        <br />
+                        {countryName}
+                      </>
+                    ) : null
                   }
                   Icon={SurveyIcon}
                   to={`/survey/${countryCode}/${surveyCode}/1`}

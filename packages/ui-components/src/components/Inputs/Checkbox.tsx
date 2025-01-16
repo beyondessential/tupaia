@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import MuiCheckbox, { CheckboxProps as MuiCheckboxProps } from '@material-ui/core/Checkbox';
 import MuiFormHelperText from '@material-ui/core/FormHelperText';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 // @ts-expect-error db-migrate has no types unfortunately
 import DBMigrate from 'db-migrate';
 import { requireEnv } from '@tupaia/utils';

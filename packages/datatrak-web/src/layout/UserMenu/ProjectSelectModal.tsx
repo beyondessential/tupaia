@@ -1,15 +1,12 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Paper } from '@material-ui/core';
-import { ProjectSelectForm } from '@tupaia/ui-components';
+import { Paper, Typography } from '@material-ui/core';
+import { IconButton, ProjectSelectForm } from '@tupaia/ui-components';
 import { RequestProjectAccess } from '../../features';
 import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
 import { Modal } from '../../components/Modal';
 import { SlideTransition } from '../../components/SlideTransition';
+import { ArrowLeftIcon } from '../../components';
 import { useIsMobile } from '../../utils';
 
 const StyledModal = styled(Modal)`
@@ -20,10 +17,14 @@ const StyledModal = styled(Modal)`
       height: 100%;
       background: ${({ theme }) => theme.palette.background.default};
 
+      // Hide the close button on mobile
+      > .MuiButtonBase-root.MuiIconButton-root {
+        display: none;
+      }
+
       > div {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         block-size: 100%;
 
         > div {
@@ -35,15 +36,11 @@ const StyledModal = styled(Modal)`
     .list-wrapper {
       border: none;
       border-radius: 0.625rem;
+      padding: 0;
     }
 
     h2.MuiFormLabel-root {
       color: ${({ theme }) => theme.palette.text.secondary};
-    }
-
-    // Hide the close button on mobile
-    .MuiButtonBase-root.MuiIconButton-root {
-      display: none;
     }
 
     // Select list
@@ -91,6 +88,33 @@ const PaperComponent = styled(Paper)`
   }
 `;
 
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-block-start: -1rem;
+  }
+`;
+
+const BackButton = styled(IconButton)`
+  margin-inline-start: -1rem;
+  color: ${({ theme }) => theme.palette.text.primary};
+
+  svg {
+    font-size: 1.2rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    display: none;
+  }
+`;
+
+const Title = styled(Typography).attrs({
+  variant: 'h1',
+})`
+  font-size: 1.25rem;
+`;
+
 interface ModalProps {
   onBack: () => void;
 }
@@ -118,16 +142,24 @@ export const ProjectSelectModal = ({ onBack }: ModalProps) => {
           onBack={() => setRequestAccessProjectCode(null)}
         />
       ) : (
-        <ProjectSelectForm
-          variant="modal"
-          projectId={projectId}
-          onClose={onBack}
-          onRequestAccess={setRequestAccessProjectCode}
-          projects={projects}
-          isLoading={isLoading}
-          onConfirm={onConfirm}
-          isConfirming={isConfirming}
-        />
+        <>
+          <Header>
+            <BackButton onClick={onBack}>
+              <ArrowLeftIcon />
+            </BackButton>
+            <Title>Select project</Title>
+          </Header>
+          <ProjectSelectForm
+            variant="modal"
+            projectId={projectId}
+            onClose={onBack}
+            onRequestAccess={setRequestAccessProjectCode}
+            projects={projects}
+            isLoading={isLoading}
+            onConfirm={onConfirm}
+            isConfirming={isConfirming}
+          />
+        </>
       )}
     </StyledModal>
   );

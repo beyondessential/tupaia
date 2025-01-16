@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Convert a string to an integer hash
  * Kudos: https://rclayton.silvrback.com/distributed-locking-with-postgres-advisory-locks
  */

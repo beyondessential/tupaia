@@ -1,17 +1,14 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import { useParams, generatePath } from 'react-router-dom';
-import { Tooltip } from '@tupaia/ui-components';
-import styled from 'styled-components';
 import { OptionsObject } from 'notistack';
+import React from 'react';
+import { generatePath, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { Tooltip } from '@tupaia/ui-components';
+
 import { CopyIcon } from '../../../components';
-import { infoToast } from '../../../utils';
 import { ROUTES } from '../../../constants';
+import { getAndroidVersion, infoToast } from '../../../utils';
 
 const StyledTooltip = styled(Tooltip)`
   text-align: center;
@@ -36,17 +33,23 @@ export const useCopySurveyUrl = ({ toastOptions = {} }: { toastOptions: OptionsO
   const path = generatePath(ROUTES.SURVEY, params);
   const link = `${window.location.origin}${path}`;
 
-  return () => {
+  return async () => {
     try {
-      navigator.clipboard.writeText(link);
-      infoToast('Page URL copied to clipboard', {
-        persist: false,
-        TransitionProps: { appear: true },
-        hideCloseButton: true,
-        ...toastOptions,
-      });
+      await navigator.clipboard.writeText(link);
+      const androidVersion = getAndroidVersion();
+
+      // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#Feedback
+      // Android 13 and above will automatically show a toast message when the page URL is copied to the clipboard
+      if (!androidVersion || androidVersion < 13) {
+        infoToast('Page URL copied to clipboard', {
+          persist: false,
+          TransitionProps: { appear: true },
+          hideCloseButton: true,
+          ...toastOptions,
+        });
+      }
     } catch (err) {
-      console.warn('Failed to copy page url: ', err);
+      console.warn('Failed to copy page URL: ', err);
     }
   };
 };
@@ -73,7 +76,7 @@ export const CopySurveyUrlButton = () => {
       enterDelay={500}
       enterTouchDelay={500}
     >
-      <Button aria-label="copy url to clipboard" onClick={copyPageUrl}>
+      <Button aria-label="Copy URL to clipboard" onClick={copyPageUrl}>
         <CopyIcon />
       </Button>
     </StyledTooltip>

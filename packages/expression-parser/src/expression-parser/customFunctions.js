@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import startCase from 'lodash.startcase';
 import * as fns from 'date-fns';
 

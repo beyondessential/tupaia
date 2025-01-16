@@ -1,10 +1,5 @@
 import winston from 'winston';
 
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 const fetchMonthlyValuesByEntityCode = async (aggregator, code, analyticsQuery) => {
   const { results } = await aggregator.fetchAnalytics(code, analyticsQuery, {
     aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH,

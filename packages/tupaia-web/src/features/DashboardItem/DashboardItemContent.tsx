@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useContext } from 'react';
 import { NoData } from '@tupaia/ui-components';
 import { DashboardItemReport, isChartReport, isViewReport } from '@tupaia/types';

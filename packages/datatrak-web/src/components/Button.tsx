@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactElement, ReactNode } from 'react';
 import { Link as RouterLink, To } from 'react-router-dom';
 import { Button as UIButton, Tooltip } from '@tupaia/ui-components';

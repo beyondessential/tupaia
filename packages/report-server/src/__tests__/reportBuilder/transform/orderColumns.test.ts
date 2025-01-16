@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { SINGLE_ANALYTIC, DATE_COLUMNS, PERIOD_COLUMNS } from './transform.fixtures';
 import { TransformTable } from '../../../reportBuilder/transform';
 import { buildTestTransform } from '../testUtils';

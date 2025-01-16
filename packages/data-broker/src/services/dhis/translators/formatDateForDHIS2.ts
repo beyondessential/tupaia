@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import moment from 'moment';
 
 const formatDate = (date: string, format: string) => moment.parseZone(date).format(format);

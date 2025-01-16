@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Location, useLocation, useNavigate } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState, useCallback } from 'react';
 import { CalendarToday, KeyboardArrowDown, Visibility, Room } from '@material-ui/icons';
 import InputAdornment from '@material-ui/core/InputAdornment';

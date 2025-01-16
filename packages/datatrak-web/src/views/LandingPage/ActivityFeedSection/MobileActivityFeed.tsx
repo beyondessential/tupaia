@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { HEADER_HEIGHT } from '../../../constants';
@@ -66,7 +61,9 @@ const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () =>
       fullScreen
     >
       <ExpandedWrapper>
-        <StickyMobileHeader onBack={onClose} title="Activity feed" onClick={scrollToTop} />
+        <StickyMobileHeader onBack={onClose} onClick={scrollToTop}>
+          Activity feed
+        </StickyMobileHeader>
         <InfiniteListWrapper>
           <InfiniteActivityFeed ref={feedRef} />
         </InfiniteListWrapper>

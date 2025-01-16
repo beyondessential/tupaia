@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { FormControlLabel, FormLabel, Radio, RadioGroup, lighten } from '@material-ui/core';
@@ -50,12 +45,18 @@ const RadioButton = styled(Radio)<{
     font-size: 1.25rem;
     fill: ${({ $color }) => ($color ? 'white' : 'transparent')};
   }
+
+  [aria-invalid='true'] & {
+    .MuiSvgIcon-root circle {
+      stroke: ${({ theme }) => theme.palette.error.main};
+    }
+  }
+
   &.Mui-checked {
     color: ${({ theme }) => theme.palette.primary.main};
-  }
-  [aria-invalid='true'] & {
-    .MuiSvgIcon-root {
-      color: ${({ theme }) => theme.palette.error.main};
+
+    .MuiSvgIcon-root circle {
+      stroke: ${({ theme }) => theme.palette.primary.main};
     }
   }
 `;

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
 import styled from 'styled-components';
@@ -93,7 +88,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   /* Override MaterialUI which hides the placeholder due to conflict with its floating labels */
   &&&& {
     .MuiInputBase-input::placeholder {
-      opacity: 1 !important;
+      opacity: 0.4 !important;
     }
   }
 

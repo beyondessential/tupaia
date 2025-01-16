@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { FIELDS as RELATION_FIELDS, RELATION_ENDPOINT } from './mapOverlayGroupRelations';
 
 const RESOURCE_NAME = { singular: 'map overlay group' };

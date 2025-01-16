@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 // detect if the device is a mobile device (without relying on screen size)
 export const getIsMobileDevice = () => {
   const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
@@ -36,4 +31,24 @@ export const getBrowser = () => {
     return BROWSERS.EDGE;
   }
   return null;
+};
+
+export const isAndroidDevice = () => {
+  return /Android/i.test(navigator.userAgent);
+};
+
+export const getAndroidVersion = () => {
+  const userAgent = navigator.userAgent;
+
+  // Check if the device is Android
+  if (!isAndroidDevice()) {
+    return null;
+  }
+
+  // Extract Android version from the User-Agent string
+  const match = userAgent.match(/Android\s([0-9.]+)/);
+  if (!match || !match[1]) {
+    return null;
+  }
+  return parseFloat(match[1]); // e.g., "13.0" => 13
 };

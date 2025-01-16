@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import { respond, DatabaseError } from '@tupaia/utils';

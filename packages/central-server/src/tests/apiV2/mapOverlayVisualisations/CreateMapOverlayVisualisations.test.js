@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { setupTest, generateId } from '@tupaia/database';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';

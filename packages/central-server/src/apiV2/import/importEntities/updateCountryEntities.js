@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { ImportValidationError, getCountryCode } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';

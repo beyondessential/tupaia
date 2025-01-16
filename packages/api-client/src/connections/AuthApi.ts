@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { AccessPolicyObject } from '../types';
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';

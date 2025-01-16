@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { getLoggerInstance, writeJsonFile } from '@tupaia/utils';
 import config from '../../config.json';
 import { E2E_CONFIG_PATH } from '../../constants';

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useEffect } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
@@ -60,6 +56,7 @@ const SurveyPageInner = () => {
     isSuccessScreen,
     isResponseScreen,
     cancelModalOpen,
+    cancelModalConfirmLink,
     closeCancelConfirmation,
     isResubmit,
     countryCode,
@@ -113,7 +110,11 @@ const SurveyPageInner = () => {
           <Outlet key={screenNumber} />
         </SurveyScreenContainer>
       </FormProvider>
-      <CancelConfirmModal isOpen={cancelModalOpen} onClose={closeCancelConfirmation} />
+      <CancelConfirmModal
+        isOpen={cancelModalOpen}
+        onClose={closeCancelConfirmation}
+        confirmPath={cancelModalConfirmLink}
+      />
     </PageWrapper>
   );
 };

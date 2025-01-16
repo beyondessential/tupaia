@@ -1,13 +1,13 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { QrCodeImage, useDownloadQrCodes } from '@tupaia/ui-components';
-import { DownloadIcon as BaseDownloadIcon, Button } from '../../../components';
+import {
+  DownloadIcon as BaseDownloadIcon,
+  Button,
+  ShareIcon as BaseShareIcon,
+} from '../../../components';
+import { useShare } from '../utils/useShare';
 
 const Wrapper = styled.li<{
   $listVariant?: 'panel' | 'modal';
@@ -19,7 +19,12 @@ const Wrapper = styled.li<{
   &:first-child {
     margin-top: 0;
   }
-  button {
+  button.MuiButtonBase-root {
+    margin-left: 0;
+
+    ~ .MuiButtonBase-root {
+      margin-top: 1rem;
+    }
     .MuiButton-label {
       font-size: ${({ $listVariant }) => ($listVariant === 'modal' ? '0.875rem' : '1rem')};
     }
@@ -47,7 +52,9 @@ const QrCodeContainer = styled.div`
 `;
 
 const EntityName = styled(Typography)`
-  width: 50%;
+  padding: 0 !important;
+  text-align: center;
+  flex: 1;
   font-size: 1.125rem;
   font-weight: ${props => props.theme.typography.fontWeightBold};
 `;
@@ -57,6 +64,21 @@ const DownloadIcon = styled(BaseDownloadIcon)<{
 }>`
   font-size: 1.1rem;
   margin-right: 0.5rem;
+`;
+
+const ShareIcon = styled(BaseShareIcon)`
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+`;
+
+const StyledQRCodeImage = styled(QrCodeImage)`
+  flex: 1;
+`;
+
+const ShareButton = styled(Button)`
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    display: none;
+  }
 `;
 
 interface QrCodeImageProps {
@@ -75,10 +97,11 @@ export const QRCodeItem = ({ entity, listVariant }: QrCodeImageProps) => {
       value: id,
     },
   ]);
+  const share = useShare();
   return (
     <Wrapper $listVariant={listVariant}>
       <QrCodeContainer>
-        <QrCodeImage qrCodeContents={id} />
+        <StyledQRCodeImage qrCodeContents={id} />
         <EntityName>{name}</EntityName>
       </QrCodeContainer>
       <Button
@@ -89,6 +112,9 @@ export const QRCodeItem = ({ entity, listVariant }: QrCodeImageProps) => {
       >
         <DownloadIcon $listVariant={listVariant} /> Download QR Code
       </Button>
+      <ShareButton onClick={share} variant="outlined" color="primary">
+        <ShareIcon /> Share QR Code
+      </ShareButton>
     </Wrapper>
   );
 };

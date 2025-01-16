@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { ReactNode } from 'react';
 import { CircleMarkerProps, PolygonProps } from 'react-leaflet';
 import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';

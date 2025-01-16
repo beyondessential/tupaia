@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { execSync } from 'child_process';
 import { existsSync, readdirSync } from 'fs';
 import { platform } from 'os';

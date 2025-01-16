@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -147,8 +142,6 @@ export const TasksSection = () => {
       </>
     );
   };
-
-  console.log('hasTasks', hasTasks);
 
   return (
     <SectionContainer>

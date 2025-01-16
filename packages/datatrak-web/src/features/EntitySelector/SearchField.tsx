@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
@@ -51,7 +46,7 @@ const StyledField = styled(TextField)<TextFieldProps>`
     }
   }
 
-  ${({ theme }) => theme.breakpoints.down('md')} {
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiOutlinedInput-notchedOutline {
       border: none;
     }

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -13,14 +8,27 @@ const Wrapper = styled.div`
   display: flex;
   flex: 1;
   height: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+  }
 `;
-const Container = styled.div`
+
+const Container = styled.div<{ $showQrCode?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-right: ${props => (props.$showQrCode ? '15rem' : '0')};
+  }
+
+  ${({ theme }) => theme.breakpoints.up('lg')} {
     flex: 1;
   }
 `;
@@ -40,7 +48,8 @@ const Title = styled(Typography).attrs({
   font-weight: 600;
   text-align: center;
   margin-block-end: 1rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
     font-size: 1.9rem;
     margin-block-end: 1.19rem;
   }
@@ -65,7 +74,7 @@ export const SurveySuccess = ({ text, title, showQrCode, children }: SurveySucce
 
   return (
     <Wrapper>
-      <Container>
+      <Container $showQrCode={showQrCode}>
         <StyledImg src="/tupaia-high-five.svg" alt="Survey submit success" />
         <Title>{title}</Title>
         {isLoggedIn && (

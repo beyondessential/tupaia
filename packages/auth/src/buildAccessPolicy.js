@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 const fetchPermissionGroupChildren = async (models, permissionGroupName) => {
   const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
   const children = await permissionGroup.getChildTree();

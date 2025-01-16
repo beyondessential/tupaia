@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -21,6 +16,12 @@ const ButtonGroup = styled.div`
 const Button = styled(BaseButton)`
   & + & {
     margin: 1.25rem 0 0 0;
+  }
+
+  &.MuiButton-outlined {
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      background: white;
+    }
   }
 `;
 

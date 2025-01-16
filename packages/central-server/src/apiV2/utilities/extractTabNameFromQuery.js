@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { compareTwoStrings } from 'string-similarity';
 import { ImportValidationError } from '@tupaia/utils';
 

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Checkbox as MuiCheckbox } from '@material-ui/core';
 import styled from 'styled-components';
 

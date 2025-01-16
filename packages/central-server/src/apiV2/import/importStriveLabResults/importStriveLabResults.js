@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 
 import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
