@@ -34,7 +34,6 @@ const Paper = styled.div<{ $hasTasks?: boolean }>`
         padding: 0;
       }
     `}
-  }
 `;
 
 const Button = styled(UIButton)`
