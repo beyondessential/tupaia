@@ -71,7 +71,6 @@ const AnimatedPig = styled(Pig)`
 `;
 
 export const UserRewardsSection = ({ pigs: pigCount, coconuts: coconutCount }: UserRewards) => {
-  console.log(typeof pigCount, typeof coconutCount);
   const pigUnit = pigCount === 1 ? 'pig' : 'pigs';
   const coconutUnit = coconutCount === 1 ? 'coconut' : 'coconuts';
   return (
