@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Slide from '@material-ui/core/Slide';
 import { Tabs, Tab, Fab, Typography } from '@material-ui/core';
+import { useDebounce } from '@tupaia/ui-components';
 import { FiltersIcon, Modal, Button } from '../../../components';
 import { MobileAutocomplete } from './MobileAutocomplete';
 import {
@@ -122,7 +123,7 @@ function a11yProps(index) {
   };
 }
 
-const SurveyFilter = ({ onChange }) => {
+const SurveyFilter = ({ onChange, value }) => {
   const [searchValue, setSearchValue] = useState('');
   const user = useCurrentUserContext();
   const { data = [], isLoading } = useProjectSurveys(user.projectId, { searchTerm: searchValue });
@@ -143,15 +144,17 @@ const SurveyFilter = ({ onChange }) => {
       onChange={handleChange}
       searchValue={searchValue}
       setSearchValue={setSearchValue}
+      value={value}
     />
   );
 };
 
-const EntityFilter = ({ onChange }) => {
+const EntityFilter = ({ onChange, value }) => {
   const [searchValue, setSearchValue] = useState('');
   const user = useCurrentUserContext();
+  const debouncedSearch = useDebounce(searchValue!, 200);
   const { data = [], isLoading } = useProjectEntities(user.project?.code, {
-    searchString: searchValue,
+    searchString: debouncedSearch,
     filter: {},
   });
   const options =
@@ -161,7 +164,7 @@ const EntityFilter = ({ onChange }) => {
       label: item.name,
     })) ?? [];
   const handleChange = newValue => {
-    onChange({ id: 'entity.name', value: newValue.name });
+    onChange({ id: 'entity.code', value: newValue.code });
   };
 
   return (
@@ -171,11 +174,12 @@ const EntityFilter = ({ onChange }) => {
       onChange={handleChange}
       searchValue={searchValue}
       setSearchValue={setSearchValue}
+      value={value}
     />
   );
 };
 
-const UserFilter = ({ onChange }) => {
+const UserFilter = ({ onChange, value }) => {
   const [searchValue, setSearchValue] = useState('');
   const user = useCurrentUserContext();
   const { data = [], isLoading } = useProjectUsers(user.project?.code, searchValue);
@@ -186,7 +190,7 @@ const UserFilter = ({ onChange }) => {
       label: item.name,
     })) ?? [];
   const handleChange = newValue => {
-    onChange({ id: 'assignee_name', value: newValue.name });
+    onChange({ id: 'assignee.id', value: newValue.id });
   };
 
   return (
@@ -196,6 +200,7 @@ const UserFilter = ({ onChange }) => {
       onChange={handleChange}
       searchValue={searchValue}
       setSearchValue={setSearchValue}
+      value={value}
     />
   );
 };
@@ -267,6 +272,10 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
     onChangeFilters([]);
   };
 
+  const getFilterValue = key => {
+    const filter = filters.find(f => f.id === key);
+    return filter?.value ? { id: filter.value } : null;
+  };
   const getHasFilter = key => filters.some(filter => filter.id === key);
   const hasAnyFilters = filters.length > 0;
 
@@ -293,26 +302,26 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           aria-label="full width tabs example"
         >
           <Tab
-            label={<TabLabel label="Survey" active={getHasFilter('survey.name')} />}
+            label={<TabLabel label="Survey" active={getHasFilter('survey.id')} />}
             {...a11yProps(0)}
           />
           <Tab
-            label={<TabLabel label="Entity" active={getHasFilter('entity.name')} />}
+            label={<TabLabel label="Entity" active={getHasFilter('entity.id')} />}
             {...a11yProps(1)}
           />
           <Tab
-            label={<TabLabel label="Assignee" active={getHasFilter('assignee_name')} />}
+            label={<TabLabel label="Assignee" active={getHasFilter('assignee.id')} />}
             {...a11yProps(1)}
           />
         </StyledTabs>
         <TabPanel value={value} index={0}>
-          <SurveyFilter onChange={handleChangeFilters} />
+          <SurveyFilter onChange={handleChangeFilters} value={getFilterValue('survey.id')} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <EntityFilter onChange={handleChangeFilters} />
+          <EntityFilter onChange={handleChangeFilters} value={getFilterValue('entity.id')} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <UserFilter onChange={handleChangeFilters} />
+          <UserFilter onChange={handleChangeFilters} value={getFilterValue('assignee.id')} />
         </TabPanel>
         <DialogActions>
           <Button variant="text" color="default" onClick={() => clearFilters()}>

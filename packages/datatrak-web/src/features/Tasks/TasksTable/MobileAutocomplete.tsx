@@ -4,8 +4,7 @@
  */
 
 import styled from 'styled-components';
-import React, { useState } from 'react';
-import debounce from 'lodash.debounce';
+import React from 'react';
 import { Autocomplete } from '../../../components';
 
 const Container = styled.div`
@@ -28,14 +27,12 @@ export const MobileAutocomplete = ({
   options,
   isLoading,
   onChange,
+  value,
   searchValue,
   setSearchValue,
 }) => {
-  const [selectedValue, setSelectedValue] = useState('');
-
   const onChangeValue = (_e, newSelection: any | null) => {
     if (newSelection) {
-      setSelectedValue(newSelection);
       onChange(newSelection);
     }
   };
@@ -43,14 +40,15 @@ export const MobileAutocomplete = ({
   return (
     <Container>
       <Autocomplete
-        value={selectedValue}
+        value={value}
         onChange={onChangeValue}
-        onInputChange={debounce((e, newValue, reason) => {
+        /*@ts-ignore */
+        onInputChange={(e, newValue, reason) => {
           if (!e) return;
           if (reason === 'input') {
             setSearchValue(newValue);
           }
-        }, 100)}
+        }}
         inputValue={searchValue}
         getOptionLabel={option => (option ? option.label : '')}
         getOptionSelected={(option, selected) => option.id === selected?.id}

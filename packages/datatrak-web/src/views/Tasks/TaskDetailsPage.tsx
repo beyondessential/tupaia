@@ -21,9 +21,12 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex: 1;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding-inline: 2.2rem;
+  }
+
   ${({ theme }) => theme.breakpoints.down('xs')} {
-    width: 100%;
-    margin-block-start: 1rem;
+    padding-inline: 0.2rem 0;
   }
 `;
 

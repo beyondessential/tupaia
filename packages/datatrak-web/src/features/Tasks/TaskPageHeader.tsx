@@ -24,6 +24,7 @@ const Wrapper = styled.div`
   padding-inline-end: 2.7rem;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     padding-inline-end: 0.5rem;
+    padding-inline-start: 0.5rem;
   }
 `;
 
