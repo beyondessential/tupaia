@@ -5,7 +5,8 @@ import styled, { css } from 'styled-components';
  * A scrollable <FlexColumn>, intended to be used with a fixed block size. Its children default to
  * filling the available inline space.
  *
- * Consider also setting as="ul" and role="list". Carousels often should have set semantics.
+ * Consider also setting as="ul" and role="list". These sorts of scroll views often should have set
+ * semantics.
  */
 export const BlockScrollView = styled.div<{
   $gap?: Property.RowGap;
@@ -31,7 +32,8 @@ export const BlockScrollView = styled.div<{
  * A scrollable <FlexRow>, intended to be used with a fixed block size. Its children default to
  * filling the available block space.
  *
- * Consider also setting as="ul" and role="list". Carousels often should have set semantics.
+ * Consider also setting as="ul" and role="list". These sorts of scroll views often should have set
+ * semantics.
  */
 export const InlineScrollView = styled.div<{
   $gap?: Property.ColumnGap;
