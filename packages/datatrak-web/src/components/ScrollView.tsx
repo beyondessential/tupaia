@@ -7,7 +7,7 @@ import styled, { css } from 'styled-components';
  *
  * Consider also setting as="ul" and role="list". Carousels often should have set semantics.
  */
-export const BlockCarousel = styled.div<{
+export const BlockScrollView = styled.div<{
   $gap?: Property.RowGap;
   $size?: Property.BlockSize;
 }>`
@@ -33,7 +33,7 @@ export const BlockCarousel = styled.div<{
  *
  * Consider also setting as="ul" and role="list". Carousels often should have set semantics.
  */
-export const InlineCarousel = styled.div<{
+export const InlineScrollView = styled.div<{
   $gap?: Property.ColumnGap;
   $size?: Property.InlineSize;
 }>`
