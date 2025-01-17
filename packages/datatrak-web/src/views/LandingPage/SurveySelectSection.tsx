@@ -7,7 +7,7 @@ import { Button, ButtonLink as BaseButtonLink } from '../../components';
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
 const SectionContainer = styled.section`
-  grid-area: surveySelect;
+  grid-area: --surveySelect;
   background-color: ${({ theme }) => theme.palette.background.paper};
   padding: 1rem;
   display: flex;

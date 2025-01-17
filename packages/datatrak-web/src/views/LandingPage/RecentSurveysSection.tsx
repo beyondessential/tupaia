@@ -9,9 +9,9 @@ import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
-  grid-area: recentSurveys;
   display: flex;
   flex-direction: column;
+  grid-area: --recentSurveys;
 `;
 
 const ScrollBody = styled.div<{

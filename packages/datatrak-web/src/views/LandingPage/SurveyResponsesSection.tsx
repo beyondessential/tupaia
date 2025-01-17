@@ -11,7 +11,7 @@ import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const Container = styled.section`
-  grid-area: recentResponses;
+  grid-area: --recentResponses;
   display: flex;
   flex-direction: column;
 `;

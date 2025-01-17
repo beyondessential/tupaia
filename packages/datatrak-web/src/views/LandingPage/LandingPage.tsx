@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { PageContainer as BasePageContainer } from '../../components';
 import { SurveySelectSection } from './SurveySelectSection';
 import { SurveyResponsesSection } from './SurveyResponsesSection';
@@ -67,23 +67,8 @@ const Grid = styled.div<{
     gap: 1.5rem;
     display: grid;
     grid-template-columns: repeat(3, 1fr) 1.25fr;
+    grid-template-rows: repeat(3, auto);
     margin-block: 0.5rem;
-    grid-template-rows: ${({ $hasMultiple }) =>
-      $hasMultiple ? 'auto auto auto' : 'auto 7rem auto'};
-    grid-template-areas: ${({ $hasMultiple }) => {
-      //If there is < 2 surveys, the recentSurveys section will be smaller and the activity feed will shift upwards on larger screens
-      if ($hasMultiple) {
-        return `
-          'surveySelect surveySelect surveySelect tasks'
-          'recentSurveys recentSurveys recentSurveys tasks'
-          'recentResponses activityFeed activityFeed leaderboard'
-        `;
-      }
-      return `'surveySelect surveySelect surveySelect tasks'
-        'recentSurveys activityFeed activityFeed tasks'
-        'recentResponses activityFeed activityFeed leaderboard'
-        `;
-    }};
 
     > section &:not(:last-child) {
       margin-block-end: 0;
@@ -92,6 +77,23 @@ const Grid = styled.div<{
     > div {
       min-block-size: auto;
     }
+    // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
+    ${({ $hasMultiple }) =>
+      $hasMultiple
+        ? css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect  --surveySelect  --tasks'
+              '--recentSurveys   --recentSurveys --recentSurveys --tasks'
+              '--recentResponses --activityFeed  --activityFeed  --leaderboard';
+            grid-template-rows: repeat(3, auto);
+          `
+        : css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect --surveySelect --tasks'
+              '--recentSurveys   --activityFeed --activityFeed --tasks'
+              '--recentResponses --activityFeed --activityFeed --leaderboard';
+            grid-template-rows: auto 7rem auto;
+          `}
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {

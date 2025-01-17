@@ -10,7 +10,7 @@ import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const SectionContainer = styled.section`
-  grid-area: tasks;
+  grid-area: --tasks;
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('lg')} {
