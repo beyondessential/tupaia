@@ -1,7 +1,14 @@
 import { Property } from 'csstype';
 import styled, { css } from 'styled-components';
 
-export const BlockCarousel = styled.div<{ $gap?: Property.RowGap }>`
+/**
+ * A scrollable <FlexColumn>, intended to be used with a fixed block size. Its children default to
+ * filling the available inline space.
+ */
+export const BlockCarousel = styled.div<{
+  $gap?: Property.RowGap;
+  $size?: Property.BlockSize;
+}>`
   align-items: stretch;
   display: flex;
   flex-direction: column;
@@ -18,7 +25,14 @@ export const BlockCarousel = styled.div<{ $gap?: Property.RowGap }>`
   }
 `;
 
-export const InlineCarousel = styled.div<{ $gap?: Property.ColumnGap }>`
+/**
+ * A scrollable <FlexRow>, intended to be used with a fixed block size. Its children default to
+ * filling the available block space.
+ */
+export const InlineCarousel = styled.div<{
+  $gap?: Property.ColumnGap;
+  $size?: Property.InlineSize;
+}>`
   align-items: stretch;
   display: flex;
   flex-direction: row;
