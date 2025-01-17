@@ -3,6 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { LoadingTile, SurveyIcon, Tile } from '../../components';
 
+import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
+
 import { useCurrentUserRecentSurveys } from '../../api';
 import { TileProps } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
