@@ -66,10 +66,10 @@ const Grid = styled.div<{
   ${({ theme }) => theme.breakpoints.up('md')} {
     gap: 1.5rem;
     display: grid;
+    grid-template-columns: repeat(3, 1fr) 1.25fr;
     margin-block: 0.5rem;
     grid-template-rows: ${({ $hasMultiple }) =>
       $hasMultiple ? 'auto auto auto' : 'auto 7rem auto'};
-    grid-template-columns: 23% 1fr 1fr 30%;
     grid-template-areas: ${({ $hasMultiple }) => {
       //If there is < 2 surveys, the recentSurveys section will be smaller and the activity feed will shift upwards on larger screens
       if ($hasMultiple) {
