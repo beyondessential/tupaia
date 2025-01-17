@@ -107,7 +107,7 @@ export const QuestionAutocomplete = styled(Autocomplete).attrs({
       component: InputHelperText,
     },
   },
-  placeholder: 'Search...',
+  placeholder: 'Search…',
 })`
   .MuiFormControl-root {
     margin-bottom: 0;
