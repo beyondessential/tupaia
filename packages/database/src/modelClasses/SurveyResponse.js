@@ -1,5 +1,5 @@
-import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
+import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { RECORDS } from '../records';
 
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [
@@ -33,10 +33,9 @@ export function getLeaderboard(projectId = '') {
     ? SYSTEM_USERS
     : [...SYSTEM_USERS, ...USERS_EXCLUDED_FROM_LEADER_BOARD];
 
-  // FLOOR to force result to be returned as int, not string
   return `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, FLOOR(COUNT(*)) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
         FROM survey_response
         JOIN survey on survey.id=survey_id
         ${projectId ? 'WHERE survey.project_id = ?' : ''}
