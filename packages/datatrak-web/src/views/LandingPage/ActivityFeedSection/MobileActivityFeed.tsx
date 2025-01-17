@@ -83,7 +83,7 @@ export const MobileActivityFeed = () => {
     <Wrapper>
       <ActivityFeedList items={firstPageItems} />
       {hasNextPage && (
-        <ViewMoreButton onClick={() => setExpanded(true)}>View activity feed...</ViewMoreButton>
+        <ViewMoreButton onClick={() => setExpanded(true)}>View activity feed…</ViewMoreButton>
       )}
       <ExpandedList expanded={expanded} onClose={() => setExpanded(false)} />
     </Wrapper>

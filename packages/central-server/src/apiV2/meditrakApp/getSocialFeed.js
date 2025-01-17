@@ -97,7 +97,7 @@ const getLeaderboard = async models => {
   return models.database.executeSql(
     ` SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
         FROM survey_response
         GROUP BY user_id
       ) r
