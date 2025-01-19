@@ -1,14 +1,15 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { PageContainer as BasePageContainer } from '../../components';
-import { SurveySelectSection } from './SurveySelectSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { TasksSection } from './TasksSection';
-import { HEADER_HEIGHT } from '../../constants';
+
 import { useCurrentUserRecentSurveys } from '../../api';
+import { PageContainer as BasePageContainer } from '../../components';
+import { HEADER_HEIGHT } from '../../constants';
+import { ActivityFeedSection } from './ActivityFeedSection';
+import { LeaderboardSection } from './LeaderboardSection';
+import { RecentSurveysSection } from './RecentSurveysSection';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
+import { SurveySelectSection } from './SurveySelectSection';
+import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;

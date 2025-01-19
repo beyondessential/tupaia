@@ -3,8 +3,8 @@ import { Skeleton } from '@material-ui/lab';
 import React, { Fragment, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Button } from './Button';
 import { useIsMobile } from '../utils';
+import { Button } from './Button';
 
 const Wrapper = styled(Paper).attrs({
   elevation: 0,
