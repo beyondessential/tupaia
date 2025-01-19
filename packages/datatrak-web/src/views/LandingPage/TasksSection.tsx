@@ -117,7 +117,7 @@ export const TasksSection = () => {
 
   const renderContents = () => {
     if (isLoading) {
-      return <TileSkeletons count={4} />;
+      return <TileSkeletons count={4} tileSkeletonProps={{ lineCount: 1 }} />;
     }
     if (!hasTasks) {
       return <NoTasksSection />;
