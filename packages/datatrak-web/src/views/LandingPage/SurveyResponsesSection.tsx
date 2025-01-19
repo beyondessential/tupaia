@@ -69,7 +69,7 @@ const SurveyResponseTile = ({
 };
 
 export const SurveyResponsesSection = () => {
-  const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
+  const { data: recentSurveyResponses, isLoading } = useCurrentUserSurveyResponses();
   const { project } = useCurrentUserContext();
 
   const ScrollView = useIsMobile() ? InlineScroll : BlockScroll;
@@ -78,19 +78,19 @@ export const SurveyResponsesSection = () => {
     <Container>
       <SectionHeading>Submission history</SectionHeading>
       <ScrollView>
-        {isLoading && <TileSkeletons count={3} />}
-        {isSuccess &&
-          (recentSurveyResponses?.length > 0 ? (
-            recentSurveyResponses.map(props => (
-              <li key={props.id}>
-                <SurveyResponseTile {...props} />
-              </li>
-            ))
-          ) : (
-            <Typography variant="body2" color="textSecondary">
-              No recent surveys responses to display for {project?.name || 'project'}
-            </Typography>
-          ))}
+        {isLoading ? (
+          <TileSkeletons count={3} />
+        ) : recentSurveyResponses?.length > 0 ? (
+          recentSurveyResponses.map(props => (
+            <li key={props.id}>
+              <SurveyResponseTile {...props} />
+            </li>
+          ))
+        ) : (
+          <Typography variant="body2" color="textSecondary">
+            No recent surveys responses to display for {project?.name || 'project'}
+          </Typography>
+        )}
       </ScrollView>
     </Container>
   );
