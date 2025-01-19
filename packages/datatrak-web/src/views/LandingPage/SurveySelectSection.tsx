@@ -20,7 +20,8 @@ const SectionContainer = styled.section`
     margin-block-start: 1.3rem;
   }
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding: 1rem 3rem 1rem 2.2rem;
+    padding-block: 1rem;
+    inline: 2.2rem 3rem;
   }
 `;
 
