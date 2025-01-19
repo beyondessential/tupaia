@@ -84,6 +84,7 @@ export const theme = createMuiTheme({
         },
         ":is(ol, ul)[role='list']": {
           listStyleType: 'none',
+          marginBlock: 0,
           paddingInlineStart: 0,
         },
       },
