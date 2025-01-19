@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { RateLimiterPostgres } from 'rate-limiter-flexible';
 
 // Limit the number of wrong attempts per day per IP to 100 for the unit tests

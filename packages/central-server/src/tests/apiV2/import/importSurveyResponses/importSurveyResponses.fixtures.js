@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Note: this file includes data that are referenced or used in import spreadsheets
  */
 

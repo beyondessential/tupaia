@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { respond } from '@tupaia/utils';
 
 export async function respondToRateLimitedUser(msBeforeNext, res) {

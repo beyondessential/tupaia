@@ -109,7 +109,7 @@ export const ModalContentProvider = ({ isLoading, error, children }: ModalConten
   const errors = getErrorsToDisplay();
   return (
     <Content>
-      {isLoading && 'Please be patient, this can take some time...'}
+      {isLoading && 'Please be patient, this can take some time…'}
       {error?.message && (
         <ErrorsWrapper>
           <ErrorHeading>{heading}</ErrorHeading>

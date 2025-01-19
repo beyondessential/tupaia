@@ -40602,7 +40602,6 @@ export const SurveyScreenComponentConfigSchema = {
 } 
 
 export const LeaderboardItemSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
 	"type": "object",
 	"properties": {
 		"user_id": {
@@ -40632,7 +40631,6 @@ export const LeaderboardItemSchema = {
 } 
 
 export const FeedItemTypesSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
 	"enum": [
 		"SurveyResponse",
 		"markdown"

@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import supertest from 'supertest';
 import autobind from 'react-autobind';
 import sinon from 'sinon';

@@ -1,7 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
 import { getDhisApiInstance } from '/dhis';
 import { getDataElementsInGroupSet } from '/apiV1/utils/getDataElementsInGroupSet';
 import { preaggregateDataElement } from '/preaggregation/preaggregateDataElement';

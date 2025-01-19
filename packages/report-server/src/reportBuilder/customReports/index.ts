@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Resolved } from '@tupaia/types';
 import { ReqContext } from '../context';
 import { testCustomReport } from './testCustomReport';

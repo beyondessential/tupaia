@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { RECORDS, JOIN_TYPES, runDatabaseFunctionInBatches } from '@tupaia/database';
 
 /**

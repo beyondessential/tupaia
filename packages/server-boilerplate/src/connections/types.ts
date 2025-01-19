@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * @deprecated use @tupaia/api-client
  */
 export interface MicroserviceApi {

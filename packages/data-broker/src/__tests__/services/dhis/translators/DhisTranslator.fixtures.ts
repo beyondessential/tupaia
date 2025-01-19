@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export const DATA_ELEMENT_DESCRIPTORS = {
   DE_1: {
     id: 'de1',

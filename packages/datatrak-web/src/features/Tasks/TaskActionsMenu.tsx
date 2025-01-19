@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { PERIOD_TYPES } from '@tupaia/tsutils';
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import {

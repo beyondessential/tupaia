@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { useMutation } from '@tanstack/react-query';
 
 export const useApproveSurveyResponseStatus = api =>

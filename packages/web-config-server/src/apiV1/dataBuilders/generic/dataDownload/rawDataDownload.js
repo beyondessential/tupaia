@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { buildExportUrl } from '/export';
 
 export const rawDataDownload = ({ dataBuilderConfig, query, req }) => {

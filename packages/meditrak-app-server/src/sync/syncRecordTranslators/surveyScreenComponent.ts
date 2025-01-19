@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { ajvValidate } from '@tupaia/tsutils';
 import { EntityType, SurveyScreenComponent, SurveyScreenComponentSchema } from '@tupaia/types';
 import semverCompare from 'semver-compare';

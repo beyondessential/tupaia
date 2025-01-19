@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import path from 'path';
 import xlsx from 'xlsx';
 import { respond, UploadError } from '@tupaia/utils';

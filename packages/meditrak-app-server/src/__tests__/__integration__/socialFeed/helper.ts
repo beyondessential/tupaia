@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Remove 'id' field and empty fields
  */
 export const filterItemFields = (items: Record<string, any>[]) =>
