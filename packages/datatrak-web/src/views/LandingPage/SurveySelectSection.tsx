@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
+
 import { ROUTES } from '../../constants';
 import { Button, ButtonLink as BaseButtonLink } from '../../components';
 
@@ -17,10 +18,11 @@ const SectionContainer = styled.section`
   overflow: visible !important;
   border-radius: 0.625rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-block-start: 1.3rem;
+    margin-block-start: 1.9375rem;
   }
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding: 1rem 3rem 1rem 2.2rem;
+    padding-block: 1rem;
+    inline: 2.2rem 3rem;
   }
 `;
 
