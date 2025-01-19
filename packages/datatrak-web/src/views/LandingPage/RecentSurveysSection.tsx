@@ -6,7 +6,7 @@ import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
 
 import { useCurrentUserRecentSurveys } from '../../api';
 import { InlineScrollView, SurveyIcon, Tile, TileSkeleton } from '../../components';
-import { TileProps, TileSkeletons } from '../../components/Tile';
+import { TileProps } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
@@ -74,8 +74,8 @@ export const RecentSurveysSection = () => {
         {isSuccess &&
           (recentSurveys?.length > 0 ? (
             recentSurveys.map(props => (
-              <li>
-                <RecentSurveyTile key={`${props.surveyCode}-${props.countryName}`} {...props} />
+              <li key={`${props.surveyCode}-${props.countryName}`}>
+                <RecentSurveyTile {...props} />
               </li>
             ))
           ) : (
