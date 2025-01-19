@@ -6,10 +6,10 @@ import { FlexSpaceBetween, Button as UIButton } from '@tupaia/ui-components';
 
 import { useCurrentUserContext, useTasks } from '../../api';
 import { ROUTES } from '../../constants';
-import { LoadingTile } from '../../components';
 import { NoTasksSection, TaskTile } from '../../features/Tasks';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
+import { TileSkeletons } from '../../components';
 
 const SectionContainer = styled.section`
   grid-area: --tasks;
@@ -117,7 +117,7 @@ export const TasksSection = () => {
 
   const renderContents = () => {
     if (isLoading) {
-      return <LoadingTile count={4} />;
+      return <TileSkeletons count={4} />;
     }
     if (!hasTasks) {
       return <NoTasksSection />;

@@ -1,165 +1,145 @@
-import React, { ComponentType, ReactNode } from 'react';
-import styled from 'styled-components';
-import { Typography, Box, Paper } from '@material-ui/core';
+import { ButtonProps, Paper, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import React, { Fragment, ReactNode } from 'react';
+import styled, { css } from 'styled-components';
+
 import { Button } from './Button';
+import { useIsMobile } from '../utils';
 
 const Wrapper = styled(Paper).attrs({
   elevation: 0,
-})`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  padding-block: 0.8rem;
-  padding-inline: 1rem;
-  background: ${({ theme }) => theme.palette.background.paper};
-  border-radius: 0.625rem;
-  font-weight: 400;
-  font-size: 0.75rem;
-  color: ${({ theme }) => theme.palette.text.secondary};
-  overflow: hidden;
-`;
-
-const ButtonWrapper = styled(Wrapper).attrs({
   component: Button,
 })`
-  flex-direction: row;
-  position: relative;
+  align-items: stretch;
+  border-radius: 0.625rem;
+  display: block flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  font-weight: 400;
+  gap: 0.25rem 0.5rem;
+  inline-size: 14.75rem;
   justify-content: flex-start;
-  align-items: flex-start;
-  padding-block-start: 0.8rem;
-  padding-block-end: 0;
-  padding-inline: 0;
+  line-height: 1.45;
+  min-block-size: fit-content;
+  overflow: hidden;
+  padding: 1rem;
 
-  svg {
-    margin-right: 0.4rem;
-    margin-top: 0.2rem;
+  .MuiButton-label :where(p, h1, h2, h3, h4, h5, h6) {
+    margin-block: 0;
   }
 
-  &:hover {
-    background-color: ${({ theme }) => theme.palette.primaryHover};
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-inline: 1rem;
-    padding-block: 0.8rem;
+  ${({ theme }) => css`
+    color: ${theme.palette.text.secondary};
+
+    &,
+    &.Mui-disabled.MuiButton-containedPrimary {
+      background-color: ${theme.palette.background.paper};
+      opacity: initial;
+    }
+
+    &:hover {
+      background-color: ${theme.palette.primaryHover};
+    }
+
+    ${theme.breakpoints.up('sm')} {
+      flex-direction: row;
+      inline-size: 100%;
+    }
+  `}
+
+  .MuiButton-label {
+    display: contents;
   }
 ` as typeof Button;
 
-const Text = styled(Typography)`
-  font-size: 0.75rem;
-  color: ${({ theme }) => theme.palette.text.secondary};
-  text-align: start;
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-inline: 0.8rem;
-  &:not(:last-child) {
-    margin-bottom: 0.2rem;
-  }
-  &:last-child {
-    border-top: 1px solid ${({ theme }) => theme.palette.divider};
-    padding-block: 0.5rem;
-    margin-block-start: 0.4rem;
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-inline: 0;
-    &:last-child {
-      border-top: none;
-      padding-block: 0;
-      margin-block-start: 0;
-    }
-  }
-`;
-
-const Heading = styled(Text)`
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.palette.text.primary};
-  margin-block-end: 0.2rem;
-`;
-
-const LoadingContainer = styled.div`
-  overflow: hidden;
-  max-height: 100%;
-  > div {
-    &:not(:last-child) {
-      margin-bottom: 0.6rem;
-    }
-  }
-`;
-
-const ButtonContent = styled.div`
+const Header = styled.header`
+  align-items: start;
+  block-size: 1.5rem;
   display: flex;
-  flex-direction: column;
-  inline-size: 100%;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: row;
-    // To make ellipsis work on the text, we need to set a max-width, and by adding calc(90%) we can make it responsive as well because calc converts the percentage to pixels
-    max-width: calc(90%);
-  }
+  justify-content: space-between;
+  margin-block-end: 0.5rem;
 `;
 
-const TextWrapper = styled(Box)`
-  margin-block-start: 0.2rem;
-  width: 100%;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-block-start: 0;
-  }
+const IconGroup = styled.div`
+  block-size: 100%;
+  display: flex;
+  gap: 0.25rem;
+`;
+const LeadingIconGroup = styled(IconGroup)`
+  align-self: flex-start;
+`;
+const TrailingIconGroup = styled(IconGroup)`
+  align-self: flex-end;
 `;
 
-const ContentItem = styled.div`
-  width: 100%;
-  padding-inline: 1rem;
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    width: auto;
-    padding-inline: 0;
-  }
+const BodyWrapper = styled.div`
+  flex-grow: 1;
 `;
 
-export interface TileProps {
-  title?: string;
-  text?: string;
+const Heading = styled(Typography).attrs({ variant: 'h3' })`
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: inherit;
+`;
+
+export interface TileProps extends ButtonProps {
+  heading?: ReactNode;
+  description?: ReactNode;
+  leadingIcons?: ReactNode;
+  trailingIcons?: ReactNode;
   to?: string;
   tooltip?: ReactNode;
-  children?: ReactNode;
-  Icon?: ComponentType;
-  onClick?: () => void;
 }
 
-export const Tile = ({ title, text, children, to, tooltip, Icon, onClick }: TileProps) => {
-  const content = [text, children].filter(Boolean);
+export const Tile = ({
+  children,
+  description,
+  heading,
+  leadingIcons,
+  trailingIcons,
+  ...props
+}: TileProps) => {
+  const Body = useIsMobile() ? Fragment : BodyWrapper;
   return (
-    <ButtonWrapper to={to} tooltip={tooltip} onClick={onClick}>
-      <ButtonContent>
-        {Icon && (
-          <ContentItem>
-            <Icon />
-          </ContentItem>
-        )}
-        <TextWrapper maxWidth="100%">
-          {title && <Heading>{title}</Heading>}
-          {content.map((content, index) => (
-            <Text key={index}>{content}</Text>
-          ))}
-        </TextWrapper>
-      </ButtonContent>
-    </ButtonWrapper>
+    <Wrapper {...props}>
+      <Header>
+        {leadingIcons && <LeadingIconGroup>{leadingIcons}</LeadingIconGroup>}
+        {trailingIcons && <TrailingIconGroup>{trailingIcons}</TrailingIconGroup>}
+      </Header>
+      <Body>
+        {heading && <Heading>{heading}</Heading>}
+        {children}
+      </Body>
+    </Wrapper>
   );
 };
 
-export const LoadingTile = ({ count = 1 }) => {
-  return (
-    <LoadingContainer>
-      {Array.from({ length: count }).map((_, index) => (
-        <Wrapper key={index}>
-          <Skeleton variant="text" width="60%" />
-          <Skeleton variant="text" width="40%" />
-          <Skeleton variant="text" width="40%" />
-        </Wrapper>
-      ))}
-    </LoadingContainer>
-  );
-};
+interface TileSkeletonProps {
+  lineCount?: number;
+}
+export const TileSkeleton = ({ lineCount = 2 }: TileSkeletonProps) => (
+  <Tile
+    disabled
+    leadingIcons={<Skeleton variant="circle" width={24} height={24} />}
+    heading={<Skeleton width="100%" />}
+  >
+    {Array.from({ length: lineCount }).map((_, i) => (
+      <Skeleton key={i} width="60%" />
+    ))}
+  </Tile>
+);
+
+export const TileSkeletons = ({
+  count = 3,
+  tileSkeletonProps,
+}: {
+  count?: number;
+  tileSkeletonProps?: TileSkeletonProps;
+}) => (
+  <>
+    {Array.from({ length: count }).map((_, i) => (
+      <TileSkeleton key={i} {...tileSkeletonProps} />
+    ))}
+  </>
+);

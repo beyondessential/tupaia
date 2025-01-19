@@ -41,10 +41,7 @@ const PageBody = styled.div`
   }
 `;
 
-const Grid = styled.div<{
-  $hasMultiple: boolean;
-}>`
-  flex: 1;
+const Grid = styled.div<{ $hasMultiple?: boolean }>`
   display: flex;
   flex-direction: column;
   min-height: 0; // This is needed to stop the grid overflowing the flex container
@@ -58,25 +55,14 @@ const Grid = styled.div<{
 
   > section {
     overflow: hidden;
-    &:not(:last-child) {
-      margin-bottom: 1rem;
-    }
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     gap: 1.5rem;
     display: grid;
     grid-template-columns: repeat(3, 1fr) 1.25fr;
-    grid-template-rows: repeat(3, auto);
     margin-block: 0.5rem;
 
-    > section &:not(:last-child) {
-      margin-block-end: 0;
-    }
-
-    > div {
-      min-block-size: auto;
-    }
     // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
     ${({ $hasMultiple }) =>
       $hasMultiple
