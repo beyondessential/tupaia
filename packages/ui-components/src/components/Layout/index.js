@@ -1,1 +1,1 @@
-export * from './Flexbox';
+export { FlexCenter, FlexColumn, FlexEnd, FlexSpaceBetween, FlexStart } from './Flexbox';
