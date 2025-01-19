@@ -72,12 +72,12 @@ export const SurveyResponsesSection = () => {
   const { data: recentSurveyResponses, isLoading } = useCurrentUserSurveyResponses();
   const { project } = useCurrentUserContext();
 
-  const ScrollView = useIsMobile() ? InlineScroll : BlockScroll;
+  const ScrollableList = useIsMobile() ? InlineScroll : BlockScroll;
 
   return (
     <Container>
       <SectionHeading>Submission history</SectionHeading>
-      <ScrollView>
+      <ScrollableList>
         {isLoading ? (
           <TileSkeletons count={3} />
         ) : recentSurveyResponses?.length > 0 ? (
@@ -91,7 +91,7 @@ export const SurveyResponsesSection = () => {
             No recent surveys responses to display for {project?.name || 'project'}
           </Typography>
         )}
-      </ScrollView>
+      </ScrollableList>
     </Container>
   );
 };

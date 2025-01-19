@@ -64,12 +64,12 @@ const RecentSurveyTile = ({
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
 
-  const ScrollView = useIsMobile() ? InlineScroll : GridScroll;
+  const ScrollableList = useIsMobile() ? InlineScroll : GridScroll;
 
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      <ScrollView as="ul" role="list">
+      <ScrollableList as="ul" role="list">
         {isLoading && <TileSkeleton lineCount={1} />}
         {isSuccess &&
           (recentSurveys?.length > 0 ? (
@@ -83,7 +83,7 @@ export const RecentSurveysSection = () => {
               No recent surveys to display
             </Typography>
           ))}
-      </ScrollView>
+      </ScrollableList>
     </RecentSurveys>
   );
 };
