@@ -78,31 +78,18 @@ const TopViewMoreButton = styled(ViewMoreButton)`
   }
 `;
 
-const DesktopButton = styled(Button)`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
-`;
-
+const DesktopButton = Button;
 const MobileButton = styled(ViewMoreButton)`
   float: right;
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: none;
-  }
 `;
 
 const ViewMoreTasksButton = ({ numberOfPages }) => {
   if (numberOfPages <= 1) return null;
+  const Button = useIsMobile() ? MobileButton : DesktopButton;
   return (
-    <>
-      <DesktopButton component={Link} to={ROUTES.TASKS}>
-        View more
-      </DesktopButton>
-      <MobileButton component={Link} to={ROUTES.TASKS}>
-        View more…
-      </MobileButton>
-    </>
+    <Button component={Link} to={ROUTES.TASKS}>
+      View more
+    </Button>
   );
 };
 
@@ -148,11 +135,11 @@ export const TasksSection = () => {
 
   return (
     <SectionContainer>
-      <FlexSpaceBetween>
+      <FlexSpaceBetween as="header">
         <SectionHeading>My tasks</SectionHeading>
         {hasTasks && (
           <TopViewMoreButton component={Link} to={ROUTES.TASKS}>
-            View more...
+            View more
           </TopViewMoreButton>
         )}
       </FlexSpaceBetween>
