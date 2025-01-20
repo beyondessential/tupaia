@@ -11,12 +11,9 @@ import {
   SurveyTickIcon,
   Tile,
 } from '../../components';
-import { SyncNeutralIcon, SyncSuccessIcon } from '../../components/Icons';
 import { TileProps, TileSkeletons } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
-import { isWebApp } from '../../utils/isWebApp';
-import { SyncIndicator } from '../../components/SyncIndicator';
 
 const Container = styled.section`
   display: grid;
@@ -65,7 +62,8 @@ const SurveyResponseTile = ({
     <Tile
       heading={surveyName}
       leadingIcons={<SurveyTickIcon />}
-      trailingIcons={isWebApp() ? <SyncIndicator syncStatus="onlineOnly" /> : null}
+      // TODO: Uncomment and de-hard-code when sync is implemented
+      // trailingIcons={isWebApp() ? <SyncIndicator syncStatus="onlineOnly" /> : null}
       to={`?responseId=${id}`}
       tooltip={tooltip}
     >
