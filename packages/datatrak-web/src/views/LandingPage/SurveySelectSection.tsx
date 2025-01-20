@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { ROUTES } from '../../constants';
 import { Button, ButtonLink as BaseButtonLink } from '../../components';
@@ -31,14 +31,21 @@ const SectionContent = styled.div`
   flex-direction: column-reverse;
   width: 70%;
   padding-inline-end: 2rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    margin-inline-start: 10%;
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-inline-start: 0;
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
+
+  ${({ theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('sm')} {
+        margin-inline-start: 10%;
+      }
+      ${up('md')} {
+        margin-inline-start: 0;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+      }
+    `;
+  }} {
   }
 `;
 
@@ -76,29 +83,39 @@ const TextWrapper = styled.div`
   margin-block-end: 0.7rem;
   display: flex;
   flex-direction: column;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-block-end: 0;
-    max-width: 75%;
-    padding-inline: 1rem 4rem;
-  }
 
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-inline: 2rem 1rem;
-    max-width: 80%;
-  }
+  ${({ theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('md')} {
+        margin-block-end: 0;
+        max-width: 75%;
+        padding-inline: 1rem 4rem;
+      }
+      ${up('lg')} {
+        padding-inline: 2rem 1rem;
+        max-width: 80%;
+      }
+    `;
+  }}
 `;
 
 const Text = styled(Typography)`
-  ${({ theme }) => theme.breakpoints.up('xs')} {
-    line-height: 1.5;
-    font-size: 0.9rem;
-  }
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 1rem;
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    font-size: 0.9rem;
-  }
+  ${({ theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('xs')} {
+        line-height: 1.5;
+        font-size: 0.9rem;
+      }
+      ${up('sm')} {
+        font-size: 1rem;
+      }
+      ${up('md')} {
+        font-size: 0.9rem;
+      }
+    `;
+  }}
 `;
 
 const DesktopText = styled.span`
@@ -107,7 +124,10 @@ const DesktopText = styled.span`
   }
 `;
 
-const SurveysImage = styled.img`
+const SurveysImage = styled.img.attrs({
+  'aria-hidden': true,
+  src: '/surveys.svg',
+})`
   position: absolute;
   width: auto;
   display: flex;
@@ -116,17 +136,22 @@ const SurveysImage = styled.img`
   transform: translateY(-50%);
   right: 0;
   height: 130%;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    right: 10%;
-    height: 125%;
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    right: -1rem;
-    height: 130%;
-  }
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    height: 150%;
-  }
+  ${({ theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('sm')} {
+        right: 10%;
+        height: 125%;
+      }
+      ${up('md')} {
+        right: -1rem;
+        height: 130%;
+      }
+      ${up('lg')} {
+        height: 150%;
+      }
+    `;
+  }}
 `;
 
 export const SurveySelectSection = () => {
@@ -151,7 +176,7 @@ export const SurveySelectSection = () => {
           </Text>
         </TextWrapper>
       </SectionContent>
-      <SurveysImage src="/surveys.svg" alt="Illustration of woman holding a tablet" />
+      <SurveysImage />
     </SectionContainer>
   );
 };
