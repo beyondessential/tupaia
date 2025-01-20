@@ -17,7 +17,7 @@ export const DotIcon = ({
   variant = 'filled',
   ...props
 }: DotIconProps) => {
-  const fillOrStroke =
+  const circleProps =
     variant === 'filled'
       ? {
           fill: htmlColor,
@@ -32,7 +32,7 @@ export const DotIcon = ({
   return (
     <svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       {titleAccess && <title>{titleAccess}</title>}
-      <circle cx={4} cy={4} {...fillOrStroke} />
+      <circle cx={4} cy={4} {...circleProps} />
     </svg>
   );
 };
