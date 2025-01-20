@@ -76,7 +76,7 @@ const SurveyResponseTile = ({
 };
 
 export const SurveyResponsesSection = () => {
-  const { data: recentSurveyResponses, isLoading } = useCurrentUserSurveyResponses();
+  const { data: recentSurveyResponses = [], isLoading } = useCurrentUserSurveyResponses();
   const { project } = useCurrentUserContext();
 
   const ScrollableList = useIsMobile() ? InlineScroll : BlockScroll;
@@ -87,7 +87,7 @@ export const SurveyResponsesSection = () => {
       <ScrollableList>
         {isLoading ? (
           <TileSkeletons count={3} />
-        ) : recentSurveyResponses?.length ? (
+        ) : recentSurveyResponses.length > 0 ? (
           recentSurveyResponses.map(props => (
             <li key={props.id}>
               <SurveyResponseTile {...props} />
