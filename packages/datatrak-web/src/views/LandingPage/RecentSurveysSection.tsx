@@ -1,44 +1,36 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { LoadingTile, SurveyIcon, Tile } from '../../components';
 
 import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
 
 import { useCurrentUserRecentSurveys } from '../../api';
+import { InlineScrollView, SurveyIcon, Tile, TileSkeleton } from '../../components';
 import { TileProps } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
-  display: flex;
-  flex-direction: column;
+  display: grid;
   grid-area: --recentSurveys;
+  grid-template-columns: subgrid;
 `;
 
-const ScrollBody = styled.div<{
-  $hasMultiple: boolean;
-}>`
-  --_column-gap: 1rem;
-  display: flex;
-  overflow-x: auto;
-  gap: 0.6rem var(--_column-gap);
-
-  > :is(a, span) {
-    inline-size: 18rem;
-    max-inline-size: 100%;
-    flex: initial;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: grid;
-    grid-template-rows: 1fr;
-    grid-auto-flow: row;
-    grid-template-columns: ${({ $hasMultiple }) =>
-      $hasMultiple
-        ? 'repeat(auto-fill, minmax(calc(33.3% - var(--_column-gap)), 1fr))'
-        : 'initial'};
-  }
+const InlineScroll = styled(InlineScrollView).attrs({
+  $gap: '1rem',
+  as: 'ul',
+  role: 'list',
+})``;
+const GridScroll = styled.div.attrs({
+  as: 'ul',
+  role: 'list',
+})`
+  column-gap: 1rem;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: subgrid;
+  row-gap: 0.6rem;
+  grid-column: 1 / -1;
 `;
 
 type RecentSurveyTileProps = TileProps &
@@ -65,35 +57,43 @@ const RecentSurveyTile = ({
 
   return (
     <Tile
-      Icon={SurveyIcon}
-      text={countryName}
-      title={surveyName}
+      heading={surveyName}
+      leadingIcons={<SurveyIcon />}
       to={`/survey/${countryCode}/${surveyCode}/1`}
       tooltip={tooltip}
       {...props}
-    />
+    >
+      {countryName}
+    </Tile>
   );
 };
 
 export const RecentSurveysSection = () => {
-  const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
+  const { data: recentSurveys = [], isLoading } = useCurrentUserRecentSurveys();
+
+  const ScrollableList = useIsMobile() ? InlineScroll : GridScroll;
+
+  const renderContents = () => {
+    if (isLoading) return <TileSkeleton lineCount={1} />;
+
+    if (recentSurveys.length > 0)
+      return recentSurveys.map(props => (
+        <li key={`${props.surveyCode}-${props.countryName}`}>
+          <RecentSurveyTile {...props} />
+        </li>
+      ));
+
+    return (
+      <Typography variant="body2" color="textSecondary">
+        No recent surveys to display
+      </Typography>
+    );
+  };
 
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      <ScrollBody $hasMultiple={recentSurveys.length > 1}>
-        {isLoading && <LoadingTile />}
-        {isSuccess &&
-          (recentSurveys?.length > 0 ? (
-            recentSurveys.map(props => (
-              <RecentSurveyTile key={`${props.surveyCode}-${props.countryName}`} {...props} />
-            ))
-          ) : (
-            <Typography variant="body2" color="textSecondary">
-              No recent surveys to display
-            </Typography>
-          ))}
-      </ScrollBody>
+      <ScrollableList>{renderContents()}</ScrollableList>
     </RecentSurveys>
   );
 };

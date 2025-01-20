@@ -4,38 +4,31 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api';
-import { LoadingTile, SurveyTickIcon, Tile } from '../../components';
+import { BlockScrollView, InlineScrollView, SurveyTickIcon, Tile } from '../../components';
 import { DateTimeDisplay } from '../../components/DateTimeDisplay';
-import { TileProps } from '../../components/Tile';
+import { TileProps, TileSkeletons } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const Container = styled.section`
+  display: grid;
   grid-area: --recentResponses;
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: subgrid;
+  grid-template-rows: auto 1fr;
 `;
 
-const ScrollBody = styled.ul.attrs({ role: 'list' })`
-  display: flex;
-  flex-direction: row;
-  overflow-x: auto;
-  column-gap: 1rem;
-  row-gap: 0.6rem;
-
-  > span,
-  > a {
-    width: 18rem;
-    max-width: 100%;
-    //Reset flex grow and shrink
-    flex: 0 0 auto;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: column;
-    overflow: auto;
-  }
-`;
+const InlineScroll = styled(InlineScrollView).attrs({
+  $gap: '1rem',
+  as: 'ul',
+  role: 'list',
+  size: '100%',
+})``;
+const BlockScroll = styled(BlockScrollView).attrs({
+  $gap: '0.6rem',
+  as: 'ul',
+  role: 'list',
+  size: '100%',
+})``;
 
 interface SurveyResponseTileProps extends TileProps {
   id: string;
@@ -62,35 +55,46 @@ const SurveyResponseTile = ({
 
   return (
     <Tile
-      Icon={SurveyTickIcon}
-      text={entityName}
-      title={surveyName}
+      heading={surveyName}
+      leadingIcons={<SurveyTickIcon />}
       to={`?responseId=${id}`}
       tooltip={tooltip}
     >
-      {countryName}, <DateTimeDisplay date={parseISO(dataTime)} variant="date" />
+      <p>{entityName}</p>
+      <p>
+        {countryName}, <DateTimeDisplay date={parseISO(dataTime)} variant="date" />
+      </p>
     </Tile>
   );
 };
 
 export const SurveyResponsesSection = () => {
-  const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
+  const { data: recentSurveyResponses = [], isLoading } = useCurrentUserSurveyResponses();
   const { project } = useCurrentUserContext();
+
+  const ScrollableList = useIsMobile() ? InlineScroll : BlockScroll;
+
+  const renderContents = () => {
+    if (isLoading) return <TileSkeletons count={3} />;
+
+    if (recentSurveyResponses.length > 0)
+      return recentSurveyResponses.map(props => (
+        <li key={props.id}>
+          <SurveyResponseTile {...props} />
+        </li>
+      ));
+
+    return (
+      <Typography variant="body2" color="textSecondary">
+        No recent surveys responses to display for {project?.name || 'project'}
+      </Typography>
+    );
+  };
 
   return (
     <Container>
       <SectionHeading>Submission history</SectionHeading>
-      <ScrollBody>
-        {isLoading && <LoadingTile />}
-        {isSuccess &&
-          (recentSurveyResponses?.length > 0 ? (
-            recentSurveyResponses.map(props => <SurveyResponseTile key={props.id} {...props} />)
-          ) : (
-            <Typography variant="body2" color="textSecondary">
-              No recent surveys responses to display for {project?.name || 'project'}
-            </Typography>
-          ))}
-      </ScrollBody>
+      <ScrollableList>{renderContents()}</ScrollableList>
     </Container>
   );
 };

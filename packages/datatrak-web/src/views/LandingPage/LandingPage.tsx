@@ -1,14 +1,15 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { PageContainer as BasePageContainer } from '../../components';
-import { SurveySelectSection } from './SurveySelectSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { TasksSection } from './TasksSection';
-import { HEADER_HEIGHT } from '../../constants';
+
 import { useCurrentUserRecentSurveys } from '../../api';
+import { PageContainer as BasePageContainer } from '../../components';
+import { HEADER_HEIGHT } from '../../constants';
+import { ActivityFeedSection } from './ActivityFeedSection';
+import { LeaderboardSection } from './LeaderboardSection';
+import { RecentSurveysSection } from './RecentSurveysSection';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
+import { SurveySelectSection } from './SurveySelectSection';
+import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -41,16 +42,14 @@ const PageBody = styled.div`
   }
 `;
 
-const Grid = styled.div<{
-  $hasMultiple: boolean;
-}>`
-  flex: 1;
+const Grid = styled.div<{ $hasMultiple?: boolean }>`
   display: flex;
   flex-direction: column;
-  min-height: 0; // This is needed to stop the grid overflowing the flex container
-  max-width: 100%;
-  margin-inline: auto;
+  gap: 1.5rem;
   margin-block: 1.3rem;
+  margin-inline: auto;
+  max-inline-size: 100%;
+  min-block-size: 0; // This is needed to stop the grid overflowing the flex container
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
@@ -58,28 +57,23 @@ const Grid = styled.div<{
 
   > section {
     overflow: hidden;
-    &:not(:last-child) {
-      margin-bottom: 1rem;
-    }
   }
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    gap: 1.5rem;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr) 1.25fr;
-    grid-template-rows: repeat(3, auto);
-    margin-block: 0.5rem;
+  ${({ $hasMultiple, theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('md')} {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr) 1.4fr;
+        margin-block: 0.5rem;
+      }
 
-    > section &:not(:last-child) {
-      margin-block-end: 0;
-    }
+      ${up('lg')} {
+        gap: 1.81rem;
+      }
 
-    > div {
-      min-block-size: auto;
-    }
-    // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
-    ${({ $hasMultiple }) =>
-      $hasMultiple
+      // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
+      ${$hasMultiple
         ? css`
             grid-template-areas:
               '--surveySelect    --surveySelect  --surveySelect  --tasks'
@@ -92,13 +86,10 @@ const Grid = styled.div<{
               '--surveySelect    --surveySelect --surveySelect --tasks'
               '--recentSurveys   --activityFeed --activityFeed --tasks'
               '--recentResponses --activityFeed --activityFeed --leaderboard';
-            grid-template-rows: auto 7rem auto;
+            grid-template-rows: auto auto 1fr;
           `}
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    gap: 1.81rem;
-  }
+    `;
+  }}
 `;
 
 export const LandingPage = () => {

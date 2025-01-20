@@ -1,14 +1,14 @@
 import { Paper, Typography } from '@material-ui/core';
-import { TaskStatus } from '@tupaia/types';
-import { LoadingContainer } from '@tupaia/ui-components';
 import { parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
+import { TaskStatus } from '@tupaia/types';
+import { LoadingContainer } from '@tupaia/ui-components';
+
 import { useEditTask, useSurveyResponse } from '../../../api';
-import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
-import { DateTimeDisplay } from '../../../components/DateTimeDisplay';
+import { Button as BaseButton, DateTimeDisplay, SurveyTickIcon, Tile } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { DueDatePicker } from '../DueDatePicker';
@@ -120,8 +120,7 @@ const InitialRequest = ({ initialRequestId }) => {
   const { id, countryName, dataTime, surveyName, entityName } = surveyResponse;
   return (
     <Tile
-      title={surveyName}
-      text={entityName}
+      heading={surveyName}
       to={`?responseId=${id}`}
       tooltip={
         <>
@@ -130,9 +129,12 @@ const InitialRequest = ({ initialRequestId }) => {
           {entityName}
         </>
       }
-      Icon={SurveyTickIcon}
+      leadingIcons={<SurveyTickIcon />}
     >
-      {countryName}, <DateTimeDisplay date={parseISO(dataTime)} variant="date" />
+      <p>{entityName}</p>
+      <p>
+        {countryName}, <DateTimeDisplay date={parseISO(dataTime)} variant="date" />
+      </p>
     </Tile>
   );
 };
