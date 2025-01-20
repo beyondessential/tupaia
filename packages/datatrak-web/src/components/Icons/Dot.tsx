@@ -3,13 +3,17 @@ import React, { SVGProps } from 'react';
 import { useTheme } from '@material-ui/core/styles';
 
 export interface DotIconProps extends SVGProps<SVGElement> {
-  title?: string;
+  /**
+   * A human-readable title for this SVG, like alt text on an `<img>`.
+   * @see https://www.w3.org/TR/SVG-access/#Equivalent
+   */
+  titleAccess?: string;
   htmlColor?: Property.Color;
   variant?: 'filled' | 'outlined';
 }
 
 export const DotIcon = ({
-  title,
+  titleAccess,
   htmlColor = 'currentcolor',
   variant = 'filled',
   viewBox = '0 0 8 8',
@@ -38,7 +42,7 @@ export const DotIcon = ({
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      {title && <title>{title}</title>}
+      {titleAccess && <title>{titleAccess}</title>}
       <circle cx={4} cy={4} {...fillOrStroke} />
     </svg>
   );

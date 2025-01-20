@@ -7,7 +7,7 @@ interface SyncIndicatorProps {
 }
 export const SyncIndicator = ({ syncStatus }: SyncIndicatorProps) =>
   syncStatus === 'onlineOnly' ? (
-    <SyncNeutralIcon title="Online only" />
+    <SyncNeutralIcon titleAccess="Online only" />
   ) : (
-    <SyncSuccessIcon title="Available offline" />
+    <SyncSuccessIcon titleAccess="Available offline" />
   );
