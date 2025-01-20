@@ -14,6 +14,7 @@ const RecentSurveys = styled.section`
   display: grid;
   grid-area: --recentSurveys;
   grid-template-columns: subgrid;
+  grid-template-rows: auto 1fr;
 `;
 
 const InlineScroll = styled(InlineScrollView).attrs({
