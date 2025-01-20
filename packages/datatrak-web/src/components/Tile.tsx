@@ -54,10 +54,21 @@ const Wrapper = styled(Paper).attrs({
 
 const Header = styled.header`
   align-items: start;
-  block-size: 1.5rem;
   display: flex;
+  gap: 0.5rem;
   justify-content: space-between;
-  margin-block-end: 0.5rem;
+
+  ${({ theme }) => {
+    const { down, up } = theme.breakpoints;
+    return css`
+      ${down('lg')} {
+        margin-block-end: 0.5rem;
+      }
+      ${up('lg')} {
+        flex-direction: column;
+      }
+    `;
+  }}
 `;
 
 const IconGroup = styled.div`
