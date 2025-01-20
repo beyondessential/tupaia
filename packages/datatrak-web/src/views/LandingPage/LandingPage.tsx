@@ -79,7 +79,7 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
               '--surveySelect    --surveySelect --surveySelect --tasks'
               '--recentSurveys   --activityFeed --activityFeed --tasks'
               '--recentResponses --activityFeed --activityFeed --leaderboard';
-            grid-template-rows: auto 7rem auto;
+            grid-template-rows: auto auto 1fr;
           `}
   }
 
