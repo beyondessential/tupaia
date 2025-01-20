@@ -8,7 +8,8 @@ import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
-import { Button as BaseButton, DateTimeDisplay, SurveyTickIcon, Tile } from '../../../components';
+import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
+import { DateTimeDisplay } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { DueDatePicker } from '../DueDatePicker';

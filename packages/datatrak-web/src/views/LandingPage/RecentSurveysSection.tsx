@@ -14,6 +14,7 @@ const RecentSurveys = styled.section`
   display: grid;
   grid-area: --recentSurveys;
   grid-template-columns: subgrid;
+  grid-template-rows: auto 1fr;
 `;
 
 const InlineScroll = styled(InlineScrollView).attrs({
@@ -73,27 +74,24 @@ export const RecentSurveysSection = () => {
 
   const ScrollableList = useIsMobile() ? InlineScroll : GridScroll;
 
-  const renderContents = () => {
-    if (isLoading) return <TileSkeleton lineCount={1} />;
-
-    if (recentSurveys.length > 0)
-      return recentSurveys.map(props => (
-        <li key={`${props.surveyCode}-${props.countryName}`}>
-          <RecentSurveyTile {...props} />
-        </li>
-      ));
-
-    return (
-      <Typography variant="body2" color="textSecondary">
-        No recent surveys to display
-      </Typography>
-    );
-  };
-
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      <ScrollableList>{renderContents()}</ScrollableList>
+      <ScrollableList>
+        {isLoading ? (
+          <TileSkeleton lineCount={1} />
+        ) : recentSurveys.length > 0 ? (
+          recentSurveys.map(props => (
+            <li key={`${props.surveyCode}-${props.countryName}`}>
+              <RecentSurveyTile {...props} />
+            </li>
+          ))
+        ) : (
+          <Typography variant="body2" color="textSecondary">
+            No recent surveys to display
+          </Typography>
+        )}
+      </ScrollableList>
     </RecentSurveys>
   );
 };

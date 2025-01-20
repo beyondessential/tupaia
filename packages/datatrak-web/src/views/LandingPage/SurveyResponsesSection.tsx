@@ -4,8 +4,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api';
-import { BlockScrollView, InlineScrollView, SurveyTickIcon, Tile } from '../../components';
-import { DateTimeDisplay } from '../../components/DateTimeDisplay';
+import {
+  BlockScrollView,
+  DateTimeDisplay,
+  InlineScrollView,
+  SurveyTickIcon,
+  Tile,
+} from '../../components';
 import { TileProps, TileSkeletons } from '../../components/Tile';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
@@ -57,6 +62,8 @@ const SurveyResponseTile = ({
     <Tile
       heading={surveyName}
       leadingIcons={<SurveyTickIcon />}
+      // TODO: Uncomment and de-hard-code when sync is implemented
+      // trailingIcons={isWebApp() ? <SyncIndicator syncStatus="onlineOnly" /> : null}
       to={`?responseId=${id}`}
       tooltip={tooltip}
     >
@@ -74,27 +81,24 @@ export const SurveyResponsesSection = () => {
 
   const ScrollableList = useIsMobile() ? InlineScroll : BlockScroll;
 
-  const renderContents = () => {
-    if (isLoading) return <TileSkeletons count={3} />;
-
-    if (recentSurveyResponses.length > 0)
-      return recentSurveyResponses.map(props => (
-        <li key={props.id}>
-          <SurveyResponseTile {...props} />
-        </li>
-      ));
-
-    return (
-      <Typography variant="body2" color="textSecondary">
-        No recent surveys responses to display for {project?.name || 'project'}
-      </Typography>
-    );
-  };
-
   return (
     <Container>
       <SectionHeading>Submission history</SectionHeading>
-      <ScrollableList>{renderContents()}</ScrollableList>
+      <ScrollableList>
+        {isLoading ? (
+          <TileSkeletons count={3} />
+        ) : recentSurveyResponses.length > 0 ? (
+          recentSurveyResponses.map(props => (
+            <li key={props.id}>
+              <SurveyResponseTile {...props} />
+            </li>
+          ))
+        ) : (
+          <Typography variant="body2" color="textSecondary">
+            No recent surveys responses to display for {project?.name || 'project'}
+          </Typography>
+        )}
+      </ScrollableList>
     </Container>
   );
 };
