@@ -41,7 +41,7 @@ const Wrapper = styled(Paper).attrs({
       background-color: ${theme.palette.primaryHover};
     }
 
-    ${theme.breakpoints.up('sm')} {
+    ${theme.breakpoints.up('lg')} {
       flex-direction: row;
       inline-size: 100%;
     }
