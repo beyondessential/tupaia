@@ -9,13 +9,14 @@ import { ROUTES } from '../../constants';
 import { useIsMobile } from '../../utils';
 
 const Section = styled.section`
-  display: flex;
   align-items: center;
+  display: flex;
+  text-wrap: balance;
 `;
 
 const DesktopWrapper = styled(Section)`
+  block-size: 100%;
   flex-direction: column;
-  height: 100%;
 `;
 
 const Image = styled.img.attrs({
