@@ -80,7 +80,7 @@ export const SurveyResponsesSection = () => {
       <ScrollableList>
         {isLoading ? (
           <TileSkeletons count={3} />
-        ) : recentSurveyResponses?.length > 0 ? (
+        ) : recentSurveyResponses?.length ? (
           recentSurveyResponses.map(props => (
             <li key={props.id}>
               <SurveyResponseTile {...props} />

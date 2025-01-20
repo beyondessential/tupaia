@@ -16,8 +16,15 @@ const RecentSurveys = styled.section`
   grid-template-columns: subgrid;
 `;
 
-const InlineScroll = styled(InlineScrollView).attrs({ $gap: '1rem' })``;
-const GridScroll = styled.div`
+const InlineScroll = styled(InlineScrollView).attrs({
+  $gap: '1rem',
+  as: 'ul',
+  role: 'list',
+})``;
+const GridScroll = styled.div.attrs({
+  as: 'ul',
+  role: 'list',
+})`
   column-gap: 1rem;
   display: grid;
   grid-auto-flow: row;
@@ -69,10 +76,10 @@ export const RecentSurveysSection = () => {
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      <ScrollableList as="ul" role="list">
+      <ScrollableList>
         {isLoading && <TileSkeleton lineCount={1} />}
         {isSuccess &&
-          (recentSurveys?.length > 0 ? (
+          (recentSurveys?.length ? (
             recentSurveys.map(props => (
               <li key={`${props.surveyCode}-${props.countryName}`}>
                 <RecentSurveyTile {...props} />
