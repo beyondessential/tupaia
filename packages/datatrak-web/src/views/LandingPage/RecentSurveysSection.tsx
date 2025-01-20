@@ -77,19 +77,19 @@ export const RecentSurveysSection = () => {
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
       <ScrollableList>
-        {isLoading && <TileSkeleton lineCount={1} />}
-        {isSuccess &&
-          (recentSurveys?.length ? (
-            recentSurveys.map(props => (
-              <li key={`${props.surveyCode}-${props.countryName}`}>
-                <RecentSurveyTile {...props} />
-              </li>
-            ))
-          ) : (
-            <Typography variant="body2" color="textSecondary">
-              No recent surveys to display
-            </Typography>
-          ))}
+        {isLoading ? (
+          <TileSkeleton lineCount={1} />
+        ) : recentSurveys.length > 0 ? (
+          recentSurveys.map(props => (
+            <li key={`${props.surveyCode}-${props.countryName}`}>
+              <RecentSurveyTile {...props} />
+            </li>
+          ))
+        ) : (
+          <Typography variant="body2" color="textSecondary">
+            No recent surveys to display
+          </Typography>
+        )}
       </ScrollableList>
     </RecentSurveys>
   );
