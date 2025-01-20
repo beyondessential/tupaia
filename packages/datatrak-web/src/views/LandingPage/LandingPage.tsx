@@ -1,26 +1,44 @@
 import React from 'react';
-import styled from 'styled-components';
-import { PageContainer as BasePageContainer } from '../../components';
-import { SurveySelectSection } from './SurveySelectSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { TasksSection } from './TasksSection';
-import { HEADER_HEIGHT } from '../../constants';
+import styled, { css } from 'styled-components';
+
 import { useCurrentUserRecentSurveys } from '../../api';
+import { PageContainer as BasePageContainer } from '../../components';
+import { HEADER_HEIGHT } from '../../constants';
+import { ActivityFeedSection } from './ActivityFeedSection';
+import { LeaderboardSection } from './LeaderboardSection';
+import { RecentSurveysSection } from './RecentSurveysSection';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
+import { SurveySelectSection } from './SurveySelectSection';
+import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(BasePageContainer)`
+  ${({ theme }) => {
+    const primary = theme.palette.primary.main;
+    const background = theme.palette.background.default;
+    return css`
+      background: linear-gradient(
+          252deg,
+          oklch(from ${primary} l c h / 15%) 2%,
+          oklch(from ${background} l c h / 20%) 29%
+        ),
+        linear-gradient(
+          242deg,
+          oklch(from ${background} l c h / 30%) 68%,
+          oklch(from ${primary} l c h / 15%) 100%
+        );
+
+      @supports not (color: oklch(from black l c h)) {
+        background: linear-gradient(252deg, ${primary}24 2%, ${background}33 29%,
+          linear-gradient(242deg, ${background}4d 68%, ${primary}28 100%);
+      }
+    `;
+  }}
+
   display: flex;
-  background: ${({
-    theme,
-  }) => `linear-gradient(252deg, ${theme.palette.primary.main}24 1.92%, ${theme.palette.background.default}33 29.06%),
-    linear-gradient(242deg, ${theme.palette.background.default}4d 68.02%, ${theme.palette.primary.main}28 100%);
-  `};
-  height: 100%;
+  block-size: 100%;
   // make the container scrollable on small screens
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    max-height: calc(100vh - ${HEADER_HEIGHT});
+    max-block-size: calc(100vh - ${HEADER_HEIGHT});
     overflow-y: auto;
   }
 `;
