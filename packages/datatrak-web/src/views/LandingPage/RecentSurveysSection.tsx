@@ -69,7 +69,7 @@ const RecentSurveyTile = ({
 };
 
 export const RecentSurveysSection = () => {
-  const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
+  const { data: recentSurveys = [], isLoading } = useCurrentUserRecentSurveys();
 
   const ScrollableList = useIsMobile() ? InlineScroll : GridScroll;
 
