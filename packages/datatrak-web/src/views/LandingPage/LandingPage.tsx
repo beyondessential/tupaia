@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { PageContainer as BasePageContainer } from '../../components';
 import { SurveySelectSection } from './SurveySelectSection';
 import { SurveyResponsesSection } from './SurveyResponsesSection';
@@ -42,7 +42,7 @@ const PageBody = styled.div`
 `;
 
 const Grid = styled.div<{
-  $hasMoreThanOneSurvey: boolean;
+  $hasMultiple: boolean;
 }>`
   flex: 1;
   display: flex;
@@ -66,33 +66,34 @@ const Grid = styled.div<{
   ${({ theme }) => theme.breakpoints.up('md')} {
     gap: 1.5rem;
     display: grid;
+    grid-template-columns: repeat(3, 1fr) 1.25fr;
+    grid-template-rows: repeat(3, auto);
     margin-block: 0.5rem;
-    grid-template-rows: ${({ $hasMoreThanOneSurvey }) =>
-      $hasMoreThanOneSurvey ? 'auto auto auto' : 'auto 7rem auto'};
-    grid-template-columns: 23% 1fr 1fr 30%;
-    grid-template-areas: ${({ $hasMoreThanOneSurvey }) => {
-      //If there is < 2 surveys, the recentSurveys section will be smaller and the activity feed will shift upwards on larger screens
-      if ($hasMoreThanOneSurvey) {
-        return `
-          'surveySelect surveySelect surveySelect tasks'
-          'recentSurveys recentSurveys recentSurveys tasks'
-          'recentResponses activityFeed activityFeed leaderboard'
-        `;
-      }
-      return `'surveySelect surveySelect surveySelect tasks'
-        'recentSurveys activityFeed activityFeed tasks'
-        'recentResponses activityFeed activityFeed leaderboard'
-        `;
-    }};
-    > section {
-      &:not(:last-child) {
-        margin-bottom: 0;
-      }
+
+    > section &:not(:last-child) {
+      margin-block-end: 0;
     }
 
     > div {
-      min-height: auto;
+      min-block-size: auto;
     }
+    // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
+    ${({ $hasMultiple }) =>
+      $hasMultiple
+        ? css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect  --surveySelect  --tasks'
+              '--recentSurveys   --recentSurveys --recentSurveys --tasks'
+              '--recentResponses --activityFeed  --activityFeed  --leaderboard';
+            grid-template-rows: repeat(3, auto);
+          `
+        : css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect --surveySelect --tasks'
+              '--recentSurveys   --activityFeed --activityFeed --tasks'
+              '--recentResponses --activityFeed --activityFeed --leaderboard';
+            grid-template-rows: auto 7rem auto;
+          `}
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
@@ -107,7 +108,7 @@ export const LandingPage = () => {
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMoreThanOneSurvey={hasMoreThanOneSurvey}>
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
           <SurveySelectSection />
           <TasksSection />
           <LeaderboardSection />

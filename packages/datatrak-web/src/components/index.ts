@@ -5,6 +5,7 @@ export { Button } from './Button';
 export { ButtonLink } from './ButtonLink';
 export { CancelConfirmModal } from './CancelConfirmModal';
 export { ChangeProjectButton } from './ChangeProjectButton';
+export { DateTimeDisplay } from './DateTimeDisplay';
 export { ErrorDisplay } from './ErrorDisplay';
 export { InputHelperText } from './InputHelperText';
 export { Modal } from './Modal';
