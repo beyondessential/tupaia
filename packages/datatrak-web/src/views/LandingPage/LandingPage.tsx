@@ -59,14 +59,21 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
     overflow: hidden;
   }
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr) 1.4fr;
-    margin-block: 0.5rem;
+  ${({ $hasMultiple, theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('md')} {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr) 1.4fr;
+        margin-block: 0.5rem;
+      }
 
-    // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
-    ${({ $hasMultiple }) =>
-      $hasMultiple
+      ${up('lg')} {
+        gap: 1.81rem;
+      }
+
+      // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
+      ${$hasMultiple
         ? css`
             grid-template-areas:
               '--surveySelect    --surveySelect  --surveySelect  --tasks'
@@ -81,11 +88,8 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
               '--recentResponses --activityFeed --activityFeed --leaderboard';
             grid-template-rows: auto auto 1fr;
           `}
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    gap: 1.81rem;
-  }
+    `;
+  }}
 `;
 
 export const LandingPage = () => {
