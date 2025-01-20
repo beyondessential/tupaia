@@ -2,7 +2,7 @@ export { ArrowLeftIcon } from './ArrowLeftIcon';
 export { Coconut } from './Coconut';
 export { CommentIcon } from './CommentIcon';
 export { CopyIcon } from './CopyIcon';
-export { DotIcon, SyncNeutralIcon, SyncSuccessIcon } from './Dot';
+export { DotIcon } from './Dot';
 export type { DotIconProps } from './Dot';
 export { DownloadIcon } from './DownloadIcon';
 export { Pig } from './Pig';

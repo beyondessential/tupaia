@@ -1,6 +1,5 @@
 import { Property } from 'csstype';
 import React, { SVGProps } from 'react';
-import { useTheme } from '@material-ui/core/styles';
 
 export interface DotIconProps extends SVGProps<SVGElement> {
   /**
@@ -46,14 +45,4 @@ export const DotIcon = ({
       <circle cx={4} cy={4} {...fillOrStroke} />
     </svg>
   );
-};
-
-export const SyncSuccessIcon = (props: DotIconProps) => {
-  const { palette } = useTheme();
-  return <DotIcon htmlColor={palette.success.main} {...props} />;
-};
-
-export const SyncNeutralIcon = (props: DotIconProps) => {
-  const { palette } = useTheme();
-  return <DotIcon variant="outlined" htmlColor={palette.grey[400]} {...props} />;
 };
