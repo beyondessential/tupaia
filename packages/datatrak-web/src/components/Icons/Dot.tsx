@@ -15,9 +15,6 @@ export const DotIcon = ({
   titleAccess,
   htmlColor = 'currentcolor',
   variant = 'filled',
-  viewBox = '0 0 8 8',
-  height = 8,
-  width = 8,
   ...props
 }: DotIconProps) => {
   const fillOrStroke =
@@ -33,14 +30,7 @@ export const DotIcon = ({
         };
 
   return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={viewBox}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       {titleAccess && <title>{titleAccess}</title>}
       <circle cx={4} cy={4} {...fillOrStroke} />
     </svg>
