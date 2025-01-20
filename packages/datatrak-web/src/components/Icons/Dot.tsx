@@ -1,7 +1,7 @@
 import { Property } from 'csstype';
 import React, { SVGProps } from 'react';
 
-export interface DotIconProps extends SVGProps<SVGElement> {
+export interface DotIconProps extends SVGProps<SVGSVGElement> {
   /**
    * A human-readable title for this SVG, like alt text on an `<img>`.
    * @see https://www.w3.org/TR/SVG-access/#Equivalent
