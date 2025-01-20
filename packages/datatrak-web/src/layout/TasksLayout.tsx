@@ -2,19 +2,16 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { PageContainer as BasePageContainer } from '../components';
-import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
 import { useIsMobile } from '../utils';
 
-const DesktopContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
-`;
+  flex: 1;
 
-const MobileContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 60vh;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding-block-end: 1.5rem;
+  }
 `;
 
 const PageContainer = styled(BasePageContainer)`
@@ -46,17 +43,17 @@ export const TasksLayout = () => {
 
   if (isMobile) {
     return (
-      <MobileContainer>
+      <Container>
         <Outlet />
-      </MobileContainer>
+      </Container>
     );
   }
 
   return (
-    <DesktopContainer>
+    <Container>
       <PageContainer>
         <Outlet />
       </PageContainer>
-    </DesktopContainer>
+    </Container>
   );
 };

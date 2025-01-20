@@ -12,6 +12,7 @@ import { getDisplayRepeatSchedule } from '../utils';
 import { TaskActionsMenu } from '../TaskActionsMenu';
 import { CommentsCount } from '../CommentsCount';
 import { StatusFilter } from './StatusFilter';
+import { StatusDot } from '../StatusPill';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
 import { RepeatScheduleFilter } from './RepeatScheduleFilter';
@@ -54,6 +55,20 @@ const StatusCellContent = styled.div`
   a:has(&) {
     // This is a workaround to make the comments count display at the edge of the cell
     padding-inline-end: 0;
+  }
+`;
+
+const StatusPillContent = styled.div`
+  display: flex;
+  align-items: center;
+  > div {
+    margin-inline-end: 0.5rem;
+  }
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -115,7 +130,22 @@ export const useTasksTable = () => {
     {
       // only the survey name can be resized
       Header: 'Survey',
-      accessor: (row: any) => row.survey.name,
+      Cell: ({
+        row,
+      }: {
+        row: {
+          original: DatatrakWebTasksRequest.ResBody['tasks'][0];
+        };
+      }) => {
+        const value = row?.original?.survey?.name || '';
+        const status = row?.original?.taskStatus || '';
+        return (
+          <StatusPillContent>
+            <StatusDot $status={status} />
+            <span>{value}</span>
+          </StatusPillContent>
+        );
+      },
       id: 'survey.name',
       filterable: true,
     },

@@ -38,9 +38,9 @@ const EQUALITY_FILTERS = ['survey.project_id', 'task_status'];
 const getFilterSettings = (cookieString: string) => {
   const cookies = parse(cookieString);
   return {
-    allAssignees: true,
-    allCompleted: true,
-    allCancelled: true,
+    allAssignees: cookies['all_assignees_tasks'] === 'true',
+    allCompleted: cookies['show_completed_tasks'] === 'true',
+    allCancelled: cookies['show_cancelled_tasks'] === 'true',
   };
 };
 

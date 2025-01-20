@@ -5,6 +5,8 @@
 
 import styled from 'styled-components';
 import React from 'react';
+import { Search } from '@material-ui/icons';
+import { InputAdornment } from '@material-ui/core';
 import { Autocomplete } from '../../../components';
 
 const Container = styled.div`
@@ -17,6 +19,11 @@ const Container = styled.div`
   .MuiPaper-root {
     border: none;
   }
+`;
+
+const SearchAdornment = styled(InputAdornment)`
+  margin-left: 1rem;
+  margin-right: -1rem;
 `;
 
 const PopperComponent = ({ children }) => {
@@ -55,6 +62,15 @@ export const MobileAutocomplete = ({
         placeholder="Search..."
         options={options}
         loading={isLoading}
+        textFieldProps={{
+          InputProps: {
+            startAdornment: (
+              <SearchAdornment position="start">
+                <Search />
+              </SearchAdornment>
+            ),
+          },
+        }}
         muiProps={{
           open: true,
           disableCloseOnSelect: true,

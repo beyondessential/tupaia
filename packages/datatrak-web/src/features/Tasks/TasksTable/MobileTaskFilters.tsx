@@ -134,7 +134,7 @@ const SurveyFilter = ({ onChange, value }) => {
       label: item.name,
     })) ?? [];
   const handleChange = newValue => {
-    onChange({ id: 'survey.name', value: newValue.name });
+    onChange({ id: 'survey.id', value: newValue.id });
   };
 
   return (
@@ -164,7 +164,7 @@ const EntityFilter = ({ onChange, value }) => {
       label: item.name,
     })) ?? [];
   const handleChange = newValue => {
-    onChange({ id: 'entity.code', value: newValue.code });
+    onChange({ id: 'entity.id', value: newValue.id });
   };
 
   return (

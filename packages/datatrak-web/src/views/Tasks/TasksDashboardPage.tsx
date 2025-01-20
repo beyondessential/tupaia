@@ -8,14 +8,6 @@ import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
 import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
 import { useIsMobile } from '../../utils';
 
-const ButtonContainer = styled.div`
-  //padding-block-end: 0.5rem;
-  //margin-block-start: 1rem;
-  //margin-inline-start: auto;
-  //margin-block-start: 0;
-  //padding-block-end: 0;
-`;
-
 const CreateButton = styled(Button).attrs({
   color: 'primary',
   variant: 'outlined',
@@ -52,11 +44,9 @@ export const TasksDashboardPage = () => {
       )}
       <TaskPageHeader title="Tasks" backTo="/">
         <TaskMetrics />
-        <ButtonContainer>
-          <CreateButton onClick={toggleCreateModal}>
-            <AddIcon /> Create task
-          </CreateButton>
-        </ButtonContainer>
+        <CreateButton onClick={toggleCreateModal}>
+          <AddIcon /> Create task
+        </CreateButton>
       </TaskPageHeader>
       <ContentWrapper>
         <TasksTable />

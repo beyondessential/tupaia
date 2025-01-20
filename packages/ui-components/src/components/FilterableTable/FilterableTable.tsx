@@ -44,6 +44,7 @@ const NoDataMessage = styled.div`
   width: 100%;
   text-align: center;
   padding-block: 2.5rem;
+  padding-inline: 2rem;
 `;
 
 const LoadingContainer = styled.div`

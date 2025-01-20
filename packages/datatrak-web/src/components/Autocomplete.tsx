@@ -7,10 +7,15 @@ import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
 
 const OptionWrapper = styled.div`
+  display: block;
+  flex: 1;
+  height: 100%;
   width: 100%;
   padding: 0.2rem 0.875rem;
   line-height: 1.2;
   margin: 0.3rem 0;
+
+  background: red;
 `;
 
 const StyledPaper = styled(Paper).attrs({
@@ -18,6 +23,7 @@ const StyledPaper = styled(Paper).attrs({
 })`
   border-color: ${({ theme }) => theme.palette.primary.main};
   .MuiAutocomplete-option {
+    background: green;
     padding: 0;
     &:hover,
     &[data-focus='true'] {
@@ -107,7 +113,7 @@ export const QuestionAutocomplete = styled(Autocomplete).attrs({
       component: InputHelperText,
     },
   },
-  placeholder: 'Search...',
+  placeholder: 'Search..',
 })`
   .MuiFormControl-root {
     margin-bottom: 0;
