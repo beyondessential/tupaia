@@ -63,6 +63,7 @@ const Header = styled.header`
     return css`
       ${down('lg')} {
         margin-block-end: 0.5rem;
+        block-size: 1.5rem;
       }
       ${up('lg')} {
         flex-direction: column;
