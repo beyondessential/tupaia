@@ -45,10 +45,11 @@ const PageBody = styled.div`
 const Grid = styled.div<{ $hasMultiple?: boolean }>`
   display: flex;
   flex-direction: column;
-  min-height: 0; // This is needed to stop the grid overflowing the flex container
-  max-width: 100%;
-  margin-inline: auto;
+  gap: 1.5rem;
   margin-block: 1.3rem;
+  margin-inline: auto;
+  max-inline-size: 100%;
+  min-block-size: 0; // This is needed to stop the grid overflowing the flex container
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
@@ -59,9 +60,8 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    gap: 1.5rem;
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 1.25fr;
+    grid-template-columns: repeat(3, 1fr) 1.4fr;
     margin-block: 0.5rem;
 
     // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
