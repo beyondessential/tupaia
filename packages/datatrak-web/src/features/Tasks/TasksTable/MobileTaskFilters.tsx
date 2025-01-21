@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { TransitionProps } from '@material-ui/core/transitions';
@@ -26,6 +21,16 @@ const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
+`;
+
+const GreenDot = styled.div`
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.palette.success.main};
 `;
 
 const StyledModal = styled(Modal)`
@@ -70,12 +75,6 @@ const StyledTabs = styled(Tabs)`
   }
 `;
 
-const Panel = styled.div`
-  padding: 1rem 0;
-  flex: 1;
-  overflow: auto;
-`;
-
 const DialogActions = styled.div`
   display: flex;
   padding: 8px;
@@ -89,121 +88,12 @@ const Title = styled(Typography).attrs({
   font-size: 1.125rem;
 `;
 
-/**
- * Taken from [Material UI's example](https://v4.mui.com/components/dialogs/#full-screen-dialogs) to make the dialog slide up from the bottom
- */
-export const SlideTransition = React.forwardRef(function Transition(
+const SlideTransition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
-const TabPanel = ({ children, value, index, ...props }) => {
-  if (value !== index) {
-    return null;
-  }
-
-  return (
-    <Panel
-      role="tabpanel"
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...props}
-    >
-      {children}
-    </Panel>
-  );
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
-const SurveyFilter = ({ onChange, value }) => {
-  const [searchValue, setSearchValue] = useState('');
-  const user = useCurrentUserContext();
-  const { data = [], isLoading } = useProjectSurveys(user.projectId, { searchTerm: searchValue });
-  const options =
-    data?.map(item => ({
-      ...item,
-      value: item.id,
-      label: item.name,
-    })) ?? [];
-  const handleChange = newValue => {
-    onChange({ id: 'survey.id', value: newValue.id });
-  };
-
-  return (
-    <MobileAutocomplete
-      options={options}
-      isLoading={isLoading}
-      onChange={handleChange}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
-      value={value}
-    />
-  );
-};
-
-const EntityFilter = ({ onChange, value }) => {
-  const [searchValue, setSearchValue] = useState('');
-  const user = useCurrentUserContext();
-  const debouncedSearch = useDebounce(searchValue!, 200);
-  const { data = [], isLoading } = useProjectEntities(user.project?.code, {
-    searchString: debouncedSearch,
-    filter: {},
-  });
-  const options =
-    data?.map(item => ({
-      ...item,
-      value: item.id,
-      label: item.name,
-    })) ?? [];
-  const handleChange = newValue => {
-    onChange({ id: 'entity.id', value: newValue.id });
-  };
-
-  return (
-    <MobileAutocomplete
-      options={options}
-      isLoading={isLoading}
-      onChange={handleChange}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
-      value={value}
-    />
-  );
-};
-
-const UserFilter = ({ onChange, value }) => {
-  const [searchValue, setSearchValue] = useState('');
-  const user = useCurrentUserContext();
-  const { data = [], isLoading } = useProjectUsers(user.project?.code, searchValue);
-  const options =
-    data?.map(item => ({
-      ...item,
-      value: item.id,
-      label: item.name,
-    })) ?? [];
-  const handleChange = newValue => {
-    onChange({ id: 'assignee.id', value: newValue.id });
-  };
-
-  return (
-    <MobileAutocomplete
-      options={options}
-      isLoading={isLoading}
-      onChange={handleChange}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
-      value={value}
-    />
-  );
-};
 
 const FlexBox = styled.div`
   display: flex;
@@ -218,31 +108,68 @@ const Dot = styled.div`
   background: ${({ theme }) => theme.palette.primary.main};
 `;
 
-const GreenDot = styled.div`
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: ${({ theme }) => theme.palette.success.main};
-`;
+const FilterTabs = ({ tabs, value, onChange }) => (
+  <StyledTabs
+    value={value}
+    onChange={onChange}
+    indicatorColor="primary"
+    textColor="primary"
+    variant="fullWidth"
+  >
+    {tabs.map((tab, index) => (
+      <Tab
+        key={tab.id}
+        label={
+          <FlexBox>
+            <span>{tab.label}</span>
+            {tab.active && <Dot />}
+          </FlexBox>
+        }
+        aria-controls={`tabpanel-${index}`}
+        id={`tab-${index}`}
+      />
+    ))}
+  </StyledTabs>
+);
 
-const TabLabel = ({ label, active }) => {
+const Filter = ({ fetchFunction, labelKey, onChange, value }) => {
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearch = useDebounce(searchValue, 200);
+  const user = useCurrentUserContext();
+  const { data = [], isLoading } = fetchFunction(user, debouncedSearch);
+
+  const options = data.map(item => ({
+    value: item.id,
+    label: item[labelKey],
+  }));
+
+  const handleChange = newValue => onChange({ id: `${labelKey}.id`, value: newValue.id });
+
   return (
-    <FlexBox>
-      <span>{label}</span>
-      {active && <Dot />}
-    </FlexBox>
+    <MobileAutocomplete
+      options={options}
+      isLoading={isLoading}
+      onChange={handleChange}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+      value={value}
+    />
   );
 };
 
 export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0);
+
+  const getHasFilter = key => filters.some(filter => filter.id === key);
+  const tabs = [
+    { id: 'survey', label: 'Survey', active: getHasFilter('survey.id') },
+    { id: 'entity', label: 'Entity', active: getHasFilter('entity.id') },
+    { id: 'assignee', label: 'Assignee', active: getHasFilter('assignee.id') },
+  ];
 
   const onChangeTab = (_event, newValue) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
 
   const handleChangeFilters = newEntry => {
@@ -260,14 +187,6 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
     onChangeFilters(originalFilters);
   };
 
-  const openFilters = () => {
-    setIsOpen(true);
-  };
-
-  const onClose = () => {
-    setIsOpen(false);
-  };
-
   const clearFilters = () => {
     onChangeFilters([]);
   };
@@ -276,58 +195,67 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
     const filter = filters.find(f => f.id === key);
     return filter?.value ? { id: filter.value } : null;
   };
-  const getHasFilter = key => filters.some(filter => filter.id === key);
-  const hasAnyFilters = filters.length > 0;
 
   return (
     <>
-      <FilterButton onClick={openFilters}>
+      <FilterButton
+        onClick={() => {
+          setIsOpen(false);
+        }}
+      >
         <FiltersIcon />
-        {hasAnyFilters && <GreenDot />}
+        {filters.length > 0 && <GreenDot />}
       </FilterButton>
       <StyledModal
         open={isOpen}
-        onClose={onClose}
+        onClose={() => {
+          setIsOpen(false);
+        }}
         disablePortal={false}
         fullScreen
         TransitionComponent={SlideTransition}
       >
         <Title>Filter by</Title>
-        <StyledTabs
-          value={value}
-          onChange={onChangeTab}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-          aria-label="full width tabs example"
-        >
-          <Tab
-            label={<TabLabel label="Survey" active={getHasFilter('survey.id')} />}
-            {...a11yProps(0)}
+        <FilterTabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
+        {tabValue === 0 && (
+          <Filter
+            fetchFunction={(user, search) =>
+              useProjectSurveys(user.projectId, { searchTerm: search })
+            }
+            labelKey="name"
+            onChange={handleChangeFilters}
+            value={getFilterValue('survey.id')}
           />
-          <Tab
-            label={<TabLabel label="Entity" active={getHasFilter('entity.id')} />}
-            {...a11yProps(1)}
+        )}
+        {tabValue === 1 && (
+          <Filter
+            fetchFunction={(user, search) =>
+              useProjectEntities(user.project?.code, { searchString: search, filter: {} })
+            }
+            labelKey="name"
+            onChange={handleChangeFilters}
+            value={getFilterValue('entity.id')}
           />
-          <Tab
-            label={<TabLabel label="Assignee" active={getHasFilter('assignee.id')} />}
-            {...a11yProps(1)}
+        )}
+        {tabValue === 2 && (
+          <Filter
+            fetchFunction={(user, search) => useProjectUsers(user.project?.code, search)}
+            labelKey="name"
+            onChange={handleChangeFilters}
+            value={getFilterValue('assignee.id')}
           />
-        </StyledTabs>
-        <TabPanel value={value} index={0}>
-          <SurveyFilter onChange={handleChangeFilters} value={getFilterValue('survey.id')} />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <EntityFilter onChange={handleChangeFilters} value={getFilterValue('entity.id')} />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <UserFilter onChange={handleChangeFilters} value={getFilterValue('assignee.id')} />
-        </TabPanel>
+        )}
         <DialogActions>
           <Button variant="text" color="default" onClick={() => clearFilters()}>
             Clear filters
           </Button>
-          <Button onClick={() => onClose()}>Apply</Button>
+          <Button
+            onClick={() => {
+              setIsOpen(false);
+            }}
+          >
+            Apply
+          </Button>
         </DialogActions>
       </StyledModal>
     </>
