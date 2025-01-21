@@ -43,24 +43,22 @@ interface SelectListProps {
 const List = ({ parentItem, items, onSelect, CountrySelector }) => {
   const parentTitle = parentItem?.value;
   return (
-    <>
-      <BaseList>
-        {CountrySelector}
-        {parentTitle && <CategoryTitle>{parentTitle}</CategoryTitle>}
-        {items?.map(item => (
-          <ListItem item={item} onSelect={onSelect} key={item.value}>
-            {item?.children && (
-              <List
-                parentItem={item}
-                items={item.children}
-                onSelect={onSelect}
-                CountrySelector={CountrySelector}
-              />
-            )}
-          </ListItem>
-        ))}
-      </BaseList>
-    </>
+    <BaseList>
+      {CountrySelector}
+      {parentTitle && <CategoryTitle>{parentTitle}</CategoryTitle>}
+      {items?.map(item => (
+        <ListItem item={item} onSelect={onSelect} key={item.value}>
+          {item?.children && (
+            <List
+              parentItem={item}
+              items={item.children}
+              onSelect={onSelect}
+              CountrySelector={CountrySelector}
+            />
+          )}
+        </ListItem>
+      ))}
+    </BaseList>
   );
 };
 
