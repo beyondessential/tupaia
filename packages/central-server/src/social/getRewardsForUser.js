@@ -1,6 +1,6 @@
 export const getRewardsForUser = async (database, userId, projectId = '') => {
   const [rewards] = await database.executeSql(
-    `SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+    `SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
     FROM survey_response
     JOIN survey on survey.id=survey_id
     WHERE user_id = ?
