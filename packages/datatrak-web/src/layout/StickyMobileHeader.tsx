@@ -17,8 +17,8 @@ export const MobileHeaderWrapper = styled.header`
   inset-inline-start: 0;
   justify-content: space-between;
   min-block-size: ${HEADER_HEIGHT};
-  padding-left: max(env(safe-area-inset-left, 0), 1rem);
-  padding-right: max(env(safe-area-inset-right, 0), 1rem);
+  padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
+  padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
   padding-top: env(safe-area-inset-top, 0);
   position: sticky;
   z-index: 1000;
