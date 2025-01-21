@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
-export const MobileHeaderWrapper = styled.div`
+export const MobileHeaderWrapper = styled.header`
   position: sticky;
   inset-block-start: 0;
   inset-inline-start: 0;
@@ -45,7 +45,7 @@ const ButtonContainer = styled.div`
   inline-size: 3.5rem;
 `;
 
-interface StickyMobileHeaderProps extends HTMLAttributes<HTMLDivElement> {
+interface StickyMobileHeaderProps extends HTMLAttributes<HTMLElement> {
   onBack?: () => void;
   onClose?: (data: any) => void;
 }
