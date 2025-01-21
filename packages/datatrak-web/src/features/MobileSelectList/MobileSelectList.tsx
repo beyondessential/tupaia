@@ -26,7 +26,6 @@ const BaseList = styled(MuiList)`
 const CategoryTitle = styled(Typography)`
   margin: -0.5rem 0 0.8rem;
   padding-top: 1rem;
-  border-top: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
 const NoResultsMessage = styled(Typography)`
