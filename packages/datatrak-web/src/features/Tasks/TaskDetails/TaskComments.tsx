@@ -214,7 +214,7 @@ export const TaskComments = ({ comments }: { comments: Comments }) => {
       </TaskCommentsDisplayContainer>
       <CommentsInput label="Add comment" name="comment" inputRef={register} />
       <Button type="submit" disabled={!isDirty || isSaving}>
-        {isSaving ? 'Saving...' : 'Add comment'}
+        {isSaving ? 'Saving…' : 'Add comment'}
       </Button>
     </Form>
   );
