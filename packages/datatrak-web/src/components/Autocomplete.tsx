@@ -7,6 +7,9 @@ import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
 
 const OptionWrapper = styled.div`
+  display: block;
+  flex: 1;
+  height: 100%;
   width: 100%;
   padding: 0.2rem 0.875rem;
   line-height: 1.2;
@@ -107,7 +110,7 @@ export const QuestionAutocomplete = styled(Autocomplete).attrs({
       component: InputHelperText,
     },
   },
-  placeholder: 'Search…',
+  placeholder: 'Search..',
 })`
   .MuiFormControl-root {
     margin-bottom: 0;
