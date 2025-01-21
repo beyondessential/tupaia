@@ -14,7 +14,7 @@ const Paragraph = styled.p`
 `;
 
 /**
- * Customising {@link formatRelative} is done on a locale-by-locale basis. Hard-coding a local
+ * Customising {@link formatRelative} is done on a locale-by-locale basis. Hard-coding a locale
  * isn’t ideal, and the choice of {@link enAU} is arbitrary; but this saves us from trying to
  * figure out what locale date-fns is currently defaulting to.
  *
