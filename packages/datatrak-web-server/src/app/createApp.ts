@@ -92,6 +92,7 @@ export async function createApp() {
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<LeaderboardRequest>('leaderboard', handleWith(LeaderboardRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
+    .get<ProjectUsersRequest>('project/:projectCode/users', handleWith(ProjectUsersRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TaskMetricsRequest>('taskMetrics/:projectId', handleWith(TaskMetricsRoute))
@@ -99,7 +100,6 @@ export async function createApp() {
     .get<TaskRequest>('tasks/:taskId', handleWith(TaskRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
     .get<SurveyUsersRequest>('users/:surveyCode/:countryCode', handleWith(SurveyUsersRoute))
-    .get<ProjectUsersRequest>('users/:projectCode', handleWith(ProjectUsersRoute))
     .get<PermissionGroupUsersRequest>('users/:countryCode', handleWith(PermissionGroupUsersRoute))
     // Post Routes
     .post<CreateTaskRequest>('tasks', handleWith(CreateTaskRoute))

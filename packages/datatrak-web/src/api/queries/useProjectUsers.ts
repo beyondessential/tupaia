@@ -4,9 +4,9 @@ import { get } from '../api';
 
 export const useProjectUsers = (projectCode?: Project['code'], searchTerm?: string) => {
   return useQuery(
-    ['users', projectCode, searchTerm],
+    ['projectUsers', projectCode, searchTerm],
     (): Promise<DatatrakWebUsersRequest.ResBody> =>
-      get(`users/${projectCode}`, {
+      get(`project/${projectCode}/users`, {
         params: {
           searchTerm,
         },
