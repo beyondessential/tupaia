@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebUsersRequest } from '@tupaia/types';
-import { getFilteredUsers } from '../utils';
+import { getFilteredUsersForPermissionGroup } from '../utils';
 
 export type SurveyUsersRequest = Request<
   DatatrakWebUsersRequest.Params,
@@ -36,6 +36,6 @@ export class SurveyUsersRoute extends Route<SurveyUsersRequest> {
       throw new Error(`Permission group with id ${permissionGroupId} not found`);
     }
 
-    return getFilteredUsers(models, countryCode, permissionGroup, searchTerm);
+    return getFilteredUsersForPermissionGroup(models, countryCode, permissionGroup, searchTerm);
   }
 }
