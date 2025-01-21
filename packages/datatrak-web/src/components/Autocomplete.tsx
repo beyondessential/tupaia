@@ -14,8 +14,6 @@ const OptionWrapper = styled.div`
   padding: 0.2rem 0.875rem;
   line-height: 1.2;
   margin: 0.3rem 0;
-
-  background: red;
 `;
 
 const StyledPaper = styled(Paper).attrs({
@@ -23,7 +21,6 @@ const StyledPaper = styled(Paper).attrs({
 })`
   border-color: ${({ theme }) => theme.palette.primary.main};
   .MuiAutocomplete-option {
-    background: green;
     padding: 0;
     &:hover,
     &[data-focus='true'] {
