@@ -1,9 +1,8 @@
-import React, { ReactNode } from 'react';
-import { FormLabelProps } from '@material-ui/core';
+import { ReactNode } from 'react';
 
 export type ListItemType = Record<string, unknown> & {
   children?: ListItemType[];
-  content: string | ReactNode;
+  content: ReactNode;
   value: string;
   selected?: boolean;
   icon?: ReactNode;
