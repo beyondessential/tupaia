@@ -52,7 +52,7 @@ export const MobileHeaderLeft = ({ onClickLogo }) => {
     return (
       <Wrapper>
         <Logo onClick={onClickLogo} component={RouterLink} to="/">
-          <img src="/mobile-logo.svg" alt="Tupaia Datatrak logo" width="100%" height="100%" />
+          <img src="/tupaia-pin.svg" alt="Tupaia DataTrak logo" width="100%" height="100%" />
         </Logo>
         {isLoggedIn && (
           <UserDetailsContainer>
@@ -67,7 +67,7 @@ export const MobileHeaderLeft = ({ onClickLogo }) => {
   return (
     <Wrapper>
       <Logo onClick={onClickLogo} component={RouterLink} to="/">
-        <img src="/datatrak-logo-black.svg" alt="Tupaia Datatrak logo" width="100%" height="100%" />
+        <img src="/datatrak-logo-black.svg" alt="Tupaia DataTrak logo" width="100%" height="100%" />
       </Logo>
     </Wrapper>
   );
