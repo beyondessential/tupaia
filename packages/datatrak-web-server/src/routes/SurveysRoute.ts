@@ -14,6 +14,11 @@ export type SurveysRequest = Request<
   DatatrakWebSurveyRequest.ReqQuery
 >;
 
+type SearchCondition = {
+  comparator: string;
+  comparisonValue: string;
+};
+
 export class SurveysRoute extends Route<SurveysRequest> {
   public async buildResponse() {
     const { ctx, query = {}, models } = this.req;
@@ -22,7 +27,7 @@ export class SurveysRoute extends Route<SurveysRequest> {
 
     const queryUrl = countryCode ? `countries/${country.id}/surveys` : 'surveys';
 
-    const filter: Record<string, any> = {};
+    const filter: Record<string, string | SearchCondition> = {};
 
     if (projectId) {
       filter.project_id = projectId;

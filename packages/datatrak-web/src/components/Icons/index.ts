@@ -4,6 +4,8 @@ export { Pig } from './Pig';
 export { SurveyIcon } from './SurveyIcon';
 export { SurveyFolderIcon } from './SurveyFolderIcon';
 export { SurveyTickIcon } from './SurveyTickIcon';
+export { DotIcon } from './Dot';
+export type { DotIconProps } from './Dot';
 export { DownloadIcon } from './DownloadIcon';
 export { RadioIcon } from './RadioIcon';
 export { PinIcon } from './PinIcon';

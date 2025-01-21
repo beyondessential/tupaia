@@ -115,7 +115,6 @@ export const Autocomplete = ({
     PaperComponent={StyledPaper}
     blurOnSelect
     renderInput={params => {
-      console.log('params', params);
       return (
         <TextField
           {...(params as any)}

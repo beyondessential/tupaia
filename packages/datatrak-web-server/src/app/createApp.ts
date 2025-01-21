@@ -100,7 +100,6 @@ export async function createApp() {
     .get<TaskRequest>('tasks/:taskId', handleWith(TaskRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
     .get<SurveyUsersRequest>('users/:surveyCode/:countryCode', handleWith(SurveyUsersRoute))
-    .get<ProjectUsersRequest>('users/:projectCode', handleWith(ProjectUsersRoute))
     .get<PermissionGroupUsersRequest>('users/:countryCode', handleWith(PermissionGroupUsersRoute))
     // Post Routes
     .post<CreateTaskRequest>('tasks', handleWith(CreateTaskRoute))

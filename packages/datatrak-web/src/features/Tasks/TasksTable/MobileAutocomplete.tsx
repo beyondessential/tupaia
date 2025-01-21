@@ -1,12 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
-import styled from 'styled-components';
 import React from 'react';
+import styled from 'styled-components';
 import { Search } from '@material-ui/icons';
 import { InputAdornment } from '@material-ui/core';
+import { AutocompleteInputChangeReason } from '@material-ui/lab/useAutocomplete';
 import { Autocomplete } from '../../../components';
 
 const Container = styled.div`
@@ -22,8 +18,8 @@ const Container = styled.div`
 `;
 
 const SearchAdornment = styled(InputAdornment)`
-  margin-left: 1rem;
-  margin-right: -1rem;
+  margin-inline-start: 1rem;
+  margin-inline-end: -1rem;
 `;
 
 const PopperComponent = ({ children }) => {
@@ -49,8 +45,12 @@ export const MobileAutocomplete = ({
       <Autocomplete
         value={value}
         onChange={onChangeValue}
-        /*@ts-ignore */
-        onInputChange={(e, newValue, reason) => {
+        /* @ts-ignore - ts fails to infer the reason prop from mui autocomplete */
+        onInputChange={(
+          e: React.ChangeEvent<{}>,
+          newValue: string,
+          reason: AutocompleteInputChangeReason,
+        ) => {
           if (!e) return;
           if (reason === 'input') {
             setSearchValue(newValue);
