@@ -6,12 +6,13 @@ import { CountrySelectWrapper } from '../CountrySelector';
 import { ListItemType } from '../useGroupedSurveyList';
 
 const BaseList = styled(MuiList)`
-  padding: 20px 25px;
-  height: 100%;
   background: ${({ theme }) => theme.palette.background.default};
+  block-size: 100%;
+  padding-block: 1.25rem;
+  padding-inline: 1.5rem;
 
   ${CountrySelectWrapper} {
-    margin-bottom: 1rem;
+    margin-block-end: 1rem;
 
     .MuiOutlinedInput-notchedOutline {
       border: none;
@@ -24,14 +25,16 @@ const BaseList = styled(MuiList)`
 `;
 
 const CategoryTitle = styled(Typography)`
-  margin: -0.5rem 0 0.8rem;
-  padding-top: 1rem;
+  margin-block: -0.5rem 0.8rem;
+  margin-inline: 0:
+  padding-block-start: 1rem;
 `;
 
 const NoResultsMessage = styled(Typography)`
-  padding: 0.8rem 0.5rem;
-  font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.secondary};
+  font-size: 0.875rem;
+  padding-block: 0.8rem;
+  padding-inline: 0.5rem;
 `;
 
 interface SelectListProps {
