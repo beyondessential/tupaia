@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   align-items: center;
   max-width: 80%;
   padding-block: 1rem;
+  gap: 0.25rem;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
@@ -22,7 +23,7 @@ const Logo = styled(IconButton)<{
   component: React.ElementType;
   to: string;
 }>`
-  padding: 0;
+  padding: 0.5rem;
 
   img {
     max-height: 2rem;
@@ -30,7 +31,6 @@ const Logo = styled(IconButton)<{
 `;
 
 const UserDetailsContainer = styled.div`
-  margin-inline-start: 0.5rem;
   height: 100%;
   overflow: hidden;
 `;
