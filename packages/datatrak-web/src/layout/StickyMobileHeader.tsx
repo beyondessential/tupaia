@@ -10,7 +10,9 @@ export const MobileHeaderWrapper = styled.header`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(3rem, max-content) 1fr minmax(3rem, max-content);
+  grid-template-areas: '--leading --title --trailing';
   gap: 1rem;
   inline-size: 100%;
   inset-block-start: 0;
@@ -29,6 +31,12 @@ const Button = styled(IconButton)`
     color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
+const LeadingIconButton = styled(Button)`
+  grid-area: --leading;
+`;
+const TrailingIconButton = styled(Button)`
+  grid-area: --trailing;
+`;
 
 const BackIcon = styled(ArrowLeftIcon)`
   width: 1rem;
@@ -36,17 +44,15 @@ const BackIcon = styled(ArrowLeftIcon)`
 `;
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
-  display: inline;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
-  svg {
-    vertical-align: middle;
-  }
+  grid-area: --title;
+  text-align: center;
 `;
 
 interface StickyMobileHeaderProps extends HTMLAttributes<HTMLDivElement> {
   onBack?: () => void;
-  onClose?: (data: any) => void;
+  onClose?: (data: unknown) => void;
 }
 
 export const StickyMobileHeader = ({
@@ -65,15 +71,15 @@ export const StickyMobileHeader = ({
       {...props}
     >
       {onBack && (
-        <Button onClick={onBack}>
+        <LeadingIconButton onClick={onBack}>
           <BackIcon />
-        </Button>
+        </LeadingIconButton>
       )}
       <Title>{children}</Title>
       {onClose && (
-        <Button aria-label="Close sync view" onClick={onClose}>
+        <TrailingIconButton aria-label="Close sync view" onClick={onClose}>
           <Close />
-        </Button>
+        </TrailingIconButton>
       )}
     </MobileHeaderWrapper>
   );
