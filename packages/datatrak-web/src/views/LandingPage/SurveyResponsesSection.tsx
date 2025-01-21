@@ -81,24 +81,27 @@ export const SurveyResponsesSection = () => {
 
   const ScrollableList = useIsMobile() ? InlineScroll : BlockScroll;
 
+  const renderContents = () => {
+    if (isLoading) return <TileSkeletons count={3} />;
+
+    if (recentSurveyResponses.length > 0)
+      return recentSurveyResponses.map(props => (
+        <li key={props.id}>
+          <SurveyResponseTile {...props} />
+        </li>
+      ));
+
+    return (
+      <Typography variant="body2" color="textSecondary">
+        No recent surveys responses to display for {project?.name || 'project'}
+      </Typography>
+    );
+  };
+
   return (
     <Container>
       <SectionHeading>Submission history</SectionHeading>
-      <ScrollableList>
-        {isLoading ? (
-          <TileSkeletons count={3} />
-        ) : recentSurveyResponses.length > 0 ? (
-          recentSurveyResponses.map(props => (
-            <li key={props.id}>
-              <SurveyResponseTile {...props} />
-            </li>
-          ))
-        ) : (
-          <Typography variant="body2" color="textSecondary">
-            No recent surveys responses to display for {project?.name || 'project'}
-          </Typography>
-        )}
-      </ScrollableList>
+      <ScrollableList>{renderContents()}</ScrollableList>
     </Container>
   );
 };

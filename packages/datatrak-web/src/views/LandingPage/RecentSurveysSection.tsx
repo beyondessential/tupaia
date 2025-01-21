@@ -74,24 +74,27 @@ export const RecentSurveysSection = () => {
 
   const ScrollableList = useIsMobile() ? InlineScroll : GridScroll;
 
+  const renderContents = () => {
+    if (isLoading) return <TileSkeleton lineCount={1} />;
+
+    if (recentSurveys.length > 0)
+      return recentSurveys.map(props => (
+        <li key={`${props.surveyCode}-${props.countryName}`}>
+          <RecentSurveyTile {...props} />
+        </li>
+      ));
+
+    return (
+      <Typography variant="body2" color="textSecondary">
+        No recent surveys to display
+      </Typography>
+    );
+  };
+
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      <ScrollableList>
-        {isLoading ? (
-          <TileSkeleton lineCount={1} />
-        ) : recentSurveys.length > 0 ? (
-          recentSurveys.map(props => (
-            <li key={`${props.surveyCode}-${props.countryName}`}>
-              <RecentSurveyTile {...props} />
-            </li>
-          ))
-        ) : (
-          <Typography variant="body2" color="textSecondary">
-            No recent surveys to display
-          </Typography>
-        )}
-      </ScrollableList>
+      <ScrollableList>{renderContents()}</ScrollableList>
     </RecentSurveys>
   );
 };
