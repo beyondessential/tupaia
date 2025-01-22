@@ -34,6 +34,13 @@ const GridScroll = styled.div.attrs({
   grid-column: 1 / -1;
 `;
 
+const TooltipText = styled.p`
+  font-weight: normal;
+  margin-block: 0;
+  text-align: center;
+  text-wrap: balance;
+`;
+
 type RecentSurveyTileProps = TileProps &
   Pick<
     DatatrakWebSurveyResponsesRequest.SurveyResponse,
@@ -47,14 +54,12 @@ const RecentSurveyTile = ({
   countryCode,
   ...props
 }: RecentSurveyTileProps) => {
-  const isMobile = useIsMobile();
-  const tooltip = isMobile ? (
+  const tooltip = (
     <>
-      {surveyName}
-      <br />
-      {countryName}
+      <TooltipText>{surveyName}</TooltipText>
+      <TooltipText>{countryName}</TooltipText>
     </>
-  ) : null;
+  );
 
   return (
     <Tile

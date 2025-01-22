@@ -35,6 +35,13 @@ const BlockScroll = styled(BlockScrollView).attrs({
   size: '100%',
 })``;
 
+const TooltipText = styled.p`
+  font-weight: normal;
+  margin-block: 0;
+  text-align: center;
+  text-wrap: balance;
+`;
+
 interface SurveyResponseTileProps extends TileProps {
   id: string;
   surveyName: string;
@@ -49,12 +56,10 @@ const SurveyResponseTile = ({
   entityName,
   countryName,
 }: SurveyResponseTileProps) => {
-  const isMobile = useIsMobile();
-  const tooltip = isMobile && (
+  const tooltip = (
     <>
-      {surveyName}
-      <br />
-      {entityName}
+      <TooltipText>{surveyName}</TooltipText>
+      <TooltipText>{entityName}</TooltipText>
     </>
   );
 
