@@ -106,7 +106,7 @@ export const FullScreenSelect = ({
   label = 'Select an option',
   value,
 }: FullScreenSelectProps) => {
-  const [selectedItem, setSelectedItem] = useState(value === undefined ? defaultValue : value);
+  const [selectedItem, setSelectedItem] = useState(value !== null ? value : defaultValue);
   useEffect(() => setSelectedItem(value), [value]);
 
   const [isOpen, setIsOpen] = useState(false);
