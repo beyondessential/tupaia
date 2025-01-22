@@ -129,7 +129,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     selectedCountry,
     updateSelectedCountry,
     isLoading: isLoadingCountries,
-  } = useUserCountries(handleCountriesError);
+  } = useUserCountries({ onError: handleCountriesError });
   const { isLoading: isLoadingUser, isFetching: isFetchingUser } = useUser();
 
   const isLoadingData = isLoadingCountries || isLoadingUser || isFetchingUser;
