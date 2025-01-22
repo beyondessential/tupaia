@@ -53,7 +53,7 @@ const StyledModal = styled(Modal)`
       > li {
         border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
 
-        .MuiButtonBase-root {
+        > div {
           font-size: 0.75rem;
           padding-inline: 0;
           padding-block: 0.75rem;
