@@ -54,7 +54,6 @@ const Modal = styled.div`
   background-color: ${({ theme }) => theme.palette.background.default};
   block-size: 100vb;
   display: grid;
-  grid-template-areas: '--header' '--content';
   grid-template-rows: auto 1fr;
   inline-size: 100vi;
   inset-block-start: 0;
@@ -64,16 +63,24 @@ const Modal = styled.div`
 `;
 
 const Header = styled(StickyMobileHeader)`
-  grid-area: --header;
   inset-block-start: initial;
   inset-inline-start: initial;
   position: initial;
   z-index: initial;
 `;
 
-const StyledList = styled(List).attrs({ disablePadding: true, role: 'list' })`
-  grid-area: --content;
+const StyledList = styled(List).attrs({ disablePadding: true, role: 'radiogroup' })`
   overflow-y: auto;
+`;
+const StyledListItem = styled(ListItem).attrs({ role: 'radio' })`
+  border-bottom: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
+  padding-block: 1rem;
+  padding-inline: 1.5rem;
+
+  &.MuiListItem-root.Mui-selected,
+  &.MuiListItem-root.Mui-selected:hover {
+    background-color: revert;
+  }
 `;
 
 interface SelectOption {
@@ -83,9 +90,7 @@ interface SelectOption {
 
 type SelectItemProps = SelectOption & ListItemProps;
 const SelectItem = ({ label, value, ...listItemProps }: SelectItemProps) => (
-  <ListItem {...listItemProps}>
-    <ListItemText primary={label} />
-  </ListItem>
+  <StyledListItem {...listItemProps}>{label}</StyledListItem>
 );
 
 type FullScreenSelectProps = Pick<
@@ -107,7 +112,9 @@ export const FullScreenSelect = ({
   label = 'Select an option',
   value,
 }: FullScreenSelectProps) => {
-  const [selectedItem, setSelectedItem] = useState(value !== null ? value : defaultValue);
+  const [selectedItem, setSelectedItem] = useState<string | null>(
+    value !== null ? value : defaultValue,
+  );
   useEffect(() => setSelectedItem(value), [value]);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -139,9 +146,17 @@ export const FullScreenSelect = ({
             {label}
           </Header>
           <StyledList>
-            {options.map(option => (
-              <SelectItem key={option.value} selected={option.value === selectedItem} {...option} />
-            ))}
+            {options.map(option => {
+              const selected = option.value === selectedItem;
+              return (
+                <SelectItem
+                  aria-selected={selected}
+                  key={option.value}
+                  selected={selected}
+                  {...option}
+                />
+              );
+            })}
             {otherChildren}
           </StyledList>
         </Modal>
