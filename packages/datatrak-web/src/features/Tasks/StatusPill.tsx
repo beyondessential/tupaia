@@ -50,13 +50,3 @@ export const StatusPill = ({ status }: { status: TaskStatusType }) => {
   const { label, color } = statusInfo;
   return <Pill $color={color}>{label}</Pill>;
 };
-
-export const StatusDot = styled.div<{
-  $status: TaskStatusType;
-}>`
-  width: 10px;
-  min-width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: ${({ $status }) => STATUS_VALUES[$status].color};
-`;

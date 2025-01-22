@@ -1,13 +1,11 @@
 import React from 'react';
 import MuiAutocomplete from '@material-ui/lab/Autocomplete';
-import { InputAdornment, TextFieldProps } from '@material-ui/core';
+import { TextFieldProps } from '@material-ui/core';
 import MuiPaper, { PaperProps } from '@material-ui/core/Paper';
 import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Popper from '@material-ui/core/Popper';
 import styled from 'styled-components';
 import { TextField } from './TextField';
-import { Search } from '@material-ui/icons';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   font-size: 1.5rem;
@@ -114,32 +112,29 @@ export const Autocomplete = ({
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
     blurOnSelect
-    renderInput={params => {
-      return (
-        <TextField
-          {...(params as any)}
-          {...textFieldProps}
-          label={label}
-          tooltip={tooltip}
-          name={name}
-          placeholder={placeholder}
-          error={error}
-          required={required}
-          helperText={helperText}
-          inputRef={inputRef}
-          InputProps={{
-            ...params.InputProps,
-            ...textFieldProps?.InputProps,
-            endAdornment: (
-              <>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      );
-    }}
+    renderInput={params => (
+      <TextField
+        {...(params as any)}
+        {...textFieldProps}
+        label={label}
+        tooltip={tooltip}
+        name={name}
+        placeholder={placeholder}
+        error={error}
+        required={required}
+        helperText={helperText}
+        inputRef={inputRef}
+        InputProps={{
+          ...params.InputProps,
+          endAdornment: (
+            <>
+              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+              {params.InputProps.endAdornment}
+            </>
+          ),
+        }}
+      />
+    )}
     {...muiProps}
   />
 );
