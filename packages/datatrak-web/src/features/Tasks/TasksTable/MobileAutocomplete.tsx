@@ -10,10 +10,16 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid ${({ theme }) => theme.palette.divider};
-  padding: 1rem;
+  padding-inline: 1rem;
+  padding-block: 1rem;
+  border-radius: 3px;
 
   .MuiPaper-root {
     border: none;
+  }
+
+  .MuiOutlinedInput-notchedOutline {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 `;
 

@@ -44,9 +44,11 @@ export const TasksDashboardPage = () => {
       )}
       <TaskPageHeader title="Tasks" backTo="/">
         <TaskMetrics />
-        <CreateButton onClick={toggleCreateModal}>
-          <AddIcon /> Create task
-        </CreateButton>
+        {!isMobile && (
+          <CreateButton onClick={toggleCreateModal}>
+            <AddIcon /> Create task
+          </CreateButton>
+        )}
       </TaskPageHeader>
       <ContentWrapper>
         <TasksTable />

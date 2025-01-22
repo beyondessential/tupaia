@@ -40,6 +40,10 @@ const StyledModal = styled(Modal)`
 
     > .MuiPaper-root {
       max-height: 37.5rem;
+      border-top-left-radius: 0.625rem;
+      border-top-right-radius: 0.625rem;
+      padding-block-start: 0;
+      padding-block-end: 0;
 
       > div {
         display: flex;
@@ -55,6 +59,8 @@ const StyledTabs = styled(Tabs)`
   border: 1px solid ${({ theme }) => theme.palette.primary.main};
   border-radius: 5px;
   margin-block-start: 1.5rem;
+  margin-block-end: 0.875rem;
+  min-height: 2.4rem;
 
   .MuiTabs-indicator {
     display: none;
@@ -62,9 +68,12 @@ const StyledTabs = styled(Tabs)`
 
   .MuiTab-root {
     border-right: 1px solid ${({ theme }) => theme.palette.primary.main};
-    color: ${({ theme }) => theme.palette.text.primary};
+    color: ${({ theme }) => theme.palette.text.secondary};
+    text-transform: none;
+    min-height: 0;
 
     &.Mui-selected {
+      color: ${({ theme }) => theme.palette.text.primary};
       background: rgba(50, 141, 229, 0.1);
     }
 
@@ -80,6 +89,10 @@ const DialogActions = styled.div`
   align-items: center;
   padding-inline: 0.5rem;
   padding-block: 0.5rem;
+
+  .MuiButton-root {
+    min-width: 6rem;
+  }
 `;
 
 const Title = styled(Typography).attrs({
