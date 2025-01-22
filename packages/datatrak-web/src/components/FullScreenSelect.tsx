@@ -69,11 +69,16 @@ const Header = styled(StickyMobileHeader)`
   z-index: initial;
 `;
 
-const StyledList = styled(List).attrs({ disablePadding: true, role: 'radiogroup' })`
+const StyledList = styled(List).attrs({
+  disablePadding: true,
+  role: 'radiogroup',
+})`
   overflow-y: auto;
 `;
-const StyledListItem = styled(ListItem).attrs({ role: 'radio' })`
-  border-bottom: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
+const StyledListItem = styled(ListItem).attrs({
+  divider: true,
+  role: 'radio',
+})`
   padding-block: 1rem;
   padding-inline: 1.5rem;
 
