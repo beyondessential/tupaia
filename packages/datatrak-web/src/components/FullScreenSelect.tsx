@@ -149,6 +149,12 @@ export const FullScreenSelect = ({
   });
 
   const selectedItemLabel = options.find(option => option.value === value)?.label ?? label;
+  const listContents = options.map(option => {
+    const selected = option.value === selectedItem;
+    return (
+      <SelectItem aria-selected={selected} key={option.value} selected={selected} {...option} />
+    );
+  });
 
   return (
     <>
@@ -159,17 +165,7 @@ export const FullScreenSelect = ({
             {label}
           </Header>
           <StyledList>
-            {options.map(option => {
-              const selected = option.value === selectedItem;
-              return (
-                <SelectItem
-                  aria-selected={selected}
-                  key={option.value}
-                  selected={selected}
-                  {...option}
-                />
-              );
-            })}
+            {listContents}
             {otherChildren}
           </StyledList>
         </Modal>
