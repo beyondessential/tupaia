@@ -82,6 +82,11 @@ export const theme = createMuiTheme({
           minWidth: 0,
           padding: 0,
         },
+        ":is(ol, ul)[role='list']": {
+          listStyleType: 'none',
+          marginBlock: 0,
+          paddingInlineStart: 0,
+        },
       },
     },
     MuiDialogActions: {
