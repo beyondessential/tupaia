@@ -93,6 +93,9 @@ const Heading = styled(Typography).attrs({ variant: 'h3' })`
   font-size: 1rem;
   font-weight: 500;
   line-height: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export interface TileProps extends ButtonProps {
