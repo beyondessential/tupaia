@@ -39,6 +39,7 @@ const MobilePageTitle = styled(Typography).attrs({
 
 const SettingsIcon = styled(Settings).attrs({ color: 'primary' })`
   margin-right: 0.4rem;
+  vertical-align: middle;
 `;
 
 export const AccountSettingsPage = () => {
