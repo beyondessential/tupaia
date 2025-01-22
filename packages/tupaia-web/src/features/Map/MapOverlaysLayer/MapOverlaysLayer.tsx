@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect } from 'react';
 import { useMatch, useParams } from 'react-router';
 import { useMap } from 'react-leaflet';

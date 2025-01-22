@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { yup } from '@tupaia/utils';
 import { DataTableParameter } from './types';
 import { dataTableParamsToYupSchema, yupSchemaToDataTableParams } from './utils';

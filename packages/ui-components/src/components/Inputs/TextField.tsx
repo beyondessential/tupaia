@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
 import { Property } from 'csstype';
 import React from 'react';

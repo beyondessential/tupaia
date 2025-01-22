@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import MuiDialog, { DialogProps as MuiDialogProps } from '@material-ui/core/Dialog';
 import Typography, { TypographyProps } from '@material-ui/core/Typography';

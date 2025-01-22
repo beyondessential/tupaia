@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { synchroniseDatabase } from '../../../sync';
 import { getCurrentUserLocation, stopWatchingUserLocation } from '../../../utilities/userLocation';
 import { SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../../constants';

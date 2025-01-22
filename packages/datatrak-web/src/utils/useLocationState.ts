@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { useLocation } from 'react-router-dom';
 
 function hasProperty<T extends string>(state: unknown, property: T): state is Record<T, string> {

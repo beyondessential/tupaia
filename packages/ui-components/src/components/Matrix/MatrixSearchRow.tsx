@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { useContext, useEffect, useState } from 'react';
 import { IconButton, TableRow } from '@material-ui/core';
 import { Clear, Search as SearchIcon } from '@material-ui/icons';

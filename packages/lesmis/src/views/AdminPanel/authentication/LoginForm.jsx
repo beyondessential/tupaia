@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -23,16 +18,15 @@ const ErrorMessage = styled.p`
 
 const Heading = styled(Typography)`
   font-size: 1.125rem;
-  line-height: 1.3rem;
+  line-height: 1.15;
   font-weight: 400;
   color: ${props => props.theme.palette.text.primary};
   text-align: center;
-  margin-bottom: 2rem;
+  margin-block-end: 2rem;
 `;
 
 const StyledButton = styled(Button)`
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-block: 1rem;
 `;
 
 const LoginFormComponent = ({

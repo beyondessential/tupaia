@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { generateId } from '@tupaia/database';
 import { ajvValidate, objectEntries } from '@tupaia/tsutils';
 import {

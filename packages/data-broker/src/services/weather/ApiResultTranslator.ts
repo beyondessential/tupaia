@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Analytic, RawAnalyticResults, EntityRecord, Event, EventResults } from '../../types';
 import { WeatherProperty, WeatherResult } from './types';
 

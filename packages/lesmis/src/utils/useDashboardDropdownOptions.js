@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { useEntityData } from '../api';
 import { DROPDOWN_OPTIONS, FAVOURITES_DASHBOARD_CODE, PROFILE_DASHBOARD_CODE } from '../constants';
 import { useI18n } from './I18n';

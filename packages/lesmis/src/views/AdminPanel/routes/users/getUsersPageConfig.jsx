@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import { users } from '@tupaia/admin-panel';

@@ -1,9 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { DataTablePreviewRequest } from '@tupaia/types';
 import { DataTableApiInterface } from '..';
 

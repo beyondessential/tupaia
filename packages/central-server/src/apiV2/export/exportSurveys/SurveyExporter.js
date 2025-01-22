@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 import { DatabaseError } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';

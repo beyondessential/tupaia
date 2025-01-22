@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { createAssertTableResults, createAssertErrorIsThrown } from './helpers';
 import { DATA_VALUES } from './tableOfDataValues.fixtures';
 import { tableOfDataValues } from '/apiV1/dataBuilders';

@@ -1,16 +1,11 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
+
 import { useCurrentUserContext } from '../../api';
 import { useLeaderboard, useUserRewards } from '../../api/queries';
 import { UserRewardsSection } from './UserRewardsSection';
 import { LeaderboardTable } from './LeaderboardTable';
-import { useMediaQuery } from '@material-ui/core';
-import { useTheme } from '@material-ui/core';
+import { useIsMobile } from '../../utils';
 
 const ScrollBody = styled.div`
   overflow: auto;
@@ -28,14 +23,9 @@ const ScrollBody = styled.div`
 export const Leaderboard = () => {
   const user = useCurrentUserContext();
   const { data: userRewards, isSuccess } = useUserRewards();
-  const { data: leaderboard } = useLeaderboard(user.projectId);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  let leaderboardList = leaderboard ?? [];
-
-  if (isMobile && leaderboard) {
-    leaderboardList = leaderboard.slice(0, 5);
-  }
+  const { data: leaderboard = [] } = useLeaderboard(user.projectId);
+  const isMobile = useIsMobile();
+  const leaderboardList = isMobile ? leaderboard.slice(0, 5) : leaderboard;
 
   return (
     <ScrollBody>

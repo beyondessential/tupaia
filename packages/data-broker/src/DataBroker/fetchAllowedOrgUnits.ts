@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DataBrokerModelRegistry, DataElement, DataGroup } from '../types';
 import { fetchOrgUnitsByCountry } from './fetchOrgUnitsByCountry';

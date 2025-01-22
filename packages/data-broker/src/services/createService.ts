@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { TupaiaDataApi } from '@tupaia/data-api';
 import { DataLakeApi } from '@tupaia/data-lake-api';
 import { IndicatorApi } from '@tupaia/indicators';

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { useState } from 'react';
 import { LegendProps, Series, Value } from '@tupaia/ui-map-components';
 

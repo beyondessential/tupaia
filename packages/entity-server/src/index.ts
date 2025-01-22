@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import http from 'http';
 import winston from 'winston';
 import { configureWinston } from '@tupaia/server-boilerplate';

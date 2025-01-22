@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import http from 'http';
 import winston from 'winston';
 import { TupaiaDatabase } from '@tupaia/database';

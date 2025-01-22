@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { HEADER_HEIGHT } from '../../../constants';
@@ -86,7 +81,7 @@ export const MobileActivityFeed = () => {
     <Wrapper>
       <ActivityFeedList items={firstPageItems} />
       {hasNextPage && (
-        <ViewMoreButton onClick={() => setExpanded(true)}>View activity feed...</ViewMoreButton>
+        <ViewMoreButton onClick={() => setExpanded(true)}>View activity feed…</ViewMoreButton>
       )}
       <ExpandedList expanded={expanded} onClose={() => setExpanded(false)} />
     </Wrapper>

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 export const getApiUrl = () => {
   const { REACT_APP_LESMIS_API_URL } = import.meta.env;
   if (REACT_APP_LESMIS_API_URL) {

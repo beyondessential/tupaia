@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ReactNode } from 'react';
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';

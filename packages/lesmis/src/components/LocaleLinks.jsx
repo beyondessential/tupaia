@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ListItem } from '@material-ui/core';

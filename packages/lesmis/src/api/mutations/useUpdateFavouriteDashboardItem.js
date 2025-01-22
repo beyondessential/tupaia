@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { post } from '../api';
 

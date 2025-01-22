@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import MuiBox from '@material-ui/core/Box';
 import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
@@ -27,35 +21,34 @@ const ErrorMessage = styled.p`
 `;
 
 const Heading = styled(Typography)`
-  font-size: 1.125rem;
-  line-height: 1.3rem;
-  font-weight: 400;
   color: ${props => props.theme.palette.text.primary};
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-block-end: 2rem;
   text-align: center;
-  margin-bottom: 2rem;
 `;
 
 const FieldSet = styled(MuiFormGroup)`
+  border-block-end: 1px solid ${props => props.theme.palette.grey['400']};
+  column-gap: 1.25rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 1.25rem;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
+  margin-block-end: 2rem;
+  padding-block-end: 1rem;
   ${props => props.theme.breakpoints.down('sm')} {
     display: block;
   }
 `;
 
 const StyledButton = styled(Button)`
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-block: 1rem;
 `;
 
 const Text = styled(Typography)`
-  text-align: center;
   font-size: 1.2rem;
-  line-height: 1.8rem;
+  line-height: 1.5;
+  text-align: center;
 `;
 
 const SuccessMessage = () => (
