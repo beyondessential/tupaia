@@ -63,6 +63,9 @@ const StatusPillContent = styled.div`
   align-items: center;
   > div {
     margin-inline-end: 0.5rem;
+    ${({ theme }) => theme.breakpoints.up('sm')} {
+      display: none;
+    }
   }
 
   span {
