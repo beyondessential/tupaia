@@ -76,9 +76,12 @@ const StyledList = styled(List).attrs({
   overflow-y: auto;
 `;
 const StyledListItem = styled(ListItem).attrs({
+  button: true,
   divider: true,
   role: 'radio',
 })`
+  display: grid;
+  grid-template-columns: 1fr auto;
   padding-block: 1rem;
   padding-inline: 1.5rem;
 
@@ -87,6 +90,9 @@ const StyledListItem = styled(ListItem).attrs({
     background-color: revert;
   }
 `;
+const StyledListItemText = styled(ListItemText).attrs({ disableTypography: true })`
+  display: contents;
+`;
 
 interface SelectOption {
   label: ReactNode;
@@ -94,8 +100,10 @@ interface SelectOption {
 }
 
 type SelectItemProps = SelectOption & ListItemProps;
-const SelectItem = ({ label, value, ...listItemProps }: SelectItemProps) => (
-  <StyledListItem {...listItemProps}>{label}</StyledListItem>
+const SelectItem = ({ label, selected, value, ...listItemProps }: SelectItemProps) => (
+  <StyledListItem {...listItemProps}>
+    <StyledListItemText primary={label} />
+  </StyledListItem>
 );
 
 type FullScreenSelectProps = Pick<
