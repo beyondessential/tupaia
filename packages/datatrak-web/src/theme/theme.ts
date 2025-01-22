@@ -88,6 +88,11 @@ export const theme = createMuiTheme({
         'input, button, textarea, select': {
           touchAction: 'manipulation',
         },
+        ":is(ol, ul)[role='list']": {
+          listStyleType: 'none',
+          marginBlock: 0,
+          paddingInlineStart: 0,
+        },
         picture: {
           display: 'contents',
         },

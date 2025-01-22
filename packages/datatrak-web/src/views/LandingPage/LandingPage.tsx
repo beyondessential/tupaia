@@ -1,14 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
-import { PageContainer as BasePageContainer } from '../../components';
-import { SurveySelectSection } from './SurveySelectSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { TasksSection } from './TasksSection';
-import { HEADER_HEIGHT } from '../../constants';
+import styled, { css } from 'styled-components';
+
 import { useCurrentUserRecentSurveys } from '../../api';
+import { PageContainer as BasePageContainer } from '../../components';
+import { HEADER_HEIGHT } from '../../constants';
+import { ActivityFeedSection } from './ActivityFeedSection';
+import { LeaderboardSection } from './LeaderboardSection';
+import { RecentSurveysSection } from './RecentSurveysSection';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
+import { SurveySelectSection } from './SurveySelectSection';
+import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -41,16 +42,14 @@ const PageBody = styled.div`
   }
 `;
 
-const Grid = styled.div<{
-  $hasMoreThanOneSurvey: boolean;
-}>`
-  flex: 1;
+const Grid = styled.div<{ $hasMultiple?: boolean }>`
   display: flex;
   flex-direction: column;
-  min-height: 0; // This is needed to stop the grid overflowing the flex container
-  max-width: 100%;
-  margin-inline: auto;
+  gap: 1.5rem;
   margin-block: 1.3rem;
+  margin-inline: auto;
+  max-inline-size: 100%;
+  min-block-size: 0; // This is needed to stop the grid overflowing the flex container
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
@@ -58,46 +57,39 @@ const Grid = styled.div<{
 
   > section {
     overflow: hidden;
-    &:not(:last-child) {
-      margin-bottom: 1rem;
-    }
   }
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    gap: 1.5rem;
-    display: grid;
-    margin-block: 0.5rem;
-    grid-template-rows: ${({ $hasMoreThanOneSurvey }) =>
-      $hasMoreThanOneSurvey ? 'auto auto auto' : 'auto 7rem auto'};
-    grid-template-columns: 23% 1fr 1fr 30%;
-    grid-template-areas: ${({ $hasMoreThanOneSurvey }) => {
-      //If there is < 2 surveys, the recentSurveys section will be smaller and the activity feed will shift upwards on larger screens
-      if ($hasMoreThanOneSurvey) {
-        return `
-          'surveySelect surveySelect surveySelect tasks'
-          'recentSurveys recentSurveys recentSurveys tasks'
-          'recentResponses activityFeed activityFeed leaderboard'
-        `;
+  ${({ $hasMultiple, theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('md')} {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr) 1.4fr;
+        margin-block: 0.5rem;
       }
-      return `'surveySelect surveySelect surveySelect tasks'
-        'recentSurveys activityFeed activityFeed tasks'
-        'recentResponses activityFeed activityFeed leaderboard'
-        `;
-    }};
-    > section {
-      &:not(:last-child) {
-        margin-bottom: 0;
+
+      ${up('lg')} {
+        gap: 1.81rem;
       }
-    }
 
-    > div {
-      min-height: auto;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    gap: 1.81rem;
-  }
+      // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
+      ${$hasMultiple
+        ? css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect  --surveySelect  --tasks'
+              '--recentSurveys   --recentSurveys --recentSurveys --tasks'
+              '--recentResponses --activityFeed  --activityFeed  --leaderboard';
+            grid-template-rows: repeat(3, auto);
+          `
+        : css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect --surveySelect --tasks'
+              '--recentSurveys   --activityFeed --activityFeed --tasks'
+              '--recentResponses --activityFeed --activityFeed --leaderboard';
+            grid-template-rows: auto auto 1fr;
+          `}
+    `;
+  }}
 `;
 
 export const LandingPage = () => {
@@ -107,7 +99,7 @@ export const LandingPage = () => {
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMoreThanOneSurvey={hasMoreThanOneSurvey}>
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
           <SurveySelectSection />
           <TasksSection />
           <LeaderboardSection />
