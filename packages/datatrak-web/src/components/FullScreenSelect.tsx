@@ -54,24 +54,25 @@ const Modal = styled.div`
   background-color: ${({ theme }) => theme.palette.background.default};
   block-size: 100vb;
   display: grid;
-  grid-template-rows: auto 1rem;
+  grid-template-areas: '--header' '--content';
+  grid-template-rows: auto 1fr;
   inline-size: 100vi;
-  // inset-block-end: 0;
   inset-block-start: 0;
-  // inset-inline-end: 0;
   inset-inline-start: 0;
   position: fixed;
   z-index: 9999;
 `;
 
 const Header = styled(StickyMobileHeader)`
-  position: initial;
+  grid-area: --header;
   inset-block-start: initial;
   inset-inline-start: initial;
+  position: initial;
   z-index: initial;
 `;
 
 const StyledList = styled(List).attrs({ disablePadding: true, role: 'list' })`
+  grid-area: --content;
   overflow-y: auto;
 `;
 
