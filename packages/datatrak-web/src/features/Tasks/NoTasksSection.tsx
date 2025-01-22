@@ -82,10 +82,9 @@ const MobileContainer = styled.div`
 const Mobile = () => (
   <MobileContainer>
     <Text>You have no tasks to complete.</Text>
-    {/* Todo: Add button back when mobile tasks are ready */}
-    {/*<Button to={ROUTES.TASKS} component={Link}>*/}
-    {/*  View all tasks*/}
-    {/*</Button>*/}
+    <Button to={ROUTES.TASKS} component={Link}>
+      View all tasks
+    </Button>
   </MobileContainer>
 );
 

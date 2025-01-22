@@ -12,9 +12,11 @@ import { getDisplayRepeatSchedule } from '../utils';
 import { TaskActionsMenu } from '../TaskActionsMenu';
 import { CommentsCount } from '../CommentsCount';
 import { StatusFilter } from './StatusFilter';
+import { StatusDot } from '../StatusPill';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
 import { RepeatScheduleFilter } from './RepeatScheduleFilter';
+import { MobileTaskFilters } from './MobileTaskFilters';
 
 const Container = styled.div`
   display: flex;
@@ -27,6 +29,17 @@ const Container = styled.div`
   .MuiTableContainer-root {
     border-radius: 3px;
     max-height: 100%;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    border: none;
+    border-radius: 0;
+    th.MuiTableCell-root {
+      border: none;
+    }
+    table .MuiTableRow-head:nth-child(2) {
+      display: none;
+    }
   }
 `;
 
@@ -42,6 +55,23 @@ const StatusCellContent = styled.div`
   a:has(&) {
     // This is a workaround to make the comments count display at the edge of the cell
     padding-inline-end: 0;
+  }
+`;
+
+const StatusPillContent = styled.div`
+  display: flex;
+  align-items: center;
+  > div {
+    margin-inline-end: 0.5rem;
+    ${({ theme }) => theme.breakpoints.up('sm')} {
+      display: none;
+    }
+  }
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -69,7 +99,9 @@ export const useTasksTable = () => {
     const nonEmptyFilters = newFilters.filter(
       ({ value }) => value !== null && value !== undefined && value !== '',
     );
+
     if (JSON.stringify(nonEmptyFilters) === JSON.stringify(filters)) return;
+
     if (nonEmptyFilters.length === 0) {
       searchParams.delete('filters');
       setSearchParams(searchParams);
@@ -101,7 +133,22 @@ export const useTasksTable = () => {
     {
       // only the survey name can be resized
       Header: 'Survey',
-      accessor: (row: any) => row.survey.name,
+      Cell: ({
+        row,
+      }: {
+        row: {
+          original: DatatrakWebTasksRequest.ResBody['tasks'][0];
+        };
+      }) => {
+        const value = row?.original?.survey?.name || '';
+        const status = row?.original?.taskStatus || '';
+        return (
+          <StatusPillContent>
+            <StatusDot $status={status} />
+            <span>{value}</span>
+          </StatusPillContent>
+        );
+      },
       id: 'survey.name',
       filterable: true,
     },
@@ -248,6 +295,7 @@ export const TasksTable = () => {
         noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
         isLoading={isLoading}
       />
+      <MobileTaskFilters onChangeFilters={updateFilters} filters={filters} />
     </Container>
   );
 };

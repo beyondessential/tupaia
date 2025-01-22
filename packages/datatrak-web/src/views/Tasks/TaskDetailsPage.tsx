@@ -3,14 +3,15 @@ import { generatePath, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { TaskStatus } from '@tupaia/types';
+import { useNavigate } from 'react-router';
 import { Modal, ModalCenteredContent, SpinningLoader } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { TaskDetails, TaskPageHeader, TaskActionsMenu } from '../../features';
 import { useTask } from '../../api';
 import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../constants';
-import { useFromLocation } from '../../utils';
+import { useFromLocation, useIsMobile } from '../../utils';
 import { SingleTaskResponse } from '../../types';
-import { TasksContentWrapper } from '../../layout';
+import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
 
 const ContentWrapper = styled(TasksContentWrapper)`
   padding-block-end: 2rem;
@@ -20,9 +21,12 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex: 1;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding-inline: 2.2rem;
+  }
+
   ${({ theme }) => theme.breakpoints.down('xs')} {
-    width: 100%;
-    margin-block-start: 1rem;
+    padding-inline: 0.2rem 0;
   }
 `;
 
@@ -95,9 +99,19 @@ export const TaskDetailsPage = () => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const { taskId } = useParams();
   const { data: task, isLoading } = useTask(taskId);
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const onBack = () => {
+    navigate(-1);
+  };
 
   return (
     <>
+      {isMobile && (
+        <StickyMobileHeader title="Tasks" onBack={onBack}>
+          Task details
+        </StickyMobileHeader>
+      )}
       <TaskPageHeader title="Task details" backTo={ROUTES.TASKS}>
         <ButtonWrapper>
           <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
