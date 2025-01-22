@@ -32,7 +32,6 @@ const FilterIndicator = styled.div`
   border-radius: 50%;
   background: ${({ theme }) => theme.palette.success.main};
 `;
-console.log('StyledModal', Modal);
 
 const StyledModal = styled(Modal)`
   .MuiDialog-scrollPaper {
