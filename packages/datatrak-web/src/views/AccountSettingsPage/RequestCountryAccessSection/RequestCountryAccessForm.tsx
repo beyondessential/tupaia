@@ -248,6 +248,7 @@ export const RequestCountryAccessForm = ({
         <Button
           disabled={noRequestableCountries || formIsInsubmissible}
           tooltip={getTooltip()}
+          tooltipDelay={0}
           type="submit"
         >
           {formIsSubmitting ? 'Submitting request' : 'Request access'}
@@ -274,6 +275,7 @@ export const RequestCountryAccessForm = ({
           <Button
             disabled={noRequestableCountries || formIsInsubmissible}
             tooltip={getTooltip()}
+            tooltipDelay={0}
             type="submit"
           >
             {formIsSubmitting ? 'Submitting request' : 'Request access'}
