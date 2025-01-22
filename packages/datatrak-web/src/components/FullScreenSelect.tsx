@@ -78,7 +78,7 @@ const StyledList = styled(List).attrs({ disablePadding: true, role: 'list' })`
 
 interface SelectOption {
   label: ReactNode;
-  value: number;
+  value: string;
 }
 
 type SelectItemProps = SelectOption & ListItemProps;
