@@ -20,8 +20,8 @@ export const useProjectEntities = (
       });
     },
     {
-      enabled: !!projectCode,
       ...useQueryOptions,
+      enabled: !!projectCode && useQueryOptions?.enabled,
     },
   );
 };
