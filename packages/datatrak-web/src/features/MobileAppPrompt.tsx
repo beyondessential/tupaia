@@ -118,9 +118,8 @@ const getAppStoreLink = () => {
 export const MobileAppPrompt = () => {
   const user = useCurrentUserContext();
   const [showPrompt, setShowPrompt] = useState(true);
-  const isMobile = getIsMobileDevice();
   const { prompted, setHasBeenPrompted } = usePromptCookie();
-  if (!isMobile || prompted || !user.isLoggedIn) return null;
+  if (prompted || !user.isLoggedIn || !getIsMobileDevice()) return null;
 
   const browser = getBrowser();
   const browserIcon = browser ? BROWSER_ICONS[browser] : null;
@@ -182,7 +181,7 @@ export const MobileAppPrompt = () => {
             ({ icon, text, button: { onClick, variant = 'contained', text: buttonText } }) => (
               <Option key={text!}>
                 <LeftColumn>
-                  <OptionIcon>{icon && <img src={icon} />}</OptionIcon>
+                  <OptionIcon aria-hidden>{icon && <img src={icon} />}</OptionIcon>
                   <OptionText>{text}</OptionText>
                 </LeftColumn>
                 <OptionButton onClick={onClick} variant={variant}>
