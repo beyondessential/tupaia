@@ -33,7 +33,7 @@ const Pin = styled.img.attrs({
   'aria-hidden': true, // this pin is not of any use to the screen reader, so hide from the screen reader
   src: '/tupaia-pin.svg',
 })`
-  width: 1rem;
+  width: 1.5rem;
   height: auto;
   margin-right: 0.5rem;
 `;
