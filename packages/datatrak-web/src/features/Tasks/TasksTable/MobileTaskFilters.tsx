@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Tabs, Tab, Fab, Typography, Slide } from '@material-ui/core';
 import { useDebounce } from '@tupaia/ui-components';
-import { FiltersIcon, Modal, Button } from '../../../components';
+import { FiltersIcon, Button } from '../../../components';
+import { Modal } from '../../../components/Modal';
 import { MobileAutocomplete } from './MobileAutocomplete';
 import {
   useCurrentUserContext,
@@ -31,6 +32,7 @@ const FilterIndicator = styled.div`
   border-radius: 50%;
   background: ${({ theme }) => theme.palette.success.main};
 `;
+console.log('StyledModal', Modal);
 
 const StyledModal = styled(Modal)`
   .MuiDialog-scrollPaper {
