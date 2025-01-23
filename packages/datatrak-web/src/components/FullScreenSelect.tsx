@@ -1,14 +1,3 @@
-import React, {
-  ChangeEvent,
-  Children,
-  Fragment,
-  ReactElement,
-  ReactNode,
-  isValidElement,
-  useEffect,
-  useState,
-} from 'react';
-import styled from 'styled-components';
 import {
   Button,
   Dialog,
@@ -21,12 +10,17 @@ import {
   Slide,
   useTheme,
 } from '@material-ui/core';
-import ChevronIcon from '@material-ui/icons/ChevronRightRounded';
-import CheckIcon from '@material-ui/icons/CheckRounded';
 import { TransitionProps } from '@material-ui/core/transitions';
+import CheckIcon from '@material-ui/icons/CheckRounded';
+import ChevronIcon from '@material-ui/icons/ChevronRightRounded';
+import React, { ChangeEvent, Fragment, ReactElement, useState } from 'react';
+import styled from 'styled-components';
+
+import { DialogContent } from '@tupaia/ui-components';
 
 import { StickyMobileHeader } from '../layout';
-import { DialogContent } from '@tupaia/ui-components';
+import { SelectOption, SelectOptions } from '../types/select';
+import { innerText } from '../utils';
 
 const Picture = styled.picture`
   object-fit: contain;
@@ -139,12 +133,7 @@ const StyledListItemText = styled(ListItemText).attrs({ disableTypography: true 
   display: contents;
 `;
 
-interface SelectOption {
-  label: ReactNode;
-  value: string;
-}
-
-type SelectItemProps = SelectOption & ListItemProps;
+type SelectItemProps = Required<SelectOption> & ListItemProps;
 const SelectItem = ({ label, selected, value, ...listItemProps }: SelectItemProps) => (
   <StyledListItem {...listItemProps}>
     <StyledListItemText primary={label} />
@@ -156,58 +145,43 @@ type FullScreenSelectProps = Pick<
   SelectProps,
   'children' | 'className' | 'id' | 'label' | 'onClose' | 'onOpen' | 'open'
 > & {
-  defaultValue?: string | number | null;
   onChange?: (
     event: ChangeEvent<{ name?: string | undefined; value: string | number | null }>,
   ) => void;
+  options: SelectOptions;
   value?: string | number | null;
 };
 
 export const FullScreenSelect = ({
   children,
-  defaultValue,
   label = 'Select an option',
   onChange,
   onClose,
+  options,
   value,
 }: FullScreenSelectProps) => {
-  const [selectedItem, setSelectedItem] = useState<typeof value>(
-    value !== null ? value : defaultValue,
-  );
-  useEffect(() => setSelectedItem(value), [value]);
-
   const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-  const options: SelectOption[] = [];
-  const otherChildren: unknown[] = [];
-  Children.forEach(children, child => {
-    if (isValidElement(child) && child.type === 'option') {
-      options.push({
-        label: child.props.children,
-        value: child.props.value ?? (child.props.children as string),
-      });
-      return;
-    }
-
-    otherChildren.push(child);
-  });
-
   const selectedItemLabel = options.find(option => option.value === value)?.label ?? label;
+
   const listContents = options.map(option => {
-    const selected = option.value === selectedItem;
+    const label = option.label;
+    const value = option.value ?? innerText(option.label);
+    const selected = option.value === value;
 
     return (
       <SelectItem
         aria-selected={selected}
         key={option.value}
+        label={label}
         onClick={e => {
           onChange?.({ ...e, target: { value: option.value } });
           closeModal();
         }}
         selected={selected}
-        {...option}
+        value={value}
       />
     );
   });
@@ -223,7 +197,7 @@ export const FullScreenSelect = ({
         </StyledDialogTitle>
         <StyledDialogContent>
           <StyledList>{listContents}</StyledList>
-          {otherChildren}
+          {children}
         </StyledDialogContent>
       </Modal>
     </>

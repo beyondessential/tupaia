@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 import { Select as BaseSelect } from '@tupaia/ui-components';
 
-import { useIsMobile } from '../../utils';
-import { FullScreenSelect } from '../../components/FullScreenSelect';
 import { useUserCountries } from '.';
+import { FullScreenSelect } from '../../components/FullScreenSelect';
+import { useIsMobile } from '../../utils';
 
 const Select = styled(BaseSelect)`
   width: 10rem;
@@ -48,32 +48,26 @@ export const CountrySelector = () => {
     onChangeCountry(countries.find(country => country.code === e.target.value) ?? null);
   };
 
-  const isMobile = useIsMobile();
+  const options =
+    countries?.map(country => ({
+      value: country.code,
+      label: country.name,
+    })) ?? [];
 
   return (
     <CountrySelectWrapper>
-      {isMobile ? (
+      {useIsMobile() ? (
         <FullScreenSelect
           label="Select country"
           onChange={updateSelectedCountry}
+          options={options}
           value={selectedCountry?.code}
-        >
-          {countries?.map(country => (
-            <option key={country.code} value={country.code}>
-              {country.name}
-            </option>
-          ))}
-        </FullScreenSelect>
+        />
       ) : (
         <>
           <Pin />
           <Select
-            options={
-              countries?.map(country => ({
-                value: country.code,
-                label: country.name,
-              })) ?? []
-            }
+            options={options}
             value={selectedCountry?.code}
             onChange={updateSelectedCountry}
             placeholder="Select a country"
