@@ -9,7 +9,7 @@ import { SlideTransition } from '../../components/SlideTransition';
 import { ArrowLeftIcon } from '../../components';
 import { useIsMobile } from '../../utils';
 
-const StyledModal = styled(Modal)`
+const StyledModal = styled(Modal)<{ $requestAccess: boolean }>`
   //  The mobile styles are specific to the project select modal in datatrak-web so they are included here
   //  instead of in the ui-components select list component
   ${({ theme }) => theme.breakpoints.down('sm')} {
@@ -25,7 +25,7 @@ const StyledModal = styled(Modal)`
       > div {
         display: flex;
         flex-direction: column;
-        block-size: 100%;
+        block-size: ${props => (props.$requestAccess ? 'auto' : '100%')};
 
         > div {
           max-block-size: 100%;
@@ -135,6 +135,7 @@ export const ProjectSelectModal = ({ onBack }: ModalProps) => {
       disablePortal={false}
       fullScreen={isMobile}
       TransitionComponent={isMobile ? SlideTransition : undefined}
+      $requestAccess={requestAccessProjectCode}
     >
       {requestAccessProjectCode ? (
         <RequestProjectAccess
