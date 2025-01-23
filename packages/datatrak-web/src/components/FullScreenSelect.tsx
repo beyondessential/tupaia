@@ -167,7 +167,10 @@ export const FullScreenSelect = ({
       <SelectItem
         aria-selected={selected}
         key={option.value}
-        onClick={e => onChange?.({ ...e, target: { value: option.value } })}
+        onClick={e => {
+          onChange?.({ ...e, target: { value: option.value } });
+          closeModal();
+        }}
         selected={selected}
         {...option}
       />
