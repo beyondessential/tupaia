@@ -14,8 +14,10 @@ import {
   ListItemProps,
   ListItemText,
   SelectProps,
+  useTheme,
 } from '@material-ui/core';
-import Chevron from '@material-ui/icons/ChevronRightRounded';
+import ChevronIcon from '@material-ui/icons/ChevronRightRounded';
+import CheckIcon from '@material-ui/icons/CheckRounded';
 
 import { StickyMobileHeader } from '../layout';
 
@@ -38,7 +40,7 @@ const StyledButton = styled(Button).attrs({
   disableElevation: true,
   fullWidth: true,
   startIcon: <Pin />,
-  endIcon: <Chevron />,
+  endIcon: <ChevronIcon />,
   size: 'large',
 })`
   display: grid;
@@ -89,8 +91,9 @@ const StyledListItem = styled(ListItem).attrs({
 })`
   background-color: ${({ theme }) => theme.palette.background.paper};
   display: grid;
-  grid-template-columns: 1fr auto;
-  padding-block: 1rem;
+  grid-template-columns: 1fr minmax(1.5rem, auto);
+  grid-template-rows: minmax(1.5rem, auto);
+  padding-block: 0.75rem;
   padding-inline: 1.5rem;
 
   &.MuiListItem-root.Mui-selected,
@@ -111,6 +114,7 @@ type SelectItemProps = SelectOption & ListItemProps;
 const SelectItem = ({ label, selected, value, ...listItemProps }: SelectItemProps) => (
   <StyledListItem {...listItemProps}>
     <StyledListItemText primary={label} />
+    {selected && <CheckIcon htmlColor={useTheme().palette.primary.main} width={24} height={24} />}
   </StyledListItem>
 );
 
