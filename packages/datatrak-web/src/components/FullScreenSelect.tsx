@@ -123,7 +123,9 @@ type FullScreenSelectProps = Pick<
   'children' | 'className' | 'id' | 'label' | 'onClose' | 'onOpen' | 'open'
 > & {
   defaultValue?: string | number | null;
-  onChange?: (event: ChangeEvent<{ name?: string | undefined; value: string | number }>) => void;
+  onChange?: (
+    event: ChangeEvent<{ name?: string | undefined; value: string | number | null }>,
+  ) => void;
   value?: string | number | null;
 };
 
