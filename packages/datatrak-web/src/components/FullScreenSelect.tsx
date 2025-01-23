@@ -1,6 +1,8 @@
 import React, {
   ChangeEvent,
   Children,
+  Fragment,
+  ReactElement,
   ReactNode,
   isValidElement,
   useEffect,
@@ -9,17 +11,22 @@ import React, {
 import styled from 'styled-components';
 import {
   Button,
+  Dialog,
+  DialogTitle,
   List,
   ListItem,
   ListItemProps,
   ListItemText,
   SelectProps,
+  Slide,
   useTheme,
 } from '@material-ui/core';
 import ChevronIcon from '@material-ui/icons/ChevronRightRounded';
 import CheckIcon from '@material-ui/icons/CheckRounded';
+import { TransitionProps } from '@material-ui/core/transitions';
 
 import { StickyMobileHeader } from '../layout';
+import { DialogContent } from '@tupaia/ui-components';
 
 const Picture = styled.picture`
   object-fit: contain;
@@ -59,16 +66,40 @@ const StyledButton = styled(Button).attrs({
   }
 `;
 
-const Modal = styled.div`
-  background-color: ${({ theme }) => theme.palette.background.default};
-  block-size: 100vb;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  inline-size: 100vi;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  position: fixed;
-  z-index: 9999;
+const Transition = React.forwardRef(
+  (props: TransitionProps & { children?: ReactElement }, ref: React.Ref<unknown>) => (
+    <Slide direction="left" ref={ref} {...props} />
+  ),
+);
+
+const Modal = styled(Dialog).attrs({
+  PaperComponent: Fragment, // The extra wrapper interferes with layout
+  TransitionComponent: Transition,
+  disableElevation: true,
+  fullScreen: true,
+  mountOnEnter: true,
+  unmountOnExit: true,
+})`
+  .MuiDialog-container {
+    background-color: ${({ theme }) => theme.palette.background.default};
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+  .MuiDialog-scrollPaper {
+    justify-content: initial;
+    align-items: initial;
+  }
+`;
+
+const StyledDialogTitle = styled(DialogTitle).attrs({ disableTypography: true })`
+  display: contents;
+  padding: 0;
+`;
+const StyledDialogContent = styled(DialogContent).attrs({ dividers: true })`
+  overflow-y: auto;
+  padding-block-end: env(safe-area-inset-bottom, 0);
+  padding-block-start: 0;
+  padding-inline: 0;
 `;
 
 const Header = styled(StickyMobileHeader)`
@@ -82,7 +113,9 @@ const StyledList = styled(List).attrs({
   disablePadding: true,
   role: 'radiogroup',
 })`
-  overflow-y: auto;
+  & + * {
+    margin-block-start: 1.5rem;
+  }
 `;
 const StyledListItem = styled(ListItem).attrs({
   button: true,
@@ -94,7 +127,8 @@ const StyledListItem = styled(ListItem).attrs({
   grid-template-columns: 1fr minmax(1.5rem, auto);
   grid-template-rows: minmax(1.5rem, auto);
   padding-block: 0.75rem;
-  padding-inline: 1.5rem;
+  padding-left: max(env(safe-area-inset-left, 0), 1.5rem);
+  padding-right: max(env(safe-area-inset-right, 0), 1.5rem);
 
   &.MuiListItem-root.Mui-selected,
   &.MuiListItem-root.Mui-selected:hover {
@@ -134,6 +168,7 @@ export const FullScreenSelect = ({
   defaultValue,
   label = 'Select an option',
   onChange,
+  onClose,
   value,
 }: FullScreenSelectProps) => {
   const [selectedItem, setSelectedItem] = useState<typeof value>(
@@ -180,17 +215,17 @@ export const FullScreenSelect = ({
   return (
     <>
       <StyledButton onClick={openModal}>{selectedItemLabel}</StyledButton>
-      {isOpen && (
-        <Modal>
+      <Modal open={isOpen} onClose={onClose}>
+        <StyledDialogTitle>
           <Header onBack={closeModal} onClose={closeModal}>
             {label}
           </Header>
-          <StyledList>
-            {listContents}
-            {otherChildren}
-          </StyledList>
-        </Modal>
-      )}
+        </StyledDialogTitle>
+        <StyledDialogContent>
+          <StyledList>{listContents}</StyledList>
+          {otherChildren}
+        </StyledDialogContent>
+      </Modal>
     </>
   );
 };
