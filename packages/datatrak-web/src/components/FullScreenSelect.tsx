@@ -73,7 +73,7 @@ const Transition = React.forwardRef(
 );
 
 const Modal = styled(Dialog).attrs({
-  PaperComponent: Fragment, // The extra wrapper interferes with layout
+  PaperComponent: Fragment, // Extra wrapper is semantically meaningless, interferes with layout
   TransitionComponent: Transition,
   disableElevation: true,
   fullScreen: true,
