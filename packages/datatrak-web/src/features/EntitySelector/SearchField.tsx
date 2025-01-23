@@ -67,11 +67,22 @@ type SearchFieldProps = TextFieldProps & {
   onChangeSearch: (value: string) => void;
   isDirty: boolean;
   invalid: boolean;
+  detailLabel?: string;
   required?: boolean;
 };
 
 export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((props, ref) => {
-  const { name, id, searchValue, onChangeSearch, isDirty, invalid, required, inputProps } = props;
+  const {
+    name,
+    id,
+    searchValue,
+    onChangeSearch,
+    isDirty,
+    invalid,
+    required,
+    inputProps,
+    detailLabel,
+  } = props;
 
   const displayValue = isDirty ? searchValue : '';
 
@@ -92,7 +103,7 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
       onChange={handleChange}
       value={displayValue}
       error={invalid}
-      helperText={`Select an entity from the list below ${required && '*'}`}
+      helperText={detailLabel}
       FormHelperTextProps={{
         component: InputHelperText,
       }}
