@@ -1,4 +1,11 @@
-import React, { Children, ReactNode, isValidElement, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent,
+  Children,
+  ReactNode,
+  isValidElement,
+  useEffect,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import {
   Button,
@@ -80,6 +87,7 @@ const StyledListItem = styled(ListItem).attrs({
   divider: true,
   role: 'radio',
 })`
+  background-color: ${({ theme }) => theme.palette.background.paper};
   display: grid;
   grid-template-columns: 1fr auto;
   padding-block: 1rem;
@@ -108,24 +116,21 @@ const SelectItem = ({ label, selected, value, ...listItemProps }: SelectItemProp
 
 type FullScreenSelectProps = Pick<
   SelectProps,
-  | 'children'
-  | 'className'
-  | 'defaultValue'
-  | 'id'
-  | 'label'
-  | 'onChange'
-  | 'onClose'
-  | 'onOpen'
-  | 'open'
-  | 'value'
->;
+  'children' | 'className' | 'id' | 'label' | 'onClose' | 'onOpen' | 'open'
+> & {
+  defaultValue?: string | number | null;
+  onChange?: (event: ChangeEvent<{ name?: string | undefined; value: string | number }>) => void;
+  value?: string | number | null;
+};
+
 export const FullScreenSelect = ({
   children,
   defaultValue,
   label = 'Select an option',
+  onChange,
   value,
 }: FullScreenSelectProps) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(
+  const [selectedItem, setSelectedItem] = useState<typeof value>(
     value !== null ? value : defaultValue,
   );
   useEffect(() => setSelectedItem(value), [value]);
@@ -140,7 +145,7 @@ export const FullScreenSelect = ({
     if (isValidElement(child) && child.type === 'option') {
       options.push({
         label: child.props.children,
-        value: child.props.value,
+        value: child.props.value ?? (child.props.children as string),
       });
       return;
     }
@@ -151,8 +156,15 @@ export const FullScreenSelect = ({
   const selectedItemLabel = options.find(option => option.value === value)?.label ?? label;
   const listContents = options.map(option => {
     const selected = option.value === selectedItem;
+
     return (
-      <SelectItem aria-selected={selected} key={option.value} selected={selected} {...option} />
+      <SelectItem
+        aria-selected={selected}
+        key={option.value}
+        onClick={e => onChange?.({ ...e, target: { value: option.value } })}
+        selected={selected}
+        {...option}
+      />
     );
   });
 

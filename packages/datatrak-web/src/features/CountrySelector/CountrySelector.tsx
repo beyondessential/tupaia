@@ -2,11 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Select as BaseSelect } from '@tupaia/ui-components';
-import { Country } from '@tupaia/types';
 
-import { Entity } from '../../types';
 import { useIsMobile } from '../../utils';
 import { FullScreenSelect } from '../../components/FullScreenSelect';
+import { useUserCountries } from '.';
 
 const Select = styled(BaseSelect)`
   width: 10rem;
@@ -30,7 +29,7 @@ const Select = styled(BaseSelect)`
   }
 `;
 const Pin = styled.img.attrs({
-  'aria-hidden': true, // this pin is not of any use to the screen reader, so hide from the screen reader
+  'aria-hidden': true,
   src: '/tupaia-pin.svg',
 })`
   width: 1.5rem;
@@ -43,27 +42,22 @@ export const CountrySelectWrapper = styled.div`
   align-items: center;
 `;
 
-export interface CountrySelectorProps {
-  countries: Entity[];
-  selectedCountry?: Country | null;
-  onChangeCountry: (country: Entity | null) => void;
-}
-
-export const CountrySelector = ({
-  countries,
-  selectedCountry,
-  onChangeCountry,
-}: CountrySelectorProps) => {
-  const isMobile = useIsMobile();
-
-  const updateSelectedCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeCountry(countries.find(country => country.code === e.target.value) || null);
+export const CountrySelector = () => {
+  const { countries, selectedCountry, updateSelectedCountry: onChangeCountry } = useUserCountries();
+  const updateSelectedCountry = e => {
+    onChangeCountry(countries.find(country => country.code === e.target.value) ?? null);
   };
+
+  const isMobile = useIsMobile();
 
   return (
     <CountrySelectWrapper>
       {isMobile ? (
-        <FullScreenSelect label="Select country">
+        <FullScreenSelect
+          label="Select country"
+          onChange={updateSelectedCountry}
+          value={selectedCountry?.code}
+        >
           {countries?.map(country => (
             <option key={country.code} value={country.code}>
               {country.name}

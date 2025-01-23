@@ -36,12 +36,7 @@ export const SurveySelectPage = () => {
   const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
   const [urlSearchParams] = useSearchParams();
   const urlProjectId = urlSearchParams.get('projectId');
-  const {
-    countries,
-    selectedCountry,
-    updateSelectedCountry,
-    isLoading: isLoadingCountries,
-  } = useUserCountries();
+  const { selectedCountry, isLoading: isLoadingCountries } = useUserCountries();
   const handleSelectSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
@@ -78,13 +73,7 @@ export const SurveySelectPage = () => {
         setSelectedSurvey={setSelectedSurvey}
         handleSelectSurvey={handleSelectSurvey}
         showLoader={showLoader}
-        CountrySelector={
-          <CountrySelector
-            countries={countries}
-            selectedCountry={selectedCountry}
-            onChangeCountry={updateSelectedCountry}
-          />
-        }
+        CountrySelector={<CountrySelector />}
       />
     );
   }
@@ -94,13 +83,7 @@ export const SurveySelectPage = () => {
       selectedSurvey={selectedSurvey}
       setSelectedSurvey={setSelectedSurvey}
       showLoader={showLoader}
-      CountrySelector={
-        <CountrySelector
-          countries={countries}
-          selectedCountry={selectedCountry}
-          onChangeCountry={updateSelectedCountry}
-        />
-      }
+      CountrySelector={<CountrySelector />}
       SubmitButton={
         <Button
           onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
