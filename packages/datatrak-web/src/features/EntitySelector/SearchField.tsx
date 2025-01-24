@@ -43,6 +43,7 @@ const StyledField = styled(TextField)<TextFieldProps>`
   &&&& {
     .MuiInputBase-input::placeholder {
       color: ${({ theme }) => theme.palette.text.hint};
+      opacity: 1 !important;
     }
   }
 
