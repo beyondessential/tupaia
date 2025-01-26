@@ -34,7 +34,7 @@ export const innerText = (node: ReactNode): string => {
     for (const child of node) {
       joined.push(isReactText(child) ? child : innerText(child as ReactElement));
     }
-    return joined.join(' ');
+    return joined.filter(Boolean).join(' ');
   }
 
   // Single child
