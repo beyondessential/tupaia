@@ -14,7 +14,7 @@ const isReactText = (node: ReactNode): node is ReactText => {
  */
 export const innerText = (node: ReactNode): string => {
   // No children
-  if (isReactText(node)) return node as string;
+  if (isReactText(node)) return String(node);
   if (isNullish(node) || typeof node === 'boolean') return '';
 
   // Failsafe
