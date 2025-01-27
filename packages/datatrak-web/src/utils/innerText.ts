@@ -22,11 +22,10 @@ export const innerText = (node: ReactNode): string => {
 
   // Multiple children
   if (Array.isArray(node)) {
-    const joined: ReactText[] = [];
-    for (const child of node) {
-      joined.push(isReactText(child) ? child : innerText(child as ReactElement));
-    }
-    return joined.filter(Boolean).join(' ');
+    return node
+      .map(child => (isReactText(child) ? child : innerText(child as ReactElement)))
+      .filter(Boolean)
+      .join(' ');
   }
 
   // Single child
