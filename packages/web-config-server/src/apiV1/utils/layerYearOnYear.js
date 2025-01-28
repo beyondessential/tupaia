@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Modify the analytic periods to use the same, latest year in order to layer the data within a dashboard.
  *
  *

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { ForgotPasswordForm } from '@tupaia/ui-components';
 import React from 'react';
 import { useForm } from 'react-hook-form';

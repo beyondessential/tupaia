@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { SVGAttributes } from 'react';
 import styled from 'styled-components';
 import BaseIcon from './BaseIcon';

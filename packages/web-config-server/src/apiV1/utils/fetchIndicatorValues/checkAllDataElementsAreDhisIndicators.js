@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 // TODO: The code in this file is to implement a hacky approach to fetch indicator values
 // because the normal analytics/rawData.json endpoint does not return any data for indicators.
 // Will have to implement this properly with #tupaia-backlog/issues/2412

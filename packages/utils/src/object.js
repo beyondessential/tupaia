@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { camel, snake } from 'case';
 
 import { compareAsc, compareDesc } from './compare';

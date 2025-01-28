@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { KeysToCamelCase } from '../../../utils/casing';
 import { FeedItem as BaseFeedItem } from '../../models';
 import {
@@ -31,4 +26,5 @@ export type ReqBody = Record<string, any>;
 export type ReqQuery = {
   projectId: string;
   page?: string;
+  pageLimit?: string;
 };

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import keyBy from 'lodash.keyby';
 
 import { DhisApi, translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';

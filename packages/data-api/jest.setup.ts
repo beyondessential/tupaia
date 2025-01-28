@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { getTestModels, setupTest, clearTestData } from '@tupaia/database';
 import { SETUP } from './src/__tests__/TupaiaDataApi.fixtures';
 import { configureEnv } from './src/configureEnv';

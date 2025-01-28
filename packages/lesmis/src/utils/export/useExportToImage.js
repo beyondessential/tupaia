@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { useRef, useState } from 'react';
 import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';

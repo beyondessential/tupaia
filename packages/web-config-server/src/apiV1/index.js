@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { Router } from 'express';
 import { emailAfterTimeout } from '@tupaia/server-boilerplate';
 import { constructExportEmail } from '@tupaia/server-utils';

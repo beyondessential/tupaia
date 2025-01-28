@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import throttle from 'lodash.throttle';
@@ -10,7 +5,7 @@ import { createFilterOptions } from '@material-ui/lab';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { DESKTOP_BREAKPOINT } from '../../constants';
 import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
 
 const Autocomplete = styled(BaseAutocomplete)`
@@ -24,7 +19,7 @@ const Autocomplete = styled(BaseAutocomplete)`
   .MuiFormLabel-root {
     font-size: 0.875rem;
     line-height: 1.2;
-    @media (min-width: ${MOBILE_BREAKPOINT}) {
+    @media (min-width: ${DESKTOP_BREAKPOINT}) {
       font-size: 1rem;
     }
   }

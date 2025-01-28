@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
 import { format, differenceInYears, addDays, isDate } from 'date-fns';
 import keyBy from 'lodash.keyby';
 import { Event } from '../../types';

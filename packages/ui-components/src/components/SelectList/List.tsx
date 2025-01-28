@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { List as MuiList } from '@material-ui/core';
 import { ListItem as Item } from './ListItem';

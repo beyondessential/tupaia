@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { COLUMNS as ENTITIES_COLUMNS } from './entities';
 
 const RESOURCE_NAME = { singular: 'country', plural: 'countries' };

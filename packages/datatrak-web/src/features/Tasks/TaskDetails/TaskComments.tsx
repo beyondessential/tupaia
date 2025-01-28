@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { format } from 'date-fns';
 import styled from 'styled-components';
@@ -219,7 +214,7 @@ export const TaskComments = ({ comments }: { comments: Comments }) => {
       </TaskCommentsDisplayContainer>
       <CommentsInput label="Add comment" name="comment" inputRef={register} />
       <Button type="submit" disabled={!isDirty || isSaving}>
-        {isSaving ? 'Saving...' : 'Add comment'}
+        {isSaving ? 'Saving…' : 'Add comment'}
       </Button>
     </Form>
   );

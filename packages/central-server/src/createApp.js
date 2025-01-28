@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';

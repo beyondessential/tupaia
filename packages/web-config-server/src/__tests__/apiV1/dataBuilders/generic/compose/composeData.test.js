@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { createJestMockInstance } from '@tupaia/utils';
 import * as FetchComposedData from '/apiV1/dataBuilders/helpers/fetchComposedData';
 import { composeData } from '/apiV1/dataBuilders/generic/compose';

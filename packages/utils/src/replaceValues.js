@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Replaces all variables in `target` with a corresponding value defined in `replacements`
  * Variables are marked by curly braces (e.g. "{replaceThis}")
  *

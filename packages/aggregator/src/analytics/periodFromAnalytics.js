@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import groupBy from 'lodash.groupby';
 import { periodToType } from '@tupaia/tsutils';
 import { min, max, findCoarsestPeriodType } from '@tupaia/utils';

@@ -1,9 +1,4 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Maintains the internal queue of changes to be synced: queues changes, provides them when asked,
  * and removes them when marked as used. First changed first out, i.e. the oldest changes are synced
  * first.

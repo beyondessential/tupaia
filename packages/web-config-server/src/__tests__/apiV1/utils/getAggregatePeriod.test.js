@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
 import { getAggregatePeriod } from '/apiV1/utils/getAggregatePeriod';
 
 const periods = [

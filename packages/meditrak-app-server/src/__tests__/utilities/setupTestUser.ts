@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { findOrCreateDummyRecord, getTestModels } from '@tupaia/database';
 import { TestModelRegistry } from '../types';

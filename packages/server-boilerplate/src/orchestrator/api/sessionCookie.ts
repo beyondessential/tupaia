@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import sessions from 'client-sessions';
 
 // session lasts 14 days, but will be extended by a further 7 if you use it

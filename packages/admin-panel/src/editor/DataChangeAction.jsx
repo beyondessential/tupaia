@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { connect } from 'react-redux';
 import { EDITOR_DATA_EDIT_BEGIN, EDITOR_DATA_EDIT_SUCCESS, EDITOR_ERROR } from './constants';
 

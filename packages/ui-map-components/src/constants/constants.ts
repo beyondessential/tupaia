@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 import { LatLngBoundsLiteral } from 'leaflet';
 
 // Note: There's a little bit of a hack going on here, the bounds[0] for explore are actually [6.5, 110]

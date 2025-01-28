@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { RECORDS } from '@tupaia/database';
 
 export const findQuestionsInSurvey = async (models, surveyId) => {

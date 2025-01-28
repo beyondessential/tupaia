@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { getKeysSortedByValues, respond, UnauthenticatedError } from '@tupaia/utils';
 import { getUniversalTypes } from '../../../database/utilities';
 import { buildMeditrakSyncQuery } from '../meditrakSync';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import type { Report } from '@tupaia/types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';

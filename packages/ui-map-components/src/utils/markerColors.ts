@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
 import moment from 'moment';
 import { blue, red, green } from '@material-ui/core/colors';
 import { ScaleType, MeasureColorScheme } from '@tupaia/types';

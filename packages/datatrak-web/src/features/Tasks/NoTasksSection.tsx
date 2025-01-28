@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -9,7 +5,7 @@ import { Button as UIButton } from '@tupaia/ui-components';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 
-const Container = styled.div`
+const DesktopContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,7 +44,7 @@ const Button = styled(UIButton)`
 `;
 
 const Desktop = () => (
-  <Container>
+  <DesktopContainer>
     <Image />
     <Text>
       Congratulations, you have no tasks to complete! You can view all other tasks for your project
@@ -57,7 +53,7 @@ const Desktop = () => (
     <Button to={ROUTES.TASKS} component={Link}>
       View all tasks
     </Button>
-  </Container>
+  </DesktopContainer>
 );
 
 const MobileContainer = styled.div`
@@ -70,19 +66,26 @@ const MobileContainer = styled.div`
     text-align: left;
     margin-inline-end: 1rem;
     margin-block-end: 0;
+    font-size: 0.75rem;
   }
 
   a.MuiButtonBase-root {
     display: inline-block;
+    margin-block-end: 0;
   }
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
 `;
+
 const Mobile = () => (
   <MobileContainer>
     <Text>You have no tasks to complete.</Text>
+    {/* Todo: Add button back when mobile tasks are ready */}
+    {/*<Button to={ROUTES.TASKS} component={Link}>*/}
+    {/*  View all tasks*/}
+    {/*</Button>*/}
   </MobileContainer>
 );
 

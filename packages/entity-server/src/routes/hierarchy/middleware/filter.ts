@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { QueryConjunctions, EntityFilter, EntityFilterFields } from '@tupaia/server-boilerplate';
 import { NumericKeys } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
