@@ -65,7 +65,7 @@ const useDisplayAnswer = (
 
   if (type === QuestionType.Instruction) return null;
   if (type === QuestionType.DateOfData || type === QuestionType.SubmissionDate) {
-    return displayDate(surveyResponse.dataTime, locale);
+    return displayDate(surveyResponse.dataTime);
   }
   if (type === QuestionType.PrimaryEntity) {
     return surveyResponse?.entityName;
@@ -89,9 +89,9 @@ const useDisplayAnswer = (
       return entity?.name;
     // If the question is a date question, display the date in a readable format
     case QuestionType.Date:
-      return displayDate(answer, locale);
+      return displayDate(answer);
     case QuestionType.DateTime:
-      return displayDateTime(answer, locale);
+      return displayDateTime(answer);
     // If the question is a geolocate question, display the latitude and longitude
     case QuestionType.Geolocate: {
       const { latitude, longitude } = JSON.parse(answer);

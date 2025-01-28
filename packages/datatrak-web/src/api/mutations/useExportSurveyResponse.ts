@@ -4,6 +4,7 @@
  */
 import { useMutation } from '@tanstack/react-query';
 import download from 'downloadjs';
+import { getBrowserTimeZone } from '@tupaia/utils';
 import { API_URL, post } from '../api';
 import { successToast } from '../../utils';
 
@@ -16,12 +17,16 @@ export const useExportSurveyResponse = (surveyResponseId: string) => {
       // Auth cookies are saved against this domain. Pass this to server, so that when it pretends to be us, it can do the same.
       const cookieDomain = new URL(API_URL).hostname;
 
+      const timezone = getBrowserTimeZone();
+
+
       return post(`export/${surveyResponseId}`, {
         responseType: 'blob',
         data: {
           cookieDomain,
           baseUrl,
           locale: window.navigator.language,
+          timezone: timezone,
         },
       });
     },

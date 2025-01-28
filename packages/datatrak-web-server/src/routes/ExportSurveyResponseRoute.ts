@@ -20,6 +20,7 @@ export type ExportSurveyResponseRequest = Request<
     baseUrl: string;
     cookieDomain: string;
     locale: string;
+    timezone: string;
   },
   Record<string, unknown>
 >;
@@ -29,7 +30,7 @@ export class ExportSurveyResponseRoute extends Route<ExportSurveyResponseRequest
 
   public async buildResponse() {
     const { surveyResponseId } = this.req.params;
-    const { baseUrl, cookieDomain, locale } = this.req.body;
+    const { baseUrl, cookieDomain, locale, timezone } = this.req.body;
     const { cookie } = this.req.headers;
 
     if (!cookie) {
@@ -38,7 +39,7 @@ export class ExportSurveyResponseRoute extends Route<ExportSurveyResponseRequest
 
     const pdfPageUrl = `${baseUrl}/export/${surveyResponseId}?locale=${locale}`;
 
-    const buffer = await downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, false, true);
+    const buffer = await downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, false, true, timezone);
 
     return {
       contents: buffer,

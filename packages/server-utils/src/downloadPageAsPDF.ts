@@ -65,6 +65,7 @@ export const downloadPageAsPDF = async (
   cookieDomain: string | undefined,
   landscape = false,
   includePageNumber = false,
+  timezone?: string,
 ) => {
   let browser;
   let buffer;
@@ -73,8 +74,14 @@ export const downloadPageAsPDF = async (
   try {
     browser = await puppeteer.launch();
     const page = await browser.newPage();
+
+    if (timezone) {
+      await page.emulateTimezone(timezone);
+    }
+
     await page.setCookie(...cookies);
     await page.goto(verifiedPDFPageUrl, { timeout: 60000, waitUntil: 'networkidle0' });
+
     buffer = await page.pdf({
       format: 'a4',
       printBackground: true,
