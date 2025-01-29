@@ -33,12 +33,12 @@ const ModalButton = styled(Button).attrs({
   color: 'default',
 })`
   width: 100%;
-  margin: 0 auto;
   max-width: 28rem;
   background-color: ${({ theme }) => theme.palette.background.paper};
   color: ${({ theme }) => theme.palette.text.primary};
   padding: 2rem 1.5rem 1.5rem;
-  margin-top: 0.5rem;
+  margin-inline: auto;
+  margin-top: 1.5rem;
 `;
 
 const TextWrapper = styled.div`
