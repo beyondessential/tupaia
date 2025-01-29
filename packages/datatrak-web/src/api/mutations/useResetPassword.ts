@@ -42,7 +42,7 @@ export const useResetPassword = (options?: {
         navigate({
           ...location,
           search: urlSearchParams.toString(),
-        });
+        }, { replace: true });
 
         if (options?.onSuccess) options.onSuccess(response);
       },
