@@ -89,9 +89,9 @@ const useDisplayAnswer = (
       return entity?.name;
     // If the question is a date question, display the date in a readable format
     case QuestionType.Date:
-      return displayDate(answer);
+      return displayDate(answer, locale);
     case QuestionType.DateTime:
-      return displayDateTime(answer);
+      return displayDateTime(answer, locale);
     // If the question is a geolocate question, display the latitude and longitude
     case QuestionType.Geolocate: {
       const { latitude, longitude } = JSON.parse(answer);

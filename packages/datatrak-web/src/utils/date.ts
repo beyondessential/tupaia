@@ -1,11 +1,11 @@
-export const displayDate = (date?: Date | null, localeCode?: string) => {
+export const displayDate = (date?: Date | string | null, localeCode?: string) => {
   if (!date) {
     return '';
   }
   return new Date(date).toLocaleDateString(localeCode);
 };
 
-export const displayDateTime = (date?: Date | null, locale?: string) => {
+export const displayDateTime = (date?: Date | string | null, locale?: string) => {
   if (!date) {
     return '';
   }
