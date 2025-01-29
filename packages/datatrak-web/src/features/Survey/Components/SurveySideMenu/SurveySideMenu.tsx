@@ -129,23 +129,24 @@ export const SurveySideMenu = () => {
     isResponseScreen,
     numberOfScreens,
   } = useSurveyForm();
-  if (isReviewScreen || isSuccessScreen || isResponseScreen) return null;
+
+  const { getScreenPath } = useSurveyRouting(numberOfScreens);
+
+  if ((isReviewScreen && !isMobile) || isSuccessScreen || isResponseScreen) {
+    return null;
+  }
+
   const onChangeScreen = () => {
     updateFormData(getValues());
     if (isMobile) toggleSideMenu();
   };
-  const getFormattedScreens = () => {
-    const screens = visibleScreens?.map(screen => {
-      const { surveyScreenComponents, id } = screen;
-      const { text } = surveyScreenComponents[0];
-      const surveyScreenNum = getSurveyScreenNumber(visibleScreens, screen);
-      return { id, text, screenNumber: surveyScreenNum };
-    });
-    return screens;
-  };
-  const screenMenuItems = getFormattedScreens();
 
-  const { getScreenPath } = useSurveyRouting(numberOfScreens);
+  const screenMenuItems = visibleScreens?.map(screen => {
+    const { surveyScreenComponents, id } = screen;
+    const { text } = surveyScreenComponents[0];
+    const surveyScreenNum = getSurveyScreenNumber(visibleScreens, screen);
+    return { id, text, screenNumber: surveyScreenNum };
+  });
 
   return (
     <>
