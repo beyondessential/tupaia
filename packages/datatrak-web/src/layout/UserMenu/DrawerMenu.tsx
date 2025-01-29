@@ -41,6 +41,7 @@ const CloseButton = styled(IconButton).attrs({
   color: 'default',
   disableRipple: true,
 })`
+    color: ${({ theme }) => theme.palette.text.primary};
   padding: 0.8rem;
 `;
 
@@ -81,7 +82,7 @@ export const DrawerMenu = ({ menuOpen, onCloseMenu, openProjectModal }: DrawerMe
     }
     return [
       {
-        label: 'Login',
+        label: 'Log in',
         to: ROUTES.LOGIN,
       },
       {
@@ -100,14 +101,6 @@ export const DrawerMenu = ({ menuOpen, onCloseMenu, openProjectModal }: DrawerMe
       disablePortal
     >
       <MenuHeader>
-        <UserDetails>
-          {user.fullName && <UserName>{user.fullName}</UserName>}
-          {user.project?.name && (
-            <UserProject onClick={openProjectModal} title="Change project">
-              {user.project.name}
-            </UserProject>
-          )}
-        </UserDetails>
         <CloseButton onClick={onCloseMenu}>
           <MenuCloseIcon />
         </CloseButton>
