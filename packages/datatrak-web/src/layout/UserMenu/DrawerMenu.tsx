@@ -47,9 +47,9 @@ const CloseButton = styled(IconButton).attrs({
 interface DrawerMenuProps {
   menuOpen: boolean;
   onCloseMenu: () => void;
-  openProjectModal: () => void;
 }
-export const DrawerMenu = ({ menuOpen, onCloseMenu, openProjectModal }: DrawerMenuProps) => {
+
+export const DrawerMenu = ({ menuOpen, onCloseMenu }: DrawerMenuProps) => {
   const user = useCurrentUserContext();
   // When not logged in, show the login and register buttons in the drawer menu
 

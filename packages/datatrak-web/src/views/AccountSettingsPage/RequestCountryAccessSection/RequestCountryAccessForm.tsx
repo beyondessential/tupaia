@@ -250,6 +250,7 @@ export const RequestCountryAccessForm = ({
           tooltip={getTooltip()}
           tooltipDelay={0}
           type="submit"
+          fullWidth
         >
           {formIsSubmitting ? 'Submitting request' : 'Request access'}
         </Button>
