@@ -25,7 +25,6 @@ const ExpandedWrapper = styled.div`
 `;
 
 const InfiniteListWrapper = styled.div`
-  margin-top: ${HEADER_HEIGHT};
   display: flex;
   overflow: hidden;
   flex-direction: column;
