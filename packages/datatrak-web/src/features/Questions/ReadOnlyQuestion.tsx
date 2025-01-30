@@ -16,8 +16,7 @@ const Wrapper = styled.div`
   justify-content: center;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding-top: 0;
-    border-width: 0 0 1px;
+    padding: 1rem 0;
   }
 `;
 
@@ -49,11 +48,20 @@ const Value = styled(Typography)`
   }
 `;
 
-export const ReadOnlyQuestion = ({ label, name, detailLabel }: SurveyQuestionInputProps) => {
+interface ReadOnlyQuestionInputProps extends SurveyQuestionInputProps {
+  className?: string;
+}
+
+export const ReadOnlyQuestion = ({
+  label,
+  name,
+  detailLabel,
+  className,
+}: ReadOnlyQuestionInputProps) => {
   const { formData } = useSurveyForm();
   const value = formData[name!];
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Label>{label}</Label>
       {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       <ValueWrapper>
@@ -62,3 +70,10 @@ export const ReadOnlyQuestion = ({ label, name, detailLabel }: SurveyQuestionInp
     </Wrapper>
   );
 };
+
+export const CodeGeneratorQuestion = styled(ReadOnlyQuestion)`
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding-top: 0;
+    border-width: 0 0 1px;
+  }
+`;

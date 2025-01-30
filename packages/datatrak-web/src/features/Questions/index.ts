@@ -1,6 +1,7 @@
 export { TextQuestion } from './TextQuestion';
 export { RadioQuestion } from './RadioQuestion';
 export { BinaryQuestion } from './BinaryQuestion';
+export { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
 export { DateQuestion } from './DateQuestion';
 export { InstructionQuestion } from './InstructionQuestion';
 export { CheckboxQuestion } from './CheckboxQuestion';

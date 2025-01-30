@@ -5,6 +5,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 import { FormHelperText } from '@material-ui/core';
 import {
   BinaryQuestion,
+  CodeGeneratorQuestion,
   DateQuestion,
   RadioQuestion,
   TextQuestion,
@@ -41,6 +42,7 @@ const QuestionWrapper = styled.div`
 export enum QUESTION_TYPES {
   Binary = BinaryQuestion,
   Checkbox = CheckboxQuestion,
+  CodeGenerator = CodeGeneratorQuestion,
   Date = DateQuestion,
   DateTime = DateTimeQuestion,
   FreeText = TextQuestion,
@@ -54,7 +56,6 @@ export enum QUESTION_TYPES {
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
   PrimaryEntity = EntityQuestion,
-  CodeGenerator = ReadOnlyQuestion,
   Arithmetic = ArithmeticQuestion,
   Condition = ReadOnlyQuestion,
   File = FileQuestion,
