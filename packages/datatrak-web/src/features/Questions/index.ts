@@ -1,7 +1,6 @@
 export { TextQuestion } from './TextQuestion';
 export { RadioQuestion } from './RadioQuestion';
 export { BinaryQuestion } from './BinaryQuestion';
-export { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
 export { DateQuestion } from './DateQuestion';
 export { InstructionQuestion } from './InstructionQuestion';
 export { CheckboxQuestion } from './CheckboxQuestion';
@@ -9,7 +8,7 @@ export { DateTimeQuestion } from './DateTimeQuestion';
 export { GeolocateQuestion } from './GeolocateQuestion';
 export { EntityQuestion } from './EntityQuestion';
 export { AutocompleteQuestion } from './AutocompleteQuestion';
-export { ReadOnlyQuestion } from './ReadOnlyQuestion';
+export { ReadOnlyQuestion, CodeGeneratorQuestion } from './ReadOnlyQuestion';
 export { ArithmeticQuestion } from './ArithmeticQuestion';
 export { PhotoQuestion } from './PhotoQuestion';
 export { FileQuestion } from './FileQuestion';
