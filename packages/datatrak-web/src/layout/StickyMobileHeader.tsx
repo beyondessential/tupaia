@@ -48,6 +48,7 @@ const Title = styled(Typography).attrs({ variant: 'h2' })`
   font-size: 1rem;
   grid-area: --title;
   text-align: center;
+  overflow: hidden;
 `;
 
 interface StickyMobileHeaderProps extends HTMLAttributes<HTMLDivElement> {

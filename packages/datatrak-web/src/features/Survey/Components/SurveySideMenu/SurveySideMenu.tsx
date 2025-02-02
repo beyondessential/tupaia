@@ -114,6 +114,15 @@ const Header = styled.div`
   }
 `;
 
+const MobileHeader = styled(StickyMobileHeader)`
+  padding-inline-start: 1rem;
+  grid-template-columns: 1fr minmax(3rem, max-content);
+  grid-template-areas: '--title --trailing';
+  h2 {
+    text-align: left;
+  }
+`;
+
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
   const from = useFromLocation();
@@ -157,9 +166,9 @@ export const SurveySideMenu = () => {
         variant={isMobile ? 'temporary' : 'persistent'}
       >
         {isMobile && (
-          <StickyMobileHeader onClose={toggleSideMenu}>
+          <MobileHeader onClose={toggleSideMenu}>
             <SurveyDisplayName />
-          </StickyMobileHeader>
+          </MobileHeader>
         )}
         <Header>
           <SideMenuButton />
