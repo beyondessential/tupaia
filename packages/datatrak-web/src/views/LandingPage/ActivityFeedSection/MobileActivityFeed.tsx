@@ -29,7 +29,7 @@ const InfiniteListWrapper = styled.div`
   overflow: hidden;
   flex-direction: column;
   max-height: calc(100vh - ${HEADER_HEIGHT});
-  background-color: ${({ theme }) => theme.palette.divider};
+  background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
 /**
