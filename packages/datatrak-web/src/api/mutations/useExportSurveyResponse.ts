@@ -4,12 +4,11 @@
  */
 import { useMutation } from '@tanstack/react-query';
 import download from 'downloadjs';
-import { getBrowserTimeZone } from '@tupaia/utils';
 import { API_URL, post } from '../api';
 import { successToast } from '../../utils';
 
 // Requests a survey response PDF export from the server, and returns the response
-export const useExportSurveyResponse = (surveyResponseId: string, timezone: string) => {
+export const useExportSurveyResponse = (surveyResponseId: string, timezone?: string | null) => {
   return useMutation<any, Error, unknown, unknown>(
     () => {
       const baseUrl = `${window.location.protocol}//${window.location.host}`;

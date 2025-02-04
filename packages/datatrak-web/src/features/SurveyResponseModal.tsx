@@ -97,7 +97,7 @@ const SurveyResponseModalContent = ({
   const [urlSearchParams] = useSearchParams();
   const surveyResponseId = urlSearchParams.get('responseId');
   const { mutate: downloadSurveyResponse, isLoading: isDownloadingSurveyResponse } =
-    useExportSurveyResponse(surveyResponseId!, surveyResponse.timezone);
+    useExportSurveyResponse(surveyResponseId!, surveyResponse?.timezone);
 
   return (
     <>
