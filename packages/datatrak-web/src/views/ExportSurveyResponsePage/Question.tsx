@@ -65,7 +65,7 @@ const useDisplayAnswer = (
 
   if (type === QuestionType.Instruction) return null;
   if (type === QuestionType.DateOfData || type === QuestionType.SubmissionDate) {
-    return displayDate(surveyResponse.dataTime);
+    return displayDate(surveyResponse.dataTime, locale);
   }
   if (type === QuestionType.PrimaryEntity) {
     return surveyResponse?.entityName;
