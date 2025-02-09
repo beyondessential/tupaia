@@ -9,6 +9,7 @@ export { ErrorDisplay } from './ErrorDisplay';
 export { InputHelperText } from './InputHelperText';
 export { Modal } from './Modal';
 export { PageTitleBar } from './PageTitleBar';
+export { BlockScrollView, InlineScrollView } from './ScrollView';
 export { SmallModal } from './SmallModal';
 export { TextInput } from './TextInput';
 export { Tile, LoadingTile } from './Tile';

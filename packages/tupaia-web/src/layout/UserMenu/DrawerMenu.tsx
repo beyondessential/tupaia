@@ -57,8 +57,6 @@ const MenuHeader = styled.div<{
   color: ${({ $secondaryColor }) => $secondaryColor};
 `;
 
-const MenuHeaderContainer = styled.div``;
-
 const MenuCloseIcon = styled(CloseIcon)<{
   $secondaryColor?: string;
 }>`
@@ -126,7 +124,7 @@ export const DrawerMenu = ({
     >
       <MenuWrapper>
         <MenuHeader $secondaryColor={secondaryColor}>
-          <MenuHeaderContainer>
+          <div>
             {currentUserUsername && (
               <Username $secondaryColor={secondaryColor}>{currentUserUsername}</Username>
             )}
@@ -140,7 +138,7 @@ export const DrawerMenu = ({
                 {userProjectName}
               </ProjectButton>
             )}
-          </MenuHeaderContainer>
+          </div>
           <MenuCloseButton onClick={onCloseMenu} aria-label="Close menu">
             <MenuCloseIcon $secondaryColor={secondaryColor} />
           </MenuCloseButton>
