@@ -83,7 +83,6 @@ export const SurveySelectPage = () => {
       selectedSurvey={selectedSurvey}
       setSelectedSurvey={setSelectedSurvey}
       showLoader={showLoader}
-      CountrySelector={<CountrySelector />}
       SubmitButton={
         <Button
           onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
