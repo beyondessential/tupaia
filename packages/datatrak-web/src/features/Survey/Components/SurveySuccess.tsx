@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SurveyQRCode } from '../SurveyQRCode';
 import { useCurrentUserContext } from '../../../api';
+import { useQRCodeLocationData } from '../SurveyQRCode/useQRCodeLocationData';
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,6 +24,7 @@ const Container = styled.div<{ $showQrCode?: boolean }>`
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 100%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: ${props => (props.$showQrCode ? '15rem' : '0')};
@@ -69,12 +71,12 @@ interface SurveySuccessProps {
   children: React.ReactNode;
 }
 
-export const SurveySuccess = ({ text, title, showQrCode, children }: SurveySuccessProps) => {
+export const SurveySuccess = ({ text, title, children }: SurveySuccessProps) => {
   const { isLoggedIn } = useCurrentUserContext();
-
+  const qrCodeEntitiesCreated = useQRCodeLocationData();
   return (
     <Wrapper>
-      <Container $showQrCode={showQrCode}>
+      <Container $showQrCode={!!qrCodeEntitiesCreated}>
         <StyledImg src="/tupaia-high-five.svg" alt="Survey submit success" />
         <Title>{title}</Title>
         {isLoggedIn && (
@@ -84,7 +86,7 @@ export const SurveySuccess = ({ text, title, showQrCode, children }: SurveySucce
           </>
         )}
       </Container>
-      {showQrCode && <SurveyQRCode />}
+      {qrCodeEntitiesCreated && <SurveyQRCode qrCodeEntitiesCreated={qrCodeEntitiesCreated} />}
     </Wrapper>
   );
 };

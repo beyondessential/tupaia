@@ -13,13 +13,13 @@ export const EntityQuestion = ({
   config,
 }: SurveyQuestionInputProps) => {
   const { isReviewScreen, isResponseScreen, formData, countryCode } = useSurveyForm();
-
   const { surveyProjectCode } = useSurveyForm();
 
   return (
     <EntitySelector
       id={id}
       label={label}
+      detailLabel={`Select an entity from the list below ${required ? '*' : ''}`}
       name={name}
       required={required}
       controllerProps={{

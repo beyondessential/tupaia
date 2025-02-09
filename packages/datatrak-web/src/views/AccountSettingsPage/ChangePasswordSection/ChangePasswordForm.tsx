@@ -133,6 +133,7 @@ export const ChangePasswordForm = () => {
             disabled={formIsInsubmissible}
             fullWidth
             tooltip={isDirty ? null : 'Change password to save changes'}
+            tooltipDelay={0}
           >
             {isSubmitting ? 'Changing' : 'Change password'}
           </StyledButton>

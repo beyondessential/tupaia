@@ -91,7 +91,7 @@ export const MenuList = ({
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
   const supportCentreItem = {
-    label: 'Support centre',
+    label: 'Help centre',
     href: 'https://bes-support.zendesk.com',
     isExternal: true,
     component: Link,
