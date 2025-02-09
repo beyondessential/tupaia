@@ -38,7 +38,6 @@ export const MobileTemplate = ({
   selectedCountry,
   setSelectedSurvey,
   showLoader,
-  CountrySelector,
   selectedSurvey,
   handleSelectSurvey,
 }) => {
@@ -65,11 +64,7 @@ export const MobileTemplate = ({
       <StickyMobileHeader onBack={onClose} onClose={onClose}>
         Select a survey
       </StickyMobileHeader>
-      <MobileSelectList
-        items={groupedSurveys}
-        onSelect={onNavigateToSurvey}
-        CountrySelector={CountrySelector}
-      />
+      <MobileSelectList items={groupedSurveys} onSelect={onNavigateToSurvey} />
     </MobileContainer>
   );
 };

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
+
+import { useCurrentUserContext, useProjectSurveys } from '../../api';
 import { useEditUser } from '../../api/mutations';
 import { Button } from '../../components';
-import { useCurrentUserContext, useProjectSurveys } from '../../api';
-import { CountrySelector, useUserCountries } from '../../features';
+import { useUserCountries } from '../../features';
 import { Survey } from '../../types';
 import { useIsMobile } from '../../utils';
 import { DesktopTemplate } from './DesktopTemplate';
@@ -73,7 +74,6 @@ export const SurveySelectPage = () => {
         setSelectedSurvey={setSelectedSurvey}
         handleSelectSurvey={handleSelectSurvey}
         showLoader={showLoader}
-        CountrySelector={<CountrySelector />}
       />
     );
   }

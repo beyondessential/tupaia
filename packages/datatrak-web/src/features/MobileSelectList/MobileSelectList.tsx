@@ -1,5 +1,5 @@
 import { List as MuiList, Typography } from '@material-ui/core';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { CountrySelectWrapper, CountrySelector } from '../CountrySelector';
@@ -41,7 +41,6 @@ const NoResultsMessage = styled(Typography)`
 interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
-  countrySelector: ReactNode;
 }
 
 const List = ({ parentItem, items, onSelect, countrySelector }) => {
