@@ -1,9 +1,9 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { CheckCircle } from '@material-ui/icons';
 
-const SuccessWrapper = styled.div`
+const SuccessWrapper = styled.div<{ $position?: string }>`
   display: flex;
   margin-block: 1.5rem 7rem;
   p:first-child {
@@ -14,18 +14,22 @@ const SuccessWrapper = styled.div`
     font-size: 0.875rem;
   }
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-block-start: 50%;
-    margin-block-end: 0;
+  ${props =>
+    props.$position === 'center' &&
+    css`
+      ${({ theme }) => theme.breakpoints.down('sm')} {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-block-start: 50%;
+        margin-block-end: 0;
 
-    .MuiSvgIcon-root,
-    .MuiTypography-root {
-      margin-bottom: 1rem;
-    }
-  }
+        .MuiSvgIcon-root,
+        .MuiTypography-root {
+          margin-bottom: 1rem;
+        }
+      }
+    `}
 `;
 
 const SuccessIcon = styled(CheckCircle)`
@@ -34,9 +38,15 @@ const SuccessIcon = styled(CheckCircle)`
   margin-inline-end: 1rem;
 `;
 
-export const RequestProjectAccessSuccessMessage = ({ projectName }: { projectName?: string }) => {
+export const RequestProjectAccessSuccessMessage = ({
+  projectName,
+  position = 'left',
+}: {
+  projectName?: string;
+  position?: 'center' | 'left';
+}) => {
   return (
-    <SuccessWrapper>
+    <SuccessWrapper $position={position}>
       <SuccessIcon />
       <div>
         <Typography>Thank you for your request to {projectName}</Typography>
