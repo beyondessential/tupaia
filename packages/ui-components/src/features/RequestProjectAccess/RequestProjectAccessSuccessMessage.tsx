@@ -18,7 +18,8 @@ const SuccessWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-block-end: 2rem;
+    margin-block-start: 50%;
+    margin-block-end: 0;
 
     .MuiSvgIcon-root,
     .MuiTypography-root {

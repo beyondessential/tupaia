@@ -94,7 +94,6 @@ const TextWrapper = styled.div`
       }
       ${up('lg')} {
         padding-inline: 2rem 1rem;
-        max-width: 80%;
       }
     `;
   }}

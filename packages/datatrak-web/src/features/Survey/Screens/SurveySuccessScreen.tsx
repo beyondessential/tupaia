@@ -54,7 +54,7 @@ export const SurveySuccessScreen = () => {
 
   const getText = () => {
     if (survey?.canRepeat) {
-      return "To repeat the same survey again click the button below, otherwise 'Close' to return to your dashboard";
+      return 'To repeat the same survey again click the button below, otherwise return to your dashboard';
     }
 
     return 'To return to your dashboard, click the button below';
@@ -63,11 +63,11 @@ export const SurveySuccessScreen = () => {
   const text = getText();
 
   return (
-    <SurveySuccess text={text} title="Survey submitted!" showQrCode>
+    <SurveySuccess text={text} title="Survey submitted!">
       <ButtonGroup>
         {survey?.canRepeat && (
           <Button onClick={repeatSurvey} fullWidth variant="outlined">
-            Repeat Survey
+            Repeat survey
           </Button>
         )}
         <ReturnButton />

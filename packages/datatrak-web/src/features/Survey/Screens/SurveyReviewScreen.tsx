@@ -66,9 +66,9 @@ const ScrollableBody = styled.div`
   height: 100%;
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 1rem 1rem 4rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2rem;
+    padding: 1rem 2rem 4rem;
   }
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1rem 2.5rem;

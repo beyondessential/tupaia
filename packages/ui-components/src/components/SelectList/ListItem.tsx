@@ -130,6 +130,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
         onClick={button ? onClick : null}
         selected={selected}
         disabled={disabled}
+        component="div"
       >
         <Wrapper tooltip={tooltip}>
           <ButtonContainer $fullWidth={button}>

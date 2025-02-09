@@ -20,7 +20,7 @@ const ScrollableBody = styled.div`
   padding: 1rem 1rem 4rem;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 1rem 1rem 5rem;
+    padding: 1rem 1rem 4rem 5rem;
   }
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1rem 2.5rem;

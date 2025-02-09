@@ -3,12 +3,19 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useEntityByCode, useSurvey } from '../../../api';
 
-const CountryName = styled.span`
-  padding-left: 0.3rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+const SurveyName = styled.div`
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-size: 0.875rem;
+  line-height: 1.2;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
-const maxSurveyNameLength = 50;
+const CountryName = styled(SurveyName)`
+  color: ${({ theme }) => theme.palette.text.secondary};
+`;
 
 export const SurveyDisplayName = () => {
   const { surveyCode, countryCode } = useParams();
@@ -17,16 +24,10 @@ export const SurveyDisplayName = () => {
 
   if (!survey?.name) return null;
 
-  const surveyName =
-    survey.name.length > maxSurveyNameLength
-      ? `${survey.name.slice(0, maxSurveyNameLength)}...`
-      : survey.name;
-  const countryName = country?.name || '';
-
   return (
     <>
-      <span aria-label="survey.name">{surveyName}</span>
-      {<CountryName>| {countryName}</CountryName>}
+      <SurveyName>{survey?.name}</SurveyName>
+      <CountryName>{country?.name}</CountryName>
     </>
   );
 };

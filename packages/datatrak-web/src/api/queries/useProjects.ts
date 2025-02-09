@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { DatatrakWebProjectsRequest } from '@tupaia/types';
 import { get } from '../api';
 
-export const useProjects = (sortByAccess = false) => {
+export const useProjects = (sortByAccess = true) => {
   const { data, ...query } = useQuery(
     ['projects'],
     (): Promise<DatatrakWebProjectsRequest.ResBody> => get('projects'),
