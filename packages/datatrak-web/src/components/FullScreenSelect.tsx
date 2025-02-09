@@ -13,7 +13,7 @@ import {
 import { TransitionProps } from '@material-ui/core/transitions';
 import CheckIcon from '@material-ui/icons/CheckRounded';
 import ChevronIcon from '@material-ui/icons/ChevronRightRounded';
-import React, { ChangeEvent, Fragment, ReactElement, useState } from 'react';
+import React, { ChangeEvent, Fragment, ReactElement, ReactNode, useState } from 'react';
 import styled from 'styled-components';
 
 import { DialogContent } from '@tupaia/ui-components';
@@ -22,25 +22,9 @@ import { StickyMobileHeader } from '../layout';
 import { SelectOption, SelectOptions } from '../types/select';
 import { innerText } from '../utils';
 
-const Picture = styled.picture`
-  object-fit: contain;
-  aspect-ratio: 1;
-`;
-const Img = styled.img`
-  block-size: 1em;
-  inline-size: auto;
-`;
-const Pin = () => (
-  <Picture>
-    <source srcSet="/tupaia-pin.svg" />
-    <Img src="/tupaia-pin.svg" width={24} height={24} />
-  </Picture>
-);
-
 const StyledButton = styled(Button).attrs({
   disableElevation: true,
   fullWidth: true,
-  startIcon: <Pin />,
   endIcon: <ChevronIcon />,
   size: 'large',
 })`
@@ -145,6 +129,7 @@ type FullScreenSelectProps = Pick<
   SelectProps,
   'children' | 'className' | 'id' | 'label' | 'onClose' | 'onOpen' | 'open'
 > & {
+  icon: ReactNode;
   onChange?: (
     event: ChangeEvent<{ name?: string | undefined; value: string | number | null }>,
   ) => void;
@@ -154,6 +139,7 @@ type FullScreenSelectProps = Pick<
 
 export const FullScreenSelect = ({
   children,
+  icon,
   label = 'Select an option',
   onChange,
   onClose,
@@ -188,7 +174,9 @@ export const FullScreenSelect = ({
 
   return (
     <>
-      <StyledButton onClick={openModal}>{selectedItemLabel}</StyledButton>
+      <StyledButton onClick={openModal} startIcon={icon}>
+        {selectedItemLabel}
+      </StyledButton>
       <Modal open={isOpen} onClose={onClose}>
         <StyledDialogTitle>
           <Header onBack={closeModal} onClose={closeModal}>

@@ -42,6 +42,21 @@ export const CountrySelectWrapper = styled.div`
   align-items: center;
 `;
 
+const Picture = styled.picture`
+  object-fit: contain;
+  aspect-ratio: 1;
+`;
+const Img = styled.img`
+  block-size: 1em;
+  inline-size: auto;
+`;
+const Pin = () => (
+  <Picture>
+    <source srcSet="/tupaia-pin.svg" />
+    <Img src="/tupaia-pin.svg" width={24} height={24} />
+  </Picture>
+);
+
 export const CountrySelector = () => {
   const { countries, selectedCountry, updateSelectedCountry: onChangeCountry } = useUserCountries();
   const updateSelectedCountry = e => {
@@ -58,6 +73,7 @@ export const CountrySelector = () => {
     <CountrySelectWrapper>
       {useIsMobile() ? (
         <FullScreenSelect
+          icon={<Pin />}
           label="Select country"
           onChange={updateSelectedCountry}
           options={options}
