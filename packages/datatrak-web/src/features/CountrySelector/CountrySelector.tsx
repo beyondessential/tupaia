@@ -28,14 +28,6 @@ const Select = styled(BaseSelect)`
     width: 100%;
   }
 `;
-const Pin = styled.img.attrs({
-  'aria-hidden': true,
-  src: '/tupaia-pin.svg',
-})`
-  width: 1.5rem;
-  height: auto;
-  margin-right: 0.5rem;
-`;
 
 export const CountrySelectWrapper = styled.div`
   display: flex;
@@ -56,6 +48,10 @@ const Pin = () => (
     <Img src="/tupaia-pin.svg" width={24} height={24} />
   </Picture>
 );
+
+const StyledPin = styled(Pin)`
+  margin-inline-end: 0.5rem;
+`;
 
 export const CountrySelector = () => {
   const { countries, selectedCountry, updateSelectedCountry: onChangeCountry } = useUserCountries();
@@ -81,7 +77,7 @@ export const CountrySelector = () => {
         />
       ) : (
         <>
-          <Pin />
+          <StyledPin />
           <Select
             options={options}
             value={selectedCountry?.code}
