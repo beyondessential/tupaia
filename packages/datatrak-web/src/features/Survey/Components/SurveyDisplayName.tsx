@@ -3,18 +3,20 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useEntityByCode, useSurvey } from '../../../api';
 
-const SurveyName = styled.div`
+const SurveyName = styled.p`
   color: ${({ theme }) => theme.palette.text.primary};
   font-size: 0.875rem;
-  line-height: 1.2;
   font-weight: 600;
-  text-overflow: ellipsis;
+  line-height: 1.2;
+  margin-block: 0;
   overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 `;
 
 const CountryName = styled(SurveyName)`
   color: ${({ theme }) => theme.palette.text.secondary};
+  font-weight: 400;
 `;
 
 export const SurveyDisplayName = () => {
