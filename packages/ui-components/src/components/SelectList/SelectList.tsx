@@ -61,7 +61,7 @@ const Subtitle = styled(Typography)`
   margin: 0 0 0.5rem 0.9rem;
 `;
 
-interface SelectListProps {
+export interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
   label?: string;

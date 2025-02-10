@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { Select as BaseSelect } from '@tupaia/ui-components';
-import { Country } from '@tupaia/types';
-import { Entity } from '../../types';
+
+import { useUserCountries } from '.';
+import { FullScreenSelect } from '../../components/FullScreenSelect';
+import { useIsMobile } from '../../utils';
 
 const Select = styled(BaseSelect)`
   width: 10rem;
@@ -25,46 +28,67 @@ const Select = styled(BaseSelect)`
     width: 100%;
   }
 `;
-const Pin = styled.img.attrs({
-  src: '/tupaia-pin.svg',
-  ['aria-hidden']: true, // this pin is not of any use to the screen reader, so hide from the screen reader
-})`
-  width: 1rem;
-  height: auto;
-  margin-right: 0.5rem;
-`;
 
 export const CountrySelectWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
 
-interface CountrySelectorProps {
-  countries: Entity[];
-  selectedCountry?: Country | null;
-  onChangeCountry: (country: Entity | null) => void;
-}
+const Picture = styled.picture`
+  object-fit: contain;
+  aspect-ratio: 1;
+`;
+const Img = styled.img`
+  block-size: 1em;
+  inline-size: auto;
+`;
+const Pin = () => (
+  <Picture>
+    <source srcSet="/tupaia-pin.svg" />
+    <Img src="/tupaia-pin.svg" width={24} height={24} />
+  </Picture>
+);
 
-export const CountrySelector = ({
-  countries,
-  selectedCountry,
-  onChangeCountry,
-}: CountrySelectorProps) => {
-  const updateSelectedCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeCountry(countries.find(country => country.code === e.target.value) || null);
+const StyledPin = styled(Pin)`
+  margin-inline-end: 0.5rem;
+`;
+
+export const CountrySelector = () => {
+  const { countries, selectedCountry, updateSelectedCountry: onChangeCountry } = useUserCountries();
+  const updateSelectedCountry = e => {
+    onChangeCountry(countries.find(country => country.code === e.target.value) ?? null);
   };
+
+  const options =
+    countries?.map(country => ({
+      value: country.code,
+      label: country.name,
+    })) ?? [];
+
   return (
     <CountrySelectWrapper>
-      <Pin />
-      <Select
-        options={countries?.map(country => ({ value: country.code, label: country.name })) || []}
-        value={selectedCountry?.code}
-        onChange={updateSelectedCountry}
-        placeholder="Select a country"
-        SelectProps={{
-          'aria-label': 'Select a country',
-        }}
-      />
+      {useIsMobile() ? (
+        <FullScreenSelect
+          icon={<Pin />}
+          label="Select country"
+          onChange={updateSelectedCountry}
+          options={options}
+          value={selectedCountry?.code}
+        />
+      ) : (
+        <>
+          <StyledPin />
+          <Select
+            options={options}
+            value={selectedCountry?.code}
+            onChange={updateSelectedCountry}
+            placeholder="Select a country"
+            SelectProps={{
+              'aria-label': 'Select a country',
+            }}
+          />
+        </>
+      )}
     </CountrySelectWrapper>
   );
 };

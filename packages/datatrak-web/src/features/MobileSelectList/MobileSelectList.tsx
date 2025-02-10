@@ -1,9 +1,10 @@
+import { List as MuiList, Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { List as MuiList, Typography } from '@material-ui/core';
-import { ListItem } from './ListItem';
-import { CountrySelectWrapper } from '../CountrySelector';
+
+import { CountrySelectWrapper, CountrySelector } from '../CountrySelector';
 import { ListItemType } from '../useGroupedSurveyList';
+import { ListItem } from './ListItem';
 
 const BaseList = styled(MuiList)`
   background: ${({ theme }) => theme.palette.background.default};
@@ -40,14 +41,13 @@ const NoResultsMessage = styled(Typography)`
 interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
-  CountrySelector: React.ReactNode;
 }
 
-const List = ({ parentItem, items, onSelect, CountrySelector }) => {
+const List = ({ parentItem, items, onSelect, countrySelector }) => {
   const parentTitle = parentItem?.value;
   return (
     <BaseList>
-      {CountrySelector}
+      {countrySelector}
       {parentTitle && <CategoryTitle>{parentTitle}</CategoryTitle>}
       {items?.map(item => (
         <ListItem item={item} onSelect={onSelect} key={item.value}>
@@ -56,7 +56,7 @@ const List = ({ parentItem, items, onSelect, CountrySelector }) => {
               parentItem={item}
               items={item.children}
               onSelect={onSelect}
-              CountrySelector={CountrySelector}
+              countrySelector={countrySelector}
             />
           )}
         </ListItem>
@@ -65,28 +65,28 @@ const List = ({ parentItem, items, onSelect, CountrySelector }) => {
   );
 };
 
-export const MobileSelectList = ({ items = [], onSelect, CountrySelector }: SelectListProps) => {
+export const MobileSelectList = ({ items = [], onSelect }: SelectListProps) => {
+  if (items.length === 0) {
+    return <NoResultsMessage>No items to display</NoResultsMessage>;
+  }
+
+  const countrySelector = <CountrySelector />;
+
   return (
-    <>
-      {items.length === 0 ? (
-        <NoResultsMessage>No items to display</NoResultsMessage>
-      ) : (
-        <BaseList>
-          {CountrySelector}
-          {items.map(item => (
-            <ListItem item={item} onSelect={onSelect} key={item.value}>
-              {item?.children && (
-                <List
-                  parentItem={item}
-                  items={item.children}
-                  onSelect={onSelect}
-                  CountrySelector={CountrySelector}
-                />
-              )}
-            </ListItem>
-          ))}
-        </BaseList>
-      )}
-    </>
+    <BaseList>
+      {countrySelector}
+      {items.map(item => (
+        <ListItem item={item} onSelect={onSelect} key={item.value}>
+          {item?.children && (
+            <List
+              parentItem={item}
+              items={item.children}
+              onSelect={onSelect}
+              countrySelector={countrySelector}
+            />
+          )}
+        </ListItem>
+      ))}
+    </BaseList>
   );
 };
