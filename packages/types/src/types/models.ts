@@ -82,7 +82,7 @@ export interface Analytics {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: string | null;
+  'type'?: QuestionType | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -96,7 +96,7 @@ export interface AnalyticsCreate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: string | null;
+  'type'?: QuestionType | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -110,7 +110,7 @@ export interface AnalyticsUpdate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: string | null;
+  'type'?: QuestionType | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -1877,9 +1877,8 @@ export enum EntityTypeEnum {
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
   'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
-  'document' = 'document',
   'document_group' = 'document_group',
-  'vehicle' = 'vehicle',
+  'document' = 'document',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
