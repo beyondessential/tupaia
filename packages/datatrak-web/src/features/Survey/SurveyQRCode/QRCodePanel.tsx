@@ -14,10 +14,6 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 const Container = styled.div`

@@ -6,12 +6,14 @@ import { useCurrentUserContext } from '../../../api';
 import { useQRCodeLocationData } from '../SurveyQRCode/useQRCodeLocationData';
 
 const Wrapper = styled.div`
-  display: flex;
-  flex: 1;
-  height: 100%;
-  flex-direction: column;
   align-items: center;
-  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100%;
+  padding-bottom: max(env(safe-area-inset-bottom, 0), 1.5rem);
+  padding-left: max(env(safe-area-inset-left, 0), 1.5rem);
+  padding-right: max(env(safe-area-inset-right, 0), 1.5rem);
+  padding-top: max(env(safe-area-inset-top, 0), 1.5rem);
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
@@ -77,7 +79,7 @@ export const SurveySuccess = ({ text, title, children }: SurveySuccessProps) => 
   return (
     <Wrapper>
       <Container $showQrCode={!!qrCodeEntitiesCreated}>
-        <StyledImg src="/tupaia-high-five.svg" alt="Survey submit success" />
+        <StyledImg aria-hidden src="/tupaia-high-five.svg" />
         <Title>{title}</Title>
         {isLoggedIn && (
           <>
