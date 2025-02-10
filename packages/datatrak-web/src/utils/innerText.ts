@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, isValidElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 
 const isNullish = (obj): obj is null | undefined => obj == null;
 
@@ -17,18 +17,10 @@ export const innerText = (node: ReactNode): string => {
   if (isReactText(node)) return String(node);
   if (isNullish(node) || typeof node === 'boolean') return '';
 
-  // Failsafe
-  if (!isValidElement(node)) return '';
-
   // Multiple children
-  if (Array.isArray(node)) {
-    return node
-      .map(child => (isReactText(child) ? child : innerText(child as ReactElement)))
-      .filter(Boolean)
-      .join(' ');
-  }
+  if (Array.isArray(node)) return node.map(innerText).join('');
 
   // Single child
-  const child = node.props.children;
+  const child = (node as ReactElement).props.children; // Type includes {} from ReactFragment, hence cast
   return innerText(child);
 };
