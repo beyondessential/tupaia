@@ -91,7 +91,7 @@ export const Footer = () => {
             Download the Tupaia app to survey clinics and help add more data to Tupaia.
           </Typography>
           <ImageWrapper>
-            <AppLink href="https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537">
+            <AppLink href="https://itunes.apple.com/app/tupaia-meditrak/id1245053537">
               <AppImage alt="Download on the App Store" src="/images/app-store-badge.svg" />
             </AppLink>
             <AppLink href="https://play.google.com/store/apps/details?id=com.tupaiameditrak">
