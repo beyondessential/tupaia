@@ -27,7 +27,7 @@ export const RequestProjectAccess = ({ projectCode, onBack }: RequestProjectAcce
   if (isMobile && isSuccess) {
     return (
       <>
-        <RequestProjectAccessSuccessMessage projectName={project?.name} />
+        <RequestProjectAccessSuccessMessage projectName={project?.name} position="center" />
         <CancelButton onClick={onBack}>Back to projects</CancelButton>
       </>
     );

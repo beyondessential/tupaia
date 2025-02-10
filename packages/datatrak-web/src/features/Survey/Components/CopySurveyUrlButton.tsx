@@ -38,9 +38,9 @@ export const useCopySurveyUrl = ({ toastOptions = {} }: { toastOptions: OptionsO
       await navigator.clipboard.writeText(link);
       const androidVersion = getAndroidVersion();
 
-      // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#Feedback
-      // Android 13 and above will automatically show a toast message when the page URL is copied to the clipboard
-      if (!androidVersion || androidVersion < 13) {
+      // Android 13 natively notifies the user when the clipboard is accessed
+      // https://developer.android.com/privacy-and-security/risks/secure-clipboard-handling
+      if (!androidVersion || androidVersion < 12) {
         infoToast('Page URL copied to clipboard', {
           persist: false,
           TransitionProps: { appear: true },
