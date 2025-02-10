@@ -3,19 +3,19 @@ import { css } from 'styled-components';
 
 export const DocumentIcon = props => (
   <svg
-    {...props}
-    width="60"
-    height="70"
+    width={60}
+    height={70}
     viewBox="0 0 60 70"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <style>
       {css`
         .a {
           stroke: white;
           stroke-width: 2;
-          stroke-miter-limit: 10;
+          stroke-miterlimit: 10;
           stroke-linecap: square;
         }
       `}
