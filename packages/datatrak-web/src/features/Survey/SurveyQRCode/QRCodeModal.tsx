@@ -39,6 +39,9 @@ const ModalButton = styled(Button).attrs({
   padding-block: calc(-1 * var(--offset)) 1.5rem;
   padding-inline: 1.5rem;
   text-align: start;
+  align-self: center;
+  inline-size: 100%;
+  max-inline-size: 28rem;
 `;
 
 const DecorativeIcon = styled.img.attrs({

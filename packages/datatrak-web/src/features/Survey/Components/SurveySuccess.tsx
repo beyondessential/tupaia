@@ -6,7 +6,6 @@ import { useCurrentUserContext } from '../../../api';
 import { useQRCodeLocationData } from '../SurveyQRCode/useQRCodeLocationData';
 
 const Wrapper = styled.div`
-  align-items: center;
   display: flex;
   flex-direction: column;
   min-block-size: 100%;
@@ -17,16 +16,18 @@ const Wrapper = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
+    flex-grow: 1;
   }
 `;
 
 const Container = styled.div<{ $showQrCode?: boolean }>`
+  align-items: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
   height: 100%;
+  justify-content: center;
+  text-wrap: balance;
+  width: 100%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: ${props => (props.$showQrCode ? '15rem' : '0')};

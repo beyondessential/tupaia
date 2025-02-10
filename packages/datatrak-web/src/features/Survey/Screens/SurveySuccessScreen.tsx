@@ -14,8 +14,11 @@ const ButtonGroup = styled.div`
 `;
 
 const Button = styled(BaseButton)`
+  text-align: center;
+
   & + & {
-    margin: 1.25rem 0 0 0;
+    margin-block: 1.25rem 0;
+    margin-inline: 0;
   }
 
   &.MuiButton-outlined {
