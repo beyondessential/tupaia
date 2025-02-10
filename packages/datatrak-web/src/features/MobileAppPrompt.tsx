@@ -168,7 +168,7 @@ export const MobileAppPrompt = () => {
   return (
     <SwipeableDrawer
       anchor="bottom"
-      open={showPrompt || true}
+      open={showPrompt}
       onClose={togglePrompt}
       onOpen={togglePrompt}
       disableDiscovery
