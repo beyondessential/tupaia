@@ -4,7 +4,6 @@ import { respond, reduceToDictionary } from '@tupaia/utils';
 import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
 import { BruteForceRateLimiter } from './BruteForceRateLimiter';
 import { allowNoPermissions } from '../../permissions';
-import { checkUserLocationAccess } from './checkUserLocationAccess';
 import { respondToRateLimitedUser } from './respondToRateLimitedUser';
 
 const GRANT_TYPES = {
@@ -138,8 +137,6 @@ export async function authenticate(req, res) {
       apiClientUser,
       permissionGroups: permissionGroupsByCountryId,
     });
-
-    await checkUserLocationAccess(req, user);
 
     // Reset rate limiting on successful authorisation
     await consecutiveFailsRateLimiter.resetFailedAttempts(req);
