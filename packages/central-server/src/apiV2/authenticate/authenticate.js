@@ -1,9 +1,11 @@
 import winston from 'winston';
+
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
-import { respond, reduceToDictionary } from '@tupaia/utils';
-import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
-import { BruteForceRateLimiter } from './BruteForceRateLimiter';
+import { reduceToDictionary, respond } from '@tupaia/utils';
+
 import { allowNoPermissions } from '../../permissions';
+import { BruteForceRateLimiter } from './BruteForceRateLimiter';
+import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
 import { respondToRateLimitedUser } from './respondToRateLimitedUser';
 
 const GRANT_TYPES = {
