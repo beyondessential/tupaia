@@ -1,5 +1,5 @@
-import { fetchWithTimeout, getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
 import { sendEmail } from '@tupaia/server-utils';
+import { fetchWithTimeout, getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
 
 const emailInternally = async (subject, message) => {
   const sendTo = requireEnv('DEV_EMAIL_ADDRESS');
