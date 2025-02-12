@@ -14,13 +14,13 @@ const emailInternally = async (subject, message) => {
 };
 
 export const createSupportTicket = async (subject, message) => {
-  // If ZENDESK_NOTIFICATIONS_DISABLE is set to true, do not create a support ticket
-  if (process.env.ZENDESK_NOTIFICATIONS_DISABLE === 'true') return;
-
   // If we are not in a production environment, send an email to the dev team instead of creating a support ticket
   if (!getIsProductionEnvironment()) {
     return emailInternally(subject, message);
   }
+
+  // If ZENDESK_NOTIFICATIONS_DISABLE is set to true, do not create a support ticket
+  if (process.env.ZENDESK_NOTIFICATIONS_DISABLE === 'true') return;
 
   try {
     const zendeskApi = requireEnv('ZENDESK_API_URL');
