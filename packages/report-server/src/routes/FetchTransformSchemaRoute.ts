@@ -1,6 +1,7 @@
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
+import { isEmptyArray } from '@tupaia/tsutils';
 import { yup } from '@tupaia/utils';
 
 import { TransformSchema } from '../types';
@@ -14,21 +15,24 @@ export type FetchTransformSchemaRequest = Request<
   Record<string, never>
 >;
 
-const removeRedundantConfigs = (fields: Record<string, any | any[]> | any[]) => {
+const removeRedundantConfigs = (fields: Record<string, any> | any[]) => {
   if (typeof fields !== 'object' || Array.isArray(fields)) {
     return fields;
   }
-  const updatedFields = { ...fields };
-  Object.entries(fields).forEach(([key, value]) => {
-    if (typeof value === 'object') {
-      updatedFields[key] = removeRedundantConfigs(value);
-    }
-    const isEmptyArray = Array.isArray(value) && value.length === 0;
-    if (isEmptyArray) {
-      delete updatedFields[key];
-    }
-  });
-  return updatedFields;
+
+  return Object.entries(fields).reduce(
+    (updatedFields, [key, value]) => {
+      if (typeof value === 'object') {
+        if (!isEmptyArray(value)) {
+          updatedFields[key] = removeRedundantConfigs(value);
+        }
+      } else {
+        updatedFields[key] = value;
+      }
+      return updatedFields;
+    },
+    {} as Record<string, any>,
+  );
 };
 
 const formatYupSchema = (yupSchema: yup.AnyObjectSchema) => {

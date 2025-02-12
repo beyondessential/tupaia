@@ -13,5 +13,7 @@ export const ensure = <T>(val: T) => {
   return val;
 };
 
+export const isEmptyArray = (val: unknown): val is [] => Array.isArray(val) && val.length === 0;
+
 export const isObject = (val: unknown): val is Record<string, unknown> =>
   typeof val === 'object' && val !== null && !Array.isArray(val);
