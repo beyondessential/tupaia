@@ -150,24 +150,26 @@ export const FullScreenSelect = ({
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-  const selectedItemLabel = options.find(option => option.value === value)?.label ?? label;
+  // Recall that only `label` is compulsory. `value` can optionally be derived from it.
+  const getValue = (option: SelectOption) => option.value ?? innerText(option.label);
+
+  const selectedItemLabel = options.find(option => getValue(option) === value)?.label ?? label;
 
   const listContents = options.map(option => {
-    const label = option.label;
-    const value = option.value ?? innerText(option.label);
-    const selected = option.value === value;
+    const optionValue = getValue(option);
+    const isSelected = optionValue === value;
 
     return (
       <SelectItem
-        aria-selected={selected}
-        key={option.value}
-        label={label}
+        aria-selected={isSelected}
+        key={optionValue}
+        label={option.label}
         onClick={e => {
           onChange?.({ ...e, target: { value: option.value } });
           closeModal();
         }}
-        selected={selected}
-        value={value}
+        selected={isSelected}
+        value={optionValue}
       />
     );
   });
