@@ -1,13 +1,13 @@
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
-import { KeyboardArrowRight, FormatListBulleted } from '@material-ui/icons';
-import { IconButton as MuiIconButton } from '@material-ui/core';
-import { useSurveyForm } from '../SurveyContext';
-import { Button as UIButton, CopyIcon, ShareIcon } from '../../../components';
-import { useCopySurveyUrl } from './CopySurveyUrlButton';
-import { useShare } from '../utils/useShare';
 
-const MOBILE_SURVEY_MENU_HEIGHT = '3.5rem';
+import { IconButton as MuiIconButton } from '@material-ui/core';
+import { FormatListBulleted, KeyboardArrowRight } from '@material-ui/icons';
+
+import { CopyIcon, ShareIcon, Button as UIButton } from '../../../components';
+import { useSurveyForm } from '../SurveyContext';
+import { useShare } from '../utils/useShare';
+import { useCopySurveyUrl } from './CopySurveyUrlButton';
 
 const Container = styled.div`
   position: fixed;
@@ -33,10 +33,10 @@ const Button = styled(UIButton).attrs({
   color: 'default',
   endIcon: <KeyboardArrowRight />,
 })`
-  min-width: 8rem;
-  flex: 1;
+  border-inline-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   border-radius: 0;
-  border-left: 1px solid ${props => props.theme.palette.divider};
+  flex: 1;
+  min-inline-size: 8rem;
   padding-block: 1.2rem;
 `;
 
@@ -55,9 +55,7 @@ export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
   const getNextButtonText = () => {
     if (isReviewScreen) return 'Submit';
     if (isResubmitReviewScreen) return 'Resubmit';
-    if (isLast) {
-      return 'Review';
-    }
+    if (isLast) return 'Review';
     return 'Next';
   };
 
