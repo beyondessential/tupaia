@@ -77,3 +77,31 @@ Authorization: {{authorization}}
 ### Get single task by ID
 GET {{host}}/tasks/6717fe105766bd32ea006d59 HTTP/1.1
 content-type: application/json
+
+### Create task
+# `repeat_frequency` values come from `rrule`’s `Frequency` enum, and are derived from `due_date`
+# - null ← doesn’t repeat
+# -    0 ← yearly
+# -    1 ← monthly
+# -    2 ← weekly
+# -    3 ← daily
+# -    4 ← hourly
+# -    5 ← minutely
+# -    6 ← secondly
+POST {{host}}/tasks HTTP/1.1
+content-type: application/json
+Authorization: {{authorization}}
+
+{
+	"survey_code": "DL_HM",
+	"entity_id": "5d3f884472db4d31bfe44aa1",
+	"due_date": "2025-02-13T10:59:59.426Z",
+	"repeat_frequency": 2,
+	"assignee": {
+		"id": "5e7846e361f76a411c08b063",
+		"name": "Tupaia Demonstration",
+		"value": "5e7846e361f76a411c08b063",
+		"label": "Tupaia Demonstration"
+	},
+	"comment": "A task can include a comment like this"
+}
