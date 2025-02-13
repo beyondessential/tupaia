@@ -1,17 +1,10 @@
 import React from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { TopProgressBar } from '../../../components';
 import { StickyMobileHeader } from '../../../layout';
 import { useSurveyForm } from '../SurveyContext';
 import { SurveyDisplayName } from './SurveyDisplayName';
-
-const StickyHeader = styled(StickyMobileHeader)`
-  h2 {
-    text-align: center;
-  }
-`;
 
 type SurveyLayoutContextT = {
   isLoading: boolean;
@@ -36,9 +29,9 @@ export const MobileSurveyHeader = () => {
 
   return (
     <>
-      <StickyHeader onBack={handleBack} onClose={openCancelConfirmation}>
+      <StickyMobileHeader onBack={handleBack} onClose={openCancelConfirmation}>
         <SurveyDisplayName />
-      </StickyHeader>
+      </StickyMobileHeader>
       {screenNumberParam && (
         <TopProgressBar
           currentSurveyQuestion={screenNumber}
