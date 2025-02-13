@@ -7,15 +7,15 @@ import { StickyMobileHeader } from '../../layout';
 import { ROUTES } from '../../constants';
 
 const MobileContainer = styled.div`
-  max-height: 100%;
-  background: ${({ theme }) => theme.palette.background.default};
-  width: 100%;
-  height: 100%;
+  background-color: ${({ theme }) => theme.palette.background.default};
+  block-size: 100%;
+  inline-size: 100%;
+  max-block-size: 100%;
 
   // parent selector - targets the parents of this container
   div:has(&) {
     padding: 0;
-    height: 100vh;
+    block-size: 100vb;
   }
 `;
 
