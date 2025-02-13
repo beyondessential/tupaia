@@ -20,8 +20,7 @@ type SurveyLayoutContextT = {
 
 export const MobileSurveyHeader = () => {
   const { screenNumber: screenNumberParam } = useParams();
-  const { screenNumber, numberOfScreens, isResponseScreen, openCancelConfirmation } =
-    useSurveyForm();
+  const { numberOfScreens, openCancelConfirmation, screenNumber } = useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
 
   const handleBack = () => {
@@ -33,10 +32,6 @@ export const MobileSurveyHeader = () => {
       onStepPrevious();
     }
   };
-
-  if (isResponseScreen) {
-    return null;
-  }
 
   return (
     <>
