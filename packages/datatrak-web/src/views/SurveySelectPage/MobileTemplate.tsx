@@ -19,7 +19,11 @@ const MobileContainer = styled.div`
   div:has(> &),
   ${PageContainer}:has(&) {
     padding: 0;
-    block-size: 100vb;
+
+    block-size: 100dvb;
+    @supports not (block-size: 100dvb) {
+      block-size: 100vb;
+    }
   }
 `;
 
