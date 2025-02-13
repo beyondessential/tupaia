@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { KeyboardArrowRight, FormatListBulleted } from '@material-ui/icons';
 import { IconButton as MuiIconButton } from '@material-ui/core';
