@@ -10,16 +10,19 @@ import { useShare } from '../utils/useShare';
 import { useCopySurveyUrl } from './CopySurveyUrlButton';
 
 const Container = styled.div`
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  height: ${MOBILE_SURVEY_MENU_HEIGHT};
-  justify-content: space-between;
   align-items: stretch;
-  padding: 0 0.5rem;
-  border-top: 1px solid ${props => props.theme.palette.divider};
   background: white;
+  block-size: 3.5rem;
+  border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  display: flex;
+  inline-size: 100%;
+  inset-block-end: 0;
+  justify-content: space-between;
+  margin-bottom: env(safe-area-inset-bottom, 0);
+  padding-block: 0;
+  padding-inline: 0.5rem;
+  position: fixed;
+  touch-action: pinch-zoom;
 `;
 
 const IconButton = styled(MuiIconButton)`
