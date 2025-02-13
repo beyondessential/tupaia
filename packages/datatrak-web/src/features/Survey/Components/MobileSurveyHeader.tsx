@@ -1,9 +1,10 @@
 import React from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+
 import { TopProgressBar } from '../../../components';
-import { useSurveyForm } from '../SurveyContext';
 import { StickyMobileHeader } from '../../../layout';
+import { useSurveyForm } from '../SurveyContext';
 import { SurveyDisplayName } from './SurveyDisplayName';
 
 const StickyHeader = styled(StickyMobileHeader)`

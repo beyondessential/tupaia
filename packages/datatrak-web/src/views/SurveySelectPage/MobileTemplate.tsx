@@ -1,10 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useGroupedSurveyList, MobileSelectList } from '../../features';
-import { StickyMobileHeader } from '../../layout';
+
+import { PageContainer } from '../../components';
 import { ROUTES } from '../../constants';
+import { MobileSelectList, useGroupedSurveyList } from '../../features';
+import { StickyMobileHeader } from '../../layout';
 
 const MobileContainer = styled.div`
   background-color: ${({ theme }) => theme.palette.background.default};
