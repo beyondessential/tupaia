@@ -7,6 +7,7 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { PageContainer } from '../../components';
 import { ROUTES } from '../../constants';
 import { MobileSelectList, useGroupedSurveyList } from '../../features';
+import { ListItemType } from '../../features/useGroupedSurveyList';
 import { StickyMobileHeader } from '../../layout';
 
 const MobileContainer = styled.div`
@@ -59,7 +60,7 @@ export const MobileTemplate = ({
   const onClose = () => {
     navigate(ROUTES.HOME);
   };
-  const onNavigateToSurvey = survey => {
+  const onNavigateToSurvey = (survey: ListItemType) => {
     handleSelectSurvey(selectedCountry, survey.value);
   };
 
