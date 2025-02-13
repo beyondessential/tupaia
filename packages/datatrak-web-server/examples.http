@@ -57,3 +57,23 @@ content-type: {{contentType}}
 ### Get survey users
 GET {{host}}/users/TAR HTTP/1.1
 content-type: {{contentType}}
+
+
+### Get tasks
+GET {{host}}/tasks
+	?pageSize=10
+  ?page=0
+	&filters[0][id]=assignee_id
+	&filters[0][value]=5e7846e361f76a411c08b063
+	&filters[1][id]=task_status
+	&filters[1][value][comparator]=NOT+IN
+	&filters[1][value][comparisonValue][0]=completed
+  &filters[1][value][comparisonValue][1]=cancelled
+	&filters[2][id]=survey.project_id
+	&filters[2][value]=5dfc6eaf61f76a497716cddf HTTP/1.1
+content-type: application/json
+Authorization: {{authorization}}
+
+### Get single task by ID
+GET {{host}}/tasks/6717fe105766bd32ea006d59 HTTP/1.1
+content-type: application/json
