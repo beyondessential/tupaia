@@ -105,3 +105,30 @@ Authorization: {{authorization}}
 	},
 	"comment": "A task can include a comment like this"
 }
+
+### Update task
+#
+# The top-level properties are optional.
+#
+# `repeat_frequency` values come from rrule’s `Frequency` enum, and are derived from the task’s due
+# date:
+#
+#   - null ← doesn’t repeat
+#   -    0 ← yearly
+#   -    1 ← monthly
+#   -    2 ← weekly
+#   -    3 ← daily
+PUT {{host}}/tasks/67ad3cda51b78c409500013c HTTP/1.1
+content-type: application/json
+Authorization: {{authorization}}
+
+{
+	"due_date": "2025-02-13T10:59:59.426Z",
+	"repeat_frequency": 2,
+	"assignee": {
+		"id": "5e7846e361f76a411c08b063",
+		"name": "Tupaia Demonstration",
+		"value": "5e7846e361f76a411c08b063",
+		"label": "Tupaia Demonstration"
+	},
+}
