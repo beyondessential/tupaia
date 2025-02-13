@@ -20,19 +20,18 @@ const removeRedundantConfigs = (fields: Record<string, any> | any[]) => {
     return fields;
   }
 
-  return Object.entries(fields).reduce(
-    (updatedFields, [key, value]) => {
-      if (typeof value === 'object') {
-        if (!isEmptyArray(value)) {
-          updatedFields[key] = removeRedundantConfigs(value);
-        }
-      } else {
-        updatedFields[key] = value;
+  const updatedFields: Record<string, any> = {};
+  for (const [key, value] of Object.entries(fields)) {
+    if (typeof value === 'object') {
+      if (!isEmptyArray(value)) {
+        updatedFields[key] = removeRedundantConfigs(value);
       }
-      return updatedFields;
-    },
-    {} as Record<string, any>,
-  );
+    } else {
+      updatedFields[key] = value;
+    }
+  }
+
+  return updatedFields;
 };
 
 const formatYupSchema = (yupSchema: yup.AnyObjectSchema) => {
