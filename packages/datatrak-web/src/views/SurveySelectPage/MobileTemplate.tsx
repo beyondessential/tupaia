@@ -15,8 +15,8 @@ const MobileContainer = styled.div`
   inline-size: 100%;
   max-block-size: 100%;
 
-  // parent selector - targets the parents of this container
-  div:has(&) {
+  div:has(> &),
+  ${PageContainer}:has(&) {
     padding: 0;
     block-size: 100vb;
   }
