@@ -1,9 +1,6 @@
-@localhost = http://localhost:8110/v1
-@dev = https://dev-config.tupaia.org
-@host = {{localhost}}
+@host = http://localhost:8110/v1
 # Uncomment the line below to point at dev rather than localhost
-# @host = {{dev}}
-@contentType = application/json
+# @host = https://dev-config.tupaia.org
 
 # In order to setup authorization, please set 'email' and 'password' in your restClient environement variables
 # see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
@@ -11,7 +8,7 @@
 
 ### Sign up
 POST {{host}}/signup HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
 
 {
   "contactNumber": "123",
@@ -27,36 +24,34 @@ content-type: {{contentType}}
 ### Login
 # @name login
 POST {{host}}/login HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
 
 {
-    "emailAddress": "{{email}}",
-    "password": "{{password}}"
+  "emailAddress": "{{email}}",
+  "password": "{{password}}"
 }
-
 
 
 ### Get Activity feed
 GET {{host}}/activityFeed?projectId=64df18f22ecffb2ac901a2b3 HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
 
 
 ### Get projects
 GET {{host}}/projects HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
 
 ### Get user
 GET {{host}}/getUser HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
 
 ### Get survey
 GET {{host}}/surveys/TAR HTTP/1.1
-content-type: {{contentType}}
-
+content-type: application/json
 
 ### Get survey users
 GET {{host}}/users/TAR HTTP/1.1
-content-type: {{contentType}}
+content-type: application/json
 
 
 ### Get tasks
@@ -75,19 +70,17 @@ content-type: application/json
 Authorization: {{authorization}}
 
 ### Get single task by ID
-GET {{host}}/tasks/6717fe105766bd32ea006d59 HTTP/1.1
+GET {{host}}/tasks/67ad3cda51b78c409500013c HTTP/1.1
 content-type: application/json
 
 ### Create task
-# `repeat_frequency` values come from `rrule`’s `Frequency` enum, and are derived from `due_date`
-# - null ← doesn’t repeat
-# -    0 ← yearly
-# -    1 ← monthly
-# -    2 ← weekly
-# -    3 ← daily
-# -    4 ← hourly
-# -    5 ← minutely
-# -    6 ← secondly
+# `repeat_frequency` values come from rrule’s `Frequency` enum, and are derived from `due_date`
+#
+#   - null ← doesn’t repeat
+#   -    0 ← yearly
+#   -    1 ← monthly
+#   -    2 ← weekly
+#   -    3 ← daily
 POST {{host}}/tasks HTTP/1.1
 content-type: application/json
 Authorization: {{authorization}}
