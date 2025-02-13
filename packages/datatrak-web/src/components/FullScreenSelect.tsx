@@ -153,8 +153,6 @@ export const FullScreenSelect = ({
   // Recall that only `label` is compulsory. `value` can optionally be derived from it.
   const getValue = (option: SelectOption) => option.value ?? innerText(option.label);
 
-  const selectedItemLabel = options.find(option => getValue(option) === value)?.label ?? label;
-
   const listContents = options.map(option => {
     const optionValue = getValue(option);
     const isSelected = optionValue === value;
@@ -177,7 +175,9 @@ export const FullScreenSelect = ({
   return (
     <>
       <StyledButton onClick={openModal} startIcon={icon}>
-        {selectedItemLabel}
+        {value === null
+          ? label
+          : (options.find(option => getValue(option) === value)?.label ?? label)}
       </StyledButton>
       <Modal open={isOpen} onClose={onClose}>
         <StyledDialogTitle>
