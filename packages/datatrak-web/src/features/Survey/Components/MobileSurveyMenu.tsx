@@ -40,7 +40,7 @@ const Button = styled(UIButton).attrs({
   padding-block: 1.2rem;
 `;
 
-export const MobileSurveyMenu = () => {
+export const MobileSurveyMenu = (props: HTMLAttributes<HTMLDivElement>) => {
   const { toggleSideMenu, isLast, isReviewScreen, isResubmitReviewScreen } = useSurveyForm();
   const copyPageUrl = useCopySurveyUrl({
     toastOptions: {
@@ -62,7 +62,7 @@ export const MobileSurveyMenu = () => {
   };
 
   return (
-    <Container>
+    <Container {...props}>
       <IconButton onClick={toggleSideMenu}>
         <FormatListBulleted />
       </IconButton>
