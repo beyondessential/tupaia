@@ -23,12 +23,12 @@ const MobileContainer = styled.div`
 `;
 
 const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100%;
-  min-height: 20rem;
+  block-size: 100%;
+  display: flex;
   flex: 1;
+  justify-content: center;
+  min-block-size: 20rem;
 `;
 
 const Loader = () => (
