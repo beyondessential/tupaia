@@ -11,9 +11,9 @@ export const MobileHeaderWrapper = styled.header`
   background-color: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
   display: grid;
-  grid-template-columns: minmax(3rem, max-content) 1fr minmax(3rem, max-content);
-  grid-template-areas: '--leading --title --trailing';
   gap: 1rem;
+  grid-template-areas: '--leading --title --trailing';
+  grid-template-columns: minmax(3rem, max-content) 1fr minmax(3rem, max-content);
   inline-size: 100%;
   inset-block-start: 0;
   inset-inline-start: 0;
@@ -23,6 +23,7 @@ export const MobileHeaderWrapper = styled.header`
   padding-right: max(env(safe-area-inset-right, 0), 0.2rem);
   padding-top: env(safe-area-inset-top, 0);
   position: sticky;
+  touch-action: pinch-zoom;
   z-index: 1000;
 `;
 
