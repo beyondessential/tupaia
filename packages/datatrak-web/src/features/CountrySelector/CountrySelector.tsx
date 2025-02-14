@@ -25,9 +25,6 @@ const Select = styled(BaseSelect)`
     border-color: ${({ theme }) => theme.palette.grey['400']};
     box-shadow: none;
   }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    width: 100%;
-  }
 `;
 
 export const CountrySelectWrapper = styled.div`
