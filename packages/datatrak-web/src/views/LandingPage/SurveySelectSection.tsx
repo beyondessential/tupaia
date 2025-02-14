@@ -8,22 +8,27 @@ import { Button, ButtonLink as BaseButtonLink } from '../../components';
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
 const SectionContainer = styled.section`
-  grid-area: --surveySelect;
-  background-color: ${({ theme }) => theme.palette.background.paper};
-  padding: 1rem;
-  display: flex;
-  position: relative;
   align-items: flex-start;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  border-radius: 0.625rem;
+  display: flex;
+  grid-area: --surveySelect;
   justify-content: space-between;
   overflow: visible !important;
-  border-radius: 0.625rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-block-start: 1.9375rem;
-  }
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-block: 1rem;
-    inline: 2.2rem 3rem;
-  }
+  padding: 1rem;
+  position: relative;
+
+  ${({ theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('md')} {
+        margin-block-start: 1.9375rem;
+      }
+      ${up('lg')} {
+        padding-inline: 2.2rem 3rem;
+      }
+    `;
+  }}
 `;
 
 const SectionContent = styled.div`
