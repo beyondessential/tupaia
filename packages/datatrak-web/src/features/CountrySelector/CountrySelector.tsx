@@ -8,17 +8,18 @@ import { FullScreenSelect } from '../../components/FullScreenSelect';
 import { useIsMobile } from '../../utils';
 
 const Select = styled(BaseSelect)`
-  width: 10rem;
+  inline-size: 10rem;
 
   &.MuiFormControl-root {
-    margin-bottom: 0;
+    margin-block-end: 0;
   }
   .MuiInputBase-input.MuiSelect-selectMenu {
     font-size: 0.875rem;
-    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    padding-block: 0.5rem;
+    padding-inline: 1rem 2.5rem;
   }
   .MuiSvgIcon-root {
-    right: 0.5rem;
+    inset-inline-end: 0.5rem;
   }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: ${({ theme }) => theme.palette.grey['400']};
