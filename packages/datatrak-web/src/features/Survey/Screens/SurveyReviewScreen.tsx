@@ -79,8 +79,9 @@ export const SurveyReviewScreen = () => {
   const isMobile = useIsMobile();
   return (
     <>
-      {isMobile && <MobileHeader />}
-      {!isMobile && (
+      {isMobile ? (
+        <MobileHeader />
+      ) : (
         <Header>
           <PageHeading>Review and submit</PageHeading>
           <PageDescription>

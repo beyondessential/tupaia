@@ -1,16 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link as RouterLink } from 'react-router-dom';
-import { HEADER_HEIGHT } from '../../constants';
 import { IconButton, Typography } from '@material-ui/core';
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import styled from 'styled-components';
 import { useCurrentUserContext } from '../../api';
 import { ChangeProjectButton } from '../../components';
+import { HEADER_HEIGHT } from '../../constants';
 
 const Wrapper = styled.div`
-  height: ${HEADER_HEIGHT};
-  display: flex;
   align-items: center;
-  max-width: 80%;
+  block-size: ${HEADER_HEIGHT};
+  display: flex;
+  max-inline-size: 80%;
   padding-block: 1rem;
   gap: 0.25rem;
 
@@ -26,23 +26,23 @@ const Logo = styled(IconButton)<{
   padding: 0.5rem;
 
   img {
-    max-height: 2rem;
+    max-block-size: 2rem;
   }
 `;
 
 const UserDetailsContainer = styled.div`
-  height: 100%;
+  block-size: 100%;
   overflow: hidden;
 `;
 
 const UserName = styled(Typography)`
   font-size: 1rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
   // this is a hack to make a responsive width become pixel based so that we can apply text-overflow: ellipsis
-  max-width: calc(100%);
+  max-inline-size: calc(100%);
 `;
 
 export const MobileHeaderLeft = ({ onClickLogo }) => {
@@ -52,7 +52,7 @@ export const MobileHeaderLeft = ({ onClickLogo }) => {
     return (
       <Wrapper>
         <Logo onClick={onClickLogo} component={RouterLink} to="/">
-          <img src="/tupaia-pin.svg" alt="Tupaia DataTrak logo" width="100%" height="100%" />
+          <img src="/tupaia-pin.svg" alt="Tupaia DataTrak" width="100%" height="100%" />
         </Logo>
         {isLoggedIn && (
           <UserDetailsContainer>
@@ -67,7 +67,7 @@ export const MobileHeaderLeft = ({ onClickLogo }) => {
   return (
     <Wrapper>
       <Logo onClick={onClickLogo} component={RouterLink} to="/">
-        <img src="/datatrak-logo-black.svg" alt="Tupaia DataTrak logo" width="100%" height="100%" />
+        <img src="/datatrak-logo-black.svg" alt="Tupaia DataTrak" width="100%" height="100%" />
       </Logo>
     </Wrapper>
   );

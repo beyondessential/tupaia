@@ -1,31 +1,39 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useGroupedSurveyList, MobileSelectList } from '../../features';
-import { StickyMobileHeader } from '../../layout';
+
+import { PageContainer } from '../../components';
 import { ROUTES } from '../../constants';
+import { MobileSelectList, useGroupedSurveyList } from '../../features';
+import { ListItemType } from '../../features/useGroupedSurveyList';
+import { StickyMobileHeader } from '../../layout';
 
 const MobileContainer = styled.div`
-  max-height: 100%;
-  background: ${({ theme }) => theme.palette.background.default};
-  width: 100%;
-  height: 100%;
+  background-color: ${({ theme }) => theme.palette.background.default};
+  block-size: 100%;
+  inline-size: 100%;
+  max-block-size: 100%;
 
-  // parent selector - targets the parents of this container
-  div:has(&) {
+  div:has(> &),
+  ${PageContainer}:has(&) {
     padding: 0;
-    height: 100vh;
+
+    block-size: 100dvb;
+    @supports not (block-size: 100dvb) {
+      block-size: 100vb;
+    }
   }
 `;
 
 const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100%;
-  min-height: 20rem;
+  block-size: 100%;
+  display: flex;
   flex: 1;
+  justify-content: center;
+  min-block-size: 20rem;
 `;
 
 const Loader = () => (
@@ -55,7 +63,7 @@ export const MobileTemplate = ({
   const onClose = () => {
     navigate(ROUTES.HOME);
   };
-  const onNavigateToSurvey = survey => {
+  const onNavigateToSurvey = (survey: ListItemType) => {
     handleSelectSurvey(selectedCountry, survey.value);
   };
 

@@ -57,10 +57,11 @@ const Heading = styled(Typography).attrs({ variant: 'h2' })`
  */
 export const SurveyScreen = () => {
   const {
-    displayQuestions,
-    screenHeader: instructionHeading,
-    screenDetail: instructionDetail,
     activeScreen,
+    displayQuestions,
+    isResponseScreen,
+    screenDetail: instructionDetail,
+    screenHeader: instructionHeading,
   } = useSurveyForm();
   const isMobile = useIsMobile();
 
@@ -73,7 +74,7 @@ export const SurveyScreen = () => {
 
   return (
     <>
-      {isMobile && <MobileSurveyHeader />}
+      {isMobile && !isResponseScreen && <MobileSurveyHeader />}
       <ScrollableBody>
         {/*
          * If the first question on the active screen is an instruction, then display it in full

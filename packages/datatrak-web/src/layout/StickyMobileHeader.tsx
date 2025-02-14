@@ -23,6 +23,7 @@ export const MobileHeaderWrapper = styled.header`
   padding-right: max(env(safe-area-inset-right, 0), 0.2rem);
   padding-top: env(safe-area-inset-top, 0);
   position: sticky;
+  touch-action: pinch-zoom;
   z-index: 1000;
 `;
 

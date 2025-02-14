@@ -12,33 +12,61 @@ import { SurveySelectSection } from './SurveySelectSection';
 import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(BasePageContainer)`
+  block-size: 100%;
   display: flex;
-  background: ${({
-    theme,
-  }) => `linear-gradient(252deg, ${theme.palette.primary.main}24 1.92%, ${theme.palette.background.default}33 29.06%),
-    linear-gradient(242deg, ${theme.palette.background.default}4d 68.02%, ${theme.palette.primary.main}28 100%);
-  `};
-  height: 100%;
-  // make the container scrollable on small screens
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    max-height: calc(100vh - ${HEADER_HEIGHT});
-    overflow-y: auto;
-  }
+
+  ${({ theme }) => {
+    const { breakpoints, palette } = theme;
+
+    return css`
+      background-image: linear-gradient(
+          252deg,
+          oklch(from ${palette.primary.main} l c h / 14%) 2%,
+          oklch(from ${palette.background.default} l c h / 20%) 29%
+        ),
+        linear-gradient(
+          242deg,
+          oklch(from ${palette.background.default} l c h / 30%) 68%,
+          oklch(from ${palette.primary.main} l c h / 16%) 100%
+        );
+      @supports not (color: oklch(from black l c h)) {
+        background-image: linear-gradient(
+            252deg,
+            ${palette.primary.main}24 2%,
+            ${palette.background.default}33 29%
+          ),
+          linear-gradient(
+            242deg,
+            ${palette.background.default}4d 68%,
+            ${palette.primary.main}28 100%
+          );
+      }
+
+      // Make the container scrollable on small screens
+      ${breakpoints.down('sm')} {
+        max-block-size: calc(100vb - ${HEADER_HEIGHT});
+        overflow-y: auto;
+      }
+    `;
+  }};
 `;
 
 const PageBody = styled.div`
+  block-size: 100%;
   display: flex;
   flex-direction: column;
-  padding: 0.5rem 0 0.5rem;
-  width: 100%;
-  max-width: 85rem;
-  margin: 0 auto;
-  height: 100%;
+  inline-size: 100%;
+  margin-block: 0;
+  margin-inline: auto;
+  max-inline-size: 85rem;
+  padding-block: 0.5rem;
+  padding-inline: 0;
 
   // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 0.2rem 1rem 0.8rem;
-    height: calc(100vh - ${HEADER_HEIGHT});
+    block-size: calc(100vh - ${HEADER_HEIGHT});
+    padding-block: 0.2rem 0.8rem;
+    padding-inline: 1rem;
   }
 `;
 

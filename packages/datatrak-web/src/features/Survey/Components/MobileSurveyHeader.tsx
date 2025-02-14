@@ -1,16 +1,10 @@
 import React from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import { TopProgressBar } from '../../../components';
-import { useSurveyForm } from '../SurveyContext';
-import { StickyMobileHeader } from '../../../layout';
-import { SurveyDisplayName } from './SurveyDisplayName';
 
-const StickyHeader = styled(StickyMobileHeader)`
-  h2 {
-    text-align: center;
-  }
-`;
+import { TopProgressBar } from '../../../components';
+import { StickyMobileHeader } from '../../../layout';
+import { useSurveyForm } from '../SurveyContext';
+import { SurveyDisplayName } from './SurveyDisplayName';
 
 type SurveyLayoutContextT = {
   isLoading: boolean;
@@ -20,8 +14,7 @@ type SurveyLayoutContextT = {
 
 export const MobileSurveyHeader = () => {
   const { screenNumber: screenNumberParam } = useParams();
-  const { screenNumber, numberOfScreens, isResponseScreen, openCancelConfirmation } =
-    useSurveyForm();
+  const { numberOfScreens, openCancelConfirmation, screenNumber } = useSurveyForm();
   const { onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
 
   const handleBack = () => {
@@ -34,15 +27,11 @@ export const MobileSurveyHeader = () => {
     }
   };
 
-  if (isResponseScreen) {
-    return null;
-  }
-
   return (
     <>
-      <StickyHeader onBack={handleBack} onClose={openCancelConfirmation}>
+      <StickyMobileHeader onBack={handleBack} onClose={openCancelConfirmation}>
         <SurveyDisplayName />
-      </StickyHeader>
+      </StickyMobileHeader>
       {screenNumberParam && (
         <TopProgressBar
           currentSurveyQuestion={screenNumber}
