@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { createReducer } from '../utilities';
 import { USED_BY_FETCH_BEGIN, USED_BY_FETCH_SUCCESS, USED_BY_FETCH_ERROR } from './constants';
 

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export { PageContainer } from './PageContainer';
 export * from './Icons';
 export { Autocomplete, QuestionAutocomplete } from './Autocomplete';
@@ -14,9 +9,9 @@ export { ErrorDisplay } from './ErrorDisplay';
 export { InputHelperText } from './InputHelperText';
 export { Modal } from './Modal';
 export { PageTitleBar } from './PageTitleBar';
+export { BlockScrollView, InlineScrollView } from './ScrollView';
 export { SmallModal } from './SmallModal';
 export { TextInput } from './TextInput';
 export { Tile, LoadingTile } from './Tile';
 export { Toast } from './Toast';
 export { TopProgressBar } from './TopProgressBar';
-export { TaskMetrics } from './TaskMetrics';

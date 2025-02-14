@@ -1,14 +1,9 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Check } from '@material-ui/icons';
 import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { Paper } from '@material-ui/core';
-import { MOBILE_BREAKPOINT } from '../constants';
+import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
 
 const OptionWrapper = styled.div`
@@ -112,7 +107,7 @@ export const QuestionAutocomplete = styled(Autocomplete).attrs({
       component: InputHelperText,
     },
   },
-  placeholder: 'Search...',
+  placeholder: 'Search…',
 })`
   .MuiFormControl-root {
     margin-bottom: 0;
@@ -121,7 +116,7 @@ export const QuestionAutocomplete = styled(Autocomplete).attrs({
   .MuiFormLabel-root {
     font-size: 0.875rem;
     line-height: 1.2;
-    @media (min-width: ${MOBILE_BREAKPOINT}) {
+    @media (min-width: ${DESKTOP_BREAKPOINT}) {
       font-size: 1rem;
     }
   }

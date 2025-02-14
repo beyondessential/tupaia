@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2022 Beyond Essential Systems Pty Ltd
- */
-
 export const EMAIL_ADDRESS_CHANGE = 'EMAIL_ADDRESS_CHANGE';
 export const REMEMBER_ME_CHANGE = 'REMEMBER_ME_CHANGE';
 export const LOGIN_MODAL_TOGGLE = 'LOGIN_MODAL_TOGGLE';

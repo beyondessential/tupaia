@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 export { BinaryQuestion } from './BinaryQuestion';
 export { CheckboxQuestion } from './CheckboxQuestion';
 export { DateQuestion, DateTimeQuestion } from './DateQuestion';

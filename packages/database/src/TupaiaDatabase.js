@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017-2024 Beyond Essential Systems Pty Ltd
- */
-
 import autobind from 'react-autobind';
 import { types as pgTypes } from 'pg';
 import knex from 'knex';

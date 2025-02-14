@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import MuiIconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 

@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { groupEventsByPeriod } from '@tupaia/dhis-api';

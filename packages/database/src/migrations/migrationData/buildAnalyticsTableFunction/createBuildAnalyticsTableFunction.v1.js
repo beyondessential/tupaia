@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * SQL for building the analytics table. If changes need to be made how to the analytics table is built
  * then please create a NEW file with a higher version.
  *

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode, useEffect } from 'react';
 import { REDIRECT_ERROR_PARAM } from '../constants';
 import { useSearchParams } from 'react-router-dom';

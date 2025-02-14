@@ -1,29 +1,26 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
-import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
-import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { MatrixConfig } from '@tupaia/types';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
+
+import { useEditUser } from '../../api/mutations';
 import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
+import { MOBILE_BREAKPOINT } from '../../constants';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
-import { ExpandButton } from './ExpandButton';
-import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
-import { StaticMap } from './StaticMap';
+import { DashboardMenu, SubscribeModal } from './DashboardMenu';
+import { ExpandButton } from './ExpandButton';
 import { ExportDashboard } from './ExportDashboard';
+import { Photo } from './Photo';
+import { StaticMap } from './StaticMap';
 import { DashboardContextProvider, useDashboard } from './utils';
-import { SubscribeModal, DashboardMenu } from './DashboardMenu';
-import { useEditUser } from '../../api/mutations';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;

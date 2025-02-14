@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { respond, UnverifiedError, FormValidationError } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
 import { sendEmailVerification, verifyEmailHelper } from './utilities/emailVerification';

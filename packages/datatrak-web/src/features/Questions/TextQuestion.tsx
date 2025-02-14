@@ -1,13 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { TextInput, InputHelperText } from '../../components';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { DESKTOP_BREAKPOINT } from '../../constants';
 import { useSurveyForm } from '..';
 
 const Wrapper = styled.div<{
@@ -24,7 +19,7 @@ const Wrapper = styled.div<{
   }
   .MuiFormControlLabel-label {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    @media (min-width: ${MOBILE_BREAKPOINT}) {
+    @media (min-width: ${DESKTOP_BREAKPOINT}) {
       font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
     }
   }

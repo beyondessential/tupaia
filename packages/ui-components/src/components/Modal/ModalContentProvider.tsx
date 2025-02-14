@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { DialogContent } from '@material-ui/core';
@@ -114,7 +109,7 @@ export const ModalContentProvider = ({ isLoading, error, children }: ModalConten
   const errors = getErrorsToDisplay();
   return (
     <Content>
-      {isLoading && 'Please be patient, this can take some time...'}
+      {isLoading && 'Please be patient, this can take some time…'}
       {error?.message && (
         <ErrorsWrapper>
           <ErrorHeading>{heading}</ErrorHeading>

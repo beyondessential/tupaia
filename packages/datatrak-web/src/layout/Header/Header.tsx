@@ -1,19 +1,18 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { PageContainer } from '../../components';
-import { HEADER_HEIGHT } from '../../constants';
+import { HEADER_HEIGHT, TABLET_BREAKPOINT } from '../../constants';
 import { UserMenu } from '../UserMenu';
-import { LogoButton } from './LogoButton';
+import { HeaderLeft } from './HeaderLeft';
 
-const Wrapper = styled.div`
+const Wrapper = styled.header`
   background: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
-  box-shadow: inset 0 0 1px #333;
   z-index: 10;
+
+  @media (min-width: ${TABLET_BREAKPOINT}) {
+    border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
+  }
 `;
 
 const Container = styled(PageContainer).attrs({
@@ -31,7 +30,7 @@ export const Header = () => {
   return (
     <Wrapper>
       <Container>
-        <LogoButton />
+        <HeaderLeft />
         <UserMenu />
       </Container>
     </Wrapper>

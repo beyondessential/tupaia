@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
-
 import React, { useRef, useEffect } from 'react';
 import { TileLayer as LeafletTileLayer } from 'leaflet';
 import { TileLayer as ReactLeafletTileLayer, LayerGroup, AttributionControl } from 'react-leaflet';

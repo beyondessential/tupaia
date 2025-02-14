@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { downloadPageAsPDF } from '@tupaia/server-utils';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { stringifyQuery } from '@tupaia/utils';

@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
 import { Pusher } from '../Pusher';
 
 export class DataPusher extends Pusher {

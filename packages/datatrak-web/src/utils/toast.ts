@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { enqueueSnackbar, OptionsObject } from 'notistack';
 
 export const successToast = (message: string, Icon?: OptionsObject['Icon']) => {

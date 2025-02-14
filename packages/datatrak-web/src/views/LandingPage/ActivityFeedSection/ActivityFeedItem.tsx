@@ -1,17 +1,16 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import styled from 'styled-components';
 import { ListItem, ListItemProps } from '@material-ui/core';
 
 export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
   color: ${({ theme }) => theme.palette.text.primary};
+  background: ${({ theme }) => theme.palette.background.paper};
   font-size: 0.75rem;
-  padding: 1.12rem 0.6rem 0.75rem 0;
+  padding-inline: 1.8rem;
+  padding-block-start: 1.12rem;
+  padding-block-end: 0.75rem;
+  position: relative;
   &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+    margin-bottom: 0.5rem;
   }
   p {
     font-size: 0.75rem;
@@ -28,5 +27,11 @@ export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
   &:hover,
   &:focus {
     text-decoration: none;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1.12rem 0.6rem 0.75rem 0;
+    &:not(:last-child) {
+      border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+    }
   }
 `;

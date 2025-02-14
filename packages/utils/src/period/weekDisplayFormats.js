@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 export const WEEK_DISPLAY_FORMATS = {
   WEEK_COMMENCING_ABBR: 'WEEK_COMMENCING_ABBR',
   WEEK_COMMENCING: 'WEEK_COMMENCING',

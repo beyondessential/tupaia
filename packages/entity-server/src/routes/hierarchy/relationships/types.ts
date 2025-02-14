@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import { Request } from 'express';
 import { EntityType } from '@tupaia/types';
 import { EntityFilter } from '@tupaia/server-boilerplate';

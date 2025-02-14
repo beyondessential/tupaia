@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Add the analytics together across the facilities and periods listed in the analytic response, and
  * return an array with the sum of each data element
  *

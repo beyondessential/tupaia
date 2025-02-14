@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { LegacyReport, Report } from '../types';
 import { extractDataFromReport } from '../utils';
 import { DashboardItem, DashboardViz, DashboardVizResource } from './types';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import MockDate from 'mockdate';
 import { EARLIEST_DATA_DATE_STRING } from '@tupaia/utils';
 import { buildTestTransform } from '../../testUtils';

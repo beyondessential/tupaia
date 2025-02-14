@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { Request, Response, NextFunction } from 'express';
 import winston from 'winston';

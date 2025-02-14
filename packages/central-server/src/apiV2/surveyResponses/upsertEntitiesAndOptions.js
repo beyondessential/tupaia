@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { DatabaseError } from '@tupaia/utils';
 
 const upsertEntities = async (models, entitiesUpserted, surveyId) => {

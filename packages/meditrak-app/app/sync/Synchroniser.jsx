@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import {Scheduler} from 'sussol-utilities';
 
 import {LogBox} from 'react-native';

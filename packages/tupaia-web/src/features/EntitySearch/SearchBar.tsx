@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { TextField, TextFieldProps } from '@material-ui/core';

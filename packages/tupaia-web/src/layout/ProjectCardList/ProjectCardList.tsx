@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { ProjectCard as ProjectCardComponent } from './ProjectCard';
 import { PROJECT_ACCESS_TYPES } from '../../constants';

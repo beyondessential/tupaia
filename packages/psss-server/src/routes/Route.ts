@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { NextFunction, Request, Response } from 'express';
 import { Route as BaseRoute, ExpressRequest, ExpressResponse } from '@tupaia/server-boilerplate';
 import { EntityConnection, CentralConnection, ReportConnection } from '../connections';

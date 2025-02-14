@@ -1,17 +1,14 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { expect } from 'chai';
+
 import {
-  buildAndInsertSurveys,
   buildAndInsertSurveyResponses,
+  buildAndInsertSurveys,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { resetTestData, TestableApp } from '../testUtilities';
+
+import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { getRewardsForUser } from '../../social/getRewardsForUser';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+import { TestableApp, resetTestData } from '../testUtilities';
 
 describe('Permissions checker for GETSurveyResponses', async () => {
   const DEFAULT_POLICY = {
@@ -199,18 +196,18 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     it('gets user rewards', async () => {
       await app.grantAccess(DEFAULT_POLICY);
 
-      const { body: results } = await app.get(`surveyResponses`);
+      const { body: results } = await app.get('surveyResponses');
 
       const userId = results[0].user_id;
       const rewards = await getRewardsForUser(app.database, userId);
 
-      expect(rewards.coconuts).to.equal('4');
+      expect(rewards.coconuts).to.equal(4);
     });
 
     it('gets rewards with a project_id', async () => {
       await app.grantAccess(DEFAULT_POLICY);
 
-      const { body: results } = await app.get(`surveyResponses`);
+      const { body: results } = await app.get('surveyResponses');
 
       const userId = results[0].user_id;
       const projectId = 'testId';

@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import { DataServiceMapping } from '../../../services/DataServiceMapping';
 import { DhisEventAnalytics } from '../../../services/dhis/types';
 import { dataElements, dataGroups, entityType } from '../../testUtils';

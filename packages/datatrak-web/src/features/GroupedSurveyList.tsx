@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React, { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 import { FormHelperText, FormLabelProps } from '@material-ui/core';

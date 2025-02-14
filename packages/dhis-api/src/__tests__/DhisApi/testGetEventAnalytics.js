@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { when } from 'jest-when';
 
 import * as BuildAnalyticsQuery from '../../buildAnalyticsQuery';

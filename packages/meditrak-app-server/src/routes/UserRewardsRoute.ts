@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
@@ -25,7 +20,7 @@ export class UserRewardsRoute extends Route<UserRewardsRequest> {
       // The COUNT(*)::int is required here, since pg serializes count to string
       // (https://stackoverflow.com/questions/47843370/postgres-sequelize-raw-query-to-get-count-returns-string-value)
       `
-        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
         FROM survey_response
         WHERE user_id = ?
         GROUP BY user_id;

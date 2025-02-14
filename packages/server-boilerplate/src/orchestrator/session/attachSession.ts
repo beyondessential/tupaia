@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { Request, Response, NextFunction } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { SessionRecord } from '../models/Session';

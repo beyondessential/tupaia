@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { AuthApiMock, setupTestApp } from '../utilities';
 import { CAT_USER, CAT_USER_SESSION, TEST_DATA } from './fixtures';

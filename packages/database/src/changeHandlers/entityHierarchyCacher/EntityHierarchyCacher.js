@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import winston from 'winston';
 import { RECORDS } from '../../records';
 import { generateId } from '../../utilities';

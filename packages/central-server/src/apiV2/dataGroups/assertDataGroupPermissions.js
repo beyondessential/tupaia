@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { getPermissionListWithWildcard } from '../utilities';

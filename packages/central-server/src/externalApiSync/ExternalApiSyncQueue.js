@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
 import autobind from 'react-autobind';
 import { getIsProductionEnvironment } from '@tupaia/utils';
 import { getSyncQueueChangeTime } from '@tupaia/tsutils';
