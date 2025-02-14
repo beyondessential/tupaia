@@ -63,7 +63,7 @@ export const Toolbar = () => {
     <Wrapper>
       <Container maxWidth="xl">
         <FlexStart>
-          <DocumentIcon />
+          <DocumentIcon aria-hidden />
           <MuiBox ml={2}>
             <SubTitle variant="h4">
               Project: {project?.['project.code']} • {permissionGroup}
