@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { MatrixConfig } from '@tupaia/types';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
@@ -22,30 +22,33 @@ import { Photo } from './Photo';
 import { StaticMap } from './StaticMap';
 import { DashboardContextProvider, useDashboard } from './utils';
 
-const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
-const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
-const MIN_SIDEBAR_WIDTH = 360;
-const MIN_EXPANDED_SIDEBAR_WIDTH = 700;
-
 const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
-  position: relative;
   background-color: ${({ theme }) => theme.palette.background.paper};
+  inline-size: 100%;
+  min-block-size: 100%;
+  overflow: visible;
+  position: relative;
   transition:
     width 0.3s ease,
     max-width 0.3s ease;
-  width: 100%;
-  overflow: visible;
-  min-height: 100%;
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
-    height: 100%;
-    min-width: ${({ $isExpanded }) =>
-      $isExpanded ? MIN_EXPANDED_SIDEBAR_WIDTH : MIN_SIDEBAR_WIDTH}px;
-    max-width: ${({ $isExpanded }) =>
-      $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
+    block-size: 100%;
+
+    ${({ $isExpanded }) =>
+      $isExpanded
+        ? css`
+            inline-size: 60%;
+            max-inline-size: 1000px;
+            min-inline-size: 700px;
+          `
+        : css`
+            inline-size: 25%;
+            max-inline-size: 550px;
+            min-inline-size: 360px;
+          `}
   }
 `;
 
