@@ -63,23 +63,21 @@ export const CountrySelector = () => {
       label: country.name,
     })) ?? [];
 
+  const commonProps = {
+    onChange: updateSelectedCountry,
+    options,
+    value: selectedCountry?.code,
+  };
+
   return (
     <CountrySelectWrapper>
       {useIsMobile() ? (
-        <FullScreenSelect
-          icon={<Pin />}
-          label="Select country"
-          onChange={updateSelectedCountry}
-          options={options}
-          value={selectedCountry?.code}
-        />
+        <FullScreenSelect {...commonProps} icon={<Pin />} label="Select country" />
       ) : (
         <>
           <StyledPin />
           <Select
-            options={options}
-            value={selectedCountry?.code}
-            onChange={updateSelectedCountry}
+            {...commonProps}
             placeholder="Select a country"
             SelectProps={{
               'aria-label': 'Select a country',
