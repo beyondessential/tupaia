@@ -42,8 +42,8 @@ export const isAndroidDevice = () => {
  *
  * @privateRemarks Ignores the patch version number, since return type is a floating point number.
  */
-export const getAndroidVersion = userAgent => {
-  // const userAgent = navigator.userAgent;
+export const getAndroidVersion = () => {
+  const userAgent = navigator.userAgent;
 
   // Check if the device is Android
   if (!isAndroidDevice()) {
