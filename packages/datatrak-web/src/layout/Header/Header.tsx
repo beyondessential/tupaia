@@ -11,7 +11,7 @@ const Wrapper = styled.header`
   z-index: 10;
 
   @media (min-width: ${TABLET_BREAKPOINT}) {
-    border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
+    border-block-end: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
   }
 `;
 
