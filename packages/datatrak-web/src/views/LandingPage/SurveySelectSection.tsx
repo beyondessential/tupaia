@@ -19,39 +19,20 @@ const SectionContainer = styled.section`
   padding: 1rem;
   position: relative;
 
-  ${({ theme }) => {
-    const { up } = theme.breakpoints;
-    return css`
-      ${up('md')} {
-        margin-block-start: 1.9375rem;
-      }
-      ${up('lg')} {
-        padding-inline: 2.2rem 3rem;
-      }
-    `;
-  }}
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-block-start: 1.9375rem;
+  }
 `;
 
 const SectionContent = styled.div`
+  align-items: center;
   display: flex;
   flex-direction: column-reverse;
-  width: 70%;
   padding-inline-end: 2rem;
 
-  ${({ theme }) => {
-    const { up } = theme.breakpoints;
-    return css`
-      ${up('sm')} {
-        margin-inline-start: 10%;
-      }
-      ${up('md')} {
-        margin-inline-start: 0;
-        flex-direction: row;
-        width: 100%;
-        align-items: center;
-      }
-    `;
-  }} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-inline-start: 0;
+    flex-direction: row;
   }
 `;
 
@@ -69,19 +50,17 @@ const ButtonLink = styled(BaseButtonLink)`
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  text-align: center;
-  max-width: 20rem;
+  max-inline-size: 20rem;
+  row-gap: 0.5rem;
+
   inline-size: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
     inline-size: 11rem;
   }
+
   .MuiButton-root {
     line-height: 1.1;
     padding: 0.75rem;
-    &:last-child {
-      margin-block-start: 0.5rem;
-    }
   }
 `;
 
@@ -107,21 +86,8 @@ const TextWrapper = styled.div`
 `;
 
 const Text = styled(Typography)`
-  ${({ theme }) => {
-    const { up } = theme.breakpoints;
-    return css`
-      ${up('xs')} {
-        line-height: 1.5;
-        font-size: 0.9rem;
-      }
-      ${up('sm')} {
-        font-size: 1rem;
-      }
-      ${up('md')} {
-        font-size: 0.9rem;
-      }
-    `;
-  }}
+  font-size: 1rem;
+  line-height: 1.5;
 `;
 
 const VisuallyHidden = styled.span`
