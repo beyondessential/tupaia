@@ -71,10 +71,10 @@ const ButtonWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   text-align: center;
-  width: 100%;
   max-width: 20rem;
+  inline-size: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 11rem;
+    inline-size: 11rem;
   }
   .MuiButton-root {
     line-height: 1.1;
@@ -86,9 +86,10 @@ const ButtonWrapper = styled.div`
 `;
 
 const TextWrapper = styled.div`
-  margin-block-end: 0.7rem;
   display: flex;
   flex-direction: column;
+  margin-block-end: 0.7rem;
+  text-wrap: balance;
 
   ${({ theme }) => {
     const { up } = theme.breakpoints;
