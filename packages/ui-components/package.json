@@ -33,6 +33,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "ace-builds": "^1.10.1",
+    "csstype": "^3.1.3",
     "date-fns": "^2.12.0",
     "downloadjs": "^1.4.7",
     "js-sql-parser": "^1.4.1",
