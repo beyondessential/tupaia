@@ -15,9 +15,7 @@ const Wrapper = styled.header`
   }
 `;
 
-const Container = styled(PageContainer).attrs({
-  maxWidth: false,
-})`
+const Container = styled(PageContainer)`
   position: relative;
   z-index: 1;
   height: ${HEADER_HEIGHT};
