@@ -1,9 +1,9 @@
-import React, { Fragment } from 'react';
 import { Typography } from '@material-ui/core';
+import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 
+import { ButtonLink as BaseButtonLink, ButtonAnchor } from '../../components';
 import { ROUTES } from '../../constants';
-import { Button, ButtonLink as BaseButtonLink } from '../../components';
 import { useIsMobile } from '../../utils';
 
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
@@ -175,9 +175,15 @@ export const SurveySelectSection = () => {
       <SectionContent>
         <ButtonWrapper>
           <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
-          <Button variant="outlined" onClick={() => window.open(TUPAIA_REDIRECT_URL)}>
+          <ButtonAnchor
+            fullWidth
+            variant="outlined"
+            href={TUPAIA_REDIRECT_URL}
+            rel="noreferrer"
+            target="_blank"
+          >
             Explore data
-          </Button>
+          </ButtonAnchor>
         </ButtonWrapper>
         <TextWrapper>
           <Text>

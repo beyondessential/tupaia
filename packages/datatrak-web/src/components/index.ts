@@ -5,7 +5,7 @@ export { PageContainer } from './PageContainer';
 
 export { Autocomplete, QuestionAutocomplete } from './Autocomplete';
 export { Button } from './Button';
-export { ButtonLink } from './ButtonLink';
+export { ButtonAnchor, ButtonLink } from './ButtonLink';
 export { CancelConfirmModal } from './CancelConfirmModal';
 export { ChangeProjectButton } from './ChangeProjectButton';
 export { DateTimeDisplay } from './DateTimeDisplay';
