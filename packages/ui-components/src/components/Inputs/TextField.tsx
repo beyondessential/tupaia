@@ -1,12 +1,14 @@
-import React from 'react';
 import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
+import { Property } from 'csstype';
+import React from 'react';
 import styled from 'styled-components';
+
 import { InputLabel } from './InputLabel';
 
 const ADORNMENT_COLOUR = '#c4c4c7';
 
-const StyledTextField = styled(MuiTextField)<TextFieldProps>`
-  margin-bottom: 1.2rem;
+const StyledTextField = styled(MuiTextField)<{ $focusColor?: Property.Color }>`
+  margin-block-end: 1.2rem;
   cursor: auto;
 
   .MuiInputBase-root {
@@ -17,7 +19,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
-    border-radius: 3px;
+    border-radius: 0.1875rem;
   }
 
   // helper text
@@ -26,9 +28,12 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   }
 
   // The border
-  .MuiOutlinedInput-notchedOutline {
+  .MuiOutlinedInput-notchedOutline,
+  .MuiOutlinedInput-root:is(:hover, .Mui-disabled, .Mui-focused, .Mui-focusVisible)
+    .MuiOutlinedInput-notchedOutline {
     border-color: ${props => props.theme.palette.grey['400']};
-    top: 0;
+    border-width: max(0.0625rem, 1px);
+    inset-block-start: 0;
 
     legend {
       display: none;
@@ -41,18 +46,9 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
     background-color: ${props => props.theme.palette.grey['100']};
   }
 
-  .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.theme.palette.grey['400']};
-  }
-
-  // Hover state
-  .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.theme.palette.grey['400']};
-  }
-
   // Focused state
-  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-width: 1px;
+  .MuiOutlinedInput-root:is(.Mui-focused, .Mui-focusVisible) .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ $focusColor, theme }) => $focusColor ?? theme.palette.primary.main};
   }
 
   .MuiFormLabel-root.Mui-focused {
@@ -62,7 +58,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   // The label
   .MuiFormLabel-root {
     position: relative;
-    margin-bottom: 3px;
+    margin-block-end: 0.1875rem;
     line-height: 1.125rem;
     transform: none;
     display: flex;
@@ -85,16 +81,18 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
     padding-left: 5px;
   }
 
+  .MuiInputBase-input::placeholder {
+    color: ${props => props.theme.palette.grey[400]};
+  }
+
   /* Override MaterialUI which hides the placeholder due to conflict with its floating labels */
-  &&&& {
-    .MuiInputBase-input::placeholder {
-      opacity: 1 !important;
-    }
+  &&&& .MuiInputBase-input::placeholder {
+    opacity: initial !important;
   }
 
   // disable MaterialUI underline
-  .MuiInput-underline:before,
-  .MuiInput-underline:after {
+  .MuiInput-underline::before,
+  .MuiInput-underline::after {
     display: none;
   }
 
@@ -110,15 +108,18 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
 `;
 
 export const TextField = ({
+  focusColor,
   label = '',
   tooltip,
   error,
   required,
   ...props
 }: Partial<TextFieldProps> & {
+  focusColor?: Property.Color;
   tooltip?: string;
 }) => (
   <StyledTextField
+    $focusColor={focusColor}
     fullWidth
     {...props}
     variant="outlined"
