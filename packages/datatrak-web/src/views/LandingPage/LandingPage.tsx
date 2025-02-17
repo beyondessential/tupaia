@@ -12,40 +12,30 @@ import { SurveySelectSection } from './SurveySelectSection';
 import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(BasePageContainer)`
+  --body-block-size: calc(100vb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
+  //                                                 ^~~~~~~~~~~~~~~~~~~ Header’s border-block-end-width
   block-size: 100%;
   display: flex;
+  max-block-size: var(--body-block-size);
+  overflow-y: auto;
 
   ${({ theme }) => {
-    const { breakpoints, palette } = theme;
-
+    const primaryColor = theme.palette.primary.main;
+    const backgroundColor = theme.palette.background.default;
     return css`
       background-image: linear-gradient(
           252deg,
-          oklch(from ${palette.primary.main} l c h / 14%) 2%,
-          oklch(from ${palette.background.default} l c h / 20%) 29%
+          oklch(from ${primaryColor} l c h / 14%) 2%,
+          oklch(from ${backgroundColor} l c h / 20%) 29%
         ),
         linear-gradient(
           242deg,
-          oklch(from ${palette.background.default} l c h / 30%) 68%,
-          oklch(from ${palette.primary.main} l c h / 16%) 100%
+          oklch(from ${backgroundColor} l c h / 30%) 68%,
+          oklch(from ${primaryColor} l c h / 16%) 100%
         );
       @supports not (color: oklch(from black l c h)) {
-        background-image: linear-gradient(
-            252deg,
-            ${palette.primary.main}24 2%,
-            ${palette.background.default}33 29%
-          ),
-          linear-gradient(
-            242deg,
-            ${palette.background.default}4d 68%,
-            ${palette.primary.main}28 100%
-          );
-      }
-
-      // Make the container scrollable on small screens
-      ${breakpoints.down('sm')} {
-        max-block-size: calc(100vb - ${HEADER_HEIGHT});
-        overflow-y: auto;
+        background-image: linear-gradient(252deg, ${primaryColor}24 2%, ${backgroundColor}33 29%),
+          linear-gradient(242deg, ${backgroundColor}4d 68%, ${primaryColor}28 100%);
       }
     `;
   }};
@@ -64,7 +54,7 @@ const PageBody = styled.div`
 
   // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
-    block-size: calc(100vh - ${HEADER_HEIGHT});
+    block-size: var(--body-block-size);
     padding-block: 0.2rem 0.8rem;
     padding-inline: 1rem;
   }
@@ -74,10 +64,10 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  margin-block: 1.3rem;
+  margin-block: 1.5rem;
   margin-inline: auto;
   max-inline-size: 100%;
-  min-block-size: 0; // This is needed to stop the grid overflowing the flex container
+  min-block-size: 50rem;
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
@@ -93,7 +83,8 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
       ${up('md')} {
         display: grid;
         grid-template-columns: repeat(3, 23.33333333%) 30%;
-        margin-block: 0.5rem;
+        padding-block: 1rem;
+        margin-block: 0;
       }
 
       ${up('lg')} {
