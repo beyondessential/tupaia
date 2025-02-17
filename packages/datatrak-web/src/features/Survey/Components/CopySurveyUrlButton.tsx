@@ -41,7 +41,7 @@ export const useCopySurveyUrl = ({ toastOptions = {} }: { toastOptions: OptionsO
       // Android 13 natively notifies the user when the clipboard is accessed
       // https://developer.android.com/privacy-and-security/risks/secure-clipboard-handling
       if (!androidVersion || androidVersion < 12) {
-        infoToast('Page URL copied to clipboard', {
+        infoToast(`Copied to clipboard:\n${link}`, {
           persist: false,
           TransitionProps: { appear: true },
           hideCloseButton: true,
