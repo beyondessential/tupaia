@@ -18,6 +18,8 @@ const PageContainer = styled(BasePageContainer)`
   display: flex;
   max-block-size: var(--body-block-size);
   overflow-y: auto;
+  max-inline-size: 100%:
+  inline-size: 100%:
 
   ${({ theme }) => {
     const primaryColor = theme.palette.primary.main;
