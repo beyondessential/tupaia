@@ -24,6 +24,10 @@ const Container = styled.div`
   padding-inline: 0.5rem;
   position: fixed;
   touch-action: pan-x pinch-zoom;
+
+  & > button {
+    border-radius: 0;
+  }
 `;
 
 const StyledCopyUrlButton = styled(CopyUrlButton).attrs({ noTooltip: true })`
