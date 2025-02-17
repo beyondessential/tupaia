@@ -85,7 +85,8 @@ const TrailingIconGroup = styled(IconGroup)`
 `;
 
 const BodyWrapper = styled.div`
-  flex-grow: 1;
+  min-inline-size: 0;
+  flex: 1;
 `;
 
 const Heading = styled(Typography).attrs({ variant: 'h3' })`

@@ -82,7 +82,7 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
     return css`
       ${up('md')} {
         display: grid;
-        grid-template-columns: repeat(3, 1fr) 1.4fr;
+        grid-template-columns: repeat(3, 23.33333333%) 30%;
         padding-block: 1rem;
         margin-block: 0;
       }
