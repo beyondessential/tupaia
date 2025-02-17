@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
-export const MobileHeaderWrapper = styled.header`
+const MobileHeaderWrapper = styled.header`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
