@@ -41,7 +41,7 @@ const Wrapper = styled(Paper).attrs({
       background-color: ${theme.palette.primaryHover};
     }
 
-    ${theme.breakpoints.up('lg')} {
+    ${theme.breakpoints.up('md')} {
       flex-direction: row;
       inline-size: 100%;
     }
@@ -61,11 +61,11 @@ const Header = styled.header`
   ${({ theme }) => {
     const { down, up } = theme.breakpoints;
     return css`
-      ${down('lg')} {
+      ${down('md')} {
         margin-block-end: 0.5rem;
         block-size: 1.5rem;
       }
-      ${up('lg')} {
+      ${up('md')} {
         flex-direction: column;
       }
     `;
