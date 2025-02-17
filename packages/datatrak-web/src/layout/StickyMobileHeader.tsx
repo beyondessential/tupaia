@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
-export const MobileHeaderWrapper = styled.header`
+const MobileHeaderWrapper = styled.header`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
@@ -15,16 +15,21 @@ export const MobileHeaderWrapper = styled.header`
   grid-template-areas: '--leading --title --trailing';
   grid-template-columns: minmax(3rem, max-content) 1fr minmax(3rem, max-content);
   inline-size: 100%;
-  inset-block-start: 0;
-  inset-inline-start: 0;
   justify-content: space-between;
   min-block-size: ${HEADER_HEIGHT};
   padding-left: max(env(safe-area-inset-left, 0), 0.2rem);
   padding-right: max(env(safe-area-inset-right, 0), 0.2rem);
   padding-top: env(safe-area-inset-top, 0);
+
+  // Stick to top
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
   position: sticky;
-  touch-action: pinch-zoom;
   z-index: 1000;
+
+  // Make pull-to-refresh harder (by preventing y-axis panning)
+  touch-action: pan-x pinch-zoom;
 `;
 
 const Button = styled(IconButton)`
