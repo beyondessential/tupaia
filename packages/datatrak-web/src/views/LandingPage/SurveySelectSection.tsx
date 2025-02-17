@@ -83,7 +83,7 @@ const TextWrapper = styled.div`
     return css`
       ${up('md')} {
         margin-block-end: 0;
-        max-width: 75%;
+        max-inline-size: 75%;
         padding-inline: 1rem 4rem;
       }
       ${up('lg')} {
