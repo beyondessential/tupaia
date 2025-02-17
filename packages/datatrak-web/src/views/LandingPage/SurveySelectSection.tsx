@@ -29,11 +29,19 @@ const SectionContent = styled.div`
   display: flex;
   flex-direction: column-reverse;
   padding-inline-end: 2rem;
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-inline-start: 0;
-    flex-direction: row;
-  }
+  ${({ theme }) => {
+    const { up, down } = theme.breakpoints;
+    return css`
+      ${up('md')} {
+        margin-inline-start: 0;
+        flex-direction: row;
+      }
+      ${down('md')} {
+        // Avoid collision with SurveysImage
+        padding-inline-end: 6.5rem;
+      }
+    `;
+  }}
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
@@ -107,24 +115,28 @@ const VisuallyHidden = styled.span`
 const SurveysImage = styled.img.attrs({
   'aria-hidden': true,
   src: '/surveys.svg',
+  width: 108,
+  height: 207,
 })`
-  position: absolute;
-  width: auto;
-  display: flex;
-  align-items: center;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 0;
   height: 130%;
+  width: auto;
+
+  inset-block-start: 50%;
+  inset-inline-end: 0;
+  position: absolute;
+  shape-margin: 1rem;
+  shape-outside: url('/surveys.svg');
+  transform: translateY(-50%);
+
   ${({ theme }) => {
     const { up } = theme.breakpoints;
     return css`
       ${up('sm')} {
-        right: 10%;
+        inset-inline-end: 10%;
         height: 125%;
       }
       ${up('md')} {
-        right: -1rem;
+        inset-inline-end: -1rem;
         height: 130%;
       }
       ${up('lg')} {
