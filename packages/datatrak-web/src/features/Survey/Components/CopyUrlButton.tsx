@@ -1,13 +1,15 @@
 import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { generatePath, useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import DoneIcon from '@material-ui/icons/Done';
 
 import { Tooltip } from '@tupaia/ui-components';
 
 import { CopyIcon } from '../../../components';
 import { ROUTES } from '../../../constants';
 import { getAndroidVersion, infoToast } from '../../../utils';
+import { useTheme } from '@material-ui/core';
 
 const StyledTooltip = styled(Tooltip).attrs({
   arrow: true,
@@ -22,14 +24,18 @@ const StyledTooltip = styled(Tooltip).attrs({
 const StyledIconButton = styled(IconButton)`
   padding: 0;
   text-align: center;
+`;
 
-  .MuiSvgIcon-root {
-    color: ${({ theme }) => theme.palette.text.primary};
-  }
-
-  &:hover .MuiSvgIcon-root {
-    color: ${({ theme }) => theme.palette.action.hover};
-  }
+const StyledCopyIcon = styled(CopyIcon)`
+  ${({ theme }) => {
+    const { action, text } = theme.palette;
+    return css`
+      color: ${text.primary};
+      ${StyledIconButton}:hover > & {
+        color: ${action.hover};
+      }
+    `;
+  }}
 `;
 
 const useCopyUrl = () => {
@@ -37,13 +43,17 @@ const useCopyUrl = () => {
   const path = generatePath(ROUTES.SURVEY, params);
   const link = `${window.location.origin}${path}`;
 
-  return async () => {
+  const [didJustCopy, setDidJustCopy] = useState(false);
+
+  const copyPageUrl = async () => {
     try {
       await navigator.clipboard.writeText(link);
-      const androidVersion = getAndroidVersion();
+      setDidJustCopy(true);
+      setTimeout(() => setDidJustCopy(false), 2000);
 
       // Android 12 (and newer) notifies the user when the clipboard is accessed
       // https://developer.android.com/privacy-and-security/risks/secure-clipboard-handling
+      const androidVersion = getAndroidVersion();
       if (!androidVersion || androidVersion < 12) {
         infoToast(`Copied to clipboard:\n${link}`, {
           persist: false,
@@ -55,19 +65,25 @@ const useCopyUrl = () => {
       console.warn('Failed to copy page URL: ', err);
     }
   };
+
+  return { copyPageUrl, didJustCopy };
 };
 
 interface CopyUrlButtonProps extends IconButtonProps {
   noTooltip?: boolean;
 }
 export const CopyUrlButton = ({ noTooltip = false, ...props }: CopyUrlButtonProps) => {
-  const copyPageUrl = useCopyUrl();
+  const { copyPageUrl, didJustCopy } = useCopyUrl();
   const MaybeTooltip = noTooltip ? Fragment : StyledTooltip;
 
   return (
     <MaybeTooltip>
       <StyledIconButton aria-label="Copy URL to clipboard" onClick={copyPageUrl} {...props}>
-        <CopyIcon />
+        {didJustCopy ? (
+          <DoneIcon htmlColor={useTheme().palette.success.main} />
+        ) : (
+          <StyledCopyIcon />
+        )}
       </StyledIconButton>
     </MaybeTooltip>
   );
