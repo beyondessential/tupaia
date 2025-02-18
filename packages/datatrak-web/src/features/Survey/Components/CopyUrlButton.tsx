@@ -55,7 +55,7 @@ const useCopyUrl = () => {
       // https://developer.android.com/privacy-and-security/risks/secure-clipboard-handling
       const androidVersion = getAndroidVersion();
       if (!androidVersion || androidVersion < 12) {
-        infoToast(`Copied to clipboard:\n${link}`, {
+        infoToast('Page URL copied to clipboard', {
           persist: false,
           TransitionProps: { appear: true },
           hideCloseButton: true,
