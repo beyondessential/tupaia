@@ -11,7 +11,7 @@ import { SurveyResponsesSection } from './SurveyResponsesSection';
 import { SurveySelectSection } from './SurveySelectSection';
 import { TasksSection } from './TasksSection';
 
-const PageContainer = styled(BasePageContainer)`
+const PageContainer = styled(BasePageContainer).attrs({ component: 'main' })`
   --body-block-size: calc(100vb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
   //                                                 ^~~~~~~~~~~~~~~~~~~ Header’s border-block-end-width
   block-size: 100%;
