@@ -1,22 +1,22 @@
+import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { SurveyQRCode } from '../SurveyQRCode';
+
 import { useCurrentUserContext } from '../../../api';
+import { PageContainer } from '../../../components';
+import { SurveyQRCode } from '../SurveyQRCode';
 import { useQRCodeLocationData } from '../SurveyQRCode/useQRCodeLocationData';
 
-const Wrapper = styled.div`
+const Wrapper = styled(PageContainer).attrs({ component: 'main' })`
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-block-size: 100%;
   padding-bottom: max(env(safe-area-inset-bottom, 0), 1.5rem);
-  padding-left: max(env(safe-area-inset-left, 0), 1.5rem);
-  padding-right: max(env(safe-area-inset-right, 0), 1.5rem);
   padding-top: max(env(safe-area-inset-top, 0), 1.5rem);
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
-    flex-grow: 1;
   }
 `;
 
