@@ -114,7 +114,7 @@ export const assertDashboardRelationCreatePermissions = async (
 
   if (!(await hasVizBuilderAccessToEntity(accessPolicy, models, entity))) {
     throw new Error(
-      `Requires Tupaia Admin Panel access to the dashboard root entity code '${dashboard.root_entity_code}'`,
+      `Requires Viz Builder access to the dashboard root entity code '${dashboard.root_entity_code}'`,
     );
   }
 

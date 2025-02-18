@@ -34,7 +34,7 @@ export const assertDashboardCreatePermissions = async (
   const entity = await models.entity.findOne({ code: rootEntityCode });
 
   if (!(await hasVizBuilderAccessToEntity(accessPolicy, models, entity))) {
-    throw new Error(`Requires Tupaia Admin Panel access to the entity code: '${rootEntityCode}'`);
+    throw new Error(`Requires Viz Builder access to the entity code: '${rootEntityCode}'`);
   }
 
   return true;
