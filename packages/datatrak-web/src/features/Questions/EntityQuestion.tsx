@@ -24,7 +24,7 @@ export const EntityQuestion = ({
   } = useSurveyForm();
 
   // Hide the question label if there is only one question, and it is the same as the screen header
-  const hideQuestionLabel = displayQuestions.length === 1 && screenHeader == label;
+  const hideQuestionLabel = displayQuestions?.length === 1 && screenHeader == label;
 
   return (
     <EntitySelector
