@@ -5,7 +5,7 @@ export const PageContainer = styled(Container).attrs({
   maxWidth: false,
 })`
   flex: 1;
-  padding-block: 0;
-  padding-inline: 1.25rem;
+  padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
+  padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
   position: relative;
 `;
