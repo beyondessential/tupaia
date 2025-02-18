@@ -51,14 +51,12 @@ const PageBody = styled.div`
   margin-block: 0;
   margin-inline: auto;
   max-inline-size: 85rem;
-  padding-block: 0.5rem;
-  padding-inline: 0;
+  padding-block-start: 1rem;
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
 
   // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
     block-size: var(--body-block-size);
-    padding-block: 0.2rem 0.8rem;
-    padding-inline: 1rem;
   }
 `;
 
