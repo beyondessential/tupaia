@@ -14,7 +14,7 @@ const PageWrapper = styled.div`
   min-block-size: 100vb;
 
   + .notistack-SnackbarContainer {
-    inset-block-start: calc(1rem + ${HEADER_HEIGHT});
+    inset-block-start: calc(1rem + ${HEADER_HEIGHT} + max(0.0625rem, 1px));
 
     ${({ theme }) => theme.breakpoints.down('md')} {
       inset-block-end: 3.5rem;
