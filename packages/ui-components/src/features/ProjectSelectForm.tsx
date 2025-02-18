@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';
-import { DialogActions, Typography, useTheme } from '@material-ui/core';
+import { DialogActions, useTheme } from '@material-ui/core';
 import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
 import { SelectList, SpinningLoader, Button as UIButton } from '../components';
 
@@ -128,7 +128,6 @@ export const ProjectSelectForm = ({
 
   return (
     <>
-      <Typography variant="h1">Select project</Typography>
       {isLoading ? (
         <LoadingContainer>
           <SpinningLoader />
