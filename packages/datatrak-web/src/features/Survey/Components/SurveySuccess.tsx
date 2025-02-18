@@ -18,16 +18,22 @@ const Wrapper = styled(PageContainer).attrs({ component: 'main' })`
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
   }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    display: grid;
+    grid-template-rows: 2fr auto minmax(3fr, auto);
+    grid-template-areas: '.' '--main' '--supplemental';
+  }
 `;
 
 const Container = styled.div<{ $showQrCode?: boolean }>`
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  grid-area: --main;
+  inline-size: 100%;
   justify-content: center;
   text-wrap: balance;
-  width: 100%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: ${props => (props.$showQrCode ? '15rem' : '0')};
@@ -67,6 +73,10 @@ const Text = styled(Typography)`
   margin-block-end: 1.875rem;
 `;
 
+const StyledSurveyQRCode = styled(SurveyQRCode)`
+  grid-area: --supplemental;
+`;
+
 interface SurveySuccessProps {
   text: string;
   title: string;
@@ -89,7 +99,9 @@ export const SurveySuccess = ({ text, title, children }: SurveySuccessProps) => 
           </>
         )}
       </Container>
-      {qrCodeEntitiesCreated && <SurveyQRCode qrCodeEntitiesCreated={qrCodeEntitiesCreated} />}
+      {qrCodeEntitiesCreated && (
+        <StyledSurveyQRCode qrCodeEntitiesCreated={qrCodeEntitiesCreated} />
+      )}
     </Wrapper>
   );
 };
