@@ -21,7 +21,8 @@ const Container = styled.div`
   justify-content: space-between;
   margin-bottom: env(safe-area-inset-bottom, 0);
   padding-block: 0;
-  padding-inline: 0.5rem;
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
   position: fixed;
   touch-action: pan-x pinch-zoom;
 
