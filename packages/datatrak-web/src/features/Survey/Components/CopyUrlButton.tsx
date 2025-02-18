@@ -1,15 +1,15 @@
+import { useTheme } from '@material-ui/core';
 import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
+import DoneIcon from '@material-ui/icons/Done';
 import React, { Fragment, useState } from 'react';
 import { generatePath, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import DoneIcon from '@material-ui/icons/Done';
 
 import { Tooltip } from '@tupaia/ui-components';
 
 import { CopyIcon } from '../../../components';
 import { ROUTES } from '../../../constants';
 import { getAndroidVersion, infoToast } from '../../../utils';
-import { useTheme } from '@material-ui/core';
 
 const StyledTooltip = styled(Tooltip).attrs({
   arrow: true,
