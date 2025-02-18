@@ -10,7 +10,7 @@ import { useIsMobile } from '../utils';
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.palette.background.default};
+  background-color: ${({ theme }) => theme.palette.background.default};
   min-block-size: 100vb;
 
   + .notistack-SnackbarContainer {
