@@ -9,7 +9,7 @@ import { useIsMobile } from '../../utils';
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
 const SectionContainer = styled.section`
-  align-items: flex-start;
+  align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
   display: flex;
