@@ -11,7 +11,7 @@ import { SurveyResponsesSection } from './SurveyResponsesSection';
 import { SurveySelectSection } from './SurveySelectSection';
 import { TasksSection } from './TasksSection';
 
-const PageContainer = styled(BasePageContainer)`
+const PageContainer = styled(BasePageContainer).attrs({ component: 'main' })`
   --body-block-size: calc(100vb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
   //                                                 ^~~~~~~~~~~~~~~~~~~ Header’s border-block-end-width
   block-size: 100%;
@@ -51,14 +51,12 @@ const PageBody = styled.div`
   margin-block: 0;
   margin-inline: auto;
   max-inline-size: 85rem;
-  padding-block: 0.5rem;
-  padding-inline: 0;
+  padding-block-start: 1rem;
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
 
   // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
     block-size: var(--body-block-size);
-    padding-block: 0.2rem 0.8rem;
-    padding-inline: 1rem;
   }
 `;
 
@@ -84,13 +82,9 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
     return css`
       ${up('md')} {
         display: grid;
-        grid-template-columns: repeat(3, 23.33333333%) 30%;
+        grid-template-columns: repeat(3, minmax(0, 23.33333333%)) minmax(min-content, 30%);
         padding-block: 1rem;
         margin-block: 0;
-      }
-
-      ${up('lg')} {
-        gap: 1.81rem;
       }
 
       // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
