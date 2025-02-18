@@ -29,6 +29,7 @@ const SectionContent = styled.div`
   display: flex;
   flex-direction: column-reverse;
   padding-inline-end: 2rem;
+  row-gap: 1rem;
   ${({ theme }) => {
     const { up, down } = theme.breakpoints;
     return css`
@@ -72,16 +73,14 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-const TextWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-block-end: 0.7rem;
+const Text = styled(Typography)`
+  font-size: 1rem;
+  line-height: 1.5;
 
   ${({ theme }) => {
     const { up } = theme.breakpoints;
     return css`
       ${up('md')} {
-        margin-block-end: 0;
         max-inline-size: 75%;
         padding-inline: 1rem 4rem;
       }
@@ -90,11 +89,6 @@ const TextWrapper = styled.div`
       }
     `;
   }}
-`;
-
-const Text = styled(Typography)`
-  font-size: 1rem;
-  line-height: 1.5;
 `;
 
 const VisuallyHidden = styled.span`
@@ -163,17 +157,15 @@ export const SurveySelectSection = () => {
             Explore data
           </ButtonAnchor>
         </ButtonWrapper>
-        <TextWrapper>
-          <Text>
-            Tupaia DataTrak makes data collection easy!
-            <SupplementalText>
-              {' '}
-              You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
-              stories and information with the Tupaia community. To collect data offline, please
-              download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
-            </SupplementalText>
-          </Text>
-        </TextWrapper>
+        <Text>
+          Tupaia DataTrak makes data collection easy!
+          <SupplementalText>
+            {' '}
+            You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
+            stories and information with the Tupaia community. To collect data offline, please
+            download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
+          </SupplementalText>
+        </Text>
       </SectionContent>
       <SurveysImage />
     </SectionContainer>
