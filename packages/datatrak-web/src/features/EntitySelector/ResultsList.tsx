@@ -10,11 +10,14 @@ const DARK_BLUE = '#004975';
 
 const ListWrapper = styled.div`
   padding-top: 1rem;
-  border-top: 1px solid ${({ theme }) => theme.palette.divider};
   display: flex;
   flex-direction: column;
   overflow: auto;
-  margin-top: 0.9rem;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: 0.9rem;
+    border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  }
 
   li .MuiSvgIcon-root:not(.MuiSvgIcon-colorPrimary) {
     color: ${DARK_BLUE};
@@ -114,7 +117,7 @@ export const ResultsList = ({
           <SelectList
             items={recentEntities}
             onSelect={onSelect}
-            subTitle="Recent entities"
+            subTitle="Recently used"
             variant="borderless"
           />
         </SubListWrapper>
@@ -125,7 +128,7 @@ export const ResultsList = ({
           onSelect={onSelect}
           variant="borderless"
           noResultsMessage={noResultsMessage}
-          subTitle={!searchValue ? 'All entities' : undefined}
+          subTitle={!searchValue ? 'All' : undefined}
         />
       </SubListWrapper>
     </ListWrapper>
