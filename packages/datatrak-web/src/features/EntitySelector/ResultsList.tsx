@@ -9,14 +9,14 @@ import { useIsMobile } from '../../utils';
 const DARK_BLUE = '#004975';
 
 const ListWrapper = styled.div`
-  padding-top: 1rem;
+  padding-block-start: 1rem;
   display: flex;
   flex-direction: column;
   overflow: auto;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-top: 0.9rem;
-    border-top: 1px solid ${({ theme }) => theme.palette.divider};
+    margin-block-start: 0.9rem;
+    border-block-start: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
   }
 
   li .MuiSvgIcon-root:not(.MuiSvgIcon-colorPrimary) {

@@ -29,7 +29,7 @@ export const EntityQuestion = ({
   return (
     <EntitySelector
       id={id}
-      label={hideQuestionLabel ? '' : label}
+      label={hideQuestionLabel ? null : label}
       detailLabel={detailLabel}
       name={name}
       required={required}

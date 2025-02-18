@@ -63,7 +63,7 @@ const Subtitle = styled(Typography)`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     color: ${({ theme }) => theme.palette.text.primary};
-    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+    border-block-end: max(0.0265rem, 1px) solid ${({ theme }) => theme.palette.divider};
     margin-block: 0 0.5rem;
     margin-inline: 0;
     padding-block-end: 0.2rem;
