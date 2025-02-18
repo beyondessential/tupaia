@@ -1,6 +1,7 @@
-import React from 'react';
-import { TextField } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
+import React from 'react';
+
+import { TextField } from '../../../../components/TextField';
 
 export const getColumnFilter = translate => {
   const ColumnFilter = ({ filter, onChange }) => (
