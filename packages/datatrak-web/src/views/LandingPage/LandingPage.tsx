@@ -89,10 +89,6 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
         margin-block: 0;
       }
 
-      ${up('lg')} {
-        gap: 1.81rem;
-      }
-
       // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
       ${$hasMultiple
         ? css`
