@@ -76,7 +76,6 @@ const TextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-block-end: 0.7rem;
-  text-wrap: balance;
 
   ${({ theme }) => {
     const { up } = theme.breakpoints;
