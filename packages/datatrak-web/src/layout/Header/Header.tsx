@@ -8,9 +8,10 @@ import { HeaderLeft } from './HeaderLeft';
 const Wrapper = styled(PageContainer).attrs({ component: 'header' })`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  display: flex;
   block-size: ${HEADER_HEIGHT};
+  display: flex;
   justify-content: space-between;
+  max-block-size: ${HEADER_HEIGHT};
   position: relative;
   width: 100%;
   z-index: 10;
