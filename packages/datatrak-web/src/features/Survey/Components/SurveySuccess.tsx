@@ -33,14 +33,14 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div<{ $showQrCode?: boolean }>`
-  grid-area: --main;
   align-items: center;
+  block-size: fit-content;
   display: flex;
   flex-direction: column;
+  grid-area: --main;
+  inline-size: 100%;
   justify-content: center;
   text-wrap: balance;
-  inline-size: 100%;
-  block-size: fit-content;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: ${props => (props.$showQrCode ? '15rem' : '0')};
