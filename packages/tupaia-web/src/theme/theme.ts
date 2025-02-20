@@ -39,6 +39,7 @@ export const theme = createMuiTheme({
     },
     text: {
       secondary: LIGHT_GREY,
+      hint: '#606368',
     },
     error: {
       main: ERROR_ORANGE,
