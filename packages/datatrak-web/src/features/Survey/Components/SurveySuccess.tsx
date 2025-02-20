@@ -9,7 +9,10 @@ import { useQRCodeLocationData } from '../SurveyQRCode/useQRCodeLocationData';
 const Wrapper = styled.div`
   align-items: center;
   display: grid;
-  grid-template-areas: '. --sidebar' '--main --sidebar' '--supplementary --sidebar';
+  grid-template-areas:
+    '.'
+    '--main'
+    '--supplemental';
   grid-template-columns: 1fr minmax(0, auto);
   grid-template-rows: 1fr auto var(--wrapper-row-3-size, 3fr);
   inline-size: 100%;
@@ -77,7 +80,7 @@ const Text = styled(Typography)`
 const StyledSurveyQrCode = styled(SurveyQRCode)`
   ${({ theme }) => theme.breakpoints.down('sm')} {
     justify-self: center;
-    grid-area: --supplementary;
+    grid-area: --supplemental;
     ${Wrapper}:has(&) {
       --wrapper-row-3-size: max(min-content, auto);
     }
