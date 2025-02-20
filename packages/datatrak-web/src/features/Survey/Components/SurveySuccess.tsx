@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   grid-template-rows:
     minmax(0, 1fr)
     minmax(0, max-content)
-    minmax(0, var(--max-content, 3fr));
+    minmax(0, max(max-content, 3fr));
   inline-size: 100%;
   justify-items: stretch;
   min-block-size: 100%;
