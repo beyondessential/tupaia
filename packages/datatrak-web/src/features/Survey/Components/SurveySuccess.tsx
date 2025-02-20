@@ -9,14 +9,8 @@ import { useQRCodeLocationData } from '../SurveyQRCode/useQRCodeLocationData';
 const Wrapper = styled.div`
   align-items: center;
   display: grid;
-  grid-template-areas:
-    '.'
-    '--main'
-    '--supplemental';
-  grid-template-rows:
-    minmax(0, 1fr)
-    minmax(0, max-content)
-    minmax(0, max(max-content, 3fr));
+  grid-template-areas: '.' '--main' '--supplemental';
+  grid-template-rows: minmax(0, auto) max-content minmax(0, auto);
   inline-size: 100%;
   justify-items: stretch;
   min-block-size: 100%;
@@ -25,10 +19,8 @@ const Wrapper = styled.div`
   padding-right: max(env(safe-area-inset-right, 0), 1.5rem);
   padding-top: max(env(safe-area-inset-top, 0), 1.5rem);
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    grid-template-rows: minmax(0, 3fr) max-content minmax(0, 4fr);
   }
 `;
 
