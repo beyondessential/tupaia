@@ -80,13 +80,13 @@ const StyledTextField = styled(MuiTextField)<{ $focusColor?: Property.Color }>`
   }
 
   .MuiInputBase-input::placeholder {
-    color: ${props => props.theme.palette.grey[400]};
+    color: ${props => props.theme.palette.text.hint};
   }
 
   /* Override MaterialUI which hides the placeholder due to conflict with its floating labels */
   &&&& .MuiInputBase-input::placeholder {
-    color: inherit;
-    opacity: 55% !important;
+    color: ${props => props.theme.palette.text.hint};
+    opacity: initial !important;
   }
 
   // disable MaterialUI underline
