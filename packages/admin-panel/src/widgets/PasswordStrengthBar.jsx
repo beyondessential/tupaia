@@ -1,25 +1,25 @@
+import MuiBox from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
 import React, { lazy, Suspense } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import MuiBox from '@material-ui/core/Box';
 
 // Lazy load the password strength library as it uses zxcvbn which is a large dependency.
 // For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
 const PasswordStrengthBarComponent = lazy(() => import('react-password-strength-bar'));
 
 const Label = styled(Typography)`
-  font-size: 0.9rem;
-  line-height: 1.2rem;
   color: ${props => props.theme.palette.text.primary};
-  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.33333333;
+  margin-block-end: 0.6rem;
 `;
 
 const HelperText = styled(Typography)`
   font-size: 0.9rem;
-  line-height: 1rem;
-  color: ${props => props.theme.palette.text.tertiary};
-  margin-top: 1rem;
+  line-height: 1.11111111;
+  color: ${props => props.theme.palette.text.hint};
+  margin-block-start: 1rem;
 `;
 
 export const PasswordStrengthBarFallback = styled.div`
