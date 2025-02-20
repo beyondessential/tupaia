@@ -13,7 +13,6 @@ const Wrapper = styled.div`
     '.'
     '--main'
     '--supplemental';
-  grid-template-columns: 1fr minmax(0, auto);
   grid-template-rows: 1fr auto var(--wrapper-row-3-size, 3fr);
   inline-size: 100%;
   justify-items: stretch;
