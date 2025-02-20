@@ -13,7 +13,10 @@ const Wrapper = styled.div`
     '.'
     '--main'
     '--supplemental';
-  grid-template-rows: 1fr auto var(--wrapper-row-3-size, 3fr);
+  grid-template-rows:
+    minmax(0, 1fr)
+    minmax(0, max-content)
+    minmax(0, var(--max-content, 3fr));
   inline-size: 100%;
   justify-items: stretch;
   min-block-size: 100%;
@@ -23,6 +26,7 @@ const Wrapper = styled.div`
   padding-top: max(env(safe-area-inset-top, 0), 1.5rem);
 
   ${({ theme }) => theme.breakpoints.up('md')} {
+    display: flex;
     flex-direction: row;
     flex-grow: 1;
   }
@@ -33,10 +37,10 @@ const Container = styled.div<{ $showQrCode?: boolean }>`
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: 100%;
   justify-content: center;
   text-wrap: balance;
-  width: 100%;
+  inline-size: 100%;
+  block-size: fit-content;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: ${props => (props.$showQrCode ? '15rem' : '0')};
@@ -78,11 +82,9 @@ const Text = styled(Typography)`
 
 const StyledSurveyQrCode = styled(SurveyQRCode)`
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    justify-self: center;
+    align-self: flex-start;
     grid-area: --supplemental;
-    ${Wrapper}:has(&) {
-      --wrapper-row-3-size: max(min-content, auto);
-    }
+    justify-self: center;
   }
 `;
 
