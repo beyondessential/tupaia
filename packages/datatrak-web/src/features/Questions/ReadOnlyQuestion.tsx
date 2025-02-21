@@ -1,22 +1,21 @@
-import React from 'react';
-import styled from 'styled-components';
 import { FormHelperText, Typography } from '@material-ui/core';
-import { SurveyQuestionInputProps } from '../../types';
+import React from 'react';
+import styled, { css } from 'styled-components';
+
 import { useSurveyForm } from '..';
+import { SurveyQuestionInputProps } from '../../types';
 
 const Wrapper = styled.div`
-  width: 100%;
-  padding: 1.8rem 0 0.8rem;
-  border-width: 1px 0;
-  border-style: solid;
-  border-color: ${({ theme }) => theme.palette.divider};
+  align-items: flex-start;
+  border-block: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
   display: flex; // to get the label to not be full width, so that the tooltip only applies over the label text
   flex-direction: column;
-  align-items: flex-start;
+  inline-size: 100%;
   justify-content: center;
+  padding-block: 1.8rem 0.8rem;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding: 1rem 0;
+    padding-block: 1rem;
   }
 `;
 
@@ -25,10 +24,12 @@ const Label = styled(Typography).attrs({
 })`
   font-size: 1rem;
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    font-size: 0.875rem;
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  }
+  ${({ theme }) => css`
+    ${theme.breakpoints.down('sm')} {
+      font-size: 0.875rem;
+      font-weight: ${theme.typography.fontWeightMedium};
+    }
+  `}
 `;
 
 const InputHelperText = styled(FormHelperText)`
@@ -37,15 +38,17 @@ const InputHelperText = styled(FormHelperText)`
 
 const ValueWrapper = styled.div`
   margin-top: 1rem;
-  min-height: 1rem; // so that the space is reserved even when there is no value
+  min-block-size: 1rem; // so that the space is reserved even when there is no value
 `;
 
 const Value = styled(Typography)`
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  ${({ theme }) => css`
+    font-weight: ${theme.typography.fontWeightMedium};
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    font-size: 1rem;
-  }
+    ${theme.breakpoints.down('sm')} {
+      font-size: 1rem;
+    }
+  `}
 `;
 
 interface ReadOnlyQuestionInputProps extends SurveyQuestionInputProps {
