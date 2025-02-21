@@ -28,11 +28,13 @@ const Container = styled.div`
     border-width: max(0.0625rem, 1px);
   }
 
-  .jsoneditor-parent,
+  .jsoneditor-parent {
+    border-radius: 0.1875rem;
+  }
   .jsoneditor,
   .jsoneditor-outer,
   .ace_editor {
-    border-radius: 0.1875rem;
+    border-radius: inherit;
   }
 `;
 
