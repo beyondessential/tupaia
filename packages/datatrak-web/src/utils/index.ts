@@ -9,3 +9,4 @@ export {
   removeTaskFilterSetting,
 } from './taskFilterSettings';
 export { useFromLocation } from './useLocationState';
+export { isWebApp } from './isWebApp';
