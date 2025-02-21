@@ -113,11 +113,6 @@ const SurveysImage = styled.img.attrs({
 })`
   height: 13rem;
   width: auto;
-
-  // inset-inline-end: 0;
-  // position: absolute;
-  shape-margin: 1rem;
-  shape-outside: url('/surveys.svg');
 `;
 
 export const SurveySelectSection = () => {
