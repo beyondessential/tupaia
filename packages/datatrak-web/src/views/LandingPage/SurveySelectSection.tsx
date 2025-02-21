@@ -1,6 +1,6 @@
 import { Typography } from '@material-ui/core';
 import React, { Fragment } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { ButtonLink as BaseButtonLink, ButtonAnchor } from '../../components';
 import { ROUTES } from '../../constants';
