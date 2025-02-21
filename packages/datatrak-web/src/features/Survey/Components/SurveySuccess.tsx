@@ -46,8 +46,7 @@ const Container = styled.div<{ $showQrCode?: boolean }>`
 const StyledImg = styled.img`
   aspect-ratio: 1;
   width: 23rem;
-  max-width: 80%;
-  max-height: 50%;
+  max-width: 50vmin;
   margin-block-end: 2.75rem;
 `;
 
