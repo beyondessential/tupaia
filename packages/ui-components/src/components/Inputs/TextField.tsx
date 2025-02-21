@@ -5,8 +5,6 @@ import styled from 'styled-components';
 
 import { InputLabel } from './InputLabel';
 
-const ADORNMENT_COLOUR = '#c4c4c7';
-
 const StyledTextField = styled(MuiTextField)<{ $focusColor?: Property.Color }>`
   margin-block-end: 1.2rem;
   cursor: auto;
@@ -66,7 +64,7 @@ const StyledTextField = styled(MuiTextField)<{ $focusColor?: Property.Color }>`
 
   // Adornments
   .MuiInputAdornment-root {
-    color: ${ADORNMENT_COLOUR};
+    color: #c4c4c7;
   }
 
   .MuiInputAdornment-positionStart {
@@ -82,13 +80,12 @@ const StyledTextField = styled(MuiTextField)<{ $focusColor?: Property.Color }>`
   }
 
   .MuiInputBase-input::placeholder {
-    color: ${props => props.theme.palette.grey[400]};
+    color: ${props => props.theme.palette.text.hint};
   }
 
   /* Override MaterialUI which hides the placeholder due to conflict with its floating labels */
   &&&& .MuiInputBase-input::placeholder {
-    color: inherit;
-    opacity: 55% !important;
+    opacity: initial !important;
   }
 
   // disable MaterialUI underline
