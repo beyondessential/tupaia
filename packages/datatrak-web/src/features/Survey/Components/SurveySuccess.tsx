@@ -19,7 +19,7 @@ const Wrapper = styled.div`
   padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
   padding-top: max(env(safe-area-inset-top, 0), 1.5rem);
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     grid-template-rows: minmax(0, 3fr) max-content minmax(0, 4fr);
   }
 `;
