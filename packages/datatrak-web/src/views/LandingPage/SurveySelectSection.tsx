@@ -12,6 +12,7 @@ const SectionContainer = styled.section`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
+  column-gap: 1rem;
   display: flex;
   grid-area: --surveySelect;
   justify-content: space-between;
@@ -28,18 +29,12 @@ const SectionContent = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column-reverse;
-  padding-inline-end: 2rem;
-  row-gap: 1rem;
+  gap: 1rem 1.25rem;
   ${({ theme }) => {
     const { up, down } = theme.breakpoints;
     return css`
       ${up('md')} {
-        margin-inline-start: 0;
         flex-direction: row;
-      }
-      ${down('md')} {
-        // Avoid collision with SurveysImage
-        padding-inline-end: 6.5rem;
       }
     `;
   }}
@@ -60,7 +55,9 @@ const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   max-inline-size: 20rem;
+  min-inline-size: 8rem;
   row-gap: 0.5rem;
+  text-align: center;
 
   inline-size: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -76,19 +73,7 @@ const ButtonWrapper = styled.div`
 const Text = styled(Typography)`
   font-size: 1rem;
   line-height: 1.5;
-
-  ${({ theme }) => {
-    const { up } = theme.breakpoints;
-    return css`
-      ${up('md')} {
-        max-inline-size: 75%;
-        padding-inline: 1rem 4rem;
-      }
-      ${up('lg')} {
-        padding-inline: 2rem 1rem;
-      }
-    `;
-  }}
+  max-inline-size: 38rem;
 `;
 
 const VisuallyHidden = styled.span`
@@ -105,39 +90,39 @@ const VisuallyHidden = styled.span`
   }
 `;
 
+/**
+ * Semantically meaningless, but using this to let `SurveysImage` overflow without the containing
+ * flexbox without increasing its block size.
+ */
+const ImageWrapper = styled.div.attrs({ 'aria-hidden': true })`
+  // Center children, even if overflowing
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+
+  block-size: 0; // Let siblings alone determine block-size of parent
+  flex: 1; // Horizontally center in available space
+  inline-size: fit-content;
+
+  @media (max-width: 20rem) {
+    display: none;
+  }
+`;
+
 const SurveysImage = styled.img.attrs({
   'aria-hidden': true,
   src: '/surveys.svg',
   width: 108,
   height: 207,
 })`
-  height: 125%;
+  height: 13rem;
   width: auto;
-  max-width: 40%;
 
-  inset-block-start: 50%;
-  inset-inline-end: 0;
-  position: absolute;
+  // inset-inline-end: 0;
+  // position: absolute;
   shape-margin: 1rem;
   shape-outside: url('/surveys.svg');
-  transform: translateY(-50%);
-
-  ${({ theme }) => {
-    const { up } = theme.breakpoints;
-    return css`
-      ${up('sm')} {
-        inset-inline-end: 10%;
-        height: 125%;
-      }
-      ${up('md')} {
-        inset-inline-end: -1rem;
-        height: 130%;
-      }
-      ${up('lg')} {
-        height: 150%;
-      }
-    `;
-  }}
 `;
 
 export const SurveySelectSection = () => {
@@ -168,7 +153,9 @@ export const SurveySelectSection = () => {
           </SupplementalText>
         </Text>
       </SectionContent>
-      <SurveysImage />
+      <ImageWrapper>
+        <SurveysImage />
+      </ImageWrapper>
     </SectionContainer>
   );
 };
