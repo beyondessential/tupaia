@@ -87,7 +87,7 @@ const VisuallyHidden = styled.span`
 
 /**
  * Semantically meaningless, but using this to let `SurveysImage` overflow without the containing
- * flexbox without increasing its block size.
+ * flexbox without increasing its height.
  */
 const ImageWrapper = styled.div.attrs({ 'aria-hidden': true })`
   // Center children, even if overflowing
@@ -96,9 +96,10 @@ const ImageWrapper = styled.div.attrs({ 'aria-hidden': true })`
   justify-content: center;
   overflow: visible;
 
-  block-size: 0; // Let siblings alone determine block-size of parent
-  flex: 1; // Horizontally center in available space
-  inline-size: fit-content;
+  height: 0; // Let siblings alone determine block-size of parent...
+  width: fit-content; // ...but accommodate entire image width.
+
+  flex: 1;
 
   @media (max-width: 20rem) {
     display: none;
