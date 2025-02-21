@@ -7,11 +7,6 @@ import { Close } from '@material-ui/icons';
 const Wrapper = styled(SnackbarContent)`
   background-color: white;
   border-radius: 0.625rem;
-  max-width: 87vw;
-  min-height: 2.25rem;
-  @media screen and (min-width: 24rem) {
-    width: 21rem;
-  }
 `;
 
 const Container = styled.div<{
