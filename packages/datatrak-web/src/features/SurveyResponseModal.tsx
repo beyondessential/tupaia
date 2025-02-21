@@ -3,29 +3,21 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Dialog, Typography } from '@material-ui/core';
-import {
-  ModalContentProvider,
-  ModalFooter,
-  ModalHeader,
-  SpinningLoader,
-} from '@tupaia/ui-components';
+import { ModalContentProvider, ModalFooter, SpinningLoader } from '@tupaia/ui-components';
 import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 import { useSurveyResponse } from '../api/queries';
-import { Button, SurveyTickIcon } from '../components';
+import { Button, DownloadIcon, SurveyTickIcon } from '../components';
 import { displayDate } from '../utils';
 import { SurveyReviewSection, useSurveyResponseWithForm } from './Survey';
 import { SurveyContext } from '.';
+import { useExportSurveyResponse } from '../api';
 
 const Header = styled.div`
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  justify-content: space-between;
+  padding: 1.5rem 1.8rem 1.2rem;
   width: 100%;
-
-  .MuiSvgIcon-root {
-    font-size: 2.5em;
-    margin-right: 0.35em;
-  }
 `;
 
 const Heading = styled(Typography).attrs({
@@ -50,13 +42,30 @@ const SubHeading = styled(Typography)`
 `;
 
 const Loader = styled(SpinningLoader)`
-  width: 25rem;
+  padding-block: 3rem;
   max-width: 100%;
 `;
 
 const Content = styled.div`
+  min-height: 10rem;
   width: 62rem;
   max-width: 100%;
+`;
+
+const Icon = styled(SurveyTickIcon)`
+  font-size: 2.5rem;
+  margin-right: 0.35rem;
+`;
+
+const DownloadButton = styled(Button).attrs({
+  variant: 'outlined',
+})`
+  margin-left: auto;
+  &.Mui-disabled.MuiButtonBase-root {
+    opacity: 0.5;
+    color: ${({ theme }) => theme.palette.primary.main};
+    border-color: ${({ theme }) => theme.palette.primary.main};
+  }
 `;
 
 const getSubHeadingText = surveyResponse => {
@@ -85,20 +94,32 @@ const SurveyResponseModalContent = ({
   const { surveyLoading } = useSurveyResponseWithForm(surveyResponse);
   const subHeading = getSubHeadingText(surveyResponse);
   const showLoading = isLoading || surveyLoading;
+  const [urlSearchParams] = useSearchParams();
+  const surveyResponseId = urlSearchParams.get('responseId');
+  const { mutate: downloadSurveyResponse, isLoading: isDownloadingSurveyResponse } =
+    useExportSurveyResponse(surveyResponseId!, surveyResponse?.timezone);
 
   return (
     <>
-      <ModalHeader onClose={onClose} title={error ? 'Error loading survey response' : ''}>
+      <Header>
         {!showLoading && !error && (
-          <Header>
-            <SurveyTickIcon />
+          <>
+            <Icon />
             <div>
               <Heading>{surveyResponse?.surveyName}</Heading>
               <SubHeading>{subHeading}</SubHeading>
             </div>
-          </Header>
+            <DownloadButton
+              onClick={downloadSurveyResponse}
+              isLoading={isDownloadingSurveyResponse}
+              loadingText="Downloading"
+              startIcon={<DownloadIcon />}
+            >
+              Download
+            </DownloadButton>
+          </>
         )}
-      </ModalHeader>
+      </Header>
       <ModalContentProvider error={error as Error}>
         <Content>
           {showLoading && <Loader />}
