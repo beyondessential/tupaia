@@ -31,8 +31,8 @@ const Container = styled.div`
 
   .jsoneditor-parent,
   .jsoneditor,
-  .ace_editor,
-  .jsoneditor-outer {
+  .jsoneditor-outer,
+  .ace_editor {
     border-radius: 0.1875rem;
   }
 `;
