@@ -75,15 +75,12 @@ interface CopyUrlButtonProps extends IconButtonProps {
 export const CopyUrlButton = ({ noTooltip = false, ...props }: CopyUrlButtonProps) => {
   const { copyPageUrl, didJustCopy } = useCopyUrl();
   const MaybeTooltip = noTooltip ? Fragment : StyledTooltip;
+  const successColor = useTheme().palette.success.main;
 
   return (
     <MaybeTooltip>
       <StyledIconButton aria-label="Copy URL to clipboard" onClick={copyPageUrl} {...props}>
-        {didJustCopy ? (
-          <DoneIcon htmlColor={useTheme().palette.success.main} />
-        ) : (
-          <StyledCopyIcon />
-        )}
+        {didJustCopy ? <DoneIcon htmlColor={successColor} /> : <StyledCopyIcon />}
       </StyledIconButton>
     </MaybeTooltip>
   );

@@ -4,14 +4,21 @@ import { useIsMobile } from '../../../utils';
 import { QRCodeList } from './QRCodeList';
 import { QRCodeModal } from './QRCodeModal';
 import { QRCodePanel } from './QRCodePanel';
+import { Entity } from '../../../types';
 
-export const SurveyQRCode = ({ qrCodeEntitiesCreated }) => {
+export const SurveyQRCode = ({
+  className,
+  qrCodeEntitiesCreated,
+}: {
+  className?: string;
+  qrCodeEntitiesCreated: Entity[];
+}) => {
   return useIsMobile() ? (
-    <QRCodeModal>
+    <QRCodeModal className={className}>
       <QRCodeList createdEntities={qrCodeEntitiesCreated} variant="modal" />
     </QRCodeModal>
   ) : (
-    <QRCodePanel>
+    <QRCodePanel className={className}>
       <QRCodeList createdEntities={qrCodeEntitiesCreated} />
     </QRCodePanel>
   );
