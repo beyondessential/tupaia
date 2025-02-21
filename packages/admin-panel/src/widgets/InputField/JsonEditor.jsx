@@ -1,7 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
+
 import { InputLabel } from '@tupaia/ui-components';
+
 import { JsonEditor as Editor } from '../JsonEditor';
 
 const Container = styled.div`
@@ -20,6 +22,18 @@ const Container = styled.div`
     border-color: ${({ theme, $invalid }) => {
       return $invalid ? theme.palette.error.main : theme.palette.text.primary;
     }};
+  }
+
+  .jsoneditor:has(:focus-visible) {
+    border-color: ${props => props.theme.palette.primary.main};
+    border-width: max(0.0625rem, 1px);
+  }
+
+  .jsoneditor-parent,
+  .jsoneditor,
+  .ace_editor,
+  .jsoneditor-outer {
+    border-radius: 0.1875rem;
   }
 `;
 
