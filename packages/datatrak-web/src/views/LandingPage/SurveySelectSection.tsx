@@ -96,7 +96,7 @@ const ImageWrapper = styled.div.attrs({ 'aria-hidden': true })`
   justify-content: center;
   overflow: visible;
 
-  height: 0; // Let siblings alone determine block-size of parent...
+  height: 0; // Let siblings alone determine height of parent...
   width: fit-content; // ...but accommodate entire image width.
 
   flex: 1;
