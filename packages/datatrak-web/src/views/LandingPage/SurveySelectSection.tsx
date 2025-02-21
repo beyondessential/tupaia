@@ -30,14 +30,9 @@ const SectionContent = styled.div`
   display: flex;
   flex-direction: column-reverse;
   gap: 1rem 1.25rem;
-  ${({ theme }) => {
-    const { up, down } = theme.breakpoints;
-    return css`
-      ${up('md')} {
-        flex-direction: row;
-      }
-    `;
-  }}
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+  }
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
