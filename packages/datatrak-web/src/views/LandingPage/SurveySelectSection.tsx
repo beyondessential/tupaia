@@ -111,8 +111,9 @@ const SurveysImage = styled.img.attrs({
   width: 108,
   height: 207,
 })`
-  height: 130%;
+  height: 125%;
   width: auto;
+  max-width: 40%;
 
   inset-block-start: 50%;
   inset-inline-end: 0;
