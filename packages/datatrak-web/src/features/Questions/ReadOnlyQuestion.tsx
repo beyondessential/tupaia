@@ -1,14 +1,13 @@
-import { FormHelperText, Typography } from '@material-ui/core';
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { useSurveyForm } from '..';
 import { SurveyQuestionInputProps } from '../../types';
+import { TextInput } from '../../components';
 
 const Wrapper = styled.div`
-  align-items: flex-start;
-  border-block: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
-  display: flex; // to get the label to not be full width, so that the tooltip only applies over the label text
+  inline-size: 100%;
+  border-block-start: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
   flex-direction: column;
   inline-size: 100%;
   justify-content: center;
@@ -17,38 +16,23 @@ const Wrapper = styled.div`
   ${({ theme }) => theme.breakpoints.down('sm')} {
     padding-block: 1rem;
   }
-`;
 
-const Label = styled(Typography).attrs({
-  variant: 'h4',
-})`
-  font-size: 1rem;
+  .MuiFormControl-root,
+  .MuiFormControlLabel-root {
+    inline-size: 100%;
+  }
 
-  ${({ theme }) => css`
-    ${theme.breakpoints.down('sm')} {
-      font-size: 0.875rem;
-      font-weight: ${theme.typography.fontWeightMedium};
-    }
-  `}
-`;
+  .MuiFormControl-root {
+    flex-direction: column-reverse; // Make helper helper text appear above input
+  }
 
-const InputHelperText = styled(FormHelperText)`
-  font-size: 0.875rem;
-`;
+  .MuiInputBase-root.Mui-disabled {
+    color: inherit;
+  }
 
-const ValueWrapper = styled.div`
-  margin-top: 1rem;
-  min-block-size: 1rem; // so that the space is reserved even when there is no value
-`;
-
-const Value = styled(Typography)`
-  ${({ theme }) => css`
-    font-weight: ${theme.typography.fontWeightMedium};
-
-    ${theme.breakpoints.down('sm')} {
-      font-size: 1rem;
-    }
-  `}
+  .MuiInput-underline.Mui-disabled::before {
+    border-block-end: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  }
 `;
 
 interface ReadOnlyQuestionInputProps extends SurveyQuestionInputProps {
@@ -65,11 +49,13 @@ export const ReadOnlyQuestion = ({
   const value = formData[name!];
   return (
     <Wrapper className={className}>
-      <Label>{label}</Label>
-      {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
-      <ValueWrapper>
-        <Value>{value}</Value>
-      </ValueWrapper>
+      <TextInput
+        disabled
+        label={label}
+        name={name}
+        textInputProps={{ helperText: detailLabel }}
+        value={value}
+      />
     </Wrapper>
   );
 };
