@@ -1,11 +1,12 @@
-import React, { ReactElement, ReactNode, useState } from 'react';
-import styled, { css } from 'styled-components';
 import {
   Collapse,
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps,
 } from '@material-ui/core';
 import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import React, { ReactElement, ReactNode, useState } from 'react';
+import styled, { css } from 'styled-components';
+
 import { Tooltip } from '../Tooltip';
 import { ListItemType } from './types';
 
@@ -26,19 +27,29 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   .MuiCollapse-container & {
     padding-inline-start: 1rem;
   }
-  &.MuiButtonBase-root {
-    &:hover,
-    &.Mui-selected:hover,
-    &:focus,
-    &.Mui-selected:focus {
-      background-color: ${({ theme }) =>
-        theme.palette.type === 'light'
-          ? `${theme.palette.primary.main}33`
-          : 'rgba(96, 99, 104, 0.50)'};
 
-      ${({ theme }) => theme.breakpoints.down('sm')} {
-        background: none;
-      }
+  &.MuiButtonBase-root:is(
+      :hover,
+      :focus-visible,
+      .Mui-selected:hover,
+      .Mui-selected:focus-visible
+    ) {
+    ${props => {
+      const { palette } = props.theme;
+      return palette.type === 'light'
+        ? css`
+            background-color: oklch(from ${palette.primary.main} l c h / 10%);
+            @supports not (color: oklch(from black l c h)) {
+              background-color: ${palette.primary.main}1a;
+            }
+          `
+        : css`
+            background-color: oklch(50% 0.0088 260.73 / 50%);
+          `;
+    }}
+
+    ${({ theme }) => theme.breakpoints.up('sm')} {
+      background-color: initial;
     }
   }
 
