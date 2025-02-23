@@ -50,7 +50,5 @@ export const useUserCountries = (onError?: (error: any) => void) => {
     countries: alphabetisedCountries,
     selectedCountry,
     updateSelectedCountry: setSelectedCountry,
-    // if the user has a country code, and it doesn't match the selected country, then the country has been updated, which means we need to update the user
-    countryHasUpdated: selectedCountry?.code !== user.country?.code,
   };
 };

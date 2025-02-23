@@ -19,10 +19,15 @@ const palette = {
   text: {
     primary: '#2E2F33', // dark text color
     secondary: '#898989', // light grey text color
+    hint: 'B8B8B8',
   },
   success: {
     main: '#25D366',
     light: '#25D36622',
+  },
+  info: {
+    main: '#004167',
+    light: '#E6ECF0',
   },
   error: {
     main: '#F76853',
@@ -82,6 +87,11 @@ const overrides = {
       ':root': {
         accentColor: palette.primary.main,
       },
+      ":is(ol, ul)[role='list']": {
+        listStyleType: 'none',
+        marginBlock: 0,
+        paddingInlineStart: 0,
+      },
     },
   },
   MuiDialogActions: {
@@ -139,7 +149,7 @@ const overrides = {
   },
   MuiPopover: {
     paper: {
-      boxShadow: '0.25rem 0.25rem 1.5rem .25rem oklch(0 0 0 / 10%)',
+      boxShadow: '0.25rem 0.25rem 1.5rem 0.25rem oklch(0 0 0 / 10%)',
     },
   },
 } as const;

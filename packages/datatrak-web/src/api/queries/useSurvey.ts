@@ -3,9 +3,9 @@ import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { get } from '../api';
 
 export const useSurvey = (surveyCode?: string) => {
-  return useQuery(
+  return useQuery<DatatrakWebSurveyRequest.ResBody>(
     ['survey', surveyCode],
-    (): Promise<DatatrakWebSurveyRequest.ResBody> => get(`surveys/${surveyCode}`),
+    () => get(`surveys/${surveyCode}`),
     {
       enabled: !!surveyCode,
       meta: {

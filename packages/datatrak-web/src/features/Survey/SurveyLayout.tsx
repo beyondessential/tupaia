@@ -30,7 +30,6 @@ const ScrollableLayout = styled.div<{
 `;
 
 const Paper = styled(MuiPaper).attrs({
-  variant: 'outlined',
   elevation: 0,
 })`
   flex: 1;
@@ -40,8 +39,13 @@ const Paper = styled(MuiPaper).attrs({
   position: relative;
   display: flex;
   flex-direction: column;
+  background-color: ${({ theme }) => theme.palette.background.default};
+  border: none;
   border-radius: 0;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    border: 1px solid ${({ theme }) => theme.palette.divider};
+    background-color: ${({ theme }) => theme.palette.background.paper};
     margin-left: 1rem;
     border-radius: 4px;
   }
