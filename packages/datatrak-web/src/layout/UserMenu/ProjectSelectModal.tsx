@@ -83,7 +83,7 @@ const PaperComponent = styled(Paper)`
   padding-inline: 1.25rem;
   max-width: none;
   width: 48rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     margin: 2rem;
     padding-block: 1rem 1.25rem;
     padding-inline: 2.5rem;
@@ -95,7 +95,9 @@ const Header = styled.header`
   align-items: center;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-block-start: -1rem;
+    *:has(> &) {
+      padding-block-start: 0;
+    }
   }
 `;
 
@@ -106,7 +108,7 @@ const BackButton = styled(IconButton)`
   svg {
     font-size: 1.2rem;
   }
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
 `;
