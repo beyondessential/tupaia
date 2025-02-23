@@ -158,7 +158,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
       >
         <Wrapper tooltip={tooltip}>
           <ButtonContainer $fullWidth={button}>
-            <IconWrapper $hasIcon={!!icon}>{icon}</IconWrapper>
+            <IconWrapper>{icon}</IconWrapper>
             {content}
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
