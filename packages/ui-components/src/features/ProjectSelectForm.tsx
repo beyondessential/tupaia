@@ -1,8 +1,9 @@
+import { DialogActions, useTheme } from '@material-ui/core';
+import { WatchLater as ClockIcon, Lock as LockIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';
-import { DialogActions, useTheme } from '@material-ui/core';
-import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
+
+import { Entity, KeysToCamelCase, Project as ProjectT } from '@tupaia/types';
 import {
   SelectList,
   SpinningLoader,
@@ -49,8 +50,8 @@ const CancelButton = (props: UIButtonProps) => {
   const isLightTheme = useTheme().palette.type === 'light';
   return (
     <Button
-      variant={isLightTheme ? 'outlined' : 'text'}
       color={isLightTheme ? 'primary' : 'default'}
+      variant={isLightTheme ? 'outlined' : 'text'}
       {...props}
     />
   );
@@ -130,8 +131,6 @@ export const ProjectSelectForm = ({
     });
   };
 
-  const projectOptions = getFormattedProjects();
-
   return (
     <>
       {isLoading ? (
@@ -141,7 +140,7 @@ export const ProjectSelectForm = ({
       ) : (
         <ListWrapper $variant={variant}>
           <SelectList
-            items={projectOptions}
+            items={getFormattedProjects()}
             label="Select a project from the list below. You can change the project at any time"
             onSelect={onSelect}
           />
