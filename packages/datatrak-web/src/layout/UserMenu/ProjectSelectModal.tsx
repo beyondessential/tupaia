@@ -88,7 +88,7 @@ const PaperComponent = styled(Paper)`
   }
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   display: flex;
   align-items: center;
 
