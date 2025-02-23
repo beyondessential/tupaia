@@ -79,12 +79,14 @@ const StyledModal = styled(Modal)<{ $requestAccess?: boolean }>`
 `;
 
 const PaperComponent = styled(Paper)`
-  padding: 1rem 1.25rem;
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
   max-width: none;
   width: 48rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2.5rem 1.25rem;
     margin: 2rem;
+    padding-block: 1rem 1.25rem;
+    padding-inline: 2.5rem;
   }
 `;
 
