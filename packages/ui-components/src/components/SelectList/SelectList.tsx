@@ -90,7 +90,7 @@ export const SelectList = ({
   label,
   ListItem,
   variant = 'fullBorder',
-  labelProps = {},
+  labelProps,
   noResultsMessage = 'No items to display',
   subTitle,
 }: SelectListProps) => {
