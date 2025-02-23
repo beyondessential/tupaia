@@ -52,7 +52,7 @@ export const ReadOnlyQuestion = ({
       <TextInput
         disabled
         label={label}
-        name={name}
+        name={name ?? undefined}
         textInputProps={{ helperText: detailLabel }}
         value={value}
       />
