@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { useSurveyForm } from '..';
 import { SurveyQuestionInputProps } from '../../types';
-import { TextInput } from '../../components';
+import { InputHelperText, TextInput } from '../../components';
 
 const Wrapper = styled.div`
   inline-size: 100%;
@@ -53,7 +53,12 @@ export const ReadOnlyQuestion = ({
         disabled
         label={label}
         name={name ?? undefined}
-        textInputProps={{ helperText: detailLabel }}
+        textInputProps={{
+          helperText: detailLabel,
+          FormHelperTextProps: {
+            component: InputHelperText,
+          },
+        }}
         value={name ? formData[name] : null}
       />
     </Wrapper>
