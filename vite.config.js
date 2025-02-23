@@ -36,16 +36,10 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
-      react({
-        jsxRuntime: 'classic',
-      }),
+      react({ jsxRuntime: 'classic' }),
     ],
-    define: {
-      'process.env': env,
-    },
-    server: {
-      open: true,
-    },
+    define: { 'process.env': env },
+    server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
       preserveSymlinks: true, // use the yarn workspace symlinks
@@ -57,16 +51,14 @@ export default defineConfig(({ command, mode }) => {
         'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
       },
     },
+    optimizeDeps: { exclude: ['@electric-sql/pglite'] },
   };
 
   // Dev specific config. This is because `define.global` breaks the build
   if (command === 'serve') {
     return {
       ...baseConfig,
-      define: {
-        ...baseConfig.define,
-        global: {},
-      },
+      define: { ...baseConfig.define, global: {} },
       resolve: {
         ...baseConfig.resolve,
         alias: {
