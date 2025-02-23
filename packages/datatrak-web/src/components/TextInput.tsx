@@ -43,17 +43,17 @@ export const TextInput = React.forwardRef<HTMLDivElement, TextInputProps>((props
       }
       name={name}
       inputRef={ref}
-      labelPlacement={'top'}
+      labelPlacement="top"
       onChange={onChange}
       value={value}
       control={
         <TextField
           disabled={disabled}
           error={invalid}
+          fullWidth
           id={id}
           required={required}
           {...textInputProps}
-          fullWidth
         />
       }
     />

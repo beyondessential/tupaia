@@ -46,7 +46,7 @@ export const ReadOnlyQuestion = ({
   className,
 }: ReadOnlyQuestionInputProps) => {
   const { formData } = useSurveyForm();
-  const value = formData[name!];
+
   return (
     <Wrapper className={className}>
       <TextInput
@@ -54,7 +54,7 @@ export const ReadOnlyQuestion = ({
         label={label}
         name={name ?? undefined}
         textInputProps={{ helperText: detailLabel }}
-        value={value}
+        value={name ? formData[name] : null}
       />
     </Wrapper>
   );
