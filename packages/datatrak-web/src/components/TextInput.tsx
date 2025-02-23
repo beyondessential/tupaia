@@ -22,6 +22,7 @@ const LabelWrapper = styled(FormControlLabel)`
 
 interface TextInputProps
   extends Pick<FormControlLabelProps, 'label' | 'name' | 'onChange' | 'value'> {
+  disabled?: boolean;
   id?: string;
   required?: boolean;
   invalid?: boolean;
@@ -32,7 +33,7 @@ interface TextInputProps
   };
 }
 export const TextInput = React.forwardRef<HTMLDivElement, TextInputProps>((props, ref) => {
-  const { value, label, name, onChange, id, textInputProps, required, invalid } = props;
+  const { value, label, name, onChange, id, textInputProps, required, invalid, disabled } = props;
   return (
     <LabelWrapper
       label={
@@ -46,7 +47,14 @@ export const TextInput = React.forwardRef<HTMLDivElement, TextInputProps>((props
       onChange={onChange}
       value={value}
       control={
-        <TextField id={id} required={required} error={invalid} {...textInputProps} fullWidth />
+        <TextField
+          disabled={disabled}
+          error={invalid}
+          id={id}
+          required={required}
+          {...textInputProps}
+          fullWidth
+        />
       }
     />
   );
