@@ -1,5 +1,5 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   Collapse,
   ListItem as MuiListItem,
@@ -11,17 +11,20 @@ import { ListItemType } from './types';
 
 // explicitly set the types so that the overrides are applied, for the `button` prop
 export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
-  display: flex;
   align-items: center;
-  border: 1px solid transparent;
   border-radius: 3px;
-  padding: 0.3rem 1rem 0.3rem 0.5rem;
+  border: max(0.0625rem, 1px) solid transparent;
+  display: flex;
+  padding-block: 0.3rem;
+  padding-inline: 0.5rem 1rem;
+
   &.Mui-selected {
     border-color: ${({ theme }) => theme.palette.primary.main};
     background-color: transparent;
   }
+
   .MuiCollapse-container & {
-    padding-left: 1rem;
+    padding-inline-start: 1rem;
   }
   &.MuiButtonBase-root {
     &:hover,
@@ -49,7 +52,7 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   }
   .text-secondary {
     color: ${({ theme }) => theme.palette.text.secondary};
-    margin-left: 0.4em;
+    margin-inline-start: 0.4em;
   }
 `;
 
