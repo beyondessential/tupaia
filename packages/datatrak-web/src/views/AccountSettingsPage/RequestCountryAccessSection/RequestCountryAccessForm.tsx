@@ -214,7 +214,7 @@ export const RequestCountryAccessForm = ({
 
   const getTooltip = () => {
     if (!project) return 'Select a project to request country access';
-    return isValid ? undefined : 'Select countries to request access';
+    return isValid ? null : 'Select countries to request access';
   };
 
   const requestableCountryChecklist = (
