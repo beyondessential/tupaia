@@ -1,28 +1,36 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
 import { Checkbox } from '@tupaia/ui-components';
 import { Entity, Project, ProjectCountryAccessListRequest } from '@tupaia/types';
-import { theme } from '../../../theme';
 
 const Container = styled.fieldset`
   border-radius: 0.1875rem;
-  border: 1px solid ${theme.palette.grey[400]};
   block-size: 100%;
-  overflow-y: auto; /* fallback */
-  overflow-block: auto;
   padding-inline: 0.87rem;
 
-  // Prevent overbearingly tall list on mobile (where parent gridlines are not used to limit height)
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-bottom: 1rem;
-    border: none;
-  }
+  ${props => {
+    const { breakpoints, palette } = props.theme;
+    return css`
+      border: max(0.0625rem, 1px) solid ${palette.grey[400]};
 
-  // Match styling of ui-components TextField
-  :disabled {
-    color: ${theme.palette.text.secondary};
-    background-color: ${theme.palette.grey['100']};
+      // Match styling of ui-components TextField
+      :disabled {
+        color: ${palette.text.secondary};
+        background-color: ${palette.grey[100]};
+      }
+
+      ${breakpoints.down('sm')} {
+        margin-block-end: 1rem;
+        border: none;
+      }
+    `;
+  }}
+
+  overflow-block: auto;
+  @supports not (overflow-block: auto) {
+    overflow-y: auto;
   }
 `;
 
