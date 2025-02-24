@@ -1,8 +1,9 @@
-import React, { ReactNode } from 'react';
 import MuiCheckbox, { CheckboxProps as MuiCheckboxProps } from '@material-ui/core/Checkbox';
-import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
+import MuiFormHelperText from '@material-ui/core/FormHelperText';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+
 import { InputLabel } from './InputLabel';
 
 const StyledCheckbox = styled(MuiCheckbox)`
