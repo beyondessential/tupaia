@@ -17,8 +17,8 @@ const Wrapper = styled.div`
     padding-block: 1rem;
   }
 
-  .MuiFormControl-root,
-  .MuiFormControlLabel-root {
+  .MuiFormControlLabel-root,
+  .MuiFormControl-root {
     inline-size: 100%;
   }
 
