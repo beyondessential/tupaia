@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { Tooltip } from '@tupaia/ui-components';
+
 import { useSurveyForm } from '..';
 import { SurveyQuestionInputProps } from '../../types';
 import { InputHelperText, TextInput } from '../../components';
+import { getArithmeticDisplayAnswer } from '../Survey';
 
 const Wrapper = styled.div`
   border-block-start: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
@@ -63,6 +66,44 @@ export const ReadOnlyQuestion = ({
         value={name ? formData[name] : null}
       />
     </Wrapper>
+  );
+};
+
+export const ArithmeticQuestionWrapper = styled(Wrapper)`
+  .MuiInput-root {
+    font-variant-numeric: lining-nums tabular-nums;
+    font-weight: 700;
+  }
+`;
+export const ArithmeticQuestion = ({
+  label,
+  name,
+  detailLabel,
+  config,
+}: SurveyQuestionInputProps) => {
+  const { formData } = useSurveyForm();
+  const rawValue = name ? formData[name] : null;
+  const displayValue = getArithmeticDisplayAnswer(config, rawValue, formData);
+
+  return (
+    <ArithmeticQuestionWrapper>
+      <TextInput
+        disabled
+        label={
+          <Tooltip title="Complete questions above to calculate" enterDelay={1000}>
+            <span>{label}</span>
+          </Tooltip>
+        }
+        name={name ?? undefined}
+        textInputProps={{
+          helperText: detailLabel,
+          FormHelperTextProps: {
+            component: InputHelperText,
+          },
+        }}
+        value={displayValue}
+      />
+    </ArithmeticQuestionWrapper>
   );
 };
 
