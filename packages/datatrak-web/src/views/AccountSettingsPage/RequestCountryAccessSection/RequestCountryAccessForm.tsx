@@ -84,10 +84,23 @@ const ExpandButton = styled(MuiButton)<{ $active: boolean }>`
   }
 `;
 
-// Usage of this component has inline styling. See there for explanation.
 const StyledFormInput = styled(FormInput).attrs({
+  Input: TextField,
   fullWidth: true,
+  inputProps: {
+    enterKeyHint: 'done',
+    /*
+     * Make `<textarea>` scroll upon overflow.
+     *
+     * MUI uses inline styling (element.style) to resize `<textarea>`s to fit an integer
+     * number of lines. This behaviour is desirable in single-column layouts, which we use
+     * in smaller size classes. In a multi-column grid it causes misalignment, so we
+     * override it, also with inline styling.
+     */
+    style: { blockSize: '100%', overflow: 'auto' },
+  },
   multiline: true,
+  rows: 6,
 })`
   margin: 0;
 
@@ -125,29 +138,9 @@ const Message = styled(Typography)`
   }
 `;
 
-const ReasonForAccessField = () => {
-  return (
-    <StyledFormInput
-      id="message"
-      Input={TextField}
-      rows={6}
-      inputProps={{
-        enterKeyHint: 'done',
-        /*
-         * Make `<textarea>` scroll upon overflow.
-         *
-         * MUI uses inline styling (element.style) to resize `<textarea>`s to fit an integer
-         * number of lines. This behaviour is desirable in single-column layouts, which we use
-         * in smaller size classes. In a multi-column grid it causes misalignment, so we
-         * override it, also with inline styling.
-         */
-        style: { height: '100%', overflow: 'auto' },
-      }}
-      label="Reason for access"
-      name="message"
-    />
-  );
-};
+const reasonForAccessField = (
+  <StyledFormInput id="message" label="Reason for access" name="message" />
+);
 
 interface RequestCountryAccessFormProps {
   countryAccessList: UseQueryResult<ProjectCountryAccessListRequest.ResBody>;
@@ -240,7 +233,7 @@ export const RequestCountryAccessForm = ({
               selectedCountries={selectedCountries}
               setSelectedCountries={setSelectedCountries}
             />
-            <ReasonForAccessField />
+            {reasonForAccessField}
           </StyledFieldset>
         </Collapse>
         <Button
@@ -270,7 +263,7 @@ export const RequestCountryAccessForm = ({
           />
         </CountryChecklistWrapper>
         <Flexbox>
-          <ReasonForAccessField />
+          {reasonForAccessField}
           <Button
             disabled={noRequestableCountries || formIsInsubmissible}
             tooltip={getTooltip()}
