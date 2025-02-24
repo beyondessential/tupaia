@@ -194,7 +194,7 @@ export const RequestCountryAccessForm = ({
 
   const hasAccessToEveryCountry = countries?.every(c => c.hasAccess) ?? true;
   if (hasAccessToEveryCountry) {
-    return <Message>You have access to all available countries within this project.</Message>;
+    return <Message>You have access to all available countries within this project</Message>;
   }
 
   const noRequestableCountries = !project || hasAccessToEveryCountry;
