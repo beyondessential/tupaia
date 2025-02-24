@@ -109,7 +109,14 @@ export const ArithmeticQuestion = ({
 
 export const CodeGeneratorQuestion = styled(ReadOnlyQuestion)`
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding-top: 0;
-    border-width: 0 0 1px;
+    border-block-start: none;
+  }
+
+  .MuiInput-root {
+    font-feature-settings:
+      'cpsp' on,
+      'ss06' on,
+      'ss07' on;
+    font-weight: 500;
   }
 `;
