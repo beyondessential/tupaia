@@ -15,12 +15,14 @@ const TileContainer = styled(Link)`
   border-radius: 10px;
   background-color: ${({ theme }) => theme.palette.background.paper};
 
-  width: 100%;
-  padding: 0.4rem 0.7rem;
+  inline-size: 100%;
   margin-block-end: 0.5rem;
+  padding-block: 0.4rem;
+  padding-inline: 0.7rem;
 
   .MuiButton-root {
-    padding: 0.2rem 1.2rem;
+    padding-block: 0.2rem;
+    padding-inline: 1.2rem;
   }
 
   .MuiButton-label {
@@ -33,8 +35,7 @@ const TileContainer = styled(Link)`
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiButtonBase-root {
-      margin-block-end: 0.4rem;
-      margin-block-start: 0.8rem;
+      margin-block-end: 0.8rem 0.4rem;
       padding-inline: 0.8rem;
     }
   }
@@ -110,9 +111,7 @@ export const TaskTile = ({ task }) => {
         </TileContent>
       </TileLeft>
       <TileRight>
-        <ButtonLink to={surveyLink} component={Link}>
-          Complete task
-        </ButtonLink>
+        <ButtonLink to={surveyLink}>Complete task</ButtonLink>
       </TileRight>
     </TileContainer>
   );

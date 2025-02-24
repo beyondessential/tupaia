@@ -28,6 +28,7 @@ const Autocomplete = styled(BaseAutocomplete)`
   }
 
   .MuiInputBase-root {
+    background: transparent;
     border-bottom: 1px solid ${({ theme }) => theme.palette.text.primary};
     border-radius: 0;
     order: 2; // make the helper text appear above the input

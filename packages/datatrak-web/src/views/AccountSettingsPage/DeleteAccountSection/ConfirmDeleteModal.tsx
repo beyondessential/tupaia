@@ -64,7 +64,10 @@ export const ConfirmDeleteModal = ({ open, onClose }: ConfirmDeleteModalProps) =
       {isLoading ? (
         <SpinningLoader />
       ) : (
-        <Typography align="center">This action is irreversible</Typography>
+        <Typography align="center">
+          Our Tupaia team will be alerted and we will email you with a confirmation once the
+          deletion is complete
+        </Typography>
       )}
     </SmallModal>
   );

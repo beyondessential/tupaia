@@ -3,19 +3,37 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SurveyQRCode } from '../SurveyQRCode';
 import { useCurrentUserContext } from '../../../api';
+import { useQRCodeLocationData } from '../SurveyQRCode/useQRCodeLocationData';
 
 const Wrapper = styled.div`
   display: flex;
-  flex: 1;
-  height: 100%;
+  flex-direction: column;
+  min-block-size: 100%;
+  padding-bottom: max(env(safe-area-inset-bottom, 0), 1.5rem);
+  padding-left: max(env(safe-area-inset-left, 0), 1.5rem);
+  padding-right: max(env(safe-area-inset-right, 0), 1.5rem);
+  padding-top: max(env(safe-area-inset-top, 0), 1.5rem);
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+    flex-grow: 1;
+  }
 `;
-const Container = styled.div`
+
+const Container = styled.div<{ $showQrCode?: boolean }>`
+  align-items: center;
   display: flex;
   flex-direction: column;
+  height: 100%;
   justify-content: center;
-  align-items: center;
+  text-wrap: balance;
   width: 100%;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-right: ${props => (props.$showQrCode ? '15rem' : '0')};
+  }
+
+  ${({ theme }) => theme.breakpoints.up('lg')} {
     flex: 1;
   }
 `;
@@ -35,7 +53,8 @@ const Title = styled(Typography).attrs({
   font-weight: 600;
   text-align: center;
   margin-block-end: 1rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
     font-size: 1.9rem;
     margin-block-end: 1.19rem;
   }
@@ -55,13 +74,13 @@ interface SurveySuccessProps {
   children: React.ReactNode;
 }
 
-export const SurveySuccess = ({ text, title, showQrCode, children }: SurveySuccessProps) => {
+export const SurveySuccess = ({ text, title, children }: SurveySuccessProps) => {
   const { isLoggedIn } = useCurrentUserContext();
-
+  const qrCodeEntitiesCreated = useQRCodeLocationData();
   return (
     <Wrapper>
-      <Container>
-        <StyledImg src="/tupaia-high-five.svg" alt="Survey submit success" />
+      <Container $showQrCode={!!qrCodeEntitiesCreated}>
+        <StyledImg aria-hidden src="/tupaia-high-five.svg" />
         <Title>{title}</Title>
         {isLoggedIn && (
           <>
@@ -70,7 +89,7 @@ export const SurveySuccess = ({ text, title, showQrCode, children }: SurveySucce
           </>
         )}
       </Container>
-      {showQrCode && <SurveyQRCode />}
+      {qrCodeEntitiesCreated && <SurveyQRCode qrCodeEntitiesCreated={qrCodeEntitiesCreated} />}
     </Wrapper>
   );
 };
