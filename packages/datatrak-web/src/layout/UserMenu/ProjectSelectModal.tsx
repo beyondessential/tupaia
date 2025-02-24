@@ -79,21 +79,25 @@ const StyledModal = styled(Modal)<{ $requestAccess?: boolean }>`
 `;
 
 const PaperComponent = styled(Paper)`
-  padding: 1rem 1.25rem;
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
   max-width: none;
   width: 48rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2.5rem 1.25rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
     margin: 2rem;
+    padding-block: 1rem 1.25rem;
+    padding-inline: 2.5rem;
   }
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   display: flex;
   align-items: center;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-block-start: -1rem;
+    *:has(> &) {
+      padding-block-start: 0;
+    }
   }
 `;
 
@@ -104,7 +108,7 @@ const BackButton = styled(IconButton)`
   svg {
     font-size: 1.2rem;
   }
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
 `;
