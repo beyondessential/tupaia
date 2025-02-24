@@ -17,10 +17,7 @@ import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
 const StyledForm = styled(Form)`
   inline-size: 100%;
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    max-inline-size: 44.25rem;
-  }
+  max-inline-size: 44.25rem;
 `;
 
 const StyledFieldset = styled.fieldset`
