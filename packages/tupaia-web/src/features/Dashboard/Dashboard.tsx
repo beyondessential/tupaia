@@ -1,49 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
-import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
-import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import styled, { css } from 'styled-components';
+
 import { MatrixConfig } from '@tupaia/types';
-import { MOBILE_BREAKPOINT } from '../../constants';
+import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
+import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
+
+import { useEditUser } from '../../api/mutations';
 import { useDashboards, useEntity, useProject, useUser } from '../../api/queries';
+import { MOBILE_BREAKPOINT } from '../../constants';
 import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent, getDefaultDashboard } from '../../utils';
+import { gaEvent } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
-import { ExpandButton } from './ExpandButton';
-import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
-import { StaticMap } from './StaticMap';
+import { DashboardMenu, SubscribeModal } from './DashboardMenu';
+import { ExpandButton } from './ExpandButton';
 import { ExportDashboard } from './ExportDashboard';
+import { Photo } from './Photo';
+import { StaticMap } from './StaticMap';
 import { DashboardContextProvider, useDashboard } from './utils';
-import { SubscribeModal, DashboardMenu } from './DashboardMenu';
-import { useEditUser } from '../../api/mutations';
-
-const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
-const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
-const MIN_SIDEBAR_WIDTH = 360;
-const MIN_EXPANDED_SIDEBAR_WIDTH = 700;
 
 const Panel = styled.div<{
   $isExpanded: boolean;
 }>`
-  position: relative;
   background-color: ${({ theme }) => theme.palette.background.paper};
+  inline-size: 100%;
+  min-block-size: 100%;
+  overflow: visible;
+  position: relative;
   transition:
     width 0.3s ease,
     max-width 0.3s ease;
-  width: 100%;
-  overflow: visible;
-  min-height: 100%;
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
-    height: 100%;
-    min-width: ${({ $isExpanded }) =>
-      $isExpanded ? MIN_EXPANDED_SIDEBAR_WIDTH : MIN_SIDEBAR_WIDTH}px;
-    max-width: ${({ $isExpanded }) =>
-      $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
+    block-size: 100%;
+
+    ${({ $isExpanded }) =>
+      $isExpanded
+        ? css`
+            inline-size: 60%;
+            max-inline-size: 1000px;
+            min-inline-size: 700px;
+          `
+        : css`
+            inline-size: 25%;
+            max-inline-size: 550px;
+            min-inline-size: 360px;
+          `}
   }
 `;
 
@@ -104,10 +109,8 @@ const DashboardItemsWrapper = styled.div<{
 `;
 
 export const Dashboard = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const { projectCode, entityCode } = useParams();
-  const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const { data: project } = useProject(projectCode);
   const { data: user } = useUser();
   const { mutate: updateUser } = useEditUser();
 
@@ -118,47 +121,16 @@ export const Dashboard = () => {
   }, [project?.code, user?.project?.code]);
 
   const { activeDashboard } = useDashboard();
-  const {
-    data: dashboards,
-    isLoading: isLoadingDashboards,
-    isError,
-    isFetched,
-  } = useDashboards(projectCode, entityCode);
+  const { isLoading: isLoadingDashboards } = useDashboards(projectCode, entityCode);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
-  // we don't want useEntityLink to take care of this because useEntityLink gets called for all child entities on the map, meaning lots of extra queries when we don't need them. Instead the redirect will be taken care of in the useEffect below, as needed
-  const defaultDashboardName = getDefaultDashboard(
-    project,
-    dashboards,
-    isLoadingDashboards,
-    isError,
-  );
-
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
     gaEvent('Pages', 'Toggle Info Panel');
   };
-
-  // check for valid dashboard name, and if not valid and not still loading, redirect to default dashboard
-  const dashboardNotFound =
-    isFetched &&
-    !isError &&
-    !isLoadingDashboards &&
-    !isLoadingProject &&
-    project?.code === projectCode &&
-    !activeDashboard;
-
-  useEffect(() => {
-    if (dashboardNotFound) {
-      navigate({
-        ...location,
-        pathname: `/${projectCode}/${entityCode}/${defaultDashboardName}`,
-      });
-    }
-  }, [dashboardNotFound, defaultDashboardName]);
 
   // Filter out drill down items from the dashboard items
   const visibleDashboards =

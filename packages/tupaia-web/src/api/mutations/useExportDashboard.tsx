@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { API_URL, post } from '../api';
-import { DashboardName, EntityCode, ProjectCode } from '../../types';
+import { Dashboard, EntityCode, ProjectCode } from '../../types';
 import { downloadPDF } from '../../utils';
 
 type ExportDashboardBody = {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
-  dashboardCode?: DashboardName;
+  dashboardCode?: Dashboard['code'];
   selectedDashboardItems?: TupaiaWebExportDashboardRequest.ReqBody['selectedDashboardItems'];
   settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
 };
