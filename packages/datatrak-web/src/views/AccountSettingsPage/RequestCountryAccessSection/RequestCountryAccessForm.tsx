@@ -217,6 +217,16 @@ export const RequestCountryAccessForm = ({
     return <Message>You have access to all available countries within this project.</Message>;
   }
 
+  const requestableCountryChecklist = (
+    <RequestableCountryChecklist
+      projectCode={projectCode}
+      countries={countries}
+      disabled={formIsSubmitting}
+      selectedCountries={selectedCountries}
+      setSelectedCountries={setSelectedCountries}
+    />
+  );
+
   if (isMobile) {
     return (
       <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
@@ -226,13 +236,7 @@ export const RequestCountryAccessForm = ({
         </ExpandButton>
         <Collapse in={isOpen}>
           <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
-            <RequestableCountryChecklist
-              projectCode={projectCode}
-              countries={countries}
-              disabled={formIsSubmitting}
-              selectedCountries={selectedCountries}
-              setSelectedCountries={setSelectedCountries}
-            />
+            {requestableCountryChecklist}
             {reasonForAccessField}
           </StyledFieldset>
         </Collapse>
@@ -254,13 +258,7 @@ export const RequestCountryAccessForm = ({
       <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
-          <RequestableCountryChecklist
-            projectCode={projectCode}
-            countries={countries}
-            disabled={formIsSubmitting}
-            selectedCountries={selectedCountries}
-            setSelectedCountries={setSelectedCountries}
-          />
+          {requestableCountryChecklist}
         </CountryChecklistWrapper>
         <Flexbox>
           {reasonForAccessField}
