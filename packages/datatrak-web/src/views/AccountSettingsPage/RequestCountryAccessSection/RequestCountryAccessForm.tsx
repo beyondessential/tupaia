@@ -215,8 +215,6 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
   };
 
   const requestableCountryChecklistProps = {
-    projectCode,
-    countries,
     disabled: formIsSubmitting,
     selectedCountries,
     setSelectedCountries,
