@@ -229,10 +229,10 @@ export const RequestCountryAccessForm = ({
   const submitButton = (
     <Button
       disabled={noRequestableCountries || formIsInsubmissible}
+      fullWidth
       tooltip={getTooltip()}
       tooltipDelay={0}
       type="submit"
-      fullWidth
     >
       {formIsSubmitting ? 'Submitting request' : 'Request access'}
     </Button>
