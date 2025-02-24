@@ -15,8 +15,8 @@ export const useCountryAccessList = (projectCode?: Project['code']) => {
       }),
     {
       enabled: !!code,
-      initialData: [],
-      placeholderData: [],
+      initialData: [] as ProjectCountryAccessListRequest.ResBody,
+      placeholderData: [] as ProjectCountryAccessListRequest.ResBody,
       staleTime: 0, // Disable cache so that if we go back to the request access view, the country list is up to date
     },
   );
