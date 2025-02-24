@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import MuiCheckbox, { CheckboxProps as MuiCheckboxProps } from '@material-ui/core/Checkbox';
 import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
@@ -28,9 +28,9 @@ const FormHelperText = styled(MuiFormHelperText)`
 `;
 
 interface CheckboxProps extends MuiCheckboxProps {
-  label?: React.ReactNode;
+  label?: ReactNode;
   error?: boolean;
-  helperText?: string;
+  helperText?: ReactNode;
   tooltip?: string;
 }
 
