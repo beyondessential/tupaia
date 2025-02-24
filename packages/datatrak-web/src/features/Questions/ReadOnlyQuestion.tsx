@@ -11,10 +11,10 @@ const Wrapper = styled.div`
   flex-direction: column;
   inline-size: 100%;
   justify-content: center;
-  padding-block: 1.8rem 0.8rem;
+  padding-block-start: 2rem;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding-block: 1rem;
+    padding-block-start: 1rem;
   }
 
   .MuiFormControlLabel-root,
@@ -23,6 +23,7 @@ const Wrapper = styled.div`
   }
 
   .MuiFormControl-root {
+    margin-block-start: 0.5rem;
     flex-direction: column-reverse; // Make helper helper text appear above input
   }
 
