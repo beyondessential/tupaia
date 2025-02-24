@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   }
 `;
 
-interface ReadOnlyQuestionInputProps extends SurveyQuestionInputProps {
+interface ReadOnlyQuestionProps extends SurveyQuestionInputProps {
   className?: string;
 }
 
@@ -45,7 +45,7 @@ export const ReadOnlyQuestion = ({
   name,
   detailLabel,
   className,
-}: ReadOnlyQuestionInputProps) => {
+}: ReadOnlyQuestionProps) => {
   const { formData } = useSurveyForm();
 
   return (
