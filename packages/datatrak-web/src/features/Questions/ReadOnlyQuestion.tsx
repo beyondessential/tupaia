@@ -12,7 +12,6 @@ const Wrapper = styled.div`
   border-block-start: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
   flex-direction: column;
   inline-size: 100%;
-  inline-size: 100%;
   justify-content: center;
 
   padding-block-start: 2rem;
@@ -59,9 +58,7 @@ export const ReadOnlyQuestion = ({
         name={name ?? undefined}
         textInputProps={{
           helperText: detailLabel,
-          FormHelperTextProps: {
-            component: InputHelperText,
-          },
+          FormHelperTextProps: { component: InputHelperText },
         }}
         value={name ? formData[name] : null}
       />
