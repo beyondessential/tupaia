@@ -138,6 +138,7 @@ const Message = styled(Typography)`
   }
 `;
 
+const formLabel = <StyledFormLabel>Select countries</StyledFormLabel>;
 const reasonForAccessField = (
   <StyledFormInput id="message" label="Reason for access" name="message" />
 );
@@ -198,9 +199,9 @@ export const RequestCountryAccessForm = ({
   }
 
   const noRequestableCountries = !project || hasAccessToEveryCountry;
-
   const formIsSubmitting = isSubmitting || requestIsLoading;
-  const formIsInsubmissible = isValidating || !isValid || accessListIsLoading || formIsSubmitting;
+  const disableForm = noRequestableCountries || formIsSubmitting;
+  const disableSubmission = disableForm || isValidating || !isValid || accessListIsLoading;
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
     requestCountryAccess({
@@ -228,7 +229,7 @@ export const RequestCountryAccessForm = ({
   );
   const submitButton = (
     <Button
-      disabled={noRequestableCountries || formIsInsubmissible}
+      disabled={disableSubmission}
       fullWidth
       tooltip={getTooltip()}
       tooltipDelay={0}
@@ -238,36 +239,34 @@ export const RequestCountryAccessForm = ({
     </Button>
   );
 
-  if (isMobile) {
-    return (
-      <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-        <ExpandButton onClick={toggleOpen} $active={isOpen}>
-          <StyledFormLabel>Select countries</StyledFormLabel>
-          <ArrowLeftIcon />
-        </ExpandButton>
-        <Collapse in={isOpen}>
-          <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
-            {requestableCountryChecklist}
-            {reasonForAccessField}
-          </StyledFieldset>
-        </Collapse>
-        {submitButton}
-      </StyledForm>
-    );
-  }
-
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
-        <CountryChecklistWrapper>
-          <StyledFormLabel>Select countries</StyledFormLabel>
-          {requestableCountryChecklist}
-        </CountryChecklistWrapper>
-        <Flexbox>
-          {reasonForAccessField}
+      {isMobile ? (
+        <>
+          <ExpandButton onClick={toggleOpen} $active={isOpen}>
+            {formLabel}
+            <ArrowLeftIcon />
+          </ExpandButton>
+          <Collapse in={isOpen}>
+            <StyledFieldset disabled={disableForm}>
+              {requestableCountryChecklist}
+              {reasonForAccessField}
+            </StyledFieldset>
+          </Collapse>
           {submitButton}
-        </Flexbox>
-      </StyledFieldset>
+        </>
+      ) : (
+        <StyledFieldset disabled={disableForm}>
+          <CountryChecklistWrapper>
+            {formLabel}
+            {requestableCountryChecklist}
+          </CountryChecklistWrapper>
+          <Flexbox>
+            {reasonForAccessField}
+            {submitButton}
+          </Flexbox>
+        </StyledFieldset>
+      )}
     </StyledForm>
   );
 };
