@@ -21,7 +21,7 @@ export const RequestCountryAccessSection = () => {
   );
 
   return (
-    <AccountSettingsSection title={title} description={description}>
+    <AccountSettingsSection heading={title} description={description}>
       <RequestCountryAccessForm />
     </AccountSettingsSection>
   );
