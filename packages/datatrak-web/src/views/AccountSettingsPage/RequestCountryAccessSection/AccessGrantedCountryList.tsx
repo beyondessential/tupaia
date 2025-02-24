@@ -4,6 +4,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableContainerProps,
   TableHead,
   TableRow,
   Typography,
@@ -45,14 +46,14 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
   font-size: inherit;
 `;
 
-export const AccessGrantedCountryList = () => {
+export const AccessGrantedCountryList = (props: Omit<TableContainerProps, 'children'>) => {
   const { data: countries = [], isFetched, isLoading } = useCountryAccessList();
   const grantedCountries = countries.filter(country => country.hasAccess);
 
   const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';
 
   return (
-    <StyledTableContainer>
+    <StyledTableContainer {...props}>
       <Table size="small" stickyHeader>
         <TableHead>
           <TableRow>
