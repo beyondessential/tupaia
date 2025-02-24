@@ -94,9 +94,7 @@ export const ArithmeticQuestion = ({
         name={name ?? undefined}
         textInputProps={{
           helperText: detailLabel,
-          FormHelperTextProps: {
-            component: InputHelperText,
-          },
+          FormHelperTextProps: { component: InputHelperText },
         }}
         value={displayValue}
       />
