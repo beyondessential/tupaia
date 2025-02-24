@@ -166,7 +166,7 @@ export const RequestCountryAccessForm = ({
     defaultValues: {
       entityIds: [],
       message: '',
-    } as RequestCountryAccessFormFields,
+    },
     mode: 'onChange',
   });
   const {
@@ -180,7 +180,7 @@ export const RequestCountryAccessForm = ({
    * `setSelectedCountries` is used here to circumvent some quirks of how React Hook Form +
    * MUI checkboxes (mis-)handle multiple checkboxes with the same control name.
    */
-  const [selectedCountries, setSelectedCountries] = useState([] as Entity['id'][]);
+  const [selectedCountries, setSelectedCountries] = useState<Entity['id'][]>([]);
   const resetForm = () => {
     reset();
     setSelectedCountries([]);
