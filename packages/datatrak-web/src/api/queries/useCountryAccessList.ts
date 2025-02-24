@@ -21,9 +21,7 @@ export const useCountryAccessList = (projectCode?: Project['code']) => {
       }),
     {
       enabled: !!code,
-      initialData: [] as ProjectCountryAccessListRequest.ResBody,
       onSuccess: async () => void queryClient.invalidateQueries(['me/countries', code]),
-      placeholderData: [] as ProjectCountryAccessListRequest.ResBody,
     },
   );
 };
