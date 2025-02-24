@@ -192,7 +192,7 @@ export const RequestCountryAccessForm = ({
     onSuccess: response => successToast(response.message),
   });
 
-  const hasAccessToEveryCountry = (countries ?? []).every(c => c.hasAccess);
+  const hasAccessToEveryCountry = countries?.every(c => c.hasAccess) ?? true;
   const noRequestableCountries = !project || hasAccessToEveryCountry;
 
   const formIsSubmitting = isSubmitting || requestIsLoading;
