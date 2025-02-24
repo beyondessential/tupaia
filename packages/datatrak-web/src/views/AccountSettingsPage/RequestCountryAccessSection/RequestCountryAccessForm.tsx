@@ -226,6 +226,17 @@ export const RequestCountryAccessForm = ({
       setSelectedCountries={setSelectedCountries}
     />
   );
+  const submitButton = (
+    <Button
+      disabled={noRequestableCountries || formIsInsubmissible}
+      tooltip={getTooltip()}
+      tooltipDelay={0}
+      type="submit"
+      fullWidth
+    >
+      {formIsSubmitting ? 'Submitting request' : 'Request access'}
+    </Button>
+  );
 
   if (isMobile) {
     return (
@@ -240,15 +251,7 @@ export const RequestCountryAccessForm = ({
             {reasonForAccessField}
           </StyledFieldset>
         </Collapse>
-        <Button
-          disabled={noRequestableCountries || formIsInsubmissible}
-          tooltip={getTooltip()}
-          tooltipDelay={0}
-          type="submit"
-          fullWidth
-        >
-          {formIsSubmitting ? 'Submitting request' : 'Request access'}
-        </Button>
+        {submitButton}
       </StyledForm>
     );
   }
@@ -262,14 +265,7 @@ export const RequestCountryAccessForm = ({
         </CountryChecklistWrapper>
         <Flexbox>
           {reasonForAccessField}
-          <Button
-            disabled={noRequestableCountries || formIsInsubmissible}
-            tooltip={getTooltip()}
-            tooltipDelay={0}
-            type="submit"
-          >
-            {formIsSubmitting ? 'Submitting request' : 'Request access'}
-          </Button>
+          {submitButton}
         </Flexbox>
       </StyledFieldset>
     </StyledForm>
