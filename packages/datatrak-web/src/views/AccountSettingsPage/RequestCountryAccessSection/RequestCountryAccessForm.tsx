@@ -71,18 +71,19 @@ const Collapse = styled(UICollapse)`
   }
 `;
 
-const ExpandButton = styled(MuiButton)<{ $active: boolean }>`
+const ExpandButton = styled(MuiButton)`
   width: 100%;
   .MuiButton-label {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  svg {
-    font-size: 1rem;
-    transform: rotate(${props => (props.$active ? '90deg' : '-90deg')});
-    transition: transform 300ms cubic-bezier(0.77, 0, 0.18, 1);
-  }
+`;
+
+const ExpandIcon = styled(ArrowLeftIcon)<{ $active: boolean }>`
+  font-size: 1rem;
+  transform: rotate(${props => (props.$active ? '-270deg' : '-90deg')});
+  transition: transform 300ms cubic-bezier(0.77, 0, 0.18, 1);
 `;
 
 const StyledFormInput = styled(FormInput).attrs({
@@ -236,9 +237,9 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)} {...props}>
       {isMobile ? (
         <>
-          <ExpandButton onClick={toggleOpen} $active={isOpen}>
+          <ExpandButton onClick={toggleOpen}>
             {formLabel}
-            <ArrowLeftIcon />
+            <ExpandIcon $active={isOpen} />
           </ExpandButton>
           <Collapse in={isOpen}>
             <StyledFieldset disabled={disableForm}>
