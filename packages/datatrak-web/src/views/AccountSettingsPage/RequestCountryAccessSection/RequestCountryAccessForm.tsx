@@ -78,8 +78,9 @@ const ExpandButton = styled(MuiButton)<{ $active: boolean }>`
     justify-content: space-between;
   }
   svg {
-    transform: rotate(${props => (props.$active ? '-270deg' : '-90deg')});
     font-size: 1rem;
+    transform: rotate(${props => (props.$active ? '90deg' : '-90deg')});
+    transition: transform 300ms cubic-bezier(0.77, 0, 0.18, 1);
   }
 `;
 
