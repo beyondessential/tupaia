@@ -193,6 +193,10 @@ export const RequestCountryAccessForm = ({
   });
 
   const hasAccessToEveryCountry = countries?.every(c => c.hasAccess) ?? true;
+  if (hasAccessToEveryCountry) {
+    return <Message>You have access to all available countries within this project.</Message>;
+  }
+
   const noRequestableCountries = !project || hasAccessToEveryCountry;
 
   const formIsSubmitting = isSubmitting || requestIsLoading;
@@ -212,10 +216,6 @@ export const RequestCountryAccessForm = ({
     if (!project) return 'Select a project to request country access';
     return isValid ? undefined : 'Select countries to request access';
   };
-
-  if (hasAccessToEveryCountry) {
-    return <Message>You have access to all available countries within this project.</Message>;
-  }
 
   const requestableCountryChecklist = (
     <RequestableCountryChecklist
