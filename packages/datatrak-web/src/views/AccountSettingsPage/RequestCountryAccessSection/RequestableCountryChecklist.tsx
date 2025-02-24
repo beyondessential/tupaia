@@ -82,13 +82,14 @@ export const RequestableCountryChecklist = ({
         : countries.map(({ id, name, hasAccess, hasPendingAccess }) => {
             const isSelected = selectedCountries.includes(id);
             const tooltip = getTooltip(hasAccess, hasPendingAccess);
+            const validate = (value: Entity['id'][]) => value.length > 0;
 
             return (
               <StyledCheckbox
                 checked={isSelected}
                 disabled={hasAccess || hasPendingAccess}
                 id="entityIds"
-                inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
+                inputRef={register({ validate })}
                 key={id}
                 label={name}
                 name="entityIds"
