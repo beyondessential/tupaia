@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { FieldsetHTMLAttributes } from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 
+import { Entity } from '@tupaia/types';
 import { Checkbox } from '@tupaia/ui-components';
-import { Entity, Project, ProjectCountryAccessListRequest } from '@tupaia/types';
 
-const Container = styled.fieldset`
+import { useCountryAccessList, useCurrentUserContext } from '../../../api';
+
+const FieldSet = styled.fieldset`
   border-radius: 0.1875rem;
   block-size: 100%;
   padding-inline: 0.87rem;
@@ -48,21 +50,20 @@ const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
   }
 `;
 
-interface RequestableCountryChecklistProps {
-  projectCode?: Project['code'];
-  countries?: ProjectCountryAccessListRequest.ResBody;
+interface RequestableCountryChecklistProps extends FieldsetHTMLAttributes<HTMLFieldSetElement> {
   selectedCountries: Entity['id'][];
   setSelectedCountries: React.Dispatch<React.SetStateAction<Entity['id'][]>>;
-  disabled?: boolean;
 }
 
 export const RequestableCountryChecklist = ({
-  projectCode,
-  countries = [],
   selectedCountries,
   setSelectedCountries,
-  disabled,
+  ...props
 }: RequestableCountryChecklistProps) => {
+  const { project } = useCurrentUserContext();
+  const projectCode = project?.code;
+  const { data: countries } = useCountryAccessList();
+
   const { register } = useFormContext();
 
   const selectCountry = (id: Entity['id'], select = true) =>
@@ -76,7 +77,7 @@ export const RequestableCountryChecklist = ({
   };
 
   return (
-    <Container disabled={disabled}>
+    <FieldSet {...props}>
       {!projectCode
         ? null
         : countries.map(({ id, name, hasAccess, hasPendingAccess }) => {
@@ -99,6 +100,6 @@ export const RequestableCountryChecklist = ({
               />
             );
           })}
-    </Container>
+    </FieldSet>
   );
 };

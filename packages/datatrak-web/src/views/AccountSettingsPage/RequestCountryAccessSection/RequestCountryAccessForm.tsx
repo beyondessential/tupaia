@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
-import { UseQueryResult } from '@tanstack/react-query';
 import {
   FormLabel,
-  Typography,
   Button as MuiButton,
+  Typography,
   Collapse as UICollapse,
 } from '@material-ui/core';
-import { Entity, ProjectCountryAccessListRequest, ProjectResponse } from '@tupaia/types';
+import React, { HTMLAttributes, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import styled from 'styled-components';
+
+import { Entity } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
-import { useRequestProjectAccess } from '../../../api';
-import { Button, ArrowLeftIcon } from '../../../components';
+
+import { useCountryAccessList, useCurrentUserContext, useRequestProjectAccess } from '../../../api';
+import { ArrowLeftIcon, Button } from '../../../components';
 import { errorToast, successToast, useIsMobile } from '../../../utils';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
@@ -143,24 +144,18 @@ const reasonForAccessField = (
   <StyledFormInput id="message" label="Reason for access" name="message" />
 );
 
-interface RequestCountryAccessFormProps {
-  countryAccessList: UseQueryResult<ProjectCountryAccessListRequest.ResBody>;
-  project?: ProjectResponse | null;
-}
-
 interface RequestCountryAccessFormFields {
   entityIds: Entity['id'][];
   message?: string;
 }
 
-export const RequestCountryAccessForm = ({
-  countryAccessList,
-  project,
-}: RequestCountryAccessFormProps) => {
+export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>) => {
+  const { project } = useCurrentUserContext();
+  const projectCode = project?.code;
+  const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
+
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
-  const { data: countries, isLoading: accessListIsLoading } = countryAccessList;
-  const projectCode = project?.code;
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -238,7 +233,7 @@ export const RequestCountryAccessForm = ({
   );
 
   return (
-    <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
+    <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)} {...props}>
       {isMobile ? (
         <>
           <ExpandButton onClick={toggleOpen} $active={isOpen}>

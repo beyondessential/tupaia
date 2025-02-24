@@ -1,5 +1,3 @@
-import React from 'react';
-import styled from 'styled-components';
 import {
   Paper,
   Table,
@@ -10,8 +8,10 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import { ProjectCountryAccessListRequest } from '@tupaia/types';
-import { UseQueryResult } from '@tanstack/react-query';
+import React from 'react';
+import styled from 'styled-components';
+
+import { useCountryAccessList } from '../../../api';
 
 const StyledTableContainer = styled(TableContainer).attrs({
   elevation: 0,
@@ -45,12 +45,8 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
   font-size: inherit;
 `;
 
-interface AccessGrantedCountryListProps {
-  countryAccessList: UseQueryResult<ProjectCountryAccessListRequest.ResBody>;
-}
-
-export const AccessGrantedCountryList = ({ countryAccessList }: AccessGrantedCountryListProps) => {
-  const { data: countries = [], isFetched, isLoading } = countryAccessList;
+export const AccessGrantedCountryList = () => {
+  const { data: countries = [], isFetched, isLoading } = useCountryAccessList();
   const grantedCountries = countries.filter(country => country.hasAccess);
 
   const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';
