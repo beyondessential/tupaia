@@ -1,9 +1,4 @@
-import {
-  FormLabel,
-  Button as MuiButton,
-  Typography,
-  Collapse as UICollapse,
-} from '@material-ui/core';
+import { FormLabel, Button as MuiButton, Typography } from '@material-ui/core';
 import React, { HTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
@@ -21,7 +16,7 @@ const StyledForm = styled(Form<RequestCountryAccessFormFields>)`
   max-inline-size: 44.25rem;
 `;
 
-const StyledFieldset = styled.fieldset`
+const FieldSet = styled.fieldset`
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -44,6 +39,16 @@ const StyledFieldset = styled.fieldset`
   }
 `;
 
+const ExpandingFieldSet = styled(FieldSet)`
+  transition: 500ms cubic-bezier(0.77, 0, 0.18, 1);
+  transition-property: block-size opacity;
+
+  &:not([aria-expanded='true']) {
+    block-size: 0;
+    opacity: 0;
+  }
+`;
+
 const CountryChecklistWrapper = styled.div`
   block-size: 100%;
   display: block flex;
@@ -61,18 +66,9 @@ const StyledFormLabel = styled(FormLabel)`
 const Flexbox = styled.div`
   display: block flex;
   flex-direction: column;
-  gap: 1.25rem;
 `;
 
-const Collapse = styled(UICollapse)`
-  padding-bottom: 2rem;
-  .MuiCollapse-wrapper {
-    width: 100%;
-  }
-`;
-
-const ExpandButton = styled(MuiButton)`
-  width: 100%;
+const ExpandButton = styled(MuiButton).attrs({ fullWidth: true })`
   .MuiButton-label {
     display: flex;
     align-items: center;
@@ -137,6 +133,17 @@ const Message = styled(Typography)`
     font-size: 1.1125rem;
     flex: 1;
     align-self: center;
+  }
+`;
+
+const StyledButton = styled(Button).attrs({
+  fullWidth: true,
+  tooltipDelay: 0,
+  type: 'submit',
+})`
+  // Put margin on tooltip (immediate parent) to avoid disrupting tooltip placement
+  *:has(> &) {
+    margin-block-start: 1.25rem;
   }
 `;
 
@@ -210,7 +217,7 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
 
   const getTooltip = () => {
     if (!project) return 'Select a project to request country access';
-    return isValid ? null : 'Select countries to request access';
+    if (!isValid) return 'Select countries to request access';
   };
 
   const requestableCountryChecklistProps = {
@@ -218,16 +225,11 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
     selectedCountries,
     setSelectedCountries,
   };
+
   const submitButton = (
-    <Button
-      disabled={disableSubmission}
-      fullWidth
-      tooltip={getTooltip()}
-      tooltipDelay={0}
-      type="submit"
-    >
+    <StyledButton disabled={disableSubmission} tooltip={getTooltip()}>
       {formIsSubmitting ? 'Submitting request' : 'Request access'}
-    </Button>
+    </StyledButton>
   );
 
   return (
@@ -238,16 +240,14 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
             {formLabel}
             <ExpandIcon $active={isOpen} />
           </ExpandButton>
-          <Collapse in={isOpen}>
-            <StyledFieldset disabled={disableForm}>
-              <RequestableCountryChecklist {...requestableCountryChecklistProps} />
-              {reasonForAccessField}
-            </StyledFieldset>
-          </Collapse>
+          <ExpandingFieldSet aria-expanded={isOpen} disabled={disableForm}>
+            <RequestableCountryChecklist {...requestableCountryChecklistProps} />
+            {reasonForAccessField}
+          </ExpandingFieldSet>
           {submitButton}
         </>
       ) : (
-        <StyledFieldset disabled={disableForm}>
+        <FieldSet disabled={disableForm}>
           <CountryChecklistWrapper>
             {formLabel}
             <RequestableCountryChecklist {...requestableCountryChecklistProps} />
@@ -256,7 +256,7 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
             {reasonForAccessField}
             {submitButton}
           </Flexbox>
-        </StyledFieldset>
+        </FieldSet>
       )}
     </StyledForm>
   );
