@@ -69,6 +69,7 @@ const Flexbox = styled.div`
 `;
 
 const ExpandButton = styled(MuiButton).attrs({ fullWidth: true })`
+  margin-block-end: 0.5rem;
   .MuiButton-label {
     display: flex;
     align-items: center;
