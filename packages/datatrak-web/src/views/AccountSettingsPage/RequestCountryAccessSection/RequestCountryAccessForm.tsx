@@ -1,5 +1,5 @@
 import { FormLabel, Button as MuiButton, Typography } from '@material-ui/core';
-import React, { FieldsetHTMLAttributes, HTMLAttributes, useState } from 'react';
+import React, { HTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -77,10 +77,14 @@ const ExpandButton = styled(MuiButton).attrs({ fullWidth: true })`
   }
 `;
 
-const ExpandIcon = styled(ArrowLeftIcon)<{ $active: boolean }>`
+const ExpandIcon = styled(ArrowLeftIcon)`
   font-size: 1rem;
-  transform: rotate(${props => (props.$active ? '-270deg' : '-90deg')});
   transition: transform 350ms var(--ease-in-out-quad);
+
+  transform: rotate(-90deg);
+  ${ExpandButton}[aria-expanded="true"] & {
+    transform: rotate(-270deg);
+  }
 `;
 
 const StyledFormInput = styled(FormInput).attrs({
@@ -243,7 +247,7 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
             onClick={toggleOpen}
           >
             {formLabel}
-            <ExpandIcon $active={isOpen} />
+            <ExpandIcon />
           </ExpandButton>
           <ExpandingFieldSet
             disabled={disableForm}
