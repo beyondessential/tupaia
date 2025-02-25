@@ -86,6 +86,7 @@ const overrides = {
       },
       ':root': {
         accentColor: palette.primary.main,
+        interpolateSize: 'allow-keywords',
       },
       ":is(ol, ul)[role='list']": {
         listStyleType: 'none',
