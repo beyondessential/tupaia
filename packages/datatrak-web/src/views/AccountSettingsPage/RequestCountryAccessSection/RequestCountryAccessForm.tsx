@@ -1,5 +1,5 @@
 import { FormLabel, Button as MuiButton, Typography } from '@material-ui/core';
-import React, { HTMLAttributes, useState } from 'react';
+import React, { FieldsetHTMLAttributes, HTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -43,7 +43,7 @@ const ExpandingFieldSet = styled(FieldSet)`
   transition: 500ms cubic-bezier(0.77, 0, 0.18, 1);
   transition-property: block-size opacity;
 
-  &:not([aria-expanded='true']) {
+  &[hidden] {
     block-size: 0;
     opacity: 0;
   }
@@ -236,11 +236,19 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
     <StyledForm formContext={formContext} onSubmit={onSubmit} {...props}>
       {isMobile ? (
         <>
-          <ExpandButton onClick={toggleOpen}>
+          <ExpandButton
+            aria-controls="collapsible-country-checklist"
+            aria-expanded={isOpen}
+            onClick={toggleOpen}
+          >
             {formLabel}
             <ExpandIcon $active={isOpen} />
           </ExpandButton>
-          <ExpandingFieldSet aria-expanded={isOpen} disabled={disableForm}>
+          <ExpandingFieldSet
+            disabled={disableForm}
+            hidden={isOpen}
+            id="collapsible-country-checklist"
+          >
             <RequestableCountryChecklist {...requestableCountryChecklistProps} />
             {reasonForAccessField}
           </ExpandingFieldSet>
