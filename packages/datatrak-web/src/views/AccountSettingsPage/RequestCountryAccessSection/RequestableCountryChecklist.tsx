@@ -50,6 +50,14 @@ const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
   }
 `;
 
+const validateField = (value: Entity['id'][]) => value.length > 0;
+
+const getTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
+  if (hasAccess) return 'You already have access';
+  if (hasPendingAccess) return 'Approval in progress';
+  return null;
+};
+
 interface RequestableCountryChecklistProps extends FieldsetHTMLAttributes<HTMLFieldSetElement> {
   selectedCountries: Entity['id'][];
   setSelectedCountries: React.Dispatch<React.SetStateAction<Entity['id'][]>>;
@@ -71,11 +79,6 @@ export const RequestableCountryChecklist = ({
       select ? selectedCountries.concat([id]) : selectedCountries.filter(element => element !== id),
     );
 
-  const getTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
-    if (hasAccess) return 'You already have access';
-    if (hasPendingAccess) return 'Approval in progress';
-  };
-
   return (
     <FieldSet {...props}>
       {!projectCode
@@ -83,14 +86,13 @@ export const RequestableCountryChecklist = ({
         : countries.map(({ id, name, hasAccess, hasPendingAccess }) => {
             const isSelected = selectedCountries.includes(id);
             const tooltip = getTooltip(hasAccess, hasPendingAccess);
-            const validate = (value: Entity['id'][]) => value.length > 0;
 
             return (
               <StyledCheckbox
                 checked={isSelected}
                 disabled={hasAccess || hasPendingAccess}
                 id="entityIds"
-                inputRef={register({ validate })}
+                inputRef={register({ validate: validateField })}
                 key={id}
                 label={name}
                 name="entityIds"
