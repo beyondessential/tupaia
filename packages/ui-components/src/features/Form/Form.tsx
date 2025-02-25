@@ -14,14 +14,14 @@ interface FormProps<TFieldValues extends FieldValues>
 export const Form = <TFieldValues extends FieldValues>({
   formContext,
   onSubmit,
-  ...props
+  ...htmlFormProps
 }: FormProps<TFieldValues>) => {
   return (
     <FormProvider {...formContext}>
       <form
         noValidate
         onSubmit={onSubmit ? formContext.handleSubmit(onSubmit) : undefined}
-        {...props}
+        {...htmlFormProps}
       />
     </FormProvider>
   );
