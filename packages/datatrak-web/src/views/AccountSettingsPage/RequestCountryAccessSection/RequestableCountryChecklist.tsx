@@ -55,7 +55,6 @@ const validateField = (value: Entity['id'][]) => value.length > 0;
 const getTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
   if (hasAccess) return 'You already have access';
   if (hasPendingAccess) return 'Approval in progress';
-  return null;
 };
 
 interface RequestableCountryChecklistProps extends FieldsetHTMLAttributes<HTMLFieldSetElement> {
@@ -83,7 +82,7 @@ export const RequestableCountryChecklist = ({
     <FieldSet {...props}>
       {!projectCode
         ? null
-        : countries.map(({ id, name, hasAccess, hasPendingAccess }) => {
+        : countries?.map(({ id, name, hasAccess, hasPendingAccess }) => {
             const isSelected = selectedCountries.includes(id);
             const tooltip = getTooltip(hasAccess, hasPendingAccess);
 
