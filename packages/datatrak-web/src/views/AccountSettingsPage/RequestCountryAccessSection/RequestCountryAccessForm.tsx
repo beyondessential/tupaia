@@ -40,7 +40,7 @@ const FieldSet = styled.fieldset`
 `;
 
 const ExpandingFieldSet = styled(FieldSet)`
-  transition: 350ms cubic-bezier(0.77, 0, 0.18, 1);
+  transition: 350ms var(--ease-in-out-quad);
   transition-property: block-size opacity;
 
   &[hidden] {
@@ -80,7 +80,7 @@ const ExpandButton = styled(MuiButton).attrs({ fullWidth: true })`
 const ExpandIcon = styled(ArrowLeftIcon)<{ $active: boolean }>`
   font-size: 1rem;
   transform: rotate(${props => (props.$active ? '-270deg' : '-90deg')});
-  transition: transform 350ms cubic-bezier(0.77, 0, 0.18, 1);
+  transition: transform 350ms var(--ease-in-out-quad);
 `;
 
 const StyledFormInput = styled(FormInput).attrs({
