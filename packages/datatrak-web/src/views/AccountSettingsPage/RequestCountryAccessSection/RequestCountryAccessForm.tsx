@@ -247,7 +247,7 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
           </ExpandButton>
           <ExpandingFieldSet
             disabled={disableForm}
-            hidden={isOpen}
+            hidden={!isOpen}
             id="collapsible-country-checklist"
           >
             <RequestableCountryChecklist {...requestableCountryChecklistProps} />
