@@ -1,19 +1,28 @@
 import React, { HTMLAttributes } from 'react';
-import { FormProvider, SubmitHandler } from 'react-hook-form';
+import { FieldValues, FormProvider, SubmitHandler, UseFormMethods } from 'react-hook-form';
 
-interface FormProps extends HTMLAttributes<HTMLFormElement> {
-  formContext: any;
-  onSubmit?: SubmitHandler<any>;
+interface FormProps<TFieldValues extends FieldValues>
+  extends Omit<HTMLAttributes<HTMLFormElement>, 'onSubmit'> {
+  formContext: UseFormMethods<TFieldValues>;
+  onSubmit?: SubmitHandler<TFieldValues>;
 }
 
 /**
  * A wrapper around react-hook-form's FormProvider and form element. Needed for custom form fields
  * such as TextField and CheckboxField to be able to self register and validate with react-hook-form.
  */
-export const Form = ({ formContext, onSubmit, ...props }: FormProps) => {
+export const Form = <TFieldValues extends FieldValues>({
+  formContext,
+  onSubmit,
+  ...props
+}: FormProps<TFieldValues>) => {
   return (
     <FormProvider {...formContext}>
-      <form onSubmit={formContext.handleSubmit(onSubmit)} noValidate {...props} />
+      <form
+        noValidate
+        onSubmit={onSubmit ? formContext.handleSubmit(onSubmit) : undefined}
+        {...props}
+      />
     </FormProvider>
   );
 };

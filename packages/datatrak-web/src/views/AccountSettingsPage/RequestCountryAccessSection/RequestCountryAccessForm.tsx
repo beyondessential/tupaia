@@ -16,7 +16,7 @@ import { ArrowLeftIcon, Button } from '../../../components';
 import { errorToast, successToast, useIsMobile } from '../../../utils';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
-const StyledForm = styled(Form)`
+const StyledForm = styled(Form<RequestCountryAccessFormFields>)`
   inline-size: 100%;
   max-inline-size: 44.25rem;
 `;
@@ -167,7 +167,6 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
   });
   const {
     formState: { isSubmitting, isValidating, isValid },
-    handleSubmit,
     reset,
   } = formContext;
 
@@ -232,7 +231,7 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
   );
 
   return (
-    <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)} {...props}>
+    <StyledForm formContext={formContext} onSubmit={onSubmit} {...props}>
       {isMobile ? (
         <>
           <ExpandButton onClick={toggleOpen}>
