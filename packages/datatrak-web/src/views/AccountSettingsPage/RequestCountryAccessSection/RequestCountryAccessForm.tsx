@@ -142,8 +142,8 @@ const StyledButton = styled(Button).attrs({
   tooltipDelay: 0,
   type: 'submit',
 })`
-  // Put margin on tooltip (immediate parent) to avoid disrupting tooltip placement
-  *:has(> &) {
+  // Put margin on tooltip (if present) to avoid disrupting tooltip placement
+  ${props => (props.tooltip ? '*:has(> &)' : '&')} {
     margin-block-start: 1.25rem;
   }
 `;
