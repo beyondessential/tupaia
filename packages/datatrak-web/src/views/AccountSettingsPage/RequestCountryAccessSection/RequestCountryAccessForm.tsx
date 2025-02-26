@@ -1,4 +1,4 @@
-import { FormLabel, Button as MuiButton, Typography } from '@material-ui/core';
+import { FormLabel, Typography } from '@material-ui/core';
 import React, { HTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
@@ -7,9 +7,10 @@ import { Entity } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 
 import { useCountryAccessList, useCurrentUserContext, useRequestProjectAccess } from '../../../api';
-import { ArrowLeftIcon, Button } from '../../../components';
+import { Button } from '../../../components';
 import { errorToast, successToast, useIsMobile } from '../../../utils';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
+import { Collapse } from './Collapse';
 
 const StyledForm = styled(Form<RequestCountryAccessFormFields>)`
   inline-size: 100%;
@@ -39,16 +40,6 @@ const FieldSet = styled.fieldset`
   }
 `;
 
-const ExpandingFieldSet = styled(FieldSet)`
-  transition: 350ms var(--ease-in-out-quad);
-  transition-property: block-size opacity;
-
-  &[hidden] {
-    block-size: 0;
-    opacity: 0;
-  }
-`;
-
 const CountryChecklistWrapper = styled.div`
   block-size: 100%;
   display: block flex;
@@ -61,30 +52,6 @@ const StyledFormLabel = styled(FormLabel)`
   font-size: 0.9375rem;
   line-height: 1.125rem;
   margin-block-end: 0.1875rem;
-`;
-
-const Flexbox = styled.div`
-  display: block flex;
-  flex-direction: column;
-`;
-
-const ExpandButton = styled(MuiButton).attrs({ fullWidth: true })`
-  margin-block-end: 0.5rem;
-  .MuiButton-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
-const ExpandIcon = styled(ArrowLeftIcon)`
-  font-size: 1rem;
-  transition: transform 350ms var(--ease-in-out-quad);
-
-  transform: rotate(-90deg);
-  ${ExpandButton}[aria-expanded="true"] & {
-    transform: rotate(-270deg);
-  }
 `;
 
 const StyledFormInput = styled(FormInput).attrs({
@@ -148,7 +115,6 @@ const StyledButton = styled(Button).attrs({
 })`
   // Put margin on tooltip (if present) to avoid disrupting tooltip placement
   ${props => (props.tooltip ? '*:has(> &)' : '&')} {
-    margin-block-start: 1.25rem;
   }
 `;
 
@@ -167,7 +133,6 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
   const projectCode = project?.code;
   const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
 
-  const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const formContext = useForm<RequestCountryAccessFormFields>({
@@ -218,8 +183,6 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
     });
   }
 
-  const toggleOpen = () => setIsOpen(!isOpen);
-
   const getTooltip = () => {
     if (!project) return 'Select a project to request country access';
     if (!isValid) return 'Select countries to request access';
@@ -239,38 +202,25 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
 
   return (
     <StyledForm formContext={formContext} onSubmit={onSubmit} {...props}>
-      {isMobile ? (
-        <>
-          <ExpandButton
-            aria-controls="collapsible-country-checklist"
-            aria-expanded={isOpen}
-            onClick={toggleOpen}
-          >
-            {formLabel}
-            <ExpandIcon />
-          </ExpandButton>
-          <ExpandingFieldSet
-            disabled={disableForm}
-            hidden={!isOpen}
-            id="collapsible-country-checklist"
-          >
-            <RequestableCountryChecklist {...requestableCountryChecklistProps} />
+      <FieldSet disabled={disableForm}>
+        {isMobile ? (
+          <>
+            <Collapse label={formLabel} name="collapsible-country-checklist">
+              <RequestableCountryChecklist {...requestableCountryChecklistProps} />
+              {reasonForAccessField}
+            </Collapse>
+          </>
+        ) : (
+          <>
+            <CountryChecklistWrapper>
+              {formLabel}
+              <RequestableCountryChecklist {...requestableCountryChecklistProps} />
+            </CountryChecklistWrapper>
             {reasonForAccessField}
-          </ExpandingFieldSet>
-          {submitButton}
-        </>
-      ) : (
-        <FieldSet disabled={disableForm}>
-          <CountryChecklistWrapper>
-            {formLabel}
-            <RequestableCountryChecklist {...requestableCountryChecklistProps} />
-          </CountryChecklistWrapper>
-          <Flexbox>
-            {reasonForAccessField}
-            {submitButton}
-          </Flexbox>
-        </FieldSet>
-      )}
+          </>
+        )}
+        {submitButton}
+      </FieldSet>
     </StyledForm>
   );
 };
