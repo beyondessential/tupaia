@@ -204,12 +204,10 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
     <StyledForm formContext={formContext} onSubmit={onSubmit} {...props}>
       <FieldSet disabled={disableForm}>
         {isMobile ? (
-          <>
-            <Collapse label={formLabel} name="collapsible-country-checklist">
-              <RequestableCountryChecklist {...requestableCountryChecklistProps} />
-              {reasonForAccessField}
-            </Collapse>
-          </>
+          <Collapse label={formLabel} name="collapsible-country-checklist">
+            <RequestableCountryChecklist {...requestableCountryChecklistProps} />
+            {reasonForAccessField}
+          </Collapse>
         ) : (
           <>
             <CountryChecklistWrapper>
