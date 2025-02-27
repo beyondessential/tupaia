@@ -1,5 +1,4 @@
 import { Button, useMediaQuery, useTheme } from '@material-ui/core';
-import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 import React, { useState, HTMLAttributes, ReactNode } from 'react';
 import styled from 'styled-components';
 
@@ -63,7 +62,6 @@ const Content = styled.div`
 `;
 
 interface AdaptiveCollapseProps extends HTMLAttributes<HTMLDivElement> {
-  breakpoint?: Breakpoint;
   contentProps?: HTMLAttributes<HTMLDivElement>;
   defaultOpen?: boolean;
   label: ReactNode;
@@ -71,7 +69,6 @@ interface AdaptiveCollapseProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const AdaptiveCollapse = ({
-  breakpoint = 'xs',
   children,
   contentProps,
   defaultOpen = false,
@@ -80,7 +77,7 @@ export const AdaptiveCollapse = ({
   ...props
 }: AdaptiveCollapseProps) => {
   const [isExpanded, setIsExpanded] = useState(defaultOpen);
-  const isCollapsible = useMediaQuery(useTheme().breakpoints.down(breakpoint));
+  const isCollapsible = useMediaQuery(useTheme().breakpoints.down('xs'));
 
   return (
     <AdaptiveSubgrid {...props}>
