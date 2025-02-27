@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { Link as RouterLink, To } from 'react-router-dom';
 import { Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
