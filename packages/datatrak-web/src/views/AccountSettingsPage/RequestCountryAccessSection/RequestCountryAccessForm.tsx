@@ -1,5 +1,5 @@
 import { FormLabel, Typography } from '@material-ui/core';
-import React, { HTMLAttributes, useEffect, useState } from 'react';
+import React, { HTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 
@@ -8,10 +8,10 @@ import { Form, FormInput, TextField } from '@tupaia/ui-components';
 
 import { useCountryAccessList, useCurrentUserContext, useRequestProjectAccess } from '../../../api';
 import { Button } from '../../../components';
-import { errorToast, successToast } from '../../../utils';
-import { RequestableCountryChecklist } from './RequestableCountryChecklist';
-import { AdaptiveCollapse } from './AdaptiveCollapse';
 import { TooltipButtonWrapper } from '../../../components/Button';
+import { errorToast, successToast } from '../../../utils';
+import { AdaptiveCollapse } from './AdaptiveCollapse';
+import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
 const StyledForm = styled(Form<RequestCountryAccessFormFields>)`
   inline-size: 100%;
@@ -121,7 +121,7 @@ const StyledButton = styled(Button).attrs({
   }
 `;
 
-interface RequestCountryAccessFormFields {
+export interface RequestCountryAccessFormFields {
   entityIds: Entity['id'][];
   message?: string;
 }

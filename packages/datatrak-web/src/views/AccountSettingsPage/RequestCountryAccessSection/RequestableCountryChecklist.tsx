@@ -1,11 +1,12 @@
 import React, { FieldsetHTMLAttributes } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, UseFormMethods } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 
 import { Entity } from '@tupaia/types';
 import { Checkbox } from '@tupaia/ui-components';
 
 import { useCountryAccessList, useCurrentUserContext } from '../../../api';
+import { RequestCountryAccessFormFields } from './RequestCountryAccessForm';
 
 const FieldSet = styled.fieldset(props => {
   const { breakpoints, palette } = props.theme;
@@ -70,10 +71,13 @@ export const RequestableCountryChecklist = ({
 
   const { register }: UseFormMethods<RequestCountryAccessFormFields> = useFormContext();
 
-  const selectCountry = (id: Entity['id'], select = true) =>
-    setSelectedCountries(
-      select ? selectedCountries.concat([id]) : selectedCountries.filter(element => element !== id),
+  const toggleCountry = (id: Entity['id'], isSelected: boolean) => {
+    return setSelectedCountries(
+      isSelected
+        ? selectedCountries.filter((element: Entity['id']) => element !== id)
+        : selectedCountries.concat(id),
     );
+  };
 
   return (
     <FieldSet {...fieldsetProps}>
@@ -91,7 +95,7 @@ export const RequestableCountryChecklist = ({
                 key={id}
                 label={name}
                 name="entityIds"
-                onChange={() => selectCountry(id, !isSelected)}
+                onChange={() => toggleCountry(id, isSelected)}
                 tooltip={tooltip}
                 value={id}
               />
