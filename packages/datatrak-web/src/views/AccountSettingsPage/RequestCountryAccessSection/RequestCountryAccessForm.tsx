@@ -129,7 +129,11 @@ export interface RequestCountryAccessFormFields {
 export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>) => {
   const { project } = useCurrentUserContext();
   const projectCode = project?.code;
-  const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
+  const {
+    data: countries,
+    isLoading: accessListIsLoading,
+    isInitialLoading: accessListIsInitialLoading,
+  } = useCountryAccessList();
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -161,14 +165,13 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
     onSuccess: response => successToast(response.message),
   });
 
-  const hasAccessToEveryCountry = countries?.every(c => c.hasAccess) ?? true;
+  const hasAccessToEveryCountry = !accessListIsInitialLoading && countries?.every(c => c.hasAccess);
   if (hasAccessToEveryCountry) {
     return <Message>You have access to all available countries within this project</Message>;
   }
 
-  const noRequestableCountries = !project || hasAccessToEveryCountry;
   const formIsSubmitting = isSubmitting || requestIsLoading;
-  const disableForm = noRequestableCountries || formIsSubmitting;
+  const disableForm = !project || formIsSubmitting;
   const disableSubmission = disableForm || isValidating || !isValid || accessListIsLoading;
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
