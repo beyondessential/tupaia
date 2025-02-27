@@ -57,7 +57,7 @@ export const Button = forwardRef(
         disabled={isLoading || disabled}
         ref={ref}
       >
-        {isLoading ? `${loadingText}...` : children}
+        {isLoading ? `${loadingText}…` : children}
       </StyledButton>
     );
   },

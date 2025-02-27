@@ -168,6 +168,7 @@ export const PersonalDetailsForm = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
+            tooltipDelay={0}
             disabled={formIsNotSubmissible}
             fullWidth
           >

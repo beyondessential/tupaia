@@ -6,15 +6,18 @@ import { Button, Modal } from '.';
 
 const Wrapper = styled.div`
   width: 25rem;
-  padding: 0 2rem 1rem 2rem;
-  text-wrap: initial;
+  max-width: 100%;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 0 2rem 1rem;
+  }
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   width: 100%;
   padding-top: 1.8rem;
+  gap: 0.5rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     flex-direction: row;
     justify-content: center;
@@ -31,10 +34,8 @@ const Heading = styled(Typography).attrs({
 const ModalButton = styled(Button).attrs({
   fullWidth: true,
 })`
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    & + & {
-      margin: 1rem 0 0 0;
-    }
+  &.MuiButtonBase-root.MuiButton-root {
+    margin-left: 0;
   }
 `;
 
