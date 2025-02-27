@@ -47,10 +47,10 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
             background-color: oklch(50% 0.0088 260.73 / 50%);
           `;
     }}
+  }
 
-    ${({ theme }) => theme.breakpoints.up('sm')} {
-      background-color: initial;
-    }
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    background-color: initial;
   }
 
   .MuiSvgIcon-root {
