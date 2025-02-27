@@ -7,34 +7,31 @@ import { Checkbox } from '@tupaia/ui-components';
 
 import { useCountryAccessList, useCurrentUserContext } from '../../../api';
 
-const FieldSet = styled.fieldset`
-  border-radius: 0.1875rem;
-  block-size: 100%;
-  padding-inline: 0.87rem;
+const FieldSet = styled.fieldset(props => {
+  const { breakpoints, palette } = props.theme;
+  return css`
+    border: max(0.0625rem, 1px) solid ${palette.grey[400]};
+    border-radius: 0.1875rem;
+    block-size: 100%;
+    padding-inline: 0.87rem;
 
-  ${props => {
-    const { breakpoints, palette } = props.theme;
-    return css`
-      border: max(0.0625rem, 1px) solid ${palette.grey[400]};
+    overflow-block: auto;
+    @supports not (overflow-block: auto) {
+      overflow-y: auto;
+    }
 
-      // Match styling of ui-components TextField
-      :disabled {
-        color: ${palette.text.secondary};
-        background-color: ${palette.grey[100]};
-      }
+    // Match styling of ui-components TextField
+    &:disabled {
+      color: ${palette.text.secondary};
+      background-color: ${palette.grey[100]};
+    }
 
-      ${breakpoints.down('sm')} {
-        margin-block-end: 1rem;
-        border: none;
-      }
-    `;
-  }}
-
-  overflow-block: auto;
-  @supports not (overflow-block: auto) {
-    overflow-y: auto;
-  }
-`;
+    ${breakpoints.down('xs')} {
+      margin-block-end: 1rem;
+      border: none;
+    }
+  `;
+});
 
 const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
   margin-block: 0;
@@ -65,7 +62,7 @@ interface RequestableCountryChecklistProps extends FieldsetHTMLAttributes<HTMLFi
 export const RequestableCountryChecklist = ({
   selectedCountries,
   setSelectedCountries,
-  ...props
+  ...fieldsetProps
 }: RequestableCountryChecklistProps) => {
   const { project } = useCurrentUserContext();
   const projectCode = project?.code;
@@ -79,7 +76,7 @@ export const RequestableCountryChecklist = ({
     );
 
   return (
-    <FieldSet {...props}>
+    <FieldSet {...fieldsetProps}>
       {!projectCode
         ? null
         : countries?.map(({ id, name, hasAccess, hasPendingAccess }) => {
@@ -90,7 +87,6 @@ export const RequestableCountryChecklist = ({
               <StyledCheckbox
                 checked={isSelected}
                 disabled={hasAccess || hasPendingAccess}
-                id="entityIds"
                 inputRef={register({ validate: validateField })}
                 key={id}
                 label={name}

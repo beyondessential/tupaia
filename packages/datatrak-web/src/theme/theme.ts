@@ -3,6 +3,16 @@ import { DESKTOP_BREAKPOINT } from '../constants';
 
 const overMobileBreakpoint = `@media (min-width: ${DESKTOP_BREAKPOINT})`;
 
+const breakpoints = {
+  values: {
+    xs: 0,
+    sm: 600,
+    md: 900,
+    lg: 1200,
+    xl: 1536,
+  },
+};
+
 const palette = {
   type: 'light',
   primary: {
@@ -157,6 +167,7 @@ const overrides = {
 } as const;
 
 export const theme = createMuiTheme({
+  breakpoints,
   palette,
   typography,
   overrides,
