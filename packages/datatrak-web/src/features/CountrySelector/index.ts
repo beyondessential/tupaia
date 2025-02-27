@@ -1,2 +1,2 @@
 export { useUserCountries } from './useUserCountries';
-export { CountrySelector } from './CountrySelector';
+export { CountrySelector, CountrySelectWrapper } from './CountrySelector';

@@ -137,6 +137,7 @@ export interface FileUploadFieldProps {
   fileName?: string;
   multiple?: boolean;
   label?: string;
+  dropzoneLabel?: string;
   tooltip?: string;
   helperText?: string;
   maxSizeInBytes?: number;
@@ -158,6 +159,7 @@ export const FileUploadField = ({
   accept,
   helperText,
   label,
+  dropzoneLabel,
   maxSizeInBytes,
   multiple = false,
   name,
@@ -241,6 +243,7 @@ export const FileUploadField = ({
   const fileOrFiles = multiple ? 'files' : 'file';
   const getDropzoneLabel = () => {
     if (isDragActive) return `Drop ${fileOrFiles} here`;
+    if (dropzoneLabel) return dropzoneLabel;
     return (
       <>
         Drag & drop or <ChooseFileButton>choose {fileOrFiles}</ChooseFileButton> to upload

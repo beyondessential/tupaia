@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Button } from './Button';
 import { Modal } from './Modal';
@@ -10,11 +11,15 @@ const Wrapper = styled.div`
     padding: 1rem 2rem;
   }
 `;
+
 const ButtonWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   width: 100%;
-  padding-top: 1.3rem;
+  max-width: 20rem;
+  margin: 1.5rem auto 0;
+  gap: 1rem;
+
   ${({ theme }) => theme.breakpoints.up('sm')} {
     flex-direction: row;
     justify-content: center;
@@ -29,12 +34,21 @@ const Heading = styled(Typography).attrs({
 `;
 
 const ModalButton = styled(Button)`
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    & + & {
-      margin: 1rem 0 0 0;
-    }
+  &.MuiButtonBase-root.MuiButton-root {
+    flex: 1;
+    margin: 0;
   }
 `;
+
+interface CancelConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  headingText?: string | null;
+  bodyText?: string | null;
+  confirmText?: string | null;
+  cancelText?: string | null;
+  confirmPath?: string | number;
+}
 
 export const CancelConfirmModal = ({
   isOpen,
@@ -43,18 +57,27 @@ export const CancelConfirmModal = ({
   bodyText = "If you exit, you will lose the progress you've made on the current survey",
   confirmText = 'Exit survey',
   cancelText = 'Continue survey',
-  confirmLink = '/',
-}) => {
+  confirmPath = '/',
+}: CancelConfirmModalProps) => {
+  const navigate = useNavigate();
+  const onConfirm = () => {
+    onClose();
+    if (typeof confirmPath === 'string') {
+      navigate(confirmPath); // Navigate to the specified path
+    } else if (typeof confirmPath === 'number') {
+      navigate(confirmPath); // Navigate by delta
+    }
+  };
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Wrapper>
         <Heading>{headingText}</Heading>
         <Typography align="center">{bodyText}</Typography>
         <ButtonWrapper>
-          <ModalButton variant="outlined" to={confirmLink} onClick={onClose}>
-            {confirmText}
+          <ModalButton onClick={onClose} variant="outlined">
+            {cancelText}
           </ModalButton>
-          <ModalButton onClick={onClose}>{cancelText}</ModalButton>
+          <ModalButton onClick={onConfirm}>{confirmText}</ModalButton>
         </ButtonWrapper>
       </Wrapper>
     </Modal>

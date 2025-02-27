@@ -171,7 +171,11 @@ export const Dashboard = () => {
           if (config?.drillDown && config?.drillDown?.itemCode === item.code) return true;
           return false;
         });
-        return isDrillDown ? items : [...items, item];
+
+        if (isDrillDown) return items;
+
+        items.push(item);
+        return items;
       },
       [],
     ) ?? [];

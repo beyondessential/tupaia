@@ -40,6 +40,12 @@ const StyledTextField = styled(TextField)`
   margin: 0; // Use gap on parent to control spacing
 `;
 
+const ButtonContainer = styled.div`
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    grid-row: -2 / -1;
+  }
+`;
+
 const StyledButton = styled(Button)`
   ${({ theme }) => theme.breakpoints.up('sm')} {
     grid-row: -2 / -1;
@@ -57,7 +63,6 @@ const StyledButton = styled(Button)`
     }
   }
 `;
-
 export const ChangePasswordForm = () => {
   const emptyFormState: ResetPasswordParams = {
     oldPassword: '',
@@ -70,7 +75,7 @@ export const ChangePasswordForm = () => {
     mode: 'onChange',
   });
   const {
-    formState: { isSubmitting, isValid, isValidating },
+    formState: { isDirty, isSubmitting, isValid, isValidating },
     getValues,
     reset,
   } = formContext;
@@ -122,9 +127,17 @@ export const ChangePasswordForm = () => {
           required
           type="password"
         />
-        <StyledButton type="submit" disabled={formIsInsubmissible} fullWidth>
-          {isSubmitting ? 'Changing' : 'Change password'}
-        </StyledButton>
+        <ButtonContainer>
+          <StyledButton
+            type="submit"
+            disabled={formIsInsubmissible}
+            fullWidth
+            tooltip={isDirty ? null : 'Change password to save changes'}
+            tooltipDelay={0}
+          >
+            {isSubmitting ? 'Changing' : 'Change password'}
+          </StyledButton>
+        </ButtonContainer>
       </StyledFieldset>
     </StyledForm>
   );

@@ -6,7 +6,9 @@ import { Tooltip as BaseTooltip } from '../Tooltip';
 import { FlexCenter } from '../Layout';
 
 /** Styled label for inputs. Handles tooltips for labels if present. */
-const Label = styled.span``;
+const Label = styled.span`
+  line-height: 1.4;
+`;
 
 const TooltipWrapper = styled.span`
   pointer-events: auto;

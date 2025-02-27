@@ -5,7 +5,7 @@ import { DesktopActivityFeed } from './DesktopActivityFeed';
 import { MobileActivityFeed } from './MobileActivityFeed';
 
 const ActivityFeed = styled.section`
-  grid-area: activityFeed;
+  grid-area: --activityFeed;
   display: flex;
   flex-direction: column;
   height: auto;

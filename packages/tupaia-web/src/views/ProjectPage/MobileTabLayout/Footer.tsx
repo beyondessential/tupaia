@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 const Wrapper = styled.footer`
   background-color: ${({ theme }) => theme.palette.common.white};
+  padding-bottom: env(safe-area-inset-bottom, 0);
 `;
 
 const Heading = styled(Typography).attrs({
@@ -12,7 +13,7 @@ const Heading = styled(Typography).attrs({
   font-size: 1.1rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
   color: ${({ theme }) => theme.palette.background.default};
-  margin-bottom: 0.5rem;
+  margin-block-end: 0.5rem;
 `;
 
 const ContentContainer = styled.div`
@@ -43,37 +44,24 @@ const Link = styled(MuiLink).attrs({
 const ImageWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-top: 1rem;
+  margin-block-start: 1rem;
 `;
 
 const AppLink = styled(Link)`
-  max-width: 150px;
-  height: auto;
-  &:not(:last-child) {
-    margin-right: 1rem;
+  & + & {
+    margin-inline-start: 1rem;
   }
 `;
 
-const AppImage = styled.img.attrs({
-  'aria-hidden': 'true', // hide this for screen readers because it isn't useful for them. Instead use the SRLinkText to announce the content
-})`
-  max-width: 100%;
-`;
-
-/** Screen reader text for the app store links */
-const SRLinkText = styled.span`
-  position: absolute;
-  left: -10000px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+const AppImage = styled.img`
+  height: 2.5rem;
+  width: auto;
 `;
 
 const AttributionText = styled(Typography)`
   font-size: 0.75rem;
   color: ${({ theme }) => theme.palette.background.default};
-  margin: 0.2rem 0;
+  margin-block: 0.2rem;
 `;
 
 export const Footer = () => {
@@ -103,21 +91,23 @@ export const Footer = () => {
             Download the Tupaia app to survey clinics and help add more data to Tupaia.
           </Typography>
           <ImageWrapper>
-            <AppLink href="https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537">
-              <AppImage src="/images/app-store-button.png" alt="Apple app store logo" />
-              <SRLinkText>Download on the App Store</SRLinkText>
+            <AppLink href="https://itunes.apple.com/app/tupaia-meditrak/id1245053537">
+              <AppImage alt="Download on the App Store" src="/images/app-store-badge.svg" />
             </AppLink>
             <AppLink href="https://play.google.com/store/apps/details?id=com.tupaiameditrak">
-              <AppImage src="/images/play-store-button.png" alt="Google play store logo" />
-              <SRLinkText>Download on the Play Store</SRLinkText>
+              <AppImage alt="Get it on Google Play" src="/images/google-play-badge.png" />
             </AppLink>
           </ImageWrapper>
         </ContentContainer>
       </ContributeContainer>
       <ContentContainer>
-        <AttributionText>© 2017 Beyond Essential Systems</AttributionText>
         <AttributionText>
-          Map used on this site: © <Link href="https://www.mapbox.com/about/maps/">Mapbox</Link> ©{' '}
+          ©&nbsp;{new Date().getFullYear()}{' '}
+          <Link href="https://bes.au">Beyond Essential Systems</Link>
+        </AttributionText>
+        <AttributionText>
+          Map used on this site: ©&nbsp;
+          <Link href="https://www.mapbox.com/about/maps">Mapbox</Link> ©&nbsp;
           <Link href="http://www.openstreetmap.org/copyright">OpenStreetMap</Link>
         </AttributionText>
       </ContentContainer>
