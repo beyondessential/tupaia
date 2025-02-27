@@ -68,7 +68,7 @@ export const RequestableCountryChecklist = ({
   const projectCode = project?.code;
   const { data: countries } = useCountryAccessList();
 
-  const { register } = useFormContext();
+  const { register }: UseFormMethods<RequestCountryAccessFormFields> = useFormContext();
 
   const selectCountry = (id: Entity['id'], select = true) =>
     setSelectedCountries(
