@@ -32,7 +32,7 @@ const ButtonWrapper = ({
   tooltip,
   tooltipDelay,
 }: {
-  children: ReactElement<any, any>;
+  children: ReactNode;
   tooltip?: ButtonProps['tooltip'];
   tooltipDelay?: ButtonProps['tooltipDelay'];
 }) => {
