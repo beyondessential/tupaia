@@ -8,7 +8,6 @@ import { Form, FormInput, TextField } from '@tupaia/ui-components';
 
 import { useCountryAccessList, useCurrentUserContext, useRequestProjectAccess } from '../../../api';
 import { Button } from '../../../components';
-import { TooltipButtonWrapper } from '../../../components/Button';
 import { errorToast, successToast } from '../../../utils';
 import { AdaptiveCollapse } from './AdaptiveCollapse';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
@@ -109,16 +108,16 @@ const Message = styled(Typography)`
   }
 `;
 
-const StyledButton = styled(Button).attrs({
-  fullWidth: true,
-  tooltipDelay: 0,
-  type: 'submit',
-})`
-  // Put margin on tooltip (if present) to avoid disrupting tooltip placement
-  ${props => (props.tooltip ? `${TooltipButtonWrapper}:has(> &)` : '&')} {
-    grid-area: --submit;
-    margin-block-start: 1.25rem;
-  }
+/**
+ * @privateRemarks The submit button sometimes (but not always) has a tooltip, which wraps the
+ * <button> element in a <span>. When the tooltip appears/disappears, it causes the button’s parent
+ * to re-render, which can affect scroll state of the button’s siblings in undesired ways.
+ * Rather than conditionally apply these styles to either the button directly or to its tooltip when
+ * present, we use a semantically useless <div> to manage its layout.
+ */
+const SubmitButtonWrapper = styled.div`
+  grid-area: --submit;
+  margin-block-start: 1.25rem;
 `;
 
 export interface RequestCountryAccessFormFields {
@@ -202,9 +201,17 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
           />
           <StyledFormInput id="message" label="Reason for access" name="message" />
         </AdaptiveCollapse>
-        <StyledButton disabled={disableSubmission} tooltip={getTooltip()}>
-          {formIsSubmitting ? 'Submitting request' : 'Request access'}
-        </StyledButton>
+        <SubmitButtonWrapper>
+          <Button
+            disabled={disableSubmission}
+            fullWidth
+            tooltip={getTooltip()}
+            tooltipDelay={0}
+            type="submit"
+          >
+            {formIsSubmitting ? 'Submitting request' : 'Request access'}
+          </Button>
+        </SubmitButtonWrapper>
       </FieldSet>
     </StyledForm>
   );
