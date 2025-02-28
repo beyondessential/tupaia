@@ -114,7 +114,8 @@ const StyledButton = styled(Button).attrs({
   tooltipDelay: 0,
   type: 'submit',
 })`
-  ${TooltipButtonWrapper}:has(> &) {
+  // Put margin on tooltip (if present) to avoid disrupting tooltip placement
+  ${props => (props.tooltip ? `${TooltipButtonWrapper}:has(> &)` : '&')} {
     grid-area: --submit;
     margin-block-start: 1.25rem;
   }
