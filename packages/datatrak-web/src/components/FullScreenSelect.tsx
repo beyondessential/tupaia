@@ -125,17 +125,18 @@ const SelectItem = ({ label, selected, value, ...listItemProps }: SelectItemProp
   </StyledListItem>
 );
 
-type FullScreenSelectProps = Pick<
-  SelectProps,
-  'children' | 'className' | 'id' | 'label' | 'onClose' | 'onOpen' | 'open'
-> & {
+interface FullScreenSelectProps
+  extends Pick<
+    SelectProps,
+    'children' | 'className' | 'id' | 'label' | 'onClose' | 'onOpen' | 'open'
+  > {
   icon: ReactNode;
   onChange?: (
     event: ChangeEvent<{ name?: string | undefined; value: string | number | null }>,
   ) => void;
   options: SelectOptions;
   value?: string | number | null;
-};
+}
 
 export const FullScreenSelect = ({
   children,
