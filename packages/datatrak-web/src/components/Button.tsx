@@ -36,7 +36,7 @@ const ButtonWrapper = ({
   tooltip?: ButtonProps['tooltip'];
   tooltipDelay?: ButtonProps['tooltipDelay'];
 }) => {
-  if (!tooltip) return children;
+  if (!tooltip) return <>{children}</>;
   return (
     // Wrap the button in a <span> to suppress console error about tooltips on disabled buttons
     <Tooltip title={tooltip} arrow enterDelay={tooltipDelay}>
