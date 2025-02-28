@@ -27,11 +27,6 @@ interface ButtonProps extends Record<string, any> {
   tooltipDelay?: number;
 }
 
-/**
- * @privateRemarks Always wraps button in <Tooltip>, even if semantically there is no tooltip. Simply
- * prevent the empty tooltip from rendering by disabling event listeners. This prevents this
- * component from causing its parent to needlessly re-render due to this subtree changing.
- */
 const ButtonWrapper = ({
   children,
   tooltip,
