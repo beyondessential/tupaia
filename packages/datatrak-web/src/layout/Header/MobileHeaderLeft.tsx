@@ -2,6 +2,7 @@ import { IconButton, Typography } from '@material-ui/core';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
+
 import { useCurrentUserContext } from '../../api';
 import { ChangeProjectButton } from '../../components';
 import { HEADER_HEIGHT } from '../../constants';

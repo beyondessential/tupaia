@@ -28,7 +28,14 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
     &.Mui-selected:hover,
     &:focus,
     &.Mui-selected:focus {
-      background: none;
+      background-color: ${({ theme }) =>
+        theme.palette.type === 'light'
+          ? `${theme.palette.primary.main}33`
+          : 'rgba(96, 99, 104, 0.50)'};
+
+      ${({ theme }) => theme.breakpoints.down('sm')} {
+        background: none;
+      }
     }
   }
 

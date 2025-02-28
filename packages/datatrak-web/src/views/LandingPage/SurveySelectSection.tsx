@@ -1,14 +1,15 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
+import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 
+import { ButtonLink as BaseButtonLink, ButtonAnchor } from '../../components';
 import { ROUTES } from '../../constants';
-import { Button, ButtonLink as BaseButtonLink } from '../../components';
+import { useIsMobile } from '../../utils';
 
 const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org';
 
 const SectionContainer = styled.section`
-  align-items: flex-start;
+  align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
   display: flex;
@@ -18,40 +19,30 @@ const SectionContainer = styled.section`
   padding: 1rem;
   position: relative;
 
-  ${({ theme }) => {
-    const { up } = theme.breakpoints;
-    return css`
-      ${up('md')} {
-        margin-block-start: 1.9375rem;
-      }
-      ${up('lg')} {
-        padding-inline: 2.2rem 3rem;
-      }
-    `;
-  }}
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-block-start: 1.9375rem;
+  }
 `;
 
 const SectionContent = styled.div`
+  align-items: center;
   display: flex;
   flex-direction: column-reverse;
-  width: 70%;
   padding-inline-end: 2rem;
-
+  row-gap: 1rem;
   ${({ theme }) => {
-    const { up } = theme.breakpoints;
+    const { up, down } = theme.breakpoints;
     return css`
-      ${up('sm')} {
-        margin-inline-start: 10%;
-      }
       ${up('md')} {
         margin-inline-start: 0;
         flex-direction: row;
-        width: 100%;
-        align-items: center;
+      }
+      ${down('md')} {
+        // Avoid collision with SurveysImage
+        padding-inline-end: 6.5rem;
       }
     `;
-  }} {
-  }
+  }}
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
@@ -68,33 +59,29 @@ const ButtonLink = styled(BaseButtonLink)`
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  text-align: center;
-  width: 100%;
-  max-width: 20rem;
+  max-inline-size: 20rem;
+  row-gap: 0.5rem;
+
+  inline-size: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 11rem;
+    inline-size: 11rem;
   }
+
   .MuiButton-root {
     line-height: 1.1;
     padding: 0.75rem;
-    &:last-child {
-      margin-block-start: 0.5rem;
-    }
   }
 `;
 
-const TextWrapper = styled.div`
-  margin-block-end: 0.7rem;
-  display: flex;
-  flex-direction: column;
+const Text = styled(Typography)`
+  font-size: 1rem;
+  line-height: 1.5;
 
   ${({ theme }) => {
     const { up } = theme.breakpoints;
     return css`
       ${up('md')} {
-        margin-block-end: 0;
-        max-width: 75%;
+        max-inline-size: 75%;
         padding-inline: 1rem 4rem;
       }
       ${up('lg')} {
@@ -104,51 +91,45 @@ const TextWrapper = styled.div`
   }}
 `;
 
-const Text = styled(Typography)`
-  ${({ theme }) => {
-    const { up } = theme.breakpoints;
-    return css`
-      ${up('xs')} {
-        line-height: 1.5;
-        font-size: 0.9rem;
-      }
-      ${up('sm')} {
-        font-size: 1rem;
-      }
-      ${up('md')} {
-        font-size: 0.9rem;
-      }
-    `;
-  }}
-`;
-
-const DesktopText = styled.span`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
+const VisuallyHidden = styled.span`
+  &:not(:focus):not(:active) {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: auto;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
   }
 `;
 
 const SurveysImage = styled.img.attrs({
   'aria-hidden': true,
   src: '/surveys.svg',
+  width: 108,
+  height: 207,
 })`
-  position: absolute;
-  width: auto;
-  display: flex;
-  align-items: center;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 0;
   height: 130%;
+  width: auto;
+
+  inset-block-start: 50%;
+  inset-inline-end: 0;
+  position: absolute;
+  shape-margin: 1rem;
+  shape-outside: url('/surveys.svg');
+  transform: translateY(-50%);
+
   ${({ theme }) => {
     const { up } = theme.breakpoints;
     return css`
       ${up('sm')} {
-        right: 10%;
+        inset-inline-end: 10%;
         height: 125%;
       }
       ${up('md')} {
-        right: -1rem;
+        inset-inline-end: -1rem;
         height: 130%;
       }
       ${up('lg')} {
@@ -159,26 +140,32 @@ const SurveysImage = styled.img.attrs({
 `;
 
 export const SurveySelectSection = () => {
+  const SupplementalText = useIsMobile() ? VisuallyHidden : Fragment;
+
   return (
     <SectionContainer>
       <SectionContent>
         <ButtonWrapper>
           <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
-          <Button variant="outlined" onClick={() => window.open(TUPAIA_REDIRECT_URL)}>
+          <ButtonAnchor
+            fullWidth
+            variant="outlined"
+            href={TUPAIA_REDIRECT_URL}
+            rel="noreferrer"
+            target="_blank"
+          >
             Explore data
-          </Button>
+          </ButtonAnchor>
         </ButtonWrapper>
-        <TextWrapper>
-          <Text>
-            Tupaia DataTrak makes data collection easy!
-            <DesktopText>
-              {' '}
-              You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
-              stories and information with the Tupaia community. To collect data offline, please
-              download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
-            </DesktopText>
-          </Text>
-        </TextWrapper>
+        <Text>
+          Tupaia DataTrak makes data collection easy!
+          <SupplementalText>
+            {' '}
+            You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
+            stories and information with the Tupaia community. To collect data offline, please
+            download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
+          </SupplementalText>
+        </Text>
       </SectionContent>
       <SurveysImage />
     </SectionContainer>

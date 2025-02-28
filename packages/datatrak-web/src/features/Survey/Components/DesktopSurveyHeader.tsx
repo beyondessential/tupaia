@@ -4,11 +4,15 @@ import { useParams } from 'react-router-dom';
 import { PageTitleBar, SurveyIcon, TopProgressBar } from '../../../components';
 import { useEntityByCode, useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
-import { CopySurveyUrlButton } from './CopySurveyUrlButton';
+import { CopyUrlButton } from './CopyUrlButton';
 
 const CountryName = styled.span`
-  padding-left: 0.3rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+  padding-inline-start: 0.3rem;
+`;
+
+const StyledCopyUrlButton = styled(CopyUrlButton)`
+  margin-inline-start: 0.5rem;
 `;
 
 export const DesktopSurveyHeader = () => {
@@ -26,7 +30,7 @@ export const DesktopSurveyHeader = () => {
     <>
       {surveyName}
       {<CountryName>| {country?.name}</CountryName>}
-      <CopySurveyUrlButton />
+      <StyledCopyUrlButton />
     </>
   );
 
