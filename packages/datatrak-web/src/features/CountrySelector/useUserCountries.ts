@@ -17,15 +17,11 @@ export const useUserCountries = (
   const entityRequestParams = {
     filter: { type: 'country' },
   };
-  const queryOptions = {
-    enabled: !!projectCode,
-    ...useProjectEntitiesQueryOptions,
-  };
   const {
     data: countries,
     isLoading: isLoadingCountries,
     isError,
-  } = useProjectEntities(projectCode, entityRequestParams, queryOptions);
+  } = useProjectEntities(projectCode, entityRequestParams, useProjectEntitiesQueryOptions);
 
   // sort the countries alphabetically so they are in a consistent order for the user
   const alphabetisedCountries = countries?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
