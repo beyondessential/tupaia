@@ -54,7 +54,9 @@ const StyledPin = styled(Pin)`
 export const CountrySelector = () => {
   const { countries, selectedCountry, updateSelectedCountry: onChangeCountry } = useUserCountries();
   const updateSelectedCountry = e => {
-    onChangeCountry(countries.find(country => country.code === e.target.value) ?? null);
+    const countryCode = e.target.value;
+    const newCountry = countries.find(country => country.code === countryCode);
+    onChangeCountry(newCountry ?? null);
   };
 
   const options =
