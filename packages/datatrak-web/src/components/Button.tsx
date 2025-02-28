@@ -36,16 +36,10 @@ const ButtonWrapper = ({
   tooltip?: ButtonProps['tooltip'];
   tooltipDelay?: ButtonProps['tooltipDelay'];
 }) => {
-  const disableListeners = tooltip
-    ? null
-    : {
-        disableFocusListener: true,
-        disableHoverListener: true,
-        disableTouchListener: true,
-      };
+  if (!tooltip) return children;
   return (
     // Wrap the button in a <span> to suppress console error about tooltips on disabled buttons
-    <Tooltip title={tooltip ?? ''} arrow enterDelay={tooltipDelay} {...disableListeners}>
+    <Tooltip title={tooltip} arrow enterDelay={tooltipDelay}>
       <TooltipButtonWrapper>{children}</TooltipButtonWrapper>
     </Tooltip>
   );
