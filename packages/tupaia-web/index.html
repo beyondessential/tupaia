@@ -8,6 +8,19 @@
       name="description"
       content="Data aggregation, analysis, and visualisation for the most remote settings in the world"
     />
+
+    <% if ( process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
+    <link rel="preconnect" href="https://tupaia-web-api.tupaia.org" crossorigin />
+    <% } else if (process.env.NODE_ENV === 'production') { %>
+    <link
+      rel="preconnect"
+      href="https://%REACT_APP_DEPLOYMENT_NAME%-tupaia-web-api.tupaia.org"
+      crossorigin
+    />
+    <% } %>
+
+    <link rel="preconnect" href="https://api.mapbox.com" crossorigin />
+
     <!-- Open Graph for Facebook link preview -->
     <meta property="og:image" content="https://tupaia.org/images/social-preview.jpeg" />
     <meta
@@ -117,7 +130,7 @@
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
+        href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700&display=swap"
         crossorigin
       />
       <link

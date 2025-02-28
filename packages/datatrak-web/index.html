@@ -12,6 +12,17 @@
     />
     <meta name="theme-color" content="#ffffff" />
     <title>Tupaia DataTrak</title>
+
+    <% if ( process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
+    <link rel="preconnect" href="https://datatrak-web-api.tupaia.org" crossorigin />
+    <% } else if (process.env.NODE_ENV === 'production') { %>
+    <link
+      rel="preconnect"
+      href="https://%REACT_APP_DEPLOYMENT_NAME%-datatrak-web-api.tupaia.org"
+      crossorigin
+    />
+    <% } %>
+
     <!-- Open Graph for shared links -->
     <meta property="og:title" content="Tupaia DataTrak" />
     <meta property="og:type" content="website" />
