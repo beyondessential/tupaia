@@ -54,6 +54,13 @@ export const useUserCountries = (
     isLoading: isLoadingCountries || (!countries && !isError),
     countries: alphabetisedCountries,
     selectedCountry,
-    updateSelectedCountry: setSelectedCountry,
+    updateSelectedCountry: e => {
+      const countryCode = e.target.value;
+      const newCountry = countries?.find((country: Entity) => country.code === countryCode);
+      console.log(`updateSelectedCountry( ${e} )`);
+      console.log(countryCode);
+      console.log(newCountry);
+      setSelectedCountry(newCountry ?? null);
+    },
   };
 };
