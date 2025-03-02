@@ -53,20 +53,19 @@ export const useGroupedSurveyList = ({
         };
         // if there is no surveyGroupName, add the survey to the list as a top level item
         if (!surveyGroupName) {
-          return [...acc, formattedSurvey];
+          acc.push(formattedSurvey);
+          return acc;
         }
         const group = acc.find(({ content }) => content === surveyGroupName);
         // if the surveyGroupName doesn't exist in the list, add it as a top level item
         if (!group) {
-          return [
-            ...acc,
-            {
-              content: surveyGroupName,
-              icon: <SurveyFolderIcon />,
-              value: surveyGroupName,
-              children: [formattedSurvey],
-            },
-          ];
+          acc.push({
+            content: surveyGroupName,
+            icon: <SurveyFolderIcon />,
+            value: surveyGroupName,
+            children: [formattedSurvey],
+          });
+          return acc;
         }
         // if the surveyGroupName exists in the list, add the survey to the children
         return acc.map(item => {
