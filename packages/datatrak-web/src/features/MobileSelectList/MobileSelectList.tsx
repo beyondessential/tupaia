@@ -43,7 +43,15 @@ interface SelectListProps {
   onSelect: (item: ListItemType) => void;
 }
 
-const List = ({ parentItem, items, onSelect, countrySelector }) => {
+const List = ({
+  parentItem,
+  items,
+  onSelect,
+  countrySelector,
+}: SelectListProps & {
+  countrySelector: JSX.Element;
+  parentItem: ListItemType;
+}) => {
   const parentTitle = parentItem?.value;
   return (
     <BaseList>
