@@ -57,13 +57,16 @@ export const CountrySelector = () => {
     const countryCode = e.target.value;
     const newCountry = countries.find(country => country.code === countryCode);
     onChangeCountry(newCountry ?? null);
+    console.log('e', e);
+    console.log('countryCode', countryCode);
+    console.log('newCountry', newCountry);
   };
 
-  const options =
-    countries?.map(country => ({
-      value: country.code,
-      label: country.name,
-    })) ?? [];
+  const options = countries.map(country => ({
+    value: country.code,
+    label: country.name,
+  }));
+  console.log('options', options);
 
   const commonProps = {
     onChange: updateSelectedCountry,
