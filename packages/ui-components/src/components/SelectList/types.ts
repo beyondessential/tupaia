@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-export type ListItemType = Record<string, unknown> & {
+export interface ListItemType extends Record<string, unknown> {
   children?: ListItemType[];
   content: ReactNode;
   value: string;
@@ -9,4 +9,4 @@ export type ListItemType = Record<string, unknown> & {
   tooltip?: string;
   button?: boolean;
   disabled?: boolean;
-};
+}

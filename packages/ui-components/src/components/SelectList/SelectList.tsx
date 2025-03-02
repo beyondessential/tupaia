@@ -81,7 +81,7 @@ interface SelectListProps {
     component?: React.ElementType;
   };
   noResultsMessage?: string;
-  subTitle?: string;
+  subTitle?: string | null;
 }
 
 export const SelectList = ({
@@ -90,9 +90,9 @@ export const SelectList = ({
   label,
   ListItem,
   variant = 'fullBorder',
-  labelProps = {},
+  labelProps,
   noResultsMessage = 'No items to display',
-  subTitle = '',
+  subTitle,
 }: SelectListProps) => {
   return (
     <Wrapper>
