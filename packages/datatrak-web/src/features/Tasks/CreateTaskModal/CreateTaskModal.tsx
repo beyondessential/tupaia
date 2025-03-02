@@ -201,7 +201,6 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                     <GroupedSurveyList
                       selectedSurvey={value}
                       setSelectedSurvey={onChange}
-                      selectedCountry={selectedCountry}
                       label="Select survey"
                       labelProps={{
                         required: true,

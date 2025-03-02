@@ -1,8 +1,11 @@
-import React, { ReactNode, useEffect } from 'react';
 import { FormLabelProps } from '@material-ui/core';
+import React, { ReactNode, useEffect } from 'react';
+
 import { useCurrentUserContext, useProjectSurveys } from '../api';
+import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
-import { SurveyIcon, SurveyFolderIcon } from '../components';
+
+import { useUserCountries } from './CountrySelector/useUserCountries';
 
 export type ListItemType = Record<string, unknown> & {
   children?: ListItemType[];
@@ -24,8 +27,9 @@ const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
   });
 };
 
-export const useGroupedSurveyList = ({ setSelectedSurvey, selectedSurvey, selectedCountry }) => {
+export const useGroupedSurveyList = ({ setSelectedSurvey, selectedSurvey }) => {
   const user = useCurrentUserContext();
+  const { selectedCountry } = useUserCountries();
   const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.code);
   const groupedSurveys =
     surveys

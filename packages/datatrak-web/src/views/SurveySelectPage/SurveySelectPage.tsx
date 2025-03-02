@@ -69,7 +69,6 @@ export const SurveySelectPage = () => {
   if (useIsMobile()) {
     return (
       <MobileTemplate
-        selectedCountry={selectedCountry}
         selectedSurvey={selectedSurvey}
         setSelectedSurvey={setSelectedSurvey}
         handleSelectSurvey={handleSelectSurvey}
@@ -79,7 +78,6 @@ export const SurveySelectPage = () => {
   }
   return (
     <DesktopTemplate
-      selectedCountry={selectedCountry}
       selectedSurvey={selectedSurvey}
       setSelectedSurvey={setSelectedSurvey}
       showLoader={showLoader}

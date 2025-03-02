@@ -54,7 +54,6 @@ const Subheader = styled(Typography).attrs({
 `;
 
 export const DesktopTemplate = ({
-  selectedCountry,
   selectedSurvey,
   setSelectedSurvey,
   showLoader,
@@ -72,11 +71,7 @@ export const DesktopTemplate = ({
       {showLoader ? (
         <Loader />
       ) : (
-        <GroupedSurveyList
-          setSelectedSurvey={setSelectedSurvey}
-          selectedSurvey={selectedSurvey}
-          selectedCountry={selectedCountry}
-        />
+        <GroupedSurveyList setSelectedSurvey={setSelectedSurvey} selectedSurvey={selectedSurvey} />
       )}
       <DialogActions>
         <Button to="/" variant="outlined">

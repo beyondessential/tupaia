@@ -6,7 +6,7 @@ import { SpinningLoader } from '@tupaia/ui-components';
 
 import { PageContainer } from '../../components';
 import { ROUTES } from '../../constants';
-import { MobileSelectList, useGroupedSurveyList } from '../../features';
+import { MobileSelectList, useGroupedSurveyList, useUserCountries } from '../../features';
 import { ListItemType } from '../../features/useGroupedSurveyList';
 import { StickyMobileHeader } from '../../layout';
 
@@ -43,12 +43,12 @@ const Loader = () => (
 );
 
 export const MobileTemplate = ({
-  selectedCountry,
   setSelectedSurvey,
   showLoader,
   selectedSurvey,
   handleSelectSurvey,
 }) => {
+  const { selectedCountry } = useUserCountries();
   const { groupedSurveys } = useGroupedSurveyList({
     setSelectedSurvey,
     selectedSurvey,
