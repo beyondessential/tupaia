@@ -164,7 +164,7 @@ export const FullScreenSelect = ({
         key={optionValue}
         label={option.label}
         onClick={e => {
-          onChange?.({ ...e, target: { value: optionValue } });
+          onChange?.(e);
           closeModal();
         }}
         selected={isSelected}

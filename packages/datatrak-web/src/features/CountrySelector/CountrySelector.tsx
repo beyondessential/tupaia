@@ -54,12 +54,7 @@ const StyledPin = styled(Pin)`
 `;
 
 export const CountrySelector = () => {
-  const { countries, selectedCountry, updateSelectedCountry: onChangeCountry } = useUserCountries();
-  const updateSelectedCountry = e => {
-    const countryCode = e.target.value;
-    const newCountry = countries.find(country => country.code === countryCode);
-    onChangeCountry(newCountry ?? null);
-  };
+  const { countries, selectedCountry, updateSelectedCountry } = useUserCountries();
 
   const options = countries.map(country => ({
     value: country.code,
