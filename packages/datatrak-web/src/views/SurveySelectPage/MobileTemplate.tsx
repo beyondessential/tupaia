@@ -52,7 +52,6 @@ export const MobileTemplate = ({
   const { groupedSurveys } = useGroupedSurveyList({
     setSelectedSurvey,
     selectedSurvey,
-    selectedCountry,
   });
   const navigate = useNavigate();
 

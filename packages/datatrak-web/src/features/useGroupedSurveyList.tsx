@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect } from 'react';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
-
+import { innerText } from '../utils';
 import { useUserCountries } from './CountrySelector/useUserCountries';
 
 export type ListItemType = Record<string, unknown> & {
@@ -22,7 +22,9 @@ export type ListItemType = Record<string, unknown> & {
 };
 
 const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
-  return (a.content as string).trim()?.localeCompare((b.content as string).trim(), 'en', {
+  const aText = innerText(a.content).trim();
+  const bText = innerText(b.content).trim();
+  return aText.localeCompare(bText, 'en', {
     numeric: true,
   });
 };
