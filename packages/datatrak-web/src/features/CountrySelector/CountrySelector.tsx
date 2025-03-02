@@ -33,8 +33,10 @@ export const CountrySelectWrapper = styled.div`
 `;
 
 const Picture = styled.picture`
-  object-fit: contain;
   aspect-ratio: 1;
+  block-size: 1.5rem;
+  object-fit: contain;
+  object-position: center;
 `;
 const Img = styled.img`
   block-size: 1.5rem;
