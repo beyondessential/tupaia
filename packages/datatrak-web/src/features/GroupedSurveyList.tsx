@@ -4,8 +4,7 @@ import styled from 'styled-components';
 
 import { SelectList } from '@tupaia/ui-components';
 
-import { Survey } from '../types';
-import { useGroupedSurveyList } from './useGroupedSurveyList';
+import { UseGroupedSurveyListParams, useGroupedSurveyList } from './useGroupedSurveyList';
 
 const ListWrapper = styled.div`
   max-height: 35rem;
@@ -18,9 +17,7 @@ const ListWrapper = styled.div`
   }
 `;
 
-interface GroupedSurveyListProps {
-  setSelectedSurvey: (surveyCode: Survey['code'] | null) => void;
-  selectedSurvey: Survey['code'] | null;
+interface GroupedSurveyListProps extends UseGroupedSurveyListParams {
   label?: string;
   labelProps?: FormLabelProps & {
     component?: React.ElementType;

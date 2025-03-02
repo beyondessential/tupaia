@@ -29,7 +29,15 @@ const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
   });
 };
 
-export const useGroupedSurveyList = ({ setSelectedSurvey, selectedSurvey }) => {
+export interface UseGroupedSurveyListParams {
+  selectedSurvey: Survey['code'] | null;
+  setSelectedSurvey: React.Dispatch<React.SetStateAction<Survey['code'] | null>>;
+}
+
+export const useGroupedSurveyList = ({
+  selectedSurvey,
+  setSelectedSurvey,
+}: UseGroupedSurveyListParams) => {
   const user = useCurrentUserContext();
   const { selectedCountry } = useUserCountries();
   const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.code);
