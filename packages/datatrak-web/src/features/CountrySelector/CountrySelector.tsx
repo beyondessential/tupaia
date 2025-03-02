@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
 import { Select as BaseSelect } from '@tupaia/ui-components';
@@ -37,13 +37,13 @@ const Picture = styled.picture`
   aspect-ratio: 1;
 `;
 const Img = styled.img`
-  block-size: 1em;
+  block-size: 1.5rem;
   inline-size: auto;
 `;
-const Pin = () => (
-  <Picture>
+const Pin = (props: ComponentPropsWithoutRef<typeof Picture>) => (
+  <Picture aria-hidden {...props}>
     <source srcSet="/tupaia-pin.svg" />
-    <Img src="/tupaia-pin.svg" width={24} height={24} />
+    <Img aria-hidden src="/tupaia-pin.svg" width={24} height={24} />
   </Picture>
 );
 
