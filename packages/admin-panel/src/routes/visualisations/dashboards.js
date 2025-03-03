@@ -112,4 +112,5 @@ export const dashboards = {
     },
   ],
   needsBESAdminAccess: ['delete'],
+  needsVizBuilderAccess: ['create'],
 };

@@ -1,10 +1,8 @@
 import { RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import {
-  assertDashboardEditPermissions,
-  getDashboardsDBFilter,
-} from '../dashboards/assertDashboardsPermissions';
+import { assertDashboardEditPermissions } from '../dashboards/assertDashboardsPermissions';
+import { getDashboardsDBFilter } from '../dashboards/getDashboardsDBFilter';
 import { mergeMultiJoin } from '../utilities';
 
 /**
@@ -26,7 +24,12 @@ export class GETDashboardMailingListEntries extends GETHandler {
 
     // Must have edit permissions to a dashboard to view its mailing list
     const dashboardChecker = accessPolicy =>
-      assertDashboardEditPermissions(accessPolicy, this.models, dashboardMailingList.dashboard_id);
+      assertDashboardEditPermissions(
+        accessPolicy,
+        this.models,
+        dashboardMailingList.dashboard_id,
+        false,
+      );
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, dashboardChecker]));
 

@@ -81,6 +81,7 @@ export const mapOverlayGroups = {
   endpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
+  needsVizBuilderAccess: ['create'],
   nestedViews: [
     {
       title: 'Map overlay group relations',

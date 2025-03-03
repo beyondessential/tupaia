@@ -5,6 +5,7 @@ import { TEST_SETUP } from './dashboardVisualisations.fixtures';
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 
 const clearRecords = async models => {
@@ -25,13 +26,13 @@ describe('POST dashboard visualisations', () => {
     },
     report: {
       code: 'test_visualisation',
-      permission_group: 'Viz_Permissions',
+      permission_group: VIZ_BUILDER_PERMISSION_GROUP,
       config: {},
     },
   };
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const besAdminPolicy = {

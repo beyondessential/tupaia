@@ -1,9 +1,7 @@
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import {
-  assertDashboardItemGetPermissions,
-  createDashboardItemsDBFilter,
-} from './assertDashboardItemsPermissions';
+import { assertDashboardItemGetPermissions } from './assertDashboardItemsPermissions';
+import { createDashboardItemsDBFilter } from './createDashboardItemsDBFilter';
 /**
  * Handles endpoints:
  * - /dashboardItems

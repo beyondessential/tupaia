@@ -8,7 +8,7 @@ import { LoginPage } from './pages/LoginPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { TabPageLayout } from './layout/TabPageLayout';
 import { useUser } from './api/queries';
-import { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
+import { getHasBESAdminAccess } from './utilities';
 import { ForgotPasswordPage, ResetPasswordPage } from './pages';
 
 export const getFlattenedChildViews = (route, basePath = '') => {

@@ -1,10 +1,6 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import {
-  hasAccessToEntityForVisualisation,
-  hasTupaiaAdminAccessToEntityForVisualisation,
-} from '../utilities';
-
+import { hasAccessToEntityForVisualisation, hasVizBuilderAccessToEntity } from '../utilities';
 const { RAW } = QUERY_CONJUNCTIONS;
 
 export const hasMapOverlayGetPermissions = async (accessPolicy, models, mapOverlayId) => {
@@ -50,34 +46,39 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
   }
 
   const entities = await models.entity.find({ code: mapOverlay.country_codes });
-  let hasPermissionGroupAccess = false;
 
-  // Check we have tupaia admin access to all countries the mapOverlay is in
-  // And permission group access to at least one of the countries
-  for (let i = 0; i < entities.length; i++) {
-    if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entities[i]))) {
-      return {
-        result: false,
-        errorMessage: `Requires Tupaia Admin Panel access to all countries (${mapOverlay.country_codes}) for the map overlay "${mapOverlayId}"`,
-      };
-    }
-    if (
-      !hasPermissionGroupAccess &&
-      (await hasAccessToEntityForVisualisation(
-        accessPolicy,
-        models,
-        entities[i],
-        mapOverlay.permission_group,
-      ))
-    ) {
-      hasPermissionGroupAccess = true;
-    }
-  }
+  // Check we have permission group access to all countries the mapOverlay is in
+  const hasPermissionGroupAccess = (
+    await Promise.all(
+      entities.map(entity =>
+        hasAccessToEntityForVisualisation(
+          accessPolicy,
+          models,
+          entity,
+          mapOverlay.permission_group,
+        ),
+      ),
+    )
+  ).every(access => access);
 
   if (!hasPermissionGroupAccess) {
     return {
       result: false,
-      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to any of its countries (${mapOverlay.country_codes})`,
+      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to all of its countries (${mapOverlay.country_codes})`,
+    };
+  }
+
+  // Check we have permission group access to all countries the mapOverlay is in
+  const hasVizBuilderAccess = (
+    await Promise.all(
+      entities.map(entity => hasVizBuilderAccessToEntity(accessPolicy, models, entity)),
+    )
+  ).every(access => access);
+
+  if (!hasVizBuilderAccess) {
+    return {
+      result: false,
+      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have VizBuilder access to all of its countries (${mapOverlay.country_codes})`,
     };
   }
 

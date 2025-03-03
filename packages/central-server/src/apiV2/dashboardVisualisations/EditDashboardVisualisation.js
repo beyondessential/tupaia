@@ -9,9 +9,9 @@ import { EditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertAdminPanelAccess,
   assertPermissionGroupAccess,
 } from '../../permissions';
+import { assertDashboardItemEditPermissions } from '../dashboardItems/assertDashboardItemsPermissions';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
@@ -29,11 +29,11 @@ const buildReport = async (models, reportRecord) => {
 
 export class EditDashboardVisualisation extends EditHandler {
   async assertUserHasAccess() {
+    const dashboardItemChecker = accessPolicy =>
+      assertDashboardItemEditPermissions(accessPolicy, this.models, this.recordId);
+
     await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Tupaia Admin Panel or BES Admin permission to edit visualisations.',
-      ),
+      assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
     );
   }
 

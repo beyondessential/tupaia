@@ -3,3 +3,4 @@ export { EditDashboardRelation } from './EditDashboardRelation';
 export { CreateDashboardRelation } from './CreateDashboardRelation';
 export { GETDashboardRelations } from './GETDashboardRelations';
 export * from './assertDashboardRelationsPermissions';
+export * from './createDashboardRelationsDBFilter';
