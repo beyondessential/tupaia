@@ -10,7 +10,7 @@ import { Entity } from '../../types';
 
 export interface UserCountriesType {
   isLoading: boolean;
-  countries: Country[]; // TODO: Entity[]?
+  countries: Country[];
   /**
    * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
    * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
