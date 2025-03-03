@@ -27,7 +27,7 @@ const BaseList = styled(MuiList)`
 
 const CategoryTitle = styled(Typography)`
   margin-block: -0.5rem 0.8rem;
-  margin-inline: 0:
+  margin-inline: 0;
   padding-block-start: 1rem;
 `;
 
