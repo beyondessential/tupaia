@@ -4,7 +4,7 @@
   "description": "API client for connecting to Tupaia APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "license": "GPL-3.0-or-later",
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",

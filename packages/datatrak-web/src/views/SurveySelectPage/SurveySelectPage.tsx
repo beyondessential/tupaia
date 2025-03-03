@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-
-import { useCurrentUserContext, useProjectSurveys } from '../../api';
 import { useEditUser } from '../../api/mutations';
 import { Button } from '../../components';
-import { useUserCountries } from '../../features';
+import { useCurrentUserContext, useProjectSurveys } from '../../api';
+import { CountrySelector, useUserCountries } from '../../features';
 import { Survey } from '../../types';
 import { useIsMobile } from '../../utils';
 import { DesktopTemplate } from './DesktopTemplate';
@@ -37,7 +36,12 @@ export const SurveySelectPage = () => {
   const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
   const [urlSearchParams] = useSearchParams();
   const urlProjectId = urlSearchParams.get('projectId');
-  const { selectedCountry, isLoading: isLoadingCountries } = useUserCountries();
+  const {
+    countries,
+    selectedCountry,
+    updateSelectedCountry,
+    isLoading: isLoadingCountries,
+  } = useUserCountries();
   const handleSelectSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
@@ -69,18 +73,34 @@ export const SurveySelectPage = () => {
   if (useIsMobile()) {
     return (
       <MobileTemplate
+        selectedCountry={selectedCountry}
         selectedSurvey={selectedSurvey}
         setSelectedSurvey={setSelectedSurvey}
         handleSelectSurvey={handleSelectSurvey}
         showLoader={showLoader}
+        CountrySelector={
+          <CountrySelector
+            countries={countries}
+            selectedCountry={selectedCountry}
+            onChangeCountry={updateSelectedCountry}
+          />
+        }
       />
     );
   }
   return (
     <DesktopTemplate
+      selectedCountry={selectedCountry}
       selectedSurvey={selectedSurvey}
       setSelectedSurvey={setSelectedSurvey}
       showLoader={showLoader}
+      CountrySelector={
+        <CountrySelector
+          countries={countries}
+          selectedCountry={selectedCountry}
+          onChangeCountry={updateSelectedCountry}
+        />
+      }
       SubmitButton={
         <Button
           onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}

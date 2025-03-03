@@ -33,7 +33,7 @@ const useSearchResults = (searchValue, filter, projectCode, disableSearch = fals
       searchString: debouncedSearch,
       pageSize: 100,
     },
-    { enabled: !disableSearch },
+    !disableSearch,
   );
 };
 
