@@ -2,11 +2,9 @@ import { FormHelperText, FormLabelProps } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
 
-import { Country } from '@tupaia/types';
 import { SelectList } from '@tupaia/ui-components';
 
-import { Survey } from '../types';
-import { useGroupedSurveyList } from './useGroupedSurveyList';
+import { UseGroupedSurveyListParams, useGroupedSurveyList } from './useGroupedSurveyList';
 
 const ListWrapper = styled.div`
   max-height: 35rem;
@@ -19,10 +17,7 @@ const ListWrapper = styled.div`
   }
 `;
 
-interface GroupedSurveyListProps {
-  setSelectedSurvey: (surveyCode: Survey['code'] | null) => void;
-  selectedSurvey: Survey['code'] | null;
-  selectedCountry?: Country | null;
+interface GroupedSurveyListProps extends UseGroupedSurveyListParams {
   label?: string;
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
@@ -33,7 +28,6 @@ interface GroupedSurveyListProps {
 export const GroupedSurveyList = ({
   setSelectedSurvey,
   selectedSurvey,
-  selectedCountry,
   label,
   labelProps,
   error,
@@ -41,7 +35,6 @@ export const GroupedSurveyList = ({
   const { groupedSurveys, onSelectSurvey } = useGroupedSurveyList({
     setSelectedSurvey,
     selectedSurvey,
-    selectedCountry,
   });
   return (
     <ListWrapper>
