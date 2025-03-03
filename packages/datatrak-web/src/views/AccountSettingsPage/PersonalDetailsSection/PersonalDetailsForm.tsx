@@ -102,7 +102,6 @@ export const PersonalDetailsForm = () => {
       <StyledFieldset disabled={isSubmitting || isLoading}>
         <FormInput
           autoComplete="given-name"
-          autoFocus
           id="firstName"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
@@ -168,6 +167,7 @@ export const PersonalDetailsForm = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
+            tooltipDelay={0}
             disabled={formIsNotSubmissible}
             fullWidth
           >

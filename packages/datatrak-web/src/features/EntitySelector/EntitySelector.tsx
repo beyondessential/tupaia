@@ -157,6 +157,7 @@ export const EntitySelector = ({
             <SpinningLoader />
           ) : (
             <ResultsList
+              searchValue={searchValue}
               value={value}
               onSelect={onSelect}
               searchResults={disableSearch ? [] : displayResults}

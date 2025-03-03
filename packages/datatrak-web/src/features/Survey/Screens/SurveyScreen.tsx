@@ -3,8 +3,30 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { QuestionType } from '@tupaia/types';
 import { useSurveyForm } from '../SurveyContext';
-import { SurveyPaginator, SurveyQuestionGroup } from '../Components';
-import { ScrollableBody } from '../../../layout';
+import {
+  SurveyPaginator,
+  SurveyQuestionGroup,
+  MobileSurveyHeader,
+  MobileSurveyMenu,
+} from '../Components';
+import { useIsMobile } from '../../../utils';
+
+const ScrollableBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  padding-block: 1rem 4rem;
+  padding-inline: 1rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding-inline: 5rem 1rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-block: 1rem;
+    padding-inline: 2.5rem;
+  }
+`;
 
 const ScreenHeader = styled.div<{
   $centered?: boolean;
@@ -12,7 +34,7 @@ const ScreenHeader = styled.div<{
   margin-block-end: 1rem;
   padding: 0.5rem 0;
 
-  /* 
+  /*
    * Ensure that vertical centring when there are no questions to display, by targeting the warpper
    * of this element
    */
@@ -35,11 +57,13 @@ const Heading = styled(Typography).attrs({ variant: 'h2' })`
  */
 export const SurveyScreen = () => {
   const {
-    displayQuestions,
-    screenHeader: instructionHeading,
-    screenDetail: instructionDetail,
     activeScreen,
+    displayQuestions,
+    isResponseScreen,
+    screenDetail: instructionDetail,
+    screenHeader: instructionHeading,
   } = useSurveyForm();
+  const isMobile = useIsMobile();
 
   const pageHasOnlyInstructions = activeScreen.every(
     question => question.type === QuestionType.Instruction,
@@ -50,7 +74,8 @@ export const SurveyScreen = () => {
 
   return (
     <>
-      <ScrollableBody $hasSidebar>
+      {isMobile && !isResponseScreen && <MobileSurveyHeader />}
+      <ScrollableBody>
         {/*
          * If the first question on the active screen is an instruction, then display it in full
          * (heading and detail). Otherwise, display only its heading without its detail; any detail
@@ -64,7 +89,7 @@ export const SurveyScreen = () => {
         </ScreenHeader>
         <SurveyQuestionGroup questions={displayQuestions} />
       </ScrollableBody>
-      <SurveyPaginator />
+      {isMobile ? <MobileSurveyMenu /> : <SurveyPaginator />}
     </>
   );
 };

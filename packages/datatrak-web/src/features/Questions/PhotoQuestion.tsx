@@ -8,6 +8,7 @@ const Wrapper = styled.div`
   .file_upload_label {
     text-transform: none;
     font-size: 1rem;
+    line-height: 1.2;
     margin-bottom: 0.2rem;
   }
   .upload_wrapper {

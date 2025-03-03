@@ -32,11 +32,17 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
         theme.palette.type === 'light'
           ? `${theme.palette.primary.main}33`
           : 'rgba(96, 99, 104, 0.50)'};
+
+      ${({ theme }) => theme.breakpoints.down('sm')} {
+        background: none;
+      }
     }
   }
+
   .MuiSvgIcon-root {
     font-size: 1rem;
   }
+
   &.Mui-disabled {
     opacity: 1; // still have the icon as the full opacity
     color: ${({ theme }) => theme.palette.text.disabled};
@@ -62,7 +68,7 @@ const ButtonContainer = styled.div<{
   width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
 `;
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<{ $hasIcon?: boolean }>`
   padding-right: 0.5rem;
   display: flex;
   align-items: center;
@@ -70,6 +76,17 @@ const IconWrapper = styled.div`
   svg {
     color: ${({ theme }) => theme.palette.primary.main};
     height: auto;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 1.3rem;
+    display: ${({ $hasIcon }) => ($hasIcon ? 'flex' : 'none')};
+  }
+`;
+
+const CheckIcon = styled(Check).attrs({ color: 'primary' })`
+  &.MuiSvgIcon-root {
+    font-size: 1.2rem;
   }
 `;
 
@@ -120,15 +137,16 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
         onClick={button ? onClick : null}
         selected={selected}
         disabled={disabled}
+        component="div"
       >
         <Wrapper tooltip={tooltip}>
           <ButtonContainer $fullWidth={button}>
-            <IconWrapper>{icon}</IconWrapper>
+            <IconWrapper $hasIcon={!!icon}>{icon}</IconWrapper>
             {content}
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
         </Wrapper>
-        {selected && <Check color="primary" />}
+        {selected && <CheckIcon />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </li>
