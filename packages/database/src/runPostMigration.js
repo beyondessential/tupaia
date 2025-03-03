@@ -52,7 +52,7 @@ export const runPostMigration = async driver => {
   const { rows: postgisExtension } = await driver.runSql(`
     SELECT COUNT(1) FROM pg_extension WHERE extname = 'postgis';
   `);
-  if (!parseInt(postgisExtension[0].count, 10)) {
+  if (!Number.parseInt(postgisExtension[0].count, 10)) {
     throw new Error(
       "PostGIS extension is required. Install the binaries and run 'CREATE EXTENSION postgis;' in postgres to install it.",
     );

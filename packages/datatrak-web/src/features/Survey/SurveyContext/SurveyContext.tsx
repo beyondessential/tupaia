@@ -49,7 +49,7 @@ export const SurveyContext = ({ children, surveyCode, countryCode }) => {
   const [primaryEntityCode] = useState(primaryEntityCodeParam);
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const params = useParams<SurveyParams>();
-  const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
+  const screenNumber = params.screenNumber ? Number.parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
   const isResponseScreen = !!urlSearchParams.get('responseId');
   const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);

@@ -104,7 +104,7 @@ const getArithmeticDependantAnswer = (questionId, answer, valueTranslation, defa
   }
   // return raw answer if it's a number, else 0 (e.g. if no valueTranslation provided for the question and this specific answer when answer is non-numeric)
   if (answer !== undefined && answer !== null && answer !== '') {
-    return isNaN(answer) ? 0 : answer; // return raw answer
+    return Number.isNaN(answer) ? 0 : answer; // return raw answer
   }
 
   return defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // No answer found, return the default answer
@@ -135,7 +135,7 @@ const getArithmeticResult = (
   // Evaluate the expression
   expressionParser.setAll(values);
 
-  const result = !isNaN(expressionParser.evaluate(formula))
+  const result = !Number.isNaN(expressionParser.evaluate(formula))
     ? Math.round(expressionParser.evaluate(formula) * 1000) / 1000 // Round to 3 decimal places
     : 0;
 

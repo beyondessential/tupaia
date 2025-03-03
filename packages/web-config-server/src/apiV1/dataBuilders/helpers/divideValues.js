@@ -8,7 +8,7 @@ const FRACTION_TYPE_TO_FUNC = {
 
 export const divideValues = (numerator, denominator, fractionType = 'percentage') => {
   const isNumeratorValid = numerator || numerator === 0;
-  const isDenominatorValid = denominator && parseFloat(denominator) !== 0;
+  const isDenominatorValid = denominator && Number.parseFloat(denominator) !== 0;
 
   if (!isNumeratorValid || !isDenominatorValid) {
     return NO_DATA_AVAILABLE;

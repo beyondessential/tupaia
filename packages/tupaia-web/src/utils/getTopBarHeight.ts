@@ -11,7 +11,7 @@ const envBannerIsVisible = () => {
 };
 export const getMobileTopBarHeight = () => {
   if (envBannerIsVisible()) {
-    const height = parseInt(TOP_BAR_HEIGHT_MOBILE) + ENV_BANNER_HEIGHT;
+    const height = Number.parseInt(TOP_BAR_HEIGHT_MOBILE) + ENV_BANNER_HEIGHT;
     return `${height}px`;
   }
   return TOP_BAR_HEIGHT_MOBILE;
@@ -19,7 +19,7 @@ export const getMobileTopBarHeight = () => {
 
 export const getTopBarHeight = () => {
   if (envBannerIsVisible()) {
-    const height = parseInt(TOP_BAR_HEIGHT) + ENV_BANNER_HEIGHT;
+    const height = Number.parseInt(TOP_BAR_HEIGHT) + ENV_BANNER_HEIGHT;
     return `${height}px`;
   }
   return TOP_BAR_HEIGHT;

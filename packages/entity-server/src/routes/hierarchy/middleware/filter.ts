@@ -68,7 +68,7 @@ const formatComparisonValue = (value: Value, operator: Operator) => {
 };
 
 const formatValue = <T extends keyof EntityFilterQuery>(field: T, value: string) =>
-  isNumericField(field) ? parseFloat(value) : value;
+  isNumericField(field) ? Number.parseFloat(value) : value;
 
 const convertValueToAdvancedCriteria = (
   field: keyof EntityFilterQuery,

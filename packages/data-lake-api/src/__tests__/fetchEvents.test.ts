@@ -23,7 +23,7 @@ const getEventsFromAnalytics = (analytics: Analytic[], dataElementsToInclude: st
         .reduce(
           (values, { data_element_code, value }) => ({
             ...values,
-            [data_element_code]: isNaN(value as any) ? value : parseFloat(value),
+            [data_element_code]: Number.isNaN(value as any) ? value : Number.parseFloat(value),
           }),
           {},
         ),

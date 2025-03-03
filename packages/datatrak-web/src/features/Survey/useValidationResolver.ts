@@ -6,7 +6,7 @@ import { getAllSurveyComponents, useSurveyForm } from '.';
 
 const transformNumberValue = (value: string | number, originalValue: string | number) => {
   // This is a workaround for yup not handling empty number fields (https://github.com/jquense/yup/issues/298)
-  return originalValue === '' || isNaN(originalValue as number) ? null : value;
+  return originalValue === '' || Number.isNaN(originalValue as number) ? null : value;
 };
 
 const getBaseSchema = (type: QuestionType) => {
@@ -81,7 +81,7 @@ const getValidationSchema = (screenComponents?: SurveyScreenComponent[]) => {
               // Show the required message when the user has not entered a location at all
               if (
                 (!value?.latitude && !value?.longitude) ||
-                (isNaN(value.latitude) && isNaN(value.longitude))
+                (Number.isNaN(value.latitude) && Number.isNaN(value.longitude))
               )
                 return 'Required';
               // Otherwise show the invalid location message
@@ -90,8 +90,8 @@ const getValidationSchema = (screenComponents?: SurveyScreenComponent[]) => {
             value =>
               value?.latitude &&
               value?.longitude &&
-              !isNaN(value.latitude) &&
-              !isNaN(value.longitude),
+              !Number.isNaN(value.latitude) &&
+              !Number.isNaN(value.longitude),
           );
         }
       }

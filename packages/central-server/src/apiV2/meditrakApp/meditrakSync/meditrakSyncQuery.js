@@ -68,11 +68,11 @@ export const selectFromClause = select => `
 
 export const extractSinceValue = req => {
   const { since = 0 } = req.query;
-  if (isNaN(since)) {
+  if (Number.isNaN(since)) {
     throw new ValidationError("The 'since' parameter must be a number.");
   }
 
-  return parseFloat(since);
+  return Number.parseFloat(since);
 };
 
 export const getModifiers = (sort, limit, offset) => {

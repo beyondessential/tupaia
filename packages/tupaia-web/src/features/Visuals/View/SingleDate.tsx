@@ -28,7 +28,7 @@ interface SingleDateProps {
 
 const formatDate = (value: string) => {
   const date = new Date(value);
-  if (!value || isNaN(date.getTime())) return 'Not yet assessed';
+  if (!value || Number.isNaN(date.getTime())) return 'Not yet assessed';
   return date.toDateString();
 };
 

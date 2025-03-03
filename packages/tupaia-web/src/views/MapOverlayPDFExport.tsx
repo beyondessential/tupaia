@@ -114,7 +114,7 @@ const useExportParams = () => {
   const tileset = urlSearchParams.get('tileset') ?? initialTileSet.url;
   const urlCenter = urlSearchParams.get('center');
   const urlZoom = urlSearchParams.get('zoom');
-  const zoom = urlZoom ? parseInt(urlZoom) : 5;
+  const zoom = urlZoom ? Number.parseInt(urlZoom) : 5;
   const center = urlCenter ? JSON.parse(urlCenter) : undefined;
   const urlHiddenValues = urlSearchParams.get('hiddenValues');
   const hiddenValues = urlHiddenValues ? JSON.parse(urlHiddenValues) : undefined;

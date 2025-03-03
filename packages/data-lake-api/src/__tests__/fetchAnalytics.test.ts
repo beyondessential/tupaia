@@ -13,7 +13,7 @@ const formatAnalytics = (inputAnalytics: Analytic[]) =>
     organisationUnit: entity_code,
     dataElement: data_element_code,
     period: dateStringToPeriod(date, 'DAY'),
-    value: isNaN(value as any) ? value : parseFloat(value),
+    value: Number.isNaN(value as any) ? value : Number.parseFloat(value),
   }));
 
 describe('fetchAnalytics', () => {

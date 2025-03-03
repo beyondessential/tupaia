@@ -131,7 +131,7 @@ export class TotalCalculator {
         const cell = this.tableConfig.cells[row][column];
         const cellVal =
           cell && !TotalCalculator.isTotalKey(cell) ? this.valuesByCell[cell] : undefined;
-        total += isNaN(cellVal) ? 0 : cellVal;
+        total += Number.isNaN(cellVal) ? 0 : cellVal;
       }
     }
 

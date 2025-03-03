@@ -28,7 +28,7 @@ const DIMENSION_TYPES = {
  */
 const sanitizeValue = (value, valueType) => {
   if (valueType === 'NUMBER') {
-    const sanitizedValue = parseFloat(value);
+    const sanitizedValue = Number.parseFloat(value);
     return Number.isNaN(sanitizedValue) ? '' : sanitizedValue;
   }
 

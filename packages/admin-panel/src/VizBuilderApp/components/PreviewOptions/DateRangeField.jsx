@@ -55,7 +55,7 @@ export const DateRangeField = () => {
     new Date(date.setMinutes(date.getMinutes() - date.getTimezoneOffset()));
 
   const convertDateToIsoString = date => {
-    if (!date || isNaN(new Date(date).getTime())) return null;
+    if (!date || Number.isNaN(new Date(date).getTime())) return null;
     const correctedDate = shiftEpoch(date);
 
     // Slice to discard timestamp, keeping only "yyyy-mm-dd"

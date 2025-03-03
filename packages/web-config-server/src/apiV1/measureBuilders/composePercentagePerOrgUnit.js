@@ -54,7 +54,7 @@ export const composePercentagePerOrgUnit = async (
 
     const fraction = divideValues(numeratorValue, denominatorValue, fractionType);
 
-    if (!isNaN(fraction)) {
+    if (!Number.isNaN(fraction)) {
       fractionsByOrgUnit[orgUnit] = {
         ...denominatorsByOrgUnit[orgUnit],
         [dataElementCode]: fraction,

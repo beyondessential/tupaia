@@ -187,7 +187,7 @@ export const constructQuestionValidators = models => ({
               }
               break;
             case 'Number':
-              if (!answers.every(answer => !isNaN(answer))) {
+              if (!answers.every(answer => !Number.isNaN(answer))) {
                 throw new Error(
                   'All answers in the visibility criteria for a number question should be numbers',
                 );

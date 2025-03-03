@@ -29,7 +29,7 @@ export const getSocialFeed = async (req, res) => {
     page = 0,
     numberPerPage = DEFAULT_NUMBER_PER_PAGE,
   } = query;
-  const pageNumber = parseInt(page, 10);
+  const pageNumber = Number.parseInt(page, 10);
 
   await req.assertPermissions(allowNoPermissions);
 

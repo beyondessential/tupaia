@@ -28,15 +28,12 @@ export class ArithmeticConfigValidator extends CalculatedConfigValidator {
    * @param {*} rowIndex
    */
   getDefaultValuesValidators(rowIndex) {
-    const existIfQuestionsInFormulaAreOptional = this.hasContentIfQuestionsInFormulaAreOptional(
-      rowIndex,
-    );
-    const defaultValuesPointToOtherQuestions = this.constructDefaultValuesPointToOtherQuestions(
-      rowIndex,
-    );
-    const defaultValuesProvidedForAllOptionalQuestions = this.constructDefaultValuesProvidedForAllOptionalQuestions(
-      rowIndex,
-    );
+    const existIfQuestionsInFormulaAreOptional =
+      this.hasContentIfQuestionsInFormulaAreOptional(rowIndex);
+    const defaultValuesPointToOtherQuestions =
+      this.constructDefaultValuesPointToOtherQuestions(rowIndex);
+    const defaultValuesProvidedForAllOptionalQuestions =
+      this.constructDefaultValuesProvidedForAllOptionalQuestions(rowIndex);
     const defaultValuesAreNumeric = this.defaultValuesAreNumeric();
 
     return [
@@ -52,15 +49,12 @@ export class ArithmeticConfigValidator extends CalculatedConfigValidator {
    * @param {*} rowIndex
    */
   getValueTranslationValidators(rowIndex) {
-    const existIfQuestionsInFormulaAreNonNumeric = this.hasContentIfQuestionsInFormulaAreNonNumeric(
-      rowIndex,
-    );
-    const valueTranslationPointToOtherQuestions = this.constructValueTranslationPointsToOtherQuestions(
-      rowIndex,
-    );
-    const valueTranslationProvidedForAllNonNumericQuestions = this.constructTranslationProvidedForAllNonNumericQuestions(
-      rowIndex,
-    );
+    const existIfQuestionsInFormulaAreNonNumeric =
+      this.hasContentIfQuestionsInFormulaAreNonNumeric(rowIndex);
+    const valueTranslationPointToOtherQuestions =
+      this.constructValueTranslationPointsToOtherQuestions(rowIndex);
+    const valueTranslationProvidedForAllNonNumericQuestions =
+      this.constructTranslationProvidedForAllNonNumericQuestions(rowIndex);
     const valueTranslationsAreNumeric = this.valueTranslationsAreNumeric();
 
     return [
@@ -184,7 +178,7 @@ export class ArithmeticConfigValidator extends CalculatedConfigValidator {
 
       for (const defaultValuePair of defaultValues) {
         const [code, defaultValue] = splitStringOn(defaultValuePair, ':');
-        if (isNaN(defaultValue)) {
+        if (Number.isNaN(defaultValue)) {
           throw new ValidationError(
             `Default values must be numeric. Found non numeric value '${defaultValue}'`,
           );
@@ -245,7 +239,7 @@ export class ArithmeticConfigValidator extends CalculatedConfigValidator {
       const valueTranslation = splitStringOnComma(value);
       for (const translation of valueTranslation) {
         const [code, translatedValue] = splitStringOn(translation, ':');
-        if (isNaN(translatedValue)) {
+        if (Number.isNaN(translatedValue)) {
           throw new ValidationError(
             `Translated values must be numeric. Found non numeric value '${translatedValue}'`,
           );

@@ -49,8 +49,8 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
     const { query, models, accessPolicy } = this.req;
     const { page: queryPage, pageLimit: queryPageLimit, projectId } = query;
 
-    const page = queryPage ? parseInt(queryPage, 10) : 0;
-    const pageLimit = queryPageLimit ? parseInt(queryPageLimit, 10) : NUMBER_PER_PAGE;
+    const page = queryPage ? Number.parseInt(queryPage, 10) : 0;
+    const pageLimit = queryPageLimit ? Number.parseInt(queryPageLimit, 10) : NUMBER_PER_PAGE;
 
     const pinned = page === 0 ? await this.getPinnedItem() : undefined;
 

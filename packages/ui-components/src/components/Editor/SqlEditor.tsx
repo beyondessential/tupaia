@@ -25,10 +25,10 @@ const AceEditor = styled(BaseAceEditor).attrs({
   // font-size set by fontSize prop
   line-height: 1.5;
 
-  /* 
+  /*
    * Prevent caret drift in some browsers, including Safari.
-   * 
-   * Ace uses CSS properties to calculate the width of characters and lines, which determines where 
+   *
+   * Ace uses CSS properties to calculate the width of characters and lines, which determines where
    * the caret should appear. However, when a font style isn’t provided by the font files, and the
    * browser attempts to synthesize it, this can cause the caret to lag behind or lead ahead of the
    * actual insertion point.
@@ -103,7 +103,7 @@ export const SqlEditor = ({
       //   "Expecting '(', 'NUMERIC', 'IDENTIFIER', 'STRING', 'EXPONENT_NU...",
       // ];
       const errors = (e as Error).message.split('\n');
-      const rowNum = parseInt(errors[0].split(' ')[4].replace(':', ''));
+      const rowNum = Number.parseInt(errors[0].split(' ')[4].replace(':', ''));
       if (errors[1].startsWith('...')) {
         errors[1] = errors[1].substring(3);
         errors[2] = errors[2].substring(3);

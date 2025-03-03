@@ -276,9 +276,8 @@ export async function importSurveyResponses(req, res) {
             checkIsCellEmpty(answerValue) &&
             IMPORT_BEHAVIOURS[importMode].shouldFillEmptyAnswer
           ) {
-            const { dataTime, answerTextsByQuestionId } = await getExistingResponseData(
-              columnIndex,
-            );
+            const { dataTime, answerTextsByQuestionId } =
+              await getExistingResponseData(columnIndex);
             // Use data from an existing response to fill the empty answer
             return isDateAnswer(rowType) ? dataTime : answerTextsByQuestionId?.[questionId];
           }
@@ -516,7 +515,7 @@ function getDateStringForColumn(sheet, columnIndex) {
   const date = isInExportFormat
     ? moment(dateString, EXPORT_DATE_FORMAT).toDate()
     : moment(dateString).toDate();
-  if (isNaN(date.getTime())) {
+  if (Number.isNaN(date.getTime())) {
     throw new ImportValidationError(`Invalid date ${dateString}`);
   }
   return stripTimezoneFromDate(date);

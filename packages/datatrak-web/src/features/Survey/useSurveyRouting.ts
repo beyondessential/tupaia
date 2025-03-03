@@ -29,14 +29,14 @@ export const useSurveyRouting = numberOfScreens => {
 
   const getNextPath = () => {
     if (isReview) return null;
-    if (params.screenNumber && parseInt(params.screenNumber) === numberOfScreens) {
+    if (params.screenNumber && Number.parseInt(params.screenNumber) === numberOfScreens) {
       const REVIEW_PATH = isResubmit ? ROUTES.SURVEY_RESUBMIT_REVIEW : ROUTES.SURVEY_REVIEW;
       return {
         ...location,
         pathname: generatePath(REVIEW_PATH, params),
       };
     }
-    return getScreenPath(parseInt(params.screenNumber ?? '1') + 1);
+    return getScreenPath(Number.parseInt(params.screenNumber ?? '1') + 1);
   };
 
   const getPreviousPath = () => {
@@ -48,7 +48,7 @@ export const useSurveyRouting = numberOfScreens => {
             ...location,
             pathname: generatePath(ROUTES.SURVEY_SELECT),
           };
-    return getScreenPath(parseInt(params.screenNumber) - 1);
+    return getScreenPath(Number.parseInt(params.screenNumber) - 1);
   };
 
   return {

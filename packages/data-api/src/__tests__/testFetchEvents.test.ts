@@ -24,7 +24,7 @@ const getEventsFromResponses = (
       .reduce(
         (values, [code, answer]) => ({
           ...values,
-          [code]: isNaN(answer as any) ? answer : parseFloat(answer),
+          [code]: Number.isNaN(answer as any) ? answer : Number.parseFloat(answer),
         }),
         {},
       ),

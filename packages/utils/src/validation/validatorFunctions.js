@@ -50,7 +50,7 @@ export const takesDateForm = value => {
 };
 
 export const isNumber = value => {
-  if (isNaN(value)) {
+  if (Number.isNaN(value)) {
     throw new ValidationError(`Should contain a number instead of ${value}`);
   }
 };

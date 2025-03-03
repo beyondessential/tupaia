@@ -35,7 +35,7 @@ export function parseValueForDhis(value: string, valueType: ValueType) {
       // in future, this should be removed
       if (value === 'Yes') return '1';
       if (value === 'No') return '0';
-      return parseFloat(value).toString();
+      return Number.parseFloat(value).toString();
 
     // booleans
     case BOOLEAN:

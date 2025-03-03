@@ -164,7 +164,7 @@ class TableOfEventsBuilder extends DataBuilder {
     const totals = {};
     Object.entries(this.config.columns).forEach(([key, { shouldShowTotal }]) => {
       if (shouldShowTotal) {
-        totals[key] = rows.reduce((total, row) => total + parseFloat(row[key]), 0);
+        totals[key] = rows.reduce((total, row) => total + Number.parseFloat(row[key]), 0);
       }
     });
 

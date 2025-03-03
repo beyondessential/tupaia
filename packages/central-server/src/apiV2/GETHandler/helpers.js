@@ -3,7 +3,7 @@ import { ValidationError } from '@tupaia/utils';
 import { getApiUrl, resourceToRecordType } from '../../utilities';
 
 export const generateLinkHeader = (resource, pageString, lastPage, originalQueryParameters) => {
-  const currentPage = parseInt(pageString, 10);
+  const currentPage = Number.parseInt(pageString, 10);
 
   const getUrlForPage = page => getApiUrl(resource, { ...originalQueryParameters, page });
 

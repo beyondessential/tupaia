@@ -36,7 +36,7 @@ export const useDataTableExport = (
             tableColumns.map(col => {
               const value = row.values[col.id];
               // check for strings that are not stringified numbers, including dates and percentages
-              if (typeof value === 'string' && isNaN(Number(value))) return value;
+              if (typeof value === 'string' && Number.isNaN(Number(value))) return value;
               // only parse the value if it is not a boolean (as this means it is definitely meant to be a number)
               const num = value && typeof value !== 'boolean' ? Number(value) : value;
 

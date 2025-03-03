@@ -54,13 +54,13 @@ const migrations = {
 export const getSyncMigrations = async database => {
   const currentMigrationVersion = (await database.getSetting(DATABASE_SYNC_MIGRATION_VERSION)) || 0;
   const availableMigrationVersions = Object.keys(migrations)
-    .map(version => parseInt(version, 10))
+    .map(version => Number.parseInt(version, 10))
     .sort(
       (versionA, versionB) =>
         // Sort in ascending order
         versionA - versionB,
     )
-    .filter(version => version > parseInt(currentMigrationVersion, 10));
+    .filter(version => version > Number.parseInt(currentMigrationVersion, 10));
   const hasNeverSynced = await !database.getSetting(LATEST_SERVER_SYNC_TIMESTAMP);
   if (hasNeverSynced) {
     // No need to migrate anything as it will do initial sync, jump the migration version up

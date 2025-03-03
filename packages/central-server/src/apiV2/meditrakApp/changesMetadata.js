@@ -22,6 +22,6 @@ export async function changesMetadata(req, res) {
     select: 'count(*)',
   });
   const queryResult = await query.executeOnDatabase(models.database);
-  const changeCount = parseInt(queryResult[0].count);
+  const changeCount = Number.parseInt(queryResult[0].count);
   respond(res, { changeCount, countries, permissionGroups });
 }

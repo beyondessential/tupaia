@@ -150,7 +150,7 @@ const percentagesPerPeriod = async (
     data: Object.keys(percentagesByPeriod)
       .sort()
       .map(periodTimestamp => {
-        const timestamp = parseInt(periodTimestamp, 10);
+        const timestamp = Number.parseInt(periodTimestamp, 10);
         const dataForPeriod = {
           name: timestampToPeriodName(timestamp, periodType),
           timestamp,

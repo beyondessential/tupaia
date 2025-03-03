@@ -43,7 +43,7 @@ const getAnalyticsFromResponses = (
         analytics.push({
           dataElement: questionCode,
           organisationUnit: r.entityCode,
-          value: isNaN(answer as any) ? answer : parseFloat(answer),
+          value: Number.isNaN(answer as any) ? answer : Number.parseFloat(answer),
           period: dateStringToPeriod(r.data_time, periodType),
         });
       });
@@ -260,7 +260,8 @@ describe('fetchAnalytics()', () => {
       `${Number(
         responses
           .reduce(
-            (sum, { answers }) => sum + (answers[answerCode] ? parseFloat(answers[answerCode]) : 0),
+            (sum, { answers }) =>
+              sum + (answers[answerCode] ? Number.parseFloat(answers[answerCode]) : 0),
             0,
           )
           .toFixed(1),

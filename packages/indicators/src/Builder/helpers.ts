@@ -54,7 +54,7 @@ export const convertBooleanToNumber = (
 };
 
 export const isValidIndicatorValue = (value: string | number) =>
-  typeof value === 'string' || isFinite(value); // Should be either string, finite number or boolean as a number
+  typeof value === 'string' || Number.isFinite(value); // Should be either string, finite number or boolean as a number
 
 export const replaceDataValuesWithDefaults = (
   dataValues: DataValues,

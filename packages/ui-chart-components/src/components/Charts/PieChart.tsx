@@ -144,7 +144,7 @@ export const PieChart = ({
     data
       ?.filter(({ value }) => {
         if (typeof value === 'number') return value > 0;
-        return parseFloat(value) > 0;
+        return Number.parseFloat(value) > 0;
       })
       .map(item => {
         const { name, ...otherKeyValues } = item;
