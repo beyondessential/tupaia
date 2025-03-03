@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { Link as RouterLink, To } from 'react-router-dom';
 import { Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
@@ -32,11 +32,11 @@ const ButtonWrapper = ({
   tooltip,
   tooltipDelay,
 }: {
-  children: ReactElement<any, any>;
+  children: ReactNode;
   tooltip?: ButtonProps['tooltip'];
   tooltipDelay?: ButtonProps['tooltipDelay'];
 }) => {
-  if (!tooltip) return children;
+  if (!tooltip) return <>{children}</>;
   return (
     // Wrap the button in a <span> to suppress console error about tooltips on disabled buttons
     <Tooltip title={tooltip} arrow enterDelay={tooltipDelay}>

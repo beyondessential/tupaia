@@ -1,89 +1,56 @@
-import {
-  FormLabel,
-  Button as MuiButton,
-  Typography,
-  Collapse as UICollapse,
-} from '@material-ui/core';
+import { FormLabel, Typography } from '@material-ui/core';
 import React, { HTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Entity } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 
 import { useCountryAccessList, useCurrentUserContext, useRequestProjectAccess } from '../../../api';
-import { ArrowLeftIcon, Button } from '../../../components';
-import { errorToast, successToast, useIsMobile } from '../../../utils';
+import { Button } from '../../../components';
+import { errorToast, successToast } from '../../../utils';
+import { AdaptiveCollapse } from './AdaptiveCollapse';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
 const StyledForm = styled(Form<RequestCountryAccessFormFields>)`
   inline-size: 100%;
-  max-inline-size: 44.25rem;
-`;
-
-const StyledFieldset = styled.fieldset`
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    display: grid;
-    grid-auto-flow: column;
-    block-size: 18.32rem;
-    grid-template: auto / 1fr 1fr;
-  }
-
-  .MuiFormLabel-root {
-    color: ${({ theme }) => theme.palette.text.primary};
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  }
-
-  // Fix labels appearing over hamburger menu drawer
-  .MuiInputLabel-outlined {
-    z-index: auto;
+  ${props => props.theme.breakpoints.up('md')} {
+    max-inline-size: 44.25rem;
   }
 `;
 
-const CountryChecklistWrapper = styled.div`
-  block-size: 100%;
-  display: block flex;
-  flex-direction: column;
-  overflow: hidden;
-`;
+const FieldSet = styled.fieldset(props => {
+  const { breakpoints, palette, typography } = props.theme;
+  return css`
+    ${breakpoints.up('sm')} {
+      block-size: 18.32rem;
+      column-gap: 1.25rem;
+      display: grid;
+      grid-template-areas:
+        '--heading   --reason'
+        '--checklist --reason'
+        '--checklist --submit';
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .MuiFormLabel-root {
+      color: ${palette.text.primary};
+      font-weight: ${typography.fontWeightMedium};
+    }
+
+    // Fix labels appearing over hamburger menu drawer
+    .MuiInputLabel-outlined {
+      z-index: auto;
+    }
+  `;
+});
 
 /** Matches styling of `.FormLabel-root` in ui-components `TextField` */
 const StyledFormLabel = styled(FormLabel)`
   font-size: 0.9375rem;
   line-height: 1.125rem;
   margin-block-end: 0.1875rem;
-`;
-
-const Flexbox = styled.div`
-  display: block flex;
-  flex-direction: column;
-  gap: 1.25rem;
-`;
-
-const Collapse = styled(UICollapse)`
-  padding-bottom: 2rem;
-  .MuiCollapse-wrapper {
-    width: 100%;
-  }
-`;
-
-const ExpandButton = styled(MuiButton)`
-  width: 100%;
-  .MuiButton-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
-const ExpandIcon = styled(ArrowLeftIcon)<{ $active: boolean }>`
-  font-size: 1rem;
-  transform: rotate(${props => (props.$active ? '-270deg' : '-90deg')});
-  transition: transform 300ms cubic-bezier(0.77, 0, 0.18, 1);
 `;
 
 const StyledFormInput = styled(FormInput).attrs({
@@ -104,6 +71,7 @@ const StyledFormInput = styled(FormInput).attrs({
   multiline: true,
   rows: 6,
 })`
+  grid-area: --reason;
   margin: 0;
 
   .MuiInputBase-root {
@@ -140,12 +108,19 @@ const Message = styled(Typography)`
   }
 `;
 
-const formLabel = <StyledFormLabel>Select countries</StyledFormLabel>;
-const reasonForAccessField = (
-  <StyledFormInput id="message" label="Reason for access" name="message" />
-);
+/**
+ * @privateRemarks The submit button sometimes (but not always) has a tooltip, which wraps the
+ * <button> element in a <span>. When the tooltip appears/disappears, it causes the button’s parent
+ * to re-render, which can affect scroll state of the button’s siblings in undesired ways.
+ * Rather than conditionally apply these styles to either the button directly or to its tooltip when
+ * present, we use a semantically useless <div> to manage its layout.
+ */
+const SubmitButtonWrapper = styled.div`
+  grid-area: --submit;
+  margin-block-start: 1.25rem;
+`;
 
-interface RequestCountryAccessFormFields {
+export interface RequestCountryAccessFormFields {
   entityIds: Entity['id'][];
   message?: string;
 }
@@ -153,10 +128,11 @@ interface RequestCountryAccessFormFields {
 export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>) => {
   const { project } = useCurrentUserContext();
   const projectCode = project?.code;
-  const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
-
-  const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useIsMobile();
+  const {
+    data: countries,
+    isLoading: accessListIsLoading,
+    isInitialLoading: accessListIsInitialLoading,
+  } = useCountryAccessList();
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -188,14 +164,13 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
     onSuccess: response => successToast(response.message),
   });
 
-  const hasAccessToEveryCountry = countries?.every(c => c.hasAccess) ?? true;
+  const hasAccessToEveryCountry = !accessListIsInitialLoading && countries?.every(c => c.hasAccess);
   if (hasAccessToEveryCountry) {
     return <Message>You have access to all available countries within this project</Message>;
   }
 
-  const noRequestableCountries = !project || hasAccessToEveryCountry;
   const formIsSubmitting = isSubmitting || requestIsLoading;
-  const disableForm = noRequestableCountries || formIsSubmitting;
+  const disableForm = !project || formIsSubmitting;
   const disableSubmission = disableForm || isValidating || !isValid || accessListIsLoading;
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
@@ -206,58 +181,38 @@ export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>)
     });
   }
 
-  const toggleOpen = () => setIsOpen(!isOpen);
-
   const getTooltip = () => {
     if (!project) return 'Select a project to request country access';
-    return isValid ? null : 'Select countries to request access';
+    if (!isValid) return 'Select countries to request access';
   };
-
-  const requestableCountryChecklistProps = {
-    disabled: formIsSubmitting,
-    selectedCountries,
-    setSelectedCountries,
-  };
-  const submitButton = (
-    <Button
-      disabled={disableSubmission}
-      fullWidth
-      tooltip={getTooltip()}
-      tooltipDelay={0}
-      type="submit"
-    >
-      {formIsSubmitting ? 'Submitting request' : 'Request access'}
-    </Button>
-  );
 
   return (
     <StyledForm formContext={formContext} onSubmit={onSubmit} {...props}>
-      {isMobile ? (
-        <>
-          <ExpandButton onClick={toggleOpen}>
-            {formLabel}
-            <ExpandIcon $active={isOpen} />
-          </ExpandButton>
-          <Collapse in={isOpen}>
-            <StyledFieldset disabled={disableForm}>
-              <RequestableCountryChecklist {...requestableCountryChecklistProps} />
-              {reasonForAccessField}
-            </StyledFieldset>
-          </Collapse>
-          {submitButton}
-        </>
-      ) : (
-        <StyledFieldset disabled={disableForm}>
-          <CountryChecklistWrapper>
-            {formLabel}
-            <RequestableCountryChecklist {...requestableCountryChecklistProps} />
-          </CountryChecklistWrapper>
-          <Flexbox>
-            {reasonForAccessField}
-            {submitButton}
-          </Flexbox>
-        </StyledFieldset>
-      )}
+      <FieldSet disabled={disableForm}>
+        <AdaptiveCollapse
+          label={<StyledFormLabel>Select countries</StyledFormLabel>}
+          name="collapsible-country-checklist"
+        >
+          <RequestableCountryChecklist
+            disabled={formIsSubmitting}
+            selectedCountries={selectedCountries}
+            setSelectedCountries={setSelectedCountries}
+            style={{ gridArea: '--checklist' }}
+          />
+          <StyledFormInput id="message" label="Reason for access" name="message" />
+        </AdaptiveCollapse>
+        <SubmitButtonWrapper>
+          <Button
+            disabled={disableSubmission}
+            fullWidth
+            tooltip={getTooltip()}
+            tooltipDelay={0}
+            type="submit"
+          >
+            {formIsSubmitting ? 'Submitting request' : 'Request access'}
+          </Button>
+        </SubmitButtonWrapper>
+      </FieldSet>
     </StyledForm>
   );
 };
