@@ -52,7 +52,7 @@ const Title = styled(Typography).attrs({ variant: 'h2' })`
   overflow: hidden;
 `;
 
-interface StickyMobileHeaderProps extends HTMLAttributes<HTMLDivElement> {
+interface StickyMobileHeaderProps extends HTMLAttributes<HTMLElement> {
   onBack?: () => void;
   onClose?: (data: any) => void;
 }

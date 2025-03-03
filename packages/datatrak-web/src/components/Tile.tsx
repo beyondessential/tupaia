@@ -41,7 +41,7 @@ const Wrapper = styled(Paper).attrs({
       background-color: ${theme.palette.primaryHover};
     }
 
-    ${theme.breakpoints.up('md')} {
+    ${theme.breakpoints.up('lg')} {
       flex-direction: row;
       inline-size: 100%;
     }
@@ -61,11 +61,11 @@ const Header = styled.header`
   ${({ theme }) => {
     const { down, up } = theme.breakpoints;
     return css`
-      ${down('md')} {
+      ${down('lg')} {
         margin-block-end: 0.5rem;
         block-size: 1.5rem;
       }
-      ${up('md')} {
+      ${up('lg')} {
         flex-direction: column;
       }
     `;
@@ -85,8 +85,7 @@ const TrailingIconGroup = styled(IconGroup)`
 `;
 
 const BodyWrapper = styled.div`
-  min-inline-size: 0;
-  flex: 1;
+  flex-grow: 1;
 `;
 
 const Heading = styled(Typography).attrs({ variant: 'h3' })`
