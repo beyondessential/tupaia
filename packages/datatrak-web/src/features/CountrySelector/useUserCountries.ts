@@ -70,9 +70,6 @@ export const useUserCountries = (
       const countryCode = e.target.value;
       const newCountry = countries?.find((country: Entity) => country.code === countryCode);
       setSelectedCountry(newCountry ?? null);
-      console.log('updateSelectedCountry', e);
-      console.log('  countryCode', countryCode);
-      console.log('  newCountry', newCountry);
     },
   };
 };
