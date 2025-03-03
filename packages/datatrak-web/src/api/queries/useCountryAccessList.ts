@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Project, ProjectCountryAccessListRequest } from '@tupaia/types';
 import { get } from '../api';
 import { useCurrentUserContext } from '..';
@@ -10,8 +10,6 @@ import { useCurrentUserContext } from '..';
 export const useCountryAccessList = (projectCode?: Project['code']) => {
   const user = useCurrentUserContext();
   const code = projectCode ?? user?.project?.code;
-
-  const queryClient = useQueryClient();
 
   return useQuery<ProjectCountryAccessListRequest.ResBody>(
     ['me/countries', code],
