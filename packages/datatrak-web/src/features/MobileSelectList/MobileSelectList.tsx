@@ -3,9 +3,9 @@ import React, { ReactElement } from 'react';
 import styled from 'styled-components';
 
 import { CountrySelectWrapper, CountrySelector } from '../CountrySelector';
+import { CountrySelectorProps } from '../CountrySelector/CountrySelector';
 import { ListItemType } from '../useGroupedSurveyList';
 import { ListItem } from './ListItem';
-import { CountrySelectorProps } from '../CountrySelector/CountrySelector';
 
 const BaseList = styled(MuiList)`
   background: ${({ theme }) => theme.palette.background.default};
