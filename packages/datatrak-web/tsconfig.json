@@ -3,5 +3,7 @@
   "include": [
     "src",
     "index.d.ts",
+    "stories",
+    ".storybook"
   ],
 }

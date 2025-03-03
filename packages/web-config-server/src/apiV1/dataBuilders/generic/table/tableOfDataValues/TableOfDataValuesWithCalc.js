@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import moment from 'moment';
 
 import { CustomError } from '@tupaia/utils';

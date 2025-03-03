@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
@@ -25,7 +21,7 @@ export const RequestProjectAccessPage = () => {
 
   const { data: project, isLoading: isLoadingProject, isFetched } = useProject(projectCode);
   const { mutate: requestProjectAccess, isLoading, isSuccess } = useRequestProjectAccess();
-  const { data: countries } = useCountryAccessList(projectCode);
+  const { data: countries = [] } = useCountryAccessList(projectCode);
 
   const onReturnToProjects = () => {
     navigate(ROUTES.PROJECT_SELECT);

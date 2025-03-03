@@ -52,7 +52,8 @@
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "@babel/types": "7.25.6"
+    "@babel/types": "7.25.6",
+    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.6",
@@ -92,6 +93,7 @@
     "nodemon": "^2.0.4",
     "npm-package-json-lint": "5.1.0",
     "pm2": "^5.3.0",
+    "prettier": "^3.5.1",
     "react-docgen-typescript-plugin": "^1.0.8",
     "storybook": "^8.2.9",
     "ts-jest": "^29.1.2",

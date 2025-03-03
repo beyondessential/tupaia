@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LoginForm, EMAIL_VERIFICATION_STATUS } from '@tupaia/ui-components';

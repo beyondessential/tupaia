@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 // some part of knex or node-pg struggles with too many bindings, so we batch them in some places
 // errors occurred at around 5000 bindings in initial testing, but more is needed - see issue #2197
 export const MAX_BINDINGS_PER_QUERY = 2500;

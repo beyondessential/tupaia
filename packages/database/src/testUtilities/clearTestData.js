@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { AnalyticsRefresher } from '..';
 
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly

@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import sanitize from 'sanitize-filename';
 import fs from 'fs';
 import * as path from 'path';

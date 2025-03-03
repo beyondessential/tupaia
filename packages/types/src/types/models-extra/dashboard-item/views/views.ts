@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { CssColor } from '../../../css';
 import { BaseViewConfig } from './common';
 import { MultiValuePresentationOptions, MultiValueViewConfig } from './multiValue';

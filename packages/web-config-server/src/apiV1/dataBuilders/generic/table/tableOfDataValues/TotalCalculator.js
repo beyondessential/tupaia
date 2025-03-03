@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- */
-
 export const TOTAL_KEYS = {
   total: '$total',
   rowTotal: '$rowTotal',

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { SnackbarContent, CustomContentProps, closeSnackbar, OptionsObject } from 'notistack';
 import styled from 'styled-components';
@@ -13,6 +8,7 @@ const Wrapper = styled(SnackbarContent)`
   background-color: white;
   border-radius: 0.625rem;
   max-width: 87vw;
+  min-height: 2.25rem;
   @media screen and (min-width: 24rem) {
     width: 21rem;
   }
@@ -66,18 +62,31 @@ const CloseButton = styled(IconButton)<{
   }
 `;
 
-const Message = styled(Typography)`
+const Message = styled(Typography)<{
+  $variant: CustomContentProps['variant'];
+}>`
   font-size: 0.875rem;
   flex: 1;
   word-break: break-word;
+  text-align: ${({ $variant }) => ($variant === 'info' ? 'center' : 'start')};
+  color: ${({ theme, $variant }) => {
+    if ($variant === 'error') {
+      return theme.palette.error.main;
+    }
+    if ($variant === 'info') {
+      return theme.palette.info.main;
+    }
+    return theme.palette.text.primary;
+  }};
 `;
 
 interface ToastProps extends CustomContentProps {
   Icon?: OptionsObject['Icon'];
+  hideCloseButton?: boolean;
 }
 
 export const Toast = React.forwardRef<HTMLDivElement, ToastProps>((props, ref) => {
-  const { id, Icon, message, variant, ...notistackProps } = props;
+  const { id, Icon, message, variant, hideCloseButton = false, ...notistackProps } = props;
 
   return (
     <Wrapper ref={ref} role="alert" {...notistackProps}>
@@ -87,14 +96,16 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>((props, ref) =
             <Icon />
           </IconWrapper>
         )}
-        <Message color={variant === 'error' ? 'error' : 'textPrimary'}>{message}</Message>
-        <CloseButton
-          onClick={() => closeSnackbar(id)}
-          $variant={variant}
-          title="Close toast message"
-        >
-          <Close />
-        </CloseButton>
+        <Message $variant={variant}>{message}</Message>
+        {!hideCloseButton && (
+          <CloseButton
+            onClick={() => closeSnackbar(id)}
+            $variant={variant}
+            title="Close toast message"
+          >
+            <Close />
+          </CloseButton>
+        )}
       </Container>
     </Wrapper>
   );

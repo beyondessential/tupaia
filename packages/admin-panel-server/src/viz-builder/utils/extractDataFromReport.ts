@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { Report } from '../types';
 
 // Used when combining the report and dashboardItem/mapOverlay

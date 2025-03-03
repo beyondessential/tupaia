@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import type { DhisApi } from '@tupaia/dhis-api';
 import { getSortByKey } from '@tupaia/utils';
 import { buildEventsFromDhisEventAnalytics } from '../builders';

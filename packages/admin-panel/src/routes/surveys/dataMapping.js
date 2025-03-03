@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import {
   DATA_ELEMENT_FIELD_EDIT_CONFIG,
   DataSourceConfigView,

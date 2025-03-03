@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 const getEventOrgUnitName = async (event, cache) => {
   const { orgUnit: code } = event;
   const entity = cache[CACHE_KEYS.entities].find(({ code: currentCode }) => currentCode === code);

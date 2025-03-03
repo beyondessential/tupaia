@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import downloadJs from 'downloadjs';
@@ -55,6 +50,7 @@ export const useExportSurveyResponses = () => {
             countryCode,
             startDate,
             endDate,
+            platform: 'datatrak',
           },
         });
 

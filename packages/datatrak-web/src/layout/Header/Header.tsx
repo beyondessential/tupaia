@@ -1,39 +1,31 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { PageContainer } from '../../components';
-import { HEADER_HEIGHT } from '../../constants';
+import { HEADER_HEIGHT, TABLET_BREAKPOINT } from '../../constants';
 import { UserMenu } from '../UserMenu';
-import { LogoButton } from './LogoButton';
+import { HeaderLeft } from './HeaderLeft';
 
-const Wrapper = styled.div`
-  background: ${({ theme }) => theme.palette.background.paper};
-  width: 100%;
-  box-shadow: inset 0 0 1px #333;
-  z-index: 10;
-`;
-
-const Container = styled(PageContainer).attrs({
-  maxWidth: false,
-})`
-  position: relative;
-  z-index: 1;
-  height: ${HEADER_HEIGHT};
-  display: flex;
+const Wrapper = styled(PageContainer).attrs({ component: 'header' })`
   align-items: center;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  block-size: ${HEADER_HEIGHT};
+  display: flex;
   justify-content: space-between;
+  max-block-size: ${HEADER_HEIGHT};
+  position: relative;
+  width: 100%;
+  z-index: 10;
+
+  @media (min-width: ${TABLET_BREAKPOINT}) {
+    border-block-end: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
+  }
 `;
 
 export const Header = () => {
   return (
     <Wrapper>
-      <Container>
-        <LogoButton />
-        <UserMenu />
-      </Container>
+      <HeaderLeft />
+      <UserMenu />
     </Wrapper>
   );
 };

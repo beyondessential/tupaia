@@ -1,6 +1,1 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-export * from './Flexbox';
+export { FlexCenter, FlexColumn, FlexEnd, FlexSpaceBetween, FlexStart } from './Flexbox';

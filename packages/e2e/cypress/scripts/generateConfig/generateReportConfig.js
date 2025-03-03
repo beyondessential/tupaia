@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 /* eslint-disable no-template-curly-in-string */
 
 import { stringifyQuery, yup } from '@tupaia/utils';

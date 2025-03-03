@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
- */
 import { BarChartConfig, ChartConfigT, ChartReport } from '@tupaia/types';
 import { ADD_TO_ALL_KEY, parseChartConfig } from '../utils';
 import { CHART_COLOR_PALETTE } from '../constants';

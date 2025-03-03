@@ -1,9 +1,5 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { To, Link as RouterLink } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
@@ -12,6 +8,8 @@ import { getSurveyScreenNumber } from '../../utils';
 import { useSurveyRouting } from '../../useSurveyRouting';
 import { SideMenuButton } from './SideMenuButton';
 import { useSurveyForm } from '../../SurveyContext';
+import { StickyMobileHeader } from '../../../../layout';
+import { SurveyDisplayName } from '../SurveyDisplayName';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
@@ -23,14 +21,16 @@ const Drawer = styled(BaseDrawer).attrs({
   position: relative;
   height: 100%;
   width: 100%;
-  max-width: ${SIDE_MENU_WIDTH};
+
   .MuiPaper-root {
     width: 100%;
     position: absolute;
     border-right: none;
     height: 100%;
   }
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    max-width: ${SIDE_MENU_WIDTH};
     .MuiPaper-root {
       background-color: transparent;
     }
@@ -39,6 +39,10 @@ const Drawer = styled(BaseDrawer).attrs({
 
 const SurveyMenuContent = styled(List)`
   padding: 0 0.5rem;
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    padding: 0;
+    border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  }
 `;
 
 const SurveyMenuItem = styled(ListItem).attrs({
@@ -77,6 +81,20 @@ const SurveyMenuItem = styled(ListItem).attrs({
       overflow: hidden;
     }
   }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+    padding: 0.8rem;
+
+    ${({ $active }) =>
+      $active &&
+      css`
+        background-color: #f4f9ff;
+      `}
+    &:hover {
+      background-color: initial;
+    }
+  }
 `;
 
 const SurveyScreenTitle = styled.span`
@@ -96,6 +114,15 @@ const Header = styled.div`
   }
 `;
 
+const MobileHeader = styled(StickyMobileHeader)`
+  padding-inline-start: 1rem;
+  grid-template-columns: 1fr minmax(3rem, max-content);
+  grid-template-areas: '--title --trailing';
+  h2 {
+    text-align: left;
+  }
+`;
+
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
   const from = useFromLocation();
@@ -111,23 +138,24 @@ export const SurveySideMenu = () => {
     isResponseScreen,
     numberOfScreens,
   } = useSurveyForm();
-  if (isReviewScreen || isSuccessScreen || isResponseScreen) return null;
+
+  const { getScreenPath } = useSurveyRouting(numberOfScreens);
+
+  if ((isReviewScreen && !isMobile) || isSuccessScreen || isResponseScreen) {
+    return null;
+  }
+
   const onChangeScreen = () => {
     updateFormData(getValues());
     if (isMobile) toggleSideMenu();
   };
-  const getFormattedScreens = () => {
-    const screens = visibleScreens?.map(screen => {
-      const { surveyScreenComponents, id } = screen;
-      const { text } = surveyScreenComponents[0];
-      const surveyScreenNum = getSurveyScreenNumber(visibleScreens, screen);
-      return { id, text, screenNumber: surveyScreenNum };
-    });
-    return screens;
-  };
-  const screenMenuItems = getFormattedScreens();
 
-  const { getScreenPath } = useSurveyRouting(numberOfScreens);
+  const screenMenuItems = visibleScreens?.map(screen => {
+    const { surveyScreenComponents, id } = screen;
+    const { text } = surveyScreenComponents[0];
+    const surveyScreenNum = getSurveyScreenNumber(visibleScreens, screen);
+    return { id, text, screenNumber: surveyScreenNum };
+  });
 
   return (
     <>
@@ -137,6 +165,11 @@ export const SurveySideMenu = () => {
         onClose={toggleSideMenu}
         variant={isMobile ? 'temporary' : 'persistent'}
       >
+        {isMobile && (
+          <MobileHeader onClose={toggleSideMenu}>
+            <SurveyDisplayName />
+          </MobileHeader>
+        )}
         <Header>
           <SideMenuButton />
         </Header>

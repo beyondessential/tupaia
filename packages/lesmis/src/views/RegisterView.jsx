@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import React from 'react';
 import styled from 'styled-components';
 import MuiCard from '@material-ui/core/Card';
@@ -48,7 +43,7 @@ const StyledLocaleLink = styled(LocaleLink)`
 export const RegisterView = () => (
   <Container>
     <FormBackButton />
-    <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
+    <StyledImg src="/lesmis-login-logo.svg" alt="LESMIS logo" />
     <StyledCard>
       <RegisterForm />
     </StyledCard>

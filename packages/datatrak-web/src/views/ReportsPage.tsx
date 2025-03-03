@@ -1,14 +1,10 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
+import { Link, Paper, Typography } from '@material-ui/core';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Paper, Typography, Link } from '@material-ui/core';
-import { Button, PageContainer, PageTitleBar, ReportsIcon, Modal } from '../components';
+import { Button, Modal, PageContainer, PageTitleBar, ReportsIcon } from '../components';
 import { Reports } from '../features';
 import { useIsMobile } from '../utils';
-import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,10 +16,11 @@ const Wrapper = styled.div`
 const Container = styled(Paper).attrs({
   elevation: 0,
 })`
+  border-radius: 0.625rem;
   inline-size: 100%;
   max-inline-size: 38rem;
-  border-radius: 0.625rem;
-  padding: 1.81rem 3.12rem;
+  padding-block: 1.81rem;
+  padding-inline: 3.12rem;
 `;
 
 const InlineLink = styled(Link)`
@@ -38,7 +35,7 @@ const MobileContainer = styled(Paper).attrs({
   elevation: 0,
 })`
   text-align: center;
-  max-width: 19rem;
+  max-inline-size: 19rem;
   padding: 0.5rem 0 0;
 
   h1.MuiTypography-root {

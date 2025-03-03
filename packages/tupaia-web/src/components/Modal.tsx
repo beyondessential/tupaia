@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import React, { ReactNode } from 'react';
 import { Dialog, Paper as MuiPaper, useTheme, useMediaQuery, IconButton } from '@material-ui/core';
 import MuiCloseIcon from '@material-ui/icons/Close';

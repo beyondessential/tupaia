@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { dataElements } from '@tupaia/admin-panel';
 import {
   DataSourceConfigView,

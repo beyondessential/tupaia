@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
@@ -41,9 +36,16 @@ const StyledField = styled(TextField)<TextFieldProps>`
     font-size: 1.2em;
   }
 
-  &&&& {
-    .MuiInputBase-input::placeholder {
-      color: ${({ theme }) => theme.palette.text.tertiary};
+  .MuiInputAdornment-positionStart {
+    margin-right: 0.2rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
+    .MuiInputBase-root {
+      border-radius: 6.25rem;
     }
   }
 `;

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import {
   ValidationError,
   respondWithDownload,
@@ -10,9 +5,8 @@ import {
   getUniqueFileNameParts,
   getDeDuplicatedFileName,
 } from '@tupaia/utils';
-import { S3, S3Client } from '@tupaia/server-utils';
+import { S3, S3Client, getTempDirectory } from '@tupaia/server-utils';
 import { RouteHandler } from './RouteHandler';
-import { getTempDirectory } from '../utilities';
 import { zipMultipleFiles } from './utilities';
 
 export class DownloadFiles extends RouteHandler {

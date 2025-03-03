@@ -1,12 +1,6 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
+import { ReactNode } from 'react';
 
-import React, { ReactNode } from 'react';
-import { FormLabelProps } from '@material-ui/core';
-
-export type ListItemType = Record<string, unknown> & {
+export interface ListItemType extends Record<string, unknown> {
   children?: ListItemType[];
   content: string | ReactNode;
   value: string;
@@ -15,4 +9,4 @@ export type ListItemType = Record<string, unknown> & {
   tooltip?: string;
   button?: boolean;
   disabled?: boolean;
-};
+}

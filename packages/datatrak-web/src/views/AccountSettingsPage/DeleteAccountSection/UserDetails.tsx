@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -69,10 +64,10 @@ export const UserDetails = () => {
       </div>
       <UserRewards>
         <UserRewardsItem>
-          <Pig /> {userRewards?.pigs}&nbsp;pigs
+          <Coconut /> {userRewards?.coconuts}&nbsp;coconuts
         </UserRewardsItem>
         <UserRewardsItem>
-          <Coconut /> {userRewards?.coconuts}&nbsp;coconuts
+          <Pig /> {userRewards?.pigs}&nbsp;pigs
         </UserRewardsItem>
       </UserRewards>
     </UserContent>

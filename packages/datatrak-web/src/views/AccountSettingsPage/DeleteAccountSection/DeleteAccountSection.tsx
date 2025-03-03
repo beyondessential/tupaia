@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState } from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
@@ -31,7 +26,7 @@ export const DeleteAccountSection = () => {
     <>
       <ConfirmDeleteModal open={confirmationDialogOpen} onClose={toggleConfirmationDialog} />
       <AccountSettingsSection
-        title="Delete account"
+        heading="Delete account"
         description={
           <Typography color="textSecondary">
             By requesting your account to be deleted, you will still be able to log in. You will be

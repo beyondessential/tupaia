@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
- */
 import React from 'react';
 import MuiCard from '@material-ui/core/Card';
 import styled from 'styled-components';
@@ -47,7 +42,7 @@ export const LoginView = () => {
   return (
     <Container>
       <FormBackButton />
-      <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
+      <StyledImg src="/lesmis-login-logo.svg" alt="LESMIS logo" />
       <StyledCard>
         <LoginForm />
       </StyledCard>

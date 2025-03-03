@@ -1,21 +1,15 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Coconut, Pig } from '../../components';
 import { UserRewards } from '../../types';
-import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
-  padding: 1.1rem 2rem;
-  border-bottom: 1px solid ${props => props.theme.palette.divider};
-  ${DESKTOP_MEDIA_QUERY} {
+  padding: 0.6rem 2rem;
+  border-bottom: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 1.5rem 2.2rem;
   }
 `;
@@ -27,7 +21,10 @@ const UserRewardItem = styled.div`
     margin-left: 2.8rem;
   }
   svg {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      font-size: 1.8rem;
+    }
   }
 `;
 
@@ -38,16 +35,57 @@ const UserRewardCount = styled(Typography)`
   line-height: 1.25rem;
 `;
 
-export const UserRewardsSection = ({ pigs, coconuts }: UserRewards) => {
+const AnimatedPig = styled(Pig)`
+  animation-name: --wiggle;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  @keyframes --wiggle {
+    // do the wiggle animation within 15% and the rest will be the delay between the wiggles
+    0% {
+      transform: rotate(0deg);
+    }
+    2% {
+      transform: rotate(10deg);
+    }
+    4% {
+      transform: rotate(-10deg);
+    }
+    6% {
+      transform: rotate(0deg);
+    }
+    9% {
+      transform: rotate(10deg);
+    }
+    12% {
+      transform: rotate(-10deg);
+    }
+    15% {
+      transform: rotate(0deg);
+    }
+  }
+
+  // stop the animation on desktop
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    animation: none;
+  }
+`;
+
+export const UserRewardsSection = ({ pigs: pigCount, coconuts: coconutCount }: UserRewards) => {
+  const pigUnit = pigCount === 1 ? 'pig' : 'pigs';
+  const coconutUnit = coconutCount === 1 ? 'coconut' : 'coconuts';
   return (
     <Wrapper>
       <UserRewardItem>
-        <Pig />
-        <UserRewardCount>{pigs}&nbsp;pigs</UserRewardCount>
+        <Coconut />
+        <UserRewardCount>
+          {coconutCount}&nbsp;{coconutUnit}
+        </UserRewardCount>
       </UserRewardItem>
       <UserRewardItem>
-        <Coconut />
-        <UserRewardCount>{coconuts}&nbsp;coconuts</UserRewardCount>
+        <AnimatedPig />
+        <UserRewardCount>
+          {pigCount}&nbsp;{pigUnit}
+        </UserRewardCount>
       </UserRewardItem>
     </Wrapper>
   );

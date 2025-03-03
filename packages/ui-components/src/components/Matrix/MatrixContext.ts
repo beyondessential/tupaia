@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { Dispatch, ReactNode, createContext } from 'react';
 import { MatrixConfig, MatrixReportRow } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';

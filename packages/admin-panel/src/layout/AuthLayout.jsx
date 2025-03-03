@@ -1,11 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React from 'react';
 import { Outlet } from 'react-router';
+import styled from 'styled-components';
+
 import { SimplePageLayout } from './SimplePageLayout';
 
 export const CenteredPageContent = styled.section`
@@ -27,11 +24,11 @@ export const CenteredPageContent = styled.section`
   }
   .MuiFormLabel-asterisk,
   .MuiFormLabel-root.MuiInputLabel-root {
-    color: ${({ theme }) => theme.palette.text.tertiary};
+    color: ${({ theme }) => theme.palette.text.hint};
     font-weight: normal;
   }
   .MuiInput-underline:before {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.text.tertiary};
+    border-bottom: 1px solid ${({ theme }) => theme.palette.text.hint};
   }
   .MuiFormControl-root + a {
     color: ${({ theme }) => theme.palette.text.secondary};

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import download from 'downloadjs';
 import JSZip from 'jszip';
 import { useMutation } from '@tanstack/react-query';

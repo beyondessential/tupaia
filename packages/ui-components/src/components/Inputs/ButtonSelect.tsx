@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React, { ChangeEvent, useCallback } from 'react';
 import MuiMenu from '@material-ui/icons/Menu';
 import MuiChevronRight from '@material-ui/icons/ChevronRight';

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import { blue, purple, red, cyan, green, orange, brown, grey } from '@material-ui/core/colors';
 
 export const BOX_SHADOW = '0 1px 4px 0 rgba(0, 0, 0, 0.3)';
