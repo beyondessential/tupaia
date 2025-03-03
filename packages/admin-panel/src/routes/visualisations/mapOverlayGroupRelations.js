@@ -61,6 +61,7 @@ export const FIELDS = {
       optionValueKey: 'mapOverlayGroups.id',
       sourceKey: 'child_id',
       visibilityCriteria: { child_type: 'mapOverlayGroup' },
+      accessor: record => record['map_overlay_group.code'],
     },
   },
   SORT_ORDER: {
