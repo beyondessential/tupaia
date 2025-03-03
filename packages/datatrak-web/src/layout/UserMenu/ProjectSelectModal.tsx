@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Paper, Typography } from '@material-ui/core';
+
 import { IconButton, ProjectSelectForm } from '@tupaia/ui-components';
+
 import { RequestProjectAccess } from '../../features';
 import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
 import { Modal } from '../../components/Modal';
