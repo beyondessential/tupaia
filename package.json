@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git"
   },
-  "license": "GPL-3.0-or-later",
+  "license": "SEE LICENSE IN LICENSE",
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "workspaces": {
     "packages": [

@@ -1,30 +1,37 @@
-import React, { ComponentPropsWithoutRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-
 import { Select as BaseSelect } from '@tupaia/ui-components';
-
-import { FullScreenSelect } from '../../components/FullScreenSelect';
-import { useIsMobile } from '../../utils';
-import { useUserCountries } from './useUserCountries';
+import { Country } from '@tupaia/types';
+import { Entity } from '../../types';
 
 const Select = styled(BaseSelect)`
-  inline-size: 10rem;
+  width: 10rem;
 
   &.MuiFormControl-root {
-    margin-block-end: 0;
+    margin-bottom: 0;
   }
   .MuiInputBase-input.MuiSelect-selectMenu {
     font-size: 0.875rem;
-    padding-block: 0.5rem;
-    padding-inline: 1rem 2.5rem;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
   }
   .MuiSvgIcon-root {
-    inset-inline-end: 0.5rem;
+    right: 0.5rem;
   }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: ${({ theme }) => theme.palette.grey['400']};
     box-shadow: none;
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+  }
+`;
+const Pin = styled.img.attrs({
+  src: '/tupaia-pin.svg',
+  ['aria-hidden']: true, // this pin is not of any use to the screen reader, so hide from the screen reader
+})`
+  width: 1rem;
+  height: auto;
+  margin-right: 0.5rem;
 `;
 
 export const CountrySelectWrapper = styled.div`
@@ -32,57 +39,32 @@ export const CountrySelectWrapper = styled.div`
   align-items: center;
 `;
 
-const Picture = styled.picture`
-  aspect-ratio: 1;
-  block-size: 1.5rem;
-  object-fit: contain;
-  object-position: center;
-`;
-const Img = styled.img`
-  block-size: 1.5rem;
-  inline-size: auto;
-`;
-const Pin = (props: ComponentPropsWithoutRef<typeof Picture>) => (
-  <Picture aria-hidden {...props}>
-    <source srcSet="/tupaia-pin.svg" />
-    <Img aria-hidden src="/tupaia-pin.svg" width={24} height={24} />
-  </Picture>
-);
+interface CountrySelectorProps {
+  countries: Entity[];
+  selectedCountry?: Country | null;
+  onChangeCountry: (country: Entity | null) => void;
+}
 
-const StyledPin = styled(Pin)`
-  margin-inline-end: 0.5rem;
-`;
-
-export const CountrySelector = () => {
-  const { countries, selectedCountry, updateSelectedCountry } = useUserCountries();
-
-  const options = countries.map(country => ({
-    value: country.code,
-    label: country.name,
-  }));
-
-  const commonProps = {
-    onChange: updateSelectedCountry,
-    options,
-    value: selectedCountry?.code,
+export const CountrySelector = ({
+  countries,
+  selectedCountry,
+  onChangeCountry,
+}: CountrySelectorProps) => {
+  const updateSelectedCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChangeCountry(countries.find(country => country.code === e.target.value) || null);
   };
-
   return (
     <CountrySelectWrapper>
-      {useIsMobile() ? (
-        <FullScreenSelect {...commonProps} icon={<Pin />} label="Select country" />
-      ) : (
-        <>
-          <StyledPin />
-          <Select
-            {...commonProps}
-            placeholder="Select a country"
-            SelectProps={{
-              'aria-label': 'Select a country',
-            }}
-          />
-        </>
-      )}
+      <Pin />
+      <Select
+        options={countries?.map(country => ({ value: country.code, label: country.name })) || []}
+        value={selectedCountry?.code}
+        onChange={updateSelectedCountry}
+        placeholder="Select a country"
+        SelectProps={{
+          'aria-label': 'Select a country',
+        }}
+      />
     </CountrySelectWrapper>
   );
 };

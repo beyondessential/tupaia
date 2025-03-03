@@ -6,7 +6,6 @@ export { useSurvey } from './useSurvey';
 export { useSurveyResponse } from './useSurveyResponse';
 export { useSurveyResponses, useCurrentUserSurveyResponses } from './useSurveyResponses';
 export { useProjectEntities } from './useProjectEntities';
-export type { UseProjectEntitiesQueryOptions } from './useProjectEntities';
 export { useEntityById, useEntityByCode } from './useEntity';
 export { useAutocompleteOptions } from './useAutocompleteOptions';
 export { useProject } from './useProject';

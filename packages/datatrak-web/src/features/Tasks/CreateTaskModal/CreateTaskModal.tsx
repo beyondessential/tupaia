@@ -124,9 +124,12 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     editUser({ projectId: null });
   };
 
-  const { selectedCountry, isLoading: isLoadingCountries } = useUserCountries({
-    onError: handleCountriesError,
-  });
+  const {
+    countries,
+    selectedCountry,
+    updateSelectedCountry,
+    isLoading: isLoadingCountries,
+  } = useUserCountries(handleCountriesError);
   const { isLoading: isLoadingUser, isFetching: isFetchingUser } = useUser();
 
   const isLoadingData = isLoadingCountries || isLoadingUser || isFetchingUser;
@@ -190,7 +193,11 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
           <FormProvider {...formContext}>
             <TaskForm onSubmit={handleSubmit(createTask)}>
               <CountrySelectorWrapper>
-                <CountrySelector />
+                <CountrySelector
+                  countries={countries}
+                  selectedCountry={selectedCountry}
+                  onChangeCountry={updateSelectedCountry}
+                />
               </CountrySelectorWrapper>
               <Controller
                 name="survey_code"
@@ -201,6 +208,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                     <GroupedSurveyList
                       selectedSurvey={value}
                       setSelectedSurvey={onChange}
+                      selectedCountry={selectedCountry}
                       label="Select survey"
                       labelProps={{
                         required: true,

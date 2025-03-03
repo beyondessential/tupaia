@@ -7,9 +7,9 @@ export const useProjectSurveys = (
   projectId?: Project['id'],
   selectedCountryCode?: Entity['code'],
 ) => {
-  return useQuery<DatatrakWebSurveyRequest.ResBody[]>(
+  return useQuery(
     ['surveys', projectId, selectedCountryCode],
-    () =>
+    (): Promise<DatatrakWebSurveyRequest.ResBody[]> =>
       get('surveys', {
         params: {
           fields: ['name', 'code', 'id', 'survey_group.name'],

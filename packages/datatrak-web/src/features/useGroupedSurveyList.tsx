@@ -1,11 +1,8 @@
-import { FormLabelProps } from '@material-ui/core';
 import React, { ReactNode, useEffect } from 'react';
-
+import { FormLabelProps } from '@material-ui/core';
 import { useCurrentUserContext, useProjectSurveys } from '../api';
-import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
-import { innerText } from '../utils';
-import { useUserCountries } from './CountrySelector/useUserCountries';
+import { SurveyIcon, SurveyFolderIcon } from '../components';
 
 export type ListItemType = Record<string, unknown> & {
   children?: ListItemType[];
@@ -22,24 +19,13 @@ export type ListItemType = Record<string, unknown> & {
 };
 
 const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
-  const aText = innerText(a.content).trim();
-  const bText = innerText(b.content).trim();
-  return aText.localeCompare(bText, 'en', {
+  return (a.content as string).trim()?.localeCompare((b.content as string).trim(), 'en', {
     numeric: true,
   });
 };
 
-export interface UseGroupedSurveyListParams {
-  selectedSurvey: Survey['code'] | null;
-  setSelectedSurvey: React.Dispatch<React.SetStateAction<Survey['code'] | null>>;
-}
-
-export const useGroupedSurveyList = ({
-  selectedSurvey,
-  setSelectedSurvey,
-}: UseGroupedSurveyListParams) => {
+export const useGroupedSurveyList = ({ setSelectedSurvey, selectedSurvey, selectedCountry }) => {
   const user = useCurrentUserContext();
-  const { selectedCountry } = useUserCountries();
   const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.code);
   const groupedSurveys =
     surveys
@@ -53,19 +39,20 @@ export const useGroupedSurveyList = ({
         };
         // if there is no surveyGroupName, add the survey to the list as a top level item
         if (!surveyGroupName) {
-          acc.push(formattedSurvey);
-          return acc;
+          return [...acc, formattedSurvey];
         }
         const group = acc.find(({ content }) => content === surveyGroupName);
         // if the surveyGroupName doesn't exist in the list, add it as a top level item
         if (!group) {
-          acc.push({
-            content: surveyGroupName,
-            icon: <SurveyFolderIcon />,
-            value: surveyGroupName,
-            children: [formattedSurvey],
-          });
-          return acc;
+          return [
+            ...acc,
+            {
+              content: surveyGroupName,
+              icon: <SurveyFolderIcon />,
+              value: surveyGroupName,
+              children: [formattedSurvey],
+            },
+          ];
         }
         // if the surveyGroupName exists in the list, add the survey to the children
         return acc.map(item => {

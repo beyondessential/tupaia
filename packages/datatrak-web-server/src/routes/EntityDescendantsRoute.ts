@@ -39,9 +39,9 @@ const getRecentEntities = (
   }
 
   const entityTypes = type.split(',');
-  const recentEntitiesOfTypes = entityTypes.flatMap(
-    entityType => userRecentEntities[countryCode][entityType] ?? [],
-  );
+  const recentEntitiesOfTypes = entityTypes
+    .map(entityType => userRecentEntities[countryCode][entityType] ?? [])
+    .flat();
 
   return recentEntitiesOfTypes;
 };
@@ -122,7 +122,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
                 isRecent: true,
               };
             })
-            .filter(Boolean),
+            .filter(e => e),
           ...entities,
         ];
 

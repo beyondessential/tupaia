@@ -1,16 +1,14 @@
-import { DialogActions, Paper, Typography } from '@material-ui/core';
 import React from 'react';
-import styled from 'styled-components';
-
-import { SpinningLoader } from '@tupaia/ui-components';
-
+import { DialogActions, Paper, Typography } from '@material-ui/core';
+import { GroupedSurveyList } from '../../features';
 import { Button } from '../../components';
-import { CountrySelector, GroupedSurveyList } from '../../features';
+import styled from 'styled-components';
+import { SpinningLoader } from '@tupaia/ui-components';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
-  inline-size: 48rem;
+  width: 48rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -24,8 +22,8 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  block-size: 100%;
-  min-block-size: 20rem;
+  height: 100%;
+  min-height: 20rem;
   flex: 1;
 `;
 
@@ -40,7 +38,7 @@ const HeaderWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  margin-block-end: 1rem;
+  margin-bottom: 1rem;
 `;
 
 const Subheader = styled(Typography).attrs({
@@ -50,14 +48,16 @@ const Subheader = styled(Typography).attrs({
   font-size: 0.875rem;
   line-height: 1.125;
   font-weight: 400;
-  margin-block-start: 0.67rem;
+  margin-top: 0.67rem;
 `;
 
 export const DesktopTemplate = ({
+  selectedCountry,
   selectedSurvey,
   setSelectedSurvey,
   showLoader,
   SubmitButton,
+  CountrySelector,
 }) => {
   return (
     <Container>
@@ -66,12 +66,16 @@ export const DesktopTemplate = ({
           <Typography variant="h1">Select survey</Typography>
           <Subheader>Select a survey from the list below</Subheader>
         </div>
-        <CountrySelector />
+        {CountrySelector}
       </HeaderWrapper>
       {showLoader ? (
         <Loader />
       ) : (
-        <GroupedSurveyList setSelectedSurvey={setSelectedSurvey} selectedSurvey={selectedSurvey} />
+        <GroupedSurveyList
+          setSelectedSurvey={setSelectedSurvey}
+          selectedSurvey={selectedSurvey}
+          selectedCountry={selectedCountry}
+        />
       )}
       <DialogActions>
         <Button to="/" variant="outlined">
