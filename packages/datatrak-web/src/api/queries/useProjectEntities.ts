@@ -1,12 +1,14 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query';
-import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
+
+import { DatatrakWebEntityDescendantsRequest, Project } from '@tupaia/types';
+
 import { get } from '../api';
 
 export interface UseProjectEntitiesQueryOptions
   extends UseQueryOptions<DatatrakWebEntityDescendantsRequest.ResBody> {}
 
 export const useProjectEntities = (
-  projectCode?: string,
+  projectCode?: Project['code'],
   params?: DatatrakWebEntityDescendantsRequest.ReqBody,
   useQueryOptions?: UseProjectEntitiesQueryOptions,
 ) => {
