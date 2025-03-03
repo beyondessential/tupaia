@@ -61,6 +61,13 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
     )
   ).every(access => access);
 
+  if (!hasPermissionGroupAccess) {
+    return {
+      result: false,
+      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to all of its countries (${mapOverlay.country_codes})`,
+    };
+  }
+
   // Check we have permission group access to all countries the mapOverlay is in
   const hasVizBuilderAccess = (
     await Promise.all(
@@ -68,12 +75,14 @@ export const hasMapOverlayEditPermissions = async (accessPolicy, models, mapOver
     )
   ).every(access => access);
 
-  return hasPermissionGroupAccess && hasVizBuilderAccess
-    ? { result: true }
-    : {
-        result: false,
-        errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have permission group access to all of its countries (${mapOverlay.country_codes})`,
-      };
+  if (!hasVizBuilderAccess) {
+    return {
+      result: false,
+      errorMessage: `Cannot edit map overlay "${mapOverlayId}" as you do not have VizBuilder access to all of its countries (${mapOverlay.country_codes})`,
+    };
+  }
+
+  return { result: true };
 };
 
 export const assertMapOverlaysGetPermissions = async (accessPolicy, models, mapOverlayId) => {

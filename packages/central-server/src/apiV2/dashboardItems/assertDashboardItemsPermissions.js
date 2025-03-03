@@ -48,7 +48,7 @@ export const hasDashboardItemEditPermissions = async (accessPolicy, models, dash
   // If the user doesn't have viz builder access to the entity code of the dashboards,
   // they can't edit the dashboard item
   if (!vizBuilderUserPermissionChecks.every(result => result)) {
-    return false;
+    throw new Error('Requires Viz builder access for all the dashboards this dashboard item is in');
   }
 
   // To edit a dashboard item, the user has to have access to the relation between the
