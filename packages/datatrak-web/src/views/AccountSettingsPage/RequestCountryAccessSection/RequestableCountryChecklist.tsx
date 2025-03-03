@@ -1,5 +1,5 @@
 import React, { FieldsetHTMLAttributes } from 'react';
-import { useFormContext, UseFormMethods } from 'react-hook-form';
+import { UseFormMethods, useFormContext } from 'react-hook-form';
 import styled, { css } from 'styled-components';
 
 import { Entity } from '@tupaia/types';
