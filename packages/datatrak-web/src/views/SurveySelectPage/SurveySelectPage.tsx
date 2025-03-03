@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useCurrentUserContext, useProjectSurveys } from '../../api';
 import { useEditUser } from '../../api/mutations';
 import { Button } from '../../components';
-import { useUserCountries } from '../../features';
+import { CountrySelector, useUserCountries } from '../../features';
 import { Survey } from '../../types';
 import { useIsMobile } from '../../utils';
 import { DesktopTemplate } from './DesktopTemplate';
@@ -37,7 +37,12 @@ export const SurveySelectPage = () => {
   const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
   const [urlSearchParams] = useSearchParams();
   const urlProjectId = urlSearchParams.get('projectId');
-  const { selectedCountry, isLoading: isLoadingCountries } = useUserCountries();
+  const {
+    countries,
+    selectedCountry,
+    updateSelectedCountry,
+    isLoading: isLoadingCountries,
+  } = useUserCountries();
   const handleSelectSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
@@ -64,11 +69,21 @@ export const SurveySelectPage = () => {
     isLoading ||
     isLoadingCountries ||
     isUpdatingUser ||
-    (urlProjectId && urlProjectId !== user?.projectId); // in this case the user will be updating and all surveys etc will be reloaded, so showing a loader when this is the case means a more seamless experience
+    (urlProjectId !== null && urlProjectId !== user?.projectId); // in this case the user will be updating and all surveys etc will be reloaded, so showing a loader when this is the case means a more seamless experience
+
+  const countrySelector = (
+    <CountrySelector
+      countries={countries}
+      onChange={updateSelectedCountry}
+      selectedCountry={selectedCountry}
+    />
+  );
 
   if (useIsMobile()) {
     return (
       <MobileTemplate
+        countrySelector={countrySelector}
+        selectedCountry={selectedCountry}
         selectedSurvey={selectedSurvey}
         setSelectedSurvey={setSelectedSurvey}
         handleSelectSurvey={handleSelectSurvey}
@@ -78,10 +93,12 @@ export const SurveySelectPage = () => {
   }
   return (
     <DesktopTemplate
+      selectedCountry={selectedCountry}
+      countrySelector={countrySelector}
       selectedSurvey={selectedSurvey}
       setSelectedSurvey={setSelectedSurvey}
       showLoader={showLoader}
-      SubmitButton={
+      submitButton={
         <Button
           onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
           disabled={!selectedSurvey || isUpdatingUser}

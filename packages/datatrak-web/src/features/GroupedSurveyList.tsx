@@ -1,5 +1,5 @@
 import { FormHelperText, FormLabelProps } from '@material-ui/core';
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
 import { SelectList } from '@tupaia/ui-components';
@@ -17,7 +17,9 @@ const ListWrapper = styled.div`
   }
 `;
 
-interface GroupedSurveyListProps extends UseGroupedSurveyListParams {
+interface GroupedSurveyListProps
+  extends UseGroupedSurveyListParams,
+    ComponentPropsWithoutRef<typeof ListWrapper> {
   label?: string;
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
@@ -26,18 +28,21 @@ interface GroupedSurveyListProps extends UseGroupedSurveyListParams {
 }
 
 export const GroupedSurveyList = ({
+  selectedCountry,
   setSelectedSurvey,
   selectedSurvey,
   label,
   labelProps,
   error,
+  ...props
 }: GroupedSurveyListProps) => {
   const { groupedSurveys, onSelectSurvey } = useGroupedSurveyList({
+    selectedCountry,
     setSelectedSurvey,
     selectedSurvey,
   });
   return (
-    <ListWrapper>
+    <ListWrapper {...props}>
       <SelectList
         items={groupedSurveys}
         onSelect={onSelectSurvey}

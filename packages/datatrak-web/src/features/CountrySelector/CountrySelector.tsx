@@ -1,11 +1,11 @@
-import React, { ComponentPropsWithoutRef } from 'react';
+import React, { ChangeEventHandler, ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
 import { Select as BaseSelect } from '@tupaia/ui-components';
 
 import { FullScreenSelect } from '../../components/FullScreenSelect';
 import { useIsMobile } from '../../utils';
-import { useUserCountries } from './useUserCountries';
+import type { UserCountriesType } from './useUserCountries';
 
 const Select = styled(BaseSelect)`
   inline-size: 10rem;
@@ -53,16 +53,20 @@ const StyledPin = styled(Pin)`
   margin-inline-end: 0.5rem;
 `;
 
-export const CountrySelector = () => {
-  const { countries, selectedCountry, updateSelectedCountry } = useUserCountries();
+export interface CountrySelectorProps
+  extends Pick<UserCountriesType, 'countries' | 'selectedCountry'>,
+    Omit<ComponentPropsWithoutRef<typeof CountrySelectWrapper>, 'onChange'> {
+  onChange: ChangeEventHandler<HTMLSelectElement>;
+}
 
+export const CountrySelector = ({ countries, selectedCountry, onChange }: CountrySelectorProps) => {
   const options = countries.map(country => ({
     value: country.code,
     label: country.name,
   }));
 
   const commonProps = {
-    onChange: updateSelectedCountry,
+    onChange,
     options,
     value: selectedCountry?.code,
   };

@@ -5,9 +5,9 @@ import { useCurrentUserContext, useProjectSurveys } from '../api';
 import { SurveyFolderIcon, SurveyIcon } from '../components';
 import { Survey } from '../types';
 import { innerText } from '../utils';
-import { useUserCountries } from './CountrySelector/useUserCountries';
+import { UserCountriesType } from './CountrySelector/useUserCountries';
 
-export type ListItemType = Record<string, unknown> & {
+export interface ListItemType extends Record<string, unknown> {
   children?: ListItemType[];
   content: string | ReactNode;
   value: string;
@@ -19,7 +19,7 @@ export type ListItemType = Record<string, unknown> & {
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
-};
+}
 
 const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
   const aText = innerText(a.content).trim();
@@ -30,16 +30,17 @@ const alphanumericCompare = (a: ListItemType, b: ListItemType) => {
 };
 
 export interface UseGroupedSurveyListParams {
+  selectedCountry: UserCountriesType['selectedCountry'];
   selectedSurvey: Survey['code'] | null;
   setSelectedSurvey: React.Dispatch<React.SetStateAction<Survey['code'] | null>>;
 }
 
 export const useGroupedSurveyList = ({
+  selectedCountry,
   selectedSurvey,
   setSelectedSurvey,
 }: UseGroupedSurveyListParams) => {
   const user = useCurrentUserContext();
-  const { selectedCountry } = useUserCountries();
   const { data: surveys } = useProjectSurveys(user?.projectId, selectedCountry?.code);
   const groupedSurveys =
     surveys

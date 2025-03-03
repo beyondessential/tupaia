@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
@@ -6,8 +6,12 @@ import { SpinningLoader } from '@tupaia/ui-components';
 
 import { PageContainer } from '../../components';
 import { ROUTES } from '../../constants';
-import { MobileSelectList, useGroupedSurveyList, useUserCountries } from '../../features';
-import { ListItemType } from '../../features/useGroupedSurveyList';
+import { MobileSelectList, useGroupedSurveyList } from '../../features';
+import {
+  CountrySelector,
+  CountrySelectorProps,
+} from '../../features/CountrySelector/CountrySelector';
+import { ListItemType, UseGroupedSurveyListParams } from '../../features/useGroupedSurveyList';
 import { StickyMobileHeader } from '../../layout';
 
 const MobileContainer = styled.div`
@@ -42,14 +46,23 @@ const Loader = () => (
   </LoadingContainer>
 );
 
+interface MobileSurveySelectPageProps extends UseGroupedSurveyListParams {
+  countrySelector: ReactElement<CountrySelectorProps, typeof CountrySelector>;
+  showLoader: boolean;
+  /* TODO: (country: Entity | null, surveyId: unknown) => void */
+  handleSelectSurvey: (country: unknown, surveyId: unknown) => void;
+}
+
 export const MobileTemplate = ({
+  countrySelector,
+  selectedCountry,
   setSelectedSurvey,
   showLoader,
   selectedSurvey,
   handleSelectSurvey,
-}) => {
-  const { selectedCountry } = useUserCountries();
+}: MobileSurveySelectPageProps) => {
   const { groupedSurveys } = useGroupedSurveyList({
+    selectedCountry,
     setSelectedSurvey,
     selectedSurvey,
   });
@@ -71,7 +84,11 @@ export const MobileTemplate = ({
       <StickyMobileHeader onBack={onClose} onClose={onClose}>
         Select a survey
       </StickyMobileHeader>
-      <MobileSelectList items={groupedSurveys} onSelect={onNavigateToSurvey} />
+      <MobileSelectList
+        countrySelector={countrySelector}
+        items={groupedSurveys}
+        onSelect={onNavigateToSurvey}
+      />
     </MobileContainer>
   );
 };
