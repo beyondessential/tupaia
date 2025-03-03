@@ -462,5 +462,5 @@ function processValidationCriteriaValue(value) {
   if (valueTranslations[value] !== undefined) {
     return valueTranslations[value];
   }
-  return parseFloat(value);
+  return Number.parseFloat(value);
 }

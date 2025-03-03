@@ -7,7 +7,7 @@ export const sanitizeAnalyticsTableValue = (value: string, type: string) => {
     case 'Binary':
     case 'Checkbox':
     case 'Number': {
-      const sanitizedValue = parseFloat(value);
+      const sanitizedValue = Number.parseFloat(value);
       return Number.isNaN(sanitizedValue) ? '' : sanitizedValue;
     }
     default:

@@ -16,17 +16,17 @@ export const VALUE_TYPES = {
 const currency = value => numeral(value).format('$0.00a');
 
 const fraction = (value, { total }) => {
-  if (isNaN(total)) return 'No data';
+  if (Number.isNaN(total)) return 'No data';
   return `${String(value)}/${String(total)}`;
 };
 
 const fractionAndPercentage = (value, { numerator, denominator }) => {
-  if (isNaN(value)) return value;
+  if (Number.isNaN(value)) return value;
   return `${numerator}/${denominator} = ${percentage(value)}`;
 };
 
 const numberAndPercentage = (value, { numerator, denominator }) => {
-  if (isNaN(value)) return value;
+  if (Number.isNaN(value)) return value;
   const percentage = (numerator / denominator) * 100;
   return `${value} (${percentage === 0 ? 0 : percentage.toFixed(1)}%)`;
 };
@@ -41,7 +41,7 @@ const text = value => String(value);
 const boolean = value => value > 0;
 
 const percentage = value => {
-  if (isNaN(value)) {
+  if (Number.isNaN(value)) {
     return value;
   }
 

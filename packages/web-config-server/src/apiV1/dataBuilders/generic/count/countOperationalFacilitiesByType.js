@@ -54,12 +54,12 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
       if (isMultipleCountries) {
         return {
           type: pluraliseFacilityType(translateCategoryCodeToFacilityType(facility.category_code)),
-          level: parseInt(facility.category_code, 10),
+          level: Number.parseInt(facility.category_code, 10),
         };
       }
       return {
         type: pluraliseFacilityType(facility.type_name),
-        level: parseFloat(facility.type),
+        level: Number.parseFloat(facility.type),
       };
     };
     const facilityTypeAndLevelByCode = {};

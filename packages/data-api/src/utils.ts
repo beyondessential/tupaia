@@ -1,7 +1,7 @@
 export const sanitizeMetadataValue = (value: string, type: string) => {
   switch (type) {
     case 'Number': {
-      const sanitizedValue = parseFloat(value);
+      const sanitizedValue = Number.parseFloat(value);
       return Number.isNaN(sanitizedValue) ? '' : sanitizedValue;
     }
     case 'Binary':
@@ -22,7 +22,7 @@ export const sanitizeAnalyticsTableValue = (value: string, type: string) => {
     case 'Checkbox':
     case 'Arithmetic':
     case 'Number': {
-      const sanitizedValue = parseFloat(value);
+      const sanitizedValue = Number.parseFloat(value);
       return Number.isNaN(sanitizedValue) ? '' : sanitizedValue;
     }
     default:

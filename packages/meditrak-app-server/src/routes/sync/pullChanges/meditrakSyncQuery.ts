@@ -52,9 +52,9 @@ export const extractSinceValue = (req: Request) => {
 
   if (typeof since === 'number') return since;
 
-  const parsedSince = parseFloat(since as string);
+  const parsedSince = Number.parseFloat(since as string);
 
-  if (isNaN(parsedSince)) {
+  if (Number.isNaN(parsedSince)) {
     throw new ValidationError("The 'since' parameter must be a number.");
   }
 

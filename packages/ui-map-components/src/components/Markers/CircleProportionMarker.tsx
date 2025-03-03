@@ -15,7 +15,7 @@ export const CircleProportionMarker = React.memo(
     if ((coordinates as number[])?.length !== 2) return null;
 
     const AREA_MULTIPLIER = 100; // just tuned by hand
-    const numberValue = parseFloat(String(radius)) || 0;
+    const numberValue = Number.parseFloat(String(radius)) || 0;
     const area = Math.max(numberValue, 1) * AREA_MULTIPLIER;
 
     const displayRadius = Math.sqrt(area / Math.PI);

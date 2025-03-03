@@ -381,7 +381,7 @@ export const calculateRadiusScaleFactor = (measureData: MeasureData[]) => {
   // (this needs to happen here instead of inside the circle marker component
   // because it needs to operate on the dataset level, not the datapoint level)
   const maxRadius = measureData
-    .map(d => parseInt(d.radius as string, 10) || 1)
+    .map(d => Number.parseInt(d.radius as string, 10) || 1)
     .reduce((state, current) => Math.max(state, current), 0);
   return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
 };
@@ -389,5 +389,5 @@ export const calculateRadiusScaleFactor = (measureData: MeasureData[]) => {
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).
 export function flattenNumericalMeasureData(measureData: MeasureData[], key: string) {
-  return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
+  return measureData.map(v => Number.parseFloat(v[key])).filter(x => !Number.isNaN(x));
 }

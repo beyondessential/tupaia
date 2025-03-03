@@ -75,8 +75,8 @@ export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapP
   // round coordinates to 4 decimal places before setting them - any less and the coordinates are not very accurate
   const onUpdateCoordinates = ({ lat, lng }: LatLngLiteral) => {
     setCoordinates({
-      lat: parseFloat(lat.toFixed(4)),
-      lng: parseFloat(lng.toFixed(4)),
+      lat: Number.parseFloat(lat.toFixed(4)),
+      lng: Number.parseFloat(lng.toFixed(4)),
     });
   };
   return (

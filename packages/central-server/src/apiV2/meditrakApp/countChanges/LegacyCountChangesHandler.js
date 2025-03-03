@@ -88,7 +88,7 @@ export class LegacyCountChangesHandler {
       [refreshToken, since, apiRequestLogId],
     );
 
-    return parseInt(count, 10);
+    return Number.parseInt(count, 10);
   }
 
   /**
@@ -142,7 +142,7 @@ export class LegacyCountChangesHandler {
       { select: 'count(*)' },
     );
     const result = await dbQuery.executeOnDatabase(models.database);
-    const changesCount = parseInt(result[0].count);
+    const changesCount = Number.parseInt(result[0].count);
 
     return changesCount > 0;
   }
@@ -168,7 +168,7 @@ export class LegacyCountChangesHandler {
     await this.handleSetUp();
     const { query } = await buildMeditrakSyncQuery(this.req, { select: 'count(*)' });
     const queryResult = await query.executeOnDatabase(this.req.models.database);
-    const changeCount = parseInt(queryResult[0].count);
+    const changeCount = Number.parseInt(queryResult[0].count);
     respond(this.res, { changeCount });
   }
 }

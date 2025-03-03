@@ -33,11 +33,11 @@ class CountDataElement10kPaxBuilder extends DataBuilder {
     if (population !== 0) {
       addRow(population, 'Population');
       const partialDoctors = totalOfDoctors / population;
-      addRow(parseFloat(partialDoctors * 10000).toFixed(2), 'Doctors/10,000 pop');
+      addRow(Number.parseFloat(partialDoctors * 10000).toFixed(2), 'Doctors/10,000 pop');
       const partialNurses = totalOfNurses / population;
-      addRow(parseFloat(partialNurses * 10000).toFixed(2), 'Nurses/10,000 pop');
+      addRow(Number.parseFloat(partialNurses * 10000).toFixed(2), 'Nurses/10,000 pop');
       const partialFacilities = numberOperational / population;
-      addRow(parseFloat(partialFacilities * 10000).toFixed(2), 'Facilities/10,000 pop');
+      addRow(Number.parseFloat(partialFacilities * 10000).toFixed(2), 'Facilities/10,000 pop');
     }
     return { data: returnData };
   }

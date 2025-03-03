@@ -11,7 +11,7 @@ const defaultAuthHandlerProvider = (req: Request) => new RequiresSessionAuthHand
 const stripVersionFromPath = (path: string) => {
   if (path.startsWith('/v')) {
     const secondSlashIndex = path.indexOf('/', 2);
-    const version = parseFloat(path.substring(2, secondSlashIndex));
+    const version = Number.parseFloat(path.substring(2, secondSlashIndex));
     return path.replace(`/v${version}`, '');
   }
   return path;

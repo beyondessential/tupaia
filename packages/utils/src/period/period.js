@@ -130,7 +130,7 @@ export const isValidPeriod = period => typeof period === 'string' && !!periodToT
 export const comparePeriods = (periodA, periodB) => {
   const dayPeriodA = convertToPeriod(periodA, DAY);
   const dayPeriodB = convertToPeriod(periodB, DAY);
-  return parseInt(dayPeriodA, 10) - parseInt(dayPeriodB, 10);
+  return Number.parseInt(dayPeriodA, 10) - Number.parseInt(dayPeriodB, 10);
 };
 
 export const isFuturePeriod = period => comparePeriods(period, getCurrentPeriod(DAY)) > 0;

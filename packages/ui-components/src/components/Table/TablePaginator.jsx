@@ -77,7 +77,7 @@ export const TablePaginator = React.memo(
 
     const handleChangeRowsPerPage = useCallback(
       event => {
-        const newRowsPerPage = parseInt(event.target.value, 10);
+        const newRowsPerPage = Number.parseInt(event.target.value, 10);
         if (onChangeRowsPerPage) onChangeRowsPerPage(newRowsPerPage);
       },
       [onChangeRowsPerPage],

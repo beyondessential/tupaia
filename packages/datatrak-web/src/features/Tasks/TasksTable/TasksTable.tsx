@@ -49,9 +49,9 @@ export const useTasksTable = () => {
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const page = parseInt(searchParams.get('page') || '0', 10);
+  const page = Number.parseInt(searchParams.get('page') || '0', 10);
 
-  const pageSize = parseInt(searchParams.get('pageSize') || '20', 10);
+  const pageSize = Number.parseInt(searchParams.get('pageSize') || '20', 10);
   const URLSortBy = searchParams.get('sortBy');
   const sortBy = URLSortBy ? JSON.parse(URLSortBy) : [];
 

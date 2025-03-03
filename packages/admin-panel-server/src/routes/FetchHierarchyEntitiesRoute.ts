@@ -42,7 +42,7 @@ export class FetchHierarchyEntitiesRoute extends Route<FetchHierarchyEntitiesReq
 
     // If pageSize is provided, return only the first n entities
     if (pageSize) {
-      return flattenedDescendants.slice(0, parseInt(pageSize, 10));
+      return flattenedDescendants.slice(0, Number.parseInt(pageSize, 10));
     }
     return flattenedDescendants;
   }

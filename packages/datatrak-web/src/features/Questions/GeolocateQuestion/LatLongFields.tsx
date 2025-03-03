@@ -29,7 +29,7 @@ export const LatLongFields = ({
   const handleChange = (e: ChangeEvent<{}>, field: string) => {
     setGeolocation({
       ...geolocation,
-      [field]: parseFloat((e.target as HTMLInputElement).value),
+      [field]: Number.parseFloat((e.target as HTMLInputElement).value),
       accuracy: 'N/A',
     });
   };
