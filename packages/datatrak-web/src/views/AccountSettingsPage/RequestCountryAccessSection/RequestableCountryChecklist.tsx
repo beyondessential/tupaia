@@ -1,28 +1,38 @@
-import React from 'react';
+import React, { FieldsetHTMLAttributes } from 'react';
 import { useFormContext } from 'react-hook-form';
-import styled from 'styled-components';
-import { Checkbox } from '@tupaia/ui-components';
-import { Entity, Project, ProjectCountryAccessListRequest } from '@tupaia/types';
-import { theme } from '../../../theme';
+import styled, { css } from 'styled-components';
 
-const Container = styled.fieldset`
+import { Entity } from '@tupaia/types';
+import { Checkbox } from '@tupaia/ui-components';
+
+import { useCountryAccessList, useCurrentUserContext } from '../../../api';
+
+const FieldSet = styled.fieldset`
   border-radius: 0.1875rem;
-  border: 1px solid ${theme.palette.grey[400]};
   block-size: 100%;
-  overflow-y: auto; /* fallback */
-  overflow-block: auto;
   padding-inline: 0.87rem;
 
-  // Prevent overbearingly tall list on mobile (where parent gridlines are not used to limit height)
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-bottom: 1rem;
-    border: none;
-  }
+  ${props => {
+    const { breakpoints, palette } = props.theme;
+    return css`
+      border: max(0.0625rem, 1px) solid ${palette.grey[400]};
 
-  // Match styling of ui-components TextField
-  :disabled {
-    color: ${theme.palette.text.secondary};
-    background-color: ${theme.palette.grey['100']};
+      // Match styling of ui-components TextField
+      :disabled {
+        color: ${palette.text.secondary};
+        background-color: ${palette.grey[100]};
+      }
+
+      ${breakpoints.down('sm')} {
+        margin-block-end: 1rem;
+        border: none;
+      }
+    `;
+  }}
+
+  overflow-block: auto;
+  @supports not (overflow-block: auto) {
+    overflow-y: auto;
   }
 `;
 
@@ -40,21 +50,27 @@ const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
   }
 `;
 
-interface RequestableCountryChecklistProps {
-  projectCode?: Project['code'];
-  countries?: ProjectCountryAccessListRequest.ResBody;
+const validateField = (value: Entity['id'][]) => value.length > 0;
+
+const getTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
+  if (hasAccess) return 'You already have access';
+  if (hasPendingAccess) return 'Approval in progress';
+};
+
+interface RequestableCountryChecklistProps extends FieldsetHTMLAttributes<HTMLFieldSetElement> {
   selectedCountries: Entity['id'][];
   setSelectedCountries: React.Dispatch<React.SetStateAction<Entity['id'][]>>;
-  disabled?: boolean;
 }
 
 export const RequestableCountryChecklist = ({
-  projectCode,
-  countries = [],
   selectedCountries,
   setSelectedCountries,
-  disabled,
+  ...props
 }: RequestableCountryChecklistProps) => {
+  const { project } = useCurrentUserContext();
+  const projectCode = project?.code;
+  const { data: countries } = useCountryAccessList();
+
   const { register } = useFormContext();
 
   const selectCountry = (id: Entity['id'], select = true) =>
@@ -62,16 +78,11 @@ export const RequestableCountryChecklist = ({
       select ? selectedCountries.concat([id]) : selectedCountries.filter(element => element !== id),
     );
 
-  const getTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
-    if (hasAccess) return 'You already have access';
-    if (hasPendingAccess) return 'Approval in progress';
-  };
-
   return (
-    <Container disabled={disabled}>
+    <FieldSet {...props}>
       {!projectCode
         ? null
-        : countries.map(({ id, name, hasAccess, hasPendingAccess }) => {
+        : countries?.map(({ id, name, hasAccess, hasPendingAccess }) => {
             const isSelected = selectedCountries.includes(id);
             const tooltip = getTooltip(hasAccess, hasPendingAccess);
 
@@ -80,7 +91,7 @@ export const RequestableCountryChecklist = ({
                 checked={isSelected}
                 disabled={hasAccess || hasPendingAccess}
                 id="entityIds"
-                inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
+                inputRef={register({ validate: validateField })}
                 key={id}
                 label={name}
                 name="entityIds"
@@ -90,6 +101,6 @@ export const RequestableCountryChecklist = ({
               />
             );
           })}
-    </Container>
+    </FieldSet>
   );
 };
