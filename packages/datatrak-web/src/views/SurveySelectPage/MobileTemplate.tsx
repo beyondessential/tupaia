@@ -13,6 +13,7 @@ import {
 } from '../../features/CountrySelector/CountrySelector';
 import { ListItemType, UseGroupedSurveyListParams } from '../../features/useGroupedSurveyList';
 import { StickyMobileHeader } from '../../layout';
+import { NavigateToSurveyType } from './SurveySelectPage';
 
 const MobileContainer = styled.div`
   background-color: ${({ theme }) => theme.palette.background.default};
@@ -49,8 +50,7 @@ const Loader = () => (
 interface MobileSurveySelectPageProps extends UseGroupedSurveyListParams {
   countrySelector: ReactElement<CountrySelectorProps, typeof CountrySelector>;
   showLoader: boolean;
-  /* TODO: (country: Entity | null, surveyId: unknown) => void */
-  handleSelectSurvey: (country: unknown, surveyId: unknown) => void;
+  handleSelectSurvey: NavigateToSurveyType;
 }
 
 export const MobileTemplate = ({
