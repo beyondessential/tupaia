@@ -27,13 +27,16 @@ export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   border-radius: 10px;
   background: white;
   padding: 1rem;
-  margin-bottom: 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   border: 1px solid transparent;
   text-align: left;
+
+  & + & {
+    margin-block-start: 0.75rem;
+  }
 `;
 
 const IconWrapper = styled.div`
