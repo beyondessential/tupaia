@@ -46,10 +46,7 @@ const List = ({
   items,
   onSelect,
   countrySelector,
-}: SelectListProps & {
-  countrySelector: JSX.Element;
-  parentItem: ListItemType;
-}) => {
+}: SelectListProps & { parentItem: ListItemType }) => {
   const parentTitle = parentItem?.value;
   return (
     <Wrapper>
