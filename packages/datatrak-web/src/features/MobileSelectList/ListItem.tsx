@@ -2,12 +2,7 @@ import React, { useState, ReactNode } from 'react';
 import { TransitionProps } from '@material-ui/core/transitions';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import {
-  Dialog,
-  ListItem as MuiListItem,
-  ListItemProps as MuiListItemProps,
-  Slide,
-} from '@material-ui/core';
+import { Dialog, ListItem as MuiListItem, Slide } from '@material-ui/core';
 import { ArrowLeftIcon } from '../../components';
 import { StickyMobileHeader } from '../../layout';
 import { ListItemType } from '../useGroupedSurveyList';
@@ -23,7 +18,7 @@ const Arrow = styled(ArrowLeftIcon)`
   transform: rotate(180deg);
 `;
 
-export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
+export const BaseListItem = styled(MuiListItem).attrs({ button: true })`
   border-radius: 10px;
   background: white;
   padding: 1rem;
@@ -89,7 +84,7 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
 
   return (
     <>
-      <BaseListItem button onClick={handleOnClick}>
+      <BaseListItem onClick={handleOnClick}>
         <IconWrapper>{icon}</IconWrapper>
         <Content>{content}</Content>
         {isNested && <Arrow />}
