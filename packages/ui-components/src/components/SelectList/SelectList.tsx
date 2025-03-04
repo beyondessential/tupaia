@@ -14,19 +14,20 @@ const Wrapper = styled.div`
 `;
 
 const fullBorder = css`
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  border-radius: 3px;
-  padding: 0 1rem;
+  border-radius: 0.1875rem;
+  border: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
+  padding-block: 0;
+  padding-inline: 1rem;
 `;
 
 const topBorder = css`
-  border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  border-top: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
   border-radius: 0;
   padding: 0.5rem 0;
 `;
 
 const ListWrapper = styled.div<{
-  $variant: string;
+  $variant: 'borderless' | 'fullBorder' | 'topBorder';
 }>`
   overflow-y: auto;
   max-height: 100%;
@@ -40,9 +41,10 @@ const ListWrapper = styled.div<{
 `;
 
 const NoResultsMessage = styled(Typography)`
-  padding: 0.8rem 0.5rem;
-  font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.secondary};
+  font-size: 0.875rem;
+  padding-block: 0.8rem;
+  padding-inline: 0.5rem;
 `;
 
 const Label = styled(FormLabel)<{
