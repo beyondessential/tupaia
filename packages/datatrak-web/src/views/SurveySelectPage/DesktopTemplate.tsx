@@ -2,8 +2,6 @@ import { DialogActions, Paper, Typography } from '@material-ui/core';
 import React, { ComponentPropsWithoutRef, ReactElement } from 'react';
 import styled from 'styled-components';
 
-import { SpinningLoader } from '@tupaia/ui-components';
-
 import { Button } from '../../components';
 import { CountrySelector, GroupedSurveyList } from '../../features';
 import { CountrySelectorProps } from '../../features/CountrySelector/CountrySelector';
@@ -21,21 +19,6 @@ const Container = styled(Paper).attrs({
     height: 35rem;
   }
 `;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  block-size: 100%;
-  min-block-size: 20rem;
-  flex: 1;
-`;
-
-const Loader = () => (
-  <LoadingContainer>
-    <SpinningLoader />
-  </LoadingContainer>
-);
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -78,15 +61,12 @@ export const DesktopTemplate = ({
         </div>
         {countrySelector}
       </HeaderWrapper>
-      {showLoader ? (
-        <Loader />
-      ) : (
-        <GroupedSurveyList
-          selectedCountry={selectedCountry}
-          setSelectedSurvey={setSelectedSurvey}
-          selectedSurvey={selectedSurvey}
-        />
-      )}
+      <GroupedSurveyList
+        selectedCountry={selectedCountry}
+        setSelectedSurvey={setSelectedSurvey}
+        selectedSurvey={selectedSurvey}
+        showLoader={showLoader}
+      />
       <DialogActions>
         <Button to="/" variant="outlined">
           Cancel
