@@ -4,6 +4,7 @@ import {
   ListItemProps as MuiListItemProps,
 } from '@material-ui/core';
 import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import { Skeleton } from '@material-ui/lab';
 import React, { ReactElement, ReactNode, useState } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -168,5 +169,20 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </>
+  );
+};
+
+export const ListItemSkeleton = () => {
+  return (
+    <BaseListItem button disabled>
+      <Skeleton
+        component="div"
+        variant="rect"
+        width="1rem"
+        height="1rem"
+        style={{ borderRadius: 'calc(1px * infinity)' }}
+      />
+      <Skeleton width="32ch" style={{ marginInlineStart: '0.5rem' }} />
+    </BaseListItem>
   );
 };

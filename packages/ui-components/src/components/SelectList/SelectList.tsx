@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { FormLabel, Typography, FormLabelProps } from '@material-ui/core';
 import { ListItemType } from './types';
-import { List } from './List';
+import { List, ListSkeleton } from './List';
 
 const Wrapper = styled.div`
   padding: 0;
@@ -16,28 +16,30 @@ const Wrapper = styled.div`
 const fullBorder = css`
   border-radius: 0.1875rem;
   border: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
-  padding-block: 0;
+
   padding-inline: 1rem;
 `;
 
 const topBorder = css`
   border-top: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
   border-radius: 0;
-  padding: 0.5rem 0;
+  padding-inline: 0;
 `;
 
 const ListWrapper = styled.div<{
   $variant: 'borderless' | 'fullBorder' | 'topBorder';
 }>`
+  block-size: 100%;
+  flex: 1;
+  max-block-size: 100%;
   overflow-y: auto;
-  max-height: 100%;
+  padding-block: 0.5rem;
+
   ${({ $variant = 'fullBorder' }) => {
     if ($variant === 'fullBorder') return fullBorder;
     if ($variant === 'topBorder') return topBorder;
     return '';
   }}
-  flex: 1;
-  height: 100%;
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -83,6 +85,7 @@ interface SelectListProps {
     component?: React.ElementType;
   };
   noResultsMessage?: string;
+  showLoader?: boolean;
   subTitle?: string | null;
 }
 
@@ -94,6 +97,7 @@ export const SelectList = ({
   variant = 'fullBorder',
   labelProps,
   noResultsMessage = 'No items to display',
+  showLoader = false,
   subTitle,
 }: SelectListProps) => {
   return (
@@ -105,7 +109,9 @@ export const SelectList = ({
       )}
       <ListWrapper $variant={variant} className="list-wrapper">
         {subTitle && <Subtitle>{subTitle}</Subtitle>}
-        {items.length === 0 ? (
+        {showLoader ? (
+          <ListSkeleton />
+        ) : items.length === 0 ? (
           <NoResultsMessage>{noResultsMessage}</NoResultsMessage>
         ) : (
           <List items={items} onSelect={onSelect} ListItem={ListItem} />
