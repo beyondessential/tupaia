@@ -147,14 +147,15 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   };
 
   return (
-    <li>
+    <>
       {/*@ts-ignore*/}
       <BaseListItem
+        aria-selected={selected}
         button={button}
         onClick={button ? onClick : null}
         selected={selected}
         disabled={disabled}
-        component="div"
+        component="li"
       >
         <Wrapper tooltip={tooltip}>
           <ButtonContainer $fullWidth={button}>
@@ -163,9 +164,9 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
         </Wrapper>
-        {selected && <CheckIcon />}
+        {selected && <CheckIcon aria-hidden />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
-    </li>
+    </>
   );
 };
