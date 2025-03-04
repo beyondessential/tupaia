@@ -68,10 +68,6 @@ export const MobileTemplate = ({
   });
   const navigate = useNavigate();
 
-  if (showLoader) {
-    return <Loader />;
-  }
-
   const onClose = () => {
     navigate(ROUTES.HOME);
   };
@@ -88,6 +84,7 @@ export const MobileTemplate = ({
         countrySelector={countrySelector}
         items={groupedSurveys}
         onSelect={onNavigateToSurvey}
+        showLoader={showLoader}
       />
     </MobileContainer>
   );
