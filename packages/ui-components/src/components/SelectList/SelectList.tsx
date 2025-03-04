@@ -13,21 +13,8 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-const fullBorder = css`
-  border-radius: 0.1875rem;
-  border: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
-
-  padding-inline: 1rem;
-`;
-
-const topBorder = css`
-  border-top: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
-  border-radius: 0;
-  padding-inline: 0;
-`;
-
 const ListWrapper = styled.div<{
-  $variant: 'borderless' | 'fullBorder' | 'topBorder';
+  $variant: 'borderless' | 'fullBorder';
 }>`
   block-size: 100%;
   flex: 1;
@@ -35,11 +22,14 @@ const ListWrapper = styled.div<{
   overflow-y: auto;
   padding-block: 0.5rem;
 
-  ${({ $variant = 'fullBorder' }) => {
-    if ($variant === 'fullBorder') return fullBorder;
-    if ($variant === 'topBorder') return topBorder;
-    return '';
-  }}
+  ${props =>
+    props.$variant === 'fullBorder'
+      ? css`
+          border: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
+          padding-inline: 1rem;
+          border-radius: 0.1875rem;
+        `
+      : null}
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -80,7 +70,7 @@ interface SelectListProps {
   onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ElementType;
-  variant?: 'fullBorder' | 'topBorder' | 'borderless';
+  variant?: 'fullBorder' | 'borderless';
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
