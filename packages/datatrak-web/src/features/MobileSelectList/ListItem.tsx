@@ -19,15 +19,15 @@ const Arrow = styled(ArrowLeftIcon)`
 `;
 
 export const BaseListItem = styled(MuiListItem).attrs({ button: true })`
-  border-radius: 10px;
+  align-items: center;
   background: white;
-  padding: 1rem;
+  border-radius: 0.625rem;
+  border: max(0.0625rem, 1px) solid transparent;
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: space-between;
-  border: 1px solid transparent;
-  text-align: left;
+  padding: 1rem;
+  text-align: start;
 
   & + & {
     margin-block-start: 0.75rem;
