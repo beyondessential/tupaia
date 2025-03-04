@@ -7,14 +7,14 @@ import { CountrySelectorProps } from '../CountrySelector/CountrySelector';
 import { ListItemType } from '../useGroupedSurveyList';
 import { ListItem } from './ListItem';
 
-const BaseList = styled(MuiList)`
+const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.default};
   block-size: 100%;
   padding-block: 1.25rem;
   padding-inline: 1.5rem;
 
   ${CountrySelectWrapper} {
-    margin-block-end: 1rem;
+    margin-block-end: 1.5rem;
 
     .MuiOutlinedInput-notchedOutline {
       border: none;
@@ -26,17 +26,13 @@ const BaseList = styled(MuiList)`
   }
 `;
 
-const CategoryTitle = styled(Typography)`
-  margin-block: -0.5rem 0.8rem;
-  margin-inline: 0;
-  padding-block-start: 1rem;
-`;
+const BaseList = styled(MuiList).attrs({ disablePadding: true })``;
 
-const NoResultsMessage = styled(Typography)`
-  color: ${({ theme }) => theme.palette.text.secondary};
-  font-size: 0.875rem;
-  padding-block: 0.8rem;
-  padding-inline: 0.5rem;
+const CategoryTitle = styled(Typography).attrs({
+  component: 'h2',
+  variant: 'body1',
+})`
+  margin-block-end: 1rem;
 `;
 
 interface SelectListProps {
@@ -53,45 +49,49 @@ const List = ({
 }: SelectListProps & { parentItem: ListItemType }) => {
   const parentTitle = parentItem?.value;
   return (
-    <BaseList>
+    <Wrapper>
       {countrySelector}
       {parentTitle && <CategoryTitle>{parentTitle}</CategoryTitle>}
-      {items?.map(item => (
-        <ListItem item={item} onSelect={onSelect} key={item.value}>
-          {item?.children && (
-            <List
-              parentItem={item}
-              items={item.children}
-              onSelect={onSelect}
-              countrySelector={countrySelector}
-            />
-          )}
-        </ListItem>
-      ))}
-    </BaseList>
+      <BaseList>
+        {items?.map(item => (
+          <ListItem item={item} onSelect={onSelect} key={item.value}>
+            {item?.children && (
+              <List
+                parentItem={item}
+                items={item.children}
+                onSelect={onSelect}
+                countrySelector={countrySelector}
+              />
+            )}
+          </ListItem>
+        ))}
+      </BaseList>
+    </Wrapper>
   );
 };
 
-export const MobileSelectList = ({ countrySelector, items = [], onSelect }: SelectListProps) => {
-  if (items.length === 0) {
-    return <NoResultsMessage>No items to display</NoResultsMessage>;
-  }
-
+export const MobileSelectList = ({ countrySelector, items, onSelect }: SelectListProps) => {
   return (
-    <BaseList>
+    <Wrapper>
       {countrySelector}
-      {items.map(item => (
-        <ListItem item={item} onSelect={onSelect} key={item.value}>
-          {item?.children && (
-            <List
-              parentItem={item}
-              items={item.children}
-              onSelect={onSelect}
-              countrySelector={countrySelector}
-            />
-          )}
-        </ListItem>
-      ))}
-    </BaseList>
+      <BaseList>
+        {items?.length === 0 ? (
+          <Typography color="textSecondary">No items to display</Typography>
+        ) : (
+          items?.map(item => (
+            <ListItem item={item} onSelect={onSelect} key={item.value}>
+              {item?.children && (
+                <List
+                  parentItem={item}
+                  items={item.children}
+                  onSelect={onSelect}
+                  countrySelector={countrySelector}
+                />
+              )}
+            </ListItem>
+          ))
+        )}
+      </BaseList>
+    </Wrapper>
   );
 };
