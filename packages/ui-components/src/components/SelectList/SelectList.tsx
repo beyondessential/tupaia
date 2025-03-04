@@ -90,6 +90,12 @@ export const SelectList = ({
   showLoader = false,
   subTitle,
 }: SelectListProps) => {
+  const renderList = () => {
+    if (showLoader) return <ListSkeleton />;
+    if (items.length === 0) return <NoResultsMessage>{noResultsMessage}</NoResultsMessage>;
+    return <List items={items} onSelect={onSelect} ListItem={ListItem} />;
+  };
+
   return (
     <Wrapper>
       {label && (
@@ -99,13 +105,7 @@ export const SelectList = ({
       )}
       <ListWrapper $variant={variant} className="list-wrapper">
         {subTitle && <Subtitle>{subTitle}</Subtitle>}
-        {showLoader ? (
-          <ListSkeleton />
-        ) : items.length === 0 ? (
-          <NoResultsMessage>{noResultsMessage}</NoResultsMessage>
-        ) : (
-          <List items={items} onSelect={onSelect} ListItem={ListItem} />
-        )}
+        {renderList()}
       </ListWrapper>
     </Wrapper>
   );
