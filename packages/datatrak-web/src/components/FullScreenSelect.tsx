@@ -4,7 +4,6 @@ import {
   DialogTitle,
   List,
   ListItem,
-  ListItemProps,
   ListItemText,
   SelectProps,
   Slide,
@@ -13,7 +12,14 @@ import {
 import { TransitionProps } from '@material-ui/core/transitions';
 import CheckIcon from '@material-ui/icons/CheckRounded';
 import ChevronIcon from '@material-ui/icons/ChevronRightRounded';
-import React, { ChangeEvent, Fragment, ReactElement, ReactNode, useState } from 'react';
+import React, {
+  ChangeEventHandler,
+  ComponentPropsWithoutRef,
+  Fragment,
+  ReactElement,
+  ReactNode,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 
 import { DialogContent } from '@tupaia/ui-components';
@@ -117,25 +123,28 @@ const StyledListItemText = styled(ListItemText).attrs({ disableTypography: true 
   display: contents;
 `;
 
-type SelectItemProps = Required<SelectOption> & ListItemProps;
-const SelectItem = ({ label, selected, value, ...listItemProps }: SelectItemProps) => (
+interface SelectItemProps
+  extends Required<SelectOption>,
+    ComponentPropsWithoutRef<typeof StyledListItem> {}
+const SelectItem = ({ label, value, ...listItemProps }: SelectItemProps) => (
   <StyledListItem {...listItemProps}>
     <StyledListItemText primary={label} />
-    {selected && <CheckIcon htmlColor={useTheme().palette.primary.main} width={24} height={24} />}
+    {listItemProps.selected && (
+      <CheckIcon htmlColor={useTheme().palette.primary.main} width={24} height={24} />
+    )}
   </StyledListItem>
 );
 
-type FullScreenSelectProps = Pick<
-  SelectProps,
-  'children' | 'className' | 'id' | 'label' | 'onClose' | 'onOpen' | 'open'
-> & {
+interface FullScreenSelectProps
+  extends Pick<
+    SelectProps,
+    'children' | 'className' | 'id' | 'label' | 'onClose' | 'onOpen' | 'open'
+  > {
   icon: ReactNode;
-  onChange?: (
-    event: ChangeEvent<{ name?: string | undefined; value: string | number | null }>,
-  ) => void;
+  onChange?: ChangeEventHandler;
   options: SelectOptions;
   value?: string | number | null;
-};
+}
 
 export const FullScreenSelect = ({
   children,
@@ -163,7 +172,10 @@ export const FullScreenSelect = ({
         key={optionValue}
         label={option.label}
         onClick={e => {
-          onChange?.({ ...e, target: { value: optionValue } });
+          onChange?.({
+            ...e,
+            target: { value: optionValue },
+          });
           closeModal();
         }}
         selected={isSelected}

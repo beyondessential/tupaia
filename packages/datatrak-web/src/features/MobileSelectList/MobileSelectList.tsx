@@ -1,8 +1,9 @@
 import { List as MuiList, Typography } from '@material-ui/core';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import styled from 'styled-components';
 
 import { CountrySelectWrapper, CountrySelector } from '../CountrySelector';
+import { CountrySelectorProps } from '../CountrySelector/CountrySelector';
 import { ListItemType } from '../useGroupedSurveyList';
 import { ListItem } from './ListItem';
 
@@ -39,11 +40,17 @@ const NoResultsMessage = styled(Typography)`
 `;
 
 interface SelectListProps {
+  countrySelector: ReactElement<CountrySelectorProps, typeof CountrySelector>;
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
 }
 
-const List = ({ parentItem, items, onSelect, countrySelector }) => {
+const List = ({
+  parentItem,
+  items,
+  onSelect,
+  countrySelector,
+}: SelectListProps & { parentItem: ListItemType }) => {
   const parentTitle = parentItem?.value;
   return (
     <BaseList>
@@ -65,12 +72,10 @@ const List = ({ parentItem, items, onSelect, countrySelector }) => {
   );
 };
 
-export const MobileSelectList = ({ items = [], onSelect }: SelectListProps) => {
+export const MobileSelectList = ({ countrySelector, items = [], onSelect }: SelectListProps) => {
   if (items.length === 0) {
     return <NoResultsMessage>No items to display</NoResultsMessage>;
   }
-
-  const countrySelector = <CountrySelector />;
 
   return (
     <BaseList>

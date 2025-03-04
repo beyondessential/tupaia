@@ -1,17 +1,19 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
-import { LoadingContainer, Modal, TextField } from '@tupaia/ui-components';
 import { ButtonProps } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import { ROUTES } from '../../../constants';
+import styled from 'styled-components';
+
+import { LoadingContainer, Modal, TextField } from '@tupaia/ui-components';
+
 import { useCreateTask, useEditUser, useUser } from '../../../api';
+import { ROUTES } from '../../../constants';
 import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
-import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
-import { TaskForm } from '../TaskForm';
+import { DueDatePicker } from '../DueDatePicker';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
+import { TaskForm } from '../TaskForm';
 import { EntityInput } from './EntityInput';
 
 const CountrySelectorWrapper = styled.div`
@@ -124,9 +126,12 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     editUser({ projectId: null });
   };
 
-  const { selectedCountry, isLoading: isLoadingCountries } = useUserCountries({
-    onError: handleCountriesError,
-  });
+  const {
+    countries,
+    selectedCountry,
+    updateSelectedCountry,
+    isLoading: isLoadingCountries,
+  } = useUserCountries({ onError: handleCountriesError });
   const { isLoading: isLoadingUser, isFetching: isFetchingUser } = useUser();
 
   const isLoadingData = isLoadingCountries || isLoadingUser || isFetchingUser;
@@ -190,7 +195,11 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
           <FormProvider {...formContext}>
             <TaskForm onSubmit={handleSubmit(createTask)}>
               <CountrySelectorWrapper>
-                <CountrySelector />
+                <CountrySelector
+                  countries={countries}
+                  onChange={updateSelectedCountry}
+                  selectedCountry={selectedCountry}
+                />
               </CountrySelectorWrapper>
               <Controller
                 name="survey_code"
@@ -199,9 +208,9 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                 render={({ onChange, value }, { invalid }) => (
                   <ListSelectWrapper>
                     <GroupedSurveyList
+                      selectedCountry={selectedCountry}
                       selectedSurvey={value}
                       setSelectedSurvey={onChange}
-                      selectedCountry={selectedCountry}
                       label="Select survey"
                       labelProps={{
                         required: true,

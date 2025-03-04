@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { ChangeEventHandler, ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
 import { Select as BaseSelect } from '@tupaia/ui-components';
 
 import { FullScreenSelect } from '../../components/FullScreenSelect';
 import { useIsMobile } from '../../utils';
-import { useUserCountries } from './useUserCountries';
+import type { UserCountriesType } from './useUserCountries';
 
 const Select = styled(BaseSelect)`
   inline-size: 10rem;
@@ -33,17 +33,19 @@ export const CountrySelectWrapper = styled.div`
 `;
 
 const Picture = styled.picture`
-  object-fit: contain;
   aspect-ratio: 1;
+  block-size: 1.5rem;
+  object-fit: contain;
+  object-position: center;
 `;
 const Img = styled.img`
-  block-size: 1em;
+  block-size: 1.5rem;
   inline-size: auto;
 `;
-const Pin = () => (
-  <Picture>
+const Pin = (props: ComponentPropsWithoutRef<typeof Picture>) => (
+  <Picture aria-hidden {...props}>
     <source srcSet="/tupaia-pin.svg" />
-    <Img src="/tupaia-pin.svg" width={24} height={24} />
+    <Img aria-hidden src="/tupaia-pin.svg" width={24} height={24} />
   </Picture>
 );
 
@@ -51,20 +53,20 @@ const StyledPin = styled(Pin)`
   margin-inline-end: 0.5rem;
 `;
 
-export const CountrySelector = () => {
-  const { countries, selectedCountry, updateSelectedCountry: onChangeCountry } = useUserCountries();
-  const updateSelectedCountry = e => {
-    onChangeCountry(countries.find(country => country.code === e.target.value) ?? null);
-  };
+export interface CountrySelectorProps
+  extends Pick<UserCountriesType, 'countries' | 'selectedCountry'>,
+    Omit<ComponentPropsWithoutRef<typeof CountrySelectWrapper>, 'onChange'> {
+  onChange: ChangeEventHandler<HTMLSelectElement>;
+}
 
-  const options =
-    countries?.map(country => ({
-      value: country.code,
-      label: country.name,
-    })) ?? [];
+export const CountrySelector = ({ countries, selectedCountry, onChange }: CountrySelectorProps) => {
+  const options = countries.map(country => ({
+    value: country.code,
+    label: country.name,
+  }));
 
   const commonProps = {
-    onChange: updateSelectedCountry,
+    onChange,
     options,
     value: selectedCountry?.code,
   };
