@@ -72,7 +72,7 @@ const List = ({
 
 const ListSkeleton = ({ length = 5 }: { length?: number }) => {
   const listItem = <ListItemSkeleton />;
-  return <BaseList>{Array.from({ length }).map(_ => listItem)}</BaseList>;
+  return <BaseList>{Array.from({ length }).map(() => listItem)}</BaseList>;
 };
 
 export const MobileSelectList = ({ countrySelector, items, onSelect }: SelectListProps) => {
