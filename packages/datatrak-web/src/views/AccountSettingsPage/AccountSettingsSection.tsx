@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, PaperProps, Typography } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AccountSettingsColumn } from './AccountSettingsColumn';
@@ -21,7 +21,7 @@ const Wrapper = styled(Paper).attrs({
   }
 `;
 
-const Title = styled(Typography).attrs({
+const Heading = styled(Typography).attrs({
   variant: 'h2',
 })`
   font-size: 1rem;
@@ -29,21 +29,21 @@ const Title = styled(Typography).attrs({
   margin-block-end: 0.6rem;
 `;
 
-interface AccountSettingsSectionProps {
-  title?: ReactNode;
+interface AccountSettingsSectionProps extends PaperProps {
+  heading?: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
 }
 
 export const AccountSettingsSection = ({
-  title,
+  heading,
   description,
   children,
 }: AccountSettingsSectionProps) => {
   return (
     <Wrapper>
       <AccountSettingsColumn>
-        <Title>{title}</Title>
+        <Heading>{heading}</Heading>
         <Typography color="textSecondary">{description}</Typography>
       </AccountSettingsColumn>
       {children}
