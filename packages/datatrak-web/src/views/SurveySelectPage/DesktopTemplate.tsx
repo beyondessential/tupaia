@@ -1,11 +1,13 @@
 import { DialogActions, Paper, Typography } from '@material-ui/core';
-import React from 'react';
+import React, { ComponentPropsWithoutRef, ReactElement } from 'react';
 import styled from 'styled-components';
 
 import { SpinningLoader } from '@tupaia/ui-components';
 
 import { Button } from '../../components';
 import { CountrySelector, GroupedSurveyList } from '../../features';
+import { CountrySelectorProps } from '../../features/CountrySelector/CountrySelector';
+import { UseGroupedSurveyListParams } from '../../features/useGroupedSurveyList';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -53,13 +55,20 @@ const Subheader = styled(Typography).attrs({
   margin-block-start: 0.67rem;
 `;
 
+interface DesktopSurveySelectPageProps extends UseGroupedSurveyListParams {
+  countrySelector: ReactElement<CountrySelectorProps, typeof CountrySelector>;
+  showLoader: boolean;
+  submitButton: ReactElement<ComponentPropsWithoutRef<typeof Button>, typeof Button>;
+}
+
 export const DesktopTemplate = ({
   selectedCountry,
+  countrySelector,
   selectedSurvey,
   setSelectedSurvey,
   showLoader,
-  SubmitButton,
-}) => {
+  submitButton,
+}: DesktopSurveySelectPageProps) => {
   return (
     <Container>
       <HeaderWrapper>
@@ -67,22 +76,22 @@ export const DesktopTemplate = ({
           <Typography variant="h1">Select survey</Typography>
           <Subheader>Select a survey from the list below</Subheader>
         </div>
-        <CountrySelector />
+        {countrySelector}
       </HeaderWrapper>
       {showLoader ? (
         <Loader />
       ) : (
         <GroupedSurveyList
+          selectedCountry={selectedCountry}
           setSelectedSurvey={setSelectedSurvey}
           selectedSurvey={selectedSurvey}
-          selectedCountry={selectedCountry}
         />
       )}
       <DialogActions>
         <Button to="/" variant="outlined">
           Cancel
         </Button>
-        {SubmitButton}
+        {submitButton}
       </DialogActions>
     </Container>
   );
