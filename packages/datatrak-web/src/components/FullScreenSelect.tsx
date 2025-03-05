@@ -42,7 +42,6 @@ const StyledButton = styled(Button).attrs({
   font-weight: 500;
   gap: 0.5rem;
   letter-spacing: 0.02em;
-  margin-block-end: 1rem;
   text-align: start;
 
   .MuiButton-label {
