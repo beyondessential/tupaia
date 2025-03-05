@@ -1,20 +1,28 @@
-import { useQuery } from '@tanstack/react-query';
-import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
+
+import { DatatrakWebEntityDescendantsRequest, Project } from '@tupaia/types';
+
 import { get } from '../api';
 
+export interface UseProjectEntitiesQueryOptions
+  extends UseQueryOptions<DatatrakWebEntityDescendantsRequest.ResBody> {}
+
 export const useProjectEntities = (
-  projectCode?: string,
+  projectCode?: Project['code'],
   params?: DatatrakWebEntityDescendantsRequest.ReqBody,
-  enabled = true,
-  options?: { onError?: (error: any) => void },
+  useQueryOptions?: UseProjectEntitiesQueryOptions,
 ) => {
-  return useQuery(
+  return useQuery<DatatrakWebEntityDescendantsRequest.ResBody>(
     ['entityDescendants', projectCode, params],
-    (): Promise<DatatrakWebEntityDescendantsRequest.ResBody> => {
+    () => {
       return get('entityDescendants', {
         params: { ...params, filter: { ...params?.filter, projectCode } },
       });
     },
-    { enabled: !!projectCode && enabled, onError: options?.onError ?? undefined },
+    {
+      ...useQueryOptions,
+      enabled: !!projectCode && useQueryOptions?.enabled,
+      placeholderData: [] as DatatrakWebEntityDescendantsRequest.ResBody,
+    },
   );
 };

@@ -1,6 +1,8 @@
-import React, { createContext, useContext } from 'react';
+import React, { ReactNode, createContext, useContext } from 'react';
+
 import { DatatrakWebUserRequest } from '@tupaia/types';
 import { FullPageLoader } from '@tupaia/ui-components';
+
 import { useUser } from './queries';
 
 export type CurrentUserContextType = DatatrakWebUserRequest.ResBody & { isLoggedIn: boolean };
@@ -15,7 +17,7 @@ export const useCurrentUserContext = (): CurrentUserContextType => {
   return currentUser;
 };
 
-export const CurrentUserContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const CurrentUserContextProvider = ({ children }: { children: Readonly<ReactNode> }) => {
   const currentUserQuery = useUser();
 
   if (currentUserQuery.isInitialLoading) {
