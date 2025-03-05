@@ -13,13 +13,13 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-const FullBorder = css`
+const fullBorder = css`
   border: 1px solid ${({ theme }) => theme.palette.divider};
   border-radius: 3px;
   padding: 0 1rem;
 `;
 
-const TopBorder = css`
+const topBorder = css`
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
   border-radius: 0;
   padding: 0.5rem 0;
@@ -30,7 +30,11 @@ const ListWrapper = styled.div<{
 }>`
   overflow-y: auto;
   max-height: 100%;
-  ${({ $variant }) => ($variant === 'fullPage' ? TopBorder : FullBorder)};
+  ${({ $variant = 'fullBorder' }) => {
+    if ($variant === 'fullBorder') return fullBorder;
+    if ($variant === 'topBorder') return topBorder;
+    return '';
+  }}
   flex: 1;
   height: 100%;
 `;
@@ -50,16 +54,34 @@ const Label = styled(FormLabel)<{
   font-weight: 400;
 `;
 
+const Subtitle = styled(Typography)`
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+  font-weight: 400;
+  margin-block: 0 0.5rem;
+  margin-inline: 0 0.9rem;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    color: ${({ theme }) => theme.palette.text.primary};
+    border-block-end: max(0.0265rem, 1px) solid ${({ theme }) => theme.palette.divider};
+    margin-block: 0 0.5rem;
+    margin-inline: 0;
+    padding-block-end: 0.2rem;
+    font-weight: 500;
+  }
+`;
+
 interface SelectListProps {
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ElementType;
-  variant?: 'fullPage' | 'inline';
+  variant?: 'fullBorder' | 'topBorder' | 'borderless';
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
   noResultsMessage?: string;
+  subTitle?: string | null;
 }
 
 export const SelectList = ({
@@ -67,9 +89,10 @@ export const SelectList = ({
   onSelect,
   label,
   ListItem,
-  variant = 'inline',
-  labelProps = {},
+  variant = 'fullBorder',
+  labelProps,
   noResultsMessage = 'No items to display',
+  subTitle,
 }: SelectListProps) => {
   return (
     <Wrapper>
@@ -79,6 +102,7 @@ export const SelectList = ({
         </Label>
       )}
       <ListWrapper $variant={variant} className="list-wrapper">
+        {subTitle && <Subtitle>{subTitle}</Subtitle>}
         {items.length === 0 ? (
           <NoResultsMessage>{noResultsMessage}</NoResultsMessage>
         ) : (

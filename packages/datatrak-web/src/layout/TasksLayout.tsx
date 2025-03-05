@@ -2,7 +2,13 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { PageContainer as BasePageContainer } from '../components';
-import { HeaderLessFullHeightContainer } from './ScrollableLayout';
+import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
+
+const HeaderLessFullHeightContainer = styled.div`
+  height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
+  display: flex;
+  flex-direction: column;
+`;
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;

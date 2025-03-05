@@ -21,6 +21,7 @@ export type SurveyFormContextType = {
   surveyStartTime?: string;
   isSuccessScreen?: boolean;
   cancelModalOpen: boolean;
+  cancelModalConfirmLink: string;
   countryCode: string;
   primaryEntityQuestion?: SurveyScreenComponent | null;
   isResubmitScreen: boolean;
@@ -60,6 +61,7 @@ export const surveyReducer = (
       return {
         ...state,
         cancelModalOpen: true,
+        cancelModalConfirmLink: action.payload as string,
       };
     case ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION:
       return {

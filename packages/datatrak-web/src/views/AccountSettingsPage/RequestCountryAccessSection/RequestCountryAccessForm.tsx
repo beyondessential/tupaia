@@ -1,51 +1,50 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import { FormLabel, Typography } from '@material-ui/core';
+import React, { HTMLAttributes, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { UseQueryResult } from '@tanstack/react-query';
-import { FormLabel, Typography, useMediaQuery, useTheme } from '@material-ui/core';
-import { Entity, ProjectCountryAccessListRequest, ProjectResponse } from '@tupaia/types';
+import styled, { css } from 'styled-components';
+
+import { Entity } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
-import { useRequestProjectAccess } from '../../../api';
+
+import { useCountryAccessList, useCurrentUserContext, useRequestProjectAccess } from '../../../api';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
+import { AdaptiveCollapse } from './AdaptiveCollapse';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
-const StyledForm = styled(Form)`
+const StyledForm = styled(Form<RequestCountryAccessFormFields>)`
   inline-size: 100%;
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
+  ${props => props.theme.breakpoints.up('md')} {
     max-inline-size: 44.25rem;
   }
 `;
 
-const StyledFieldset = styled.fieldset`
-  display: grid;
-  gap: 1.25rem;
-  grid-auto-flow: column;
-  grid-template: auto auto / auto;
+const FieldSet = styled.fieldset(props => {
+  const { breakpoints, palette, typography } = props.theme;
+  return css`
+    ${breakpoints.up('sm')} {
+      block-size: 18.32rem;
+      column-gap: 1.25rem;
+      display: grid;
+      grid-template-areas:
+        '--heading   --reason'
+        '--checklist --reason'
+        '--checklist --submit';
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+    }
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    block-size: 18.32rem;
-    grid-template: auto / 1fr 1fr;
-  }
+    .MuiFormLabel-root {
+      color: ${palette.text.primary};
+      font-weight: ${typography.fontWeightMedium};
+    }
 
-  .MuiFormLabel-root {
-    color: ${({ theme }) => theme.palette.text.primary};
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  }
-
-  // Fix labels appearing over hamburger menu drawer
-  .MuiInputLabel-outlined {
-    z-index: auto;
-  }
-`;
-
-const CountryChecklistWrapper = styled.div`
-  block-size: 100%;
-  display: block flex;
-  flex-direction: column;
-  overflow: hidden;
-`;
+    // Fix labels appearing over hamburger menu drawer
+    .MuiInputLabel-outlined {
+      z-index: auto;
+    }
+  `;
+});
 
 /** Matches styling of `.FormLabel-root` in ui-components `TextField` */
 const StyledFormLabel = styled(FormLabel)`
@@ -54,18 +53,25 @@ const StyledFormLabel = styled(FormLabel)`
   margin-block-end: 0.1875rem;
 `;
 
-const Flexbox = styled.div`
-  display: block flex;
-  flex-direction: column;
-  gap: 1.25rem;
-`;
-
-// Usage of this component has inline styling. See there for explanation.
 const StyledFormInput = styled(FormInput).attrs({
+  Input: TextField,
   fullWidth: true,
+  inputProps: {
+    enterKeyHint: 'done',
+    /*
+     * Make `<textarea>` scroll upon overflow.
+     *
+     * MUI uses inline styling (element.style) to resize `<textarea>`s to fit an integer
+     * number of lines. This behaviour is desirable in single-column layouts, which we use
+     * in smaller size classes. In a multi-column grid it causes misalignment, so we
+     * override it, also with inline styling.
+     */
+    style: { blockSize: '100%', overflow: 'auto' },
+  },
   multiline: true,
+  rows: 6,
 })`
-  block-size: 100%;
+  grid-area: --reason;
   margin: 0;
 
   .MuiInputBase-root {
@@ -79,6 +85,9 @@ const StyledFormInput = styled(FormInput).attrs({
   }
   .MuiOutlinedInput-inputMultiline {
     padding: 1rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    block-size: 100%;
   }
 `;
 
@@ -99,33 +108,41 @@ const Message = styled(Typography)`
   }
 `;
 
-interface RequestCountryAccessFormProps {
-  countryAccessList: UseQueryResult<ProjectCountryAccessListRequest.ResBody>;
-  project?: ProjectResponse | null;
-}
+/**
+ * @privateRemarks The submit button sometimes (but not always) has a tooltip, which wraps the
+ * <button> element in a <span>. When the tooltip appears/disappears, it causes the button’s parent
+ * to re-render, which can affect scroll state of the button’s siblings in undesired ways.
+ * Rather than conditionally apply these styles to either the button directly or to its tooltip when
+ * present, we use a semantically useless <div> to manage its layout.
+ */
+const SubmitButtonWrapper = styled.div`
+  grid-area: --submit;
+  margin-block-start: 1.25rem;
+`;
 
-interface RequestCountryAccessFormFields {
+export interface RequestCountryAccessFormFields {
   entityIds: Entity['id'][];
   message?: string;
 }
 
-export const RequestCountryAccessForm = ({
-  countryAccessList,
-  project,
-}: RequestCountryAccessFormProps) => {
-  const { data: countries, isLoading: accessListIsLoading } = countryAccessList;
+export const RequestCountryAccessForm = (props: HTMLAttributes<HTMLFormElement>) => {
+  const { project } = useCurrentUserContext();
   const projectCode = project?.code;
+  const {
+    data: countries,
+    isLoading: accessListIsLoading,
+    isInitialLoading: accessListIsInitialLoading,
+  } = useCountryAccessList();
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
       entityIds: [],
       message: '',
-    } as RequestCountryAccessFormFields,
+    },
     mode: 'onChange',
   });
   const {
     formState: { isSubmitting, isValidating, isValid },
-    handleSubmit,
     reset,
   } = formContext;
 
@@ -134,7 +151,7 @@ export const RequestCountryAccessForm = ({
    * `setSelectedCountries` is used here to circumvent some quirks of how React Hook Form +
    * MUI checkboxes (mis-)handle multiple checkboxes with the same control name.
    */
-  const [selectedCountries, setSelectedCountries] = useState([] as Entity['id'][]);
+  const [selectedCountries, setSelectedCountries] = useState<Entity['id'][]>([]);
   const resetForm = () => {
     reset();
     setSelectedCountries([]);
@@ -147,19 +164,14 @@ export const RequestCountryAccessForm = ({
     onSuccess: response => successToast(response.message),
   });
 
-  const { breakpoints } = useTheme();
-  const sizeClassIsMdOrLarger = useMediaQuery(breakpoints.up('sm'));
-
-  const getTooltip = () => {
-    if (!project) return 'Select a project to request country access';
-    return isValid ? undefined : 'Select countries to request access';
-  };
-
-  const hasAccessToEveryCountry = (countries ?? []).every(c => c.hasAccess);
-  const noRequestableCountries = !project || hasAccessToEveryCountry;
+  const hasAccessToEveryCountry = !accessListIsInitialLoading && countries?.every(c => c.hasAccess);
+  if (hasAccessToEveryCountry) {
+    return <Message>You have access to all available countries within this project</Message>;
+  }
 
   const formIsSubmitting = isSubmitting || requestIsLoading;
-  const formIsInsubmissible = isValidating || !isValid || accessListIsLoading || formIsSubmitting;
+  const disableForm = !project || formIsSubmitting;
+  const disableSubmission = disableForm || isValidating || !isValid || accessListIsLoading;
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
     requestCountryAccess({
@@ -169,51 +181,38 @@ export const RequestCountryAccessForm = ({
     });
   }
 
-  if (hasAccessToEveryCountry) {
-    return <Message>You have access to all available countries within this project.</Message>;
-  }
+  const getTooltip = () => {
+    if (!project) return 'Select a project to request country access';
+    if (!isValid) return 'Select countries to request access';
+  };
 
   return (
-    <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
-        <CountryChecklistWrapper>
-          <StyledFormLabel>Select countries</StyledFormLabel>
+    <StyledForm formContext={formContext} onSubmit={onSubmit} {...props}>
+      <FieldSet disabled={disableForm}>
+        <AdaptiveCollapse
+          label={<StyledFormLabel>Select countries</StyledFormLabel>}
+          name="collapsible-country-checklist"
+        >
           <RequestableCountryChecklist
-            projectCode={projectCode}
-            countries={countries}
             disabled={formIsSubmitting}
             selectedCountries={selectedCountries}
             setSelectedCountries={setSelectedCountries}
+            style={{ gridArea: '--checklist' }}
           />
-        </CountryChecklistWrapper>
-        <Flexbox>
-          <StyledFormInput
-            id="message"
-            Input={TextField}
-            inputProps={{
-              enterKeyHint: 'done',
-              /*
-               * Make `<textarea>` scroll upon overflow.
-               *
-               * MUI uses inline styling (element.style) to resize `<textarea>`s to fit an integer
-               * number of lines. This behaviour is desirable in single-column layouts, which we use
-               * in smaller size classes. In a multi-column grid it causes misalignment, so we
-               * override it, also with inline styling.
-               */
-              style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : undefined,
-            }}
-            label="Reason for access"
-            name="message"
-          />
+          <StyledFormInput id="message" label="Reason for access" name="message" />
+        </AdaptiveCollapse>
+        <SubmitButtonWrapper>
           <Button
-            disabled={noRequestableCountries || formIsInsubmissible}
+            disabled={disableSubmission}
+            fullWidth
             tooltip={getTooltip()}
+            tooltipDelay={0}
             type="submit"
           >
             {formIsSubmitting ? 'Submitting request' : 'Request access'}
           </Button>
-        </Flexbox>
-      </StyledFieldset>
+        </SubmitButtonWrapper>
+      </FieldSet>
     </StyledForm>
   );
 };
