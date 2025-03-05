@@ -182,7 +182,7 @@ export const ListItemSkeleton = () => {
         height="1rem"
         style={{ borderRadius: 'calc(1px * infinity)' }}
       />
-      <Skeleton width="32ch" style={{ marginInlineStart: '0.5rem' }} />
+      <Skeleton width="40ch" style={{ marginInlineStart: '0.5rem' }} />
     </BaseListItem>
   );
 };
