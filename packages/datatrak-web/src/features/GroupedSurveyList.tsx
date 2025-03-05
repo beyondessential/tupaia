@@ -25,12 +25,14 @@ interface GroupedSurveyListProps
     component?: React.ElementType;
   };
   error?: string;
+  showLoader?: boolean;
 }
 
 export const GroupedSurveyList = ({
   selectedCountry,
   setSelectedSurvey,
   selectedSurvey,
+  showLoader,
   label,
   labelProps,
   error,
@@ -48,6 +50,7 @@ export const GroupedSurveyList = ({
         onSelect={onSelectSurvey}
         label={label}
         labelProps={labelProps}
+        showLoader={showLoader}
       />
       {error && <FormHelperText error>{error}</FormHelperText>}
     </ListWrapper>
