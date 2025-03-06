@@ -42,7 +42,7 @@ export const CheckboxQuestion = ({
       inputRef={ref}
       helperText={detailLabel as string}
       inputProps={{
-        ['aria-invalid']: invalid,
+        'aria-invalid': invalid,
       }}
     />
   );

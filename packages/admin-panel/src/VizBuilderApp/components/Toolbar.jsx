@@ -68,7 +68,7 @@ export const Toolbar = () => {
           <DocumentIcon aria-hidden />
           <MuiBox ml={2}>
             <SubTitle variant="h4">
-              Project: {project?.['project.code']} • {permissionGroup}
+              Project: {project?.['project.code']} &middot; {permissionGroup}
             </SubTitle>
             <Title variant="h2">{name}</Title>
           </MuiBox>
