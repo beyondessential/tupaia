@@ -1,13 +1,7 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import {
-  DatatrakWebSurveyResponsesRequest,
-  SurveyResponse,
-  Country,
-  Entity,
-  Survey,
-} from '@tupaia/types';
+import { DatatrakWebSurveyResponsesRequest } from '@tupaia/types';
 
 export type SurveyResponsesRequest = Request<
   DatatrakWebSurveyResponsesRequest.Params,
@@ -15,16 +9,6 @@ export type SurveyResponsesRequest = Request<
   DatatrakWebSurveyResponsesRequest.ReqBody,
   DatatrakWebSurveyResponsesRequest.ReqQuery
 >;
-
-type SurveyResponseT = Record<string, any> & {
-  assessor_name: SurveyResponse['assessor_name'];
-  'country.name': Country['name'];
-  data_time: Date;
-  'entity.name': Entity['name'];
-  id: SurveyResponse['id'];
-  'survey.name': Survey['name'];
-  'survey.project_id': Survey['project_id'];
-};
 
 const DEFAULT_FIELDS = [
   'assessor_name',

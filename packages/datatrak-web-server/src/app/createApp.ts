@@ -58,6 +58,8 @@ import {
   UserRoute,
   ResubmitSurveyResponseRequest,
   ResubmitSurveyResponseRoute,
+  ExportSurveyResponseRequest,
+  ExportSurveyResponseRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 import { API_CLIENT_PERMISSIONS } from '../constants';
@@ -110,6 +112,10 @@ export async function createApp() {
       handleWith(ResubmitSurveyResponseRoute),
     )
     .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
+    .post<ExportSurveyResponseRequest>(
+      'export/:surveyResponseId',
+      handleWith(ExportSurveyResponseRoute),
+    )
     // Forward auth requests to web-config
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
