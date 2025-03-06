@@ -88,7 +88,7 @@ export const downloadPageAsPDF = async (
       landscape,
       displayHeaderFooter: includePageNumber,
       // remove the default header so that only the page number is displayed, not a header
-      headerTemplate: `<div></div>`,
+      headerTemplate: '<div></div>',
       footerTemplate: pageNumberHTML,
       //add a margin so the page number doesn't overlap with the content, and the top margin is set for overflow content
       margin: includePageNumber ? { bottom: '20mm', top: '10mm' } : undefined,

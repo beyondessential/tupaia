@@ -28,7 +28,7 @@ export class ExportSurveyResponseRoute extends Route<ExportSurveyResponseRequest
     const { cookie } = this.req.headers;
 
     if (!cookie) {
-      throw new Error(`Must have a valid session to export a dashboard`);
+      throw new Error('Must have a valid session to export a dashboard');
     }
 
     const pdfPageUrl = `${baseUrl}/export/${surveyResponseId}?locale=${locale}`;
