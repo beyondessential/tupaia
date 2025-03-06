@@ -34,24 +34,9 @@ const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: strin
 };
 
 const pageNumberHTML = `
-<div
-  style="
-    text-align: right;
-    width: 13.4cm;
-    font-size: 6px;
-    margin-left: 1.2cm;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #c1c1c1; 
-    border-top: 1px solid #888888; 
-    padding-top: 1mm;
-  "
->   
-  <span>
-    <span class="pageNumber"></span> of <span class="totalPages"></span>
-  </span>
-</div> 
-
-
+<div style="border-block-start: 1pt solid #c1c1c1; color: #c1c1c1; font-family: Roboto, system-ui, 'Segoe UI', Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 9pt; font-weight: 500; inline-size: 100%; margin-inline: 15mm; padding-block-start: 4.5pt; text-align: end">
+ 	<span class="pageNumber"></span>&nbsp;of <span class="totalPages"></span>
+</div>
 `;
 
 /**
@@ -89,7 +74,7 @@ export const downloadPageAsPDF = async (
       landscape,
       displayHeaderFooter: includePageNumber,
       // remove the default header so that only the page number is displayed, not a header
-      headerTemplate: '<div></div>',
+      headerTemplate: '<div hidden></div>',
       footerTemplate: pageNumberHTML,
       //add a margin so the page number doesn't overlap with the content, and the top margin is set for overflow content
       margin: includePageNumber ? { bottom: '20mm', top: '10mm' } : undefined,
