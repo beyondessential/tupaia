@@ -7,11 +7,12 @@ const verifyPDFPageUrl = (pdfPageUrl: string): string => {
   if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
     throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
   }
-  const location = new URL(pdfPageUrl);
+  const { hostname } = new URL(pdfPageUrl);
   if (
-    !location.hostname.endsWith('.tupaia.org') &&
-    !validDomains.includes(location.hostname) &&
-    !location.hostname.endsWith('localhost')
+    hostname.endsWith('.tupaia.org') &&
+    validDomains.includes(hostname) &&
+    hostname.endsWith('localhost') &&
+    hostname.endsWith('.local')
   ) {
     throw new Error(`'pdfPageUrl' is not valid, got: ${pdfPageUrl}`);
   }
