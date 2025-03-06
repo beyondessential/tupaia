@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { downloadPageAsPDF } from '@tupaia/server-utils';
 
@@ -11,10 +12,7 @@ export interface PDFExportRequest
   > {}
 
 export class PDFExportRoute extends Route<PDFExportRequest> {
-  public constructor(req: PDFExportRequest, res: Response, next: NextFunction) {
-    super(req, res, next);
-    this.type = 'download';
-  }
+  protected type = 'download' as const;
 
   public async buildResponse() {
     const { pdfPageUrl } = this.req.body;
