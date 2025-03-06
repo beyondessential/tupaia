@@ -2,22 +2,21 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { downloadPageAsPDF } from '@tupaia/server-utils';
 
-export type ExportSurveyResponseRequest = Request<
-  {
-    surveyResponseId: string;
-  },
-  {
-    contents: Buffer;
-    type: string;
-  },
-  {
-    baseUrl: string;
-    cookieDomain: string;
-    locale: string;
-    timezone: string;
-  },
-  Record<string, unknown>
->;
+export interface ExportSurveyResponseRequest
+  extends Request<
+    { surveyResponseId: string },
+    {
+      contents: Uint8Array;
+      type: string;
+    },
+    {
+      baseUrl: string;
+      cookieDomain: string;
+      locale: string;
+      timezone: string;
+    },
+    Record<string, unknown>
+  > {}
 
 export class ExportSurveyResponseRoute extends Route<ExportSurveyResponseRequest> {
   protected type = 'download' as const;
