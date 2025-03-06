@@ -128,7 +128,7 @@ export const ResultsList = ({
           onSelect={onSelect}
           variant="borderless"
           noResultsMessage={noResultsMessage}
-          subTitle={!searchValue ? 'All' : undefined}
+          subTitle={showRecentEntities && !searchValue ? 'All' : null}
         />
       </SubListWrapper>
     </ListWrapper>
