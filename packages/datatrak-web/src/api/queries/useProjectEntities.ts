@@ -22,7 +22,7 @@ export const useProjectEntities = (
         filter: { ...params?.filter, projectCode },
       },
     });
-    return entities.sort((a, b) => a.name.localeCompare(b.name));
+    return entities;
   };
 
   return useQuery<DatatrakWebEntityDescendantsRequest.ResBody>(
