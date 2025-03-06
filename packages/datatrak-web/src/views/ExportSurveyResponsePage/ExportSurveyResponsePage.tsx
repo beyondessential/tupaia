@@ -100,9 +100,9 @@ export const ExportSurveyResponsePage = () => {
       </Header>
       {visibleScreens.map((screenComponents, index) => (
         <ScreenWrapper key={`screen-${index}`}>
-          {screenComponents.map((surveyScreenComponent, index) => (
+          {screenComponents.map(surveyScreenComponent => (
             <Question
-              key={index}
+              key={surveyScreenComponent.id}
               surveyScreenComponent={surveyScreenComponent}
               surveyResponse={surveyResponse}
             />
