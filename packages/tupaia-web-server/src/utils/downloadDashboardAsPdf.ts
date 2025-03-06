@@ -2,7 +2,7 @@ import { downloadPageAsPDF } from '@tupaia/server-utils';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { stringifyQuery } from '@tupaia/utils';
 
-export const downloadDashboardAsPdf = (
+export const downloadDashboardAsPdf = async (
   projectCode: string,
   entityCode: string,
   dashboardName: string,
@@ -23,5 +23,5 @@ export const downloadDashboardAsPdf = (
     settings: JSON.stringify(settings),
   });
 
-  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, false, true);
+  return await downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, false, true);
 };

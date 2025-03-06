@@ -117,7 +117,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       });
       return sendEmail(email, {
         subject,
-        attachments: [{ filename, content: buffer }],
+        attachments: [{ filename, content: Buffer.from(buffer) }],
         templateName: 'dashboardSubscription',
         templateContext: {
           title: 'Your Tupaia Dashboard Export is ready',

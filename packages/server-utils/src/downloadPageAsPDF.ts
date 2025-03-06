@@ -1,5 +1,5 @@
 import cookie from 'cookie';
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser } from 'puppeteer';
 
 const verifyPDFPageUrl = (pdfPageUrl: string): string => {
   const { VALID_DOMAINS = 'tupaia.org' } = process.env;
@@ -68,8 +68,8 @@ export const downloadPageAsPDF = async (
   includePageNumber = false,
   timezone?: string,
 ) => {
-  let browser;
-  let buffer;
+  let browser: Browser | undefined;
+  let buffer: Uint8Array | undefined;
   const { cookies, verifiedPDFPageUrl } = buildParams(pdfPageUrl, userCookie, cookieDomain);
 
   try {
