@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { renderMatches, useLocation } from 'react-router';
-import { matchRoutes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
 import { VizConfigProvider as StateProvider } from './context';
-import { useVizBuilderBasePath } from './utils';
 import { SimplePageLayout } from '../layout';
 import { useUser } from '../api/queries';
 
@@ -21,29 +19,6 @@ const Container = styled.div`
 export const App = ({ Footer, homeLink, logo }) => {
   const { isLoading: isUserLoading } = useUser();
 
-  const basePath = useVizBuilderBasePath();
-  const location = useLocation();
-
-  const matches = matchRoutes(
-    [
-      {
-        path: `${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`,
-        exact: true,
-        element: <CreateNew />,
-      },
-      {
-        path: `${basePath}/viz-builder/:dashboardItemOrMapOverlay/:visualisationId`,
-        element: <Main />,
-      },
-      // react router v6 does not support optional params, so we need to define two routes
-      {
-        path: `${basePath}/viz-builder/:dashboardItemOrMapOverlay`,
-        element: <Main />,
-      },
-    ],
-    location.pathname,
-  );
-
   if (isUserLoading) {
     return <FullPageLoader />;
   }
@@ -52,8 +27,12 @@ export const App = ({ Footer, homeLink, logo }) => {
     <StateProvider>
       <SimplePageLayout logo={logo} homeLink={homeLink}>
         <Container>
-          {/** Workaround for handling issues with this nested app */}
-          {renderMatches(matches)}
+          <Routes>
+            <Route path="/:dashboardItemOrMapOverlay/new" exact element={<CreateNew />} />
+            <Route path="/:dashboardItemOrMapOverlay/:visualisationId" element={<Main />} />
+            <Route path="/:dashboardItemOrMapOverlay" element={<Main />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
           {Footer && <Footer />}
         </Container>
       </SimplePageLayout>

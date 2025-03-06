@@ -12,7 +12,11 @@ export {
   getAdminPanelAllowedPermissionGroupIdsByCountryIds,
 } from './getAdminPanelAllowedCountries';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
-export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
+export {
+  hasAccessToEntityForVisualisation,
+  hasVizBuilderAccessToEntity,
+  hasVizBuilderAccessToEntityCode,
+} from './hasAccessToEntityForVisualisation';
 export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
