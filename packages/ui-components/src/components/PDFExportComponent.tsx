@@ -16,6 +16,5 @@ export const A4Page = styled.div<{
   break-after: ${({ separatePage }) => (separatePage ? 'always' : 'auto')};
   break-inside: avoid;
   flex-direction: column;
-  padding-block: 1.5cm 2cm; // Bottom slightly taller than top for *optical* alignment
-  padding-inline: 4.5cm;
+  padding-block: 1.5cm 4.5cm 2cm; // Bottom slightly taller than top for *optical* alignment
 `;
