@@ -30,7 +30,7 @@ const Alert = styled(SmallAlert).attrs({
   severity: 'error',
   variant: 'standard',
 })`
-  width: 100%;
+  inline-size: 100%;
 `;
 
 const AlertWrapper = styled.div`

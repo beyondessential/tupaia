@@ -13,20 +13,21 @@ import { SurveyContext } from '.';
 import { useExportSurveyResponse } from '../api';
 
 const Header = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
+  inline-size: 100%;
   justify-content: space-between;
-  padding: 1.5rem 1.8rem 1.2rem;
-  width: 100%;
+  padding-block: 1.5rem 1.2rem;
+  padding-inline: 1.8rem;
 `;
 
 const Heading = styled(Typography).attrs({
   variant: 'h2',
 })`
-  font-size: 1.5rem;
   color: ${({ theme }) => theme.palette.text.primary};
+  font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 0.2rem;
+  margin-block-end: 0.2rem;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     font-size: 1rem;
   }
@@ -34,8 +35,8 @@ const Heading = styled(Typography).attrs({
 
 const SubHeading = styled(Typography)`
   color: ${({ theme }) => theme.palette.text.secondary};
-  font-weight: 400;
   font-size: 1rem;
+  font-weight: 400;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     font-size: 0.875rem;
   }
