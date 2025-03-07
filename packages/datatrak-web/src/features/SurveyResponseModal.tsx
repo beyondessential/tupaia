@@ -42,15 +42,10 @@ const SubHeading = styled(Typography)`
   }
 `;
 
-const Loader = styled(SpinningLoader)`
-  padding-block: 3rem;
-  max-width: 100%;
-`;
-
-const Content = styled.div`
-  min-height: 10rem;
-  width: 62rem;
-  max-width: 100%;
+const StyledModalContentProvider = styled(ModalContentProvider)`
+  inline-size: 60rem;
+  max-inline-size: 100%;
+  min-block-size: 12rem;
 `;
 
 const Icon = styled(SurveyTickIcon)`
@@ -121,12 +116,13 @@ const SurveyResponseModalContent = ({
           </>
         )}
       </Header>
-      <ModalContentProvider error={error as Error}>
-        <Content>
-          {showLoading && <Loader />}
-          {!showLoading && !error && <SurveyReviewSection />}
-        </Content>
-      </ModalContentProvider>
+      <StyledModalContentProvider error={error as Error}>
+        {showLoading ? (
+          <SpinningLoader style={{ margin: 'auto' }} />
+        ) : (
+          !error && <SurveyReviewSection />
+        )}
+      </StyledModalContentProvider>
       <ModalFooter>
         <Button onClick={onClose}>Close</Button>
       </ModalFooter>
