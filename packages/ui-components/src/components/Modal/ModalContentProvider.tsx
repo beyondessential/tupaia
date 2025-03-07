@@ -6,8 +6,6 @@ import HelpOutline from '@material-ui/icons/HelpOutline';
 import { TooltipIconButton } from '../TooltipIconButton';
 import { SmallAlert } from '../Alert';
 
-const LIGHT_RED = '#F76853';
-const RED = '#F76853';
 const Content = styled(DialogContent)`
   text-align: left;
   min-height: 220px;
@@ -43,13 +41,11 @@ const AlertWrapper = styled.div`
   }
 
   .MuiSvgIcon-root {
-    color: ${LIGHT_RED};
+    color: ${props => props.theme.palette.error.main};
     margin-block-end: 0.3rem;
   }
-  .tooltip-icon:hover {
-    svg {
-      fill: ${RED};
-    }
+  .tooltip-icon:hover svg {
+    fill: ${props => props.theme.palette.error.main};
   }
 `;
 
