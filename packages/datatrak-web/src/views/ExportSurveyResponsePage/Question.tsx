@@ -15,7 +15,7 @@ const QuestionWrapper = styled.div<{ $border?: boolean }>`
   max-width: 350pt;
 
   & + & {
-    margin-block-start: 1.125rem;
+    margin-block-start: 1.5rem;
   }
 `;
 
