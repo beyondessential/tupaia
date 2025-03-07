@@ -9,52 +9,53 @@ import { getIsQuestionVisible } from '../../features/Survey/SurveyContext/utils'
 import { useSearchParams } from 'react-router-dom';
 import { displayDate } from '../../utils';
 
-const DARK_GREY = '#444';
-
 const Page = styled(A4Page)`
-  background-color: white;
-  padding-block-start: 0;
-  padding-block-end: 1cm;
+  background-color: transparent;
+  padding-block-start: 0 1cm;
   padding-inline: 1.55cm;
-  width: 21cm; // A4 width in cm
 `;
 
 const Header = styled.div`
+  align-items: center;
+  border-block-end: 1pt solid #444;
+  color: #444;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  margin-block-end: 1rem;
   padding-block-end: 0.75rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid ${DARK_GREY};
-`;
-
-const ScreenWrapper = styled.div`
-  padding-block-start: 0.5rem;
-  padding-block-end: 0.5rem;
-`;
-
-const SurveyResponseDetailsWrapper = styled.div`
-  > * {
-    font-size: 0.75rem;
-    text-align: right;
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  }
-`;
-const SurveyTitle = styled(Typography)`
-  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
-  line-height: 1.8;
-  color: ${DARK_GREY};
-`;
-
-const SurveyResponseDetails = styled(Typography)`
   line-height: 1.5;
-  color: ${DARK_GREY};
 `;
 
 const ProjectLogo = styled.img`
   max-height: 4rem;
-  width: auto;
   max-width: 5rem;
+  width: auto;
+`;
+
+const SurveyResponseDetailsWrapper = styled.div`
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  > * {
+    font-size: 0.75rem;
+    text-align: right;
+  }
+`;
+
+const SurveyTitle = styled(Typography)`
+  color: inherit;
+  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+  line-height: inherit;
+  margin-block-end: 0.5rem;
+`;
+
+const SurveyResponseDetails = styled(Typography)`
+  color: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+`;
+
+const ScreenWrapper = styled.div`
+  break-after: always;
+  padding-block: 0.5rem;
 `;
 
 export const ExportSurveyResponsePage = () => {
