@@ -67,7 +67,7 @@ const useDisplayAnswer = (
     return surveyResponse?.entityName;
   }
 
-  if (!answer) return 'No answer';
+  if (!answer) return <em>No answer</em>;
 
   // If there are defined options, display the selected option label if set. Usually this is the same as the saved value but not always
   if (options?.length && options?.length > 0) {
@@ -91,7 +91,13 @@ const useDisplayAnswer = (
     // If the question is a geolocate question, display the latitude and longitude
     case QuestionType.Geolocate: {
       const { latitude, longitude } = JSON.parse(answer);
-      return `${latitude}, ${longitude} (latitude, longitude)`;
+      if (latitude === null && longitude === null) return <em>No answer</em>;
+      return (
+        <>
+          {latitude ?? <em>Unknown latitute</em>}, {longitude ?? <em>unknown longitude</em>}{' '}
+          (latitude, longitude)
+        </>
+      );
     }
     case QuestionType.File: {
       // If the value is a file, split the value to get the file name
