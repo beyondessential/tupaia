@@ -82,9 +82,7 @@ export const downloadPageAsPDF = async (
   } catch (e) {
     throw new Error(`puppeteer error: ${(e as Error).message}`);
   } finally {
-    if (browser) {
-      await browser.close();
-    }
+    await browser?.close();
   }
 
   return buffer;
