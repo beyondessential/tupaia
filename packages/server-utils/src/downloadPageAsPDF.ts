@@ -34,7 +34,7 @@ const buildParams = (pdfPageUrl: string, userCookie: string, cookieDomain: strin
 };
 
 const pageNumberHTML = `
-<div style="border-block-start: 1pt solid #c1c1c1; color: #c1c1c1; font-family: Roboto, system-ui, 'Segoe UI', Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 9pt; font-weight: 500; inline-size: 100%; margin-inline: 15mm; padding-block-start: 4.5pt; text-align: end">
+<div style="border-block-start: 1pt solid #c1c1c1; color: #c1c1c1; font-family: Roboto, system-ui, 'Segoe UI', Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 8pt; font-weight: 400; inline-size: 100%; margin-inline: 15mm; padding-block-start: 4.5pt; text-align: end">
  	<span class="pageNumber"></span>&nbsp;of <span class="totalPages"></span>
 </div>
 `;

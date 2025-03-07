@@ -44,7 +44,7 @@ const SurveyTitle = styled(Typography)`
   color: inherit;
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
   line-height: inherit;
-  margin-block-end: 0.5rem;
+  margin-block-end: 0.25rem;
 `;
 
 const SurveyResponseDetails = styled(Typography)`
