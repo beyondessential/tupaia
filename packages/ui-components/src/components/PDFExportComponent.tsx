@@ -1,8 +1,5 @@
 import styled from 'styled-components';
 
-export const A4_PAGE_WIDTH_MM = 210;
-export const A4_PAGE_HEIGHT_MM = 297;
-
 /*
  * The px values below are not actually equivalent to the mm values above when interpreted as CSS
  * units, because CSS takes 1px to be 1/96 of an inch. The intention is to refactor PDF exports to
