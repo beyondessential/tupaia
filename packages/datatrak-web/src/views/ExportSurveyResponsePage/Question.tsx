@@ -1,11 +1,13 @@
+import { Avatar, Typography } from '@material-ui/core';
 import React from 'react';
-import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/types';
-import { Typography, Avatar } from '@material-ui/core';
+
 import { useAutocompleteOptions, useEntityById } from '../../api';
-import { displayDate, displayDateTime } from '../../utils';
 import { SurveyScreenComponent } from '../../types';
+import { displayDate, displayDateTime, formatNumberWithTrueMinus } from '../../utils';
 
 type SurveyResponse = DatatrakWebSingleSurveyResponseRequest.ResBody;
 
@@ -92,10 +94,11 @@ const useDisplayAnswer = (
     case QuestionType.Geolocate: {
       const { latitude, longitude } = JSON.parse(answer);
       if (latitude === null && longitude === null) return <em>No answer</em>;
+      console.log(typeof latitude, typeof longitude);
       return (
         <>
-          {latitude ?? <em>Unknown latitute</em>}, {longitude ?? <em>unknown longitude</em>}{' '}
-          (latitude, longitude)
+          {formatNumberWithTrueMinus(latitude) ?? <em>Unknown latitude</em>},{' '}
+          {formatNumberWithTrueMinus(longitude) ?? <em>unknown longitude</em>} (latitude, longitude)
         </>
       );
     }
