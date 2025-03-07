@@ -10,9 +10,9 @@ import { SurveyScreenComponent } from '../../types';
 type SurveyResponse = DatatrakWebSingleSurveyResponseRequest.ResBody;
 
 const QuestionWrapper = styled.div<{ $border?: boolean }>`
-  ${({ $border = true }) => $border && 'border-bottom: 1px solid #ccc;'}
+  ${({ $border = true }) => $border && 'border-bottom: 1pt solid #ccc;'}
   page-break-inside: avoid;
-  max-width: 500px;
+  max-width: 350pt;
 
   & + & {
     margin-block-start: 1.125rem;
@@ -20,7 +20,7 @@ const QuestionWrapper = styled.div<{ $border?: boolean }>`
 `;
 
 const InstructionQuestionText = styled(Typography)`
-  max-width: 500px;
+  max-width: 350pt;
   font-size: 0.875rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   line-height: 1.5;
