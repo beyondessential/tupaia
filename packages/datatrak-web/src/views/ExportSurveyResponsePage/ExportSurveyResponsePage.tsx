@@ -80,7 +80,7 @@ export const ExportSurveyResponsePage = () => {
       .filter(screenComponents => screenComponents.length > 0) ?? [];
 
   // Format the date and time in the timezone provided in the URL because the server is in UTC
-  const formattedDataTime = displayDate(endTime as Date, locale);
+  const formattedDataTime = displayDate(endTime, locale);
 
   return (
     <Page>

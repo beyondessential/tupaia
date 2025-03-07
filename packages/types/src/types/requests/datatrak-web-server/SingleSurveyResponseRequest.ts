@@ -15,6 +15,8 @@ export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'data_time
   countryCode: Country['code'];
   /** ISO9075 format */
   dataTime: string;
+  /** ISO8601 format */
+  endTime: string;
   entityParentName: Entity['name'];
 }
 export type ReqBody = Record<string, never>;
