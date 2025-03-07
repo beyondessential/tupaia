@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ComponentPropsWithoutRef, ReactNode } from 'react';
 import styled from 'styled-components';
 import { DialogContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -63,7 +63,7 @@ const Error = ({ message, details }: { message: string; details?: string }) => {
   );
 };
 
-export interface ModalContentProviderProps {
+export interface ModalContentProviderProps extends ComponentPropsWithoutRef<typeof Content> {
   isLoading?: boolean;
   error?: {
     message: string;
@@ -78,10 +78,14 @@ export interface ModalContentProviderProps {
       };
     };
   };
-  children: ReactNode;
 }
 
-export const ModalContentProvider = ({ isLoading, error, children }: ModalContentProviderProps) => {
+export const ModalContentProvider = ({
+  isLoading,
+  error,
+  children,
+  ...props
+}: ModalContentProviderProps) => {
   const getHeading = () => {
     if (!error) return null;
     const { extraFields } = error;
@@ -104,7 +108,7 @@ export const ModalContentProvider = ({ isLoading, error, children }: ModalConten
 
   const errors = getErrorsToDisplay();
   return (
-    <Content>
+    <Content {...props}>
       {isLoading && 'Please be patient, this can take some time…'}
       {error?.message && (
         <ErrorsWrapper>
