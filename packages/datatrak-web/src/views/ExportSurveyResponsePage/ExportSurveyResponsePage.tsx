@@ -94,7 +94,8 @@ export const ExportSurveyResponsePage = () => {
             {survey?.project?.name} | {survey?.name}
           </SurveyTitle>
           <SurveyResponseDetails>
-            {entityName} {entityParentName && `| ${entityParentName}`} {formattedDataTime}
+            {entityName} {entityParentName && `| ${entityParentName}`}{' '}
+            <time dateTime={new Date(endTime).toISOString()}>{formattedDataTime}</time>
           </SurveyResponseDetails>
           <SurveyResponseDetails>Submitted by: {assessorName}</SurveyResponseDetails>
         </SurveyResponseDetailsWrapper>
