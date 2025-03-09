@@ -14,16 +14,13 @@ const PageWrapper = styled.div`
   min-block-size: 100vb;
 
   + .notistack-SnackbarContainer {
+    align-items: stretch;
+    inline-size: 28rem;
     inset-block-start: calc(1rem + ${HEADER_HEIGHT} + max(0.0625rem, 1px));
     inset-inline-end: 0;
-    max-inline-size: initial;
+    max-inline-size: 100%;
     padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
     padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
-
-    // Out of the box, notistack does this at 600px
-    @media (min-width: 25rem) {
-      align-items: flex-end;
-    }
 
     ${({ theme }) => theme.breakpoints.down('md')} {
       inset-block-end: 3.5rem;
