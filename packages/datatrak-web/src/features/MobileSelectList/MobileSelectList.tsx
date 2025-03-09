@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { CountrySelectWrapper, CountrySelector } from '../CountrySelector';
 import { CountrySelectorProps } from '../CountrySelector/CountrySelector';
 import { ListItemType } from '../useGroupedSurveyList';
-import { ListItem } from './ListItem';
+import { ListItem, ListItemSkeleton } from './ListItem';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.default};
@@ -70,28 +70,38 @@ const List = ({
   );
 };
 
+const ListSkeleton = ({ length = 5 }: { length?: number }) => {
+  const listItem = <ListItemSkeleton />;
+  return <BaseList>{Array.from({ length }).map(() => listItem)}</BaseList>;
+};
+
 export const MobileSelectList = ({ countrySelector, items, onSelect }: SelectListProps) => {
+  const isFetchingSurveys = items === undefined;
   return (
     <Wrapper>
       {countrySelector}
-      <BaseList>
-        {items?.length === 0 ? (
-          <Typography color="textSecondary">No items to display</Typography>
-        ) : (
-          items?.map(item => (
-            <ListItem item={item} onSelect={onSelect} key={item.value}>
-              {item?.children && (
-                <List
-                  parentItem={item}
-                  items={item.children}
-                  onSelect={onSelect}
-                  countrySelector={countrySelector}
-                />
-              )}
-            </ListItem>
-          ))
-        )}
-      </BaseList>
+      {isFetchingSurveys ? (
+        <ListSkeleton />
+      ) : (
+        <BaseList>
+          {items?.length === 0 ? (
+            <Typography color="textSecondary">No items to display</Typography>
+          ) : (
+            items?.map(item => (
+              <ListItem item={item} onSelect={onSelect} key={item.value}>
+                {item?.children && (
+                  <List
+                    parentItem={item}
+                    items={item.children}
+                    onSelect={onSelect}
+                    countrySelector={countrySelector}
+                  />
+                )}
+              </ListItem>
+            ))
+          )}
+        </BaseList>
+      )}
     </Wrapper>
   );
 };
