@@ -1,12 +1,14 @@
-import React, { useState, ReactNode } from 'react';
 import { TransitionProps } from '@material-ui/core/transitions';
-import styled from 'styled-components';
+import { Skeleton } from '@material-ui/lab';
+import React, { useState, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { Dialog, ListItem as MuiListItem, Slide } from '@material-ui/core';
 import { ArrowLeftIcon } from '../../components';
+import { ROUTES } from '../../constants';
 import { StickyMobileHeader } from '../../layout';
 import { ListItemType } from '../useGroupedSurveyList';
-import { ROUTES } from '../../constants';
 
 const Content = styled.div`
   flex: 1;
@@ -63,7 +65,7 @@ interface ListItemProps {
 }
 
 export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState<boolean>(false);
   const { content, icon } = item;
   const isNested = !!item.children;
   const navigate = useNavigate();
@@ -106,3 +108,15 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
     </>
   );
 };
+
+export const ListItemSkeleton = styled(Skeleton).attrs({
+  component: 'div',
+  variant: 'rect',
+})`
+  border-radius: 0.625rem;
+  min-block-size: 3.5rem;
+
+  & + & {
+    margin-block-start: 0.75rem;
+  }
+`;
