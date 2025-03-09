@@ -12,21 +12,7 @@ const Wrapper = styled(SnackbarContent)`
 const Container = styled.div<{
   $variant: CustomContentProps['variant'];
 }>`
-  background-color: ${({ theme, $variant }) => {
-    if ($variant === 'success') {
-      return theme.palette.success.light;
-    }
-    if ($variant === 'error') {
-      return theme.palette.error.light;
-    }
-    if ($variant === 'warning') {
-      return theme.palette.warning.light;
-    }
-    if ($variant === 'info') {
-      return theme.palette.info.light;
-    }
-  }};
-  padding: 0.5rem 0.58rem 0.5rem 0.88rem;
+  background-color: ${({ theme, $variant }) => theme.palette[$variant].light};
   border-radius: 0.625rem;
   display: flex;
   width: 100%;
