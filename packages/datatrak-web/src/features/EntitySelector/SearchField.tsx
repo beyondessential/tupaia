@@ -40,13 +40,6 @@ const StyledField = styled(TextField)<TextFieldProps>`
     margin-right: 0.2rem;
   }
 
-  &&&& {
-    .MuiInputBase-input::placeholder {
-      color: ${({ theme }) => theme.palette.text.hint};
-      opacity: 1 !important;
-    }
-  }
-
   ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiOutlinedInput-notchedOutline {
       border: none;
