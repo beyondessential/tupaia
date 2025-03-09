@@ -59,7 +59,7 @@ const entitiesData = [
     },
   },
 ].sort(
-  // useProjectEntities returns entities in this order
+  // EntityDescendantsRoute returns entities in this order
   (a, b) => a.name.localeCompare(b.name),
 );
 
