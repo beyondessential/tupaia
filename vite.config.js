@@ -4,6 +4,7 @@ import viteCompression from 'vite-plugin-compression';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import dns from 'dns';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -37,8 +38,9 @@ export default defineConfig(({ command, mode }) => {
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({ jsxRuntime: 'classic' }),
+      nodePolyfills(),
     ],
-    define: { 'process.env': env },
+    define: { 'process.env': env, __dirname: JSON.stringify('/') },
     server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
@@ -74,6 +76,8 @@ export default defineConfig(({ command, mode }) => {
             './packages/ui-map-components/src/index.ts',
           ),
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
+          // TODO: Make this export both core + browser
+          '@tupaia/database': path.resolve(__dirname, './packages/database/src/core/index.js'),
         },
       },
     };

@@ -9,11 +9,17 @@
     "directory": "packages/database"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
-  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "node": "./dist/server/index.js",
+      "browser": "./dist/browser/index.js",
+      "default": "./dist/server/index.js"
+    }
+  },
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "npm run --prefix ../../ package:build:js",
+    "build:src": "npm run --prefix ../../ package:build:js:server && npm run --prefix ../../ package:build:js:browser",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "npm run build",
     "build-watch": "rm -rf dist && npm run build:types && npm run --prefix ../../ package:build:js-watch",

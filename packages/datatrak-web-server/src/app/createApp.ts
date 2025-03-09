@@ -61,7 +61,6 @@ import {
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 import { API_CLIENT_PERMISSIONS } from '../constants';
-import { runLoadTest } from './PostgresLoadTester';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
@@ -121,8 +120,6 @@ export async function createApp() {
   await builder.initialiseApiClient(API_CLIENT_PERMISSIONS);
 
   const app = builder.build();
-
-  await runLoadTest();
   
   return app;
 }
