@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
-const Wrapper = styled(SnackbarContent)`
+const Wrapper = styled(SnackbarContent).withConfig({
+  shouldForwardProp: prop => !['anchorOrigin', 'iconVariant'].includes(prop),
+})`
   background-color: white;
   border-radius: 0.625rem;
 `;
