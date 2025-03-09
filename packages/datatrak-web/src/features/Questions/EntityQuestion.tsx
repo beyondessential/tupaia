@@ -12,8 +12,8 @@ export const EntityQuestion = ({
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
-  const { isReviewScreen, isResponseScreen, formData, countryCode } = useSurveyForm();
-  const { surveyProjectCode } = useSurveyForm();
+  const { countryCode, formData, isResponseScreen, isReviewScreen, surveyProjectCode } =
+    useSurveyForm();
 
   return (
     <EntitySelector
