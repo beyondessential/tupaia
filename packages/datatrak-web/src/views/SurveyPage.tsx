@@ -49,6 +49,11 @@ const SurveyScreenContainer = styled.div<{
   }
 `;
 
+function beforeUnloadHandler(event: BeforeUnloadEvent) {
+  event.preventDefault(); // For modern browsers
+  event.returnValue = ''; // For legacy browsers
+}
+
 const SurveyPageInner = () => {
   const { screenNumber } = useParams<SurveyParams>();
   const {
@@ -99,6 +104,12 @@ const SurveyPageInner = () => {
       );
     }
   }, [survey?.id]);
+
+  if (formContext.formState.isDirty) {
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+  } else {
+    window.removeEventListener('beforeunload', beforeUnloadHandler);
+  }
 
   return (
     <PageWrapper>
