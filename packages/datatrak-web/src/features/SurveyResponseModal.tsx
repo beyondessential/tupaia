@@ -59,6 +59,7 @@ const Icon = styled(SurveyTickIcon).attrs({
 `;
 
 const DownloadButton = styled(Button).attrs({
+  loadingText: 'Downloading',
   variant: 'outlined',
 })`
   margin-left: auto;
@@ -116,7 +117,6 @@ const SurveyResponseModalContent = ({
             <DownloadButton
               onClick={downloadSurveyResponse}
               isLoading={isDownloadingSurveyResponse}
-              loadingText="Downloading"
               startIcon={isNotClaustrophobic && <DownloadIcon />}
             >
               Download
