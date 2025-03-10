@@ -12,5 +12,7 @@ export function useBeforeUnload(enabled = true) {
     } else {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     }
+
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [enabled]);
 }
