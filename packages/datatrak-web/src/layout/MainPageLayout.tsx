@@ -1,12 +1,12 @@
 import React from 'react';
 import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { HEADER_HEIGHT } from '../constants';
-import { Header } from '.';
+
+import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { MobileAppPrompt, SurveyResponseModal } from '../features';
-import { ROUTES } from '../constants';
 import { useIsMobile } from '../utils';
-import { HeaderRoot } from './Header/Header';
+import { Header, HeaderRoot } from './Header/Header';
+import { MobileHeaderRoot } from './StickyMobileHeader';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -29,7 +29,7 @@ const PageWrapper = styled.div`
     }
   }
 
-  #root:has(${HeaderRoot}) & + .notistack-SnackbarContainer {
+  #root:has(${HeaderRoot}, ${MobileHeaderRoot}) & + .notistack-SnackbarContainer {
     inset-block-start: ${HEADER_HEIGHT};
   }
 `;
