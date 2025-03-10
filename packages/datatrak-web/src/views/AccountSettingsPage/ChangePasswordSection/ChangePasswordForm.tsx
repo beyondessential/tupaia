@@ -6,7 +6,7 @@ import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
 import { ResetPasswordParams, useResetPassword } from '../../../api';
 
-const StyledForm = styled(Form)`
+const StyledForm = styled(Form<ResetPasswordParams>)`
   width: 100%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
