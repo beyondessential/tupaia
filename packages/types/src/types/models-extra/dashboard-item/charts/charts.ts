@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { PieChartConfig, PieChartPresentationOptions } from './pie';
 import { BaseChartConfig, CartesianChartPresentationOptions, ChartType } from './common';
 import { BarChartConfig, BarChartPresentationOptions } from './bar';

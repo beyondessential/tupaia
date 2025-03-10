@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { MockTupaiaApiClient, MockEntityApi } from '@tupaia/api-client';
 import { DataTableServiceBuilder } from '../../../dataTableService';
 import { ENTITIES, ENTITY_RELATIONS } from './fixtures';

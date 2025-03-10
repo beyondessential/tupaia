@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 // eslint-disable-next-line import/no-extraneous-dependencies
 import MockDate from 'mockdate';
 import { constructAccessToken } from '@tupaia/auth';

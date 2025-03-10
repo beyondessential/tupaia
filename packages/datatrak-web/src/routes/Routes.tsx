@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
 import {
@@ -27,6 +22,7 @@ import { WelcomeScreens } from '../views/WelcomeScreens';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
+import { SyncPage } from '../views/Sync/SyncPage';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
@@ -89,6 +85,7 @@ export const Routes = () => {
             </Route>
           </Route>
           <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
+          <Route path={ROUTES.SYNC} element={<SyncPage />} />
         </Route>
         {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 
@@ -99,7 +96,11 @@ export const Routes = () => {
         <Route
           path="/"
           element={
-            <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
+            <BackgroundPageLayout
+              backgroundImage="/auth-background.svg"
+              mobileBackgroundImage="/auth-background-mobile.svg"
+              headerBorderHidden
+            />
           }
         >
           <Route

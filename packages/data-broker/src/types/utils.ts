@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Return the values of the provided object type `T`
  */
 export type Values<T extends Record<string, unknown>> = T[keyof T] extends never

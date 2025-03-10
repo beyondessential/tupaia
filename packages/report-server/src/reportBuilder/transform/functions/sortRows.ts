@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { yup, orderBy } from '@tupaia/utils';
 import { yupTsUtils } from '@tupaia/tsutils';
 

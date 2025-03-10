@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import sinon from 'sinon';
 
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';

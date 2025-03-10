@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { S3Client, S3 } from '@tupaia/server-utils';
 import { EditHandler } from '../EditHandler';

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
 import moment from 'moment';
 import { useQuery } from '@tanstack/react-query';
 import { post } from '../api';

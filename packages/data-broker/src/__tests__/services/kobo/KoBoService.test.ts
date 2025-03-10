@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { KoBoService } from '../../../services/kobo/KoBoService';
 import { createModelsStub, createKoBoApiStub } from './KoBoService.stubs';
 import { MOCK_DATA_SOURCE, TRANSLATED_DATA } from './KoBoService.fixtures';

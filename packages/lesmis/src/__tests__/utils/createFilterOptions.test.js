@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import { createFilterOptions } from '../../utils/useAutocomplete';
 import options from './exampleOptions.json';
 

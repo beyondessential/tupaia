@@ -1,7 +1,2 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 export { useUserCountries } from './useUserCountries';
-export { CountrySelector } from './CountrySelector';
+export { CountrySelector, CountrySelectWrapper } from './CountrySelector';

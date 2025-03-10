@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ComponentType, ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import { useMatch } from 'react-router';
@@ -43,6 +38,12 @@ export const MenuButton = styled(Button).attrs({
   font-weight: ${props => props.theme.typography.fontWeightRegular};
   & ~ .MuiButtonBase-root {
     margin-left: 0;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    .MuiButton-label {
+      font-size: 1.125rem;
+    }
   }
 `;
 
@@ -90,7 +91,7 @@ export const MenuList = ({
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
   const supportCentreItem = {
-    label: 'Support centre',
+    label: 'Help centre',
     href: 'https://bes-support.zendesk.com',
     isExternal: true,
     component: Link,
@@ -140,7 +141,7 @@ export const MenuList = ({
       <CancelConfirmModal
         isOpen={surveyCancelModalIsOpen}
         onClose={() => setIsOpen(false)}
-        confirmLink={confirmModalLink}
+        confirmPath={confirmModalLink}
       />
     </>
   );

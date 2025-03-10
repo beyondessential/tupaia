@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { PhotoAlbum } from '@material-ui/icons';
 import { connect, useSelector } from 'react-redux';

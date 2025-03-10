@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -15,17 +10,18 @@ import { useIsMobile } from '../utils';
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: ${({ theme }) => theme.palette.background.default};
-  min-height: 100vh;
+  background-color: ${({ theme }) => theme.palette.background.default};
+  min-block-size: 100vb;
 
   + .notistack-SnackbarContainer {
-    top: calc(1rem + ${HEADER_HEIGHT});
+    inset-block-start: calc(1rem + ${HEADER_HEIGHT} + max(0.0625rem, 1px));
 
     ${({ theme }) => theme.breakpoints.down('md')} {
-      bottom: 3.5rem;
+      inset-block-end: 3.5rem;
     }
   }
 `;
+
 
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();

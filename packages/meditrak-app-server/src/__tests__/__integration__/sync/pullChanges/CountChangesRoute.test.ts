@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { constructAccessToken } from '@tupaia/auth';
 import { clearTestData, getTestDatabase, getTestModels, upsertDummyRecord } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';

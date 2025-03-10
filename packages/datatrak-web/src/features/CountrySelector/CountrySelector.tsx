@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import styled from 'styled-components';
 import { Select as BaseSelect } from '@tupaia/ui-components';
@@ -37,7 +33,8 @@ const Pin = styled.img.attrs({
   height: auto;
   margin-right: 0.5rem;
 `;
-const CountrySelectWrapper = styled.div`
+
+export const CountrySelectWrapper = styled.div`
   display: flex;
   align-items: center;
 `;

@@ -167,7 +167,7 @@
     {
       "name": "web-config-server",
       "path": "packages/web-config-server"
-    }
+    },
     {
       "name": "viz-test-tool",
       "path": "packages/viz-test-tool"
@@ -233,6 +233,7 @@
       "singularise",
       "spec",
       "specs",
+      "swipeable",
       "Syncable",
       "testid",
       "Tongatapu",
@@ -248,6 +249,8 @@
       "packages/": true
     },
     "search.exclude": {
+      ".yarn/": true,
+      "*.lock": true,
       "**/lib": true,
       "**/logfile*.log": true,
       "**/yarn-1.18.0.js": true

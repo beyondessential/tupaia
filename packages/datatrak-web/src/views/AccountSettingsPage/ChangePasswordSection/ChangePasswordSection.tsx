@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import { AccountSettingsSection } from '../AccountSettingsSection';
 import { ChangePasswordForm } from './ChangePasswordForm';
@@ -10,7 +5,7 @@ import { ChangePasswordForm } from './ChangePasswordForm';
 export const ChangePasswordSection = () => {
   return (
     <AccountSettingsSection
-      title="Change password"
+      heading="Change password"
       description="To change your password please enter your current password, your new password and confirm your new password"
     >
       <ChangePasswordForm />

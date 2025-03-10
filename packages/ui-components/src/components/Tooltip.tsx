@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import MuiTooltip, { TooltipProps } from '@material-ui/core/Tooltip';
@@ -28,12 +23,13 @@ export const Tooltip = styled(
 )`
   & .MuiTooltip-tooltip {
     background-color: ${({ theme }) => theme.palette.tooltip || TOOLTIP_COLOR};
+    border-radius: 0.1875rem;
     color: white;
-    border-radius: 3px;
     font-size: 0.75rem;
-    line-height: 1rem;
-    padding: 0.55rem 1rem 0.6rem;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.03em;
+    line-height: 1.35;
+    padding-block: 0.55rem 0.6rem;
+    padding-inline: 1rem;
 
     .MuiTooltip-arrow {
       color: ${({ theme }) => theme.palette.tooltip || TOOLTIP_COLOR};

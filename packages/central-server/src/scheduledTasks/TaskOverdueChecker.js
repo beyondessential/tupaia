@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { sendEmail } from '@tupaia/server-utils';
 import { requireEnv } from '@tupaia/utils';
 import winston from 'winston';

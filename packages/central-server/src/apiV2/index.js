@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import express from 'express';
 
 import { catchAsyncErrors, handleError, logApiRequest, multipartJson } from './middleware';

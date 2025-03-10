@@ -1,54 +1,69 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
-import React, { ReactElement, ReactNode, useState } from 'react';
-import styled from 'styled-components';
 import {
   Collapse,
   ListItem as MuiListItem,
   ListItemProps as MuiListItemProps,
 } from '@material-ui/core';
 import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import React, { ReactElement, ReactNode, useState } from 'react';
+import styled, { css } from 'styled-components';
+
 import { Tooltip } from '../Tooltip';
 import { ListItemType } from './types';
 
 // explicitly set the types so that the overrides are applied, for the `button` prop
 export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
-  display: flex;
   align-items: center;
-  border: 1px solid transparent;
   border-radius: 3px;
-  padding: 0.3rem 1rem 0.3rem 0.5rem;
+  border: max(0.0625rem, 1px) solid transparent;
+  display: flex;
+  padding-block: 0.3rem;
+  padding-inline: 0.5rem 1rem;
+
   &.Mui-selected {
     border-color: ${({ theme }) => theme.palette.primary.main};
     background-color: transparent;
   }
+
   .MuiCollapse-container & {
-    padding-left: 1rem;
+    padding-inline-start: 1rem;
   }
-  &.MuiButtonBase-root {
-    &:hover,
-    &.Mui-selected:hover,
-    &:focus,
-    &.Mui-selected:focus {
-      background-color: ${({ theme }) =>
-        theme.palette.type === 'light'
-          ? `${theme.palette.primary.main}33`
-          : 'rgba(96, 99, 104, 0.50)'};
-    }
+
+  &.MuiButtonBase-root:is(
+      :hover,
+      :focus-visible,
+      .Mui-selected:hover,
+      .Mui-selected:focus-visible
+    ) {
+    ${props => {
+      const { palette } = props.theme;
+      return palette.type === 'light'
+        ? css`
+            background-color: oklch(from ${palette.primary.main} l c h / 10%);
+            @supports not (color: oklch(from black l c h)) {
+              background-color: ${palette.primary.main}1a;
+            }
+          `
+        : css`
+            background-color: oklch(50% 0.0088 260.73 / 50%);
+          `;
+    }}
   }
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    background-color: initial;
+  }
+
   .MuiSvgIcon-root {
     font-size: 1rem;
   }
+
   &.Mui-disabled {
     opacity: 1; // still have the icon as the full opacity
     color: ${({ theme }) => theme.palette.text.disabled};
   }
   .text-secondary {
     color: ${({ theme }) => theme.palette.text.secondary};
-    margin-left: 0.4em;
+    margin-inline-start: 0.4em;
   }
 `;
 
@@ -68,13 +83,27 @@ const ButtonContainer = styled.div<{
 `;
 
 const IconWrapper = styled.div`
-  padding-right: 0.5rem;
-  display: flex;
+  --icon-width: 1.5rem;
   align-items: center;
-  width: 1.5rem;
+  display: flex;
+  inline-size: var(--icon-width);
+  justify-content: center;
+  padding-inline-end: 0.5rem;
+
   svg {
+    block-size: auto;
     color: ${({ theme }) => theme.palette.primary.main};
-    height: auto;
+    max-inline-size: var(--icon-width);
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    --icon-width: 1.3rem;
+  }
+`;
+
+const CheckIcon = styled(Check).attrs({ color: 'primary' })`
+  &.MuiSvgIcon-root {
+    font-size: 1.2rem;
   }
 `;
 
@@ -125,6 +154,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
         onClick={button ? onClick : null}
         selected={selected}
         disabled={disabled}
+        component="div"
       >
         <Wrapper tooltip={tooltip}>
           <ButtonContainer $fullWidth={button}>
@@ -133,7 +163,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
         </Wrapper>
-        {selected && <Check color="primary" />}
+        {selected && <CheckIcon />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </li>

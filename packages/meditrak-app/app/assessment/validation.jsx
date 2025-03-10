@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 // Validators return null if there is no error, or a string representing the error message
 const answerValidators = {
   isNumber: answer => (isNaN(parseFloat(answer)) ? 'Must be a number' : null),

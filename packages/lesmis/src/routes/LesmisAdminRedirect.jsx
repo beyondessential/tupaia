@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- *
- */
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useUser } from '@tupaia/admin-panel';

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import xlsx from 'xlsx';
 import { respondWithDownload, toFilename } from '@tupaia/utils';
 import { getExportPathForUser } from '@tupaia/server-utils';

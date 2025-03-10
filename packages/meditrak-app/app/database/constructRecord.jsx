@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import * as DataTypes from './types';
 import { snakeToCamelCase } from '../utilities';
 

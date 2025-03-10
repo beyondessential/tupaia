@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { http, HttpResponse } from 'msw';
 import entity from './mockData/entity.json';
 import dashboards from './mockData/dashboards.json';

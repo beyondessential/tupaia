@@ -1,19 +1,21 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
-import React, { ReactNode, useState } from 'react';
+import { DialogActions, useTheme } from '@material-ui/core';
+import { WatchLater as ClockIcon, Lock as LockIcon } from '@material-ui/icons';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { KeysToCamelCase, Entity, Project as ProjectT } from '@tupaia/types';
-import { DialogActions, Typography, useTheme } from '@material-ui/core';
-import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
-import { SelectList, SpinningLoader, Button as UIButton } from '../components';
+
+import { Entity, KeysToCamelCase, Project as ProjectT } from '@tupaia/types';
+import {
+  SelectList,
+  SpinningLoader,
+  Button as UIButton,
+  ButtonProps as UIButtonProps,
+} from '../components';
 
 const Button = styled(UIButton)`
-  text-transform: none;
   font-size: 0.875rem;
-  padding: 0.5rem 1.6rem;
+  padding-block: 0.5rem;
+  padding-inline: 1.6rem;
+  text-transform: none;
 `;
 
 const LoadingContainer = styled.div`
@@ -44,25 +46,25 @@ const ListWrapper = styled.div<{
   }
 `;
 
-const CancelButton = ({ onClick, children }: { onClick: () => void; children: ReactNode }) => {
-  const { palette } = useTheme();
-  const variant = palette.type === 'light' ? 'outlined' : 'text';
-  const color = palette.type === 'light' ? 'primary' : 'default';
+const CancelButton = (props: UIButtonProps) => {
+  const isLightTheme = useTheme().palette.type === 'light';
   return (
-    <Button onClick={onClick} variant={variant} color={color}>
-      {children}
-    </Button>
+    <Button
+      color={isLightTheme ? 'primary' : 'default'}
+      variant={isLightTheme ? 'outlined' : 'text'}
+      {...props}
+    />
   );
 };
 
-type Project = KeysToCamelCase<ProjectT> & {
+interface Project extends KeysToCamelCase<ProjectT> {
   hasAccess: boolean;
   hasPendingAccess: boolean;
   homeEntityCode: Entity['code'];
   name: Entity['name'];
   names?: Entity['name'][];
   value?: string;
-};
+}
 
 interface ProjectSelectFormProps {
   projectId?: Project['id'];
@@ -129,11 +131,8 @@ export const ProjectSelectForm = ({
     });
   };
 
-  const projectOptions = getFormattedProjects();
-
   return (
     <>
-      <Typography variant="h1">Select project</Typography>
       {isLoading ? (
         <LoadingContainer>
           <SpinningLoader />
@@ -141,7 +140,7 @@ export const ProjectSelectForm = ({
       ) : (
         <ListWrapper $variant={variant}>
           <SelectList
-            items={projectOptions}
+            items={getFormattedProjects()}
             label="Select a project from the list below. You can change the project at any time"
             onSelect={onSelect}
           />

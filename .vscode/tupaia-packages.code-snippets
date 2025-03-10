@@ -1,14 +1,4 @@
 {
-  "Copyright": {
-    "prefix": "cpr",
-    "body": [
-      "/**",
-      " * Tupaia",
-      " * Copyright (c) 2017 - $CURRENT_YEAR Beyond Essential Systems Pty Ltd",
-      " */"
-    ],
-    "description": "Copyright notice"
-  },
   "abstract method": {
     "prefix": "absm",
     "body": [

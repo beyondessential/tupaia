@@ -9047,9 +9047,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshwooding/vite-plugin-react-docgen-typescript@npm:0.3.1":
-  version: 0.3.1
-  resolution: "@joshwooding/vite-plugin-react-docgen-typescript@npm:0.3.1"
+"@joshwooding/vite-plugin-react-docgen-typescript@npm:0.3.0":
+  version: 0.3.0
+  resolution: "@joshwooding/vite-plugin-react-docgen-typescript@npm:0.3.0"
   dependencies:
     glob: ^7.2.0
     glob-promise: ^4.2.0
@@ -9061,7 +9061,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: a7f3240668c695c3beca936d7a95272f8d03dd76fbf0ef057ca51bc864ceca628e6bb2e8d8adb6081ae0005287c204a3fbb4db6e558a8b7707545715cc12e101
+  checksum: 3fe2dc68dcb43920cc08bc5cc2937953bed1080e9c453dc3f513156b9a862fe6af0cda94b70272a4844a27964070129f8d0d31056211b1486a8fd9f6e1c20559
   languageName: node
   linkType: hard
 
@@ -11452,7 +11452,7 @@ __metadata:
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.6.8
     bson-objectid: ^1.2.2
-    camelcase-keys: ^9.1.3
+    csstype: ^3.1.3
     date-fns: ^2.29.2
     downloadjs: 1.4.7
     esbuild: ^0.24.0
@@ -11696,7 +11696,7 @@ __metadata:
     metro-react-native-babel-preset: 0.76.8
     moment: ^2.24.0
     nanoid: ^2.0.3
-    prettier: ^2.4.1
+    prettier: ^3.5.1
     prop-types: ^15.8.1
     react: 18.2.0
     react-native: 0.72.5
@@ -12050,6 +12050,7 @@ __metadata:
     "@types/react-table": ^7.7.14
     "@types/styled-components": ^5.0.0
     ace-builds: ^1.10.1
+    csstype: ^3.1.3
     date-fns: ^2.12.0
     downloadjs: ^1.4.7
     faker: ^4.1.0
@@ -16264,18 +16265,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase-keys@npm:^9.1.3":
-  version: 9.1.3
-  resolution: "camelcase-keys@npm:9.1.3"
-  dependencies:
-    camelcase: ^8.0.0
-    map-obj: 5.0.0
-    quick-lru: ^6.1.1
-    type-fest: ^4.3.2
-  checksum: 2da83e6b7a162e9b7e6d94a5874ed8b580e6f78e50cb2b8137c00f3d5adb42fdae2691bd3587018cabcd489626c52e38ca3a7f6706b28521717b12e149322e64
-  languageName: node
-  linkType: hard
-
 "camelcase@npm:^5.0.0, camelcase@npm:^5.3.1":
   version: 5.3.1
   resolution: "camelcase@npm:5.3.1"
@@ -16297,13 +16286,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "camelcase@npm:8.0.0"
-  checksum: 6da7abe997af29e80052f17aa21628c7cce14af364cef9f07a2a44d59614dd6f361d405f121938e673424d673697a8c53ad17be8c4b03b0a727307c4db8b5b5e
-  languageName: node
-  linkType: hard
-
 "camelize@npm:^1.0.0":
   version: 1.0.0
   resolution: "camelize@npm:1.0.0"
@@ -16311,17 +16293,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001503, caniuse-lite@npm:^1.0.30001541, caniuse-lite@npm:^1.0.30001565":
-  version: 1.0.30001625
-  resolution: "caniuse-lite@npm:1.0.30001625"
-  checksum: e7f8b9e10c35a5d9a1d1db76be398cb1c592ee1bc905fabe6bd90313537099d29a65c49c85e6350132fa30ca20e8c0317ecfaa66d997f7fac21ff37ddaece2a9
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001646":
-  version: 1.0.30001659
-  resolution: "caniuse-lite@npm:1.0.30001659"
-  checksum: 99304d1ca91ddd25065d200ecc545668187359d54eea5d9eef6b4d99f28ce1164c0a6c7f785c531a336aeed171055f50be5bc68ae0b1e564474c1d35ce737947
+"caniuse-lite@npm:^1.0.30001254, caniuse-lite@npm:^1.0.30001503, caniuse-lite@npm:^1.0.30001541, caniuse-lite@npm:^1.0.30001565, caniuse-lite@npm:^1.0.30001646":
+  version: 1.0.30001690
+  resolution: "caniuse-lite@npm:1.0.30001690"
+  checksum: f2c1b595f15d8de4d9ccd155d61ac9f00ac62f1515870505a0186266fd52aef169fcddc90d8a4814e52b77107244806466fadc2c216662f23f1022a430e735ee
   languageName: node
   linkType: hard
 
@@ -17981,6 +17956,13 @@ __metadata:
   version: 3.0.8
   resolution: "csstype@npm:3.0.8"
   checksum: 5939a003858a31a32cbc52a8f45496aa0c2bcb4629b21c5bc14a7ddcac1a3d4adfd655f56843dc14940f60563378e9444af2c9c373b3f212601b9eeb6740b8db
+  languageName: node
+  linkType: hard
+
+"csstype@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "csstype@npm:3.1.3"
+  checksum: 8db785cc92d259102725b3c694ec0c823f5619a84741b5c7991b8ad135dfaa66093038a1cc63e03361a6cd28d122be48f2106ae72334e067dd619a51f49eddf7
   languageName: node
   linkType: hard
 
@@ -27415,13 +27397,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"map-obj@npm:5.0.0":
-  version: 5.0.0
-  resolution: "map-obj@npm:5.0.0"
-  checksum: c35a4e42a484eb958cb6985da1ed4cb9597a65b2e7986eb585489733533ced144acaece4a2e5d2b53d0ba9167c44c0b4475d1eaeb86dd2e889435f4204258307
-  languageName: node
-  linkType: hard
-
 "map-obj@npm:^1.0.0":
   version: 1.0.1
   resolution: "map-obj@npm:1.0.1"
@@ -31062,21 +31037,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.4.1":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
-  bin:
-    prettier: bin-prettier.js
-  checksum: b49e409431bf129dd89238d64299ba80717b57ff5a6d1c1a8b1a28b590d998a34e083fa13573bc732bb8d2305becb4c9a4407f8486c81fa7d55100eb08263cf8
-  languageName: node
-  linkType: hard
-
 "prettier@npm:^3.1.1":
   version: 3.3.3
   resolution: "prettier@npm:3.3.3"
   bin:
     prettier: bin/prettier.cjs
   checksum: bc8604354805acfdde6106852d14b045bb20827ad76a5ffc2455b71a8257f94de93f17f14e463fe844808d2ccc87248364a5691488a3304f1031326e62d9276e
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "prettier@npm:3.5.1"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: a3fc77235b5a30259641547c688a067bd9db10fbf741be2ba94901480937ae8f5d26c8d7b1b688f93091882ec6afb8e48f90b86ddc3deb85a0eed28164680cb2
   languageName: node
   linkType: hard
 
@@ -31611,13 +31586,6 @@ __metadata:
   version: 5.1.1
   resolution: "quick-lru@npm:5.1.1"
   checksum: a516faa25574be7947969883e6068dbe4aa19e8ef8e8e0fd96cddd6d36485e9106d85c0041a27153286b0770b381328f4072aa40d3b18a19f5f7d2b78b94b5ed
-  languageName: node
-  linkType: hard
-
-"quick-lru@npm:^6.1.1":
-  version: 6.1.2
-  resolution: "quick-lru@npm:6.1.2"
-  checksum: 0491a24dcd39b8a325e9d3ae719fad7690a1da7a0dbfa8f16613663dc7d262d08b565005ce16a04497ed4700f1f477b8e06cd46e10a7a112a481a18d056c38f7
   languageName: node
   linkType: hard
 
@@ -37015,6 +36983,7 @@ __metadata:
     nodemon: ^2.0.4
     npm-package-json-lint: 5.1.0
     pm2: ^5.3.0
+    prettier: ^3.5.1
     react-docgen-typescript-plugin: ^1.0.8
     storybook: ^8.2.9
     ts-jest: ^29.1.2
@@ -37142,13 +37111,6 @@ __metadata:
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: a4ef07ece297c9fba78fc1bd6d85dff4472fe043ede98bd4710d2615d15776902b595abf62bd78339ed6278f021235fb28a96361f8be86ed754f778973a0d278
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^4.3.2":
-  version: 4.30.2
-  resolution: "type-fest@npm:4.30.2"
-  checksum: 861f7ae761fa11194743318a486c04b369f6f39060c8c24a099880478efa5c7562b72ad88c38fb7d7dc57111fb378b8922fceddaff363cfc002c6005a99d6bb6
   languageName: node
   linkType: hard
 
