@@ -4,7 +4,7 @@ import { PersonalDetailsForm } from './PersonalDetailsForm';
 
 export const PersonalDetailsSection = () => {
   return (
-    <AccountSettingsSection title="Personal details" description="Edit your personal details">
+    <AccountSettingsSection heading="Personal details" description="Edit your personal details">
       <PersonalDetailsForm />
     </AccountSettingsSection>
   );

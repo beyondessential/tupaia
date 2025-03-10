@@ -21,7 +21,7 @@ interface RequestProjectAccessProps {
 export const RequestProjectAccess = ({ projectCode, onBack }: RequestProjectAccessProps) => {
   const { data: project, isLoading: isLoadingProject, isFetched } = useProject(projectCode);
   const { mutate: requestProjectAccess, isLoading, isSuccess, isIdle } = useRequestProjectAccess();
-  const { data: countries } = useCountryAccessList(projectCode);
+  const { data: countries = [] } = useCountryAccessList(projectCode);
   const isMobile = useIsMobile();
 
   if (isMobile && isSuccess) {
