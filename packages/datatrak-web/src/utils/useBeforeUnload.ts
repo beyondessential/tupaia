@@ -5,14 +5,17 @@ function handleBeforeUnload(event: BeforeUnloadEvent) {
   event.returnValue = ''; // For legacy browsers
 }
 
+function addListener() {
+  window.addEventListener('beforeunload', handleBeforeUnload);
+}
+
+function removeListener() {
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+}
+
 export function useBeforeUnload(enabled = true) {
   useEffect(() => {
-    if (enabled) {
-      window.addEventListener('beforeunload', handleBeforeUnload);
-    } else {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    }
-
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    (enabled ? addListener : removeListener)();
+    return removeListener;
   }, [enabled]);
 }
