@@ -30,12 +30,14 @@ const Title = styled(Typography).attrs({
   variant: 'h1',
 })`
   font-size: 1rem;
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
+  text-wrap: balance;
 `;
 
 const Text = styled(Typography)`
   font-size: 0.875rem;
   block-size: 5rem;
+  text-wrap: balance;
 `;
 
 interface CarouselStep {

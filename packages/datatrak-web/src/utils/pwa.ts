@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-function getPWADisplayMode() {
+function getPwaDisplayMode() {
   if (document.referrer.startsWith('android-app://')) return 'twa';
   if (window.matchMedia('(display-mode: browser)').matches) return 'browser';
   if (window.matchMedia('(display-mode: standalone)').matches) return 'standalone';
@@ -16,10 +16,8 @@ function getPWADisplayMode() {
 }
 
 export const isPWA = () => {
-  const displayMode = getPWADisplayMode();
+  const displayMode = getPwaDisplayMode();
   return (
-    getPWADisplayMode() === 'standalone' ||
-    getPWADisplayMode() === 'fullscreen' ||
-    getPWADisplayMode() === 'minimal-ui'
+    displayMode === 'standalone' || displayMode === 'fullscreen' || displayMode === 'minimal-ui'
   );
 };

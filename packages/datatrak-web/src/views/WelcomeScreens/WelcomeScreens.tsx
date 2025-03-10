@@ -14,11 +14,11 @@ import { ROUTES } from '../../constants';
 const steps = [
   {
     title: 'Welcome to Tupaia DataTrak!',
-    text: "If you're here from MediTrak, welcome! Rest assured that you have all the same functionality as MediTrak, only better. Come for a quick tour of what's new.",
+    text: 'If you’re here from MediTrak, welcome! Rest assured that you have all the same functionality as MediTrak, only better. Come for a quick tour of what’s new.',
     imgPath: 'images/data-collection-woman.svg',
   },
   {
-    title: 'Sync Status',
+    title: 'Sync status',
     text: 'See your last sync and which surveys are pending sync on your home page. Use the sync button on the top right to manually sync your device.',
     imgPath: 'images/pig-on-beach.svg',
   },
@@ -29,7 +29,7 @@ const steps = [
   },
   {
     title: 'Projects',
-    text: "From the home screen you can see which project you're in. Click on the project to swap to a different project.",
+    text: 'From the home screen you can see which project you’re in. Click on the project to swap to a different project.',
     imgPath: 'images/data-collection-man.svg',
   },
 ];

@@ -15,7 +15,7 @@ const Container = styled.div`
 const Dot = styled.button<{ $active: boolean }>`
   width: 0.5rem;
   height: 0.5rem;
-  border-radius: 50%;
+  border-radius: calc(infinity * 1px);
   background-color: ${({ theme, $active }) =>
     $active ? theme.palette.primary.main : theme.palette.divider};
   border: none;
