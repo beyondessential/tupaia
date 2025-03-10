@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState, ReactNode } from 'react';
 import { TransitionProps } from '@material-ui/core/transitions';
 import styled from 'styled-components';

@@ -1,56 +1,73 @@
 import React from 'react';
-import styled from 'styled-components';
-import { PageContainer as BasePageContainer } from '../../components';
-import { SurveySelectSection } from './SurveySelectSection';
-import { SurveyResponsesSection } from './SurveyResponsesSection';
-import { LeaderboardSection } from './LeaderboardSection';
-import { ActivityFeedSection } from './ActivityFeedSection';
-import { RecentSurveysSection } from './RecentSurveysSection';
-import { TasksSection } from './TasksSection';
-import { HEADER_HEIGHT } from '../../constants';
-import { useCurrentUserRecentSurveys } from '../../api';
+import styled, { css } from 'styled-components';
 
-const PageContainer = styled(BasePageContainer)`
+import { useCurrentUserRecentSurveys } from '../../api';
+import { PageContainer as BasePageContainer } from '../../components';
+import { HEADER_HEIGHT } from '../../constants';
+import { ActivityFeedSection } from './ActivityFeedSection';
+import { LeaderboardSection } from './LeaderboardSection';
+import { RecentSurveysSection } from './RecentSurveysSection';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
+import { SurveySelectSection } from './SurveySelectSection';
+import { TasksSection } from './TasksSection';
+
+const PageContainer = styled(BasePageContainer).attrs({ component: 'main' })`
+  --body-block-size: calc(100vb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
+  //                                                 ^~~~~~~~~~~~~~~~~~~ Header’s border-block-end-width
+  block-size: 100%;
   display: flex;
-  background: ${({
-    theme,
-  }) => `linear-gradient(252deg, ${theme.palette.primary.main}24 1.92%, ${theme.palette.background.default}33 29.06%),
-    linear-gradient(242deg, ${theme.palette.background.default}4d 68.02%, ${theme.palette.primary.main}28 100%);
-  `};
-  height: 100%;
-  // make the container scrollable on small screens
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    max-height: calc(100vh - ${HEADER_HEIGHT});
-    overflow-y: auto;
-  }
+  max-block-size: var(--body-block-size);
+  overflow-y: auto;
+  max-inline-size: 100%;
+  inline-size: 100%;
+
+  ${({ theme }) => {
+    const primaryColor = theme.palette.primary.main;
+    const backgroundColor = theme.palette.background.default;
+    return css`
+      background-image: linear-gradient(
+          252deg,
+          oklch(from ${primaryColor} l c h / 14%) 2%,
+          oklch(from ${backgroundColor} l c h / 20%) 29%
+        ),
+        linear-gradient(
+          242deg,
+          oklch(from ${backgroundColor} l c h / 30%) 68%,
+          oklch(from ${primaryColor} l c h / 16%) 100%
+        );
+      @supports not (color: oklch(from black l c h)) {
+        background-image: linear-gradient(252deg, ${primaryColor}24 2%, ${backgroundColor}33 29%),
+          linear-gradient(242deg, ${backgroundColor}4d 68%, ${primaryColor}28 100%);
+      }
+    `;
+  }};
 `;
 
 const PageBody = styled.div`
+  block-size: 100%;
   display: flex;
   flex-direction: column;
-  padding: 0.5rem 0 0.5rem;
-  width: 100%;
-  max-width: 85rem;
-  margin: 0 auto;
-  height: 100%;
+  inline-size: 100%;
+  margin-block: 0;
+  margin-inline: auto;
+  max-inline-size: 85rem;
+  padding-block-start: 1rem;
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
 
   // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 0.2rem 1rem 0.8rem;
-    height: calc(100vh - ${HEADER_HEIGHT});
+    block-size: var(--body-block-size);
   }
 `;
 
-const Grid = styled.div<{
-  $hasMoreThanOneSurvey: boolean;
-}>`
-  flex: 1;
+const Grid = styled.div<{ $hasMultiple?: boolean }>`
   display: flex;
   flex-direction: column;
-  min-height: 0; // This is needed to stop the grid overflowing the flex container
-  max-width: 100%;
+  gap: 1.5rem;
+  margin-block: 1.5rem;
   margin-inline: auto;
-  margin-block: 1.3rem;
+  max-inline-size: 100%;
+  min-block-size: 50rem;
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
@@ -58,46 +75,36 @@ const Grid = styled.div<{
 
   > section {
     overflow: hidden;
-    &:not(:last-child) {
-      margin-bottom: 1rem;
-    }
   }
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    gap: 1.5rem;
-    display: grid;
-    margin-block: 0.5rem;
-    grid-template-rows: ${({ $hasMoreThanOneSurvey }) =>
-      $hasMoreThanOneSurvey ? 'auto auto auto' : 'auto 7rem auto'};
-    grid-template-columns: 23% 1fr 1fr 30%;
-    grid-template-areas: ${({ $hasMoreThanOneSurvey }) => {
-      //If there is < 2 surveys, the recentSurveys section will be smaller and the activity feed will shift upwards on larger screens
-      if ($hasMoreThanOneSurvey) {
-        return `
-          'surveySelect surveySelect surveySelect tasks'
-          'recentSurveys recentSurveys recentSurveys tasks'
-          'recentResponses activityFeed activityFeed leaderboard'
-        `;
+  ${({ $hasMultiple, theme }) => {
+    const { up } = theme.breakpoints;
+    return css`
+      ${up('md')} {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 23.33333333%)) minmax(min-content, 30%);
+        padding-block: 1rem;
+        margin-block: 0;
       }
-      return `'surveySelect surveySelect surveySelect tasks'
-        'recentSurveys activityFeed activityFeed tasks'
-        'recentResponses activityFeed activityFeed leaderboard'
-        `;
-    }};
-    > section {
-      &:not(:last-child) {
-        margin-bottom: 0;
-      }
-    }
 
-    > div {
-      min-height: auto;
-    }
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    gap: 1.81rem;
-  }
+      // If there is only one survey, Recent Surveys section collapses and Activity Feed shifts up
+      ${$hasMultiple
+        ? css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect  --surveySelect  --tasks'
+              '--recentSurveys   --recentSurveys --recentSurveys --tasks'
+              '--recentResponses --activityFeed  --activityFeed  --leaderboard';
+            grid-template-rows: repeat(3, auto);
+          `
+        : css`
+            grid-template-areas:
+              '--surveySelect    --surveySelect --surveySelect --tasks'
+              '--recentSurveys   --activityFeed --activityFeed --tasks'
+              '--recentResponses --activityFeed --activityFeed --leaderboard';
+            grid-template-rows: auto auto 1fr;
+          `}
+    `;
+  }}
 `;
 
 export const LandingPage = () => {
@@ -107,7 +114,7 @@ export const LandingPage = () => {
   return (
     <PageContainer>
       <PageBody>
-        <Grid $hasMoreThanOneSurvey={hasMoreThanOneSurvey}>
+        <Grid $hasMultiple={hasMoreThanOneSurvey}>
           <SurveySelectSection />
           <TasksSection />
           <LeaderboardSection />

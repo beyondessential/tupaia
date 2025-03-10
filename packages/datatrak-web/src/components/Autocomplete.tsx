@@ -125,6 +125,7 @@ export const QuestionAutocomplete = styled(Autocomplete).attrs({
   }
 
   .MuiInputBase-root {
+    background: transparent;
     max-width: 25rem;
     border-bottom: 1px solid ${({ theme }) => theme.palette.text.secondary};
     border-radius: 0;

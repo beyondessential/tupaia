@@ -12,6 +12,10 @@ const Title = styled(Typography).attrs({
   text-align: center;
 `;
 
+const Description = styled(Typography).attrs({ align: 'center' })`
+  text-wrap: balance;
+`;
+
 const List = styled.ul`
   display: flex;
   flex-direction: row;
@@ -19,7 +23,7 @@ const List = styled.ul`
   justify-content: center;
   list-style: none;
   padding-inline-start: 0;
-  margin-top: 2.8rem;
+  margin-top: 1.5rem;
 `;
 
 interface QRCodeListProps {
@@ -32,11 +36,11 @@ export const QRCodeList = ({ createdEntities, variant = 'panel' }: QRCodeListPro
 
   return (
     <>
-      <Title>QR Code generated</Title>
-      <Typography align="center">
-        Your survey has successfully generated the below QR code
+      <Title>QR&nbsp;code generated</Title>
+      <Description>
+        Your survey has successfully generated the below QR&nbsp;code
         {createdEntities.length > 1 ? 's' : ''}. Download it below to print or share with others.
-      </Typography>
+      </Description>
 
       <List>
         {createdEntities.map(entity => (

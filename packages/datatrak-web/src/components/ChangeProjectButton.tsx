@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { HTMLAttributes, useState } from 'react';
 import styled from 'styled-components';
-import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
+
 import { useCurrentUserContext } from '../api';
+import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
 import { UserDetails as NavbarUserDetails } from '../layout/UserMenu/UserInfo';
 import { Button, TooltipButtonWrapper } from './Button';
 
@@ -17,7 +18,7 @@ const Container = styled.div`
     padding-inline-start: 0.5rem;
   }
 
-  .MuiTypography-root & {
+  :is(p, h1, h2, h3, h4, h5, h6) & {
     &,
     > ${TooltipButtonWrapper} // Prevent span wrapper on button from growing to fill parent
     {
@@ -63,7 +64,7 @@ const ProjectButton = styled(Button).attrs({
   }
 `;
 
-export const ChangeProjectButton = ({ className }: { className?: string }) => {
+export const ChangeProjectButton = (props: HTMLAttributes<HTMLDivElement>) => {
   const { project } = useCurrentUserContext();
   const projectName = project?.name ?? null;
 
@@ -72,7 +73,7 @@ export const ChangeProjectButton = ({ className }: { className?: string }) => {
   const closeProjectModal = () => setProjectModalIsOpen(false);
 
   return (
-    <Container className={className}>
+    <Container {...props}>
       <ProjectButton onClick={openProjectModal} tooltip="Change project">
         {projectName ?? 'Select project'}
       </ProjectButton>

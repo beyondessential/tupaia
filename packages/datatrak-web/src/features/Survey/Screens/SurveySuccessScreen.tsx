@@ -14,8 +14,17 @@ const ButtonGroup = styled.div`
 `;
 
 const Button = styled(BaseButton)`
+  text-align: center;
+
   & + & {
-    margin: 1.25rem 0 0 0;
+    margin-block: 1.25rem 0;
+    margin-inline: 0;
+  }
+
+  &.MuiButton-outlined {
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      background: white;
+    }
   }
 
   &.MuiButton-outlined {
@@ -54,7 +63,7 @@ export const SurveySuccessScreen = () => {
 
   const getText = () => {
     if (survey?.canRepeat) {
-      return "To repeat the same survey again click the button below, otherwise 'Close' to return to your dashboard";
+      return 'To repeat the same survey again click the button below, otherwise return to your dashboard';
     }
 
     return 'To return to your dashboard, click the button below';
@@ -63,11 +72,11 @@ export const SurveySuccessScreen = () => {
   const text = getText();
 
   return (
-    <SurveySuccess text={text} title="Survey submitted!" showQrCode>
+    <SurveySuccess text={text} title="Survey submitted!">
       <ButtonGroup>
         {survey?.canRepeat && (
           <Button onClick={repeatSurvey} fullWidth variant="outlined">
-            Repeat Survey
+            Repeat survey
           </Button>
         )}
         <ReturnButton />

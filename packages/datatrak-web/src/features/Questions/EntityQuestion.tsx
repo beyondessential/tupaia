@@ -7,19 +7,30 @@ import { EntitySelector } from '../EntitySelector';
 export const EntityQuestion = ({
   id,
   label,
+  detailLabel,
   name,
   required,
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
-  const { isReviewScreen, isResponseScreen, formData, countryCode } = useSurveyForm();
+  const {
+    isReviewScreen,
+    isResponseScreen,
+    formData,
+    countryCode,
+    displayQuestions,
+    screenHeader,
+    surveyProjectCode,
+  } = useSurveyForm();
 
-  const { surveyProjectCode } = useSurveyForm();
+  // Hide the question label if there is only one question, and it is the same as the screen header
+  const hideQuestionLabel = displayQuestions?.length === 1 && screenHeader == label;
 
   return (
     <EntitySelector
       id={id}
-      label={label}
+      label={hideQuestionLabel ? null : label}
+      detailLabel={detailLabel}
       name={name}
       required={required}
       controllerProps={{

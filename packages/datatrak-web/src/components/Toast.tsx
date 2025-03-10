@@ -68,7 +68,7 @@ const Message = styled(Typography)<{
   font-size: 0.875rem;
   flex: 1;
   word-break: break-word;
-  text-align: ${({ $variant }) => ($variant === 'info' ? 'center' : 'left')};
+  text-align: ${({ $variant }) => ($variant === 'info' ? 'center' : 'start')};
   color: ${({ theme, $variant }) => {
     if ($variant === 'error') {
       return theme.palette.error.main;

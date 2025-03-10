@@ -1,12 +1,15 @@
+import { SwipeableDrawer, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { SwipeableDrawer, Typography } from '@material-ui/core';
+
 import { Button } from '@tupaia/ui-components';
-import { BROWSERS, getBrowser, getIsMobileDevice } from '../utils';
+
 import { useCurrentUserContext } from '../api';
+import { BROWSERS, getBrowser, getIsMobileDevice } from '../utils';
 
 const Container = styled.div`
-  padding: 2.2rem 1.25rem 3.4rem 1.25rem;
+  padding-block: 2.2rem 3.4rem;
+  padding-inline: 1.25rem;
 `;
 
 const Title = styled(Typography).attrs({
@@ -25,20 +28,21 @@ const LeftColumn = styled.div`
 const Option = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 1rem;
+  margin-block-start: 1rem;
   justify-content: space-between;
 `;
 
 const OptionIcon = styled.div`
-  border: 1px solid ${({ theme }) => theme.palette.divider};
+  border: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
   width: 2.8rem;
   height: 2.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.3rem;
-  border-radius: 4px;
-  margin: 0 0.625rem;
+  border-radius: 0.25rem;
+  margin-block: 0;
+  margin-inline: 0.625rem;
   img {
     height: 100%;
     width: auto;
@@ -51,16 +55,16 @@ const OptionText = styled(Typography)`
 
 const OptionButton = styled(Button)`
   border-radius: 2rem;
-  width: 7rem;
   font-weight: 400;
+  inline-size: 7rem;
 `;
 
 const BROWSER_ICONS = {
-  [BROWSERS.CHROME]: '/chrome-icon.png',
-  [BROWSERS.FIREFOX]: '/firefox-icon.png',
-  [BROWSERS.SAFARI]: '/safari-icon.png',
-  [BROWSERS.OPERA]: '/opera-icon.png',
-  [BROWSERS.EDGE]: '/edge-icon.png',
+  [BROWSERS.CHROME]: '/browser-icons/chrome.svg',
+  [BROWSERS.EDGE]: '/browser-icons/edge.svg',
+  [BROWSERS.FIREFOX]: '/browser-icons/firefox.svg',
+  [BROWSERS.OPERA]: '/browser-icons/opera.svg',
+  [BROWSERS.SAFARI]: '/browser-icons/safari.svg',
 };
 
 const APP_TARGET = 'tupaiameditrak://';
@@ -76,7 +80,7 @@ const usePromptCookie = () => {
   const setCookie = () => {
     const date = new Date();
     date.setTime(date.getTime() + 24 * 60 * 60 * 1000); // 24 hours, in milliseconds
-    const expires = 'expires=' + date.toUTCString();
+    const expires = `expires=${date.toUTCString()}`;
     const cookie = `${COOKIE_NAME}=${true};${expires};path=/`;
     document.cookie = cookie;
   };
@@ -182,7 +186,7 @@ export const MobileAppPrompt = () => {
             ({ icon, text, button: { onClick, variant = 'contained', text: buttonText } }) => (
               <Option key={text!}>
                 <LeftColumn>
-                  <OptionIcon>{icon && <img src={icon} />}</OptionIcon>
+                  <OptionIcon aria-hidden>{icon && <img src={icon} />}</OptionIcon>
                   <OptionText>{text}</OptionText>
                 </LeftColumn>
                 <OptionButton onClick={onClick} variant={variant}>

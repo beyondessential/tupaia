@@ -17,13 +17,14 @@ const ScrollableBody = styled.div`
   height: 100%;
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 1rem 4rem;
-
+  padding-block: 1rem 4rem;
+  padding-inline: 1rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 1rem 1rem 5rem;
+    padding-inline: 5rem 1rem;
   }
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 1rem 2.5rem;
+    padding-block: 1rem;
+    padding-inline: 2.5rem;
   }
 `;
 
@@ -33,7 +34,7 @@ const ScreenHeader = styled.div<{
   margin-block-end: 1rem;
   padding: 0.5rem 0;
 
-  /* 
+  /*
    * Ensure that vertical centring when there are no questions to display, by targeting the warpper
    * of this element
    */
@@ -56,10 +57,11 @@ const Heading = styled(Typography).attrs({ variant: 'h2' })`
  */
 export const SurveyScreen = () => {
   const {
-    displayQuestions,
-    screenHeader: instructionHeading,
-    screenDetail: instructionDetail,
     activeScreen,
+    displayQuestions,
+    isResponseScreen,
+    screenDetail: instructionDetail,
+    screenHeader: instructionHeading,
   } = useSurveyForm();
   const isMobile = useIsMobile();
 
@@ -72,7 +74,7 @@ export const SurveyScreen = () => {
 
   return (
     <>
-      {isMobile && <MobileSurveyHeader />}
+      {isMobile && !isResponseScreen && <MobileSurveyHeader />}
       <ScrollableBody>
         {/*
          * If the first question on the active screen is an instruction, then display it in full

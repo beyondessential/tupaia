@@ -145,7 +145,7 @@ export const EntitySelector = ({
               invalid={invalid}
               required={required}
               inputProps={{
-                ['aria-labelledby']: showLegend && !label ? 'entity-selector-legend' : undefined,
+                'aria-labelledby': showLegend && !label ? 'entity-selector-legend' : undefined,
               }}
             />
           )}

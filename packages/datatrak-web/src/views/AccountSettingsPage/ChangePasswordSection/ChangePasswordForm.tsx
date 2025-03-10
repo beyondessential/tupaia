@@ -6,7 +6,7 @@ import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
 import { ResetPasswordParams, useResetPassword } from '../../../api';
 
-const StyledForm = styled(Form)`
+const StyledForm = styled(Form<ResetPasswordParams>)`
   width: 100%;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -133,6 +133,7 @@ export const ChangePasswordForm = () => {
             disabled={formIsInsubmissible}
             fullWidth
             tooltip={isDirty ? null : 'Change password to save changes'}
+            tooltipDelay={0}
           >
             {isSubmitting ? 'Changing' : 'Change password'}
           </StyledButton>
