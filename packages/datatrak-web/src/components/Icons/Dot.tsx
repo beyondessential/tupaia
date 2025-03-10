@@ -30,7 +30,14 @@ export const DotIcon = ({
         };
 
   return (
-    <svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg
+      viewBox="0 0 8 8"
+      fill="none"
+      width={8}
+      height={8}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
       {titleAccess && <title>{titleAccess}</title>}
       <circle cx={4} cy={4} {...circleProps} />
     </svg>

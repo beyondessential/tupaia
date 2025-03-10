@@ -25,12 +25,11 @@ const ExpandedWrapper = styled.div`
 `;
 
 const InfiniteListWrapper = styled.div`
-  margin-top: ${HEADER_HEIGHT};
   display: flex;
   overflow: hidden;
   flex-direction: column;
   max-height: calc(100vh - ${HEADER_HEIGHT});
-  background-color: ${({ theme }) => theme.palette.divider};
+  background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
 /**

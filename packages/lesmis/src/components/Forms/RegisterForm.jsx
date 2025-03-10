@@ -1,13 +1,16 @@
-import React, { lazy } from 'react';
-import { TextField, Button, Checkbox, PasswordStrengthBar } from '@tupaia/ui-components';
-import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
+import React, { lazy } from 'react';
 import { useForm } from 'react-hook-form';
-import * as COLORS from '../../constants';
+import styled from 'styled-components';
+
+import { Button, Checkbox, PasswordStrengthBar } from '@tupaia/ui-components';
+
 import { useRegisterUser } from '../../api';
+import * as COLORS from '../../constants';
 import { I18n, useI18n } from '../../utils/I18n';
+import { TextField } from '../TextField';
 
 // Lazy load the password strength library as it uses zxcvbn which is a large dependency.
 // For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
@@ -18,35 +21,34 @@ const ErrorMessage = styled.p`
 `;
 
 const Heading = styled(Typography)`
-  font-size: 1.125rem;
-  line-height: 1.3rem;
-  font-weight: 400;
   color: ${props => props.theme.palette.text.primary};
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-block-end: 2rem;
   text-align: center;
-  margin-bottom: 2rem;
 `;
 
 const FieldSet = styled(MuiFormGroup)`
+  border-block-end: 1px solid ${props => props.theme.palette.grey['400']};
+  column-gap: 1.25rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 1.25rem;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
+  margin-block-end: 2rem;
+  padding-block-end: 1rem;
   ${props => props.theme.breakpoints.down('sm')} {
     display: block;
   }
 `;
 
 const StyledButton = styled(Button)`
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-block: 1rem;
 `;
 
 const Text = styled(Typography)`
-  text-align: center;
   font-size: 1.2rem;
-  line-height: 1.8rem;
+  line-height: 1.5;
+  text-align: center;
 `;
 
 const SuccessMessage = () => (

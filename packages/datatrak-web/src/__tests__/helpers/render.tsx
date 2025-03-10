@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { UseMutationResult, QueryClient } from '@tanstack/react-query';
 import { MemoryRouter, Routes as Router } from 'react-router-dom';
 import { renderHook } from '@testing-library/react-hooks';
@@ -7,7 +7,7 @@ import { render } from '@testing-library/react';
 import { AppProviders } from '../../AppProviders';
 import { Routes, SurveyRoutes } from '../../routes';
 
-export function renderComponent(children) {
+export function renderComponent(children: ReactNode) {
   const queryClient = new QueryClient();
   return render(<AppProviders queryClient={queryClient}>{children}</AppProviders>);
 }

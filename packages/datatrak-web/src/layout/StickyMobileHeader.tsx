@@ -6,24 +6,37 @@ import styled from 'styled-components';
 import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
-export const MobileHeaderWrapper = styled.div`
-  position: sticky;
+export const MobileHeaderWrapper = styled.header`
+  align-items: center;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  block-size: ${HEADER_HEIGHT};
+  display: grid;
+  gap: 1rem;
+  grid-template-areas: '--leading --title --trailing';
+  grid-template-columns: minmax(3rem, max-content) 1fr minmax(3rem, max-content);
+  inline-size: 100%;
   inset-block-start: 0;
   inset-inline-start: 0;
-  inline-size: 100%;
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme.palette.background.paper};
   min-block-size: ${HEADER_HEIGHT};
-  block-size: ${HEADER_HEIGHT};
+  padding-left: max(env(safe-area-inset-left, 0), 0.2rem);
+  padding-right: max(env(safe-area-inset-right, 0), 0.2rem);
+  padding-top: env(safe-area-inset-top, 0);
+  position: sticky;
+  touch-action: pinch-zoom;
   z-index: 1000;
 `;
 
 const Button = styled(IconButton)`
-  svg {
+  .MuiSvgIcon-root {
     color: ${({ theme }) => theme.palette.text.primary};
   }
+`;
+const LeadingIconButton = styled(Button)`
+  grid-area: --leading;
+`;
+const TrailingIconButton = styled(Button)`
+  grid-area: --trailing;
 `;
 
 const BackIcon = styled(ArrowLeftIcon)`
@@ -32,17 +45,11 @@ const BackIcon = styled(ArrowLeftIcon)`
 `;
 
 const Title = styled(Typography).attrs({ variant: 'h2' })`
-  display: inline;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
-  margin-inline: 1rem;
-  svg {
-    vertical-align: middle;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  inline-size: 3.5rem;
+  grid-area: --title;
+  text-align: center;
+  overflow: hidden;
 `;
 
 interface StickyMobileHeaderProps extends HTMLAttributes<HTMLDivElement> {
@@ -66,20 +73,16 @@ export const StickyMobileHeader = ({
       {...props}
     >
       {onBack && (
-        <ButtonContainer>
-          <Button onClick={onBack}>
-            <BackIcon />
-          </Button>
-        </ButtonContainer>
+        <LeadingIconButton onClick={onBack}>
+          <BackIcon />
+        </LeadingIconButton>
       )}
       <Title>{children}</Title>
-      <ButtonContainer>
-        {onClose && (
-          <Button onClick={onClose}>
-            <Close />
-          </Button>
-        )}
-      </ButtonContainer>
+      {onClose && (
+        <TrailingIconButton aria-label="Close sync view" onClick={onClose}>
+          <Close />
+        </TrailingIconButton>
+      )}
     </MobileHeaderWrapper>
   );
 };

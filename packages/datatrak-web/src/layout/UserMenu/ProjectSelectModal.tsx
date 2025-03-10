@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Paper, Typography } from '@material-ui/core';
+
 import { IconButton, ProjectSelectForm } from '@tupaia/ui-components';
+
 import { RequestProjectAccess } from '../../features';
 import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
 import { Modal } from '../../components/Modal';
@@ -9,7 +11,7 @@ import { SlideTransition } from '../../components/SlideTransition';
 import { ArrowLeftIcon } from '../../components';
 import { useIsMobile } from '../../utils';
 
-const StyledModal = styled(Modal)`
+const StyledModal = styled(Modal)<{ $requestAccess?: boolean }>`
   //  The mobile styles are specific to the project select modal in datatrak-web so they are included here
   //  instead of in the ui-components select list component
   ${({ theme }) => theme.breakpoints.down('sm')} {
@@ -25,7 +27,7 @@ const StyledModal = styled(Modal)`
       > div {
         display: flex;
         flex-direction: column;
-        block-size: 100%;
+        block-size: ${props => (props.$requestAccess ? 'auto' : '100%')};
 
         > div {
           max-block-size: 100%;
@@ -53,7 +55,7 @@ const StyledModal = styled(Modal)`
       > li {
         border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
 
-        .MuiButtonBase-root {
+        > div {
           font-size: 0.75rem;
           padding-inline: 0;
           padding-block: 0.75rem;
@@ -79,21 +81,25 @@ const StyledModal = styled(Modal)`
 `;
 
 const PaperComponent = styled(Paper)`
-  padding: 1rem 1.25rem;
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
   max-width: none;
   width: 48rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2.5rem 1.25rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
     margin: 2rem;
+    padding-block: 1rem 1.25rem;
+    padding-inline: 2.5rem;
   }
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   display: flex;
   align-items: center;
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-block-start: -1rem;
+    *:has(> &) {
+      padding-block-start: 0;
+    }
   }
 `;
 
@@ -104,7 +110,7 @@ const BackButton = styled(IconButton)`
   svg {
     font-size: 1.2rem;
   }
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
   }
 `;
@@ -135,6 +141,7 @@ export const ProjectSelectModal = ({ onBack }: ModalProps) => {
       disablePortal={false}
       fullScreen={isMobile}
       TransitionComponent={isMobile ? SlideTransition : undefined}
+      $requestAccess={!!requestAccessProjectCode}
     >
       {requestAccessProjectCode ? (
         <RequestProjectAccess

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode, useEffect } from 'react';
 import { FormLabelProps } from '@material-ui/core';
 import { useCurrentUserContext, useProjectSurveys } from '../api';

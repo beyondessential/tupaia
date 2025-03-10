@@ -1,19 +1,22 @@
-import React from 'react';
-import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button as UIButton } from '@tupaia/ui-components';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { Button as UIButton } from '@tupaia/ui-components';
+
 import { ROUTES } from '../../constants';
+import { useIsMobile } from '../../utils';
 
-const DesktopContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const Section = styled.section`
   align-items: center;
-  height: 100%;
+  display: flex;
+  text-wrap: balance;
+`;
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
+const DesktopWrapper = styled(Section)`
+  block-size: 100%;
+  flex-direction: column;
 `;
 
 const Image = styled.img.attrs({
@@ -44,7 +47,7 @@ const Button = styled(UIButton)`
 `;
 
 const Desktop = () => (
-  <DesktopContainer>
+  <DesktopWrapper>
     <Image />
     <Text>
       Congratulations, you have no tasks to complete! You can view all other tasks for your project
@@ -53,17 +56,15 @@ const Desktop = () => (
     <Button to={ROUTES.TASKS} component={Link}>
       View all tasks
     </Button>
-  </DesktopContainer>
+  </DesktopWrapper>
 );
 
-const MobileContainer = styled.div`
-  display: flex;
+const MobileWrapper = styled(Section)`
   justify-content: space-between;
-  align-items: center;
 
   p {
     flex: 1;
-    text-align: left;
+    text-align: start;
     margin-inline-end: 1rem;
     margin-block-end: 0;
     font-size: 0.75rem;
@@ -72,10 +73,6 @@ const MobileContainer = styled.div`
   a.MuiButtonBase-root {
     display: inline-block;
     margin-block-end: 0;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: none;
   }
 `;
 
@@ -88,9 +85,4 @@ const Mobile = () => (
   </MobileContainer>
 );
 
-export const NoTasksSection = () => (
-  <>
-    <Desktop />
-    <Mobile />
-  </>
-);
+export const NoTasksSection = () => (useIsMobile() ? <Mobile /> : <Desktop />);

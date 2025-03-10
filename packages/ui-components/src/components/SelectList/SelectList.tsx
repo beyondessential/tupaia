@@ -58,7 +58,17 @@ const Subtitle = styled(Typography)`
   font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.secondary};
   font-weight: 400;
-  margin: 0 0 0.5rem 0.9rem;
+  margin-block: 0 0.5rem;
+  margin-inline: 0 0.9rem;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    color: ${({ theme }) => theme.palette.text.primary};
+    border-block-end: max(0.0265rem, 1px) solid ${({ theme }) => theme.palette.divider};
+    margin-block: 0 0.5rem;
+    margin-inline: 0;
+    padding-block-end: 0.2rem;
+    font-weight: 500;
+  }
 `;
 
 interface SelectListProps {
@@ -71,7 +81,7 @@ interface SelectListProps {
     component?: React.ElementType;
   };
   noResultsMessage?: string;
-  subTitle?: string;
+  subTitle?: string | null;
 }
 
 export const SelectList = ({
@@ -80,9 +90,9 @@ export const SelectList = ({
   label,
   ListItem,
   variant = 'fullBorder',
-  labelProps = {},
+  labelProps,
   noResultsMessage = 'No items to display',
-  subTitle = '',
+  subTitle,
 }: SelectListProps) => {
   return (
     <Wrapper>

@@ -75,7 +75,10 @@ const StyledQRCodeImage = styled(QrCodeImage)`
   flex: 1;
 `;
 
-const ShareButton = styled(Button)`
+const ShareButton = styled(Button).attrs({
+  color: 'primary',
+  variant: 'outlined',
+})`
   ${({ theme }) => theme.breakpoints.up('sm')} {
     display: none;
   }
@@ -110,10 +113,10 @@ export const QRCodeItem = ({ entity, listVariant }: QrCodeImageProps) => {
         variant={listVariant === 'modal' ? 'contained' : 'text'}
         color={listVariant === 'modal' ? 'primary' : 'default'}
       >
-        <DownloadIcon $listVariant={listVariant} /> Download QR Code
+        <DownloadIcon $listVariant={listVariant} /> Download QR&nbsp;code
       </Button>
-      <ShareButton onClick={share} variant="outlined" color="primary">
-        <ShareIcon /> Share QR Code
+      <ShareButton onClick={share}>
+        <ShareIcon /> Share QR&nbsp;code
       </ShareButton>
     </Wrapper>
   );

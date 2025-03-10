@@ -27,7 +27,7 @@ const ButtonColumn = styled(FullWidthColumn)`
   justify-content: center;
 `;
 
-const StyledForm = styled(Form)`
+const StyledForm = styled(Form<RegisterFormFields>)`
   margin-top: 4.3rem;
   width: 42rem;
   max-width: 100%;
