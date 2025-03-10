@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 
 function handleBeforeUnload(event: BeforeUnloadEvent) {
-  event.preventDefault(); // For modern browsers
-  event.returnValue = ''; // For legacy browsers
+  event.preventDefault();
 }
 
 export function useBeforeUnload(enabled = true) {
