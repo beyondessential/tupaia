@@ -6,6 +6,7 @@ import { Header } from '.';
 import { MobileAppPrompt, SurveyResponseModal } from '../features';
 import { ROUTES } from '../constants';
 import { useIsMobile } from '../utils';
+import { HeaderRoot } from './Header/Header';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -16,15 +17,20 @@ const PageWrapper = styled.div`
   + .notistack-SnackbarContainer {
     align-items: stretch;
     inline-size: 28rem;
-    inset-block-start: calc(1rem + ${HEADER_HEIGHT} + max(0.0625rem, 1px));
+    inset-block-start: 0;
     inset-inline-end: 0;
     max-inline-size: 100%;
+    padding-block-start: calc(1rem + max(0.0625rem, 1px));
     padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
     padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
 
     ${({ theme }) => theme.breakpoints.down('md')} {
       inset-block-end: 3.5rem;
     }
+  }
+
+  #root:has(${HeaderRoot}) & + .notistack-SnackbarContainer {
+    inset-block-start: ${HEADER_HEIGHT};
   }
 `;
 
