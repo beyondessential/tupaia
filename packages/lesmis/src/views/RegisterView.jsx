@@ -43,7 +43,7 @@ const StyledLocaleLink = styled(LocaleLink)`
 export const RegisterView = () => (
   <Container>
     <FormBackButton />
-    <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
+    <StyledImg src="/lesmis-login-logo.svg" alt="LESMIS logo" />
     <StyledCard>
       <RegisterForm />
     </StyledCard>

@@ -28,7 +28,7 @@ const palette = {
   text: {
     primary: COLORS.LIGHT_BLACK,
     secondary: COLORS.TEXT_MIDGREY,
-    tertiary: COLORS.TEXT_LIGHTGREY,
+    hint: COLORS.TEXT_LIGHTGREY,
   },
   divider: COLORS.GREY_DE,
   blue: {

@@ -17,10 +17,12 @@ import {
   TasksDashboardPage,
   TaskDetailsPage,
   NotAuthorisedPage,
+  OfflinePage,
 } from '../views';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
+import { SyncPage } from '../views/Sync/SyncPage';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
@@ -53,6 +55,7 @@ const AuthViewLoggedInRedirect = ({ children }) => {
 export const Routes = () => {
   return (
     <RouterRoutes>
+      <Route path="/offline" element={<OfflinePage />} />
       <Route path="/" element={<MainPageLayout />}>
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
@@ -82,6 +85,7 @@ export const Routes = () => {
             </Route>
           </Route>
           <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
+          <Route path={ROUTES.SYNC} element={<SyncPage />} />
         </Route>
         {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 

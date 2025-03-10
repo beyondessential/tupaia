@@ -15,20 +15,6 @@ export class OptionRecord extends DatabaseRecord {
           return error.message;
         }
       },
-      async (value, model) => {
-        const foundConflict = await findFieldConflict('value', value, model);
-        if (foundConflict) return 'Found duplicate values in option set';
-        return null;
-      },
-      async (value, model) => {
-        if (!model.label) {
-          const foundConflict = await findFieldConflict('label', value, model);
-          if (foundConflict)
-            return 'Label is not provided; value cannot conflict with another label in option set';
-          return null;
-        }
-        return null;
-      },
     ])
     .set('label', [
       async (label, model) => {

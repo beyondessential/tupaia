@@ -1,16 +1,18 @@
-import React from 'react';
+import MuiBox from '@material-ui/core/Box';
 import MuiContainer from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
-import MuiBox from '@material-ui/core/Box';
+
 import { FlexEnd, FlexSpaceBetween, FlexStart } from '@tupaia/ui-components';
-import { ExportButton } from './ExportButton';
-import { SaveButton } from './SaveButton';
-import { DocumentIcon } from './DocumentIcon';
-import { EditModal } from './Modal';
-import { useVizConfigContext } from '../context';
+
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
+import { useVizConfigContext } from '../context';
+import { DocumentIcon } from './DocumentIcon';
+import { ExportButton } from './ExportButton';
+import { EditModal } from './Modal';
+import { SaveButton } from './SaveButton';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -63,10 +65,10 @@ export const Toolbar = () => {
     <Wrapper>
       <Container maxWidth="xl">
         <FlexStart>
-          <DocumentIcon />
+          <DocumentIcon aria-hidden />
           <MuiBox ml={2}>
             <SubTitle variant="h4">
-              Project: {project?.['project.code']} • {permissionGroup}
+              Project: {project?.['project.code']} &middot; {permissionGroup}
             </SubTitle>
             <Title variant="h2">{name}</Title>
           </MuiBox>

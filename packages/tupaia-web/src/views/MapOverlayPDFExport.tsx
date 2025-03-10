@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
@@ -142,13 +142,17 @@ export const MapOverlayPDFExport = () => {
     selectedOverlay,
   );
 
-  const getDateRangeString = () => {
+  const getDateRangeString = (): ReactNode => {
     if (startDate && endDate) {
       const startDateString = moment(startDate).toDate().toLocaleDateString(locale);
       const endDateString = moment(endDate).toDate().toLocaleDateString(locale);
-      return `${startDateString} - ${endDateString}`;
+      return (
+        <>
+          ${startDateString}&nbsp;&ndash; ${endDateString}
+        </>
+      );
     }
-    return '';
+    return null;
   };
 
   const dateRangeString = getDateRangeString();
