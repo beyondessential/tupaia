@@ -123,7 +123,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
               };
             })
             .filter(Boolean),
-          ...entities,
+          ...entities.sort((a: any, b: any) => a.name.localeCompare(b.name)),
         ];
 
     return camelcaseKeys(sortedEntities, { deep: true });

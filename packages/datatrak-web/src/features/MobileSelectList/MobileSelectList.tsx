@@ -39,6 +39,7 @@ interface SelectListProps {
   countrySelector: ReactElement<CountrySelectorProps, typeof CountrySelector>;
   items?: ListItemType[];
   onSelect: (item: ListItemType) => void;
+  showLoader?: boolean;
 }
 
 const List = ({
@@ -72,15 +73,19 @@ const List = ({
 
 const ListSkeleton = ({ length = 5 }: { length?: number }) => {
   const listItem = <ListItemSkeleton />;
-  return <BaseList>{Array.from({ length }).map(() => listItem)}</BaseList>;
+  return <BaseList>{Array.from({ length }).map(_ => listItem)}</BaseList>;
 };
 
-export const MobileSelectList = ({ countrySelector, items, onSelect }: SelectListProps) => {
-  const isFetchingSurveys = items === undefined;
+export const MobileSelectList = ({
+  countrySelector,
+  items,
+  onSelect,
+  showLoader,
+}: SelectListProps) => {
   return (
     <Wrapper>
       {countrySelector}
-      {isFetchingSurveys ? (
+      {showLoader ? (
         <ListSkeleton />
       ) : (
         <BaseList>

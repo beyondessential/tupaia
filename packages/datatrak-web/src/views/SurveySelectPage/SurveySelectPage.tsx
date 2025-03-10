@@ -45,13 +45,16 @@ export const SurveySelectPage = () => {
     countries,
     selectedCountry,
     updateSelectedCountry,
-    isLoading: isLoadingCountries,
+    isFetching: isFetchingCountries,
   } = useUserCountries();
   const handleSelectSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const { isLoading, data: surveys } = useProjectSurveys(user.projectId, selectedCountry?.code);
+  const { isFetching: isFetchingSurveys, data: surveys } = useProjectSurveys(
+    user.projectId,
+    selectedCountry?.code,
+  );
 
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
@@ -70,8 +73,8 @@ export const SurveySelectPage = () => {
   }, [urlProjectId]);
 
   const showLoader =
-    isLoading ||
-    isLoadingCountries ||
+    isFetchingSurveys ||
+    isFetchingCountries ||
     isUpdatingUser ||
     (urlProjectId !== null && urlProjectId !== user?.projectId); // in this case the user will be updating and all surveys etc will be reloaded, so showing a loader when this is the case means a more seamless experience
 

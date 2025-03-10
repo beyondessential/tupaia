@@ -12,7 +12,7 @@ export const EntityQuestion = ({
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
-  const { countryCode, formData, isResponseScreen, isReviewScreen, surveyProjectCode } =
+  const { isReviewScreen, isResponseScreen, formData, countryCode, surveyProjectCode } =
     useSurveyForm();
 
   return (

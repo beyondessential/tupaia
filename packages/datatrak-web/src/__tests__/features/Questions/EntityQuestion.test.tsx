@@ -58,7 +58,10 @@ const entitiesData = [
       color: 'blue',
     },
   },
-];
+].sort(
+  // EntityDescendantsRoute returns entities in this order
+  (a, b) => a.name.localeCompare(b.name),
+);
 
 const userData = { project: { code: 'explore' }, country: { code: 'DL' } };
 
