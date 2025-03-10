@@ -216,6 +216,7 @@
       "middlewares",
       "migrator",
       "originalname",
+      "requestable",
       "oucode",
       "outdater",
       "parameterise",

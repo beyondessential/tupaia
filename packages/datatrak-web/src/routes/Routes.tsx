@@ -17,6 +17,7 @@ import {
   TasksDashboardPage,
   TaskDetailsPage,
   NotAuthorisedPage,
+  OfflinePage,
 } from '../views';
 import { WelcomeScreens } from '../views/WelcomeScreens';
 import { useCurrentUserContext } from '../api';
@@ -55,6 +56,7 @@ const AuthViewLoggedInRedirect = ({ children }) => {
 export const Routes = () => {
   return (
     <RouterRoutes>
+      <Route path="/offline" element={<OfflinePage />} />
       <Route path="/" element={<MainPageLayout />}>
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
