@@ -19,7 +19,7 @@ const palette = {
   text: {
     primary: '#2E2F33', // dark text color
     secondary: '#898989', // light grey text color
-    hint: 'B8B8B8',
+    hint: '#B8B8B8',
   },
   success: {
     main: '#25D366',
@@ -85,7 +85,9 @@ const overrides = {
         padding: 0,
       },
       ':root': {
+        '--ease-in-out-quad': 'cubic-bezier(0.76, 0, 0.24, 1)',
         accentColor: palette.primary.main,
+        interpolateSize: 'allow-keywords',
       },
       ":is(ol, ul)[role='list']": {
         listStyleType: 'none',

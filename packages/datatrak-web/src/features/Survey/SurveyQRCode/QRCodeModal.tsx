@@ -76,11 +76,17 @@ const Body = styled.p`
   padding-inline: 0;
 `;
 
-export const QRCodeModal = ({ children }: { children: ReactNode }) => {
+export const QRCodeModal = ({
+  children,
+  className,
+}: {
+  children?: ReactNode;
+  className?: string;
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <>
-      <ModalButton onClick={() => setModalOpen(true)}>
+      <ModalButton className={className} onClick={() => setModalOpen(true)}>
         <DecorativeIcon src="/qr-code-icon.svg" />
         <Title>QR&nbsp;code generated</Title>
         <Body>Click to view, share or download your QR&nbsp;code</Body>
