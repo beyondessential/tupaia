@@ -21,3 +21,4 @@ export { ReportsPage } from './ReportsPage';
 export { TasksDashboardPage, TaskDetailsPage } from './Tasks';
 export { NotAuthorisedPage } from './NotAuthorisedPage';
 export { ExportSurveyResponsePage } from './ExportSurveyResponsePage';
+export { OfflinePage } from './OfflinePage';

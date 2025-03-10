@@ -1,14 +1,16 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
+
 import { InputLabel } from '@tupaia/ui-components';
+
 import { JsonEditor as Editor } from '../JsonEditor';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 300px;
-  margin-bottom: 20px;
+  margin-block-end: 1.25rem;
+  min-block-size: 18.75rem;
 
   .jsoneditor-parent {
     display: flex;
@@ -16,10 +18,23 @@ const Container = styled.div`
   }
 
   .jsoneditor {
-    height: auto;
-    border-color: ${({ theme, $invalid }) => {
-      return $invalid ? theme.palette.error.main : theme.palette.text.primary;
-    }};
+    block-size: auto;
+    border-color: ${({ theme, $invalid }) =>
+      $invalid ? theme.palette.error.main : theme.palette.divider};
+  }
+
+  .jsoneditor:has(:focus-visible) {
+    border-color: ${props => props.theme.palette.primary.main};
+    border-width: max(0.0625rem, 1px);
+  }
+
+  .jsoneditor-parent {
+    border-radius: 0.1875rem;
+  }
+  .jsoneditor,
+  .jsoneditor-outer,
+  .ace_editor {
+    border-radius: inherit;
   }
 `;
 
