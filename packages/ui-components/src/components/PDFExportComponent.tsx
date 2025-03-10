@@ -12,7 +12,6 @@ export const A4Page = styled.div<{
   separatePage?: boolean;
 }>`
   width: 210mm;
-  height: 297mm;
   break-after: ${({ separatePage }) => (separatePage ? 'always' : 'auto')};
   break-inside: avoid;
   flex-direction: column;
