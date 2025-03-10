@@ -11,7 +11,7 @@ const Container = styled.div`
   height: 100vh;
 `;
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.header`
   background: ${({ theme }) => theme.palette.background.paper};
 `;
 
@@ -20,7 +20,7 @@ const HeaderInner = styled.div`
   align-items: center;
   block-size: ${HEADER_HEIGHT};
   padding: 0 1.5rem;
-  margin: 0 auto;
+  margin-inline: auto;
   max-inline-size: 75rem;
 `;
 
@@ -40,12 +40,7 @@ const Header = () => {
     <HeaderContainer>
       <HeaderInner>
         <Logo component={RouterLink} to="/" title="Home" variant="text">
-          <img
-            src="/datatrak-logo-black.svg"
-            alt="Tupaia Datatrak logo"
-            width="100%"
-            height="100%"
-          />
+          <img src="/datatrak-logo-black.svg" alt="Tupaia Datatrak logo" width={84} height={42} />
         </Logo>
       </HeaderInner>
     </HeaderContainer>
@@ -59,7 +54,8 @@ const Body = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 1rem 1.5rem 1rem;
+  padding-block: 1rem;
+  padding-inline: 1.5rem;
   inline-size: 45rem;
   max-inline-size: 100%;
   margin: 0 auto;
