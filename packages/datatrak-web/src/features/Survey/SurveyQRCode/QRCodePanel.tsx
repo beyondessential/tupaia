@@ -14,9 +14,6 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 const Container = styled.div`
@@ -24,9 +21,15 @@ const Container = styled.div`
   padding: 5rem 1.5rem 1.5rem; // to allow space for the success notification
 `;
 
-export const QRCodePanel = ({ children }: { children: ReactNode }) => {
+export const QRCodePanel = ({
+  children,
+  className,
+}: {
+  children?: ReactNode;
+  className?: string;
+}) => {
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Container>{children}</Container>
     </Wrapper>
   );

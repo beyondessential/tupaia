@@ -1,37 +1,41 @@
-import React from 'react';
-import { TextField, Button } from '@tupaia/ui-components';
-import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import * as COLORS from '../../constants';
-import { useLogin } from '../../api/mutations';
-import { I18n, useI18n } from '../../utils';
+import styled from 'styled-components';
+
+import { Button } from '@tupaia/ui-components';
+
 import { useEmailVerification } from '../../api';
+import { useLogin } from '../../api/mutations';
+import * as COLORS from '../../constants';
+import { I18n, useI18n } from '../../utils';
+import { TextField } from '../TextField';
 
 const ErrorMessage = styled(Typography)`
-  text-align: center;
   color: ${COLORS.RED};
-  margin: -1rem 0 1rem;
+  margin-block: -1rem 1rem;
+  margin-inline: 0;
+  text-align: center;
 `;
 
 const SuccessMessage = styled(Typography)`
-  text-align: center;
   color: ${COLORS.GREEN};
-  margin: -1rem 0 1rem;
+  margin-block: -1rem 1rem;
+  margin-inline: 0;
+  text-align: center;
 `;
 
 const Heading = styled(Typography)`
-  font-size: 1.125rem;
-  line-height: 1.3rem;
-  font-weight: 400;
   color: ${props => props.theme.palette.text.primary};
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-block-end: 2rem;
   text-align: center;
-  margin-bottom: 2rem;
 `;
 
 const StyledButton = styled(Button)`
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-block: 1rem;
 `;
 
 const VerifyEmail = () => {
@@ -62,7 +66,7 @@ export const LoginForm = () => {
         type="email"
         defaultValue={user?.email}
         error={!!errors.email}
-        helperText={errors.email && errors.email.message}
+        helperText={errors.email?.message}
         inputRef={register({
           required: 'Required',
           pattern: {
@@ -76,7 +80,7 @@ export const LoginForm = () => {
         type="password"
         placeholder={translate('login.password')}
         error={!!errors.password}
-        helperText={errors.password && errors.password.message}
+        helperText={errors.password?.message}
         inputRef={register({
           required: 'Required',
         })}
