@@ -5,7 +5,7 @@ export type Params = {
   id: string;
 };
 
-export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'data_time'>> {
+export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'data_time' | 'end_time'>> {
   answers: Record<string, string>;
   countryName: Country['name'];
   entityName: Entity['name'];
