@@ -1,4 +1,4 @@
-import { Dialog, Typography } from '@material-ui/core';
+import { Dialog, Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
@@ -14,13 +14,14 @@ import { Button, DownloadIcon, SurveyTickIcon } from '../components';
 import { displayDate } from '../utils';
 import { SurveyReviewSection, useSurveyResponseWithForm } from './Survey';
 
-const Header = styled.div`
+const Header = styled.header`
   align-items: center;
   display: flex;
   inline-size: 100%;
-  justify-content: space-between;
   padding-block: 1.5rem 1.2rem;
   padding-inline: 1.8rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 `;
 
 const Heading = styled(Typography).attrs({
@@ -50,7 +51,9 @@ const StyledModalContentProvider = styled(ModalContentProvider)`
   min-block-size: 12rem;
 `;
 
-const Icon = styled(SurveyTickIcon)`
+const Icon = styled(SurveyTickIcon).attrs({
+  'aria-hidden': true,
+})`
   font-size: 2.5rem;
   margin-right: 0.35rem;
 `;
@@ -59,6 +62,7 @@ const DownloadButton = styled(Button).attrs({
   variant: 'outlined',
 })`
   margin-left: auto;
+  min-inline-size: fit-content;
   &.Mui-disabled.MuiButtonBase-root {
     opacity: 0.5;
     color: ${({ theme }) => theme.palette.primary.main};
@@ -97,12 +101,14 @@ const SurveyResponseModalContent = ({
   const { mutate: downloadSurveyResponse, isLoading: isDownloadingSurveyResponse } =
     useExportSurveyResponse(surveyResponseId!, surveyResponse?.timezone);
 
+  const isNotClaustrophobic = useMediaQuery(useTheme().breakpoints.up('sm'));
+
   return (
     <>
       <Header>
         {!showLoading && !error && (
           <>
-            <Icon />
+            {isNotClaustrophobic && <Icon />}
             <div>
               <Heading>{surveyResponse?.surveyName}</Heading>
               <SubHeading>{subHeading}</SubHeading>
@@ -111,7 +117,7 @@ const SurveyResponseModalContent = ({
               onClick={downloadSurveyResponse}
               isLoading={isDownloadingSurveyResponse}
               loadingText="Downloading"
-              startIcon={<DownloadIcon />}
+              startIcon={isNotClaustrophobic && <DownloadIcon />}
             >
               Download
             </DownloadButton>
