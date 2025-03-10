@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 function getPwaDisplayMode() {
   if (document.referrer.startsWith('android-app://')) return 'twa';
   if (window.matchMedia('(display-mode: browser)').matches) return 'browser';
