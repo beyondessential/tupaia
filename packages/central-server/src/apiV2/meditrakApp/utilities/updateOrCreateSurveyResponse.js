@@ -64,14 +64,31 @@ const createOptions = async (models, optionsCreated) => {
   for (const optionObject of optionsCreated) {
     const { value, option_set_id: optionSetId } = optionObject;
     const largestSorOrder = await models.option.getLargestSortOrder(optionSetId);
-    const optionRecord = await models.option.updateOrCreate(
-      { option_set_id: optionSetId, value },
-      {
+    const sortOrder = largestSorOrder + 1; // append the option to the end to resolve any sort order conflict from other devices
+
+    // If an option exists with the same value,
+    // set the value of the option to be duplicate and create a new option
+    const existingOption = await models.option.findOne({ option_set_id: optionSetId, value });
+    let optionRecord;
+    if (existingOption) {
+      optionRecord = await models.option.create({
         ...optionObject,
-        sort_order: largestSorOrder + 1, // append the option to the end to resolve any sort order conflict from other devices
+        option_set_id: optionSetId,
+        value: `${value} (duplicate)`,
+        sort_order: sortOrder,
         attributes: {},
-      },
-    );
+      });
+    } else {
+      optionRecord = await models.option.updateOrCreate(
+        { option_set_id: optionSetId, value },
+        {
+          ...optionObject,
+          sort_order: sortOrder,
+          attributes: {},
+        },
+      );
+    }
+
     options.push(optionRecord);
   }
 

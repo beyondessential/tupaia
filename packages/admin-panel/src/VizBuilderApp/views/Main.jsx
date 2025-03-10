@@ -52,8 +52,7 @@ export const Main = () => {
     throw new Error(`Unknown viz type ${dashboardItemOrMapOverlay}`);
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const [_, { setVisualisation, setVizType }] = useVizConfigContext();
+  const [, { setVisualisation, setVizType }] = useVizConfigContext();
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);
   const { data = {}, error } = useViz();
   const { visualisation } = data;
