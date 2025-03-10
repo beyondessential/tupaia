@@ -4,6 +4,7 @@ import {
   ListItemProps as MuiListItemProps,
 } from '@material-ui/core';
 import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import { Skeleton } from '@material-ui/lab';
 import React, { ReactElement, ReactNode, useState } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -147,14 +148,15 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   };
 
   return (
-    <li>
+    <>
       {/*@ts-ignore*/}
       <BaseListItem
+        aria-selected={selected}
         button={button}
         onClick={button ? onClick : null}
         selected={selected}
         disabled={disabled}
-        component="div"
+        component="li"
       >
         <Wrapper tooltip={tooltip}>
           <ButtonContainer $fullWidth={button}>
@@ -163,9 +165,24 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
         </Wrapper>
-        {selected && <CheckIcon />}
+        {selected && <CheckIcon aria-hidden />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
-    </li>
+    </>
+  );
+};
+
+export const ListItemSkeleton = () => {
+  return (
+    <BaseListItem button disabled>
+      <Skeleton
+        component="div"
+        variant="rect"
+        width="1rem"
+        height="1rem"
+        style={{ borderRadius: 'calc(1px * infinity)' }}
+      />
+      <Skeleton width="40ch" style={{ marginInlineStart: '0.5rem' }} />
+    </BaseListItem>
   );
 };
