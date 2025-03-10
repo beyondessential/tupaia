@@ -1,18 +1,20 @@
 import React, { useEffect } from 'react';
-import { useParams, Outlet } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Outlet, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useForm, FormProvider } from 'react-hook-form';
+
 import { useCurrentUserContext, useEditUser, useEntityByCode, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
+import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
 import {
   DesktopSurveyHeader,
+  SurveyContext,
   useSurveyForm,
   useValidationResolver,
-  SurveyContext,
 } from '../features';
 import { SurveyParams } from '../types';
-import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
-import { successToast, useIsMobile } from '../utils';
+import { successToast, useBeforeUnload, useIsMobile } from '../utils';
+
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
   display: flex;
@@ -48,11 +50,6 @@ const SurveyScreenContainer = styled.div<{
     padding-bottom: 2rem;
   }
 `;
-
-function beforeUnloadHandler(event: BeforeUnloadEvent) {
-  event.preventDefault(); // For modern browsers
-  event.returnValue = ''; // For legacy browsers
-}
 
 const SurveyPageInner = () => {
   const { screenNumber } = useParams<SurveyParams>();
@@ -105,11 +102,7 @@ const SurveyPageInner = () => {
     }
   }, [survey?.id]);
 
-  if (formContext.formState.isDirty) {
-    window.addEventListener('beforeunload', beforeUnloadHandler);
-  } else {
-    window.removeEventListener('beforeunload', beforeUnloadHandler);
-  }
+  useBeforeUnload(formContext.formState.isDirty);
 
   return (
     <PageWrapper>

@@ -7,5 +7,6 @@ export {
   setTaskFilterSetting,
 } from './taskFilterSettings';
 export { errorToast, infoToast, successToast } from './toast';
+export { useBeforeUnload } from './useBeforeUnload';
 export { useIsMobileMediaQuery as useIsMobile } from './useIsMobileMediaQuery';
 export { useFromLocation } from './useLocationState';
