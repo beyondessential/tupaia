@@ -1,9 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
-
 import { Request } from 'express';
 import { Route } from '../../routes';
 import { EmptyObject } from '../../types';

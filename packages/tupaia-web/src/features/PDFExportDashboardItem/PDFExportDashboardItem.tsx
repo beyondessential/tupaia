@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
@@ -35,8 +30,6 @@ const StyledA4Page = styled(A4Page)<{
   padding-block-start: 0;
   padding-block-end: 1cm;
 `;
-
-const PDFExportBody = styled.main``;
 
 const Title = styled.h3`
   font-size: 1.25rem;
@@ -187,7 +180,7 @@ export const PDFExportDashboardItem = ({
           {entityName}
         </PDFExportHeader>
       )}
-      <PDFExportBody>
+      <main>
         {displayHeader && (
           <DashboardName>
             {activeDashboard?.name}
@@ -215,7 +208,7 @@ export const PDFExportDashboardItem = ({
             <DashboardItemContent />
           </DashboardItemContext.Provider>
         </ExportContent>
-      </PDFExportBody>
+      </main>
     </StyledA4Page>
   );
 };

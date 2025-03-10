@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { HEADER_HEIGHT } from '../../../constants';
@@ -30,12 +25,11 @@ const ExpandedWrapper = styled.div`
 `;
 
 const InfiniteListWrapper = styled.div`
-  margin-top: ${HEADER_HEIGHT};
   display: flex;
   overflow: hidden;
   flex-direction: column;
   max-height: calc(100vh - ${HEADER_HEIGHT});
-  background-color: ${({ theme }) => theme.palette.divider};
+  background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
 /**
@@ -66,7 +60,9 @@ const ExpandedList = ({ expanded, onClose }: { expanded: boolean; onClose: () =>
       fullScreen
     >
       <ExpandedWrapper>
-        <StickyMobileHeader onBack={onClose} title="Activity feed" onClick={scrollToTop} />
+        <StickyMobileHeader onBack={onClose} onClick={scrollToTop}>
+          Activity feed
+        </StickyMobileHeader>
         <InfiniteListWrapper>
           <InfiniteActivityFeed ref={feedRef} />
         </InfiniteListWrapper>
@@ -86,7 +82,7 @@ export const MobileActivityFeed = () => {
     <Wrapper>
       <ActivityFeedList items={firstPageItems} />
       {hasNextPage && (
-        <ViewMoreButton onClick={() => setExpanded(true)}>View activity feed...</ViewMoreButton>
+        <ViewMoreButton onClick={() => setExpanded(true)}>View activity feed…</ViewMoreButton>
       )}
       <ExpandedList expanded={expanded} onClose={() => setExpanded(false)} />
     </Wrapper>

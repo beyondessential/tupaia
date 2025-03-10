@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import momentTimezone from 'moment-timezone';
 import { constructAccessToken } from '@tupaia/auth';
 import {

@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { periodToMoment } from '@tupaia/tsutils';
 import { reduceToDictionary } from '@tupaia/utils';
 import moment from 'moment';

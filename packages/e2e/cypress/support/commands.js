@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import '@testing-library/cypress/add-commands';
 
 import snapshot from '@cypress/snapshot';

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
- */
 import nodeFetch from 'node-fetch';
 import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactNode } from 'react';
 import { Popover as MuiPopover } from '@material-ui/core';
 import { MenuList } from './MenuList';

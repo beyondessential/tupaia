@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 
@@ -26,6 +21,7 @@ export type SurveyFormContextType = {
   surveyStartTime?: string;
   isSuccessScreen?: boolean;
   cancelModalOpen: boolean;
+  cancelModalConfirmLink: string;
   countryCode: string;
   primaryEntityQuestion?: SurveyScreenComponent | null;
   isResubmitScreen: boolean;
@@ -65,6 +61,7 @@ export const surveyReducer = (
       return {
         ...state,
         cancelModalOpen: true,
+        cancelModalConfirmLink: action.payload as string,
       };
     case ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION:
       return {

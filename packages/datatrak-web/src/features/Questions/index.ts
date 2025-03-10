@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 export { TextQuestion } from './TextQuestion';
 export { RadioQuestion } from './RadioQuestion';
 export { BinaryQuestion } from './BinaryQuestion';
@@ -12,7 +8,8 @@ export { DateTimeQuestion } from './DateTimeQuestion';
 export { GeolocateQuestion } from './GeolocateQuestion';
 export { EntityQuestion } from './EntityQuestion';
 export { AutocompleteQuestion } from './AutocompleteQuestion';
-export { ReadOnlyQuestion } from './ReadOnlyQuestion';
+export { ReadOnlyQuestion, CodeGeneratorQuestion } from './ReadOnlyQuestion';
+export { ArithmeticQuestion } from './ArithmeticQuestion';
 export { PhotoQuestion } from './PhotoQuestion';
 export { FileQuestion } from './FileQuestion';
 export { UserQuestion } from './UserQuestion';

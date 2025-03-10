@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import flatten from 'lodash.flatten';
 
 import { dateStringToPeriod } from '@tupaia/utils';

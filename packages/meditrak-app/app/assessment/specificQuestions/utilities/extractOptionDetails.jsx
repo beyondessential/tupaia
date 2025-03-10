@@ -1,9 +1,4 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-/**
  * Options can either be defined as simple strings, which will be used as both their label and
  * value, or as a string of JSON that separately defines the label and value, and optionally the
  * color it is presented in

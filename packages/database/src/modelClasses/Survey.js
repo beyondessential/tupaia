@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { reduceToDictionary } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { MaterializedViewLogDatabaseModel } from '../analytics';

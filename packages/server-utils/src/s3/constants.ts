@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { getIsProductionEnvironment } from '@tupaia/utils';
 
 export const S3_BUCKET_NAME = 'tupaia';

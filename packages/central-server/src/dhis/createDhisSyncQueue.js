@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { ExternalApiSyncQueue } from '../externalApiSync/ExternalApiSyncQueue';
 import { DhisChangeValidator } from './DhisChangeValidator';
 import { DhisChangeDetailGenerator } from './DhisChangeDetailGenerator';

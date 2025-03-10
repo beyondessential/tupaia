@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React, { ReactElement, ReactNode } from 'react';
 import { Link as RouterLink, To } from 'react-router-dom';
 import { Button as UIButton, Tooltip } from '@tupaia/ui-components';
@@ -29,26 +24,35 @@ interface ButtonProps extends Record<string, any> {
   tooltip?: ReactNode;
   children?: ReactNode;
   to?: To;
+  tooltipDelay?: number;
 }
 
 const ButtonWrapper = ({
   children,
   tooltip,
+  tooltipDelay,
 }: {
   children: ReactElement<any, any>;
   tooltip?: ButtonProps['tooltip'];
+  tooltipDelay?: ButtonProps['tooltipDelay'];
 }) => {
   if (!tooltip) return children;
   return (
     // Wrap the button in a <span> to suppress console error about tooltips on disabled buttons
-    <Tooltip title={tooltip} arrow enterDelay={1000}>
+    <Tooltip title={tooltip} arrow enterDelay={tooltipDelay}>
       <TooltipButtonWrapper>{children}</TooltipButtonWrapper>
     </Tooltip>
   );
 };
-export const Button = ({ tooltip, children, to, ...restOfProps }: ButtonProps) => {
+export const Button = ({
+  tooltip,
+  children,
+  to,
+  tooltipDelay = 1000,
+  ...restOfProps
+}: ButtonProps) => {
   return (
-    <ButtonWrapper tooltip={tooltip}>
+    <ButtonWrapper tooltip={tooltip} tooltipDelay={tooltipDelay}>
       <StyledButton
         {...restOfProps}
         component={to ? RouterLink : undefined}

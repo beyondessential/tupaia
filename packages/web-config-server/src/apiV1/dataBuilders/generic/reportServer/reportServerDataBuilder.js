@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { ReportConnection } from '/connections';
 

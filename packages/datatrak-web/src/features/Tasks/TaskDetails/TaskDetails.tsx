@@ -1,24 +1,22 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
-import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import styled from 'styled-components';
 import { Paper, Typography } from '@material-ui/core';
+import { parseISO } from 'date-fns';
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import styled from 'styled-components';
+
 import { TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
+
 import { useEditTask, useSurveyResponse } from '../../../api';
-import { displayDate } from '../../../utils';
 import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
+import { DateTimeDisplay } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
-import { RepeatScheduleInput } from '../RepeatScheduleInput';
-import { DueDatePicker } from '../DueDatePicker';
 import { AssigneeInput } from '../AssigneeInput';
+import { DueDatePicker } from '../DueDatePicker';
+import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { TaskForm } from '../TaskForm';
-import { TaskMetadata } from './TaskMetadata';
 import { TaskComments } from './TaskComments';
+import { TaskMetadata } from './TaskMetadata';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -123,8 +121,7 @@ const InitialRequest = ({ initialRequestId }) => {
   const { id, countryName, dataTime, surveyName, entityName } = surveyResponse;
   return (
     <Tile
-      title={surveyName}
-      text={entityName}
+      heading={surveyName}
       to={`?responseId=${id}`}
       tooltip={
         <>
@@ -133,9 +130,12 @@ const InitialRequest = ({ initialRequestId }) => {
           {entityName}
         </>
       }
-      Icon={SurveyTickIcon}
+      leadingIcons={<SurveyTickIcon />}
     >
-      {countryName}, {displayDate(dataTime as Date)}
+      <p>{entityName}</p>
+      <p>
+        {countryName}, <DateTimeDisplay date={parseISO(dataTime)} variant="date" />
+      </p>
     </Tile>
   );
 };

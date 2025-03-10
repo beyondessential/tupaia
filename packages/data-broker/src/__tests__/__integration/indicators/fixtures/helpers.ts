@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 import { arrayToAnalytics, ArrayAnalytic } from '@tupaia/tsutils';
 
 // surveyCode, entityCode, data_time, answers

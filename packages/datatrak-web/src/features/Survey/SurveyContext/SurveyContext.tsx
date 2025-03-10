@@ -1,7 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React, { createContext, Dispatch, useContext, useReducer, useState, useMemo } from 'react';
 import { useMatch, useParams, useSearchParams } from 'react-router-dom';
 import { QuestionType } from '@tupaia/types';
@@ -34,6 +30,7 @@ const defaultContext = {
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
+  cancelModalConfirmLink: '/',
   countryCode: '',
   primaryEntityQuestion: null,
   isResubmitScreen: false,
@@ -197,8 +194,8 @@ export const useSurveyForm = () => {
     return surveyFormContext.formData[questionId];
   };
 
-  const openCancelConfirmation = () => {
-    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION });
+  const openCancelConfirmation = ({ confirmPath }: { confirmPath?: string | number }) => {
+    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION, payload: confirmPath });
   };
 
   const closeCancelConfirmation = () => {

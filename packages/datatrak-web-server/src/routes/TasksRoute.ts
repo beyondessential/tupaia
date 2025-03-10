@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import { sub } from 'date-fns';
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
@@ -42,9 +38,9 @@ const EQUALITY_FILTERS = ['survey.project_id', 'task_status'];
 const getFilterSettings = (cookieString: string) => {
   const cookies = parse(cookieString);
   return {
-    allAssignees: cookies['all_assignees_tasks'] === 'true',
-    allCompleted: cookies['show_completed_tasks'] === 'true',
-    allCancelled: cookies['show_cancelled_tasks'] === 'true',
+    allAssignees: cookies.all_assignees_tasks === 'true',
+    allCompleted: cookies.show_completed_tasks === 'true',
+    allCancelled: cookies.show_cancelled_tasks === 'true',
   };
 };
 
@@ -76,7 +72,7 @@ export class TasksRoute extends Route<TasksRequest> {
       }
 
       if (id === 'repeat_schedule') {
-        this.filters[`repeat_schedule->freq`] = value;
+        this.filters['repeat_schedule->freq'] = value;
         return;
       }
       this.filters[id] = {
@@ -94,7 +90,7 @@ export class TasksRoute extends Route<TasksRequest> {
 
     if (!cookies.allAssignees) {
       const { id: userId } = await this.req.ctx.services.central.getUser();
-      this.filters['assignee_id'] = userId;
+      this.filters.assignee_id = userId;
     }
 
     // If the task status filter is already present, don't need to worry about allCompleted and allCancelled filters
@@ -103,21 +99,21 @@ export class TasksRoute extends Route<TasksRequest> {
     }
 
     if (!cookies.allCompleted) {
-      this.filters['task_status'] = {
+      this.filters.task_status = {
         comparator: 'NOT IN',
         comparisonValue: [TaskStatus.completed],
       };
     }
 
     if (!cookies.allCancelled) {
-      this.filters['task_status'] = {
+      this.filters.task_status = {
         comparator: 'NOT IN',
         comparisonValue: [TaskStatus.cancelled],
       };
     }
 
     if (!cookies.allCompleted && !cookies.allCancelled) {
-      this.filters['task_status'] = {
+      this.filters.task_status = {
         comparator: 'NOT IN',
         comparisonValue: [TaskStatus.completed, TaskStatus.cancelled],
       };

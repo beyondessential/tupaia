@@ -1,32 +1,42 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { IconButton, Typography } from '@material-ui/core';
-import React from 'react';
+import { Close } from '@material-ui/icons';
+import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
+
 import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
-import { Close } from '@material-ui/icons';
 
-const Wrapper = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
+export const MobileHeaderWrapper = styled.header`
   align-items: center;
-  justify-content: space-between;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  height: ${HEADER_HEIGHT};
+  block-size: ${HEADER_HEIGHT};
+  display: grid;
+  gap: 1rem;
+  grid-template-areas: '--leading --title --trailing';
+  grid-template-columns: minmax(3rem, max-content) 1fr minmax(3rem, max-content);
+  inline-size: 100%;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  justify-content: space-between;
+  min-block-size: ${HEADER_HEIGHT};
+  padding-left: max(env(safe-area-inset-left, 0), 0.2rem);
+  padding-right: max(env(safe-area-inset-right, 0), 0.2rem);
+  padding-top: env(safe-area-inset-top, 0);
+  position: sticky;
+  touch-action: pinch-zoom;
   z-index: 1000;
 `;
 
 const Button = styled(IconButton)`
-  svg {
+  .MuiSvgIcon-root {
     color: ${({ theme }) => theme.palette.text.primary};
   }
+`;
+const LeadingIconButton = styled(Button)`
+  grid-area: --leading;
+`;
+const TrailingIconButton = styled(Button)`
+  grid-area: --trailing;
 `;
 
 const BackIcon = styled(ArrowLeftIcon)`
@@ -37,45 +47,42 @@ const BackIcon = styled(ArrowLeftIcon)`
 const Title = styled(Typography).attrs({ variant: 'h2' })`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
+  grid-area: --title;
+  text-align: center;
+  overflow: hidden;
 `;
 
-const ButtonContainer = styled.div`
-  width: 3.5rem;
-`;
-
-interface StickyMobileHeaderProps {
-  onBack: () => void;
-  title: string;
-  onClose?: () => void;
-  onClick?: () => void;
+interface StickyMobileHeaderProps extends HTMLAttributes<HTMLDivElement> {
+  onBack?: () => void;
+  onClose?: (data: any) => void;
 }
 
 export const StickyMobileHeader = ({
+  children,
   onBack,
-  title,
-  onClose,
   onClick,
+  onClose,
+  ...props
 }: StickyMobileHeaderProps) => {
   return (
-    <Wrapper
+    <MobileHeaderWrapper
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? 'Header, click to scroll list back to top' : undefined}
+      {...props}
     >
-      <ButtonContainer>
-        <Button onClick={onBack}>
+      {onBack && (
+        <LeadingIconButton onClick={onBack}>
           <BackIcon />
-        </Button>
-      </ButtonContainer>
-      <Title>{title}</Title>
-      <ButtonContainer>
-        {onClose && (
-          <Button onClick={onClose}>
-            <Close />
-          </Button>
-        )}
-      </ButtonContainer>
-    </Wrapper>
+        </LeadingIconButton>
+      )}
+      <Title>{children}</Title>
+      {onClose && (
+        <TrailingIconButton aria-label="Close sync view" onClick={onClose}>
+          <Close />
+        </TrailingIconButton>
+      )}
+    </MobileHeaderWrapper>
   );
 };

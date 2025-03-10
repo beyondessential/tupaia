@@ -1,7 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
 import { DatabaseError, FormValidationError, isValidPassword, respond } from '@tupaia/utils';
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { allowNoPermissions } from '../permissions';

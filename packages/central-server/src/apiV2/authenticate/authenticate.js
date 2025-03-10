@@ -1,14 +1,11 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import winston from 'winston';
+
 import { getAuthorizationObject, getUserAndPassFromBasicAuth } from '@tupaia/auth';
-import { respond, reduceToDictionary } from '@tupaia/utils';
-import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
-import { BruteForceRateLimiter } from './BruteForceRateLimiter';
+import { reduceToDictionary, respond } from '@tupaia/utils';
+
 import { allowNoPermissions } from '../../permissions';
-import { checkUserLocationAccess } from './checkUserLocationAccess';
+import { BruteForceRateLimiter } from './BruteForceRateLimiter';
+import { ConsecutiveFailsRateLimiter } from './ConsecutiveFailsRateLimiter';
 import { respondToRateLimitedUser } from './respondToRateLimitedUser';
 
 const GRANT_TYPES = {
@@ -142,8 +139,6 @@ export async function authenticate(req, res) {
       apiClientUser,
       permissionGroups: permissionGroupsByCountryId,
     });
-
-    await checkUserLocationAccess(req, user);
 
     // Reset rate limiting on successful authorisation
     await consecutiveFailsRateLimiter.resetFailedAttempts(req);

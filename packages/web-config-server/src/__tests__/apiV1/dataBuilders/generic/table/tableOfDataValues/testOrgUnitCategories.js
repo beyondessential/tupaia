@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { getSortByKey } from '@tupaia/utils';
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES } from './tableOfDataValues.fixtures';

@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AddCircle } from '@material-ui/icons';

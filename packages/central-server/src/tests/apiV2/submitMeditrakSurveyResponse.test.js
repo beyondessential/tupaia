@@ -1,8 +1,3 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- */
-
 import { expect, assert } from 'chai';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {

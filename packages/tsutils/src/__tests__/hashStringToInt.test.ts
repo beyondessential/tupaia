@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import { hashStringToInt } from '../hashStringToInt';
 
 const MAX_INPUT_LENGTH = 1000;

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 const SURVEY_URL = '/survey/:countryCode/:surveyCode';
 
 const SURVEY_RESUBMIT_BASE_URL = `${SURVEY_URL}/resubmit/:surveyResponseId`;
@@ -30,6 +25,7 @@ export const ROUTES = {
   VERIFY_EMAIL: '/verify-email',
   VERIFY_EMAIL_RESEND: '/verify-email-resend',
   REPORTS: '/reports',
+  SYNC: '/sync',
   TASKS: '/tasks',
   TASK_DETAILS: '/tasks/:taskId',
   NOT_AUTHORISED: '/not-authorised',

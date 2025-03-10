@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- */
-
 /* eslint-disable jest/no-conditional-expect */
 
 import { configValidator } from '../../reportBuilder/configValidator';

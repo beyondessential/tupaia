@@ -1,8 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { ImageUploadField } from '@tupaia/ui-components';
@@ -13,6 +8,7 @@ const Wrapper = styled.div`
   .file_upload_label {
     text-transform: none;
     font-size: 1rem;
+    line-height: 1.2;
     margin-bottom: 0.2rem;
   }
   .upload_wrapper {

@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import { hasNoContent, takesDateForm, takesIdForm, yup, yupUtils } from '@tupaia/utils';
 
 export const eventOptionsValidator = yup.object().shape({

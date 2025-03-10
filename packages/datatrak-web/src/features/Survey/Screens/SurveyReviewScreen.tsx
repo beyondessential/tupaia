@@ -1,12 +1,11 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-import React from 'react';
 import { Typography } from '@material-ui/core';
+import React from 'react';
+import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
-import { SurveyPaginator, SurveyReviewSection } from '../Components';
-import { ScrollableBody } from '../../../layout';
+import { StickyMobileHeader } from '../../../layout';
+import { useIsMobile } from '../../../utils';
+import { MobileSurveyMenu, SurveyPaginator, SurveyReviewSection } from '../Components';
+import { useSurveyForm } from '../SurveyContext';
 
 const Header = styled.div`
   padding: 1rem;
@@ -34,20 +33,68 @@ const PageDescription = styled(Typography)`
   }
 `;
 
+const StickyHeader = styled(StickyMobileHeader)`
+  h2 {
+    text-align: center;
+  }
+`;
+
+interface SurveyLayoutContext {
+  isLoading: boolean;
+  onStepPrevious: () => void;
+  hasBackButton: boolean;
+}
+
+const MobileHeader = () => {
+  const { openCancelConfirmation } = useSurveyForm();
+  const { onStepPrevious } = useOutletContext<SurveyLayoutContext>();
+
+  const handleBack = () => {
+    onStepPrevious();
+  };
+
+  return (
+    <StickyHeader onBack={handleBack} onClose={openCancelConfirmation}>
+      Review & submit
+    </StickyHeader>
+  );
+};
+
+const ScrollableBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1rem 4rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 1rem 2rem 4rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1rem 2.5rem;
+  }
+`;
+
 export const SurveyReviewScreen = () => {
+  const isMobile = useIsMobile();
   return (
     <>
-      <Header>
-        <PageHeading>Review and submit</PageHeading>
-        <PageDescription>
-          Please review your survey answers below. To edit any answers, please navigate back using
-          the ‘Back’ button below. Once submitted, your survey answers will be uploaded to Tupaia.
-        </PageDescription>
-      </Header>
+      {isMobile ? (
+        <MobileHeader />
+      ) : (
+        <Header>
+          <PageHeading>Review and submit</PageHeading>
+          <PageDescription>
+            Please review your survey answers below. To edit any answers, please navigate back using
+            the ‘Back’ button below. Once submitted, your survey answers will be uploaded to Tupaia.
+          </PageDescription>
+        </Header>
+      )}
       <ScrollableBody>
         <SurveyReviewSection />
       </ScrollableBody>
-      <SurveyPaginator />
+
+      {isMobile ? <MobileSurveyMenu /> : <SurveyPaginator />}
     </>
   );
 };

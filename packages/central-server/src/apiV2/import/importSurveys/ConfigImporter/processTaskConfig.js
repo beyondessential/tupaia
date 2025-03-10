@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { translateQuestionCodeToId } from '../../../utilities';
 
 const QUESTION_FIELDS = ['shouldCreateTask', 'entityId', 'dueDate', 'assignee'];

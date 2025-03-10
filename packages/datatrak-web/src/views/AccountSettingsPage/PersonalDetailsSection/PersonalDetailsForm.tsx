@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Box } from '@material-ui/core';
@@ -107,7 +102,6 @@ export const PersonalDetailsForm = () => {
       <StyledFieldset disabled={isSubmitting || isLoading}>
         <FormInput
           autoComplete="given-name"
-          autoFocus
           id="firstName"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
@@ -173,6 +167,7 @@ export const PersonalDetailsForm = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
+            tooltipDelay={0}
             disabled={formIsNotSubmissible}
             fullWidth
           >

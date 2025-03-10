@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import { addDays, format, subDays, subYears } from 'date-fns';
 
 const DATE_FORMAT = 'yyyy-MM-dd';

@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import { MapOverlay } from '../../models';
 import { EntityType, MapOverlayConfig, ReferenceProps } from '../../models-extra';
 import { KeysToCamelCase } from '../../../utils';

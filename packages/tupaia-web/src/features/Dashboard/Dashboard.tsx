@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -176,7 +171,11 @@ export const Dashboard = () => {
           if (config?.drillDown && config?.drillDown?.itemCode === item.code) return true;
           return false;
         });
-        return isDrillDown ? items : [...items, item];
+
+        if (isDrillDown) return items;
+
+        items.push(item);
+        return items;
       },
       [],
     ) ?? [];

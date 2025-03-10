@@ -1,12 +1,8 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
-
-import React from 'react';
-import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
+import React from 'react';
+import styled from 'styled-components';
+
 import { MarkdownFeedItem } from '../../../types';
 import { displayDate } from '../../../utils';
 
@@ -45,8 +41,8 @@ const Header = styled.div<{
 `;
 
 const Logo = styled.img.attrs({
-  src: '/bes-logo.png',
-  alt: 'BES logo',
+  'aria-hidden': true,
+  src: '/bes-logo.svg',
 })`
   width: 1.75rem;
   height: 1.75rem;

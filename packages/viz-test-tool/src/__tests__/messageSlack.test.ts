@@ -1,8 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import {
   VIZ_TEST_TOOL_CHANNEL_ID,
   VIZ_TEST_TOOL_CHANNEL_NAME,

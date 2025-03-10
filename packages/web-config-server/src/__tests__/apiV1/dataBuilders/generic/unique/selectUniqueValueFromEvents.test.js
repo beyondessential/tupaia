@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import { createJestMockInstance } from '@tupaia/utils';
 import { selectUniqueValueFromEvents } from '/apiV1/dataBuilders/generic/unique';
 import { NO_UNIQUE_VALUE } from '/apiV1/dataBuilders/helpers/uniqueValues';

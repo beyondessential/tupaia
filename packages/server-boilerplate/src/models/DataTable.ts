@@ -1,7 +1,3 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- */
 import {
   DataTableModel as BaseDataTableModel,
   DataTableRecord as BaseDataTableRecord,

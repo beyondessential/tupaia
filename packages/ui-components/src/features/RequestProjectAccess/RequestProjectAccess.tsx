@@ -1,8 +1,3 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -21,10 +16,6 @@ const BodyText = styled(Typography).attrs({
 })`
   font-size: 0.875rem;
   margin: 1rem 0 2rem;
-`;
-
-const Container = styled.div`
-  padding-top: 1.75rem;
 `;
 
 const Logo = styled.img`
@@ -86,7 +77,7 @@ export const RequestProjectAccess = ({
     <Wrapper>
       <Title>Request project access</Title>
       <BodyText>Complete the form below to request access to this project</BodyText>
-      <Container>
+      <div>
         {isLoading ? (
           <SpinningLoader />
         ) : (
@@ -110,7 +101,7 @@ export const RequestProjectAccess = ({
             />
           </>
         )}
-      </Container>
+      </div>
     </Wrapper>
   );
 };

@@ -1,9 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/**
- * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
 import pick from 'lodash.pick';
 import { isDefined } from '@tupaia/tsutils';
 import { EntityApiInterface } from '..';
