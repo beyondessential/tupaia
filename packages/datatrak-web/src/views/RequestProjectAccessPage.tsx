@@ -21,7 +21,7 @@ export const RequestProjectAccessPage = () => {
 
   const { data: project, isLoading: isLoadingProject, isFetched } = useProject(projectCode);
   const { mutate: requestProjectAccess, isLoading, isSuccess } = useRequestProjectAccess();
-  const { data: countries } = useCountryAccessList(projectCode);
+  const { data: countries = [] } = useCountryAccessList(projectCode);
 
   const onReturnToProjects = () => {
     navigate(ROUTES.PROJECT_SELECT);
