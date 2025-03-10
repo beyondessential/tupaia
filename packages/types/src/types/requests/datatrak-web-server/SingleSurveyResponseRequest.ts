@@ -1,9 +1,9 @@
 import { Country, Entity, Survey, SurveyResponse } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 
-export type Params = {
+export interface Params {
   id: string;
-};
+}
 
 export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'data_time' | 'end_time'>> {
   answers: Record<string, string>;
