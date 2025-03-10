@@ -75,9 +75,10 @@ const Heading = styled(Typography).attrs({ variant: 'h1' })`
 
 const Text = styled(Typography)`
   font-size: 1rem;
-  margin-block-end: 5%;
+  margin-block-end: 1rem;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-block-end: 2rem;
     font-size: 22px;
   }
 `;
