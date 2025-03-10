@@ -14,11 +14,13 @@ const Wrapper = styled(SnackbarContent).withConfig({
 const Container = styled.div<{
   $variant: CustomContentProps['variant'];
 }>`
+  align-items: center;
   background-color: ${({ theme, $variant }) => theme.palette[$variant].light};
   border-radius: 0.625rem;
   display: flex;
-  width: 100%;
-  align-items: center;
+  padding-block: 0.5rem;
+  padding-inline: 0.88rem 0.58rem;
+  inline-size: 100%;
 `;
 
 const IconWrapper = styled.div`
