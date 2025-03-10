@@ -54,7 +54,6 @@ const SurveyResponseDetails = styled(Typography)`
 `;
 
 const ScreenWrapper = styled.div`
-  break-after: always;
   padding-block: 0.5rem;
 `;
 
