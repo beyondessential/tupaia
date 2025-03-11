@@ -1,5 +1,7 @@
 import { fetchWithTimeout, requireEnv, stringifyQuery } from '@tupaia/utils';
 
+const MAX_FETCH_WAIT_TIME = 15_000; // 15 seconds
+
 /** @see https://www.weatherbit.io/api/historical-weather-daily */
 interface WeatherResult {
   /** Date (YYYY-MM-DD) */
@@ -74,8 +76,6 @@ interface WeatherResult {
   max_uv: number | null;
 }
 
-const MAX_FETCH_WAIT_TIME = 15_000; // 15 seconds
-
 export class WeatherApi {
   public async current(lat: string, lon: string) {
     return this.fetch('/v2.0/current', { lat, lon });
@@ -114,6 +114,7 @@ export class WeatherApi {
     const url = stringifyQuery('https://api.weatherbit.io', endpoint, queryParams);
 
     const result = await fetchWithTimeout(url, {}, MAX_FETCH_WAIT_TIME);
+    console.log(result);
 
     if (result.status !== 200) {
       const bodyText = await result.text();
