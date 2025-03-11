@@ -16,7 +16,7 @@ const PageWrapper = styled.div`
 
   + .notistack-SnackbarContainer {
     align-items: stretch;
-    inline-size: 28rem;
+    inline-size: 26rem;
     inset-block-start: 0;
     inset-inline-end: 0;
     max-inline-size: 100%;
