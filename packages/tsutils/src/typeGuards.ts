@@ -1,6 +1,8 @@
 export const isDefined = <T>(value: T): value is Exclude<T, undefined> => value !== undefined;
 
-export const isNullish = (val: unknown): val is null | undefined => val == null;
+export function isNullish(val: unknown): val is null | undefined {
+  return val === null || val === undefined;
+}
 
 export const isNotNullish = <T>(val: T): val is NonNullable<T> => val !== undefined && val !== null;
 
