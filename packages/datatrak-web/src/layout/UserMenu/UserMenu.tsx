@@ -1,7 +1,10 @@
+import MuiMenuIcon from '@material-ui/icons/Menu';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import MuiMenuIcon from '@material-ui/icons/Menu';
+
 import { IconButton } from '@tupaia/ui-components';
+
+import { useIsMobile } from '../../utils';
 import { DrawerMenu } from './DrawerMenu';
 import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
@@ -11,16 +14,15 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const MenuButton = styled(IconButton).attrs({
-  disableRipple: true,
+const MenuButton = styled(IconButton).withConfig({
+  shouldForwardProp: prop => prop !== 'theme',
 })`
   margin-left: 1rem;
 `;
 
 const MenuIcon = styled(MuiMenuIcon)`
   color: ${({ theme }) => theme.palette.text.primary};
-  width: 2rem;
-  height: 2rem;
+  font-size: 2rem;
 `;
 
 /**
@@ -31,17 +33,15 @@ export const UserMenu = () => {
   const onCloseMenu = () => setMenuOpen(false);
   const toggleUserMenu = () => setMenuOpen(!menuOpen);
 
+  const Menu = useIsMobile() ? DrawerMenu : PopoverMenu;
+
   return (
     <Wrapper>
       <UserInfo />
       <MenuButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu">
         <MenuIcon />
       </MenuButton>
-      <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
-      <DrawerMenu
-        menuOpen={menuOpen}
-        onCloseMenu={onCloseMenu}
-      />
+      <Menu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
     </Wrapper>
   );
 };
