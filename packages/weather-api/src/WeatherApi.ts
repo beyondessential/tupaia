@@ -114,7 +114,6 @@ export class WeatherApi {
     const url = stringifyQuery('https://api.weatherbit.io', endpoint, queryParams);
 
     const result = await fetchWithTimeout(url, {}, MAX_FETCH_WAIT_TIME);
-    console.log(result);
 
     if (result.status !== 200) {
       const bodyText = await result.text();
