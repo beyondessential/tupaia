@@ -7,7 +7,12 @@ import { DatatrakWebSingleSurveyResponseRequest, QuestionType } from '@tupaia/ty
 
 import { useAutocompleteOptions, useEntityById } from '../../api';
 import { SurveyScreenComponent } from '../../types';
-import { displayDate, displayDateTime, formatNumberWithTrueMinus } from '../../utils';
+import {
+  displayDate,
+  displayDateTime,
+  formatNumberWithTrueMinus,
+  isNonEmptyArray,
+} from '../../utils';
 
 type SurveyResponse = DatatrakWebSingleSurveyResponseRequest.ResBody;
 
@@ -72,7 +77,7 @@ const useDisplayAnswer = (
   if (!answer) return <em>No answer</em>;
 
   // If there are defined options, display the selected option label if set. Usually this is the same as the saved value but not always
-  if (options?.length && options?.length > 0) {
+  if (isNonEmptyArray(options)) {
     const selectedOption = options?.find(option => option.value === answer);
     return selectedOption?.label ?? answer;
   }
