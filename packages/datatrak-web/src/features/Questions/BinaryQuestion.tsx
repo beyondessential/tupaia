@@ -3,7 +3,7 @@ import { SurveyQuestionInputProps } from '../../types';
 import { RadioQuestion } from './RadioQuestion';
 
 export const BinaryQuestion = ({ options = [], ...props }: SurveyQuestionInputProps) => {
-  const questionOptions = Array.isArray(options)
+  const questionOptions = isNonEmptyArray(options)
     ? options
     : [
         {
