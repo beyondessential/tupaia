@@ -78,7 +78,7 @@ const useDisplayAnswer = (
 
   // If there are defined options, display the selected option label if set. Usually this is the same as the saved value but not always
   if (isNonEmptyArray(options)) {
-    const selectedOption = options?.find(option => option.value === answer);
+    const selectedOption = options.find(option => option.value === answer);
     return selectedOption?.label ?? answer;
   }
   if (optionSetId) {
