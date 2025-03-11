@@ -17,6 +17,7 @@ import {
   TasksDashboardPage,
   TaskDetailsPage,
   NotAuthorisedPage,
+  OfflinePage,
 } from '../views';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
@@ -54,6 +55,7 @@ const AuthViewLoggedInRedirect = ({ children }) => {
 export const Routes = () => {
   return (
     <RouterRoutes>
+      <Route path="/offline" element={<OfflinePage />} />
       <Route path="/" element={<MainPageLayout />}>
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
