@@ -12,6 +12,7 @@ import {
   displayDateTime,
   formatNumberWithTrueMinus,
   isNonEmptyArray,
+  isNullish,
 } from '../../utils';
 
 type SurveyResponse = DatatrakWebSingleSurveyResponseRequest.ResBody;
@@ -97,15 +98,20 @@ const useDisplayAnswer = (
       return displayDateTime(answer, locale);
     // If the question is a geolocate question, display the latitude and longitude
     case QuestionType.Geolocate: {
-      const { latitude, longitude } = JSON.parse(answer);
-      if (latitude === null && longitude === null) return <em>No answer</em>;
-      console.log(typeof latitude, typeof longitude);
-      return (
-        <>
-          {formatNumberWithTrueMinus(latitude) ?? <em>Unknown latitude</em>},{' '}
-          {formatNumberWithTrueMinus(longitude) ?? <em>unknown longitude</em>} (latitude, longitude)
-        </>
-      );
+      try {
+        const { latitude, longitude } = JSON.parse(answer);
+        if (isNullish(latitude) || isNullish(longitude)) return <em>No answer</em>;
+        return (
+          <>
+            {formatNumberWithTrueMinus(latitude) ?? <em>Unknown latitude</em>},&nbsp;
+            {formatNumberWithTrueMinus(longitude) ?? <em>unknown longitude</em>}{' '}
+            (latitude,&nbsp;longitude)
+          </>
+        );
+      } catch {
+        console.error(`Couldn’t parse Geolocate question answer as JSON: \`${answer}\``);
+        return <em>No answer</em>;
+      }
     }
     case QuestionType.File: {
       // If the value is a file, split the value to get the file name
