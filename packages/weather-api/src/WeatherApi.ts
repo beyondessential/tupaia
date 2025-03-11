@@ -7,7 +7,7 @@ type WeatherResult = {
   datetime: string;
 };
 
-const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
+const MAX_FETCH_WAIT_TIME = 15_000; // 15 seconds
 
 export class WeatherApi {
   public async current(lat: string, lon: string) {
