@@ -58,7 +58,7 @@ export class ApiResultTranslator {
             translated = this.apiResultToEvents(apiResult, entity);
             break;
           default:
-            throw new Error(`Unknown data format`);
+            throw new Error('Unknown data format');
         }
       }
 
@@ -80,7 +80,7 @@ export class ApiResultTranslator {
       case 'events':
         return combinedData;
       default:
-        throw new Error(`Unknown data format`);
+        throw new Error('Unknown data format');
     }
   }
 
