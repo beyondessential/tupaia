@@ -37,9 +37,10 @@ const downloadMapOverlayAsPdf = (
   });
 
   return downloadPageAsPdf({
+    cookieDomain,
+    landscape: true,
     pdfPageUrl,
     userCookie: cookie,
-    cookieDomain,
   });
 };
 
