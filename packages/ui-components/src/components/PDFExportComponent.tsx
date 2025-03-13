@@ -6,14 +6,15 @@ import styled from 'styled-components';
  * use absolute length units (like cm and pt) and remove these constants at some point.
  */
 export const A4_PAGE_WIDTH_PX = 1191; // at 144ppi
-export const A4_PAGE_HEIGHT_PX = 1683; // at 144ppi
 
 export const A4Page = styled.div<{
   separatePage?: boolean;
 }>`
-  width: 210mm;
+  background: none;
   break-after: ${({ separatePage }) => (separatePage ? 'always' : 'auto')};
   break-inside: avoid;
   flex-direction: column;
-  padding: 1.5cm 4.5cm 2cm; // Bottom slightly taller than top for *optical* alignment
+  padding-left: 25mm;
+  padding-right: 25mm;
+  width: 210mm;
 `;
