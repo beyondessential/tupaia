@@ -26,7 +26,6 @@ export const downloadDashboardAsPdf = async (
   return await downloadPageAsPdf({
     cookieDomain,
     includePageNumber: true,
-    landscape: false,
     pdfPageUrl,
     userCookie: cookie,
   });
