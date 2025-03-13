@@ -11,7 +11,7 @@ import {
   TupaiaWebExportDashboardRequest,
   VizPeriodGranularity,
 } from '@tupaia/types';
-import { A4Page, ReferenceTooltip } from '@tupaia/ui-components';
+import { A4Page, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
 import {
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
@@ -127,7 +127,7 @@ export const PDFExportDashboardItem = ({
   useEffect(() => {
     if (pageRef.current) setWidth(pageRef.current.offsetWidth);
   }, []);
-  const previewZoom = `calc(${width} / 21cm)`;
+  const previewZoom = width / A4_PAGE_WIDTH_PX;
 
   const { projectCode, entityCode } = useParams();
   const { legacy, code, reportCode } = dashboardItem || ({} as DashboardItem);

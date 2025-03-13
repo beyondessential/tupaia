@@ -5,7 +5,7 @@ import styled from 'styled-components';
  * units, because CSS takes 1px to be 1/96 of an inch. The intention is to refactor PDF exports to
  * use absolute length units (like cm and pt) and remove these constants at some point.
  */
-export const A4_PAGE_WIDTH_PX = 1191; // at 144ppi
+export const A4_PAGE_WIDTH_PX = 793.701;
 
 export const A4Page = styled.div<{
   separatePage?: boolean;
