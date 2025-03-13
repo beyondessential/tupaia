@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Moment } from 'moment';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import {
@@ -26,9 +26,13 @@ const StyledA4Page = styled(A4Page)<{
   $previewZoom?: number;
 }>`
   ${({ $isPreview, $previewZoom = 0.25 }) =>
-    $isPreview ? `width: 100%; zoom: ${$previewZoom};` : ''};
   padding-block-start: 0;
   padding-block-end: 1cm;
+    $isPreview &&
+    css`
+      width: 100%;
+      zoom: ${$previewZoom};
+    `};
 `;
 
 const Title = styled.h3`
