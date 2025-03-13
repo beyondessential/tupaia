@@ -9,12 +9,6 @@ import { getIsQuestionVisible } from '../../features/Survey/SurveyContext/utils'
 import { useSearchParams } from 'react-router-dom';
 import { displayDate } from '../../utils';
 
-const Page = styled(A4Page)`
-  background-color: transparent;
-  padding-block-start: 0 1cm;
-  padding-inline: 1.55cm;
-`;
-
 const Header = styled.div`
   align-items: center;
   border-block-end: 1pt solid #444;
@@ -82,7 +76,7 @@ export const ExportSurveyResponsePage = () => {
   const formattedDataTime = displayDate(endTime, locale);
 
   return (
-    <Page>
+    <A4Page>
       <Header>
         <ProjectLogo
           src={survey?.project?.logoUrl || '/tupaia-logo-dark.svg'}
@@ -110,6 +104,6 @@ export const ExportSurveyResponsePage = () => {
           ))}
         </ScreenWrapper>
       ))}
-    </Page>
+    </A4Page>
   );
 };
