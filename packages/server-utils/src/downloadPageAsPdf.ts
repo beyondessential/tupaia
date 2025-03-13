@@ -43,7 +43,8 @@ const pageNumberHTML = `
 			font-size: 8pt;
 			font-weight: 400;
 			inline-size: 100%;
-			margin-inline: 15mm;
+			margin-block-start: 15mm;
+			margin-inline: 25mm;
 			padding-block-start: 4.5pt;
 			text-align: end;
 		"
