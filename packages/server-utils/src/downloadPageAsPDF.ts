@@ -52,20 +52,29 @@ const pageNumberHTML = `
 	</div>
 `;
 
+interface DownloadPageAsPdfParams {
+  /** The domain of cookie, required when setting up cookie in page */
+  cookieDomain?: string;
+  includePageNumber?: boolean;
+  landscape?: boolean;
+  /** The url to visit and download as a pdf */
+  pdfPageUrl: string;
+  timezone?: string;
+  /** The user's cookie to bypass auth, and ensure page renders under the correct user context */
+  userCookie?: string;
+}
+
 /**
- * @param pdfPageUrl the url to visit and download as a pdf
- * @param userCookie the user's cookie to bypass auth, and ensure page renders under the correct user context
- * @param cookieDomain the domain of cookie, required when setting up cookie in page.
- * @returns pdf buffer
+ * @returns PDF buffer
  */
-export const downloadPageAsPDF = async (
-  pdfPageUrl: string,
+export const downloadPageAsPdf = async ({
+  pdfPageUrl,
   userCookie = '',
-  cookieDomain: string | undefined,
+  cookieDomain,
   landscape = false,
   includePageNumber = false,
-  timezone?: string,
-) => {
+  timezone,
+}: DownloadPageAsPdfParams): Promise<Uint8Array> => {
   let browser: Browser | undefined;
   let buffer: Uint8Array | undefined;
   const { cookies, verifiedPDFPageUrl } = buildParams(pdfPageUrl, userCookie, cookieDomain);
@@ -89,7 +98,14 @@ export const downloadPageAsPDF = async (
       headerTemplate: '<div hidden></div>',
       footerTemplate: pageNumberHTML,
       //add a margin so the page number doesn't overlap with the content, and the top margin is set for overflow content
-      margin: includePageNumber ? { bottom: '20mm', top: '10mm' } : undefined,
+      margin: includePageNumber
+        ? {
+            bottom: '20mm',
+            top: '10mm',
+            left: '50mm',
+            right: '50mm',
+          }
+        : undefined,
     });
   } catch (e) {
     throw new Error(`puppeteer error: ${(e as Error).message}`);

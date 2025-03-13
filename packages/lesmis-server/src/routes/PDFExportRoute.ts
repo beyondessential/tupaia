@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
 import { Route } from '@tupaia/server-boilerplate';
-import { downloadPageAsPDF } from '@tupaia/server-utils';
+import { downloadPageAsPdf } from '@tupaia/server-utils';
 
 export interface PDFExportRequest
   extends Request<
@@ -18,7 +18,11 @@ export class PDFExportRoute extends Route<PDFExportRequest> {
     const { pdfPageUrl } = this.req.body;
     const { cookie, host: cookieDomain } = this.req.headers;
 
-    const buffer = await downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain);
+    const buffer = await downloadPageAsPdf({
+      pdfPageUrl,
+      userCookie: cookie,
+      cookieDomain,
+    });
     this.res.set({
       'Content-Type': 'application/pdf',
       'Content-Length': buffer.length,

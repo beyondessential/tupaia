@@ -1,4 +1,4 @@
-import { downloadPageAsPDF } from '@tupaia/server-utils';
+import { downloadPageAsPdf } from '@tupaia/server-utils';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { stringifyQuery } from '@tupaia/utils';
 
@@ -16,12 +16,18 @@ export const downloadDashboardAsPdf = async (
     exportDescription: null,
     separatePagePerItem: true,
   },
-) => {
+): Promise<Uint8Array> => {
   const endpoint = `${projectCode}/${entityCode}/${dashboardName}/dashboard-pdf-export`;
   const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
     selectedDashboardItems: selectedDashboardItems?.join(','),
     settings: JSON.stringify(settings),
   });
 
-  return await downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, false, true);
+  return await downloadPageAsPdf({
+    cookieDomain,
+    includePageNumber: true,
+    landscape: false,
+    pdfPageUrl,
+    userCookie: cookie,
+  });
 };

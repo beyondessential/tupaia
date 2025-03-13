@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { downloadPageAsPDF } from '@tupaia/server-utils';
+import { downloadPageAsPdf } from '@tupaia/server-utils';
 
 export interface ExportSurveyResponseRequest
   extends Request<
@@ -32,7 +32,13 @@ export class ExportSurveyResponseRoute extends Route<ExportSurveyResponseRequest
 
     const pdfPageUrl = `${baseUrl}/export/${surveyResponseId}?locale=${locale}`;
 
-    const buffer = await downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, false, true, timezone);
+    const buffer = await downloadPageAsPdf({
+      cookieDomain,
+      includePageNumber: true,
+      pdfPageUrl,
+      timezone,
+      userCookie: cookie,
+    });
 
     return {
       contents: buffer,
