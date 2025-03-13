@@ -184,7 +184,7 @@ jobs:
           cache: yarn
       - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
-      - run: yarn build:internal-dependencies
+      - run: yarn workspaces foreach --recursive --parallel --topological --from @tupaia/${{ matrix.package }} run build
       - run: yarn workspace @tupaia/${{ matrix.package }} setup-test || echo "No setup needed"
       - run: yarn workspace @tupaia/${{ matrix.package }} test
 
