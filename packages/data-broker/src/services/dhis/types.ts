@@ -77,7 +77,7 @@ export interface DhisAnalytics {
     >;
     dimensions: Record<string, string[]>;
   };
-  rows: string[][];
+  rows: (string | null)[][];
 }
 
 export interface DhisEventAnalytics {

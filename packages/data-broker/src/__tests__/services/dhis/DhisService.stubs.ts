@@ -92,14 +92,13 @@ export const buildDhisAnalyticsResponse = (analytics: Analytic[]): DhisAnalytics
     dataElement,
     organisationUnit,
     period,
-    value.toString(),
+    value?.toString() ?? null,
   ]);
   const dataElementsInAnalytics = analytics.map(({ dataElement }) => dataElement);
   const items = dataElementsInAnalytics
     .map(dataElement => {
-      const { dataElementCode: dhisCode } = DATA_ELEMENTS[
-        dataElement as keyof typeof DATA_ELEMENTS
-      ];
+      const { dataElementCode: dhisCode } =
+        DATA_ELEMENTS[dataElement as keyof typeof DATA_ELEMENTS];
       return DHIS_RESPONSE_DATA_ELEMENTS[dhisCode as keyof typeof DHIS_RESPONSE_DATA_ELEMENTS];
     })
     .reduce((itemAgg, { uid, code, name }) => {

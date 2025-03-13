@@ -9,12 +9,14 @@ describe('ApiResultTranslator', () => {
       MELB: {
         data: [
           {
+            rh: 70.2,
             precip: 23.6,
             max_temp: 29.8,
             min_temp: 24,
             datetime: '2020-08-20',
           },
           {
+            rh: 83.5,
             precip: 5,
             max_temp: 6,
             min_temp: 7,
@@ -29,6 +31,7 @@ describe('ApiResultTranslator', () => {
     const translator = new ApiResultTranslator([entity], 'events', [
       'WTHR_PRECIP',
       'WTHR_MAX_TEMP',
+      'WTHR_RELATIVE_HUMIDITY',
     ]);
 
     const actual = translator.translate(mockApiResponse());
@@ -42,6 +45,7 @@ describe('ApiResultTranslator', () => {
         dataValues: {
           WTHR_PRECIP: 23.6,
           WTHR_MAX_TEMP: 29.8,
+          WTHR_RELATIVE_HUMIDITY: 70.2,
         },
       },
       {
@@ -52,6 +56,7 @@ describe('ApiResultTranslator', () => {
         dataValues: {
           WTHR_PRECIP: 5,
           WTHR_MAX_TEMP: 6,
+          WTHR_RELATIVE_HUMIDITY: 83.5,
         },
       },
     ]);
@@ -61,6 +66,7 @@ describe('ApiResultTranslator', () => {
     const translator = new ApiResultTranslator([entity], 'analytics', [
       'WTHR_PRECIP',
       'WTHR_MAX_TEMP',
+      'WTHR_RELATIVE_HUMIDITY',
     ]);
 
     const actual = translator.translate(mockApiResponse());
@@ -79,6 +85,12 @@ describe('ApiResultTranslator', () => {
         period: '20200820',
       },
       {
+        dataElement: 'WTHR_RELATIVE_HUMIDITY',
+        value: 70.2,
+        organisationUnit: 'MELB',
+        period: '20200820',
+      },
+      {
         dataElement: 'WTHR_PRECIP',
         value: 5,
         organisationUnit: 'MELB',
@@ -87,6 +99,12 @@ describe('ApiResultTranslator', () => {
       {
         dataElement: 'WTHR_MAX_TEMP',
         value: 6,
+        organisationUnit: 'MELB',
+        period: '20200821',
+      },
+      {
+        dataElement: 'WTHR_RELATIVE_HUMIDITY',
+        value: 83.5,
         organisationUnit: 'MELB',
         period: '20200821',
       },
