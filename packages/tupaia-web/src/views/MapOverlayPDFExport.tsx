@@ -148,7 +148,7 @@ export const MapOverlayPDFExport = () => {
       const endDateString = moment(endDate).toDate().toLocaleDateString(locale);
       return (
         <>
-          ${startDateString}&nbsp;&ndash; ${endDateString}
+          {startDateString}&nbsp;&ndash; {endDateString}
         </>
       );
     }
