@@ -26,8 +26,6 @@ const StyledA4Page = styled(A4Page)<{
   $previewZoom?: number;
 }>`
   ${({ $isPreview, $previewZoom = 0.25 }) =>
-  padding-block-start: 0;
-  padding-block-end: 1cm;
     $isPreview &&
     css`
       width: 100%;
