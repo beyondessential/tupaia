@@ -92,6 +92,7 @@ export const downloadPageAsPdf = async ({
 
     buffer = await page.pdf({
       format: 'a4',
+      printBackground: true,
       landscape,
       displayHeaderFooter: includePageNumber,
       // remove the default header so that only the page number is displayed, not a header
