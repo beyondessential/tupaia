@@ -1,18 +1,20 @@
-import { Analytic, RawAnalyticResults, EntityRecord, Event, EventResults } from '../../types';
-import { WeatherProperty, WeatherResult } from './types';
+import { WeatherResult, WeatherSnapshot } from '@tupaia/weather-api';
+import { Analytic, EntityRecord, Event, EventResults, RawAnalyticResults } from '../../types';
 
 export type ResultFormat = 'analytics' | 'events';
 
-type WeatherDataElementCode = keyof typeof DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP;
-
-const DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP: Record<string, WeatherProperty> = {
+/** Record<string, WeatherProperty>, but narrower */
+const DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP = {
   WTHR_MIN_TEMP: 'min_temp',
   WTHR_MAX_TEMP: 'max_temp',
   WTHR_PRECIP: 'precip',
   WTHR_FORECAST_MIN_TEMP: 'min_temp',
   WTHR_FORECAST_MAX_TEMP: 'max_temp',
   WTHR_FORECAST_PRECIP: 'precip',
-};
+  WTHR_RELATIVE_HUMIDITY: 'rh',
+} as const;
+
+export type WeatherDataElementCode = keyof typeof DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP;
 
 /**
  * Translates Weather API data into events/analytics formatted data
@@ -89,7 +91,7 @@ export class ApiResultTranslator {
 
     for (const entry of apiResult.data) {
       const eventDate = `${entry.datetime}T23:59:59`; // time is 23:59:59 to represent the complete day
-      const event: Event & { dataValues: Record<string, string | number> } = {
+      const event: Event & { dataValues: Partial<WeatherSnapshot> } = {
         event: `weather_${entity.code}_${entry.datetime}`,
         orgUnit: entity.code,
         orgUnitName: entity.name,
@@ -99,7 +101,8 @@ export class ApiResultTranslator {
 
       for (const dataElementCode of this.dataElementCodes) {
         const apiProperty = DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP[dataElementCode];
-        event.dataValues[dataElementCode as string] = entry[apiProperty];
+        const val = entry[apiProperty];
+        event.dataValues[dataElementCode] = val;
       }
 
       events.push(event);

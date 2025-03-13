@@ -2,7 +2,7 @@ export interface Analytic {
   dataElement: string;
   organisationUnit: string;
   period: string; // should be in format YYYYMMDD e.g. "20210103"
-  value: string | number;
+  value: string | number | null;
 }
 
 export interface DataElementMetadata {
@@ -35,7 +35,7 @@ export interface Event {
   eventDate: string;
   orgUnit: string;
   orgUnitName: string;
-  dataValues: Record<string, string | number>;
+  dataValues: Record<string, string | number | null>;
   trackedEntityId?: string;
   trackedEntityCode?: string;
 }
