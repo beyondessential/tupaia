@@ -99,14 +99,7 @@ export const downloadPageAsPdf = async ({
       headerTemplate: '<div hidden></div>',
       footerTemplate: pageNumberHTML,
       //add a margin so the page number doesn't overlap with the content, and the top margin is set for overflow content
-      margin: includePageNumber
-        ? {
-            bottom: '20mm',
-            top: '10mm',
-            left: '50mm',
-            right: '50mm',
-          }
-        : undefined,
+      margin: includePageNumber ? { bottom: '15mm', top: '10mm' } : undefined,
     });
   } catch (e) {
     throw new Error(`puppeteer error: ${(e as Error).message}`);
