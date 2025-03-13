@@ -1,30 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Moment } from 'moment';
-import styled, { css } from 'styled-components';
-import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
+import { Property } from 'csstype';
+import { Moment } from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router';
+import styled, { css } from 'styled-components';
+
+import {
+  BaseReport,
+  DashboardItemConfig,
+  TupaiaWebExportDashboardRequest,
+  VizPeriodGranularity,
+} from '@tupaia/types';
+import { A4Page, ReferenceTooltip } from '@tupaia/ui-components';
 import {
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
   getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
-import {
-  BaseReport,
-  DashboardItemConfig,
-  VizPeriodGranularity,
-  TupaiaWebExportDashboardRequest,
-} from '@tupaia/types';
-import { A4Page, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
-import { Dashboard, DashboardItem, Entity } from '../../types';
+
 import { useProject, useReport } from '../../api/queries';
+import { Dashboard, DashboardItem, Entity } from '../../types';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
 
 const StyledA4Page = styled(A4Page)<{
   $isPreview?: boolean;
-  $previewZoom?: number;
+  $previewZoom?: Property.Zoom;
 }>`
+  width: 31.512cm;
   ${({ $isPreview, $previewZoom = 0.25 }) =>
     $isPreview &&
     css`
@@ -123,7 +127,7 @@ export const PDFExportDashboardItem = ({
   useEffect(() => {
     if (pageRef.current) setWidth(pageRef.current.offsetWidth);
   }, []);
-  const previewZoom = width / A4_PAGE_WIDTH_PX;
+  const previewZoom = `calc(${width} / 21cm)`;
 
   const { projectCode, entityCode } = useParams();
   const { legacy, code, reportCode } = dashboardItem || ({} as DashboardItem);
