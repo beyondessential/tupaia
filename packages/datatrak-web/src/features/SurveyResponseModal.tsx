@@ -55,7 +55,7 @@ const Icon = styled(SurveyTickIcon).attrs({
   'aria-hidden': true,
 })`
   font-size: 2.5rem;
-  margin-right: 0.35rem;
+  margin-inline-end: 0.35rem;
 `;
 
 const DownloadButton = styled(Button).attrs({
@@ -109,18 +109,20 @@ const SurveyResponseModalContent = ({
       <Header>
         {!showLoading && !error && (
           <>
-            {isNotClaustrophobic && <Icon />}
+            <Icon />
             <div>
               <Heading>{surveyResponse?.surveyName}</Heading>
               <SubHeading>{subHeading}</SubHeading>
             </div>
-            <DownloadButton
-              onClick={downloadSurveyResponse}
-              isLoading={isDownloadingSurveyResponse}
-              startIcon={isNotClaustrophobic && <DownloadIcon />}
-            >
-              Download
-            </DownloadButton>
+            {isNotClaustrophobic && (
+              <DownloadButton
+                onClick={downloadSurveyResponse}
+                isLoading={isDownloadingSurveyResponse}
+                startIcon={<DownloadIcon />}
+              >
+                Download
+              </DownloadButton>
+            )}
           </>
         )}
       </Header>
