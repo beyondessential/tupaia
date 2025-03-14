@@ -1,12 +1,12 @@
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import React, { HTMLAttributes } from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
 import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
-export const MobileHeaderWrapper = styled.header`
+export const MobileHeaderRoot = styled.header`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
@@ -52,7 +52,7 @@ const Title = styled(Typography).attrs({ variant: 'h2' })`
   overflow: hidden;
 `;
 
-interface StickyMobileHeaderProps extends HTMLAttributes<HTMLDivElement> {
+interface StickyMobileHeaderProps extends ComponentPropsWithoutRef<typeof MobileHeaderRoot> {
   onBack?: () => void;
   onClose?: (data: any) => void;
 }
@@ -65,7 +65,7 @@ export const StickyMobileHeader = ({
   ...props
 }: StickyMobileHeaderProps) => {
   return (
-    <MobileHeaderWrapper
+    <MobileHeaderRoot
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -83,6 +83,6 @@ export const StickyMobileHeader = ({
           <Close />
         </TrailingIconButton>
       )}
-    </MobileHeaderWrapper>
+    </MobileHeaderRoot>
   );
 };
