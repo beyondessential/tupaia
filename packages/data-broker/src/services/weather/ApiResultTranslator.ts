@@ -8,10 +8,11 @@ const DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP = {
   WTHR_MIN_TEMP: 'min_temp',
   WTHR_MAX_TEMP: 'max_temp',
   WTHR_PRECIP: 'precip',
+  WTHR_RH: 'rh',
   WTHR_FORECAST_MIN_TEMP: 'min_temp',
   WTHR_FORECAST_MAX_TEMP: 'max_temp',
   WTHR_FORECAST_PRECIP: 'precip',
-  WTHR_RELATIVE_HUMIDITY: 'rh',
+  WTHR_FORECAST_RH: 'rh',
 } as const;
 
 export type WeatherDataElementCode = keyof typeof DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP;

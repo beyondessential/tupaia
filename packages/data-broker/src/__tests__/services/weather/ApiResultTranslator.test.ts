@@ -31,7 +31,7 @@ describe('ApiResultTranslator', () => {
     const translator = new ApiResultTranslator([entity], 'events', [
       'WTHR_PRECIP',
       'WTHR_MAX_TEMP',
-      'WTHR_RELATIVE_HUMIDITY',
+      'WTHR_RH',
     ]);
 
     const actual = translator.translate(mockApiResponse());
@@ -45,7 +45,7 @@ describe('ApiResultTranslator', () => {
         dataValues: {
           WTHR_PRECIP: 23.6,
           WTHR_MAX_TEMP: 29.8,
-          WTHR_RELATIVE_HUMIDITY: 70.2,
+          WTHR_RH: 70.2,
         },
       },
       {
@@ -56,7 +56,7 @@ describe('ApiResultTranslator', () => {
         dataValues: {
           WTHR_PRECIP: 5,
           WTHR_MAX_TEMP: 6,
-          WTHR_RELATIVE_HUMIDITY: 83.5,
+          WTHR_RH: 83.5,
         },
       },
     ]);
@@ -66,7 +66,7 @@ describe('ApiResultTranslator', () => {
     const translator = new ApiResultTranslator([entity], 'analytics', [
       'WTHR_PRECIP',
       'WTHR_MAX_TEMP',
-      'WTHR_RELATIVE_HUMIDITY',
+      'WTHR_RH',
     ]);
 
     const actual = translator.translate(mockApiResponse());
@@ -85,7 +85,7 @@ describe('ApiResultTranslator', () => {
         period: '20200820',
       },
       {
-        dataElement: 'WTHR_RELATIVE_HUMIDITY',
+        dataElement: 'WTHR_RH',
         value: 70.2,
         organisationUnit: 'MELB',
         period: '20200820',
@@ -103,7 +103,7 @@ describe('ApiResultTranslator', () => {
         period: '20200821',
       },
       {
-        dataElement: 'WTHR_RELATIVE_HUMIDITY',
+        dataElement: 'WTHR_RH',
         value: 83.5,
         organisationUnit: 'MELB',
         period: '20200821',
