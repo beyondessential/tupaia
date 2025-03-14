@@ -127,7 +127,12 @@ export const PDFExportDashboardItem = ({
   useEffect(() => {
     if (pageRef.current) setWidth(pageRef.current.offsetWidth);
   }, []);
-  const previewZoom = width / A4_PAGE_WIDTH_PX;
+
+  // Semantically, this magic number should be 21cm (A4 width) in pixels (at CSS’s fixed
+  // 1 inch : 96px ratio). This was previously defined incorrectly as 1191 in @tupaia/ui-components.
+  // The value of A4_PAGE_WIDTH_PX has since been fixed in @tupaia/ui-components, but here we use
+  // the old value to preserve existing layout behaviour.
+  const previewZoom = width / 1191;
 
   const { projectCode, entityCode } = useParams();
   const { legacy, code, reportCode } = dashboardItem || ({} as DashboardItem);
