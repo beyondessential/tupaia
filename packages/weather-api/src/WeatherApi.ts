@@ -3,7 +3,11 @@ import { fetchWithTimeout, requireEnv, stringifyQuery } from '@tupaia/utils';
 const MAX_FETCH_WAIT_TIME = 15_000; // 15 seconds
 
 /**
- * @privateRemarks Weatherbit returns more properties. We just care about these ones.
+ * @privateRemarks
+ * - Weatherbit returns more properties. We just care about these ones.
+ * - There doesn’t seem to be any guarantee from Weatherbit that the fields
+ *   won’t be null. We simply haven’t yet run into issues, but may need to make
+ *   these nullable and refator all usages of this type to handle nulls.
  * @see https://www.weatherbit.io/api/historical-weather-daily
  */
 export interface WeatherSnapshot {
