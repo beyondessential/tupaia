@@ -92,7 +92,7 @@ export const buildDhisAnalyticsResponse = (analytics: Analytic[]): DhisAnalytics
     dataElement,
     organisationUnit,
     period,
-    value?.toString() ?? null,
+    value.toString(),
   ]);
   const dataElementsInAnalytics = analytics.map(({ dataElement }) => dataElement);
   const items = dataElementsInAnalytics

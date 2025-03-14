@@ -10,13 +10,13 @@ export interface WeatherSnapshot {
   /** Date (YYYY-MM-DD) */
   datetime: string;
   /** Maximum temperature (default Celsius) */
-  max_temp: number | null;
+  max_temp: number;
   /** Minimum temperature (default Celsius) */
-  min_temp: number | null;
+  min_temp: number;
   /** Accumulated precipitation (default mm) */
-  precip: number | null;
+  precip: number;
   /** Average relative humidity (%) */
-  rh: number | null;
+  rh: number;
 }
 
 export type WeatherProperty = keyof WeatherSnapshot;
