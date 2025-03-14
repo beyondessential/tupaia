@@ -90,7 +90,7 @@ export interface DhisEventAnalytics {
     items: Record<string, { name: string }>;
     dimensions: Record<string, string[]>;
   };
-  rows: string[][];
+  rows: (string | null)[][];
   width?: number;
   height?: number;
 }
