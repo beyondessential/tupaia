@@ -12,13 +12,13 @@ const Inner = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 0 0.5rem;
+  flex: 1;
   inline-size: 100%;
+  justify-content: center;
   max-inline-size: 100%;
+  padding-inline: 0.5rem;
 `;
 
 const Title = styled(Typography).attrs({
