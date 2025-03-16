@@ -31,31 +31,33 @@ const steps = [
 ];
 
 const Container = styled.div`
+  block-size: 100dvb;
   display: flex;
   flex-direction: column;
-  text-align: center;
-  block-size: 100vh;
+  margin-inline: auto;
   max-inline-size: 30rem;
-  margin: 0 auto;
+  text-align: center;
 `;
 
 const Header = styled.div`
   display: flex;
   justify-content: flex-end;
-  padding: 1rem 1.8rem;
+  padding-block: 1rem;
+  padding-inline: 1.8rem;
 `;
 
 const Body = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
   justify-content: center;
-  padding: 0 1.8rem;
+  padding-inline: 1.8rem;
 `;
 
 const Footer = styled.div`
   block-size: 6rem;
-  padding: 0 2rem 1rem;
+  padding-block-end: 1rem;
+  padding-inline: 2rem;
 `;
 
 const TextButton = styled(MuiButton)`
