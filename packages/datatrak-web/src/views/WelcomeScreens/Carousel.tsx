@@ -29,8 +29,9 @@ const Title = styled(Typography).attrs({
 `;
 
 const Text = styled(Typography)`
-  font-size: 0.875rem;
   block-size: 5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
   text-wrap: balance;
 `;
 
