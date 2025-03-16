@@ -1,18 +1,20 @@
 import React, { useEffect } from 'react';
-import { useParams, Outlet } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Outlet, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useForm, FormProvider } from 'react-hook-form';
+
 import { useCurrentUserContext, useEditUser, useEntityByCode, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
+import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
 import {
   DesktopSurveyHeader,
+  SurveyContext,
   useSurveyForm,
   useValidationResolver,
-  SurveyContext,
 } from '../features';
 import { SurveyParams } from '../types';
-import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
-import { successToast, useIsMobile } from '../utils';
+import { successToast, useBeforeUnload, useIsMobile } from '../utils';
+
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
   display: flex;
@@ -100,6 +102,8 @@ const SurveyPageInner = () => {
     }
   }, [survey?.id]);
 
+  useBeforeUnload(formContext.formState.isDirty);
+
   return (
     <PageWrapper>
       <FormProvider {...formContext}>
@@ -119,7 +123,13 @@ const SurveyPageInner = () => {
   );
 };
 
-// The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
+/**
+ * @privateRemarks The form provider has to be outside the outlet so that the form context is
+ * available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page,
+ * because otherwise it rerenders on survey screen change, which makes it close and open again every
+ * time you change screen via the jump-to menu. The survey side menu needs to be inside the form
+ * provider so that it can access the form context to save form data
+ */
 export const SurveyPage = () => {
   const { countryCode, surveyCode } = useParams<SurveyParams>();
   return (
