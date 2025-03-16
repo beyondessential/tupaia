@@ -26,7 +26,6 @@ const Title = styled(Typography).attrs({
 })`
   font-size: 1rem;
   margin-block-end: 1rem;
-  text-wrap: balance;
 `;
 
 const Text = styled(Typography)`
