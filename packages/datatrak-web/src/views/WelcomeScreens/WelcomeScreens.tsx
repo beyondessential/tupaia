@@ -12,25 +12,43 @@ const steps = [
     title: 'Welcome to Tupaia DataTrak!',
     text: 'If you’re here from MediTrak, welcome! Rest assured that you have all the same functionality as MediTrak, only better. Come for a quick tour of what’s new.',
     imgPath: 'images/data-collection-woman.svg',
+    imgIntrinsicWidth: 336,
+    imgIntrinsicHeight: 470,
   },
   {
     title: 'Sync status',
     text: 'See your last sync and which surveys are pending sync on your home page. Use the sync button on the top right to manually sync your device.',
     imgPath: 'images/pig-on-beach.svg',
+    imgIntrinsicWidth: 336,
+    imgIntrinsicHeight: 336,
   },
   {
     title: 'Submission history',
     text: 'Quickly see and access your recently submitted surveys under the ‘Submission history’ section on the dashboard',
     imgPath: 'images/digital-update.svg',
+    imgIntrinsicWidth: 336,
+    imgIntrinsicHeight: 336,
   },
   {
     title: 'Projects',
     text: 'From the home screen you can see which project you’re in. Click on the project to swap to a different project.',
     imgPath: 'images/data-collection-man.svg',
+    imgIntrinsicWidth: 336,
+    imgIntrinsicHeight: 336,
   },
-];
+] as const;
 
 const Container = styled.div`
+  > * {
+    outline: 1px solid red;
+    > * {
+      outline: 1px solid green;
+      > * {
+        outline: 1px solid blue;
+      }
+    }
+  }
+
   block-size: 100dvb;
   display: flex;
   flex-direction: column;

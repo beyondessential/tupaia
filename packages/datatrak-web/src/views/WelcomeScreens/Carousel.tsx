@@ -11,38 +11,43 @@ const Inner = styled.div`
   justify-content: flex-end;
 `;
 
-const ImageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  inline-size: 100%;
-  justify-content: center;
-  max-inline-size: 100%;
-  padding-inline: 0.5rem;
+const Image = styled.img`
+  aspect-ratio: 336 / 470;
+  object-fit: contain;
+  object-position: bottom;
+  width: 100%;
+  max-height: 55dvh;
 `;
 
 const Title = styled(Typography).attrs({
   variant: 'h1',
 })`
   font-size: 1rem;
-  margin-block-end: 1rem;
+  margin-block-start: 2rem;
 `;
 
 const Text = styled(Typography)`
-  block-size: 5rem;
   font-size: 0.875rem;
   line-height: 1.5;
+  margin-block-start: 1em;
+  min-block-size: 3lh;
   text-wrap: balance;
 `;
 
+const StyledCarouselDots = styled(CarouselDots)`
+  margin-block-start: 1rem;
+`;
+
 interface CarouselStep {
-  title: string;
-  text: string;
-  imgPath: string;
+  readonly title: string;
+  readonly text: string;
+  readonly imgPath: React.ImgHTMLAttributes<HTMLImageElement>['src'];
+  readonly imgIntrinsicWidth?: React.ImgHTMLAttributes<HTMLImageElement>['width'];
+  readonly imgIntrinsicHeight?: React.ImgHTMLAttributes<HTMLImageElement>['height'];
 }
 
 interface CarouselProps {
-  steps: CarouselStep[];
+  steps: readonly CarouselStep[];
   activeStep: number;
   handleStepChange: (step: number) => void;
 }
@@ -53,15 +58,25 @@ export const Carousel = ({ steps, activeStep, handleStepChange }: CarouselProps)
       <SwipeableViews index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
         {steps.map(step => (
           <Inner key={step.title}>
-            <ImageContainer>
-              <img src={step.imgPath} alt={step.title} />
-            </ImageContainer>
+            <picture aria-hidden>
+              <source src={step.imgPath} type="image/svg+xml" />
+              <Image
+                aria-hidden
+                src={step.imgPath}
+                width={step.imgIntrinsicWidth}
+                height={step.imgIntrinsicHeight}
+              />
+            </picture>
             <Title>{steps[activeStep].title}</Title>
             <Text>{steps[activeStep].text}</Text>
           </Inner>
         ))}
       </SwipeableViews>
-      <CarouselDots maxSteps={steps.length} activeStep={activeStep} onClick={handleStepChange} />
+      <StyledCarouselDots
+        maxSteps={steps.length}
+        activeStep={activeStep}
+        onClick={handleStepChange}
+      />
     </>
   );
 };
