@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 /*
  * The px values below are not actually equivalent to the mm values above when interpreted as CSS
@@ -8,10 +8,18 @@ import styled from 'styled-components';
 export const A4_PAGE_WIDTH_PX = 793.701;
 
 export const A4Page = styled.div<{
-  separatePage?: boolean;
+  $separatePage?: boolean;
 }>`
+  ${props =>
+    props.$separatePage &&
+    css`
+      break-before: page;
+      @supports not (break-before: page) {
+        page-break-before: always;
+      }
+    `};
+
   background: none;
-  break-after: ${({ separatePage }) => (separatePage ? 'always' : 'auto')};
   break-inside: avoid;
   flex-direction: column;
   padding-left: 25mm;

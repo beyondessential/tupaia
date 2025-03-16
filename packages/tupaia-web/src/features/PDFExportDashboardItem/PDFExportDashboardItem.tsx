@@ -184,7 +184,7 @@ export const PDFExportDashboardItem = ({
       key={dashboardItem?.code}
       $isPreview={isPreview}
       $previewZoom={previewZoom}
-      separatePage={separatePagePerItem}
+      $separatePage={separatePagePerItem}
     >
       {displayHeader && (
         <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
