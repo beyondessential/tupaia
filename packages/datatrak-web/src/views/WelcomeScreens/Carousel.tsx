@@ -50,7 +50,7 @@ export const Carousel = ({ steps, activeStep, handleStepChange }: CarouselProps)
   return (
     <>
       <SwipeableViews index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
-        {steps.map((step: CarouselStep) => (
+        {steps.map(step => (
           <Inner key={step.title}>
             <ImageContainer>
               <img src={step.imgPath} alt={step.title} />
