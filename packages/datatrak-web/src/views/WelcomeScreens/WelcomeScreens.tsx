@@ -39,14 +39,14 @@ const Container = styled.div`
   text-align: center;
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   display: flex;
   justify-content: flex-end;
   padding-block: 1rem;
   padding-inline: 1.8rem;
 `;
 
-const Body = styled.div`
+const Body = styled.main`
   display: flex;
   flex-direction: column;
   flex: 1;
