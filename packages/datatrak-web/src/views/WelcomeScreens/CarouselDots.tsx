@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -19,15 +19,15 @@ const Dot = styled.button<{ $active: boolean }>`
   padding: 0;
 `;
 
-interface CarouselDotsProps {
+interface CarouselDotsProps extends ComponentPropsWithoutRef<typeof Container> {
   maxSteps: number;
   activeStep: number;
   onClick: (index: number) => void;
 }
 
-export const CarouselDots = ({ maxSteps, activeStep, onClick }: CarouselDotsProps) => {
+export const CarouselDots = ({ maxSteps, activeStep, onClick, ...props }: CarouselDotsProps) => {
   return (
-    <Container>
+    <Container {...props}>
       {Array.from({ length: maxSteps }, (_, i) => (
         <Dot key={i} $active={i === activeStep} onClick={() => onClick(i)} />
       ))}
