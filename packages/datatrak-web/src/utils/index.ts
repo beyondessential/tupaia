@@ -8,6 +8,7 @@ export {
 } from './taskFilterSettings';
 export { errorToast, infoToast, successToast } from './toast';
 export { isEmptyArray, isNonEmptyArray } from './typeGuards';
+export { useBeforeUnload } from './useBeforeUnload';
 export { useIsMobileMediaQuery as useIsMobile } from './useIsMobileMediaQuery';
 export { useFromLocation } from './useLocationState';
 export { isPWA } from './pwa';
