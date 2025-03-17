@@ -41,7 +41,8 @@ const Drawer = ({ children }) => {
       disableSwipeToOpen
       PaperProps={{
         style: {
-          borderRadius: '0.625rem 0.625rem 0 0',
+          borderStartStartRadius: '0.625rem',
+          borderStartEndRadius: '0.625rem',
         },
       }}
     >
