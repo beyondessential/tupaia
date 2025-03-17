@@ -1,5 +1,6 @@
 export * from './date';
 export * from './detectDevice';
+export { isWebApp } from './displayMode';
 export { gaEvent } from './ga';
 export {
   getTaskFilterSetting,
@@ -11,4 +12,3 @@ export { isEmptyArray, isNonEmptyArray } from './typeGuards';
 export { useBeforeUnload } from './useBeforeUnload';
 export { useIsMobileMediaQuery as useIsMobile } from './useIsMobileMediaQuery';
 export { useFromLocation } from './useLocationState';
-export { isPWA } from './pwa';

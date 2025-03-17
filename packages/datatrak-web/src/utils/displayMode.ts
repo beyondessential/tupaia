@@ -1,4 +1,4 @@
-function getPwaDisplayMode() {
+function getDisplayMode() {
   if (document.referrer.startsWith('android-app://')) return 'twa';
   if (window.matchMedia('(display-mode: browser)').matches) return 'browser';
   if (window.matchMedia('(display-mode: standalone)').matches) return 'standalone';
@@ -10,8 +10,8 @@ function getPwaDisplayMode() {
   return 'unknown';
 }
 
-export const isPWA = () => {
-  const displayMode = getPwaDisplayMode();
+export const isWebApp = () => {
+  const displayMode = getDisplayMode();
   return (
     displayMode === 'standalone' || displayMode === 'fullscreen' || displayMode === 'minimal-ui'
   );
