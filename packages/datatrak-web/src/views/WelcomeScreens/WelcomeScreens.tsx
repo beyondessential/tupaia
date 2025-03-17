@@ -76,6 +76,19 @@ const TextButton = styled(MuiButton)`
   font-size: 0.75rem;
 `;
 
+const StyledButton = styled(UIButton)`
+  transform: translateY(0);
+  transition-behavior: allow-discrete;
+  transition-property: opacity, transform, visibility;
+  transition: 200ms var(--ease-out-quad);
+
+  &[hidden] {
+    visibility: hidden;
+    opacity: 25%;
+    transform: translateY(20%);
+  }
+`;
+
 export const WelcomeScreens = () => {
   const [activeStep, setActiveStep] = useState(0);
   const navigate = useNavigate();
@@ -106,11 +119,9 @@ export const WelcomeScreens = () => {
         <Carousel steps={steps} activeStep={activeStep} handleStepChange={handleStepChange} />
       </Body>
       <Footer>
-        {isLastStep && (
-          <UIButton onClick={onComplete} fullWidth>
-            Go to Tupaia DataTrak
-          </UIButton>
-        )}
+        <StyledButton onClick={onComplete} fullWidth hidden={!isLastStep}>
+          Go to Tupaia DataTrak
+        </StyledButton>
       </Footer>
     </Container>
   );
