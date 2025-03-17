@@ -1,7 +1,6 @@
 {
   "id": "datatrak",
   "name": "Tupaia DataTrak",
-  "short_name": "Tupaia DataTrak",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
   "display": "standalone",
