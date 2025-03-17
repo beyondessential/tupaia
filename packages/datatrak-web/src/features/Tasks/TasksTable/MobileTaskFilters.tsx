@@ -265,7 +265,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           />
         )}
         <DialogActions>
-          <Button variant="text" color="default" onClick={() => clearFilters()}>
+          <Button variant="text" color="default" onClick={clearFilters}>
             Clear filters
           </Button>
           <Button
