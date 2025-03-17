@@ -2,60 +2,57 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
+import { PageContainer } from '../../components';
 
-const Container = styled.div`
-  display: flex;
+const Wrapper = styled(PageContainer)`
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  background: #333333;
-`;
-
-const LeftColumn = styled.div`
+  background-color: oklch(32% 0 0);
+  color-scheme: dark only;
+  color: white;
   display: flex;
-  align-items: center;
+  flex: initial;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding-bottom: 0.75rem;
+  padding-top: calc(env(safe-area-inset-top, 0) + 0.75rem);
+  text-wrap: pretty;
+  gap: 1rem;
 `;
 
-const Title = styled(Typography).attrs({
-  variant: 'h2',
-})`
-  font-size: 0.6rem;
-  color: #ffffff;
-`;
-
-const Text = styled(Typography)`
-  font-size: 0.6rem;
-  color: #eaeaea;
+const Text = styled(Typography).attrs({ color: 'textSecondary' })`
+  margin-block-start: 0.25em;
 `;
 
 const Logo = styled.img.attrs({
+  'aria-hidden': true,
   src: '/datatrak-logo-white.svg',
-  alt: 'Tupaia Datatrak logo',
 })`
-  width: auto;
-  height: 1.6rem;
-  margin-right: 0.6rem;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  width: 4rem;
 `;
 
 const OpenButton = styled(Button)`
-  border-radius: 1rem;
-  width: 3.5rem;
-  font-size: 10px;
-  height: 26px;
+  border-radius: calc(infinity * 1px);
+  padding-block: 0.25rem;
+
+  .MuiButton-label {
+    text-box-edge: cap alphabetic;
+    text-box-trim: trim-both;
+  }
 `;
 
-export const OpenPrompt = () => {
-  console.log('open');
+export const OpenPrompt = (props: React.ComponentPropsWithoutRef<typeof Wrapper>) => {
   return (
-    <Container>
-      <LeftColumn>
-        <Logo />
-        <div>
-          <Title>Tupaia Datatrak is best used with the app on mobile</Title>
-          <Text>Open in the Tupaia Datatrak app</Text>
-        </div>
-      </LeftColumn>
+    <Wrapper {...props}>
+      <Logo />
+      <div style={{ flex: 1 }}>
+        <Typography>Tupaia DataTrak is best used with the web app on mobile</Typography>
+        <Text color="textSecondary">Open in the Tupaia DataTrak web app</Text>
+      </div>
       <OpenButton>Open</OpenButton>
-    </Container>
+    </Wrapper>
   );
 };
