@@ -1,7 +1,3 @@
-/*
- * Tupaia
- *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- */
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
