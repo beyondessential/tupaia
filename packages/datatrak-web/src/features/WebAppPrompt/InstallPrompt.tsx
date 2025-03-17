@@ -9,12 +9,12 @@ const LeftColumn = styled.div`
 `;
 
 const Pin = styled.img.attrs({
+  'aria-hidden': true,
   src: '/tupaia-pin.svg',
-  ['aria-hidden']: true, // this pin is not of any use to the screen reader, so hide from the screen reader
 })`
-  width: 1rem;
   height: auto;
-  margin-right: 0.5rem;
+  margin-inline-end: 0.5rem;
+  width: 1rem;
 `;
 
 const Title = styled(Typography).attrs({
