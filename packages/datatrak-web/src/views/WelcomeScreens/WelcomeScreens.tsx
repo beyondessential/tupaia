@@ -17,6 +17,7 @@ const steps = [
     imgPath: 'images/data-collection-woman.svg',
     imgIntrinsicWidth: 336,
     imgIntrinsicHeight: 470,
+    imgMediaType: 'image/svg+xml',
   },
   {
     title: 'Sync status',
@@ -24,6 +25,7 @@ const steps = [
     imgPath: 'images/pig-on-beach.svg',
     imgIntrinsicWidth: 336,
     imgIntrinsicHeight: 336,
+    imgMediaType: 'image/svg+xml',
   },
   {
     title: 'Submission history',
@@ -31,6 +33,7 @@ const steps = [
     imgPath: 'images/digital-update.svg',
     imgIntrinsicWidth: 336,
     imgIntrinsicHeight: 336,
+    imgMediaType: 'image/svg+xml',
   },
   {
     title: 'Projects',
@@ -38,6 +41,7 @@ const steps = [
     imgPath: 'images/data-collection-man.svg',
     imgIntrinsicWidth: 336,
     imgIntrinsicHeight: 336,
+    imgMediaType: 'image/svg+xml',
   },
 ] as const;
 

@@ -52,11 +52,12 @@ const StyledCarouselDots = styled(CarouselDots)`
 `;
 
 interface CarouselStep {
-  readonly title: string;
-  readonly text: string;
+  readonly title: React.ReactNode;
+  readonly text: React.ReactNode;
   readonly imgPath: React.ImgHTMLAttributes<HTMLImageElement>['src'];
   readonly imgIntrinsicWidth?: React.ImgHTMLAttributes<HTMLImageElement>['width'];
   readonly imgIntrinsicHeight?: React.ImgHTMLAttributes<HTMLImageElement>['height'];
+  readonly imgMediaType?: React.SourceHTMLAttributes<HTMLSourceElement>['type'];
 }
 
 interface CarouselProps {
@@ -69,10 +70,10 @@ export const Carousel = ({ steps, activeStep, handleStepChange }: CarouselProps)
   return (
     <>
       <Swipeable index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
-        {steps.map(step => (
-          <Inner key={step.title}>
+        {steps.map((step, index) => (
+          <Inner key={index}>
             <picture aria-hidden>
-              <source src={step.imgPath} type="image/svg+xml" />
+              <source src={step.imgPath} type={step.imgMediaType} />
               <Image
                 aria-hidden
                 src={step.imgPath}
