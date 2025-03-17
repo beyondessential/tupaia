@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { Button as MuiButton } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { Button as UIButton } from '@tupaia/ui-components';
-import { Carousel } from './Carousel';
+
 import { useCurrentUserContext, useEditUser } from '../../api';
+import { PageContainer } from '../../components';
 import { ROUTES } from '../../constants';
+import { Carousel } from './Carousel';
 
 const steps = [
   {
@@ -40,11 +43,11 @@ const steps = [
 
 const Container = styled.div`
   > * {
-    outline: 1px solid red;
+    outline: 2px solid oklch(from red l c h / 50%);
     > * {
-      outline: 1px solid green;
+      outline: 2px solid oklch(from green l c h / 50%);
       > * {
-        outline: 1px solid blue;
+        outline: 2px solid oklch(from blue l c h / 50%);
       }
     }
   }
@@ -57,25 +60,25 @@ const Container = styled.div`
   text-align: center;
 `;
 
-const Header = styled.header`
+const Header = styled(PageContainer).attrs({ as: 'header' })`
   display: flex;
+  flex: initial;
   justify-content: flex-end;
-  padding-block: 1rem;
-  padding-inline: 1.8rem;
+  padding-bottom: 1rem;
+  padding-top: max(env(safe-area-inset-top, 0), 1rem);
 `;
 
-const Body = styled.main`
+const Body = styled(PageContainer).attrs({ as: 'main' })`
   display: flex;
   flex-direction: column;
   flex: 1;
   justify-content: center;
-  padding-inline: 1.8rem;
 `;
 
-const Footer = styled.div`
-  block-size: 6rem;
-  padding-block-end: 1rem;
-  padding-inline: 2rem;
+const Footer = styled(PageContainer)`
+  flex: initial;
+  margin-block-start: 2.5rem;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 2.5rem);
 `;
 
 const TextButton = styled(MuiButton)`

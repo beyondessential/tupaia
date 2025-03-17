@@ -13,10 +13,13 @@ const Inner = styled.div`
 
 const Image = styled.img`
   aspect-ratio: 336 / 470;
+  height: auto;
+  margin-inline: auto;
+  max-height: 55dvh;
+  max-width: 100%;
   object-fit: contain;
   object-position: bottom;
   width: 100%;
-  max-height: 55dvh;
 `;
 
 const Title = styled(Typography).attrs({
