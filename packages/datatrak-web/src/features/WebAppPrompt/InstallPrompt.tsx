@@ -10,7 +10,7 @@ const LeftColumn = styled.div`
 
 const Pin = styled.img.attrs({
   'aria-hidden': true,
-  src: '/tupaia-pin.svg',
+  src: '/datatrak-pin.svg',
 })`
   height: auto;
   margin-inline-end: 0.5rem;
