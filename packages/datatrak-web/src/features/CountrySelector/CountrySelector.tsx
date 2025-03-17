@@ -26,7 +26,7 @@ const Select = styled(BaseSelect)`
   }
 `;
 const Pin = styled.img.attrs({
-  src: '/tupaia-pin.svg',
+  src: '/datatrak-pin.svg',
   'aria-hidden': true, // this pin is not of any use to the screen reader, so hide from the screen reader
 })`
   width: 1rem;

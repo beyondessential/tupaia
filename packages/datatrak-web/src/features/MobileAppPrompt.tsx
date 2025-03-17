@@ -146,7 +146,7 @@ export const MobileAppPrompt = () => {
 
   const displayOptions = [
     {
-      icon: '/tupaia-pin.svg',
+      icon: '/datatrak-pin.svg',
       text: 'Datatrak app',
       button: {
         text: 'Open',
