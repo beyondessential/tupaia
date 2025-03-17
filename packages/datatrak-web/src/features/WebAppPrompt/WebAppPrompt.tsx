@@ -10,10 +10,11 @@ import { MobileAppPrompt } from '../MobileAppPrompt';
 import { OpenPrompt } from './OpenPrompt';
 
 const Container = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: space-between;
-  padding: 1rem 1.25rem 2rem;
+  padding-block: 1rem 2rem;
+  padding-inline: 1.25rem;
 `;
 
 const TopBar = styled.div`
