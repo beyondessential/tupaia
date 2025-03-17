@@ -4,6 +4,13 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { CarouselDots } from './CarouselDots';
 
+const Swipeable = styled(SwipeableViews)`
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
+`;
+
 const Inner = styled.div`
   height: 100%;
   display: flex;
@@ -61,7 +68,7 @@ interface CarouselProps {
 export const Carousel = ({ steps, activeStep, handleStepChange }: CarouselProps) => {
   return (
     <>
-      <SwipeableViews index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
+      <Swipeable index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
         {steps.map(step => (
           <Inner key={step.title}>
             <picture aria-hidden>
@@ -77,7 +84,7 @@ export const Carousel = ({ steps, activeStep, handleStepChange }: CarouselProps)
             <Text>{steps[activeStep].text}</Text>
           </Inner>
         ))}
-      </SwipeableViews>
+      </Swipeable>
       <StyledCarouselDots
         maxSteps={steps.length}
         activeStep={activeStep}
