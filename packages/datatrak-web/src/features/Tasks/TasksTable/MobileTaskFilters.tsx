@@ -1,17 +1,19 @@
+import { Fab, Slide, Tab, Tabs, Typography } from '@material-ui/core';
+import { TransitionProps } from '@material-ui/core/transitions';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { TransitionProps } from '@material-ui/core/transitions';
-import { Tabs, Tab, Fab, Typography, Slide } from '@material-ui/core';
+
 import { useDebounce } from '@tupaia/ui-components';
-import { FiltersIcon, Button } from '../../../components';
-import { Modal } from '../../../components/Modal';
-import { MobileAutocomplete } from './MobileAutocomplete';
+
 import {
   useCurrentUserContext,
   useProjectEntities,
   useProjectSurveys,
-  useProjectUsers,
+  useProjectUsersQuery,
 } from '../../../api';
+import { Button, FiltersIcon } from '../../../components';
+import { Modal } from '../../../components/Modal';
+import { MobileAutocomplete } from './MobileAutocomplete';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   position: absolute;
@@ -256,7 +258,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
         )}
         {tabValue === 2 && (
           <Filter
-            fetchFunction={(user, search) => useProjectUsers(user.project?.code, search)}
+            fetchFunction={(user, search) => useProjectUsersQuery(user.project?.code, search)}
             filterKey="assignee.id"
             onChange={handleChangeFilters}
             value={getFilterValue('assignee.id')}
