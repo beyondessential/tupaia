@@ -42,16 +42,6 @@ const steps = [
 ] as const;
 
 const Container = styled.div`
-  > * {
-    outline: 2px solid oklch(from red l c h / 50%);
-    > * {
-      outline: 2px solid oklch(from green l c h / 50%);
-      > * {
-        outline: 2px solid oklch(from blue l c h / 50%);
-      }
-    }
-  }
-
   block-size: 100dvb;
   display: flex;
   flex-direction: column;
