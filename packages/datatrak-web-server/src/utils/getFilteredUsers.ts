@@ -46,12 +46,12 @@ export const getFilteredUsers = async (
 
   // manually sort the users by full name, so that names beginning with special characters are first to match Meditrak
   return users
-    .sort((a, b) => a.full_name.toLowerCase().localeCompare(b.full_name.toLowerCase()))
+    .sort((a, b) => a.full_name.toLocaleUpperCase().localeCompare(b.full_name.toLocaleUpperCase()))
+    .slice(0, DEFAULT_PAGE_SIZE)
     .map(user => ({
       id: user.id,
       name: user.full_name,
-    }))
-    .slice(0, DEFAULT_PAGE_SIZE);
+    }));
 };
 
 export const getFilteredUsersForPermissionGroup = async (
