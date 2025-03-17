@@ -163,7 +163,7 @@ export const EntitySelector = ({
           )}
         </div>
       </Container>
-      {errors && errors[name!] && <FormHelperText error>{errors[name!].message}</FormHelperText>}
+      {errors?.[name!] && <FormHelperText error>{errors[name!].message}</FormHelperText>}
     </>
   );
 };
