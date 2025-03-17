@@ -22,6 +22,7 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
+    "@tupaia/utils": "workspace:*",
     "date-fns": "^2.16.1",
     "lodash.startcase": "^4.4.0",
     "mathjs": "^11.11.0"

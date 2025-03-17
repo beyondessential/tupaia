@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path, { join, dirname } from 'path';
+import path, { join } from 'path';
 import type { StorybookConfig } from '@storybook/react-vite';
 
 const getStoriesDir = () => {
