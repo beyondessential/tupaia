@@ -1,8 +1,9 @@
-import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { Request } from 'express';
 import sortBy from 'lodash.sortby';
+
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
 type SingleSurveyResponse = DatatrakWebSurveyRequest.ResBody;
 
@@ -14,10 +15,12 @@ export type SurveysRequest = Request<
   DatatrakWebSurveyRequest.ReqQuery
 >;
 
-type SearchCondition = {
-  comparator: string;
-  comparisonValue: string;
-};
+type SearchCondition =
+  | {
+      comparator: string;
+      comparisonValue: string;
+    }
+  | { sql: string };
 
 export class SurveysRoute extends Route<SurveysRequest> {
   public async buildResponse() {
