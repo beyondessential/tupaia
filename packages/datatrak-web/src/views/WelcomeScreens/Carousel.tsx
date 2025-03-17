@@ -20,6 +20,9 @@ const Image = styled.img`
   object-fit: contain;
   object-position: bottom;
   width: 100%;
+
+  // Generally considered inaccessible, but swiping between steps is more important
+  user-drag: none;
 `;
 
 const Title = styled(Typography).attrs({
