@@ -1,8 +1,9 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { Country, Project, EntityTypeEnum } from '@tupaia/types';
-import { PermissionGroupRecord } from '@tupaia/server-boilerplate';
-import { DatatrakWebServerModelRegistry } from '../types';
+import { DbFilter, PermissionGroupRecord } from '@tupaia/server-boilerplate';
+import { Country, EntityTypeEnum, UserAccount } from '@tupaia/types';
+
 import { API_CLIENT_PERMISSIONS } from '../constants';
+import { DatatrakWebServerModelRegistry } from '../types';
 
 const USERS_EXCLUDED_FROM_LIST = [
   'edmofro@gmail.com', // Edwin
@@ -21,19 +22,26 @@ const USERS_EXCLUDED_FROM_LIST = [
 
 const DEFAULT_PAGE_SIZE = 100;
 
-const usersFilter = {
-  email: { comparator: 'not in', comparisonValue: USERS_EXCLUDED_FROM_LIST },
-  [QUERY_CONJUNCTIONS.RAW]: {
-    // exclude E2E users and any internal users
-    sql: `(email NOT LIKE '%tupaia.org' AND email NOT LIKE '%beyondessential.com.au' AND email NOT LIKE '%@bes.au')`,
-  },
-} as Record<string, any>;
+interface UserAccountWithCustomColumns extends UserAccount {
+  full_name: string;
+}
 
 export const getFilteredUsers = async (
   models: DatatrakWebServerModelRegistry,
   searchTerm?: string,
   userIds?: string[],
 ) => {
+  const usersFilter = {
+    email: {
+      comparator: 'not in',
+      comparisonValue: USERS_EXCLUDED_FROM_LIST,
+    },
+    [QUERY_CONJUNCTIONS.RAW]: {
+      // exclude E2E users and any internal users
+      sql: "(email NOT ILIKE '%@tupaia.org' AND email NOT ILIKE '%@bes.au' AND email NOT ILIKE '%@beyondessential.com.au')",
+    },
+  } as unknown as DbFilter<UserAccountWithCustomColumns>;
+
   if (userIds) {
     usersFilter.id = userIds;
   }
@@ -46,12 +54,12 @@ export const getFilteredUsers = async (
 
   // manually sort the users by full name, so that names beginning with special characters are first to match Meditrak
   return users
-    .sort((a, b) => a.full_name.toLowerCase().localeCompare(b.full_name.toLowerCase()))
+    .sort((a, b) => a.full_name.toLocaleUpperCase().localeCompare(b.full_name.toLocaleUpperCase()))
+    .slice(0, DEFAULT_PAGE_SIZE)
     .map(user => ({
       id: user.id,
       name: user.full_name,
-    }))
-    .slice(0, DEFAULT_PAGE_SIZE);
+    }));
 };
 
 export const getFilteredUsersForPermissionGroup = async (
@@ -71,11 +79,13 @@ export const getFilteredUsersForPermissionGroup = async (
   }
 
   // get the ancestors of the permission group
-  const permissionGroupWithAncestors = await permissionGroup.getAncestors();
-  const entity = await models.entity.findOne({
-    country_code: countryCode,
-    type: EntityTypeEnum.country,
-  });
+  const [permissionGroupWithAncestors, entity] = await Promise.all([
+    permissionGroup.getAncestors(),
+    models.entity.findOne({
+      country_code: countryCode,
+      type: EntityTypeEnum.country,
+    }),
+  ]);
 
   // get the user entity permissions for the permission group and its ancestors
   const userEntityPermissions = await models.userEntityPermission.find({
