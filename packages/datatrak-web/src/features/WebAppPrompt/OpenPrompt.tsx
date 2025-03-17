@@ -19,7 +19,7 @@ const Wrapper = styled(PageContainer)`
   gap: 1rem;
 `;
 
-const Text = styled(Typography).attrs({ color: 'textSecondary' })`
+const SecondaryText = styled(Typography).attrs({ color: 'textSecondary' })`
   margin-block-start: 0.25em;
 `;
 
@@ -50,7 +50,7 @@ export const OpenPrompt = (props: React.ComponentPropsWithoutRef<typeof Wrapper>
       <Logo />
       <div style={{ flex: 1 }}>
         <Typography>Tupaia DataTrak is best used with the web app on mobile</Typography>
-        <Text color="textSecondary">Open in the Tupaia DataTrak web app</Text>
+        <SecondaryText>Open in the Tupaia DataTrak web app</SecondaryText>
       </div>
       <OpenButton>Open</OpenButton>
     </Wrapper>
