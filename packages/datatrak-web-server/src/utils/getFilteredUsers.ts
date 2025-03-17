@@ -1,8 +1,9 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { Country, Project, EntityTypeEnum } from '@tupaia/types';
-import { PermissionGroupRecord } from '@tupaia/server-boilerplate';
-import { DatatrakWebServerModelRegistry } from '../types';
+import { DbFilter, PermissionGroupRecord } from '@tupaia/server-boilerplate';
+import { Country, EntityTypeEnum, UserAccount } from '@tupaia/types';
+
 import { API_CLIENT_PERMISSIONS } from '../constants';
+import { DatatrakWebServerModelRegistry } from '../types';
 
 const USERS_EXCLUDED_FROM_LIST = [
   'edmofro@gmail.com', // Edwin
@@ -21,19 +22,26 @@ const USERS_EXCLUDED_FROM_LIST = [
 
 const DEFAULT_PAGE_SIZE = 100;
 
-const usersFilter = {
-  email: { comparator: 'not in', comparisonValue: USERS_EXCLUDED_FROM_LIST },
-  [QUERY_CONJUNCTIONS.RAW]: {
-    // exclude E2E users and any internal users
-    sql: "(email NOT ILIKE '%@tupaia.org' AND email NOT ILIKE '%@bes.au' AND email NOT ILIKE '%@beyondessential.com.au')",
-  },
-} as Record<string, any>;
+interface UserAccountWithCustomColumns extends UserAccount {
+  full_name: string;
+}
 
 export const getFilteredUsers = async (
   models: DatatrakWebServerModelRegistry,
   searchTerm?: string,
   userIds?: string[],
 ) => {
+  const usersFilter = {
+    email: {
+      comparator: 'not in',
+      comparisonValue: USERS_EXCLUDED_FROM_LIST,
+    },
+    [QUERY_CONJUNCTIONS.RAW]: {
+      // exclude E2E users and any internal users
+      sql: "(email NOT ILIKE '%@tupaia.org' AND email NOT ILIKE '%@bes.au' AND email NOT ILIKE '%@beyondessential.com.au')",
+    },
+  } as unknown as DbFilter<UserAccountWithCustomColumns>;
+
   if (userIds) {
     usersFilter.id = userIds;
   }
