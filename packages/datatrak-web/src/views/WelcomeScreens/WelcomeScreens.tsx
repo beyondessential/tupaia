@@ -29,7 +29,12 @@ const steps = [
   },
   {
     title: 'Submission history',
-    text: 'Quickly see and access your recently submitted surveys under the ‘Submission history’ section on the dashboard',
+    text: (
+      <>
+        Quickly see and access your recently submitted surveys under the{' '}
+        <strong>Submission history</strong> section on the dashboard
+      </>
+    ),
     imgPath: 'images/digital-update.svg',
     imgIntrinsicWidth: 336,
     imgIntrinsicHeight: 336,
