@@ -149,7 +149,7 @@ export const EntitySelector = ({
               invalid={invalid}
               required={required}
               inputProps={{
-                ['aria-labelledby']: showLegend && !label ? 'entity-selector-legend' : undefined,
+                'aria-labelledby': showLegend && !label ? 'entity-selector-legend' : undefined,
               }}
             />
           )}
@@ -157,6 +157,7 @@ export const EntitySelector = ({
             <SpinningLoader />
           ) : (
             <ResultsList
+              searchValue={searchValue}
               value={value}
               onSelect={onSelect}
               searchResults={disableSearch ? [] : displayResults}

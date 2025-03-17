@@ -76,11 +76,12 @@ export const DashboardPDFExport = ({
   const settings = getSettings();
 
   const dashboardItems = selectedDashboardItems?.reduce(
-    (result: DashboardItem[], code?: string) => {
+    (result: DashboardItem[], code?: DashboardItem['code']) => {
       const item = (activeDashboard?.items as DashboardItem[])?.find(
-        (dashboardItem: DashboardItem) => dashboardItem.code === (code as DashboardItem['code']),
+        dashboardItem => dashboardItem.code === code,
       );
-      return item ? [...result, item] : result;
+      if (item) result.push(item);
+      return result;
     },
     [],
   );

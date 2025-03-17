@@ -22,7 +22,7 @@ describe('getLeaderboard()', () => {
   it('should filter out internal users on standard projects', async () => {
     const expectedLeaderboard = `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, FLOOR(COUNT(*)) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
         FROM survey_response
         JOIN survey on survey.id=survey_id
         WHERE survey.project_id = ?
@@ -45,7 +45,7 @@ describe('getLeaderboard()', () => {
     ];
     const expectedLeaderboard = `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
       FROM (
-        SELECT user_id, FLOOR(COUNT(*)) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        SELECT user_id, COUNT(*)::int as coconuts, FLOOR(COUNT(*) / 100)::int as pigs
         FROM survey_response
         JOIN survey on survey.id=survey_id
         WHERE survey.project_id = ?

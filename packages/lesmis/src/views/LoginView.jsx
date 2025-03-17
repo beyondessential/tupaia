@@ -42,7 +42,7 @@ export const LoginView = () => {
   return (
     <Container>
       <FormBackButton />
-      <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
+      <StyledImg src="/lesmis-login-logo.svg" alt="LESMIS logo" />
       <StyledCard>
         <LoginForm />
       </StyledCard>

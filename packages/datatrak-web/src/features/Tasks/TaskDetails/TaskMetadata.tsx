@@ -44,8 +44,8 @@ const Row = styled(DataWrapper)`
 `;
 
 const Pin = styled.img.attrs({
-  src: '/tupaia-pin.svg',
-  ['aria-hidden']: true, // this pin is not of any use to the screen reader, so hide from the screen reader
+  src: '/datatrak-pin.svg',
+  'aria-hidden': true, // this pin is not of any use to the screen reader, so hide from the screen reader
 })`
   width: auto;
   height: 1rem;

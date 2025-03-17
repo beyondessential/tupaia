@@ -1,13 +1,20 @@
 import React, { useEffect } from 'react';
-import { useParams, Outlet } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Outlet, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useForm, FormProvider } from 'react-hook-form';
+
 import { useCurrentUserContext, useEditUser, useEntityByCode, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
-import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
-import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
-import { successToast } from '../utils';
+import {
+  DesktopSurveyHeader,
+  SurveyContext,
+  useSurveyForm,
+  useValidationResolver,
+} from '../features';
+import { SurveyParams } from '../types';
+import { successToast, useBeforeUnload, useIsMobile } from '../utils';
+
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
   display: flex;
@@ -30,12 +37,14 @@ const SurveyScreenContainer = styled.div<{
   display: flex;
   overflow: ${({ $scrollable }) => ($scrollable ? 'auto' : 'hidden')};
   align-items: flex-start;
-  height: ${({ $hasToolbar }) =>
-    $hasToolbar
-      ? `calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT})`
-      : `calc(100vh - ${HEADER_HEIGHT})`};
+
+  height: 100vh;
   width: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
+    height: ${({ $hasToolbar }) =>
+      $hasToolbar
+        ? `calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT})`
+        : `calc(100vh - ${HEADER_HEIGHT})`};
     margin-left: -1.25rem;
     padding-top: ${({ $scrollable }) => ($scrollable ? '0' : '2rem')};
     padding-bottom: 2rem;
@@ -49,6 +58,7 @@ const SurveyPageInner = () => {
     isSuccessScreen,
     isResponseScreen,
     cancelModalOpen,
+    cancelModalConfirmLink,
     closeCancelConfirmation,
     isResubmit,
     countryCode,
@@ -92,22 +102,34 @@ const SurveyPageInner = () => {
     }
   }, [survey?.id]);
 
+  useBeforeUnload(formContext.formState.isDirty);
+
   return (
     <PageWrapper>
       <FormProvider {...formContext}>
-        <SurveyToolbar />
+        {!useIsMobile() ? <DesktopSurveyHeader /> : null}
         <SurveyScreenContainer $scrollable={isSuccessScreen} $hasToolbar={!isResponseScreen}>
           {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}
           <Outlet key={screenNumber} />
         </SurveyScreenContainer>
       </FormProvider>
-      <CancelConfirmModal isOpen={cancelModalOpen} onClose={closeCancelConfirmation} />
+      <CancelConfirmModal
+        isOpen={cancelModalOpen}
+        onClose={closeCancelConfirmation}
+        confirmPath={cancelModalConfirmLink}
+      />
     </PageWrapper>
   );
 };
 
-// The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
+/**
+ * @privateRemarks The form provider has to be outside the outlet so that the form context is
+ * available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page,
+ * because otherwise it rerenders on survey screen change, which makes it close and open again every
+ * time you change screen via the jump-to menu. The survey side menu needs to be inside the form
+ * provider so that it can access the form context to save form data
+ */
 export const SurveyPage = () => {
   const { countryCode, surveyCode } = useParams<SurveyParams>();
   return (
