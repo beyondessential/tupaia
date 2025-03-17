@@ -607,6 +607,7 @@
   "shortcuts": [
     {
       "name": "DataTrak Tasks",
+      "short_name": "Tasks",
       "description": "Tupaia DataTrak tasks",
       "url": "/tasks",
       "icons": [
