@@ -25,7 +25,7 @@ const usersFilter = {
   email: { comparator: 'not in', comparisonValue: USERS_EXCLUDED_FROM_LIST },
   [QUERY_CONJUNCTIONS.RAW]: {
     // exclude E2E users and any internal users
-    sql: `(email NOT LIKE '%tupaia.org' AND email NOT LIKE '%beyondessential.com.au' AND email NOT LIKE '%@bes.au')`,
+    sql: "(email NOT ILIKE '%@tupaia.org' AND email NOT ILIKE '%@bes.au' AND email NOT ILIKE '%@beyondessential.com.au')",
   },
 } as Record<string, any>;
 
