@@ -26,13 +26,13 @@ const FilterButton = styled(Fab).attrs({ color: 'primary' })`
 `;
 
 const FilterIndicator = styled.div`
-  position: absolute;
-  top: -0.2rem;
-  right: -0.2rem;
-  width: 1.375rem;
+  background-color: ${props => props.theme.palette.success.main};
+  border-radius: calc(infinity * 1px);
   height: 1.375rem;
-  border-radius: 50%;
-  background: ${({ theme }) => theme.palette.success.main};
+  inset-block-start: -0.2rem;
+  inset-inline-end: -0.2rem;
+  position: absolute;
+  width: 1.375rem;
 `;
 
 const StyledModal = styled(Modal)`
@@ -42,11 +42,10 @@ const StyledModal = styled(Modal)`
     justify-content: flex-end;
 
     > .MuiPaper-root {
-      max-height: 37.5rem;
-      border-top-left-radius: 0.625rem;
-      border-top-right-radius: 0.625rem;
-      padding-block-start: 0;
-      padding-block-end: 0;
+      border-start-end-radius: 0.625rem;
+      border-start-start-radius: 0.625rem;
+      max-block-size: 37.5rem;
+      padding-block: 0;
 
       > div {
         display: flex;
@@ -70,18 +69,17 @@ const StyledTabs = styled(Tabs)`
   }
 
   .MuiTab-root {
-    border-right: 1px solid ${({ theme }) => theme.palette.primary.main};
     color: ${({ theme }) => theme.palette.text.secondary};
     text-transform: none;
     min-height: 0;
 
-    &.Mui-selected {
-      color: ${({ theme }) => theme.palette.text.primary};
-      background: rgba(50, 141, 229, 0.1);
+    &:not(:last-child) {
+      border-inline-end: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.primary.main};
     }
 
-    &:last-child {
-      border-right: none;
+    &.Mui-selected {
+      color: ${({ theme }) => theme.palette.text.primary};
+      background-color: oklch(63.33% 0.157 251.26 / 10%);
     }
   }
 `;
