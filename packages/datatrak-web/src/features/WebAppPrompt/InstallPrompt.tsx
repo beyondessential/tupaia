@@ -41,7 +41,7 @@ export const InstallPrompt = ({ onInstall }) => {
       <LeftColumn>
         <Pin />
         <div>
-          <Title>Tupaia Datatrak</Title>
+          <Title>Tupaia DataTrak</Title>
           <Text>datatrak.tupaia.org</Text>
         </div>
       </LeftColumn>
