@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useCurrentUserContext } from '../api';
 import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
-import { isPWA } from '../utils';
+import { isWebApp } from '../utils';
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactElement => {
@@ -22,7 +22,7 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
   }
 
   // If the user is logged in and has not seen the welcome screen, redirect to the welcome screen
-  if (isPWA() && !hideWelcomeScreen && pathname !== ROUTES.WELCOME) {
+  if (isWebApp() && !hideWelcomeScreen && pathname !== ROUTES.WELCOME) {
     return <Navigate to={ROUTES.WELCOME} replace={true} />;
   }
 
