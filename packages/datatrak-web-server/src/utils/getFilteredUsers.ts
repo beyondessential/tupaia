@@ -71,11 +71,13 @@ export const getFilteredUsersForPermissionGroup = async (
   }
 
   // get the ancestors of the permission group
-  const permissionGroupWithAncestors = await permissionGroup.getAncestors();
-  const entity = await models.entity.findOne({
-    country_code: countryCode,
-    type: EntityTypeEnum.country,
-  });
+  const [permissionGroupWithAncestors, entity] = await Promise.all([
+    permissionGroup.getAncestors(),
+    models.entity.findOne({
+      country_code: countryCode,
+      type: EntityTypeEnum.country,
+    }),
+  ]);
 
   // get the user entity permissions for the permission group and its ancestors
   const userEntityPermissions = await models.userEntityPermission.find({
