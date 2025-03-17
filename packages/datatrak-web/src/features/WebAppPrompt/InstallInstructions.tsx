@@ -25,12 +25,12 @@ const Text = styled(Typography)`
 `;
 
 const Pin = styled.img.attrs({
-  src: '/tupaia-pin.svg',
-  ['aria-hidden']: true, // this pin is not of any use to the screen reader, so hide from the screen reader
+  'aria-hidden': true,
+  src: '/datatrak-pin.svg',
 })`
-  width: 1rem;
   height: auto;
-  margin-right: 0.5rem;
+  margin-inline-end: 0.5rem;
+  width: 1rem;
 `;
 
 export const InstallInstructions = () => {
@@ -38,10 +38,10 @@ export const InstallInstructions = () => {
     <Container>
       <Box>
         <Pin />
-        <Title>Tupaia Datatrak</Title>
+        <Title>Tupaia DataTrak</Title>
       </Box>
       <Text>
-        To install the Tupaia Datatrak app, click the install button in the bottom right corner of
+        To install the Tupaia DataTrak app, click the install button in the bottom right corner of
         your screen.
       </Text>
     </Container>
