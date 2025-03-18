@@ -15,7 +15,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -39,6 +39,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "mockdate": "^3.0.5"
+    "mockdate": "^3.0.5",
+    "rimraf": "^6.0.1"
   }
 }

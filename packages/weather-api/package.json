@@ -12,12 +12,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",
     "test": "yarn package:test",
     "test-coverage": "yarn test --coverage"
   },
   "dependencies": {
     "@tupaia/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }

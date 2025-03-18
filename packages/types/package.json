@@ -15,9 +15,9 @@
     "hoistingLimits": "workspaces"
   },
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",
-    "build-watch": "rm -rf dist && npm run --prefix ../../ package:build:ts-watch",
+    "build-watch": "rimraf dist && npm run --prefix ../../ package:build:ts-watch",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "echo \"No tests specified\" && exit 0",
@@ -30,6 +30,7 @@
     "@rmp135/sql-ts": "^1.15.1",
     "dotenv": "^16.4.5",
     "knex": "^3.1.0",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.1",
     "typescript-json-schema": "^0.55.0"
   }

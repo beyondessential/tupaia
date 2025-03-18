@@ -13,7 +13,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && yarn package:build:ts",
+    "build": "rimraf dist && yarn package:build:ts",
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -70,6 +70,7 @@
     "@types/styled-components": "^5.0.0",
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
-    "react-password-strength-bar": "^0.3.3"
+    "react-password-strength-bar": "^0.3.3",
+    "rimraf": "^6.0.1"
   }
 }

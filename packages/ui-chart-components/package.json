@@ -13,7 +13,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && yarn package:build:ts",
+    "build": "rimraf dist && yarn package:build:ts",
     "build-dev": "npm run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@types/lodash.get": "^4.4.7",
-    "@types/recharts": "^1.8.24"
+    "@types/recharts": "^1.8.24",
+    "rimraf": "^6.0.1"
   }
 }
