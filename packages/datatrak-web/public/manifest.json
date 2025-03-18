@@ -6,7 +6,7 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "description": "Data collection and visualisation for the most remote settings in the world",
+  "description": "Tupaia DataTrak is a free and open source tool that can be used for data collection, managing tasking and generating reports.",
   "screenshots": [
     {
       "src": "screenshots/login.png",
