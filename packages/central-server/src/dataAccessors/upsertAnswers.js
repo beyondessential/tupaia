@@ -7,9 +7,7 @@ function isValidHttpUrl(str) {
     const url = new URL(str);
     return url.protocol === 'https:' || url.protocol === 'http:';
   } catch (e) {
-    if (e instanceof TypeError && e.code === 'ERR_INVALID_URL') {
-      return false;
-    }
+    if (e instanceof TypeError) return false;
     throw e;
   }
 }
