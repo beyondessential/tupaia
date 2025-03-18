@@ -4,7 +4,7 @@ import { TupaiaDatabase } from '../../core/BaseDatabase';
 
 let database = null;
 
-// configureEnv();
+configureEnv();
 
 export function getTestDatabase() {
   if (!database) {
