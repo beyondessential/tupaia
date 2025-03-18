@@ -2,6 +2,18 @@ import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server
 import { QuestionType } from '@tupaia/types';
 import { DatabaseError, UploadError } from '@tupaia/utils';
 
+function isValidHttpUrl(str) {
+  try {
+    const url = new URL(str);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch (e) {
+    if (e instanceof TypeError && e.code === 'ERR_INVALID_URL') {
+      return false;
+    }
+    throw e;
+  }
+}
+
 export async function upsertAnswers(models, answers, surveyResponseId) {
   const answerRecords = [];
 
@@ -16,7 +28,7 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       const validFileIdRegex = /^[a-f\d]{24}$/;
       const s3ImagePath = getS3ImageFilePath();
 
-      if (answer.body.includes('http')) {
+      if (isValidHttpUrl(answer.body)) {
         answerDocument.text = answer.body;
       } else if (validFileIdRegex.test(answer.body)) {
         // if this is passed a valid id in the answer body
