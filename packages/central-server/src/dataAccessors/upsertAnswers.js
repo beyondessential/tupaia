@@ -14,6 +14,10 @@ function isValidHttpUrl(str) {
   }
 }
 
+function isValidFileId(str) {
+  return /^[a-f\d]{24}$/.test(str);
+}
+
 export async function upsertAnswers(models, answers, surveyResponseId) {
   const answerRecords = [];
 
@@ -25,12 +29,11 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       survey_response_id: surveyResponseId,
     };
     if (answer.type === QuestionType.Photo) {
-      const validFileIdRegex = /^[a-f\d]{24}$/;
       const s3ImagePath = getS3ImageFilePath();
 
       if (isValidHttpUrl(answer.body)) {
         answerDocument.text = answer.body;
-      } else if (validFileIdRegex.test(answer.body)) {
+      } else if (isValidFileId(answer.body)) {
         // if this is passed a valid id in the answer body
         answerDocument.text = `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.png`;
       } else {
