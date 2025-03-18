@@ -13,7 +13,7 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       survey_response_id: surveyResponseId,
     };
     if (answer.type === QuestionType.Photo) {
-      const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
+      const validFileIdRegex = /^[a-f\d]{24}$/;
       const s3ImagePath = getS3ImageFilePath();
 
       if (answer.body.includes('http')) {
