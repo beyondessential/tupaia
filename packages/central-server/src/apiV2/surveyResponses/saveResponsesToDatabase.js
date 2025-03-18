@@ -69,7 +69,7 @@ function buildResponseRecord(user, entitiesByCode, body) {
    * But if any of them are missing, and we don't have a value for timestamp, we throw an error
    */
   if (!timezone && !timestamp) {
-    throw new ValidationError(`Must provide timezone or timestamp`);
+    throw new ValidationError('Must provide timezone or timestamp');
   }
 
   const defaultToTimestampOrThrow = (value, parameterName) => {
