@@ -1,6 +1,6 @@
 import { configureEnv } from '../../configureEnv';
 import { ModelRegistry } from '../../core/ModelRegistry';
-import { TupaiaDatabase } from '../../core/BaseDatabase';
+import { TupaiaDatabase } from '../TupaiaDatabase';
 
 let database = null;
 
