@@ -15,7 +15,7 @@
     "build:src": "npm run --prefix ../../ package:build:vite",
     "preview": "vite preview",
     "build:library": "rimraf lib && npm run --prefix ../../ package:build:lib",
-    "build-dev": "npm run build:library",
+    "build-dev": "yarn run build:library",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "yarn package:start:vite --port 3000",

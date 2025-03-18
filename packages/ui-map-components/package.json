@@ -14,7 +14,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf dist && yarn package:build:ts",
-    "build-dev": "npm run build",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint:js",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --env=jsdom",

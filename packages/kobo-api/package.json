@@ -15,7 +15,7 @@
     "build": "rimraf dist && run-p \"build:* {@}\" --",
     "build:src": "npm run --prefix ../../ package:build:js",
     "build:types": "npm run --prefix ../../ package:build:types",
-    "build-dev": "npm run build",
+    "build-dev": "yarn run build",
     "test": "yarn package:test",
     "test:coverage": "yarn test --coverage"
   },
