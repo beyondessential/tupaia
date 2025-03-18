@@ -118,8 +118,10 @@ async function saveSurveyResponses(models, responseRecords) {
 
 export async function saveResponsesToDatabase(models, userId, responses) {
   // pre-fetch some data that will be used by multiple responses/answers
-  const entitiesByCode = await getEntitiesByCode(models, responses);
-  const user = await models.user.findById(userId);
+  const [entitiesByCode, user] = await Promise.all([
+    getEntitiesByCode(models, responses),
+    models.user.findById(userId),
+  ]);
 
   // build the response records then persist them to the database
   const responseRecords = responses.map(r => buildResponseRecord(user, entitiesByCode, r));
