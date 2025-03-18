@@ -2,10 +2,11 @@ import React from 'react';
 import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { Header } from '.';
 import { HEADER_HEIGHT, ROUTES } from '../constants';
-import { MobileAppPrompt, SurveyResponseModal } from '../features';
+import { SurveyResponseModal, WebAppPrompt } from '../features';
 import { useIsMobile } from '../utils';
-import { Header, HeaderRoot } from './Header/Header';
+import { HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
 
 const PageWrapper = styled.div`
@@ -55,9 +56,9 @@ export const MainPageLayout = () => {
   const showHeader = useHeaderVisibility();
   return (
     <PageWrapper>
+      <WebAppPrompt />
       {showHeader && <Header />}
       <Outlet />
-      <MobileAppPrompt />
       <SurveyResponseModal />
     </PageWrapper>
   );
