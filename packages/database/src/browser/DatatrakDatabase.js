@@ -1,7 +1,7 @@
 import ClientPgLite from 'knex-pglite';
 
-import { BaseDatabase } from '@tupaia/database';
 import { getConnectionConfig } from './getConnectionConfig';
+import { BaseDatabase } from '../core';
 
 export class DatatrakDatabase extends BaseDatabase {
   constructor() {

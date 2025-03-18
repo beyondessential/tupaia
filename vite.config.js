@@ -77,7 +77,7 @@ export default defineConfig(({ command, mode }) => {
           ),
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           // TODO: Make this export both core + browser
-          '@tupaia/database': path.resolve(__dirname, './packages/database/src/core/index.js'),
+          '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
         },
       },
     };

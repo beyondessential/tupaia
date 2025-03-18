@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DatatrakWebUserRequest } from '@tupaia/types';
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, createDatabase } from '@tupaia/database';
 
-import { createDatabase } from '../database/createDatabase';
 
 export type DatabaseContextType = DatatrakWebUserRequest.ResBody & { models: ModelRegistry };
 
