@@ -30,7 +30,7 @@ export class MigrationManager {
 
   async createMigrationsTable() {
     await this.client.exec(`
-      CREATE TABLE IF NOT EXISTS browser_migrations (
+      CREATE TABLE IF NOT EXISTS migrations (
         id SERIAL PRIMARY KEY,
         version INTEGER NOT NULL,
         name VARCHAR(255) NOT NULL,
@@ -48,10 +48,10 @@ export class MigrationManager {
     );
 
     for (const [name, migrationModule] of Object.entries(sortedMigrationFiles)) {
-      const environments = migrationModule._meta.environments || [];
+      const targets = migrationModule._meta.targets || [];
 
       // Only run migration if it is intended for the browser
-      if (!environments.includes('browser')) {
+      if (!targets.includes('browser')) {
         continue;
       }
 
