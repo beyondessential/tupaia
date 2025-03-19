@@ -62,18 +62,14 @@ export class MigrationManager {
         name,
         // Wrap the up/down functions to handle both direct SQL and db.runSql format
         up: async () => {
-          if (typeof migrationModule.up === 'function') {
-            await migrationModule.up({
-              runSql: sql => this.client.exec(sql),
-            });
-          }
+          await migrationModule.up({
+            runSql: sql => this.client.exec(sql),
+          });
         },
         down: async () => {
-          if (typeof migrationModule.down === 'function') {
-            await migrationModule.down({
-              runSql: sql => this.client.exec(sql),
-            });
-          }
+          await migrationModule.down({
+            runSql: sql => this.client.exec(sql),
+          });
         },
       });
     }
