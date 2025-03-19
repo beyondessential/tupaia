@@ -3,14 +3,18 @@ import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import viteCompression from 'vite-plugin-compression';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import dns from 'dns';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import commonjs from 'vite-plugin-commonjs';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
@@ -38,9 +42,23 @@ export default defineConfig(({ command, mode }) => {
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({ jsxRuntime: 'classic' }),
-      nodePolyfills(),
+      commonjs(),
+      nodePolyfills({
+        globals: {
+          process: true,
+          Buffer: true,
+        },
+        protocolImports: true,
+        overrides: {
+          // Since `fs` is not supported in browsers, we can use the `memfs` package to polyfill it.
+          fs: 'memfs',
+        },
+      }),
     ],
-    define: { 'process.env': env, __dirname: JSON.stringify('/') },
+    define: {
+      'process.env': env,
+      __dirname: JSON.stringify(__dirname),
+    },
     server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
