@@ -59,11 +59,13 @@ const StyledModal = styled(Modal)<{ $requestAccess?: boolean }>`
           font-size: 0.75rem;
           padding-inline: 0;
           padding-block: 0.75rem;
-
-          &.Mui-selected {
-            border: none;
-          }
         }
+      }
+
+      // Use only checkmark as selection indicator
+      > li {
+        border-block-start: 0;
+        border-inline: 0;
       }
     }
 
