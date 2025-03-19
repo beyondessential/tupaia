@@ -18,10 +18,24 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   await db.runSql(`
-    INSERT INTO data_source (id, code, type, service_type, config)
-      VALUES ('${generateId()}', 'WTHR_RH', 'dataElement', 'weather', '{}');
-    INSERT INTO data_source (id, code, type, service_type, config)
-      VALUES ('${generateId()}', 'WTHR_FORECAST_RH', 'dataElement', 'weather', '{"weatherForecastData": true}');
+    INSERT INTO data_element (id, code, service_type, config, m_row$, permission_groups)
+      VALUES (
+        '${generateId()}',
+        'WTHR_RH',
+        'weather',
+        DEFAULT,
+        DEFAULT,
+        '{Public}'
+      );
+    INSERT INTO data_element (id, code, service_type, config, m_row$, permission_groups)
+      VALUES (
+        '${generateId()}',
+        'WTHR_FORECAST_RH',
+        'weather',
+        '{"weatherForecastData": true}',
+        DEFAULT,
+        '{Public}'
+      );
 	`);
 
   return null;
