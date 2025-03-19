@@ -37,8 +37,6 @@ exports.up = async function (db) {
         '{Public}'
       );
 	`);
-
-  return null;
 };
 
 exports.down = function (db) {
