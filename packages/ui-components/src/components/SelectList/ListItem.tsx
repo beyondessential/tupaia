@@ -12,7 +12,7 @@ import { Tooltip } from '../Tooltip';
 import { ListItemType } from './types';
 
 // explicitly set the types so that the overrides are applied, for the `button` prop
-export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
+export const ListItemRoot = styled(MuiListItem)<MuiListItemProps>`
   align-items: center;
   border-radius: 3px;
   border: max(0.0625rem, 1px) solid transparent;
@@ -150,7 +150,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   return (
     <>
       {/*@ts-ignore*/}
-      <BaseListItem
+      <ListItemRoot
         aria-selected={selected}
         button={button}
         onClick={button ? onClick : null}
@@ -166,7 +166,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
           </ButtonContainer>
         </Wrapper>
         {selected && <CheckIcon aria-hidden />}
-      </BaseListItem>
+      </ListItemRoot>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </>
   );
@@ -174,7 +174,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
 
 export const ListItemSkeleton = () => {
   return (
-    <BaseListItem button disabled>
+    <ListItemRoot button disabled>
       <Skeleton
         component="div"
         variant="rect"
@@ -183,6 +183,6 @@ export const ListItemSkeleton = () => {
         style={{ borderRadius: 'calc(1px * infinity)' }}
       />
       <Skeleton width="40ch" style={{ marginInlineStart: '0.5rem' }} />
-    </BaseListItem>
+    </ListItemRoot>
   );
 };
