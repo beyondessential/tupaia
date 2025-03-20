@@ -5,6 +5,7 @@ const SURVEY_RESUBMIT_BASE_URL = `${SURVEY_URL}/resubmit/:surveyResponseId`;
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  OFFLINE: '/offline',
   REGISTER: '/register',
   REQUEST_ACCESS: '/request-access',
   FORGOT_PASSWORD: '/forgot-password',
@@ -29,6 +30,7 @@ export const ROUTES = {
   TASKS: '/tasks',
   TASK_DETAILS: '/tasks/:taskId',
   NOT_AUTHORISED: '/not-authorised',
+  EXPORT_SURVEY_RESPONSE: 'export/:surveyResponseId',
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
