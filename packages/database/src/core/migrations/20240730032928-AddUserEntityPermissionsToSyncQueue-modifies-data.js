@@ -1,7 +1,7 @@
 'use strict';
 
 import { getSyncQueueChangeTime } from '@tupaia/tsutils';
-import { generateId } from '../../core/utilities/generateId';
+import { generateId } from '../utilities/generateId';
 
 var dbm;
 var type;

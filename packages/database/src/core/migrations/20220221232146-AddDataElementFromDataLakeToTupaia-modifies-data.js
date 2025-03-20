@@ -1,7 +1,7 @@
 'use strict';
 
 import DATA_ELEMENT_CODES from './migrationData/20220221232146-AddDataElementFromDataLakeToTupaia-modifies-data/DataElementCodes - DataLake.json';
-import { generateId } from '../../core/utilities/generateId';
+import { generateId } from '../utilities/generateId';
 
 var dbm;
 var type;
