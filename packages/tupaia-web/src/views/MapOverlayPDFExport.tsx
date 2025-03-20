@@ -5,16 +5,14 @@ import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { LeafletMap, TileLayer, getAutoTileSet } from '@tupaia/ui-map-components';
-import { A4_PAGE_HEIGHT_PX, A4_PAGE_WIDTH_PX } from '@tupaia/ui-components';
 import { MapOverlaysLayer, Legend } from '../features/Map';
 import { useMapOverlays, useProject } from '../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../constants';
 import { useDateRanges } from '../utils';
 
 const Parent = styled.div`
-  // reverse the width and height to make the map landscape
-  height: ${A4_PAGE_WIDTH_PX - 2}px;
-  width: ${A4_PAGE_HEIGHT_PX}px;
+  height: 210mm;
+  width: 297mm;
   position: relative;
   overflow: hidden;
 `;
@@ -114,7 +112,7 @@ const useExportParams = () => {
   const tileset = urlSearchParams.get('tileset') ?? initialTileSet.url;
   const urlCenter = urlSearchParams.get('center');
   const urlZoom = urlSearchParams.get('zoom');
-  const zoom = urlZoom ? parseInt(urlZoom) : 5;
+  const zoom = urlZoom ? Number.parseInt(urlZoom) : 5;
   const center = urlCenter ? JSON.parse(urlCenter) : undefined;
   const urlHiddenValues = urlSearchParams.get('hiddenValues');
   const hiddenValues = urlHiddenValues ? JSON.parse(urlHiddenValues) : undefined;
@@ -148,7 +146,7 @@ export const MapOverlayPDFExport = () => {
       const endDateString = moment(endDate).toDate().toLocaleDateString(locale);
       return (
         <>
-          ${startDateString}&nbsp;&ndash; ${endDateString}
+          {startDateString}&nbsp;&ndash; {endDateString}
         </>
       );
     }
