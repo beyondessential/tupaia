@@ -32,9 +32,8 @@ export class MigrationManager {
     await this.client.exec(`
       CREATE TABLE IF NOT EXISTS migrations (
         id SERIAL PRIMARY KEY,
-        version INTEGER NOT NULL,
         name VARCHAR(255) NOT NULL,
-        executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        run_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
   }
