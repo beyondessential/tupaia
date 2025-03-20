@@ -2,6 +2,7 @@ import { IconButton, Typography } from '@material-ui/core';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
+
 import { useCurrentUserContext } from '../../api';
 import { ChangeProjectButton } from '../../components';
 import { HEADER_HEIGHT } from '../../constants';
@@ -12,6 +13,7 @@ const Wrapper = styled.div`
   display: flex;
   max-inline-size: 80%;
   padding-block: 1rem;
+  gap: 0.25rem;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
@@ -22,7 +24,7 @@ const Logo = styled(IconButton)<{
   component: React.ElementType;
   to: string;
 }>`
-  padding: 0;
+  padding: 0.5rem;
 
   img {
     max-block-size: 2rem;
@@ -31,7 +33,6 @@ const Logo = styled(IconButton)<{
 
 const UserDetailsContainer = styled.div`
   block-size: 100%;
-  margin-inline-start: 0.5rem;
   overflow: hidden;
 `;
 
@@ -52,7 +53,7 @@ export const MobileHeaderLeft = ({ onClickLogo }) => {
     return (
       <Wrapper>
         <Logo onClick={onClickLogo} component={RouterLink} to="/">
-          <img src="/mobile-logo.svg" alt="Tupaia DataTrak" width="100%" height="100%" />
+          <img src="/tupaia-pin.svg" alt="Tupaia DataTrak" width="100%" height="100%" />
         </Logo>
         {isLoggedIn && (
           <UserDetailsContainer>

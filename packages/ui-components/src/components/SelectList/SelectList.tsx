@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { FormLabel, Typography, FormLabelProps } from '@material-ui/core';
 import { ListItemType } from './types';
-import { List } from './List';
+import { List, ListSkeleton } from './List';
 
 const Wrapper = styled.div`
   padding: 0;
@@ -13,36 +13,30 @@ const Wrapper = styled.div`
   flex: 1;
 `;
 
-const fullBorder = css`
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  border-radius: 3px;
-  padding: 0 1rem;
-`;
-
-const topBorder = css`
-  border-top: 1px solid ${({ theme }) => theme.palette.divider};
-  border-radius: 0;
-  padding: 0.5rem 0;
-`;
-
 const ListWrapper = styled.div<{
-  $variant: string;
+  $variant: 'borderless' | 'fullBorder';
 }>`
-  overflow-y: auto;
-  max-height: 100%;
-  ${({ $variant = 'fullBorder' }) => {
-    if ($variant === 'fullBorder') return fullBorder;
-    if ($variant === 'topBorder') return topBorder;
-    return '';
-  }}
+  block-size: 100%;
   flex: 1;
-  height: 100%;
+  max-block-size: 100%;
+  overflow-y: auto;
+  padding-block: 0.5rem;
+
+  ${props =>
+    props.$variant === 'fullBorder'
+      ? css`
+          border: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.divider};
+          padding-inline: 1rem;
+          border-radius: 0.1875rem;
+        `
+      : null}
 `;
 
 const NoResultsMessage = styled(Typography)`
-  padding: 0.8rem 0.5rem;
-  font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.secondary};
+  font-size: 0.875rem;
+  padding-block: 0.8rem;
+  padding-inline: 0.5rem;
 `;
 
 const Label = styled(FormLabel)<{
@@ -76,12 +70,13 @@ interface SelectListProps {
   onSelect: (item: ListItemType) => void;
   label?: string;
   ListItem?: React.ElementType;
-  variant?: 'fullBorder' | 'topBorder' | 'borderless';
+  variant?: 'fullBorder' | 'borderless';
   labelProps?: FormLabelProps & {
     component?: React.ElementType;
   };
   noResultsMessage?: string;
-  subTitle?: string;
+  showLoader?: boolean;
+  subTitle?: string | null;
 }
 
 export const SelectList = ({
@@ -90,10 +85,17 @@ export const SelectList = ({
   label,
   ListItem,
   variant = 'fullBorder',
-  labelProps = {},
+  labelProps,
   noResultsMessage = 'No items to display',
-  subTitle = '',
+  showLoader = false,
+  subTitle,
 }: SelectListProps) => {
+  const renderList = () => {
+    if (showLoader) return <ListSkeleton />;
+    if (items.length === 0) return <NoResultsMessage>{noResultsMessage}</NoResultsMessage>;
+    return <List items={items} onSelect={onSelect} ListItem={ListItem} />;
+  };
+
   return (
     <Wrapper>
       {label && (
@@ -103,11 +105,7 @@ export const SelectList = ({
       )}
       <ListWrapper $variant={variant} className="list-wrapper">
         {subTitle && <Subtitle>{subTitle}</Subtitle>}
-        {items.length === 0 ? (
-          <NoResultsMessage>{noResultsMessage}</NoResultsMessage>
-        ) : (
-          <List items={items} onSelect={onSelect} ListItem={ListItem} />
-        )}
+        {renderList()}
       </ListWrapper>
     </Wrapper>
   );
