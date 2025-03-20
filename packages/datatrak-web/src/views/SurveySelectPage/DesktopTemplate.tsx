@@ -1,14 +1,16 @@
-import React from 'react';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
-import { GroupedSurveyList } from '../../features';
-import { Button } from '../../components';
+import React, { ComponentPropsWithoutRef, ReactElement } from 'react';
 import styled from 'styled-components';
-import { SpinningLoader } from '@tupaia/ui-components';
+
+import { Button } from '../../components';
+import { CountrySelector, GroupedSurveyList } from '../../features';
+import { CountrySelectorProps } from '../../features/CountrySelector/CountrySelector';
+import { UseGroupedSurveyListParams } from '../../features/useGroupedSurveyList';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
-  width: 48rem;
+  inline-size: 48rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -18,27 +20,12 @@ const Container = styled(Paper).attrs({
   }
 `;
 
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  min-height: 20rem;
-  flex: 1;
-`;
-
-const Loader = () => (
-  <LoadingContainer>
-    <SpinningLoader />
-  </LoadingContainer>
-);
-
 const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
 `;
 
 const Subheader = styled(Typography).attrs({
@@ -48,17 +35,23 @@ const Subheader = styled(Typography).attrs({
   font-size: 0.875rem;
   line-height: 1.125;
   font-weight: 400;
-  margin-top: 0.67rem;
+  margin-block-start: 0.67rem;
 `;
+
+interface DesktopSurveySelectPageProps extends UseGroupedSurveyListParams {
+  countrySelector: ReactElement<CountrySelectorProps, typeof CountrySelector>;
+  showLoader: boolean;
+  submitButton: ReactElement<ComponentPropsWithoutRef<typeof Button>, typeof Button>;
+}
 
 export const DesktopTemplate = ({
   selectedCountry,
+  countrySelector,
   selectedSurvey,
   setSelectedSurvey,
   showLoader,
-  SubmitButton,
-  CountrySelector,
-}) => {
+  submitButton,
+}: DesktopSurveySelectPageProps) => {
   return (
     <Container>
       <HeaderWrapper>
@@ -66,22 +59,19 @@ export const DesktopTemplate = ({
           <Typography variant="h1">Select survey</Typography>
           <Subheader>Select a survey from the list below</Subheader>
         </div>
-        {CountrySelector}
+        {countrySelector}
       </HeaderWrapper>
-      {showLoader ? (
-        <Loader />
-      ) : (
-        <GroupedSurveyList
-          setSelectedSurvey={setSelectedSurvey}
-          selectedSurvey={selectedSurvey}
-          selectedCountry={selectedCountry}
-        />
-      )}
+      <GroupedSurveyList
+        selectedCountry={selectedCountry}
+        setSelectedSurvey={setSelectedSurvey}
+        selectedSurvey={selectedSurvey}
+        showLoader={showLoader}
+      />
       <DialogActions>
         <Button to="/" variant="outlined">
           Cancel
         </Button>
-        {SubmitButton}
+        {submitButton}
       </DialogActions>
     </Container>
   );

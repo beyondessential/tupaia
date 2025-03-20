@@ -4,6 +4,7 @@ import {
   ListItemProps as MuiListItemProps,
 } from '@material-ui/core';
 import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import { Skeleton } from '@material-ui/lab';
 import React, { ReactElement, ReactNode, useState } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -11,7 +12,7 @@ import { Tooltip } from '../Tooltip';
 import { ListItemType } from './types';
 
 // explicitly set the types so that the overrides are applied, for the `button` prop
-export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
+export const ListItemRoot = styled(MuiListItem)<MuiListItemProps>`
   align-items: center;
   border-radius: 3px;
   border: max(0.0625rem, 1px) solid transparent;
@@ -147,14 +148,15 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   };
 
   return (
-    <li>
+    <>
       {/*@ts-ignore*/}
-      <BaseListItem
+      <ListItemRoot
+        aria-selected={selected}
         button={button}
         onClick={button ? onClick : null}
         selected={selected}
         disabled={disabled}
-        component="div"
+        component="li"
       >
         <Wrapper tooltip={tooltip}>
           <ButtonContainer $fullWidth={button}>
@@ -163,9 +165,24 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
             {isNested && <Arrow $open={open} />}
           </ButtonContainer>
         </Wrapper>
-        {selected && <CheckIcon />}
-      </BaseListItem>
+        {selected && <CheckIcon aria-hidden />}
+      </ListItemRoot>
       {isNested && <Collapse in={open}>{children}</Collapse>}
-    </li>
+    </>
+  );
+};
+
+export const ListItemSkeleton = () => {
+  return (
+    <ListItemRoot button disabled>
+      <Skeleton
+        component="div"
+        variant="rect"
+        width="1rem"
+        height="1rem"
+        style={{ borderRadius: 'calc(1px * infinity)' }}
+      />
+      <Skeleton width="40ch" style={{ marginInlineStart: '0.5rem' }} />
+    </ListItemRoot>
   );
 };

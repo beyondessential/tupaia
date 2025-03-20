@@ -5,7 +5,7 @@ import { TupaiaWebReportRequest } from '@tupaia/types';
 import { get } from '../api';
 import { DashboardItem, EntityCode, ProjectCode } from '../../types';
 
-type QueryParams = Record<string, unknown> & {
+interface QueryParams extends Record<string, unknown> {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
   dashboardCode?: DashboardItem['code'];
@@ -13,7 +13,7 @@ type QueryParams = Record<string, unknown> & {
   legacy?: DashboardItem['legacy'];
   startDate?: Moment | string | null;
   endDate?: Moment | string | null;
-};
+}
 
 export const useReport = (
   reportCode: DashboardItem['reportCode'],
@@ -28,7 +28,7 @@ export const useReport = (
   const formattedStartDate = formatDateForApi(startDate, null);
   const formattedEndDate = formatDateForApi(endDateToUse, null);
   const endPoint = legacy ? 'legacyDashboardReport' : 'report';
-  return useQuery(
+  return useQuery<TupaiaWebReportRequest.ResBody>(
     [
       'report',
       reportCode,
@@ -41,7 +41,7 @@ export const useReport = (
       ...Object.values(rest),
       enabled,
     ],
-    (): Promise<TupaiaWebReportRequest.ResBody> =>
+    () =>
       get(`${endPoint}/${reportCode}`, {
         params: {
           dashboardCode,
