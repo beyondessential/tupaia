@@ -1,8 +1,9 @@
 import { EntityModel } from '@tupaia/database';
 import { createJestMockInstance } from '@tupaia/utils';
+import { WeatherResult } from '@tupaia/weather-api';
 import { DataServiceMapping } from '../../../services/DataServiceMapping';
-import { DataElement, WeatherResult } from '../../../services/weather/types';
 import { PullOptions } from '../../../services/weather/WeatherService';
+import { DataElement } from '../../../services/weather/types';
 import { DataBrokerModelRegistry, DataGroup, Entity } from '../../../types';
 
 interface MockModelResponseMap {
@@ -32,12 +33,14 @@ export const createWeatherApiStubWithMockResponse = () => {
     {
       data: [
         {
+          rh: 67.2,
           precip: 23.6,
           max_temp: 29.8,
           min_temp: 24,
           datetime: '2020-08-20',
         },
         {
+          rh: 79.0,
           precip: 5,
           max_temp: 6,
           min_temp: 7,
@@ -48,6 +51,7 @@ export const createWeatherApiStubWithMockResponse = () => {
     {
       data: [
         {
+          rh: 90.1,
           precip: 100,
           max_temp: 112,
           min_temp: 111,
