@@ -2,6 +2,7 @@ export * from './date';
 export * from './detectDevice';
 export { formatNumberWithTrueMinus } from './formatNumbers';
 export { gaEvent } from './ga';
+export { innerText } from './innerText';
 export {
   getTaskFilterSetting,
   removeTaskFilterSetting,
