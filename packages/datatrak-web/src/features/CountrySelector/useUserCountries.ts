@@ -1,25 +1,39 @@
-import { useState } from 'react';
-import { useProjectEntities, useCurrentUserContext } from '../../api';
+import { ChangeEvent, ChangeEventHandler, useState } from 'react';
+
+import { Country } from '@tupaia/types';
+import {
+  UseProjectEntitiesQueryOptions,
+  useCurrentUserContext,
+  useProjectEntities,
+} from '../../api';
 import { Entity } from '../../types';
+import { UseProjectEntitiesQueryResult } from '../../api/queries/useProjectEntities';
 
-export const useUserCountries = (onError?: (error: any) => void) => {
+export type UserCountriesType = Omit<UseProjectEntitiesQueryResult, 'data'> & {
+  countries: Exclude<UseProjectEntitiesQueryResult['data'], undefined>;
+  /**
+   * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
+   * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
+   */
+  selectedCountry: Country | null | undefined;
+  updateSelectedCountry: ChangeEventHandler;
+};
+
+export const useUserCountries = (
+  useProjectEntitiesQueryOptions?: UseProjectEntitiesQueryOptions,
+): UserCountriesType => {
   const user = useCurrentUserContext();
-  const [newSelectedCountry, setSelectedCountry] = useState<Entity | null>(null);
-  const {
-    data: countries,
-    isLoading: isLoadingCountries,
-    isError,
-  } = useProjectEntities(
-    user.project?.code,
-    {
-      filter: { type: 'country' },
-    },
-    undefined,
-    { onError },
-  );
+  const [newSelectedCountry, setSelectedCountry] = useState<Country | null>(null);
 
-  // sort the countries alphabetically so they are in a consistent order for the user
-  const alphabetisedCountries = countries?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];
+  const projectCode = user.project?.code;
+  const entityRequestParams = {
+    filter: { type: 'country' },
+  };
+  const { data: countries = [], ...projectEntitiesQuery } = useProjectEntities(
+    projectCode,
+    entityRequestParams,
+    useProjectEntitiesQueryOptions,
+  );
 
   const getSelectedCountry = () => {
     // if the country has been changed (but not yet saved), return the new country
@@ -31,24 +45,25 @@ export const useUserCountries = (onError?: (error: any) => void) => {
     }
 
     // if the selected project is 'explore', return demo land
-    if (user.project?.code === 'explore') {
-      return alphabetisedCountries?.find(({ code }) => code === 'DL');
+    if (projectCode === 'explore') {
+      return countries.find(({ code }) => code === 'DL');
     }
 
     // otherwise return the first country in the list
-    if (alphabetisedCountries?.length > 0) {
-      return alphabetisedCountries[0];
-    }
-
-    return null;
+    return countries[0];
   };
 
   const selectedCountry = getSelectedCountry();
 
   return {
-    isLoading: isLoadingCountries || (!countries && !isError),
-    countries: alphabetisedCountries,
+    countries,
+    ...projectEntitiesQuery,
+
     selectedCountry,
-    updateSelectedCountry: setSelectedCountry,
+    updateSelectedCountry: (e: ChangeEvent<HTMLSelectElement>) => {
+      const countryCode = e.target.value;
+      const newCountry = countries?.find((country: Entity) => country.code === countryCode);
+      setSelectedCountry(newCountry ?? null);
+    },
   };
 };

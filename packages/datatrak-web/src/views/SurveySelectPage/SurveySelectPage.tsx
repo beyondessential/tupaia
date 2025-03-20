@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
+
+import { Country } from '@tupaia/types';
+
+import { useCurrentUserContext, useProjectSurveys } from '../../api';
 import { useEditUser } from '../../api/mutations';
 import { Button } from '../../components';
-import { useCurrentUserContext, useProjectSurveys } from '../../api';
 import { CountrySelector, useUserCountries } from '../../features';
 import { Survey } from '../../types';
 import { useIsMobile } from '../../utils';
@@ -15,7 +18,7 @@ const useNavigateToSurvey = () => {
   const user = useCurrentUserContext();
   const { mutate: updateUser } = useEditUser();
 
-  return (country, surveyCode) => {
+  return (country: Country | null | undefined, surveyCode: Survey['code'] | null) => {
     if (country?.code === user.country?.code) {
       return navigate(`/survey/${country?.code}/${surveyCode}`);
     }
@@ -32,6 +35,8 @@ const useNavigateToSurvey = () => {
   };
 };
 
+export type NavigateToSurveyType = ReturnType<typeof useNavigateToSurvey>;
+
 export const SurveySelectPage = () => {
   const [selectedSurvey, setSelectedSurvey] = useState<Survey['code'] | null>(null);
   const [urlSearchParams] = useSearchParams();
@@ -40,13 +45,16 @@ export const SurveySelectPage = () => {
     countries,
     selectedCountry,
     updateSelectedCountry,
-    isLoading: isLoadingCountries,
+    isFetching: isFetchingCountries,
   } = useUserCountries();
   const handleSelectSurvey = useNavigateToSurvey();
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const { isLoading, data: surveys } = useProjectSurveys(user.projectId, selectedCountry?.code);
+  const { isFetching: isFetchingSurveys, data: surveys } = useProjectSurveys(
+    user.projectId,
+    selectedCountry?.code,
+  );
 
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
@@ -65,43 +73,39 @@ export const SurveySelectPage = () => {
   }, [urlProjectId]);
 
   const showLoader =
-    isLoading ||
-    isLoadingCountries ||
+    isFetchingSurveys ||
+    isFetchingCountries ||
     isUpdatingUser ||
-    (urlProjectId && urlProjectId !== user?.projectId); // in this case the user will be updating and all surveys etc will be reloaded, so showing a loader when this is the case means a more seamless experience
+    (urlProjectId !== null && urlProjectId !== user?.projectId); // in this case the user will be updating and all surveys etc will be reloaded, so showing a loader when this is the case means a more seamless experience
+
+  const countrySelector = (
+    <CountrySelector
+      countries={countries}
+      onChange={updateSelectedCountry}
+      selectedCountry={selectedCountry}
+    />
+  );
 
   if (useIsMobile()) {
     return (
       <MobileTemplate
+        countrySelector={countrySelector}
         selectedCountry={selectedCountry}
         selectedSurvey={selectedSurvey}
         setSelectedSurvey={setSelectedSurvey}
         handleSelectSurvey={handleSelectSurvey}
         showLoader={showLoader}
-        CountrySelector={
-          <CountrySelector
-            countries={countries}
-            selectedCountry={selectedCountry}
-            onChangeCountry={updateSelectedCountry}
-          />
-        }
       />
     );
   }
   return (
     <DesktopTemplate
       selectedCountry={selectedCountry}
+      countrySelector={countrySelector}
       selectedSurvey={selectedSurvey}
       setSelectedSurvey={setSelectedSurvey}
       showLoader={showLoader}
-      CountrySelector={
-        <CountrySelector
-          countries={countries}
-          selectedCountry={selectedCountry}
-          onChangeCountry={updateSelectedCountry}
-        />
-      }
-      SubmitButton={
+      submitButton={
         <Button
           onClick={() => handleSelectSurvey(selectedCountry, selectedSurvey)}
           disabled={!selectedSurvey || isUpdatingUser}

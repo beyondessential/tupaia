@@ -10,3 +10,11 @@ export function isEmptyArray(val: unknown): val is [] {
 export function isNonEmptyArray<T = unknown>(val: unknown): val is [T, ...T[]] {
   return Array.isArray(val) && val.length > 0;
 }
+
+export function isNullish(val: unknown): val is null | undefined {
+  return val === null || val === undefined;
+}
+
+export function isNotNullish<T>(val: T): val is NonNullable<T> {
+  return val !== null && val !== undefined;
+}

@@ -97,15 +97,17 @@ export const buildDhisAnalyticsResponse = (analytics: Analytic[]): DhisAnalytics
   const dataElementsInAnalytics = analytics.map(({ dataElement }) => dataElement);
   const items = dataElementsInAnalytics
     .map(dataElement => {
-      const { dataElementCode: dhisCode } = DATA_ELEMENTS[
-        dataElement as keyof typeof DATA_ELEMENTS
-      ];
+      const { dataElementCode: dhisCode } =
+        DATA_ELEMENTS[dataElement as keyof typeof DATA_ELEMENTS];
       return DHIS_RESPONSE_DATA_ELEMENTS[dhisCode as keyof typeof DHIS_RESPONSE_DATA_ELEMENTS];
     })
-    .reduce((itemAgg, { uid, code, name }) => {
-      const newItem = { uid, code, name, dimensionItemType: 'DATA_ELEMENT' };
-      return { ...itemAgg, [uid]: newItem };
-    }, {});
+    .reduce(
+      (itemAgg, { uid, code, name }) => {
+        itemAgg[uid] = { uid, code, name, dimensionItemType: 'DATA_ELEMENT' };
+        return itemAgg;
+      },
+      {} as DhisAnalytics['metaData']['items'],
+    );
   const dimensions = { dx: Object.keys(items), co: [] };
 
   return {
