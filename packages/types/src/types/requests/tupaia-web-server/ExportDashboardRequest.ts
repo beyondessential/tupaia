@@ -4,7 +4,7 @@ export interface Params {
   dashboardCode: string;
 }
 export interface ResBody {
-  contents: Buffer;
+  contents: Uint8Array;
   filePath?: string;
   type: string;
 }
