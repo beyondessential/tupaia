@@ -7,7 +7,7 @@ import {
   findSingleRecord,
   findSingleRecordBySql,
   updateValues,
-} from '../../core/utilities';
+} from '../utilities';
 import {
   NEW_TRANSFORM_STEPS,
   OLD_TRANSFORM_STEPS,

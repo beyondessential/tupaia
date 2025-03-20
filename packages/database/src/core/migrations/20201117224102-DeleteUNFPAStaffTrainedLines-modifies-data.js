@@ -1,6 +1,6 @@
 'use strict';
 
-const { arrayToDbString } = require('../../core/utilities/migration');
+const { arrayToDbString } = require('../utilities/migration');
 
 var dbm;
 var type;

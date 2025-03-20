@@ -1,7 +1,7 @@
 'use strict';
 
 import { schoolRelations } from './migrationData/20220122223251-PenFaaSamoaAddVillageSchoolEntityRelations/PenFaa Samoa school entity relations.json';
-import { generateId, insertObject } from '../../core/utilities';
+import { generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;

@@ -1,4 +1,4 @@
-import { build2DTableCells } from '../../core/utilities/migration';
+import { build2DTableCells } from '../utilities/migration';
 
 ('use strict');
 

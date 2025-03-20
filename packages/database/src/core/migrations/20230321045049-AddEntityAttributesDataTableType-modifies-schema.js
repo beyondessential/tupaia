@@ -1,7 +1,7 @@
 'use strict';
 
 import { TupaiaDatabase } from '@tupaia/database';
-import { arrayToDbString } from '../../core/utilities/migration';
+import { arrayToDbString } from '../utilities/migration';
 
 var dbm;
 var type;

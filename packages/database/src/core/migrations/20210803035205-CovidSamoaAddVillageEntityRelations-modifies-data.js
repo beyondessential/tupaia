@@ -1,7 +1,7 @@
 'use strict';
 
 import { villageRelations } from './migrationData/20210803014704-CovidSamoaAddSubDistrictEntities/Entities - Village Update 20210802';
-import { arrayToDbString, findSingleRecord, generateId, insertObject } from '../../core/utilities';
+import { arrayToDbString, findSingleRecord, generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;

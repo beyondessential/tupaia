@@ -1,7 +1,7 @@
 'use strict';
 
 import { TARGET_DISTRICTS } from './migrationData/20210811234228-AddLESMISTargetDistricts';
-import { arrayToDbString } from '../../core/utilities';
+import { arrayToDbString } from '../utilities';
 
 var dbm;
 var type;

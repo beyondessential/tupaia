@@ -1,4 +1,4 @@
-import { codeToId, updateValues } from '../../core/utilities';
+import { codeToId, updateValues } from '../utilities';
 
 ('use strict');
 

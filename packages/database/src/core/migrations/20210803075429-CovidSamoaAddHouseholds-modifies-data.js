@@ -1,7 +1,7 @@
 'use strict';
 
-import { codeToId, insertObject } from '../../core/utilities/migration';
-import { generateId } from '../../core/utilities';
+import { codeToId, insertObject } from '../utilities/migration';
+import { generateId } from '../utilities';
 
 import samoaHouseholds from './migrationData/20210803014704-CovidSamoaAddSubDistrictEntities/Entities - households.json';
 

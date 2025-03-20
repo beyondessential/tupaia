@@ -1,7 +1,7 @@
 'use strict';
 
 import { pascal } from 'case';
-import { arrayToDbString } from '../../core/utilities';
+import { arrayToDbString } from '../utilities';
 
 var dbm;
 var type;

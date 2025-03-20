@@ -3,7 +3,7 @@
 'use strict';
 
 import surveys from './migrationData/20231120003955-CreateDuplicateSurveys/surveys.json';
-import { generateId, insertObject } from '../../core/utilities';
+import { generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;

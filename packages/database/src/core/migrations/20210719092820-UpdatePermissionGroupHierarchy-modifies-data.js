@@ -1,7 +1,7 @@
 'use strict';
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { arrayToDbString, updateValues } from '../../core/utilities';
+import { arrayToDbString, updateValues } from '../utilities';
 
 var dbm;
 var type;

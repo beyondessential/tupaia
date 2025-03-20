@@ -1,4 +1,4 @@
-import { insertObject, generateId, codeToId } from '../../core/utilities';
+import { insertObject, generateId, codeToId } from '../utilities';
 
 ('use strict');
 

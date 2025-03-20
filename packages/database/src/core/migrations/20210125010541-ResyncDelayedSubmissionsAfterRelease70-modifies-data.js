@@ -3,7 +3,7 @@
 import path from 'path';
 
 import { DatabaseChangeChannel } from '../DatabaseChangeChannel';
-import { arrayToDbString, markRecordsForResync } from '../../core/utilities';
+import { arrayToDbString, markRecordsForResync } from '../utilities';
 
 var dbm;
 var type;

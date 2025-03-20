@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, codeToId, generateId, insertObject } from '../../core/utilities';
+import { arrayToDbString, codeToId, generateId, insertObject } from '../utilities';
 import subDivisionsGeoData from './migrationData/20210603034000-AddFijiCovid19SubDivisions-modifies-data/Fiji_SubDivisions 20210609.json';
 
 var dbm;

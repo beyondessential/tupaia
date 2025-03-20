@@ -1,6 +1,6 @@
 'use strict';
 
-const { insertObject, generateId, codeToId } = require('../../core/utilities');
+const { insertObject, generateId, codeToId } = require('../utilities');
 
 var dbm;
 var type;

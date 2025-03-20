@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { buildSingleColumnTableCells } from '../../core/utilities/migration';
+import { buildSingleColumnTableCells } from '../utilities/migration';
 
 var dbm;
 var type;

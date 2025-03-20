@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject } from '../../core/utilities/migration';
+import { insertObject } from '../utilities/migration';
 
 var dbm;
 var type;

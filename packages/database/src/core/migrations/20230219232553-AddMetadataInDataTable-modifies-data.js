@@ -1,6 +1,6 @@
 'use strict';
 
-const { generateId, arrayToDbString } = require('../../core/utilities');
+const { generateId, arrayToDbString } = require('../utilities');
 
 var dbm;
 var type;

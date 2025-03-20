@@ -1,6 +1,6 @@
 'use strict';
 
-import { removeJsonEntry } from '../../core/utilities';
+import { removeJsonEntry } from '../utilities';
 
 var dbm;
 var type;

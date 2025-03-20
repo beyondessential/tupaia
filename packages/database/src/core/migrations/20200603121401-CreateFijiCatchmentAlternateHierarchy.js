@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, arrayToDbString, generateId } from '../../core/utilities';
+import { insertObject, arrayToDbString, generateId } from '../utilities';
 import { FIJI_ENTITIES_PROVINCES } from './migrationData/20200603121401-createWishCatchmentHierarchy/WishProvinces';
 import { FIJI_ENTITIES_SUB_CATCHMENTS } from './migrationData/20200603121401-createWishCatchmentHierarchy/WishCatchments';
 import {

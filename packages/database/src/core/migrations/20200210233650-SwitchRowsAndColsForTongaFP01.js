@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import { build2DTableCells, build2dTableStringFormatCells } from '../../core/utilities/migration';
+import { build2DTableCells, build2dTableStringFormatCells } from '../utilities/migration';
 
 ('use strict');
 

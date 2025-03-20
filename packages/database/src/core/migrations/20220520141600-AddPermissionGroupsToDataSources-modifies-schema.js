@@ -1,7 +1,7 @@
 'use strict';
 
 import { ExpressionParser } from '@tupaia/expression-parser';
-import { arrayToDbString, nameToId, updateValues } from '../../core/utilities';
+import { arrayToDbString, nameToId, updateValues } from '../utilities';
 
 var dbm;
 var type;

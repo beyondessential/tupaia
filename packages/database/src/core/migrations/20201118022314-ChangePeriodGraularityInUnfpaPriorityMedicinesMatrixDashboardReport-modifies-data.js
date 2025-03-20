@@ -1,6 +1,6 @@
 'use strict';
 
-import { updateValues } from '../../core/utilities';
+import { updateValues } from '../utilities';
 
 var dbm;
 var type;

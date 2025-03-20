@@ -1,6 +1,6 @@
 'use strict';
 
-import { codeToId, insertObject, generateId, findSingleRecordBySql } from '../../core/utilities';
+import { codeToId, insertObject, generateId, findSingleRecordBySql } from '../utilities';
 
 var dbm;
 var type;

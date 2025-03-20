@@ -1,7 +1,7 @@
 'use strict';
 
 import { DatabaseChangeChannel } from '../DatabaseChangeChannel';
-import { markRecordsForResync } from '../../core/utilities';
+import { markRecordsForResync } from '../utilities';
 
 var dbm;
 var type;

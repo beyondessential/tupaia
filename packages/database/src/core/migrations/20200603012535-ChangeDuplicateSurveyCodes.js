@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString } from '../../core/utilities';
+import { arrayToDbString } from '../utilities';
 
 import surveyData from './migrationData/20200603012535-ChangeDuplicateSurveyCodes.json';
 

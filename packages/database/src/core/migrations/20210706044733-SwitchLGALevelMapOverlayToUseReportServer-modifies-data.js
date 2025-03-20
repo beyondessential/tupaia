@@ -6,7 +6,7 @@ import {
   findSingleRecord,
   updateValues,
   arrayToDbString,
-} from '../../core/utilities';
+} from '../utilities';
 
 var dbm;
 var type;

@@ -1,4 +1,4 @@
-import { arrayToDbString } from '../../core/utilities';
+import { arrayToDbString } from '../utilities';
 
 ('use strict');
 

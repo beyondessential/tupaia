@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateId, insertObject } from '../../core/utilities';
+import { generateId, insertObject } from '../utilities';
 import {
   medicineElements,
   vaccineElements,

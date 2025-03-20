@@ -7,7 +7,7 @@ import {
   findSingleRecord,
   findSingleRecordBySql,
   updateValues,
-} from '../../core/utilities';
+} from '../utilities';
 
 var dbm;
 var type;

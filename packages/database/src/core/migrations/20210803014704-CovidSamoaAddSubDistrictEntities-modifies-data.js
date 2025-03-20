@@ -1,6 +1,6 @@
 'use strict';
 
-import { codeToId, generateId, insertObject } from '../../core/utilities';
+import { codeToId, generateId, insertObject } from '../utilities';
 import samoaSubDistrictGeoData from './migrationData/20210803014704-CovidSamoaAddSubDistrictEntities/Samoa_SubDistrict_Entities_GeoJSON_V2.json';
 
 var dbm;

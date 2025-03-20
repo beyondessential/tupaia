@@ -1,7 +1,7 @@
 'use strict';
 
-import { codeToId, insertObject } from '../../core/utilities/migration';
-import { generateId } from '../../core/utilities';
+import { codeToId, insertObject } from '../utilities/migration';
+import { generateId } from '../utilities';
 
 import palauGeoData from './migrationData/20201208103439-AddPalauEntities-modifies-data/Palau.json';
 import palauIslandGroupsGeoData from './migrationData/20201208103439-AddPalauEntities-modifies-data/Palau_Island_Groups.json';
