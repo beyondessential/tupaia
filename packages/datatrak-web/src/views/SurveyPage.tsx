@@ -102,7 +102,7 @@ const SurveyPageInner = () => {
     }
   }, [survey?.id]);
 
-  useBeforeUnload(formContext.formState.isDirty);
+  useBeforeUnload(formContext.formState.isDirty && !isSuccessScreen);
 
   return (
     <PageWrapper>
