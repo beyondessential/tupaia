@@ -10,6 +10,26 @@ import {
 } from './WeatherService.stubs';
 import { mockNow } from './testutil';
 
+const mockHistoricDailyApiResponse = {
+  data: [
+    {
+      rh: 82.9,
+      precip: 23.6,
+      max_temp: 29.8,
+      min_temp: 24,
+      datetime: '2019-01-20',
+    },
+    {
+      rh: 75.5,
+      precip: 5,
+      max_temp: 6,
+      min_temp: 7,
+      datetime: '2019-01-21',
+    },
+  ],
+  sources: [],
+};
+
 describe('WeatherService', () => {
   beforeEach(() => {
     mockNow(1549342800 * 1000); // 2019-02-05 05:00 UTC
@@ -18,27 +38,7 @@ describe('WeatherService', () => {
   describe('basic operation', () => {
     it('returns analytics data when requesting data for dataElements', async () => {
       const mockModels = await createMockModelsStubWithMockEntity();
-
-      const mockHistoricDailyApiResponse = {
-        data: [
-          {
-            precip: 23.6,
-            max_temp: 29.8,
-            min_temp: 24,
-            datetime: '2019-01-20',
-          },
-          {
-            precip: 5,
-            max_temp: 6,
-            min_temp: 7,
-            datetime: '2019-01-21',
-          },
-        ],
-        sources: [],
-      };
-
       const mockApi = createWeatherApiStub(mockHistoricDailyApiResponse);
-
       const service = new WeatherService(mockModels, mockApi);
 
       const actual = await service.pullAnalytics(
@@ -65,27 +65,7 @@ describe('WeatherService', () => {
 
     it('returns events data when requesting data for a dataGroup', async () => {
       const mockModels = await createMockModelsStubWithMockEntity();
-
-      const mockHistoricDailyApiResponse = {
-        data: [
-          {
-            precip: 23.6,
-            max_temp: 29.8,
-            min_temp: 24,
-            datetime: '2019-01-20',
-          },
-          {
-            precip: 5,
-            max_temp: 6,
-            min_temp: 7,
-            datetime: '2019-01-21',
-          },
-        ],
-        sources: [],
-      };
-
       const mockApi = createWeatherApiStub(mockHistoricDailyApiResponse);
-
       const service = new WeatherService(mockModels, mockApi);
 
       const actual = await service.pullEvents(

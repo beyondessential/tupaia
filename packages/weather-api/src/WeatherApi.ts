@@ -1,13 +1,37 @@
 import { fetchWithTimeout, requireEnv, stringifyQuery } from '@tupaia/utils';
 
-type WeatherResult = {
-  min_temp: number;
-  max_temp: number;
-  precip: number;
-  datetime: string;
-};
+const MAX_FETCH_WAIT_TIME = 15_000; // 15 seconds
 
-const MAX_FETCH_WAIT_TIME = 15 * 1000; // 15 seconds
+/**
+ * @privateRemarks
+ * - Weatherbit returns more properties. We just care about these ones.
+ * - There doesn’t seem to be any guarantee from Weatherbit that the fields
+ *   won’t be null. We simply haven’t yet run into issues, but may need to make
+ *   these nullable and refator all usages of this type to handle nulls.
+ * @see https://www.weatherbit.io/api/historical-weather-daily
+ */
+export interface WeatherSnapshot {
+  /** Date (YYYY-MM-DD) */
+  datetime: string;
+  /** Maximum temperature (default Celsius) */
+  max_temp: number;
+  /** Minimum temperature (default Celsius) */
+  min_temp: number;
+  /** Accumulated precipitation (default mm) */
+  precip: number;
+  /** Average relative humidity (%) */
+  rh: number;
+}
+
+export type WeatherProperty = keyof WeatherSnapshot;
+
+/**
+ * @privateRemarks Weatherbit returns more properties. We just care about this one.
+ * @see https://www.weatherbit.io/api/historical-weather-daily
+ */
+export interface WeatherResult {
+  data: WeatherSnapshot[];
+}
 
 export class WeatherApi {
   public async current(lat: string, lon: string) {
@@ -40,7 +64,7 @@ export class WeatherApi {
       start_date?: string;
       end_date?: string;
     },
-  ): Promise<{ data: WeatherResult[] }> {
+  ): Promise<WeatherResult> {
     const apiKey = requireEnv('WEATHERBIT_API_KEY');
     const queryParams = { ...params, key: apiKey };
 

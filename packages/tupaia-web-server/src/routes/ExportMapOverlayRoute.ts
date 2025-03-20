@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebExportMapOverlayRequest } from '@tupaia/types';
 import { stringifyQuery } from '@tupaia/utils';
-import { downloadPageAsPDF } from '@tupaia/server-utils';
+import { downloadPageAsPdf } from '@tupaia/server-utils';
 
 export type ExportMapOverlayRequest = Request<
   TupaiaWebExportMapOverlayRequest.Params,
@@ -36,7 +36,12 @@ const downloadMapOverlayAsPdf = (
     locale,
   });
 
-  return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain, true);
+  return downloadPageAsPdf({
+    cookieDomain,
+    landscape: true,
+    pdfPageUrl,
+    userCookie: cookie,
+  });
 };
 
 export class ExportMapOverlayRoute extends Route<ExportMapOverlayRequest> {
