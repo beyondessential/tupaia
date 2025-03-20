@@ -78,7 +78,7 @@ const MobileWrapper = styled(Section)`
 
 const Mobile = () => (
   <MobileWrapper>
-    <Text>You have no tasks to complete.</Text>
+    <Text>You have no tasks to complete</Text>
     <Button to={ROUTES.TASKS} component={Link}>
       View all tasks
     </Button>
