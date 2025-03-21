@@ -1,5 +1,7 @@
-import { scheduleJob } from 'node-schedule';
+import { scheduleJob, Job } from 'node-schedule';
 import winston from 'winston';
+
+import { ModelRegistry } from '@tupaia/database';
 
 /**
  * Base class for scheduled tasks. Uses 'node-schedule' for scheduling based on cron tab syntax
@@ -10,34 +12,34 @@ export class ScheduledTask {
   /**
    * Cron tab config for scheduling the task
    */
-  schedule = null;
+  schedule: string | null = null;
 
   /**
    * Name of the task for logging
    */
-  name = null;
+  name: string | null = null;
 
   /**
    * Holds the scheduled job object for the task
    */
-  job = null;
+  job: Job | null = null;
 
   /**
    * Keeps track of start time for logging
    */
-  start = null;
+  start: number | null = null;
 
   /**
    * Lock key for database advisory lock
    */
-  lockKey = null;
+  lockKey: string | null = null;
 
   /**
    * Model registry for database access
    */
-  models = null;
+  models: ModelRegistry;
 
-  constructor(models, name, schedule) {
+  constructor(models: ModelRegistry, name: string, schedule: string) {
     if (!name) {
       throw new Error(`ScheduledTask has no name`);
     }
@@ -61,12 +63,12 @@ export class ScheduledTask {
     this.start = Date.now();
 
     try {
-      await this.models.wrapInTransaction(async transactingModels => {
+      await this.models.wrapInTransaction(async (transactingModels: ModelRegistry) => {
         // Acquire a database advisory lock for the transaction
         // Ensures no other server instance can execute its change handler at the same time
         await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
         await this.run();
-        const durationMs = Date.now() - this.start;
+        const durationMs = Date.now() - (this.start as number);
         winston.info(`ScheduledTask: ${this.name}: Succeeded in ${durationMs}`);
         return true;
       });

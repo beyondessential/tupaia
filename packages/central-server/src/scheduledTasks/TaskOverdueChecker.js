@@ -1,7 +1,7 @@
 import { sendEmail } from '@tupaia/server-utils';
 import { requireEnv } from '@tupaia/utils';
 import winston from 'winston';
-import { ScheduledTask } from './ScheduledTask';
+import { ScheduledTask } from '@tupaia/server-utils';
 
 export class TaskOverdueChecker extends ScheduledTask {
   constructor(models) {
