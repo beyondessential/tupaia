@@ -27,21 +27,22 @@ const Wrapper = styled.fieldset`
 
 const SeparatorText = styled(Typography)`
   font-size: 1rem;
-  margin: 0.8rem 1.5rem 0.3rem;
+  margin-block: 0.8rem 0.3rem;
+  margin-inline: 1.5rem;
 `;
 
 const ModalButton = styled(Button).attrs({
   variant: 'text',
 })`
-  padding-left: 0.1rem;
-  padding-bottom: 0;
+  padding-block-end: 0;
+  padding-inline-start: 0.1rem;
 `;
 
 const ButtonText = styled.span`
-  text-decoration: underline;
-  margin-left: 0.56rem;
   font-size: 1rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  margin-inline-start: 0.56rem;
+  text-decoration: underline;
 `;
 
 export const GeolocateQuestion = ({
