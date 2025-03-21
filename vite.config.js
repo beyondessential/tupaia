@@ -33,7 +33,7 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
-
+    
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
