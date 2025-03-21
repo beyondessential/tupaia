@@ -35,8 +35,6 @@
     "markdown-to-jsx": "^6.4.1",
     "nanoid": "^2.0.3",
     "notistack": "^3.0.1",
-    "perf_hooks": "^0.0.1",
-    "pg-pubsub": "^0.8.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",

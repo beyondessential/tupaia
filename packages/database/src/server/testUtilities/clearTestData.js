@@ -1,4 +1,4 @@
-// import { AnalyticsRefresher } from '../../server/changeHandlers';
+import { AnalyticsRefresher } from '../../server/changeHandlers';
 
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
 const TABLES_TO_CLEAR = [
@@ -64,5 +64,5 @@ export async function clearTestData(db) {
   const sql = TABLES_TO_CLEAR.reduce((acc, table) => `${acc}\nDELETE FROM ${table};`, '');
 
   await db.executeSql(sql);
-  // await AnalyticsRefresher.refreshAnalytics(db);
+  await AnalyticsRefresher.refreshAnalytics(db);
 }
