@@ -1,4 +1,4 @@
-import { arrayToDbString } from './utilities';
+import { arrayToDbString } from '../core/utilities';
 
 const TABLES_REQUIRING_TRIGGER_CREATION = [
   'access_request',

@@ -7000,6 +7000,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@electric-sql/pglite@npm:^0.2.14, @electric-sql/pglite@npm:^0.2.17":
+  version: 0.2.17
+  resolution: "@electric-sql/pglite@npm:0.2.17"
+  checksum: 4c78d2beea408209cbd00e2cd888daa1def35ba406d2195d32acf8bad6d404df3215e0739bfd7f246c0c98e19fb2f0bded87736767fe8fc10d78789b565dfa93
+  languageName: node
+  linkType: hard
+
 "@emotion/hash@npm:^0.8.0":
   version: 0.8.0
   resolution: "@emotion/hash@npm:0.8.0"
@@ -10087,6 +10094,7 @@ __metadata:
   resolution: "@tupaia/database@workspace:packages/database"
   dependencies:
     "@babel/node": ^7.10.5
+    "@electric-sql/pglite": ^0.2.17
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
@@ -10098,6 +10106,7 @@ __metadata:
     db-migrate-pg: ^1.2.2
     dotenv: ^16.4.5
     knex: ^3.1.0
+    knex-pglite: ^0.11.0
     lodash.clonedeep: ^4.5.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -10155,6 +10164,7 @@ __metadata:
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
     "@testing-library/user-event": ^13.5.0
+    "@tupaia/database": "workspace:*"
     "@tupaia/expression-parser": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
@@ -24554,6 +24564,55 @@ __metadata:
   languageName: node
   linkType: hard
 
+"knex-pglite@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "knex-pglite@npm:0.11.0"
+  dependencies:
+    "@electric-sql/pglite": ^0.2.14
+    knex: 3.1.0
+  checksum: 680de87b9c567bfc3009c81e85584e4e634ede8b98f14acd4d4463e1eae084cdfc0eed05979db742ee2af1bd6f857bb23ca28c4175abdf27b3d6e3e2dfcba4df
+  languageName: node
+  linkType: hard
+
+"knex@npm:3.1.0, knex@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "knex@npm:3.1.0"
+  dependencies:
+    colorette: 2.0.19
+    commander: ^10.0.0
+    debug: 4.3.4
+    escalade: ^3.1.1
+    esm: ^3.2.25
+    get-package-type: ^0.1.0
+    getopts: 2.3.0
+    interpret: ^2.2.0
+    lodash: ^4.17.21
+    pg-connection-string: 2.6.2
+    rechoir: ^0.8.0
+    resolve-from: ^5.0.0
+    tarn: ^3.0.2
+    tildify: 2.0.0
+  peerDependenciesMeta:
+    better-sqlite3:
+      optional: true
+    mysql:
+      optional: true
+    mysql2:
+      optional: true
+    pg:
+      optional: true
+    pg-native:
+      optional: true
+    sqlite3:
+      optional: true
+    tedious:
+      optional: true
+  bin:
+    knex: bin/cli.js
+  checksum: 3905f8d27960975f7f57f3f488d1ef3ccf47784acc8eb627e8a28cbbe1f296c6879c8ef0cbd9e17e867be80117d305cd948545f3fbd4c74b24c90d2413bbc021
+  languageName: node
+  linkType: hard
+
 "knex@npm:^1.0.3":
   version: 1.0.7
   resolution: "knex@npm:1.0.7"
@@ -24590,45 +24649,6 @@ __metadata:
   bin:
     knex: bin/cli.js
   checksum: 57608a3a6813cb66da6f5a078016338166c53ab2cbaab66e81492352023db88fc158e4ad6bbd2156cd9d7c9cac14a4b1e581dd8232b4f9bab2285ea6f1efc5cf
-  languageName: node
-  linkType: hard
-
-"knex@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "knex@npm:3.1.0"
-  dependencies:
-    colorette: 2.0.19
-    commander: ^10.0.0
-    debug: 4.3.4
-    escalade: ^3.1.1
-    esm: ^3.2.25
-    get-package-type: ^0.1.0
-    getopts: 2.3.0
-    interpret: ^2.2.0
-    lodash: ^4.17.21
-    pg-connection-string: 2.6.2
-    rechoir: ^0.8.0
-    resolve-from: ^5.0.0
-    tarn: ^3.0.2
-    tildify: 2.0.0
-  peerDependenciesMeta:
-    better-sqlite3:
-      optional: true
-    mysql:
-      optional: true
-    mysql2:
-      optional: true
-    pg:
-      optional: true
-    pg-native:
-      optional: true
-    sqlite3:
-      optional: true
-    tedious:
-      optional: true
-  bin:
-    knex: bin/cli.js
-  checksum: 3905f8d27960975f7f57f3f488d1ef3ccf47784acc8eb627e8a28cbbe1f296c6879c8ef0cbd9e17e867be80117d305cd948545f3fbd4c74b24c90d2413bbc021
   languageName: node
   linkType: hard
 

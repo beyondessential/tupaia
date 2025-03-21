@@ -1,4 +1,4 @@
-import { AnalyticsRefresher } from '..';
+import { AnalyticsRefresher } from '../../server/changeHandlers';
 
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
 const TABLES_TO_CLEAR = [

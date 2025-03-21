@@ -4,7 +4,7 @@ import { fetchPatiently, translatePoint, translateRegion, translateBounds } from
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 
 // NOTE: These hard coded entity types are now a legacy pattern
 // Users can now create their own entity types
