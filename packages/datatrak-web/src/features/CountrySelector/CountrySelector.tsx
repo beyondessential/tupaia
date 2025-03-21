@@ -46,7 +46,7 @@ const Img = styled.img`
 /** @privateRemarks Forwards props to <img> because <picture> is set to `display: contents`. */
 const Pin = (props: ComponentPropsWithoutRef<typeof Img>) => (
   <Picture aria-hidden>
-    <source srcSet="/datatrak-pin.svg" />
+    <source src="/datatrak-pin.svg" type="image/svg+xml" />
     <Img aria-hidden src="/datatrak-pin.svg" width={24} height={24} {...props} />
   </Picture>
 );
