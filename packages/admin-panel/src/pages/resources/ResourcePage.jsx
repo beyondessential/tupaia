@@ -102,7 +102,8 @@ export const ResourcePage = ({
         exportConfig={canExport && exportConfig}
         createConfig={canCreate && createConfig}
         ExportModalComponent={canExport && ExportModalComponent}
-        LinksComponent={LinksComponent}
+        /* Links component is only used for adding viz builder button */
+        LinksComponent={hasVizBuilderAccess && LinksComponent}
         resourceName={resourceName?.singular}
       />
       <DataFetchingTable
