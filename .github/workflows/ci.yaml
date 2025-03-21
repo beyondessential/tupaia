@@ -150,6 +150,7 @@ jobs:
           - server-boilerplate
           - server-utils
           - superset-api
+          - sync-server
           - tsutils
           - tupaia-web
           - tupaia-web-server
