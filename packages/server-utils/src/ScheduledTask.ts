@@ -12,17 +12,17 @@ export class ScheduledTask {
   /**
    * Cron tab config for scheduling the task
    */
-  schedule: string | null = null;
+  schedule: string;
 
   /**
    * Name of the task for logging
    */
-  name: string | null = null;
+  name: string;
 
   /**
    * Holds the scheduled job object for the task
    */
-  job: Job | null = null;
+  job: Job;
 
   /**
    * Keeps track of start time for logging
@@ -32,7 +32,7 @@ export class ScheduledTask {
   /**
    * Lock key for database advisory lock
    */
-  lockKey: string | null = null;
+  lockKey: string;
 
   /**
    * Model registry for database access
@@ -72,7 +72,7 @@ export class ScheduledTask {
         winston.info(`ScheduledTask: ${this.name}: Succeeded in ${durationMs}`);
         return true;
       });
-    } catch (e) {
+    } catch (e: any) {
       const durationMs = Date.now() - this.start;
       winston.error(`ScheduledTask: ${this.name}: Failed`, { durationMs });
       winston.error(e.stack);
