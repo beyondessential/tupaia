@@ -9,25 +9,46 @@
   "description": "Tupaia DataTrak is a free and open-source tool that can be used for data collection, managing tasking and generating reports.",
   "screenshots": [
     {
-      "src": "screenshots/login.png",
-      "sizes": "2000x1000",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Login screen"
-    },
-    {
-      "src": "screenshots/dashboard.png",
-      "sizes": "2000x1000",
+      "src": "screenshots/desktop__dashboard.png",
+      "sizes": "2880x2048",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Dashboard"
     },
     {
-      "src": "screenshots/login-mobile.png",
-      "sizes": "381x667",
+      "src": "screenshots/desktop__survey-submitted.png",
+      "sizes": "2880x2048",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Survey submitted"
+    },
+    {
+      "src": "screenshots/desktop__login.png",
+      "sizes": "2880x2048",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Login screen"
+    },
+    {
+      "src": "screenshots/mobile__dashboard.png",
+      "sizes": "720x1600",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Mobile login screen"
+      "label": "Dashboard"
+    },
+    {
+      "src": "screenshots/mobile__survey-submitted.png",
+      "sizes": "720x1600",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Survey submitted"
+    },
+    {
+      "src": "screenshots/mobile__login.png",
+      "sizes": "720x1600",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Survey submitted"
     }
   ],
   "icons": [
