@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-
-import { SpinningLoader } from '@tupaia/ui-components';
 
 import { PageContainer } from '../../components';
 import { ROUTES } from '../../constants';
 import { MobileSelectList, useGroupedSurveyList } from '../../features';
-import { ListItemType } from '../../features/useGroupedSurveyList';
+import {
+  CountrySelector,
+  CountrySelectorProps,
+} from '../../features/CountrySelector/CountrySelector';
+import { ListItemType, UseGroupedSurveyListParams } from '../../features/useGroupedSurveyList';
 import { StickyMobileHeader } from '../../layout';
+import { NavigateToSurveyType } from './SurveySelectPage';
 
 const MobileContainer = styled.div`
   background-color: ${({ theme }) => theme.palette.background.default};
@@ -27,39 +30,26 @@ const MobileContainer = styled.div`
   }
 `;
 
-const LoadingContainer = styled.div`
-  align-items: center;
-  block-size: 100%;
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  min-block-size: 20rem;
-`;
-
-const Loader = () => (
-  <LoadingContainer>
-    <SpinningLoader />
-  </LoadingContainer>
-);
+interface MobileSurveySelectPageProps extends UseGroupedSurveyListParams {
+  countrySelector: ReactElement<CountrySelectorProps, typeof CountrySelector>;
+  showLoader: boolean;
+  handleSelectSurvey: NavigateToSurveyType;
+}
 
 export const MobileTemplate = ({
+  countrySelector,
   selectedCountry,
   setSelectedSurvey,
   showLoader,
-  CountrySelector,
   selectedSurvey,
   handleSelectSurvey,
-}) => {
+}: MobileSurveySelectPageProps) => {
   const { groupedSurveys } = useGroupedSurveyList({
+    selectedCountry,
     setSelectedSurvey,
     selectedSurvey,
-    selectedCountry,
   });
   const navigate = useNavigate();
-
-  if (showLoader) {
-    return <Loader />;
-  }
 
   const onClose = () => {
     navigate(ROUTES.HOME);
@@ -74,9 +64,10 @@ export const MobileTemplate = ({
         Select a survey
       </StickyMobileHeader>
       <MobileSelectList
+        countrySelector={countrySelector}
         items={groupedSurveys}
         onSelect={onNavigateToSurvey}
-        CountrySelector={CountrySelector}
+        showLoader={showLoader}
       />
     </MobileContainer>
   );
