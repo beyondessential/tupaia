@@ -22,7 +22,7 @@ const Select = styled(BaseSelect)`
     inset-inline-end: 0.5rem;
   }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.grey['400']};
+    border-color: ${props => props.theme.palette.grey[400]};
     box-shadow: none;
   }
 `;
