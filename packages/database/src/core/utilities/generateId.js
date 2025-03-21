@@ -10,7 +10,6 @@ let currentCounterValue = 0;
 export const generateId = () => {
   const seconds = getSecondsStringFromTimestamp(new Date());
   const machineId = crypto.createHash('md5').update(os.hostname()).digest('hex').slice(0, 6);
-  // TODO: Fix this so that it can be used in front end
   const processId = process.pid.toString(16).slice(0, 4).padStart(4, '0');
 
   // generation of the counter differs from the original gist to reduce the chance of conflicts
