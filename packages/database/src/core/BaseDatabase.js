@@ -69,7 +69,7 @@ const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class BaseDatabase {
-  static CHANGE_HANDLER_SUPPORTED = false;
+  static IS_CHANGE_HANDLER_SUPPORTED = false;
 
   constructor(transactingConnection, transactingChangeChannel, clientType = 'pg', getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {

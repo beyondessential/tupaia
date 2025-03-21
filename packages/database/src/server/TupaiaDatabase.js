@@ -5,7 +5,7 @@ import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 
 export class TupaiaDatabase extends BaseDatabase {
-  static CHANGE_HANDLER_SUPPORTED = true;
+  static IS_CHANGE_HANDLER_SUPPORTED = true;
 
   /**
    * @param {TupaiaDatabase} [transactingConnection]

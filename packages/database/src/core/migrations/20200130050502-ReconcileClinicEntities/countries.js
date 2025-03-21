@@ -1,4 +1,4 @@
-import { generateId } from '../../../core/utilities/generateId';
+import { generateId } from '../../utilities/generateId';
 
 export const newCountries = [
   {
