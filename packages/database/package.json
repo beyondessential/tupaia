@@ -9,11 +9,17 @@
     "directory": "packages/database"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
-  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "node": "./dist/server/index.js",
+      "browser": "./dist/browser/index.js",
+      "default": "./dist/server/index.js"
+    }
+  },
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && run-p \"build:* {@}\" --",
-    "build:src": "npm run --prefix ../../ package:build:js",
+    "build:src": "npm run --prefix ../../ package:build:js:server && npm run --prefix ../../ package:build:js:browser",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "npm run build",
     "build-watch": "rm -rf dist && npm run build:types && npm run --prefix ../../ package:build:js-watch",
@@ -33,17 +39,20 @@
     "setup-new-database": "./scripts/setupNewDatabase.sh"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.2.17",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "bson-objectid": "^2.0.4",
     "date-fns": "^2.29.2",
     "date-fns-tz": "^2.0.1",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.4.5",
     "knex": "^3.1.0",
+    "knex-pglite": "^0.11.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
