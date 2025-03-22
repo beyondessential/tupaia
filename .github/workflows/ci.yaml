@@ -151,6 +151,7 @@ jobs:
           - server-utils
           - superset-api
           - sync-server
+          - sync
           - tsutils
           - tupaia-web
           - tupaia-web-server
