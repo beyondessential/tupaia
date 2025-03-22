@@ -18,6 +18,7 @@ DEPLOYABLE_PACKAGES=(
     'tupaia-web-server'
     'web-config-server'
     'admin-panel-server' # admin-panel-server last as it depends on report-server
+    'sync-server'
 )
 echo "${DEPLOYABLE_PACKAGES[@]}"
 
