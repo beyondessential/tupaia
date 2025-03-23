@@ -56,6 +56,7 @@ const SurveyPageInner = () => {
   const {
     formData,
     isSuccessScreen,
+    isResubmitSuccessScreen,
     isResponseScreen,
     cancelModalOpen,
     cancelModalConfirmLink,
@@ -102,7 +103,7 @@ const SurveyPageInner = () => {
     }
   }, [survey?.id]);
 
-  useBeforeUnload(formContext.formState.isDirty && !isSuccessScreen);
+  useBeforeUnload(formContext.formState.isDirty && !isSuccessScreen && !isResubmitSuccessScreen);
 
   return (
     <PageWrapper>
