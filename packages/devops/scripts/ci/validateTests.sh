@@ -1,6 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 DIR=$(dirname "$0")
-ROOT="${DIR}/../../../../"
+ROOT="$DIR/../../../../"
 
-node ${ROOT}/scripts/node/validateTests
+node "$ROOT/scripts/node/validateTests"
