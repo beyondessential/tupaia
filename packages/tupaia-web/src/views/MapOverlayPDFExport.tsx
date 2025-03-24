@@ -11,10 +11,11 @@ import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../constants';
 import { useDateRanges } from '../utils';
 
 const Parent = styled.div`
+  font-size: 10pt;
   height: 210mm;
-  width: 297mm;
-  position: relative;
   overflow: hidden;
+  position: relative;
+  width: 297mm;
 `;
 
 const MapContainer = styled.div`
@@ -48,54 +49,54 @@ const StyledMap = styled(LeafletMap)`
 `;
 
 const LegendWrapper = styled.div`
-  inset-block-end: 2.8rem;
-  inset-inline-start: 2.8rem;
+  inset-block-end: 20pt;
+  inset-inline-start: 28pt;
   position: absolute;
+
+  &,
+  * {
+    font-size: inherit;
+  }
 `;
 
 const MapOverlayInfoContainer = styled.div`
   align-items: center;
   background-color: white;
   border: 1pt solid ${props => props.theme.palette.divider};
-  display: flex;
-  inset-block-start: 1.3rem;
-  inset-inline-start: 2.1rem;
-  max-inline-size: 27rem;
-  min-inline-size: 20rem;
-  padding-block: 1rem;
-  padding-inline: 1.3rem;
+  column-gap: 0.8em;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  inset-block-start: 20pt;
+  inset-inline-start: 28pt;
+  max-inline-size: 27em;
+  min-inline-size: 20em;
+  padding: 1em;
   position: absolute;
 `;
 
-const MapOverlayInfoText = styled(Typography)`
-  font-size: 0.875rem;
-  font-weight: 500;
-`;
-
-const MapOverlayName = styled(MapOverlayInfoText).attrs({
+const MapOverlayName = styled(Typography).attrs({
   variant: 'h2',
 })`
   color: black;
-  font-size: 1rem;
+  font-size: inherit;
+  font-weight: 500;
+  text-wrap: balance;
 `;
 
-const LatestDataText = styled(MapOverlayInfoText)`
-  color: ${({ theme }) => theme.palette.divider};
-  margin-block-start: 0.4rem;
+const LatestDataText = styled(Typography)`
+  color: ${props => props.theme.palette.text.secondary};
+  font-size: inherit;
+  font-weight: 500;
+  margin-block-start: 0.5em;
 `;
 
 const ProjectLogo = styled.img`
   border-inline-end: 1pt solid ${props => props.theme.palette.divider};
-  height: 5rem;
-  padding-inline-end: 0.8rem;
+  height: 5em;
   object-fit: contain;
   object-position: center;
-  width: 5rem;
-`;
-
-const TextWrapper = styled.div`
-  margin-inline-start: 0.8rem;
-  width: calc(100% - 5rem);
+  padding-inline-end: 0.8em;
+  width: 5em;
 `;
 
 const useExportParams = () => {
@@ -158,10 +159,10 @@ export const MapOverlayPDFExport = () => {
       </MapContainer>
       <MapOverlayInfoContainer>
         <ProjectLogo src={project?.logoUrl || '/tupaia-logo-dark.svg'} alt={project?.name} />
-        <TextWrapper>
+        <div>
           <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
           {dateRangeString && <LatestDataText>Date of data: {dateRangeString}</LatestDataText>}
-        </TextWrapper>
+        </div>
       </MapOverlayInfoContainer>
       <LegendWrapper>
         <Legend hiddenValues={hiddenValues} setValueHidden={() => {}} isExport />
