@@ -1,8 +1,10 @@
+import keyBy from 'lodash.keyby';
+import momentTimezone from 'moment-timezone';
+
 import { generateId } from '@tupaia/database';
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
 import { ValidationError, stripTimezoneFromDate } from '@tupaia/utils';
-import keyBy from 'lodash.keyby';
-import momentTimezone from 'moment-timezone';
+
 import { upsertAnswers } from '../../dataAccessors';
 
 async function getRecordsByCode(model, codes) {
@@ -69,7 +71,7 @@ function buildResponseRecord(user, entitiesByCode, body) {
    * But if any of them are missing, and we don't have a value for timestamp, we throw an error
    */
   if (!timezone && !timestamp) {
-    throw new ValidationError(`Must provide timezone or timestamp`);
+    throw new ValidationError('Must provide timezone or timestamp');
   }
 
   const defaultToTimestampOrThrow = (value, parameterName) => {
@@ -118,8 +120,10 @@ async function saveSurveyResponses(models, responseRecords) {
 
 export async function saveResponsesToDatabase(models, userId, responses) {
   // pre-fetch some data that will be used by multiple responses/answers
-  const entitiesByCode = await getEntitiesByCode(models, responses);
-  const user = await models.user.findById(userId);
+  const [entitiesByCode, user] = await Promise.all([
+    getEntitiesByCode(models, responses),
+    models.user.findById(userId),
+  ]);
 
   // build the response records then persist them to the database
   const responseRecords = responses.map(r => buildResponseRecord(user, entitiesByCode, r));

@@ -6,6 +6,7 @@ import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 import { SECTION_FIELD_TYPE } from './constants';
 import { EditorInputField } from './EditorInputField';
 import { getFieldEditKey } from './utils';
+import { useUser } from '../api/queries';
 
 const EditorWrapper = styled.form`
   .file_upload_label {
@@ -40,6 +41,7 @@ export const onInputChange = async (
 };
 
 export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile }) => {
+  const { hasVizBuilderAccess } = useUser();
   if (!fields || fields.length === 0) {
     return false;
   }
@@ -60,7 +62,12 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
   // Get the fields that are visible from an array
   const filterVisibleFields = allFields => {
     return allFields.filter(({ show = true, editConfig = {} }) => {
-      const { visibilityCriteria } = editConfig;
+      const { visibilityCriteria, needsVizBuilderAccess } = editConfig;
+
+      // hide the field (edit visual button) if the user does not have Viz Builder access
+      if (needsVizBuilderAccess && !hasVizBuilderAccess) {
+        return false;
+      }
 
       if (!show) {
         return false;

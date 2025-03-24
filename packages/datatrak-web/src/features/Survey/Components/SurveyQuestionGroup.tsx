@@ -9,8 +9,8 @@ const QuestionWrapper = styled.div<{
   $isInstruction: boolean;
 }>`
   display: flex;
-  &:not(:last-child) {
-    margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1rem' : '2rem')};
+  & + & {
+    margin-block-start: 2.5rem;
   }
   .MuiFormLabel-root {
     color: ${({ theme }) => theme.palette.text.primary};

@@ -103,7 +103,6 @@ export const PersonalDetailsForm = () => {
       <StyledFieldset disabled={isSubmitting || isLoading}>
         <FormInput
           autoComplete="given-name"
-          autoFocus
           id="firstName"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 import { PageContainer } from '../../components';
 import { HEADER_HEIGHT, TABLET_BREAKPOINT } from '../../constants';
 import { UserMenu } from '../UserMenu';
 import { HeaderLeft } from './HeaderLeft';
 
-const Wrapper = styled(PageContainer).attrs({ component: 'header' })`
+export const HeaderRoot = styled(PageContainer).attrs({ component: 'header' })`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
@@ -21,11 +21,11 @@ const Wrapper = styled(PageContainer).attrs({ component: 'header' })`
   }
 `;
 
-export const Header = () => {
+export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
   return (
-    <Wrapper>
+    <HeaderRoot {...props}>
       <HeaderLeft />
       <UserMenu />
-    </Wrapper>
+    </HeaderRoot>
   );
 };

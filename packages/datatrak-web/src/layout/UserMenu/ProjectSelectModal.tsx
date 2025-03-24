@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
 import { Paper, Typography } from '@material-ui/core';
+import React, { useState } from 'react';
+import styled, { css } from 'styled-components';
 
-import { IconButton, ProjectSelectForm } from '@tupaia/ui-components';
+import { IconButton, ListItemRoot, ProjectSelectForm } from '@tupaia/ui-components';
 
-import { RequestProjectAccess } from '../../features';
 import { useCurrentUserContext, useEditUser, useProjects } from '../../api';
+import { ArrowLeftIcon } from '../../components';
 import { Modal } from '../../components/Modal';
 import { SlideTransition } from '../../components/SlideTransition';
-import { ArrowLeftIcon } from '../../components';
+import { RequestProjectAccess } from '../../features';
 import { useIsMobile } from '../../utils';
 
 const StyledModal = styled(Modal)<{ $requestAccess?: boolean }>`
@@ -53,19 +53,31 @@ const StyledModal = styled(Modal)<{ $requestAccess?: boolean }>`
       padding-block: 0.3rem;
 
       > li {
+        padding: 0;
         border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
 
         > div {
           font-size: 0.75rem;
           padding-inline: 0;
           padding-block: 0.75rem;
-
-          &.Mui-selected {
-            border: none;
-          }
         }
       }
     }
+
+    ${props =>
+      props.fullScreen &&
+      css`
+        ${ListItemRoot} {
+          border-radius: 0;
+          min-block-size: 2.75rem;
+          padding-block: 0;
+        }
+        // Use only checkmark as selection indicator
+        ${ListItemRoot}.Mui-selected {
+          border-block-start: 0;
+          border-inline: 0;
+        }
+      `}
 
     // Modal Actions
     .MuiDialogActions-root {
