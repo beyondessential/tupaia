@@ -13,9 +13,9 @@ import { useDateRanges } from '../utils';
 const Parent = styled.div`
   font-size: 10pt;
   height: 210mm;
-  overflow: hidden;
-  position: relative;
   width: 297mm;
+  position: relative;
+  overflow: hidden;
 `;
 
 const MapContainer = styled.div`
