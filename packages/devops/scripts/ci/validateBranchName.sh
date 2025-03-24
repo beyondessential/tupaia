@@ -1,7 +1,9 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
+set -e
 
 DIR=$(dirname "$0")
-. ${DIR}/utils.sh
+. "$DIR"/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?' '_')
 SUBDOMAIN_SUFFIXES=(
