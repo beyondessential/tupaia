@@ -41,7 +41,7 @@ function get_branch_name() {
     local branch_name="$CI_BRANCH"
     if [[ $branch_name == "" ]]; then
         # Get currently checked out branch
-        branch_name=$(git rev-parse --abbrev-ref HEAD)
+        branch_name=$(git branch --show-current)
     fi
 
     echo $branch_name
