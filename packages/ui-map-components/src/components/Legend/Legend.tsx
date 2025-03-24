@@ -104,8 +104,7 @@ export const Legend = React.memo(
     };
 
     const legendTypes = currentMapOverlayCodes
-      .map(mapOverlayCode => measureInfo[mapOverlayCode].serieses)
-      .flat()
+      .flatMap(mapOverlayCode => measureInfo[mapOverlayCode].serieses)
       .map(({ type }) => type);
     const legendsHaveSameType = legendTypes.length > 1 && new Set(legendTypes).size === 1;
 
