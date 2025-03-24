@@ -75,19 +75,19 @@ describe('Survey', () => {
     renderSurveyPage('/survey/DL/test/8');
     const input = await screen.findByLabelText('Enter a number');
     fireEvent.change(input, { target: { value: '4' } });
-    expect(screen.queryByText('Result for > 3')).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('Result for > 3')).toBeInTheDocument();
 
     fireEvent.change(input, { target: { value: '2' } });
-    expect(screen.queryByText('Result for < 3')).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('Result for < 3')).toBeInTheDocument();
   });
 
   it('Updates the arithmetic question answer when the associated question is updated', async () => {
     renderSurveyPage('/survey/DL/test/8');
     const input = await screen.findByLabelText('Enter a number');
     fireEvent.change(input, { target: { value: '4' } });
-    expect(screen.queryByText('This is an answer, from (4 + 2): 6')).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('This is an answer, from (4 + 2): 6')).toBeInTheDocument();
 
     fireEvent.change(input, { target: { value: '' } });
-    expect(screen.queryByText('This is an answer, from (0 + 1): 1')).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('This is an answer, from (0 + 1): 1')).toBeInTheDocument();
   });
 });
