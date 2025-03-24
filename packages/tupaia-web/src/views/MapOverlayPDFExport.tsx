@@ -28,8 +28,6 @@ const MapContainer = styled.div`
 
   .leaflet-container {
     min-height: 15rem;
-    // This is to compensate for the pdf resolution scaling the map down to look smaller than what the screen was displaying. We cannot always do this via map zoom, because the map zoom is limited to the tile set zoom levels.
-    zoom: 1.5;
   }
 `;
 
@@ -50,23 +48,23 @@ const StyledMap = styled(LeafletMap)`
 `;
 
 const LegendWrapper = styled.div`
+  inset-block-end: 2.8rem;
+  inset-inline-start: 2.8rem;
   position: absolute;
-  bottom: 2.8rem;
-  left: 2.8rem;
 `;
 
 const MapOverlayInfoContainer = styled.div`
-  position: absolute;
-  top: 1.3rem;
-  left: 2.1rem;
-  background-color: white;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  max-width: 27rem;
-  min-width: 20rem;
-  padding-inline: 1.3rem;
-  padding-block: 1rem;
-  display: flex;
   align-items: center;
+  background-color: white;
+  border: 1pt solid ${props => props.theme.palette.divider};
+  display: flex;
+  inset-block-start: 1.3rem;
+  inset-inline-start: 2.1rem;
+  max-inline-size: 27rem;
+  min-inline-size: 20rem;
+  padding-block: 1rem;
+  padding-inline: 1.3rem;
+  position: absolute;
 `;
 
 const MapOverlayInfoText = styled(Typography)`
@@ -86,18 +84,13 @@ const LatestDataText = styled(MapOverlayInfoText)`
   margin-block-start: 0.4rem;
 `;
 
-const LogoWrapper = styled.div`
-  width: 5rem;
-  height: 5rem;
-  border-right: 1px solid ${({ theme }) => theme.palette.divider};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-inline-end: 0.8rem;
-`;
 const ProjectLogo = styled.img`
-  max-width: 100%;
-  height: auto;
+  border-inline-end: 1pt solid ${props => props.theme.palette.divider};
+  height: 5rem;
+  padding-inline-end: 0.8rem;
+  object-fit: contain;
+  object-position: center;
+  width: 5rem;
 `;
 
 const TextWrapper = styled.div`
@@ -164,9 +157,7 @@ export const MapOverlayPDFExport = () => {
         </StyledMap>
       </MapContainer>
       <MapOverlayInfoContainer>
-        <LogoWrapper>
-          <ProjectLogo src={project?.logoUrl || '/tupaia-logo-dark.svg'} alt={project?.name} />
-        </LogoWrapper>
+        <ProjectLogo src={project?.logoUrl || '/tupaia-logo-dark.svg'} alt={project?.name} />
         <TextWrapper>
           <MapOverlayName>{selectedOverlay?.name}</MapOverlayName>
           {dateRangeString && <LatestDataText>Date of data: {dateRangeString}</LatestDataText>}
