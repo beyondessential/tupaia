@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { MeasureType } from '@tupaia/types';
 import { LegendProps as BaseLegendProps, Series, SpectrumSeries } from '../../types';
 import { MarkerLegend } from './MarkerLegend';
@@ -20,18 +20,22 @@ const LegendFrame = styled.div<{
     theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(43, 45, 56, 0.85)'};
   border-radius: 3px;
   opacity: ${props => (props.isDisplayed ? '100%' : '20%')};
-  margin: 0.6rem auto;
+  margin-block: 0.6rem;
+  margin-inline: auto;
 
   ${({ $isExport, theme }) =>
     !$isExport &&
-    ` 
-    ${theme.breakpoints.down('sm')} {
-      margin: 0.6rem 0.6rem 0.6rem 0;
-    }`}
+    css`
+      ${theme.breakpoints.down('sm')} {
+        margin-block: 0;
+        margin-inline: 0 0.6rem;
+      }
+    `}
 `;
 
 const LegendName = styled.div`
-  margin: auto 0.6rem;
+  margin-block: auto;
+  margin-inline: 0.6rem;
 `;
 
 // This is a workaround for type errors we get when trying to use Array.includes with a subset of a union type. This solution comes from https://github.com/microsoft/TypeScript/issues/51881
