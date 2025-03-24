@@ -5,9 +5,9 @@ import { EditHandler } from '../EditHandler';
 import {
   assertBESAdminAccess,
   assertAnyPermissions,
-  assertAdminPanelAccess,
   assertPermissionGroupsAccess,
 } from '../../permissions';
+import { assertMapOverlaysEditPermissions } from '../mapOverlays';
 
 const isFieldUpdated = (oldObject, newObject, fieldName) =>
   newObject[fieldName] !== undefined && newObject[fieldName] !== oldObject[fieldName];
@@ -25,12 +25,10 @@ const buildReport = async (models, reportRecord) => {
 
 export class EditMapOverlayVisualisation extends EditHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Tupaia Admin Panel or BES Admin permission to create visualisations.',
-      ),
-    );
+    const mapOverlayChecker = accessPolicy =>
+      assertMapOverlaysEditPermissions(accessPolicy, this.models, this.recordId);
+
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
   }
 
   getMapOverlayRecord() {
@@ -82,13 +80,6 @@ export class EditMapOverlayVisualisation extends EditHandler {
   }
 
   async editRecord() {
-    await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertAdminPanelAccess],
-        'You require Viz Builder User or BES Admin permission to create visualisations.',
-      ),
-    );
-
     const mapOverlayRecord = this.getMapOverlayRecord();
     const reportRecord = this.getReportRecord();
 

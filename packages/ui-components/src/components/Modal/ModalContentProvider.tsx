@@ -1,36 +1,34 @@
-import React, { ReactNode } from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
+
 import { DialogContent } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import HelpOutline from '@material-ui/icons/HelpOutline';
-import { TooltipIconButton } from '../TooltipIconButton';
-import { SmallAlert } from '../Alert';
 
-const LIGHT_RED = '#F76853';
-const RED = '#F76853';
+import { SmallAlert } from '../Alert';
+import { TooltipIconButton } from '../TooltipIconButton';
+
 const Content = styled(DialogContent)`
-  text-align: left;
-  min-height: 220px;
-  border-color: ${props => props.theme.palette.grey['400']};
-  border-style: solid;
-  border-width: 1px 0;
-  padding-block: 1.25rem;
-  padding-inline: 1.9rem;
+  border-block: 1px solid ${props => props.theme.palette.grey[400]};
   display: flex;
   flex-direction: column;
+  min-block-size: 13.75rem;
+  padding-block: 1.25rem;
+  padding-inline: 1.9rem;
+  text-align: start;
 `;
 
 const ErrorHeading = styled(Typography)`
-  margin-bottom: 1.1rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: ${props => props.theme.typography.body1.fontSize};
+  font-weight: ${props => props.theme.typography.fontWeightMedium};
+  margin-block-end: 1.1rem;
 `;
 
 const Alert = styled(SmallAlert).attrs({
   severity: 'error',
   variant: 'standard',
 })`
-  width: 100%;
+  inline-size: 100%;
 `;
 
 const AlertWrapper = styled.div`
@@ -43,13 +41,11 @@ const AlertWrapper = styled.div`
   }
 
   .MuiSvgIcon-root {
-    color: ${LIGHT_RED};
+    color: ${props => props.theme.palette.error.main};
     margin-block-end: 0.3rem;
   }
-  .tooltip-icon:hover {
-    svg {
-      fill: ${RED};
-    }
+  .tooltip-icon:hover svg {
+    fill: ${props => props.theme.palette.error.main};
   }
 `;
 
@@ -67,7 +63,7 @@ const Error = ({ message, details }: { message: string; details?: string }) => {
   );
 };
 
-export interface ModalContentProviderProps {
+export interface ModalContentProviderProps extends ComponentPropsWithoutRef<typeof Content> {
   isLoading?: boolean;
   error?: {
     message: string;
@@ -82,10 +78,14 @@ export interface ModalContentProviderProps {
       };
     };
   };
-  children: ReactNode;
 }
 
-export const ModalContentProvider = ({ isLoading, error, children }: ModalContentProviderProps) => {
+export const ModalContentProvider = ({
+  isLoading,
+  error,
+  children,
+  ...props
+}: ModalContentProviderProps) => {
   const getHeading = () => {
     if (!error) return null;
     const { extraFields } = error;
@@ -108,7 +108,7 @@ export const ModalContentProvider = ({ isLoading, error, children }: ModalConten
 
   const errors = getErrorsToDisplay();
   return (
-    <Content>
+    <Content {...props}>
       {isLoading && 'Please be patient, this can take some time…'}
       {error?.message && (
         <ErrorsWrapper>

@@ -12,9 +12,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
-    "build-watch": "rm -rf dist && npm run --prefix ../../ package:build:ts-watch",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "yarn run build",
+    "build-watch": "rimraf dist && npm run --prefix ../../ package:build:ts-watch",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --passWithNoTests",
@@ -33,6 +33,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@types/lodash.get": "^4.4.2"
+    "@types/lodash.get": "^4.4.2",
+    "rimraf": "^6.0.1"
   }
 }

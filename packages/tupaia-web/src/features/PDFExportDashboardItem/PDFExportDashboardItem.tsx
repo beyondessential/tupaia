@@ -1,34 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Moment } from 'moment';
-import styled from 'styled-components';
-import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
+import { Property } from 'csstype';
+import { Moment } from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router';
+import styled, { css } from 'styled-components';
+
+import {
+  BaseReport,
+  DashboardItemConfig,
+  TupaiaWebExportDashboardRequest,
+  VizPeriodGranularity,
+} from '@tupaia/types';
+import { A4Page, ReferenceTooltip } from '@tupaia/ui-components';
 import {
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
   getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
-import {
-  BaseReport,
-  DashboardItemConfig,
-  VizPeriodGranularity,
-  TupaiaWebExportDashboardRequest,
-} from '@tupaia/types';
-import { A4Page, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
-import { Dashboard, DashboardItem, Entity } from '../../types';
+
 import { useProject, useReport } from '../../api/queries';
+import { Dashboard, DashboardItem, Entity } from '../../types';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
 
 const StyledA4Page = styled(A4Page)<{
   $isPreview?: boolean;
-  $previewZoom?: number;
+  $previewZoom?: Property.Zoom;
 }>`
+  width: 31.512cm;
   ${({ $isPreview, $previewZoom = 0.25 }) =>
-    $isPreview ? `width: 100%; zoom: ${$previewZoom};` : ''};
-  padding-block-start: 0;
-  padding-block-end: 1cm;
+    $isPreview &&
+    css`
+      width: 100%;
+      zoom: ${$previewZoom};
+    `};
 `;
 
 const Title = styled.h3`
@@ -121,7 +127,12 @@ export const PDFExportDashboardItem = ({
   useEffect(() => {
     if (pageRef.current) setWidth(pageRef.current.offsetWidth);
   }, []);
-  const previewZoom = width / A4_PAGE_WIDTH_PX;
+
+  // Semantically, this magic number should be 21cm (A4 width) in pixels (at CSS’s fixed
+  // 1 inch : 96px ratio). This was previously defined incorrectly as 1191 in @tupaia/ui-components.
+  // The value of A4_PAGE_WIDTH_PX has since been fixed in @tupaia/ui-components, but here we use
+  // the old value to preserve existing layout behaviour.
+  const previewZoom = width / 1191;
 
   const { projectCode, entityCode } = useParams();
   const { legacy, code, reportCode } = dashboardItem || ({} as DashboardItem);
@@ -173,7 +184,7 @@ export const PDFExportDashboardItem = ({
       key={dashboardItem?.code}
       $isPreview={isPreview}
       $previewZoom={previewZoom}
-      separatePage={separatePagePerItem}
+      $separatePage={separatePagePerItem}
     >
       {displayHeader && (
         <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
