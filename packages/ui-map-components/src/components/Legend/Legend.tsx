@@ -24,13 +24,15 @@ const LegendFrame = styled.div<{
   margin-inline: auto;
 
   ${({ $isExport, theme }) =>
-    !$isExport &&
-    css`
-      ${theme.breakpoints.down('sm')} {
-        margin-block: 0;
-        margin-inline: 0 0.6rem;
-      }
-    `}
+    $isExport
+      ? css`
+          margin: 0;
+        `
+      : css`
+          ${theme.breakpoints.down('sm')} {
+            margin-inline: 0 0.6rem;
+          }
+        `}
 `;
 
 const LegendName = styled.div`
