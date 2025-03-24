@@ -6,6 +6,7 @@ import { findTestRecordByCode, TEST_SETUP } from './dashboardVisualisations.fixt
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
 } from '../../../permissions';
 
 describe('GET dashboard visualisations', () => {
@@ -24,7 +25,7 @@ describe('GET dashboard visualisations', () => {
     report: {
       code: modernReport.code,
       config: modernReport.config,
-      permissionGroup: 'Viz_Permissions',
+      permissionGroup: VIZ_BUILDER_PERMISSION_GROUP,
       latestDataParameters: {},
     },
   };
@@ -39,7 +40,7 @@ describe('GET dashboard visualisations', () => {
   };
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const besAdminPolicy = {
