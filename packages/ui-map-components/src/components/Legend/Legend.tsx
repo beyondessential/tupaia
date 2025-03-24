@@ -75,33 +75,36 @@ export const Legend = React.memo(
       return null;
     }
 
-    const measureInfo = currentMapOverlayCodes.reduce((results, mapOverlayCode) => {
-      // measure info for mapOverlayCode may not exist when location changes.
-      const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
-      const serieses = baseSerieses.filter((series: Series) => {
-        const { type, hideFromLegend, values = [] } = series;
+    const measureInfo = currentMapOverlayCodes.reduce(
+      (results, mapOverlayCode) => {
+        // measure info for mapOverlayCode may not exist when location changes.
+        const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
+        const serieses = baseSerieses.filter((series: Series) => {
+          const { type, hideFromLegend, values = [] } = series;
 
-        // if type is radius or popup-only, don't create a legend
-        if (checkMeasureType(type, [MeasureType.RADIUS, 'popup-only'])) return false;
+          // if type is radius or popup-only, don't create a legend
+          if (checkMeasureType(type, [MeasureType.RADIUS, 'popup-only'])) return false;
 
-        // if hideFromLegend is true, don't create a legend
-        if (hideFromLegend) return false;
+          // if hideFromLegend is true, don't create a legend
+          if (hideFromLegend) return false;
 
-        // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
-        if (checkMeasureType(type, [MeasureType.SPECTRUM, MeasureType.SHADED_SPECTRUM])) {
-          const { min, max, noDataColour } = series as SpectrumSeries;
-          return noDataColour
-            ? true
-            : !(min === null || min === undefined || max === null || max === undefined);
-        }
-        return values.filter(value => !value?.hideFromLegend).length > 0;
-      });
-      return { ...results, [mapOverlayCode]: { serieses } };
-    }, {}) as {
-      [mapOverlayCode: string]: {
-        serieses: Series[];
-      };
-    };
+          // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
+          if (checkMeasureType(type, [MeasureType.SPECTRUM, MeasureType.SHADED_SPECTRUM])) {
+            const { min, max, noDataColour } = series as SpectrumSeries;
+            return noDataColour
+              ? true
+              : !(min === null || min === undefined || max === null || max === undefined);
+          }
+          return values.filter(value => !value?.hideFromLegend).length > 0;
+        });
+
+        results[mapOverlayCode] = { serieses };
+        return results;
+      },
+      {} as {
+        [mapOverlayCode: string]: { serieses: Series[] };
+      },
+    );
 
     const legendTypes = currentMapOverlayCodes
       .flatMap(mapOverlayCode => measureInfo[mapOverlayCode].serieses)
