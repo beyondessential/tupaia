@@ -28,10 +28,6 @@ const SearchAdornment = styled(InputAdornment)`
   margin-inline-end: -1rem;
 `;
 
-const PopperComponent = ({ children }) => {
-  return <>{children}</>;
-};
-
 export const MobileAutocomplete = ({
   options,
   isLoading,
@@ -83,7 +79,7 @@ export const MobileAutocomplete = ({
           freeSolo: true,
           disableClearable: true,
           disablePortal: false,
-          PopperComponent,
+          PopperComponent: React.Fragment,
         }}
       />
     </Container>
