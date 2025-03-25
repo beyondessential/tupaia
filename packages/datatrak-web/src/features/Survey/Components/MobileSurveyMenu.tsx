@@ -15,7 +15,7 @@ const Container = styled.div`
   block-size: calc(env(safe-area-inset-bottom, 0) + 3.5rem);
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: grid;
-  grid-template-columns: repeat(3, minmax(3.5rem, 1fr)) minmax(min-content, 1fr);
+  grid-template-columns: repeat(3, minmax(3.5rem, 1fr)) minmax(min-content, 1.5fr);
   inline-size: 100%;
   inset-block-end: 0;
   justify-content: space-between;
