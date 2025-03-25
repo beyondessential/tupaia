@@ -12,15 +12,14 @@ import { CopyUrlButton } from './CopyUrlButton';
 const Container = styled.div`
   align-items: stretch;
   background: white;
-  block-size: 3.5rem;
+  block-size: calc(env(safe-area-inset-bottom, 0) + 3.5rem);
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: grid;
   grid-template-columns: repeat(3, minmax(3.5rem, 1fr)) minmax(min-content, 1fr);
   inline-size: 100%;
   inset-block-end: 0;
   justify-content: space-between;
-  margin-bottom: env(safe-area-inset-bottom, 0);
-  padding-block: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
   padding-left: env(safe-area-inset-left, 0);
   padding-right: env(safe-area-inset-right, 0);
   position: fixed;
