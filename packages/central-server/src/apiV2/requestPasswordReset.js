@@ -33,7 +33,7 @@ export const requestPasswordReset = async (req, res) => {
   const resetUrl = passwordResetUrl.replace('{token}', token);
 
   sendEmail(user.email, {
-    subject: 'Password reset on Tupaia.org',
+    subject: 'Reset your Tupaia password',
     templateName: 'passwordReset',
     templateContext: {
       userName: user.first_name,
