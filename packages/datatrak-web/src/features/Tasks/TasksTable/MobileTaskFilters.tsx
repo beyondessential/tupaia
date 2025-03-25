@@ -1,4 +1,4 @@
-import { Fab, Slide, Tab, Tabs, Typography } from '@material-ui/core';
+import { Fab, Slide, Tab, Tabs, TabsProps, Typography } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -115,14 +115,24 @@ const TabLabel = styled.div`
 `;
 
 const Dot = styled.div`
-  width: 0.4375rem;
-  height: 0.4375rem;
+  background-color: ${props => props.theme.palette.primary.main};
   border-radius: 50%;
-  margin-left: 0.5rem;
-  background: ${({ theme }) => theme.palette.primary.main};
+  height: 0.4375rem;
+  margin-inline-start: 0.5rem;
+  width: 0.4375rem;
 `;
 
-const FilterTabs = ({ tabs, value, onChange }) => (
+interface FilterTab {
+  active?: boolean;
+  id: string;
+  label: string;
+}
+
+interface FilterTabsProps extends Pick<TabsProps, 'onChange' | 'value'> {
+  tabs: FilterTab[];
+}
+
+const FilterTabs = ({ tabs, value, onChange }: Readonly<FilterTabsProps>) => (
   <StyledTabs
     value={value}
     onChange={onChange}
@@ -183,7 +193,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
     { id: 'survey', label: 'Survey', active: getHasFilter('survey.id') },
     { id: 'entity', label: 'Entity', active: getHasFilter('entity.id') },
     { id: 'assignee', label: 'Assignee', active: getHasFilter('assignee.id') },
-  ];
+  ] as const;
 
   const onChangeTab = (_event, newValue) => {
     setTabValue(newValue);
