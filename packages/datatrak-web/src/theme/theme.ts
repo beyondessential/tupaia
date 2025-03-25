@@ -94,6 +94,9 @@ const overrides = {
         marginBlock: 0,
         paddingInlineStart: 0,
       },
+      time: {
+        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
     },
   },
   MuiDialogActions: {

@@ -5,19 +5,19 @@ import { API_URL, timeout } from '../api';
 import FetchError from '../fetchError';
 
 const EMAIL_TIMEOUT = 1000 * 30; // 30 seconds
-type ExportSurveyResponsesResponse = {
+interface ExportSurveyResponsesResponse {
   filePath: string;
   blob: Blob;
   contentType: string;
-};
+}
 
-export type ExportSurveyResponsesParams = {
+export interface ExportSurveyResponsesParams {
   surveyCodes: string;
   entityIds: string;
   countryCode: string;
   startDate?: string;
   endDate?: string;
-};
+}
 
 const readBlob = (blob: Blob) => {
   return new Promise((resolve, reject) => {

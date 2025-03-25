@@ -1,6 +1,9 @@
 import { setupTest, generateId } from '@tupaia/database';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
+} from '../../../permissions';
 import { TEST_SETUP } from './mapOverlayVisualisations.fixtures';
 
 const clearRecords = async models => {
@@ -13,11 +16,15 @@ describe('POST map overlay visualisations', async () => {
   const { models } = app;
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [
+      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+      VIZ_BUILDER_PERMISSION_GROUP,
+      'Test Permission Group',
+    ],
   };
 
   const vizBuilderOnlyPermission = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const permissionGroupId = generateId();
@@ -28,7 +35,7 @@ describe('POST map overlay visualisations', async () => {
       code: 'new_visual',
       name: 'New Visual',
       config: { displayType: 'spectrum', scaleType: 'neutral' },
-      permission_group: 'Viz_Permissions',
+      permission_group: VIZ_BUILDER_PERMISSION_GROUP,
       country_codes: '{DL}',
       linkedMeasures: [],
       project_codes: '{explore}',
@@ -38,7 +45,7 @@ describe('POST map overlay visualisations', async () => {
     },
     report: {
       code: 'new_visual_report',
-      permission_group: 'Viz_Permissions',
+      permission_group: 'Test Permission Group',
       config: {
         code: 'new_visual_report',
         config: {
