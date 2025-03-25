@@ -12,23 +12,13 @@ export const EntityQuestion = ({
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
-  const {
-    isReviewScreen,
-    isResponseScreen,
-    formData,
-    countryCode,
-    displayQuestions,
-    screenHeader,
-    surveyProjectCode,
-  } = useSurveyForm();
-
-  // Hide the question label if there is only one question, and it is the same as the screen header
-  const hideQuestionLabel = displayQuestions?.length === 1 && screenHeader == label;
+  const { isReviewScreen, isResponseScreen, formData, countryCode, surveyProjectCode } =
+    useSurveyForm();
 
   return (
     <EntitySelector
       id={id}
-      label={hideQuestionLabel ? null : label}
+      label={label}
       name={name}
       required={required}
       controllerProps={{

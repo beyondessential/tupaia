@@ -41,9 +41,9 @@ const getRecentEntities = (
   }
 
   const entityTypes = type.split(',');
-  const recentEntitiesOfTypes = entityTypes
-    .map(entityType => userRecentEntities[countryCode][entityType] ?? [])
-    .flat();
+  const recentEntitiesOfTypes = entityTypes.flatMap(
+    entityType => userRecentEntities[countryCode][entityType] ?? [],
+  );
 
   return recentEntitiesOfTypes;
 };
@@ -124,8 +124,8 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
                 isRecent: true,
               };
             })
-            .filter(e => e),
-          ...entities,
+            .filter(Boolean),
+          ...entities.sort((a: any, b: any) => a.name.localeCompare(b.name)),
         ];
 
     return camelcaseKeys(sortedEntities, { deep: true });

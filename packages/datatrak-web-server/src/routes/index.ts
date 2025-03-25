@@ -33,3 +33,7 @@ export {
   PermissionGroupUsersRequest,
   PermissionGroupUsersRoute,
 } from './PermissionGroupUsersRoute';
+export {
+  ExportSurveyResponseRequest,
+  ExportSurveyResponseRoute,
+} from './ExportSurveyResponseRoute';

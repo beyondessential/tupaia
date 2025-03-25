@@ -12,20 +12,19 @@ export const useProjectSurveys = (
   projectId?: Project['id'],
   { countryCode, searchTerm }: QueryOptions = {},
 ) => {
-  return useQuery(
+  const getSurveys = () =>
+    get('surveys', {
+      params: {
+        fields: ['name', 'code', 'id', 'survey_group.name'],
+        projectId,
+        ...(searchTerm && { searchTerm }),
+        ...(countryCode && { countryCode }),
+      },
+    });
+
+  return useQuery<DatatrakWebSurveyRequest.ResBody[]>(
     ['surveys', projectId, countryCode, searchTerm],
-    (): Promise<DatatrakWebSurveyRequest.ResBody[]> => {
-      return get('surveys', {
-        params: {
-          fields: ['name', 'code', 'id', 'survey_group.name'],
-          projectId,
-          ...(searchTerm && { searchTerm }),
-          ...(countryCode && { countryCode }),
-        },
-      });
-    },
-    {
-      enabled: !!projectId,
-    },
+    getSurveys,
+    { enabled: !!projectId },
   );
 };

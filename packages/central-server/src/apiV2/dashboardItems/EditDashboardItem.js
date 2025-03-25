@@ -7,6 +7,7 @@ export class EditDashboardItem extends EditHandler {
   async assertUserHasAccess() {
     const dashboardItemChecker = accessPolicy =>
       assertDashboardItemEditPermissions(accessPolicy, this.models, this.recordId);
+
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, dashboardItemChecker]),
     );

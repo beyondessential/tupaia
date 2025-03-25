@@ -6,7 +6,7 @@ export interface Params {
   mapOverlayCode: MapOverlay['code'];
 }
 export interface ResBody {
-  contents: Buffer;
+  contents: Uint8Array;
   filePath?: string;
   type: string;
 }

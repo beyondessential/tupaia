@@ -1,17 +1,14 @@
-import React, { useState, ReactNode } from 'react';
 import { TransitionProps } from '@material-ui/core/transitions';
-import styled from 'styled-components';
+import { Skeleton } from '@material-ui/lab';
+import React, { useState, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Dialog,
-  ListItem as MuiListItem,
-  ListItemProps as MuiListItemProps,
-  Slide,
-} from '@material-ui/core';
+import styled from 'styled-components';
+
+import { Dialog, ListItem as MuiListItem, Slide } from '@material-ui/core';
 import { ArrowLeftIcon } from '../../components';
+import { ROUTES } from '../../constants';
 import { StickyMobileHeader } from '../../layout';
 import { ListItemType } from '../useGroupedSurveyList';
-import { ROUTES } from '../../constants';
 
 const Content = styled.div`
   flex: 1;
@@ -23,17 +20,20 @@ const Arrow = styled(ArrowLeftIcon)`
   transform: rotate(180deg);
 `;
 
-export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
-  border-radius: 10px;
+export const BaseListItem = styled(MuiListItem).attrs({ button: true })`
+  align-items: center;
   background: white;
-  padding: 1rem;
-  margin-bottom: 10px;
+  border-radius: 0.625rem;
+  border: max(0.0625rem, 1px) solid transparent;
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: space-between;
-  border: 1px solid transparent;
-  text-align: left;
+  padding: 1rem;
+  text-align: start;
+
+  & + & {
+    margin-block-start: 0.75rem;
+  }
 `;
 
 const IconWrapper = styled.div`
@@ -65,7 +65,7 @@ interface ListItemProps {
 }
 
 export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState<boolean>(false);
   const { content, icon } = item;
   const isNested = !!item.children;
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
 
   return (
     <>
-      <BaseListItem button onClick={handleOnClick}>
+      <BaseListItem onClick={handleOnClick}>
         <IconWrapper>{icon}</IconWrapper>
         <Content>{content}</Content>
         {isNested && <Arrow />}
@@ -108,3 +108,15 @@ export const ListItem = ({ item, onSelect, children }: ListItemProps) => {
     </>
   );
 };
+
+export const ListItemSkeleton = styled(Skeleton).attrs({
+  component: 'div',
+  variant: 'rect',
+})`
+  border-radius: 0.625rem;
+  min-block-size: 3.5rem;
+
+  & + & {
+    margin-block-start: 0.75rem;
+  }
+`;
