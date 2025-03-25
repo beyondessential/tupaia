@@ -136,7 +136,7 @@ const FilterTabs = ({ tabs, value, onChange }) => (
         label={
           <TabLabel>
             <span>{tab.label}</span>
-            {tab.active && <Dot />}
+            {tab.active && <Dot aria-hidden />}
           </TabLabel>
         }
         aria-controls={`tabpanel-${index}`}
