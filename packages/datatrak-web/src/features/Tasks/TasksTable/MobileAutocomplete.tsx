@@ -65,7 +65,7 @@ export const MobileAutocomplete = ({
         inputValue={searchValue}
         getOptionLabel={option => (option ? option.label : '')}
         getOptionSelected={(option, selected) => option.id === selected?.id}
-        placeholder="Search..."
+        placeholder="Search…"
         options={options}
         loading={isLoading}
         textFieldProps={{
