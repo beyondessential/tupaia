@@ -1,4 +1,5 @@
 import { ButtonProps } from '@material-ui/core';
+import { endOfToday } from 'date-fns';
 import React, { useEffect } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
@@ -8,6 +9,7 @@ import { LoadingContainer, Modal, TextField } from '@tupaia/ui-components';
 
 import { useCreateTask, useEditUser, useUser } from '../../../api';
 import { ROUTES } from '../../../constants';
+import { useIsMobile } from '../../../utils';
 import { CountrySelector, useUserCountries } from '../../CountrySelector';
 import { GroupedSurveyList } from '../../GroupedSurveyList';
 import { AssigneeInput } from '../AssigneeInput';
@@ -15,7 +17,6 @@ import { DueDatePicker } from '../DueDatePicker';
 import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { TaskForm } from '../TaskForm';
 import { EntityInput } from './EntityInput';
-import { useIsMobile } from '../../../utils';
 
 const CountrySelectorWrapper = styled.div`
   display: flex;
@@ -95,13 +96,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
   const isMobile = useIsMobile();
 
-  const generateDefaultDueDate = () => {
-    const now = new Date();
-    now.setHours(23, 59, 59);
-    return new Date(now);
-  };
-
-  const defaultDueDate = generateDefaultDueDate();
+  const defaultDueDate = endOfToday();
   const defaultValues = {
     survey_code: null,
     entity_id: null,
@@ -171,15 +166,14 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
 
   useEffect(() => {
     if (!selectedCountry?.code) return;
-    const { survey_code: surveyCode, entity_id: entityId } = dirtyFields;
     // reset surveyCode and entityId when country changes, if they are dirty
-    if (surveyCode) {
+    if (dirtyFields.survey_code) {
       setValue('survey_code', null, { shouldValidate: true });
     }
-    if (entityId) {
+    if (dirtyFields.entity_id) {
       setValue('entity_id', null, { shouldValidate: true });
     }
-  }, [selectedCountry?.code]);
+  }, [dirtyFields.survey_code, dirtyFields.entity_id, selectedCountry?.code, setValue]);
 
   const surveyCode = watch('survey_code');
   const dueDate = watch('due_date');
