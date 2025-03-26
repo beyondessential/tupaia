@@ -28,17 +28,30 @@ const SearchAdornment = styled(InputAdornment)`
   margin-inline-end: -1rem;
 `;
 
+interface MobileAutocompleteProps {
+  isLoading: boolean;
+  onChange?: (event: React.ChangeEvent<{}>, value: any) => void;
+  options: {
+    id: string;
+    label: string;
+    value: string;
+  }[];
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+  value: any;
+}
+
 export const MobileAutocomplete = ({
-  options,
   isLoading,
   onChange,
-  value,
+  options,
   searchValue,
   setSearchValue,
-}) => {
+  value,
+}: MobileAutocompleteProps) => {
   const onChangeValue = (event, newSelection) => {
     if (newSelection) {
-      onChange(event, newSelection);
+      onChange?.(event, newSelection);
     }
   };
 
