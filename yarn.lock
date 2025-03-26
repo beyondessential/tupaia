@@ -10405,6 +10405,7 @@ __metadata:
     nanoid: ^2.0.3
     notistack: ^3.0.1
     npm-run-all: ^4.1.5
+    prop-types: ^15.8.1
     react: ^16.14.0
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
