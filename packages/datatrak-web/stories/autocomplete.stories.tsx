@@ -81,13 +81,6 @@ export const Simple: Story = {
         label: user.name,
       })) ?? [];
 
-    return (
-      <MobileAutocomplete
-        options={options}
-        isLoading={isLoading}
-        label="Assignee"
-        name="assignee"
-      />
-    );
+    return <MobileAutocomplete options={options} isLoading={isLoading} />;
   },
 };
