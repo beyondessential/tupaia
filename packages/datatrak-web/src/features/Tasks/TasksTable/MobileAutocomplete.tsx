@@ -9,17 +9,17 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
   padding-inline: 1rem;
   padding-block: 1rem;
   border-radius: 3px;
 
-  .MuiPaper-root {
-    border: none;
+  &,
+  .MuiOutlinedInput-notchedOutline {
+    border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   }
 
-  .MuiOutlinedInput-notchedOutline {
-    border: 1px solid ${({ theme }) => theme.palette.divider};
+  .MuiPaper-root {
+    border: none;
   }
 `;
 
