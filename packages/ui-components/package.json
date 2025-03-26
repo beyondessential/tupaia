@@ -58,6 +58,7 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/downloadjs": "^1.4.3",

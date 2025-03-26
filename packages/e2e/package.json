@@ -24,6 +24,7 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
     "@cypress/snapshot": "^2.1.7",
     "@testing-library/cypress": "^7.0.0",
+    "@testing-library/dom": "^10.4.0",
     "@tupaia/utils": "workspace:*",
     "case": "^1.6.3",
     "cheerio": "^1.0.0-rc.3",
