@@ -1,11 +1,13 @@
 import { Fab, Slide, Tab, Tabs, TabsProps, Typography } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
+import { UseQueryResult } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { useDebounce } from '@tupaia/ui-components';
 
 import {
+  CurrentUserContextType,
   useCurrentUserContext,
   useProjectEntities,
   useProjectSurveys,
@@ -162,7 +164,17 @@ const FilterTabs = ({ tabs, value, onChange }: FilterTabsProps) => (
   </StyledTabs>
 );
 
-const Filter = ({ fetchFunction, filterKey, onChange, value }) => {
+interface FilterProps {
+  fetchFunction: (
+    user: CurrentUserContextType,
+    searchValue: string,
+  ) => UseQueryResult<{ id: string; name: string }[]>;
+  filterKey: string;
+  onChange: (event: React.ChangeEvent<{}>, value: any) => void;
+  value: any;
+}
+
+const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearch = useDebounce(searchValue, 100);
   const user = useCurrentUserContext();
