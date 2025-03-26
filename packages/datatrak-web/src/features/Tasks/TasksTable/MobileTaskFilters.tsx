@@ -174,8 +174,8 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }) => {
     label: item.name,
   }));
 
-  const handleChange = newValue => {
-    onChange({ id: filterKey, value: newValue.value });
+  const handleChange = (event, newValue) => {
+    onChange(event, { id: filterKey, value: newValue.value });
   };
 
   return (

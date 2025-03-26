@@ -36,9 +36,9 @@ export const MobileAutocomplete = ({
   searchValue,
   setSearchValue,
 }) => {
-  const onChangeValue = (_e, newSelection: any | null) => {
+  const onChangeValue = (event, newSelection) => {
     if (newSelection) {
-      onChange(newSelection);
+      onChange(event, newSelection);
     }
   };
 
