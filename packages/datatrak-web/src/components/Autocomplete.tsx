@@ -106,10 +106,8 @@ export const Autocomplete = styled(BaseAutocomplete).attrs(props => ({
   .MuiFormControl-root {
     margin-bottom: 0;
   }
-  fieldset:disabled & {
-    .MuiAutocomplete-clearIndicator {
-      display: none; // hide the clear button when disabled
-    }
+  fieldset:disabled & .MuiAutocomplete-clearIndicator {
+    display: none; // hide the clear button when disabled
   }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     box-shadow: none;
