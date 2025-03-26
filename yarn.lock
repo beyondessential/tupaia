@@ -132,6 +132,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-sdk/abort-controller@npm:^3.341.0":
+  version: 3.370.0
+  resolution: "@aws-sdk/abort-controller@npm:3.370.0"
+  dependencies:
+    "@aws-sdk/types": 3.370.0
+    tslib: ^2.5.0
+  checksum: 0095e83186de9ce150826d5afc59ae02de0a05508595226edec187c96ff6b46687a4b3ba9a9051a25b85a6051c7d7aeba347e8a7a0632edbe116ee3c60376842
+  languageName: node
+  linkType: hard
+
 "@aws-sdk/chunked-blob-reader@npm:3.310.0":
   version: 3.310.0
   resolution: "@aws-sdk/chunked-blob-reader@npm:3.310.0"
@@ -1071,6 +1081,16 @@ __metadata:
   dependencies:
     tslib: ^2.5.0
   checksum: 799b053d3651f1754e2925b671fe890047d0ff1af69d22b6826d8e74edefcd558c7c7a911d48eaf5930032bcf291dbdbb6dd2d2f0c596bbe52100941aa349221
+  languageName: node
+  linkType: hard
+
+"@aws-sdk/types@npm:3.370.0":
+  version: 3.370.0
+  resolution: "@aws-sdk/types@npm:3.370.0"
+  dependencies:
+    "@smithy/types": ^1.1.0
+    tslib: ^2.5.0
+  checksum: 105a5768f20075035c2250de69f782ea4219c9ed8cd426c9ab57605616c8b1d534764d3c5b29e9715eb68a0e3f99b27ed463c410a3d728abf3c4ad59347e9f4e
   languageName: node
   linkType: hard
 
@@ -9182,6 +9202,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@smithy/types@npm:^1.1.0":
+  version: 1.2.0
+  resolution: "@smithy/types@npm:1.2.0"
+  dependencies:
+    tslib: ^2.5.0
+  checksum: 376a1402d356a8dddd804af66ff2d273e57e332a3e9537a98039b47572684aae044d5fcd879ac6eee5cc08640ea00fbef0725a6a16026db5fb8d189473d44fe6
+  languageName: node
+  linkType: hard
+
 "@sphinxxxx/color-conversion@npm:^2.2.2":
   version: 2.2.2
   resolution: "@sphinxxxx/color-conversion@npm:2.2.2"
@@ -10624,6 +10653,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/server-utils@workspace:packages/server-utils"
   dependencies:
+    "@aws-sdk/abort-controller": ^3.341.0
     "@aws-sdk/client-s3": ^3.341.0
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
@@ -10863,6 +10893,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
   dependencies:
+    "@aws-sdk/abort-controller": ^3.341.0
     "@aws-sdk/client-s3": ^3.341.0
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
