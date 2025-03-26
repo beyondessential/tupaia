@@ -18,9 +18,9 @@ import { Modal } from '../../../components/Modal';
 import { MobileAutocomplete } from './MobileAutocomplete';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
+  bottom: max(env(safe-area-inset-bottom, 0), 1rem);
+  right: max(env(safe-area-inset-right, 0), 1.25rem);
   position: absolute;
-  bottom: 1rem;
-  right: 2rem;
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: none;
