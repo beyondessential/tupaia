@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import styled from 'styled-components';
@@ -73,6 +73,7 @@ const useData = () => {
 export const Simple: Story = {
   render: () => {
     const { data = [], isLoading } = useData();
+    const [searchValue, setSearchValue] = useState('');
 
     const options =
       data?.map(user => ({
@@ -81,6 +82,14 @@ export const Simple: Story = {
         label: user.name,
       })) ?? [];
 
-    return <MobileAutocomplete options={options} isLoading={isLoading} />;
+    return (
+      <MobileAutocomplete
+        isLoading={isLoading}
+        options={options}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+        value={null}
+      />
+    );
   },
 };
