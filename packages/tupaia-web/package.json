@@ -35,6 +35,7 @@
     "axios": "^1.6.8",
     "dom-to-image": "2.6.0",
     "downloadjs": "1.4.7",
+    "jquery": "^3.7.1",
     "leaflet": "^1.7.1",
     "moment": "^2.24.0",
     "react": "^16.14.0",
