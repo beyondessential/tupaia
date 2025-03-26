@@ -128,11 +128,17 @@ interface FilterTab {
   label: string;
 }
 
-interface FilterTabsProps extends Pick<TabsProps, 'onChange' | 'value'> {
-  tabs: FilterTab[];
+interface FilterTabsProps extends Pick<TabsProps, 'value'> {
+  /**
+   * @privateRemarks Manually picked from {@link TabsProps}. For some reason,
+   * {@link TabsProps['onChange']} includes `& React.FormEventHandler<HTMLButtonElement>`; and
+   * `Exclude<>`-ing it leaves only `undefined`.
+   */
+  onChange?: (event: React.ChangeEvent<{}>, value: any) => void;
+  tabs: readonly FilterTab[];
 }
 
-const FilterTabs = ({ tabs, value, onChange }: Readonly<FilterTabsProps>) => (
+const FilterTabs = ({ tabs, value, onChange }: FilterTabsProps) => (
   <StyledTabs
     value={value}
     onChange={onChange}
