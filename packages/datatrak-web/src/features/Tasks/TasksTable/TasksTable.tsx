@@ -1,22 +1,23 @@
 import React from 'react';
-import styled from 'styled-components';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { FilterableTable } from '@tupaia/ui-components';
-import { TaskStatusType } from '../../../types';
+
 import { useCurrentUserContext, useTasks } from '../../../api';
-import { displayDate } from '../../../utils';
-import { DueDatePicker } from '../DueDatePicker';
-import { StatusPill } from '../StatusPill';
-import { getDisplayRepeatSchedule } from '../utils';
-import { TaskActionsMenu } from '../TaskActionsMenu';
+import { TaskStatusType } from '../../../types';
+import { displayDate, isNotNullish } from '../../../utils';
 import { CommentsCount } from '../CommentsCount';
-import { StatusFilter } from './StatusFilter';
-import { StatusDot } from '../StatusPill';
+import { DueDatePicker } from '../DueDatePicker';
+import { StatusDot, StatusPill } from '../StatusPill';
+import { TaskActionsMenu } from '../TaskActionsMenu';
+import { getDisplayRepeatSchedule } from '../utils';
 import { ActionButton } from './ActionButton';
 import { FilterToolbar } from './FilterToolbar';
-import { RepeatScheduleFilter } from './RepeatScheduleFilter';
 import { MobileTaskFilters } from './MobileTaskFilters';
+import { RepeatScheduleFilter } from './RepeatScheduleFilter';
+import { StatusFilter } from './StatusFilter';
 
 const Container = styled.div`
   display: flex;
@@ -96,9 +97,7 @@ export const useTasksTable = () => {
   };
 
   const updateFilters = newFilters => {
-    const nonEmptyFilters = newFilters.filter(
-      ({ value }) => value !== null && value !== undefined && value !== '',
-    );
+    const nonEmptyFilters = newFilters.filter(({ value }) => isNotNullish(value) && value !== '');
 
     if (JSON.stringify(nonEmptyFilters) === JSON.stringify(filters)) return;
 
