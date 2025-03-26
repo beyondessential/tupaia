@@ -59,12 +59,17 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const StyledTabs = styled(Tabs)`
-  border: 1px solid ${({ theme }) => theme.palette.primary.main};
-  border-radius: 5px;
-  margin-block-start: 1.5rem;
+const StyledTabs = styled(Tabs).attrs({
+  indicatorColor: 'primary',
+  textColor: 'primary',
+  variant: 'fullWidth',
+})`
+  --border: max(0.0625rem, 1px) solid ${props => props.theme.palette.primary.main};
+  border-radius: 0.3125rem;
+  border: var(--border);
   margin-block-end: 0.875rem;
-  min-height: 2.4rem;
+  margin-block-start: 1.5rem;
+  min-block-size: 2.4rem;
 
   .MuiTabs-indicator {
     display: none;
@@ -76,12 +81,12 @@ const StyledTabs = styled(Tabs)`
     min-height: 0;
 
     &:not(:last-child) {
-      border-inline-end: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.primary.main};
+      border-inline-end: var(--border);
     }
 
     &.Mui-selected {
-      color: ${({ theme }) => theme.palette.text.primary};
       background-color: oklch(63.33% 0.157 251.26 / 10%);
+      color: ${props => props.theme.palette.text.primary};
     }
   }
 `;
@@ -141,13 +146,7 @@ interface FilterTabsProps extends Pick<TabsProps, 'value'> {
 }
 
 const FilterTabs = ({ tabs, value, onChange }: FilterTabsProps) => (
-  <StyledTabs
-    value={value}
-    onChange={onChange}
-    indicatorColor="primary"
-    textColor="primary"
-    variant="fullWidth"
-  >
+  <StyledTabs value={value} onChange={onChange}>
     {tabs.map((tab, index) => (
       <Tab
         key={tab.id}
