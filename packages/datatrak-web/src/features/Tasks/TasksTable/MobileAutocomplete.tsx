@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Search } from '@material-ui/icons';
+import { Search as SearchIcon } from '@material-ui/icons';
 import { InputAdornment } from '@material-ui/core';
 import { AutocompleteInputChangeReason } from '@material-ui/lab/useAutocomplete';
 import { Autocomplete } from '../../../components';
@@ -68,7 +68,7 @@ export const MobileAutocomplete = ({
           InputProps: {
             startAdornment: (
               <SearchAdornment position="start">
-                <Search />
+                <SearchIcon />
               </SearchAdornment>
             ),
           },
