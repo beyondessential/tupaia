@@ -39,7 +39,7 @@
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "ace-builds": "^1.10.1",
-    "axios": "^1.6.8",
+    "axios": "^1.7.4",
     "case": "^1.5.3",
     "content-disposition-header": "^0.6.0",
     "date-fns": "^2.29.2",
