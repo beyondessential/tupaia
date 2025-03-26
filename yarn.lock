@@ -9899,7 +9899,7 @@ __metadata:
     prop-types: ^15.6.0
     qrcode: ^1.5.3
     query-string: ^5.1.1
-    react: ^16.13.1
+    react: ^16.14.0
     react-autobind: ^1.0.6
     react-beautiful-dnd: ^13.1.0
     react-beforeunload: ^2.5.1
@@ -9907,6 +9907,7 @@ __metadata:
     react-dom: ^16.13.1
     react-hook-form: ^6.8.3
     react-icons: ^2.2.7
+    react-is: ^16.13.1
     react-password-strength-bar: ^0.4.1
     react-redux: ^5.0.6
     react-router: 6.3.0
@@ -10234,9 +10235,10 @@ __metadata:
     nanoid: ^2.0.3
     notistack: ^3.0.1
     npm-run-all: ^4.1.5
-    react: ^16.13.1
+    react: ^16.14.0
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
+    react-is: ^16.13.1
     react-leaflet: ^3.2.1
     react-router: 6.3.0
     react-router-dom: 6.3.0
@@ -10403,9 +10405,10 @@ __metadata:
     npm-run-all: ^4.1.5
     prop-types: ^15.7.2
     query-string: ^5.1.1
-    react: ^16.13.1
+    react: ^16.14.0
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
+    react-is: ^16.13.1
     react-leaflet: ^3.2.1
     react-password-strength-bar: ^0.4.1
     react-redux: ^5.0.6
@@ -10564,9 +10567,10 @@ __metadata:
     msw: ^0.26.0
     npm-run-all: ^4.1.5
     prop-types: ^15.7.2
-    react: ^16.13.1
+    react: ^16.14.0
     react-dom: ^16.13.1
     react-hook-form: ^6.0.0
+    react-is: ^16.13.1
     react-password-strength-bar: ^0.4.1
     react-redux: ^7.1.0
     react-router-dom: ^5.1.2
@@ -10756,9 +10760,10 @@ __metadata:
     moment: ^2.24.0
     msw: ^2.0.9
     npm-run-all: ^4.1.5
-    react: ^16.13.1
+    react: ^16.14.0
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
+    react-is: ^16.13.1
     react-leaflet: ^3.2.1
     react-qr-reader: ^3.0.0-beta-1
     react-router: 6.3.0
@@ -10800,8 +10805,9 @@ __metadata:
     lodash.get: ^4.4.2
     moment: ^2.24.0
     prop-types: ^15.7.2
-    react: ^16.13.1
+    react: ^16.14.0
     react-dom: ^16.13.1
+    react-is: ^16.13.1
     react-table: ^7.7.0
     recharts: ^1.8.5
     rimraf: ^6.0.1
@@ -10847,11 +10853,12 @@ __metadata:
     moment: ^2.24.0
     prop-types: ^15.7.2
     qrcode: ^1.5.3
-    react: ^16.13.1
+    react: ^16.14.0
     react-ace: ^10.1.0
     react-dom: ^16.13.1
     react-dropzone: ^14.2.3
     react-hook-form: ^6.15.1
+    react-is: ^16.13.1
     react-password-strength-bar: ^0.4.1
     react-router-dom: ^5.1.2
     react-router-dom-v6: "npm:react-router-dom@6.3.0"
@@ -10880,8 +10887,9 @@ __metadata:
     leaflet: ^1.7.1
     moment: ^2.24.0
     prop-types: ^15.7.2
-    react: ^16.13.1
+    react: ^16.14.0
     react-dom: ^16.13.1
+    react-is: ^16.13.1
     react-leaflet: ^3.2.1
     react-table: ^7.7.0
     rimraf: ^6.0.1
@@ -31375,6 +31383,17 @@ __metadata:
     object-assign: ^4.1.1
     prop-types: ^15.6.2
   checksum: 4508f4207caca6bef55736284cbf2ce18d2edfee4c1457fc0bb2086b34ed5bcf9b44acdb71e27574e73a5b5d4d093720b5b4ec0bf92bb89394ee3a0a7c42c2d4
+  languageName: node
+  linkType: hard
+
+"react@npm:^16.14.0":
+  version: 16.14.0
+  resolution: "react@npm:16.14.0"
+  dependencies:
+    loose-envify: ^1.1.0
+    object-assign: ^4.1.1
+    prop-types: ^15.6.2
+  checksum: 8484f3ecb13414526f2a7412190575fc134da785c02695eb92bb6028c930bfe1c238d7be2a125088fec663cc7cda0a3623373c46807cf2c281f49c34b79881ac
   languageName: node
   linkType: hard
 
