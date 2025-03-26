@@ -6526,7 +6526,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.15.4
   resolution: "@babel/runtime@npm:7.15.4"
   dependencies:
@@ -7964,19 +7964,6 @@ __metadata:
     "@types/istanbul-reports": ^1.1.1
     "@types/yargs": ^13.0.0
   checksum: 603698f774cf22f9d16a0e0fac9e10e7db21052aebfa33db154c8a5940e0eb1fa9c079a8c91681041ad3aeee2adfa950608dd0c663130316ba034b8bca7b301c
-  languageName: node
-  linkType: hard
-
-"@jest/types@npm:^26.3.0":
-  version: 26.3.0
-  resolution: "@jest/types@npm:26.3.0"
-  dependencies:
-    "@types/istanbul-lib-coverage": ^2.0.0
-    "@types/istanbul-reports": ^3.0.0
-    "@types/node": "*"
-    "@types/yargs": ^15.0.0
-    chalk: ^4.0.0
-  checksum: 832fcb106870b095a33e93afc130ef4359a5a024317e00101f9ca934fe9c667b8ac6bc350260c8758f519feedc1370277f0169da11153739552dfd30775b474a
   languageName: node
   linkType: hard
 
@@ -9811,15 +9798,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/cypress@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "@testing-library/cypress@npm:7.0.1"
+"@testing-library/cypress@npm:^7.0.6":
+  version: 7.0.7
+  resolution: "@testing-library/cypress@npm:7.0.7"
   dependencies:
-    "@babel/runtime": ^7.11.2
-    "@testing-library/dom": ^7.22.2
+    "@babel/runtime": ^7.12.5
+    "@testing-library/dom": ^7.29.6
   peerDependencies:
-    cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
-  checksum: 7870ce6b19b0fcfc6b9de3401239285e39480dbb053b6b3c7b673b6321e14fc1bda1c7dab82b4f21317fe2b0e258460274235914385a233a51299af92b8a363c
+    cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: e19c24c4d5017f08eb9dfd96bf3400e294a9b3f96395756120d9f016e70905ff047bbb2d45121f3dc79a65dae09a9d7bab540e1efda295c05e44d5e929f13863
   languageName: node
   linkType: hard
 
@@ -9839,18 +9826,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^7.22.2":
-  version: 7.24.3
-  resolution: "@testing-library/dom@npm:7.24.3"
+"@testing-library/dom@npm:^7.29.6":
+  version: 7.31.2
+  resolution: "@testing-library/dom@npm:7.31.2"
   dependencies:
     "@babel/code-frame": ^7.10.4
-    "@babel/runtime": ^7.10.3
+    "@babel/runtime": ^7.12.5
     "@types/aria-query": ^4.2.0
     aria-query: ^4.2.2
     chalk: ^4.1.0
-    dom-accessibility-api: ^0.5.1
-    pretty-format: ^26.4.2
-  checksum: 0558de0bebc0cec2239a460ff3fdfe247d92f92d31ad32457ec7078554d3073312195be4c14ed359638919fc63ffa661379c156cd29a58f62df6adcea7062529
+    dom-accessibility-api: ^0.5.6
+    lz-string: ^1.4.4
+    pretty-format: ^26.6.2
+  checksum: 54fbedd1ecdfe1d47be2e592b98d18b2ab9d7e731f57231caf9b152593fe7329fe5ebe219e0e5d1e0df5b1ab803121cb8acd8b73bd1fb292bfdc2c55663eb01d
   languageName: node
   linkType: hard
 
@@ -10455,7 +10443,7 @@ __metadata:
     "@babel/node": ^7.10.5
     "@babel/plugin-proposal-nullish-coalescing-operator": ^7.14.5
     "@cypress/snapshot": ^2.1.7
-    "@testing-library/cypress": ^7.0.0
+    "@testing-library/cypress": ^7.0.6
     "@testing-library/dom": ^10.4.0
     "@tupaia/utils": "workspace:*"
     case: ^1.6.3
@@ -17996,14 +17984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-accessibility-api@npm:^0.5.1":
-  version: 0.5.2
-  resolution: "dom-accessibility-api@npm:0.5.2"
-  checksum: d8329cc57f186ade04cb3b93e414d2846b1160055c99ec2978f85aabc15c28a171fc7a26f907465e887f77ae55f5ce216d3e84466f33bc50c07323dff0d88648
-  languageName: node
-  linkType: hard
-
-"dom-accessibility-api@npm:^0.5.9":
+"dom-accessibility-api@npm:^0.5.6, dom-accessibility-api@npm:^0.5.9":
   version: 0.5.16
   resolution: "dom-accessibility-api@npm:0.5.16"
   checksum: 005eb283caef57fc1adec4d5df4dd49189b628f2f575af45decb210e04d634459e3f1ee64f18b41e2dcf200c844bc1d9279d80807e686a30d69a4756151ad248
@@ -26077,7 +26058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lz-string@npm:^1.5.0":
+"lz-string@npm:^1.4.4, lz-string@npm:^1.5.0":
   version: 1.5.0
   resolution: "lz-string@npm:1.5.0"
   bin:
@@ -29908,18 +29889,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^26.4.2":
-  version: 26.4.2
-  resolution: "pretty-format@npm:26.4.2"
-  dependencies:
-    "@jest/types": ^26.3.0
-    ansi-regex: ^5.0.0
-    ansi-styles: ^4.0.0
-    react-is: ^16.12.0
-  checksum: 37908b0cc9e04133f3c76bdf75e15cd5e2541d49f682edfd64b838d3f24d5966bea15f5a47fbf8104472041cb5a98941653890780c596cdfac19531d904710c1
-  languageName: node
-  linkType: hard
-
 "pretty-format@npm:^26.5.2, pretty-format@npm:^26.6.2":
   version: 26.6.2
   resolution: "pretty-format@npm:26.6.2"
@@ -30820,7 +30789,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.12.0, react-is@npm:^16.13.0, react-is@npm:^16.13.1, react-is@npm:^16.9.0":
+"react-is@npm:^16.13.0, react-is@npm:^16.13.1, react-is@npm:^16.9.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
