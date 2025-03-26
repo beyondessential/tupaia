@@ -9878,7 +9878,7 @@ __metadata:
     react-dom: ^16.13.1
     react-hook-form: ^6.8.3
     react-icons: ^2.2.7
-    react-password-strength-bar: ^0.3.2
+    react-password-strength-bar: ^0.4.1
     react-redux: ^5.0.6
     react-router: 6.3.0
     react-router-dom: 6.3.0
@@ -10377,7 +10377,7 @@ __metadata:
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
     react-leaflet: ^3.2.1
-    react-password-strength-bar: ^0.3.3
+    react-password-strength-bar: ^0.4.1
     react-redux: ^5.0.6
     react-router: 6.3.0
     react-router-dom: 6.3.0
@@ -10537,7 +10537,7 @@ __metadata:
     react: ^16.13.1
     react-dom: ^16.13.1
     react-hook-form: ^6.0.0
-    react-password-strength-bar: ^0.3.3
+    react-password-strength-bar: ^0.4.1
     react-redux: ^7.1.0
     react-router-dom: ^5.1.2
     redux: ^4.0.2
@@ -10821,7 +10821,7 @@ __metadata:
     react-dom: ^16.13.1
     react-dropzone: ^14.2.3
     react-hook-form: ^6.15.1
-    react-password-strength-bar: ^0.3.3
+    react-password-strength-bar: ^0.4.1
     react-router-dom: ^5.1.2
     react-router-dom-v6: "npm:react-router-dom@6.3.0"
     react-table: ^7.7.0
@@ -30929,27 +30929,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-password-strength-bar@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "react-password-strength-bar@npm:0.3.2"
+"react-password-strength-bar@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "react-password-strength-bar@npm:0.4.1"
   dependencies:
     zxcvbn: 4.4.2
   peerDependencies:
-    react: 16.8.6
-    react-dom: 16.8.6
-  checksum: f5f350ceff6a24d1e98171258ec3c40fdad90f3f428b7f2e0f71eda7fc4a587a7fa50d46c7fec21409aae95ca460e9e2b9388e8b70fdfb93ea8ad9c9f4c69471
-  languageName: node
-  linkType: hard
-
-"react-password-strength-bar@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "react-password-strength-bar@npm:0.3.3"
-  dependencies:
-    zxcvbn: 4.4.2
-  peerDependencies:
-    react: ^16.8.6
-    react-dom: ^16.8.6
-  checksum: d967a0bf371ef1a9b7af8c8a074ec16be990dac729cf930a74a0c10a6dc75dc80f5daff6d0cd16e190768178bbdad6fe174bb18d6207be32399cbb22d2b786d7
+    react: ">=16.8.6"
+    react-dom: ">=16.8.6"
+  checksum: e51ab3ea8f1dfae2ad3f0bd0f942b7029872d4eb31244d575739d755ad00ce6b92e5df679d1168e971270ceafee778d26b3ffc617cd0e2f1839a730215794d1a
   languageName: node
   linkType: hard
 
