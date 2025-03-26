@@ -10576,6 +10576,7 @@ __metadata:
     react-redux: ^5.0.6
     react-router: 6.3.0
     react-router-dom: 6.3.0
+    redux: ^4.2.1
     styled-components: ^5.1.0
     vite: ^4.5.3
   languageName: unknown
