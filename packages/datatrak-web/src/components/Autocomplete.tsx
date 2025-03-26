@@ -1,17 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Check } from '@material-ui/icons';
+import { Check as CheckIcon } from '@material-ui/icons';
 import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { Paper } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
-
-const OptionWrapper = styled.div`
-  width: 100%;
-  padding: 0.2rem 0.875rem;
-  line-height: 1.2;
-  margin: 0.3rem 0;
-`;
 
 const StyledPaper = styled(Paper).attrs({
   variant: 'outlined',
@@ -32,14 +25,22 @@ const StyledPaper = styled(Paper).attrs({
   }
 `;
 
-const SelectedOption = styled(OptionWrapper)`
-  display: flex;
+const OptionWrapper = styled.div`
+  border-radius: 0.1875rem;
+  inline-size: 100%;
+  line-height: 1.2;
+  margin-block: 0.3rem;
+  padding-block: 0.2rem;
+  padding-inline: 0.875rem;
+`;
+
+const SelectedOptionWrapper = styled(OptionWrapper)`
   align-items: center;
+  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.primary.main};
+  display: flex;
   justify-content: space-between;
-  padding-inline: 0.425rem;
   margin-inline: 0.45rem;
-  border-radius: 3px;
-  border: 1px solid ${({ theme }) => theme.palette.primary.main};
+  padding-inline: 0.425rem;
   .MuiSvgIcon-root {
     font-size: 1.2rem;
   }
@@ -58,8 +59,22 @@ const Code = styled.span`
   flex: 1;
 `;
 
-const DisplayOption = ({ option, state }) => {
-  const { selected } = state;
+interface DisplayOptionProps {
+  option:
+    | string
+    | {
+        id: string;
+        label?: React.ReactNode;
+        secondaryLabel?: React.ReactNode;
+        value: boolean | number | string;
+      };
+  state: {
+    inputValue: string;
+    selected?: boolean;
+  };
+}
+
+const DisplayOption = ({ option, state }: DisplayOptionProps) => {
   const label =
     typeof option === 'string' ? (
       option
@@ -70,12 +85,12 @@ const DisplayOption = ({ option, state }) => {
       </>
     );
 
-  if (selected)
+  if (state.selected)
     return (
-      <SelectedOption>
+      <SelectedOptionWrapper>
         {label}
-        <Check color="primary" />
-      </SelectedOption>
+        <CheckIcon aria-hidden color="primary" />
+      </SelectedOptionWrapper>
     );
   return <OptionWrapper>{label}</OptionWrapper>;
 };
