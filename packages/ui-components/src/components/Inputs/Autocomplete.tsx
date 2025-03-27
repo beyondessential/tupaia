@@ -54,7 +54,7 @@ export interface BaseAutocompleteProps<
   getOptionSelected?: (option: T, value: any) => boolean;
   helperText?: string;
   id?: string;
-  label?: string;
+  label?: React.ReactNode;
   placeholder?: TextFieldProps['placeholder'];
   required?: boolean;
   value?: any;
