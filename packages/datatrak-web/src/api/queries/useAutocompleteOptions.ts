@@ -9,9 +9,9 @@ export const useAutocompleteOptions = (
   searchText?: string,
 ) => {
   const { getAnswerByQuestionId } = useSurveyForm();
-  return useQuery(
+  return useQuery<Option[]>(
     ['autocompleteOptions', optionSetId, searchText],
-    (): Promise<Option[]> =>
+    () =>
       get(`optionSets/${optionSetId}/options`, {
         params: {
           filter: searchText
