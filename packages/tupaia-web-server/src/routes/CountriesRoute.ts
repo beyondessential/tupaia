@@ -1,13 +1,14 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { Entity } from '@tupaia/types';
+import { TupaiaWebCountriesRequest } from '@tupaia/types';
 
-export type CountriesRequest = Request<
-  Record<string, never>,
-  Partial<Entity>[],
-  Record<string, never>,
-  Record<string, never>
->;
+export interface CountriesRequest
+  extends Request<
+    TupaiaWebCountriesRequest.Params,
+    TupaiaWebCountriesRequest.ResBody,
+    TupaiaWebCountriesRequest.ReqBody,
+    TupaiaWebCountriesRequest.ReqQuery
+  > {}
 
 export class CountriesRoute extends Route<CountriesRequest> {
   public async buildResponse() {
@@ -28,6 +29,8 @@ export class CountriesRoute extends Route<CountriesRequest> {
       },
     );
 
-    return Promise.all(countries.map(country => country.getData()));
+    return Promise.all(
+      countries.map(country => country.getData() as Promise<TupaiaWebCountriesRequest.ResBodyItem>),
+    );
   }
 }
