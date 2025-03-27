@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { Autocomplete } from '../../../components';
 
 export interface ReportAutocompleteOption {
-  value: string;
   label: string;
+  value: string;
 }
 
 export const ReportAutocomplete = styled(Autocomplete<ReportAutocompleteOption>)`
