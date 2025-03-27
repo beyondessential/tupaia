@@ -19,7 +19,6 @@ export const RepeatScheduleInput = ({
   dueDate,
 }: RepeatScheduleInputProps) => {
   const repeatScheduleOptions = getRepeatScheduleOptions(dueDate);
-  console.log('RepeatScheduleInput:21 repeatScheduleOptions', repeatScheduleOptions);
 
   useEffect(() => {
     if (!dueDate) {
