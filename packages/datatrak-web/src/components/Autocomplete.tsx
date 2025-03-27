@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Check as CheckIcon } from '@material-ui/icons';
-import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
+import { Autocomplete as BaseAutocomplete, AutocompleteProps } from '@tupaia/ui-components';
 import { Paper } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
@@ -95,7 +95,7 @@ const DisplayOption = ({ option, state }: DisplayOptionProps) => {
   return <OptionWrapper>{label}</OptionWrapper>;
 };
 
-export const Autocomplete = styled(BaseAutocomplete).attrs(props => ({
+export const StyledBaseAutocomplete = styled(BaseAutocomplete).attrs(props => ({
   muiProps: {
     renderOption: (option, state) => <DisplayOption option={option} state={state} />,
     PaperComponent: StyledPaper,
@@ -113,8 +113,25 @@ export const Autocomplete = styled(BaseAutocomplete).attrs(props => ({
     box-shadow: none;
   }
 `;
+/**
+ * Thin wrapper around {@link StyledBaseAutocomplete} to use its styling, but preserve generic
+ * behaviour from the underlying component it styles.
+ */
+export const Autocomplete = <
+  T = unknown,
+  Multiple extends boolean | undefined = false,
+  DisableClearable extends boolean | undefined = false,
+  FreeSolo extends boolean | undefined = false,
+>(
+  props: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>,
+) => (
+  <StyledBaseAutocomplete
+    as={BaseAutocomplete<T, Multiple, DisableClearable, FreeSolo>}
+    {...props}
+  />
+);
 
-export const QuestionAutocomplete = styled(Autocomplete).attrs({
+const StyledAutocomplete = styled(Autocomplete).attrs({
   textFieldProps: {
     FormHelperTextProps: {
       component: InputHelperText,
@@ -163,3 +180,18 @@ export const QuestionAutocomplete = styled(Autocomplete).attrs({
     color: ${({ theme }) => theme.palette.text.secondary};
   }
 `;
+
+/**
+ * Thin wrapper around {@link StyledAutocomplete} to use its styling, but preserve generic behaviour
+ * from the underlying component it styles.
+ */
+export const QuestionAutocomplete = <
+  T = unknown,
+  Multiple extends boolean | undefined = false,
+  DisableClearable extends boolean | undefined = false,
+  FreeSolo extends boolean | undefined = false,
+>(
+  props: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>,
+) => (
+  <StyledAutocomplete as={BaseAutocomplete<T, Multiple, DisableClearable, FreeSolo>} {...props} />
+);

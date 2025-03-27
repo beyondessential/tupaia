@@ -1,12 +1,14 @@
+import { createFilterOptions } from '@material-ui/lab';
+import throttle from 'lodash.throttle';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import throttle from 'lodash.throttle';
-import { createFilterOptions } from '@material-ui/lab';
+
 import { Option } from '@tupaia/types';
-import { SurveyQuestionInputProps } from '../../types';
+
 import { useAutocompleteOptions } from '../../api';
-import { DESKTOP_BREAKPOINT } from '../../constants';
 import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
+import { DESKTOP_BREAKPOINT } from '../../constants';
+import { SurveyQuestionInputProps } from '../../types';
 
 const Autocomplete = styled(BaseAutocomplete)`
   width: calc(100% - 3.5rem);
@@ -129,6 +131,7 @@ export const AutocompleteQuestion = ({
   return (
     <>
       <Autocomplete
+        as={BaseAutocomplete<Option>}
         id={id}
         label={label!}
         name={name!}
