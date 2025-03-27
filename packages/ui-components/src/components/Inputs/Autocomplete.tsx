@@ -55,7 +55,7 @@ export interface BaseAutocompleteProps<
   helperText?: string;
   id?: string;
   label?: string;
-  placeholder?: string;
+  placeholder?: TextFieldProps['placeholder'];
   required?: boolean;
   value?: any;
 
@@ -105,7 +105,7 @@ export const Autocomplete = <
   loading,
   muiProps,
   name,
-  placeholder = '',
+  placeholder,
   required = false,
   textFieldProps,
   tooltip,

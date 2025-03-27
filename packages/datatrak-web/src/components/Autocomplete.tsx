@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Check as CheckIcon } from '@material-ui/icons';
-import { Autocomplete as BaseAutocomplete, AutocompleteProps } from '@tupaia/ui-components';
+import {
+  Autocomplete as UiAutocomplete,
+  AutocompleteProps as UiAutocompleteProps,
+} from '@tupaia/ui-components';
 import { Paper } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
@@ -95,7 +98,7 @@ const DisplayOption = ({ option, state }: DisplayOptionProps) => {
   return <OptionWrapper>{label}</OptionWrapper>;
 };
 
-export const StyledBaseAutocomplete = styled(BaseAutocomplete).attrs(props => ({
+export const StyledBaseAutocomplete = styled(UiAutocomplete).attrs(props => ({
   muiProps: {
     renderOption: (option, state) => <DisplayOption option={option} state={state} />,
     PaperComponent: StyledPaper,
@@ -123,12 +126,9 @@ export const Autocomplete = <
   DisableClearable extends boolean | undefined = false,
   FreeSolo extends boolean | undefined = false,
 >(
-  props: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>,
+  props: UiAutocompleteProps<T, Multiple, DisableClearable, FreeSolo>,
 ) => (
-  <StyledBaseAutocomplete
-    as={BaseAutocomplete<T, Multiple, DisableClearable, FreeSolo>}
-    {...props}
-  />
+  <StyledBaseAutocomplete as={UiAutocomplete<T, Multiple, DisableClearable, FreeSolo>} {...props} />
 );
 
 const StyledAutocomplete = styled(Autocomplete).attrs({
@@ -191,7 +191,5 @@ export const QuestionAutocomplete = <
   DisableClearable extends boolean | undefined = false,
   FreeSolo extends boolean | undefined = false,
 >(
-  props: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>,
-) => (
-  <StyledAutocomplete as={BaseAutocomplete<T, Multiple, DisableClearable, FreeSolo>} {...props} />
-);
+  props: UiAutocompleteProps<T, Multiple, DisableClearable, FreeSolo>,
+) => <StyledAutocomplete as={UiAutocomplete<T, Multiple, DisableClearable, FreeSolo>} {...props} />;
