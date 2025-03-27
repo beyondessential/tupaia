@@ -187,7 +187,7 @@ export const ProjectsModal = () => {
               <SearchAutocomplete
                 options={countries?.map(({ name }) => ({ label: name, value: name })) ?? []}
                 loading={isLoading}
-                placeholder="Search country..."
+                placeholder="Search country…"
                 onInputChange={(_, newValue) => setSearchTerm(newValue)}
                 getOptionLabel={option => option.label}
                 value={selectedCountry}
@@ -229,7 +229,7 @@ export const ProjectsModal = () => {
                       }`}
                     />
                   ),
-                  [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
+                  [PROJECT_ACCESS_TYPES.PENDING]: ProjectPendingLink,
                   [PROJECT_ACCESS_TYPES.DENIED]: ({
                     project: { code },
                   }: {
