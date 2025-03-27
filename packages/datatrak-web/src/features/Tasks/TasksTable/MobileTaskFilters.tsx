@@ -216,7 +216,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
     setTabValue(newValue);
   };
 
-  const handleChangeFilters = newEntry => {
+  const handleChangeFilters = (_event, newEntry) => {
     const originalFilters = [...filters];
     const index = originalFilters.findIndex(filter => filter.id === newEntry.id);
 
