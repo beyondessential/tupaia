@@ -30,7 +30,9 @@ export class CountriesRoute extends Route<CountriesRequest> {
     );
 
     return Promise.all(
-      countries.map(country => country.getData() as Promise<TupaiaWebCountriesRequest.ResBodyItem>),
+      countries.map(
+        country => country.getData() as Promise<TupaiaWebCountriesRequest.CountriesResponseItem>,
+      ),
     );
   }
 }
