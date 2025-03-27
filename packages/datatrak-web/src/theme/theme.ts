@@ -111,6 +111,9 @@ const overrides = {
       source: {
         display: 'none',
       },
+      time: {
+        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
     },
   },
   MuiDialogActions: {

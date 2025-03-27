@@ -58,7 +58,7 @@ export const TextQuestion = ({
         required={required}
         invalid={invalid}
         textInputProps={{
-          ['aria-describedby']: `question_number_${id}`,
+          'aria-describedby': `question_number_${id}`,
           type: FIELD_TYPES[type as unknown as FIELD_TYPES],
           placeholder,
           min,

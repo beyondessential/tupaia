@@ -1,7 +1,10 @@
 import { setupTest } from '@tupaia/database';
 import { expect } from 'chai';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  VIZ_BUILDER_PERMISSION_GROUP,
+} from '../../../permissions';
 import { TEST_SETUP, findTestRecordByCode } from './mapOverlayVisualisations.fixtures';
 
 describe('PUT map overlay visualisations', async () => {
@@ -12,11 +15,15 @@ describe('PUT map overlay visualisations', async () => {
   const modernReport = findTestRecordByCode('report', 'Modern_Report');
 
   const policy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions', 'Test Permission Group'],
+    DL: [
+      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+      VIZ_BUILDER_PERMISSION_GROUP,
+      'Test Permission Group',
+    ],
   };
 
   const unacceptedPolicy = {
-    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Viz_Permissions'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, VIZ_BUILDER_PERMISSION_GROUP],
   };
 
   const modernVisualisation = {
@@ -59,10 +66,7 @@ describe('PUT map overlay visualisations', async () => {
       const response = await app.put(`mapOverlayVisualisations/${modernMapOverlay.id}`, {
         body: modernVisualisation,
       });
-      expectError(
-        response,
-        'Internal server error: You do not have access to all related permission groups',
-      );
+      expectError(response, 'Cannot edit map overlay', 403);
     });
 
     it('Makes change successfully', async () => {

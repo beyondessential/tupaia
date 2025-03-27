@@ -68,15 +68,14 @@ type SearchFieldProps = TextFieldProps & {
 export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((props, ref) => {
   const {
     name,
-    label,
     id,
     searchValue,
     onChangeSearch,
     isDirty,
     invalid,
-    detailLabel,
     required,
     inputProps,
+    detailLabel,
   } = props;
 
   const displayValue = isDirty ? searchValue : '';
@@ -92,7 +91,6 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
   return (
     <StyledField
       id={id}
-      label={label}
       name={name}
       inputRef={ref}
       required={required}
