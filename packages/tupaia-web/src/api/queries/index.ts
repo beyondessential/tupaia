@@ -11,4 +11,4 @@ export { useReport } from './useReport';
 export { useMapOverlayReport } from './useMapOverlayReport';
 export { useMapOverlays } from './useMapOverlays';
 export { useEntitySearch } from './useEntitySearch';
-export { useCountriesQuery } from './useCountries';
+export { useCountriesQuery } from './useCountriesQuery';
