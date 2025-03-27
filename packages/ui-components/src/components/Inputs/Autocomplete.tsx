@@ -1,7 +1,7 @@
 import React from 'react';
 import MuiAutocomplete from '@material-ui/lab/Autocomplete';
 import { TextFieldProps } from '@material-ui/core';
-import MuiPaper, { PaperProps } from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper';
 import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
@@ -11,11 +11,10 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   font-size: 1.5rem;
 `;
 
-const Paper = (props: PaperProps) => <MuiPaper {...props} variant="outlined" elevation={0} />;
-
-const StyledPaper = styled(Paper)`
+const StyledPaper = styled(Paper).attrs({ elevation: 0, variant: 'outlined' })`
   .MuiAutocomplete-option {
-    padding: 0.6rem 1.2rem;
+    padding-block: 0.6rem;
+    padding-inline: 1.2rem;
   }
 `;
 
@@ -31,9 +30,11 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
   .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
     right: 0.9rem;
   }
+
   .MuiInputBase-root.Mui-error {
     background-color: transparent;
-    border-color: ${props => props.theme.palette.error.main};
+
+    &,
     &.Mui-focused {
       border-color: ${props => props.theme.palette.error.main};
     }
