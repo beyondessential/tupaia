@@ -50,7 +50,6 @@ export interface BaseAutocompleteProps<
   FreeSolo extends boolean | undefined,
 > extends MuiAutocompleteProps<T, Multiple, DisableClearable, FreeSolo> {
   error?: boolean;
-  getOptionLabel?: (option: T) => string;
   getOptionSelected?: (option: T, value: any) => boolean;
   helperText?: string;
   id?: string;
