@@ -29,5 +29,5 @@ export default meta;
 type Story = StoryObj<typeof MobileTaskFilters>;
 
 export const Simple: Story = {
-  render: () => <MobileTaskFilters />,
+  render: () => <MobileTaskFilters filters={undefined} onChangeFilters={undefined} />,
 };
