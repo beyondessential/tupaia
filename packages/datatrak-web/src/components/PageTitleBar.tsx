@@ -19,7 +19,6 @@ const Wrapper = styled.div<{
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-inline: -1.25rem;
-    margin-inline: -1.25rem;
   }
 `;
 
