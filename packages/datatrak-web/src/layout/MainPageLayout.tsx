@@ -34,21 +34,22 @@ const PageWrapper = styled.div`
   }
 `;
 
+
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();
-  // Always show header if not mobile
-  if (!useIsMobile()) {
-    return true;
-  }
-  // Some routes on mobile don't have header
-  const headerLessRoutePatterns = [
-    `${ROUTES.SURVEY}/*`,
-    ROUTES.ACCOUNT_SETTINGS,
-    ROUTES.SURVEY_SELECT,
-    ROUTES.SYNC,
-  ];
 
-  return !headerLessRoutePatterns.some(pathPattern => matchPath(pathPattern, pathname));
+  const mobileHeaderlessRoutes = [
+    `${ROUTES.SURVEY}/*`,
+    ROUTES.SURVEY_SELECT,
+    ROUTES.ACCOUNT_SETTINGS,
+    ROUTES.WELCOME,
+  ];
+  if (useIsMobile()) {
+    return !mobileHeaderlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
+  }
+  const desktopHeaderlessRoutes = [ROUTES.WELCOME];
+
+  return !desktopHeaderlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
 };
 
 export const MainPageLayout = () => {
