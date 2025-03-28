@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Search as SearchIcon } from '@material-ui/icons';
 import { InputAdornment } from '@material-ui/core';
 import { AutocompleteInputChangeReason } from '@material-ui/lab/useAutocomplete';
+
 import { Autocomplete } from '../../../components';
 
 const Container = styled.div`
@@ -27,6 +28,12 @@ const SearchAdornment = styled(InputAdornment)`
   margin-inline-start: 1rem;
   margin-inline-end: -1rem;
 `;
+
+interface TaskAutocompleteOption {
+  id: string;
+  label: string;
+  value: string;
+}
 
 interface MobileAutocompleteProps {
   isLoading: boolean;
@@ -57,7 +64,7 @@ export const MobileAutocomplete = ({
 
   return (
     <Container>
-      <Autocomplete
+      <Autocomplete<TaskAutocompleteOption>
         value={value}
         onChange={onChangeValue}
         /* @ts-ignore - ts fails to infer the reason prop from mui autocomplete */
@@ -74,7 +81,6 @@ export const MobileAutocomplete = ({
         inputValue={searchValue}
         getOptionLabel={option => (option ? option.label : '')}
         getOptionSelected={(option, selected) => option.id === selected?.id}
-        placeholder="Search…"
         options={options}
         loading={isLoading}
         textFieldProps={{
