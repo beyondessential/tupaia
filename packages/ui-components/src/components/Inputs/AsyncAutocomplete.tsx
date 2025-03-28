@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import throttle from 'lodash.throttle';
 
-import { Option } from '@tupaia/types';
-
 import { Autocomplete, BaseAutocompleteProps } from './Autocomplete';
 
 type FetchOptions<T> = (query: string) => Promise<T[]>;
