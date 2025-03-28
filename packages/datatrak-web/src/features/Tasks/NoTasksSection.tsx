@@ -19,9 +19,9 @@ const DesktopWrapper = styled(Section)`
   flex-direction: column;
 `;
 
-const Image = styled.img.attrs({
+const DecorativeImage = styled.img.attrs({
+  'aria-hidden': true,
   src: '/tupaia-high-five.svg',
-  alt: 'Illustration of two hands giving a high five',
 })`
   flex: 1;
   height: auto;
@@ -48,7 +48,7 @@ const Button = styled(UIButton)`
 
 const Desktop = () => (
   <DesktopWrapper>
-    <Image />
+    <DecorativeImage />
     <Text>
       Congratulations, you have no tasks to complete! You can view all other tasks for your project
       using the button below.
@@ -79,10 +79,9 @@ const MobileWrapper = styled(Section)`
 const Mobile = () => (
   <MobileWrapper>
     <Text>You have no tasks to complete</Text>
-    {/* Todo: Add button back when mobile tasks are ready */}
-    {/*<Button to={ROUTES.TASKS} component={Link}>*/}
-    {/*  View all tasks*/}
-    {/*</Button>*/}
+    <Button to={ROUTES.TASKS} component={Link}>
+      View all tasks
+    </Button>
   </MobileWrapper>
 );
 

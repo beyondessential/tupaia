@@ -1,23 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
+import { useNavigate } from 'react-router';
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
-import { TasksContentWrapper } from '../../layout';
+import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
 import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
-
-const ButtonContainer = styled.div`
-  padding-block-end: 0.5rem;
-  margin-block-start: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    margin-inline-start: auto;
-    margin-block-start: 0;
-    padding-block-end: 0;
-  }
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    align-self: self-end;
-  }
-`;
+import { useIsMobile } from '../../utils';
 
 const CreateButton = styled(Button).attrs({
   color: 'primary',
@@ -40,16 +29,26 @@ const ContentWrapper = styled(TasksContentWrapper)`
 
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const onBack = () => {
+    navigate(-1);
+  };
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
     <>
+      {isMobile && (
+        <StickyMobileHeader title="Tasks" onBack={onBack}>
+          View all tasks
+        </StickyMobileHeader>
+      )}
       <TaskPageHeader title="Tasks" backTo="/">
         <TaskMetrics />
-        <ButtonContainer>
+        {!isMobile && (
           <CreateButton onClick={toggleCreateModal}>
             <AddIcon /> Create task
           </CreateButton>
-        </ButtonContainer>
+        )}
       </TaskPageHeader>
       <ContentWrapper>
         <TasksTable />

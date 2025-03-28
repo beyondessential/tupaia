@@ -85,7 +85,9 @@ const overrides = {
         padding: 0,
       },
       ':root': {
-        '--ease-in-out-quad': 'cubic-bezier(0.76, 0, 0.24, 1)',
+        '--ease-in-out-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
+        '--ease-in-quart': 'cubic-bezier(0.5, 0, 0.75, 0)',
+        '--ease-out-quart': 'cubic-bezier(0.25, 1, 0.5, 1)',
         accentColor: palette.primary.main,
         interpolateSize: 'allow-keywords',
       },
@@ -159,8 +161,18 @@ const overrides = {
   },
 } as const;
 
+const transitions = {
+  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline['root']` */
+  easing: {
+    easeIn: 'var(--ease-in-quart)',
+    easeInOut: 'var(--ease-in-out-quart)',
+    easeOut: 'var(--ease-out-quart)',
+  },
+};
+
 export const theme = createMuiTheme({
-  palette,
-  typography,
   overrides,
+  palette,
+  transitions,
+  typography,
 });

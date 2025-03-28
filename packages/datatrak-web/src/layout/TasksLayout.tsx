@@ -2,12 +2,16 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { PageContainer as BasePageContainer } from '../components';
-import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
+import { useIsMobile } from '../utils';
 
-const HeaderLessFullHeightContainer = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
+const Container = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding-block-end: 1.5rem;
+  }
 `;
 
 const PageContainer = styled(BasePageContainer)`
@@ -35,11 +39,21 @@ export const TasksContentWrapper = styled.div`
 `;
 
 export const TasksLayout = () => {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <Container>
+        <Outlet />
+      </Container>
+    );
+  }
+
   return (
-    <HeaderLessFullHeightContainer>
+    <Container>
       <PageContainer>
         <Outlet />
       </PageContainer>
-    </HeaderLessFullHeightContainer>
+    </Container>
   );
 };

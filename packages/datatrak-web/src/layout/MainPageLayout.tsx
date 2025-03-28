@@ -44,6 +44,8 @@ const useHeaderVisibility = () => {
   const headerLessRoutePatterns = [
     `${ROUTES.SURVEY}/*`,
     ROUTES.ACCOUNT_SETTINGS,
+    ROUTES.TASKS,
+    ROUTES.TASK_DETAILS,
     ROUTES.SURVEY_SELECT,
     ROUTES.SYNC,
   ];

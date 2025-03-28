@@ -51,10 +51,9 @@ export const SurveySelectPage = () => {
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
-  const { isFetching: isFetchingSurveys, data: surveys } = useProjectSurveys(
-    user.projectId,
-    selectedCountry?.code,
-  );
+  const { isFetching: isFetchingSurveys, data: surveys } = useProjectSurveys(user.projectId, {
+    countryCode: selectedCountry?.code,
+  });
 
   useEffect(() => {
     // when the surveys change, check if the selected survey is still in the list. If not, clear the selection
