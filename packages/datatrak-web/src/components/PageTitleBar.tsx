@@ -1,22 +1,24 @@
-import React, { ReactNode } from 'react';
+import { Typography } from '@material-ui/core';
+import React, { Fragment, ReactNode, isValidElement } from 'react';
 import styled from 'styled-components';
-import { SvgIcon, Typography } from '@material-ui/core';
+
 import { TITLE_BAR_HEIGHT } from '../constants';
 
 const Wrapper = styled.div<{
   $isTransparent?: boolean;
 }>`
-  height: ${TITLE_BAR_HEIGHT};
-  background: ${({ theme, $isTransparent }) =>
+  --border-width: max(0.0625rem, 1px);
+  block-size: ${TITLE_BAR_HEIGHT};
+  background-color: ${({ theme, $isTransparent }) =>
     $isTransparent ? 'transparent' : theme.palette.background.paper};
-  border-top: 1px solid ${({ theme }) => theme.palette.divider};
-  margin-top: -1px; // make sure this is always visible, even with qr code panel open
+  border-block-start: var(--border-width) solid ${({ theme }) => theme.palette.divider};
+  // Make sure this is always visible, even with QR code panel open
+  margin-block-start: calc(var(--border-width) * -1);
   display: flex;
   justify-content: space-between;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-left: -1.25rem;
-    margin-right: -1.25rem;
+    margin-inline: -1.25rem;
   }
 `;
 
@@ -33,19 +35,32 @@ const TitleWrapper = styled.div`
   }
 `;
 
-interface PageTitleBarProps {
-  title?: ReactNode;
-  children?: ReactNode;
+const Heading = styled(Typography).attrs({ variant: 'h1' })``;
+
+interface PageTitleBarProps extends React.ComponentPropsWithoutRef<typeof Wrapper> {
+  children?: ReactNode | null;
+  heading?: ReactNode | null;
   isTransparent?: boolean;
-  Icon: typeof SvgIcon;
+  leadingIcon?: ReactNode | null;
+  trailingIcon?: ReactNode | null;
 }
 
-export const PageTitleBar = ({ isTransparent, title, children, Icon }: PageTitleBarProps) => {
+export const PageTitleBar = ({
+  children,
+  heading,
+  isTransparent,
+  leadingIcon,
+  trailingIcon,
+  ...props
+}: PageTitleBarProps) => {
+  const HeadingWrapper = isValidElement(heading) ? Fragment : Heading;
+
   return (
-    <Wrapper $isTransparent={isTransparent}>
+    <Wrapper $isTransparent={isTransparent} {...props}>
       <TitleWrapper>
-        <Icon color="primary" />
-        {title && <Typography variant="h1">{title}</Typography>}
+        {leadingIcon}
+        <HeadingWrapper>{heading}</HeadingWrapper>
+        {trailingIcon}
       </TitleWrapper>
       {children}
     </Wrapper>

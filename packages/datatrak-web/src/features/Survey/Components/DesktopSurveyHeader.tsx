@@ -5,10 +5,14 @@ import { PageTitleBar, SurveyIcon, TopProgressBar } from '../../../components';
 import { useEntityByCode, useSurvey } from '../../../api';
 import { useSurveyForm } from '../SurveyContext';
 import { CopyUrlButton } from './CopyUrlButton';
+import { Typography } from '@material-ui/core';
 
 const CountryName = styled.span`
-  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
-  padding-inline-start: 0.3rem;
+  --leading-border-spacing: 0.3rem;
+  border-inline-start: max(0.0625rem, 1px) solid currentcolor;
+  font-weight: ${props => props.theme.typography.fontWeightRegular};
+  margin-inline-start: var(--leading-border-spacing);
+  padding-inline-start: var(--leading-border-spacing);
 `;
 
 const StyledCopyUrlButton = styled(CopyUrlButton)`
@@ -26,16 +30,20 @@ export const DesktopSurveyHeader = () => {
   }
 
   const surveyName = survey?.name || '';
-  const Title = () => (
-    <>
+  const pageTitle = (
+    <Typography variant="h1">
       {surveyName}
-      {<CountryName>| {country?.name}</CountryName>}
-      <StyledCopyUrlButton />
-    </>
+      {country?.name && <CountryName>{country?.name}</CountryName>}
+    </Typography>
   );
 
   return (
-    <PageTitleBar isTransparent={!screenNumberParam} title={<Title />} Icon={SurveyIcon}>
+    <PageTitleBar
+      heading={pageTitle}
+      isTransparent={!screenNumberParam}
+      leadingIcon={<SurveyIcon color="primary" />}
+      trailingIcon={<StyledCopyUrlButton />}
+    >
       {screenNumberParam && (
         <TopProgressBar
           currentSurveyQuestion={screenNumber}
