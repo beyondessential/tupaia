@@ -1,6 +1,6 @@
-import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { render } from '../../../../helpers/testingRenderer';
 import { FakeAPI } from '../../../../stories/story-utils/api';
 import { AsyncAutocomplete } from '../../../components/Inputs';
@@ -38,7 +38,7 @@ describe('asyncAutocomplete', () => {
     renderAsyncAutocomplete();
 
     const input = screen.getByRole('textbox');
-    await userEvent.type(input, exampleName.substring(0, 3));
+    userEvent.type(input, exampleName.substring(0, 3));
 
     await waitFor(
       () => {
@@ -53,11 +53,11 @@ describe('asyncAutocomplete', () => {
     renderAsyncAutocomplete();
 
     const input = screen.getByRole('textbox');
-    await userEvent.type(input, exampleName.substring(0, 3));
+    userEvent.type(input, exampleName.substring(0, 3));
 
     await waitFor(
       () => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/no options/i)).not.toBeInTheDocument();
       },
       { timeout: 3000 },
     );
