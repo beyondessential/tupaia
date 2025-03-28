@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Autocomplete } from '../../../components';
 
-export interface ReportAutocompleteOption {
+interface ReportAutocompleteOption {
   label: string;
   value: string;
 }
