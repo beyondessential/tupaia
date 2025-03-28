@@ -1,29 +1,25 @@
+import { Drawer, Paper as MuiPaper } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import styled from 'styled-components';
-import { Drawer as MuiDrawer, Paper as MuiPaper } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+
 import { IconButton, RouterLink } from '@tupaia/ui-components';
-import { DESKTOP_BREAKPOINT, ROUTES } from '../../constants';
+
 import { useCurrentUserContext } from '../../api';
+import { ROUTES } from '../../constants';
 import { MenuButton, MenuList } from './MenuList';
 
-const Drawer = styled(MuiDrawer)`
-  @media screen and (min-width: ${DESKTOP_BREAKPOINT}) {
-    display: none;
-  }
-`;
-
 const Paper = styled(MuiPaper)`
-  min-width: 70vw;
   border-radius: 0;
-  padding: 0 1rem;
+  min-inline-size: 70vw;
+  padding-inline: 1rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 0 1.5rem;
+    padding-inline: 1.5rem;
   }
 `;
 
 const MenuHeader = styled.div`
-  border-bottom: 1px solid ${({ theme }) => theme.palette.text.primary};
+  border-block-end: max(0.0625rem, 1px) solid ${({ theme }) => theme.palette.text.primary};
   position: relative;
   padding: 0;
   display: flex;
@@ -32,16 +28,15 @@ const MenuHeader = styled.div`
 `;
 
 const MenuCloseIcon = styled(CloseIcon)`
-  width: 1.2em;
-  height: 1.2em;
+  &.MuiSvgIcon-root {
+    font-size: 1.8rem;
+  }
 `;
 
 const CloseButton = styled(IconButton).attrs({
   color: 'default',
-  disableRipple: true,
 })`
-    color: ${({ theme }) => theme.palette.text.primary};
-  padding: 0.8rem;
+  color: ${props => props.theme.palette.text.primary};
 `;
 
 interface DrawerMenuProps {
