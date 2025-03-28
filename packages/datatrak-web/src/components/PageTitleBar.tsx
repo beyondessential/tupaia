@@ -35,16 +35,22 @@ const TitleWrapper = styled.div`
   }
 `;
 
-interface PageTitleBarProps {
+interface PageTitleBarProps extends React.ComponentPropsWithoutRef<typeof Wrapper> {
   title?: ReactNode;
   children?: ReactNode;
   isTransparent?: boolean;
   Icon: typeof SvgIcon;
 }
 
-export const PageTitleBar = ({ isTransparent, title, children, Icon }: PageTitleBarProps) => {
+export const PageTitleBar = ({
+  Icon,
+  children,
+  isTransparent,
+  title,
+  ...props
+}: PageTitleBarProps) => {
   return (
-    <Wrapper $isTransparent={isTransparent}>
+    <Wrapper $isTransparent={isTransparent} {...props}>
       <TitleWrapper>
         <Icon color="primary" />
         {title && <Typography variant="h1">{title}</Typography>}
