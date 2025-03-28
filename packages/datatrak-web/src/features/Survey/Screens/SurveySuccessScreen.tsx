@@ -26,6 +26,12 @@ const Button = styled(BaseButton)`
       background: white;
     }
   }
+
+  &.MuiButton-outlined {
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      background: white;
+    }
+  }
 `;
 
 const ReturnButton = () => {
