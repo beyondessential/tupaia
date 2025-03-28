@@ -5,9 +5,9 @@ import { Entity } from '@tupaia/types';
 
 export const useEntityByCode = (
   entityCode: Entity['code'],
-  options?: UseQueryOptions<DatatrakWebEntitiesRequest.ResBody>,
+  options?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
-  return useQuery<DatatrakWebEntitiesRequest.ResBody>(
+  return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
     ['entity', entityCode],
     () => get(`entity/${entityCode}`),
     options,
@@ -16,9 +16,9 @@ export const useEntityByCode = (
 
 export const useEntityById = (
   entityId: Entity['id'],
-  options?: UseQueryOptions<DatatrakWebEntitiesRequest.ResBody>,
+  options?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
-  return useQuery<DatatrakWebEntitiesRequest.ResBody[0]>(
+  return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
     ['entities', entityId],
     async () => {
       const response = await get('entities', {
