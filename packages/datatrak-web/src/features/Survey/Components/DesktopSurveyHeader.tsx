@@ -26,7 +26,7 @@ export const DesktopSurveyHeader = () => {
   }
 
   const surveyName = survey?.name || '';
-  const Title = () => (
+  const pageTitle = (
     <>
       {surveyName}
       {<CountryName>| {country?.name}</CountryName>}
@@ -35,7 +35,7 @@ export const DesktopSurveyHeader = () => {
   );
 
   return (
-    <PageTitleBar isTransparent={!screenNumberParam} title={<Title />} Icon={SurveyIcon}>
+    <PageTitleBar isTransparent={!screenNumberParam} heading={pageTitle} Icon={SurveyIcon}>
       {screenNumberParam && (
         <TopProgressBar
           currentSurveyQuestion={screenNumber}
