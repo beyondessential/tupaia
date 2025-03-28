@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import React, { Fragment, ReactNode, isValidElement } from 'react';
 import styled from 'styled-components';
-import { SvgIcon, Typography } from '@material-ui/core';
+
 import { TITLE_BAR_HEIGHT } from '../constants';
 
 const Wrapper = styled.div<{
@@ -39,17 +39,19 @@ const TitleWrapper = styled.div`
 const Heading = styled(Typography).attrs({ variant: 'h1' })``;
 
 interface PageTitleBarProps extends React.ComponentPropsWithoutRef<typeof Wrapper> {
-  children?: ReactNode;
+  children?: ReactNode | null;
   heading?: ReactNode | null;
   isTransparent?: boolean;
-  Icon: typeof SvgIcon;
+  leadingIcon?: ReactNode | null;
+  trailingIcon?: ReactNode | null;
 }
 
 export const PageTitleBar = ({
-  Icon,
   children,
   heading,
   isTransparent,
+  leadingIcon,
+  trailingIcon,
   ...props
 }: PageTitleBarProps) => {
   const HeadingWrapper = isValidElement(heading) ? Fragment : Heading;
@@ -57,8 +59,9 @@ export const PageTitleBar = ({
   return (
     <Wrapper $isTransparent={isTransparent} {...props}>
       <TitleWrapper>
-        <Icon color="primary" />
+        {leadingIcon}
         <HeadingWrapper>{heading}</HeadingWrapper>
+        {trailingIcon}
       </TitleWrapper>
       {children}
     </Wrapper>

@@ -74,7 +74,7 @@ export const ReportsPage = () => {
 
   return (
     <PageContainer>
-      <PageTitleBar heading="Reports" Icon={ReportsIcon} isTransparent />
+      <PageTitleBar heading="Reports" leadingIcon={<ReportsIcon color="primary" />} isTransparent />
       <Wrapper>
         <Container>
           <Text>
