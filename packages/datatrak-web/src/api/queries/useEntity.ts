@@ -4,19 +4,22 @@ import { get } from '../api';
 import { Entity } from '@tupaia/types';
 
 export const useEntityByCode = (
-  entityCode: Entity['code'],
-  options?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
+  entityCode?: Entity['code'],
+  useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
   return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
     ['entity', entityCode],
     () => get(`entity/${entityCode}`),
-    options,
+    {
+      ...useQueryOptions,
+      enabled: !!entityCode && (useQueryOptions?.enabled ?? true),
+    },
   );
 };
 
 export const useEntityById = (
-  entityId: Entity['id'],
-  options?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
+  entityId?: Entity['id'],
+  useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
   return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
     ['entities', entityId],
@@ -26,6 +29,9 @@ export const useEntityById = (
       });
       return response[0];
     },
-    options,
+    {
+      ...useQueryOptions,
+      enabled: !!entityId && (useQueryOptions?.enabled ?? true),
+    },
   );
 };
