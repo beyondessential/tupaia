@@ -11,8 +11,11 @@ export type EntitiesRequest = Request<
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
-    const { query, models } = this.req;
-    const { filter, limit, sort } = query;
+    const {
+      query: { filter, limit, sort },
+      models,
+    } = this.req;
+
     const entities = await models.entity.find(filter, {
       limit,
       sort,
