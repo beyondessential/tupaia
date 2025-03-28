@@ -3,7 +3,7 @@ import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { HEADER_HEIGHT, ROUTES } from '../constants';
-import { MobileAppPrompt, SurveyResponseModal } from '../features';
+import { SurveyResponseModal } from '../features';
 import { useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
@@ -57,7 +57,6 @@ export const MainPageLayout = () => {
     <PageWrapper>
       {showHeader && <Header />}
       <Outlet />
-      <MobileAppPrompt />
       <SurveyResponseModal />
     </PageWrapper>
   );

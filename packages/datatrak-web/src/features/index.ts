@@ -12,7 +12,6 @@ export {
   SurveyResubmitSuccessScreen,
 } from './Survey';
 export { RequestProjectAccess } from './RequestProjectAccess';
-export { MobileAppPrompt } from './MobileAppPrompt';
 export { Leaderboard } from './Leaderboard';
 export { Reports } from './Reports';
 export { TaskPageHeader, TasksTable, TaskDetails, CreateTaskModal, TaskActionsMenu } from './Tasks';

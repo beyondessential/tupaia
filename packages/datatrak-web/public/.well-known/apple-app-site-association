@@ -1,22 +1,4 @@
 {
-  "applinks": {
-    "apps": [],
-    "details": [
-      {
-        "appIDs": ["352QMCKRKJ.com.tupaia.meditrak"],
-        "components": [
-          { "/": "/account-settings/*", "exclude": true },
-          { "/": "/forgot-password/*", "exclude": true },
-          { "/": "/reports/*", "exclude": true },
-          { "/": "/reset-password/*", "exclude": true },
-          { "/": "/verify-email/*", "exclude": true },
-          { "/": "/verify-email-resend/*", "exclude": true },
-          { "/": "/tasks/*", "exclude": true },
-          { "/": "/*" }
-        ]
-      }
-    ]
-  },
   "webcredentials": {
     "apps": ["352QMCKRKJ.com.tupaia.meditrak"]
   }

@@ -65,8 +65,8 @@ export const SyncPage = () => {
       <LayoutManager>
         <Content>
           <picture>
-            <source srcSet="/tupaia-pin.svg" />
-            <img aria-hidden src="/tupaia-pin.svg" height={52} width={37} />
+            <source srcSet="/datatrak-pin.svg" />
+            <img aria-hidden src="/datatrak-pin.svg" height={52} width={37} />
           </picture>
           <StyledSyncStatus value={syncProgress} />
           <StyledLastSyncDate date={lastSyncDate} />
