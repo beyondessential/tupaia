@@ -100,7 +100,9 @@ const DisplayOption = ({ option, state }: DisplayOptionProps) => {
 
 export const StyledBaseAutocomplete = styled(UiAutocomplete).attrs(props => ({
   muiProps: {
-    renderOption: (option, state) => <DisplayOption option={option} state={state} />,
+    renderOption: (option: DisplayOptionProps['option'], state: DisplayOptionProps['state']) => (
+      <DisplayOption option={option} state={state} />
+    ),
     PaperComponent: StyledPaper,
     ...(props.muiProps || {}),
   },
