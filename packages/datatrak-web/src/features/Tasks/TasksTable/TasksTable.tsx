@@ -20,16 +20,16 @@ import { RepeatScheduleFilter } from './RepeatScheduleFilter';
 import { StatusFilter } from './StatusFilter';
 
 const Container = styled.div`
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  border-radius: 0.1875rem;
+  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: flex;
   flex-direction: column;
   flex: 1;
-  max-height: 100%;
-  border: 1px solid ${({ theme }) => theme.palette.divider};
-  background-color: ${({ theme }) => theme.palette.background.paper};
-  border-radius: 3px;
+  max-block-size: 100%;
   .MuiTableContainer-root {
-    border-radius: 3px;
-    max-height: 100%;
+    border-radius: 0.1875rem;
+    max-block-size: 100%;
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
