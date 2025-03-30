@@ -5,13 +5,10 @@ import {
   Autocomplete as UiAutocomplete,
   AutocompleteProps as UiAutocompleteProps,
 } from '@tupaia/ui-components';
-import { Paper } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
 
-const StyledPaper = styled(Paper).attrs({
-  elevation: 0,
-})`
+const PopupBody = styled.div`
   margin-block: 0;
 
   .MuiAutocomplete-listbox {
@@ -98,7 +95,7 @@ export const StyledBaseAutocomplete = styled(UiAutocomplete).attrs(props => ({
     renderOption: (option: DisplayOptionProps['option'], state: DisplayOptionProps['state']) => (
       <DisplayOption option={option} state={state} />
     ),
-    PaperComponent: StyledPaper,
+    PaperComponent: PopupBody,
     ...props.muiProps,
   },
 }))`
