@@ -62,6 +62,8 @@ const Code = styled.span`
   flex: 1;
 `;
 
+const checkIcon = <CheckIcon aria-hidden color="primary" style={{ fontSize: '1.2rem' }} />;
+
 interface DisplayOptionProps {
   option:
     | string
@@ -92,7 +94,7 @@ const DisplayOption = ({ option, state }: DisplayOptionProps) => {
     return (
       <SelectedOptionWrapper>
         {label}
-        <CheckIcon aria-hidden color="primary" />
+        {checkIcon}
       </SelectedOptionWrapper>
     );
   return <OptionWrapper>{label}</OptionWrapper>;
