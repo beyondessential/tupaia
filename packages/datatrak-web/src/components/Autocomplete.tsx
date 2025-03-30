@@ -8,58 +8,49 @@ import {
 import { Paper } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
+import { isReactText } from '../utils/innerText';
+import { isNullish } from '../utils';
 
 const StyledPaper = styled(Paper).attrs({
   variant: 'outlined',
 })`
   border-color: ${({ theme }) => theme.palette.primary.main};
   .MuiAutocomplete-option {
-    padding: 0;
+    align-items: center;
+    border-radius: 0.1875rem;
+    border: max(0.0625rem, 1px) solid transparent;
+    display: grid;
+    grid-template-columns: minmax(min-content, 1fr) auto;
+    inline-size: 100%;
+    min-block-size: 2.5rem;
+    padding-block: 0.5rem;
+    padding-inline: 0.875rem;
+    text-wrap: balance;
+
     &:hover,
     &[data-focus='true'] {
-      background-color: ${({ theme }) => theme.palette.primaryHover};
+      background-color: ${props => props.theme.palette.primaryHover};
     }
-    &[aria-selected='true'] {
+
+    &[aria-selected='true']:not(:hover) {
       background-color: transparent;
     }
+
+    &[aria-selected='true'] {
+      border: max(0.0625rem, 1px) solid ${props => props.theme.palette.primary.main};
+    }
+
     &[aria-disabled='true'] {
       opacity: 1;
     }
   }
 `;
 
-const OptionWrapper = styled.div`
-  border-radius: 0.1875rem;
-  inline-size: 100%;
-  line-height: 1.2;
-  margin-block: 0.3rem;
-  padding-block: 0.2rem;
-  padding-inline: 0.875rem;
-`;
-
-const SelectedOptionWrapper = styled(OptionWrapper)`
-  align-items: center;
-  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.primary.main};
-  display: flex;
-  justify-content: space-between;
-  margin-inline: 0.45rem;
-  padding-inline: 0.425rem;
-  .MuiSvgIcon-root {
-    font-size: 1.2rem;
-  }
-`;
-
-const Label = styled.span`
-  font-style: ${props => props.theme.typography.fontWeightBold};
-  color: ${props => props.theme.palette.text.primary};
-`;
-
-const Code = styled.span`
-  margin-inline: 0.45rem;
-  padding-inline-start: 0.45rem;
+const SecondaryLabel = styled.span`
   border-inline-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.text.secondary};
   color: ${props => props.theme.palette.text.secondary};
-  flex: 1;
+  margin-inline: 1ch;
+  padding-inline-start: 1ch;
 `;
 
 const checkIcon = <CheckIcon aria-hidden color="primary" style={{ fontSize: '1.2rem' }} />;
@@ -84,20 +75,19 @@ const DisplayOption = ({ option, state }: DisplayOptionProps) => {
     typeof option === 'string' ? (
       option
     ) : (
-      <>
-        <Label>{option.label || option.value}</Label>
-        {option.secondaryLabel ? <Code>{option.secondaryLabel}</Code> : null}
-      </>
+      // span only for layout, no semantics
+      <span>
+        {option.label ?? option.value}
+        {option.secondaryLabel && <SecondaryLabel>{option.secondaryLabel}</SecondaryLabel>}
+      </span>
     );
 
-  if (state.selected)
-    return (
-      <SelectedOptionWrapper>
-        {label}
-        {checkIcon}
-      </SelectedOptionWrapper>
-    );
-  return <OptionWrapper>{label}</OptionWrapper>;
+  return (
+    <>
+      {label}
+      {state.selected && checkIcon}
+    </>
+  );
 };
 
 export const StyledBaseAutocomplete = styled(UiAutocomplete).attrs(props => ({
@@ -143,10 +133,6 @@ const StyledAutocomplete = styled(Autocomplete).attrs({
   },
   placeholder: 'Search…',
 })`
-  .MuiFormControl-root {
-    margin-bottom: 0;
-  }
-
   .MuiFormLabel-root {
     font-size: 0.875rem;
     line-height: 1.2;
