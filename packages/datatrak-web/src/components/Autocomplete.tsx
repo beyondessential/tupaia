@@ -56,8 +56,8 @@ const Label = styled.span`
 
 const Code = styled.span`
   margin-inline: 0.45rem;
-  padding-left: 0.45rem;
-  border-left: 1px solid ${props => props.theme.palette.text.secondary};
+  padding-inline-start: 0.45rem;
+  border-inline-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.text.secondary};
   color: ${props => props.theme.palette.text.secondary};
   flex: 1;
 `;
