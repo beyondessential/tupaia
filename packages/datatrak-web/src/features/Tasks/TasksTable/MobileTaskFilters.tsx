@@ -37,13 +37,27 @@ const FilterIndicator = styled.div`
   width: 1.375rem;
 `;
 
-const StyledModal = styled(Modal)`
+const SlideTransition = React.forwardRef(function Transition(
+  props: TransitionProps & { children?: React.ReactElement },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const StyledModal = styled(Modal).attrs({
+  TransitionComponent: SlideTransition,
+  disablePortal: false,
+  fullScreen: true,
+})`
   .MuiDialog-scrollPaper {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
 
     > .MuiPaper-root {
+      outline: 2px solid green;
+      outline-offset: -2px;
+
       border-start-end-radius: 0.625rem;
       border-start-start-radius: 0.625rem;
       max-block-size: 37.5rem;
@@ -110,13 +124,6 @@ const Title = styled(Typography).attrs({
 })`
   font-size: 1.125rem;
 `;
-
-const SlideTransition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const TabLabel = styled.div`
   display: flex;
@@ -257,9 +264,6 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
         onClose={() => {
           setIsOpen(false);
         }}
-        disablePortal={false}
-        fullScreen
-        TransitionComponent={SlideTransition}
       >
         <Title>Filter by</Title>
         <FilterTabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
