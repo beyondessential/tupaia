@@ -8,8 +8,6 @@ import {
 import { Paper } from '@material-ui/core';
 import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
-import { isReactText } from '../utils/innerText';
-import { isNullish } from '../utils';
 
 const StyledPaper = styled(Paper).attrs({
   variant: 'outlined',
