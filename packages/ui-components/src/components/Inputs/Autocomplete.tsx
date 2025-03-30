@@ -104,7 +104,7 @@ export const Autocomplete = <
   loading,
   muiProps,
   name,
-  placeholder,
+  placeholder = 'Search…',
   required = false,
   textFieldProps,
   tooltip,
