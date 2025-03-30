@@ -55,9 +55,6 @@ const StyledModal = styled(Modal).attrs({
     justify-content: flex-end;
 
     > .MuiPaper-root {
-      outline: 2px solid green;
-      outline-offset: -2px;
-
       border-start-end-radius: 0.625rem;
       border-start-start-radius: 0.625rem;
       max-block-size: 37.5rem;
