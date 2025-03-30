@@ -61,7 +61,8 @@ const StyledModal = styled(Modal).attrs({
       border-start-end-radius: 0.625rem;
       border-start-start-radius: 0.625rem;
       max-block-size: 37.5rem;
-      padding-block: 0;
+      padding-top: 0;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);
 
       > div {
         display: flex;
@@ -109,8 +110,9 @@ const DialogActions = styled.div`
   align-items: center;
   display: flex;
   flex-direction: row-reverse;
+  gap: 0.5rem;
   justify-content: center;
-  margin-block: 0.5rem;
+  margin-block-start: 1rem;
 
   .MuiButton-root {
     flex: 1;
@@ -125,16 +127,20 @@ const Title = styled(Typography).attrs({
   font-size: 1.125rem;
 `;
 
-const TabLabel = styled.div`
-  display: flex;
-  align-items: center;
+const StyledTab = styled(Tab)`
+  .MuiTab-wrapper {
+    display: contents;
+  }
 `;
 
-const Dot = styled.div`
+const ActiveFilterIndicator = styled.div.attrs({
+  'aria-label': 'Filter is active',
+})`
   background-color: ${props => props.theme.palette.primary.main};
   border-radius: 50%;
+  display: inline-block;
   height: 0.4375rem;
-  margin-inline-start: 0.5rem;
+  margin-inline-start: 0.35rem;
   width: 0.4375rem;
 `;
 
@@ -157,13 +163,13 @@ interface FilterTabsProps extends Pick<TabsProps, 'value'> {
 const FilterTabs = ({ tabs, value, onChange }: FilterTabsProps) => (
   <StyledTabs value={value} onChange={onChange}>
     {tabs.map((tab, index) => (
-      <Tab
+      <StyledTab
         key={tab.id}
         label={
-          <TabLabel>
-            <span>{tab.label}</span>
-            {tab.active && <Dot aria-hidden />}
-          </TabLabel>
+          <>
+            {tab.label}
+            {tab.active && <ActiveFilterIndicator />}
+          </>
         }
         aria-controls={`tabpanel-${index}`}
         id={`tab-${index}`}
