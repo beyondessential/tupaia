@@ -104,7 +104,7 @@ export const StyledBaseAutocomplete = styled(UiAutocomplete).attrs(props => ({
       <DisplayOption option={option} state={state} />
     ),
     PaperComponent: StyledPaper,
-    ...(props.muiProps || {}),
+    ...props.muiProps,
   },
 }))`
   width: 100%;
