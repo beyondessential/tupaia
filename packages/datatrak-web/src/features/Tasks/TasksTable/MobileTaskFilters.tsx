@@ -92,14 +92,16 @@ const StyledTabs = styled(Tabs).attrs({
 `;
 
 const DialogActions = styled.div`
-  display: flex;
-  justify-content: center;
   align-items: center;
-  padding-inline: 0.5rem;
-  padding-block: 0.5rem;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  margin-block: 0.5rem;
 
   .MuiButton-root {
-    min-width: 6rem;
+    flex: 1;
+    margin: 0;
+    max-inline-size: 10rem;
   }
 `;
 
@@ -290,15 +292,15 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           />
         )}
         <DialogActions>
-          <Button variant="text" color="default" onClick={clearFilters}>
-            Clear filters
-          </Button>
           <Button
             onClick={() => {
               setIsOpen(false);
             }}
           >
             Apply
+          </Button>
+          <Button variant="text" color="default" onClick={clearFilters}>
+            Clear filters
           </Button>
         </DialogActions>
       </StyledModal>
