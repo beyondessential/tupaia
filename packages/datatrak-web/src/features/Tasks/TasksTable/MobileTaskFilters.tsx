@@ -15,6 +15,7 @@ import {
 } from '../../../api';
 import { Button, FiltersIcon } from '../../../components';
 import { Modal } from '../../../components/Modal';
+import { useIsMobile } from '../../../utils';
 import { MobileAutocomplete } from './MobileAutocomplete';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
@@ -22,9 +23,8 @@ const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   right: max(env(safe-area-inset-right, 0), 1.25rem);
   position: absolute;
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: none;
-  }
+  // TODO: Remove this override in RN-1551
+  bottom: calc(max(env(safe-area-inset-bottom, 0), 1rem) + 3.25rem);
 `;
 
 const FilterIndicator = styled.div`
@@ -216,6 +216,7 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
 export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const isMobile = useIsMobile();
 
   const getHasFilter = key => filters.some(filter => filter.id === key);
   const tabs = [
@@ -254,14 +255,16 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
 
   return (
     <>
-      <FilterButton
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        <FiltersIcon />
-        {filters.length > 0 && <FilterIndicator />}
-      </FilterButton>
+      {isMobile && (
+        <FilterButton
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
+          <FiltersIcon />
+          {filters.length > 0 && <FilterIndicator />}
+        </FilterButton>
+      )}
       <StyledModal
         open={isOpen}
         onClose={() => {
