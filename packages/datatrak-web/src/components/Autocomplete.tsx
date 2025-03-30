@@ -10,9 +10,14 @@ import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
 
 const StyledPaper = styled(Paper).attrs({
-  variant: 'outlined',
+  elevation: 0,
 })`
-  border-color: ${({ theme }) => theme.palette.primary.main};
+  margin-block: 0;
+
+  .MuiAutocomplete-listbox {
+    padding-block: 0;
+  }
+
   .MuiAutocomplete-option {
     align-items: center;
     border-radius: 0.1875rem;

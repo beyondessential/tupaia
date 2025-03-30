@@ -9,6 +9,7 @@ import { Autocomplete } from '../../../components';
 const Container = styled.div`
   height: 100%;
   display: flex;
+  row-gap: 1rem;
   flex-direction: column;
   padding-inline: 1rem;
   padding-block: 1rem;
@@ -17,10 +18,6 @@ const Container = styled.div`
   &,
   .MuiOutlinedInput-notchedOutline {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
-  }
-
-  .MuiPaper-root {
-    border: none;
   }
 `;
 
