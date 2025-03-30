@@ -10,6 +10,7 @@ import { InputHelperText } from './InputHelperText';
 
 const PopupBody = styled.div`
   margin-block: 0;
+  flex: 1;
 
   .MuiAutocomplete-listbox {
     padding-block: 0;

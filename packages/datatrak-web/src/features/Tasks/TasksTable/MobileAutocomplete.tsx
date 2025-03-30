@@ -7,13 +7,12 @@ import { AutocompleteInputChangeReason } from '@material-ui/lab/useAutocomplete'
 import { Autocomplete } from '../../../components';
 
 const Container = styled.div`
-  height: 100%;
-  display: flex;
-  row-gap: 1rem;
-  flex-direction: column;
-  padding-inline: 1rem;
-  padding-block: 1rem;
+  block-size: 100%;
   border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  row-gap: 1rem;
 
   &,
   .MuiOutlinedInput-notchedOutline {
