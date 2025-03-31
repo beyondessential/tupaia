@@ -8,7 +8,7 @@ import { Autocomplete } from '../../../components';
 
 const Container = styled.div`
   block-size: 100%;
-  border-radius: 3px;
+  border-radius: 0.1875rem;
   display: flex;
   flex-direction: column;
   padding: 1rem;

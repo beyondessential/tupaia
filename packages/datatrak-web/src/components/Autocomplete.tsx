@@ -13,6 +13,7 @@ const PopupBody = styled.div`
 
   .MuiAutocomplete-listbox {
     padding-block: 0;
+    max-block-size: 100%;
   }
 
   .MuiAutocomplete-option {

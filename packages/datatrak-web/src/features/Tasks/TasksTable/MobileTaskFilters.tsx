@@ -14,7 +14,7 @@ import {
   useProjectUsersQuery,
 } from '../../../api';
 import { Button, FiltersIcon } from '../../../components';
-import { Modal } from '../../../components/Modal';
+import { Modal, ModalBody } from '../../../components/Modal';
 import { useIsMobile } from '../../../utils';
 import { MobileAutocomplete } from './MobileAutocomplete';
 
@@ -49,9 +49,9 @@ const StyledModal = styled(Modal).attrs({
   disablePortal: false,
   fullScreen: true,
 })`
-  padding-top: env(safe-area-inset-top, 0);
+  padding-top: calc(env(safe-area-inset-top, 0), 10rem);
 
-  .MuiDialog-scrollPaper {
+  .MuiDialog-container {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -59,19 +59,19 @@ const StyledModal = styled(Modal).attrs({
     > .MuiPaper-root {
       border-start-end-radius: 0.625rem;
       border-start-start-radius: 0.625rem;
-      max-block-size: 40rem;
+      max-block-size: 50rem;
       padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);
       padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
       padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
       padding-top: 0;
-
-      > div {
-        display: flex;
-        height: 100%;
-        flex-direction: column;
-        justify-content: space-between;
-      }
     }
+  }
+
+  ${ModalBody} {
+    block-size: 100%;
+    display: grid;
+    grid-template-areas: '--header' '--tabs' '--autocomplete' '--actions';
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
   }
 `;
 
@@ -83,6 +83,7 @@ const StyledTabs = styled(Tabs).attrs({
   --border: max(0.0625rem, 1px) solid ${props => props.theme.palette.primary.main};
   border-radius: 0.3125rem;
   border: var(--border);
+  grid-area: --tabs;
   margin-block-end: 0.875rem;
   margin-block-start: 1.5rem;
   min-block-size: 2.4rem;
@@ -107,18 +108,19 @@ const StyledTabs = styled(Tabs).attrs({
   }
 `;
 
-const DialogActions = styled.div`
+const ButtonGroup = styled.div`
   align-items: center;
   display: flex;
   flex-direction: row-reverse;
   gap: 0.5rem;
+  grid-area: --actions;
   justify-content: center;
   margin-block-start: 1rem;
 
   .MuiButton-root {
     flex: 1;
     margin: 0;
-    max-inline-size: 10rem;
+    max-inline-size: 12rem;
   }
 `;
 
@@ -126,6 +128,7 @@ const Title = styled(Typography).attrs({
   variant: 'h2',
 })`
   font-size: 1.125rem;
+  grid-area: --header;
 `;
 
 const StyledTab = styled(Tab)`
@@ -305,7 +308,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
             value={getFilterValue('assignee.id')}
           />
         )}
-        <DialogActions>
+        <ButtonGroup>
           <Button
             onClick={() => {
               setIsOpen(false);
@@ -316,7 +319,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           <Button variant="text" color="default" onClick={clearFilters}>
             Clear filters
           </Button>
-        </DialogActions>
+        </ButtonGroup>
       </StyledModal>
     </>
   );

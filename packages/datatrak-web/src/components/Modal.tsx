@@ -17,7 +17,7 @@ const CloseButton = styled(IconButton)`
   z-index: 1;
 `;
 
-const Content = styled.div`
+export const ModalBody = styled.div`
   padding-block-start: 1rem;
 `;
 
@@ -31,7 +31,7 @@ export const Modal = ({ open, onClose, children, ...props }: ModalProps) => {
       <CloseButton onClick={onClose}>
         <CloseIcon color="inherit" style={{ fontSize: '2rem' }} />
       </CloseButton>
-      <Content>{children}</Content>
+      <ModalBody>{children}</ModalBody>
     </Dialog>
   );
 };
