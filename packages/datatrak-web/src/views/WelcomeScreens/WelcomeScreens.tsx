@@ -54,35 +54,25 @@ const Container = styled.div`
   block-size: 100dvb;
   display: flex;
   flex-direction: column;
+  inline-size: 100dvi;
   margin-inline: auto;
   max-inline-size: 30rem;
+  padding-top: env(safe-area-inset-top, 0);
   text-align: center;
 `;
 
-const Header = styled(PageContainer).attrs({ as: 'header' })`
-  display: flex;
-  flex: initial;
-  justify-content: flex-end;
-  padding-bottom: 1rem;
-  padding-top: max(env(safe-area-inset-top, 0), 1rem);
-`;
-
-const Body = styled(PageContainer).attrs({ as: 'main' })`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: center;
-`;
-
-const Footer = styled(PageContainer)`
-  flex: initial;
-  margin-block-start: 2.5rem;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 2.5rem);
-`;
-
 const TextButton = styled(MuiButton)`
-  font-weight: 400;
   font-size: 0.75rem;
+  font-weight: 400;
+  position: absolute;
+  right: max(env(safe-area-inset-right, 0), 1.25rem);
+  top: max(env(safe-area-inset-top, 0), 1rem);
+`;
+
+const Footer = styled(PageContainer).attrs({ as: 'footer' })`
+  flex: initial;
+  margin-block-start: 0.5rem;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1.5rem);
 `;
 
 const StyledButton = styled(UIButton)`
@@ -121,12 +111,8 @@ export const WelcomeScreens = () => {
 
   return (
     <Container>
-      <Header>
-        <TextButton onClick={onComplete}>Skip</TextButton>
-      </Header>
-      <Body>
-        <Carousel steps={steps} activeStep={activeStep} handleStepChange={handleStepChange} />
-      </Body>
+      <TextButton onClick={onComplete}>Skip</TextButton>
+      <Carousel steps={steps} activeStep={activeStep} handleStepChange={handleStepChange} />
       <Footer>
         <StyledButton onClick={onComplete} fullWidth hidden={!isLastStep}>
           Go to Tupaia DataTrak

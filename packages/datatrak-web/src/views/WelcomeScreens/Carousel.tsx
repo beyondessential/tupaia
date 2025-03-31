@@ -3,6 +3,14 @@ import SwipeableViews from 'react-swipeable-views';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { CarouselDots } from './CarouselDots';
+import { PageContainer } from '../../components';
+
+const Wrapper = styled(PageContainer).attrs({ as: 'main' })`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+`;
 
 const Swipeable = styled(SwipeableViews)`
   cursor: grab;
@@ -22,8 +30,7 @@ const Image = styled.img`
   aspect-ratio: 336 / 470;
   height: auto;
   margin-inline: auto;
-  max-height: 55dvh;
-  max-width: 100%;
+  max-width: min(100%, 40dvh);
   object-fit: contain;
   object-position: bottom;
   width: 100%;
@@ -43,12 +50,12 @@ const Text = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.5;
   margin-block-start: 1em;
-  min-block-size: 3lh;
+  min-block-size: 4lh;
   text-wrap: balance;
 `;
 
 const StyledCarouselDots = styled(CarouselDots)`
-  margin-block-start: 1rem;
+  margin-block: auto;
 `;
 
 interface CarouselStep {
@@ -68,7 +75,7 @@ interface CarouselProps {
 
 export const Carousel = ({ steps, activeStep, handleStepChange }: CarouselProps) => {
   return (
-    <>
+    <Wrapper>
       <Swipeable index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
         {steps.map((step, index) => (
           <Inner key={index}>
@@ -91,6 +98,6 @@ export const Carousel = ({ steps, activeStep, handleStepChange }: CarouselProps)
         activeStep={activeStep}
         onClick={handleStepChange}
       />
-    </>
+    </Wrapper>
   );
 };
