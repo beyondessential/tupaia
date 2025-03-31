@@ -49,6 +49,8 @@ const StyledModal = styled(Modal).attrs({
   disablePortal: false,
   fullScreen: true,
 })`
+  padding-top: env(safe-area-inset-top, 0);
+
   .MuiDialog-scrollPaper {
     display: flex;
     flex-direction: column;
@@ -57,9 +59,11 @@ const StyledModal = styled(Modal).attrs({
     > .MuiPaper-root {
       border-start-end-radius: 0.625rem;
       border-start-start-radius: 0.625rem;
-      max-block-size: 37.5rem;
-      padding-top: 0;
+      max-block-size: 40rem;
       padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);
+      padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
+      padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
+      padding-top: 0;
 
       > div {
         display: flex;
