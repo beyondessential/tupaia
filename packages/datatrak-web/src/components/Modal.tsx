@@ -1,16 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Dialog, Paper, DialogProps } from '@material-ui/core';
-import MuiCloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 import { IconButton } from '@tupaia/ui-components';
 
 const Wrapper = styled(Paper)`
   padding: 2rem;
   max-inline-size: 100%;
-`;
-
-const CloseIcon = styled(MuiCloseIcon).attrs({ color: 'inherit' })`
-  font-size: 2rem;
 `;
 
 const CloseButton = styled(IconButton)`
@@ -29,11 +25,11 @@ interface ModalProps extends DialogProps {
   onClose: () => void;
 }
 
-export const Modal = ({ open, onClose, children, ...muiProps }: ModalProps) => {
+export const Modal = ({ open, onClose, children, ...props }: ModalProps) => {
   return (
-    <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal {...muiProps}>
+    <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal {...props}>
       <CloseButton onClick={onClose}>
-        <CloseIcon />
+        <CloseIcon color="inherit" style={{ fontSize: '2rem' }} />
       </CloseButton>
       <Content>{children}</Content>
     </Dialog>
