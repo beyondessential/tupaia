@@ -1,9 +1,8 @@
-import React, { HTMLAttributes, useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
+import styled, { css } from 'styled-components';
 
 import { useCurrentUserContext } from '../api';
 import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
-import { UserDetails as NavbarUserDetails } from '../layout/UserMenu/UserInfo';
 import { Button, TooltipButtonWrapper } from './Button';
 
 /**
@@ -12,24 +11,17 @@ import { Button, TooltipButtonWrapper } from './Button';
  *
  * Also adds a border to separate it from adjacent elements in certain contexts.
  */
-const Container = styled.div`
-  ${NavbarUserDetails} & {
-    border-inline-start: 1px solid ${({ theme }) => theme.palette.text.secondary};
-    padding-inline-start: 0.5rem;
-  }
+const Container = styled.div<{ $leadingBorder?: boolean }>`
+  ${props =>
+    props.$leadingBorder &&
+    css`
+      border-inline-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.text.secondary};
+      padding-inline-start: 0.5rem;
+    `}
 
-  :is(p, h1, h2, h3, h4, h5, h6) & {
-    &,
-    > ${TooltipButtonWrapper} // Prevent span wrapper on button from growing to fill parent
-    {
-      display: inline;
-    }
-
-    :before {
-      color: ${({ theme }) => theme.palette.text.primary};
-      content: '|';
-      margin-inline: 0.25rem;
-    }
+  &,
+  ${TooltipButtonWrapper} {
+    display: inline;
   }
 `;
 
@@ -52,19 +44,23 @@ const ProjectButton = styled(Button).attrs({
   .MuiButton-root,
   .MuiButton-label {
     font-size: inherit;
-    font-weight: 500;
-    line-height: inherit;
+    font-weight: inherit;
     inline-size: fit-content;
+    line-height: inherit;
     margin: 0;
     padding: 0;
   }
 
-  .MuiTypography-root & .MuiButton-label {
-    font-weight: 400;
+  .MuiButton-label {
+    display: contents;
   }
 `;
 
-export const ChangeProjectButton = (props: HTMLAttributes<HTMLDivElement>) => {
+interface ChangeProjectButtonProps extends React.ComponentPropsWithoutRef<typeof Container> {
+  leadingBorder?: boolean;
+}
+
+export const ChangeProjectButton = ({ leadingBorder, ...props }: ChangeProjectButtonProps) => {
   const { project } = useCurrentUserContext();
   const projectName = project?.name ?? null;
 
@@ -73,7 +69,7 @@ export const ChangeProjectButton = (props: HTMLAttributes<HTMLDivElement>) => {
   const closeProjectModal = () => setProjectModalIsOpen(false);
 
   return (
-    <Container {...props}>
+    <Container $leadingBorder={leadingBorder} {...props}>
       <ProjectButton onClick={openProjectModal} tooltip="Change project">
         {projectName ?? 'Select project'}
       </ProjectButton>
