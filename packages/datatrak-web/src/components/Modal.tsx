@@ -27,9 +27,7 @@ const Content = styled.div`
 `;
 
 interface ModalProps extends DialogProps {
-  open: boolean;
   onClose: () => void;
-  children?: ReactNode;
 }
 
 export const Modal = ({ open, onClose, children, ...muiProps }: ModalProps) => {
