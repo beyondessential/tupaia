@@ -1,7 +1,13 @@
 // Exporting these first to avoid issues with circular references
 export * from './Icons';
 export { Modal } from './Modal';
-export { PageContainer } from './PageContainer';
+export {
+  PageContainer,
+  SafeArea,
+  SafeAreaColumn,
+  SafeAreaFooter,
+  SafeAreaHeader,
+} from './PageContainer';
 
 export { Autocomplete, QuestionAutocomplete } from './Autocomplete';
 export { Button } from './Button';
