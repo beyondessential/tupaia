@@ -6,10 +6,8 @@ import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
 import { Button, TooltipButtonWrapper } from './Button';
 
 /**
- * Manages how this “Change Project button” component is laid out. Under normal circumstances, it
- * uses block display; but if it’s the child of a paragraph or heading, it is displayed inline.
- *
- * Also adds a border to separate it from adjacent elements in certain contexts.
+ * Semantically useless wrapper, but prevents {@link TooltipButtonWrapper} from wreaking havoc on
+ * the button’s layout.
  */
 const Container = styled.div<{ $leadingBorder?: boolean }>`
   ${props =>
