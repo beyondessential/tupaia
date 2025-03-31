@@ -1,5 +1,5 @@
 import { Typography } from '@material-ui/core';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { ArrowLeftIcon, Button, PageContainer, TaskIcon } from '../../components';
 import { useFromLocation } from '../../utils';
