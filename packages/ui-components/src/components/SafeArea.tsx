@@ -1,7 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-/** @see https://developer.mozilla.org/en-US/docs/Web/CSS/env */
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/CSS/env
+ * @privateRemarks Using absolute properties because safe-area-inset-*
+ * [has no logical equivalents](https://github.com/w3c/csswg-drafts/issues/6379).
+ */
 export const SafeArea = styled.div<{
   top?: boolean;
   bottom?: boolean;
