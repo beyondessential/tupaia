@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
 import { ArrowLeftIcon, Button, PageContainer, TaskIcon } from '../../components';
-import { useFromLocation } from '../../utils';
+import { useFromLocation, useIsMobile } from '../../utils';
 
 const BackButton = styled(Button).attrs({
   title: 'Back',
@@ -14,9 +14,6 @@ const BackButton = styled(Button).attrs({
   border-radius: 50%;
   .MuiSvgIcon-root {
     font-size: 1.3rem;
-  }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
   }
 `;
 
@@ -69,17 +66,20 @@ interface TaskPageHeaderProps extends React.ComponentPropsWithoutRef<typeof Wrap
 
 export const TaskPageHeader = ({ backTo, children, title, ...props }: TaskPageHeaderProps) => {
   const from = useFromLocation();
+  const isMobile = useIsMobile();
   return (
     <Wrapper {...props}>
-      <Container>
-        <BackButton to={from || backTo}>
-          <ArrowLeftIcon />
-        </BackButton>
-        <HeadingContainer>
-          <TaskIcon />
-          <Title>{title}</Title>
-        </HeadingContainer>
-      </Container>
+      {!isMobile && (
+        <Container>
+          <BackButton to={from || backTo}>
+            <ArrowLeftIcon />
+          </BackButton>
+          <HeadingContainer>
+            <TaskIcon />
+            <Title>{title}</Title>
+          </HeadingContainer>
+        </Container>
+      )}
       <ContentWrapper>{children}</ContentWrapper>
     </Wrapper>
   );
