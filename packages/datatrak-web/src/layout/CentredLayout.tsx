@@ -2,13 +2,19 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { HEADER_HEIGHT } from '../constants';
+import { SafeArea } from '../components';
 
-const Wrapper = styled.div`
+const Wrapper = styled(SafeArea).attrs({
+  bottom: true,
+  left: true,
+  right: true,
+})`
+  align-items: center;
+  block-size: calc(100dvb - 2 * ${HEADER_HEIGHT});
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: calc(100vh - 2 * ${HEADER_HEIGHT});
-  padding: 1rem 0;
+  padding-top: 1rem;
+
   form p,
   form a,
   .MuiTypography-root.MuiFormControlLabel-label {
