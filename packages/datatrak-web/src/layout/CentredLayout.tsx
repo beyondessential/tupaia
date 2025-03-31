@@ -1,8 +1,10 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
+
+import { SafeArea } from '@tupaia/ui-components';
+
 import { HEADER_HEIGHT } from '../constants';
-import { SafeArea } from '../components';
 
 const Wrapper = styled(SafeArea).attrs({
   bottom: true,
