@@ -32,8 +32,9 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
     return <Navigate to={ROUTES.HOME} replace={true} />;
   }
 
-  // If the user is logged in and does not have a project and is not already on the project select page, redirect to the project select page
-  if (!user.projectId && !PROJECT_SELECT_URLS.includes(pathname)) {
+  // If the user is logged in, does not have a project, and is not already on the project select
+  // page, redirect to the project select page. (But let them complete on-boarding first.)
+  if (!user.projectId && !PROJECT_SELECT_URLS.includes(pathname) && pathname !== ROUTES.WELCOME) {
     return (
       <Navigate
         to={ROUTES.PROJECT_SELECT}
