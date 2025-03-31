@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 /**
  * @deprecated
- * Consider using {@link SafeArea} or {@link SafeAreaColumn} instead, augmenting it with
- * {@link styled} as needed. This component sets `flex` and `position` values, which are easier to
- * work with when set by the consumer. This component remains for backward compatibility, and will
- * be removed in the future.
+ * Consider using `SafeArea` or `SafeAreaColumn` from @tupaia/ui-components instead, augmenting it
+ * with {@link styled} as needed. This component sets `flex` and `position` values, which are easier
+ * to work with when set by the consumer. This component remains for backward compatibility, and
+ * will be removed in the future.
  */
 export const PageContainer = styled(Container).attrs({
   maxWidth: false,
