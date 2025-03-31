@@ -24,7 +24,7 @@ const PopupBody = styled.div`
     inline-size: 100%;
     min-block-size: 2.5rem;
     padding-block: 0.5rem;
-    padding-inline: 0.875rem;
+    padding-inline: 1.1rem; // Align with search input
     text-wrap: balance;
 
     &:hover,
