@@ -172,7 +172,6 @@ export const AutocompleteQuestion = ({
             component: InputHelperText,
           },
         }}
-        placeholder="Search…" // TODO: Might be redundant?
         muiProps={{
           freeSolo: !!createNew,
           getOptionDisabled: (option: AutocompleteQuestionOption) =>
