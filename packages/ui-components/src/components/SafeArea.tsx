@@ -34,10 +34,12 @@ export const SafeAreaColumn = (props: React.HTMLAttributes<HTMLDivElement>) => (
   <SafeArea {...props} left right />
 );
 
+/** @privateRemarks Consider setting `as="header"` */
 export const SafeAreaHeader = (props: React.HTMLAttributes<HTMLDivElement>) => (
   <SafeArea {...props} top />
 );
 
+/** @privateRemarks Consider setting `as="footer"` */
 export const SafeAreaFooter = (props: React.HTMLAttributes<HTMLDivElement>) => (
   <SafeArea {...props} bottom />
 );
