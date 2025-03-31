@@ -183,7 +183,7 @@ export const AutocompleteQuestion = ({
             if (params.inputValue !== '' && createNew) {
               filtered.push({
                 value: params.inputValue,
-                label: `Add "${params.inputValue}"`,
+                label: `Add “${params.inputValue}”`,
               });
             }
 
