@@ -1,10 +1,13 @@
 import { Typography } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { ArrowLeftIcon, Button, TaskIcon } from '../../components';
+import { ArrowLeftIcon, Button, PageContainer, TaskIcon } from '../../components';
 import { useFromLocation } from '../../utils';
 
-const BackButton = styled(Button)`
+const BackButton = styled(Button).attrs({
+  title: 'Back',
+  variant: 'text',
+})`
   min-width: 0;
   color: ${({ theme }) => theme.palette.text.primary};
   padding: 0.7rem;
@@ -17,14 +20,13 @@ const BackButton = styled(Button)`
   }
 `;
 
-const Wrapper = styled.div`
-  padding-block: 0.7rem;
-  display: flex;
+const Wrapper = styled(PageContainer)`
   align-items: self-start;
-  padding-inline-end: 2.7rem;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding-inline: 0.5rem;
-  }
+  display: flex;
+  flex: initial;
+  gap: 1rem;
+  padding-block: 0.7rem;
+  position: initial;
 `;
 
 const HeadingContainer = styled.div`
@@ -52,27 +54,25 @@ const Container = styled.div`
 `;
 
 const ContentWrapper = styled.div`
-  flex: 1;
-  display: flex;
   align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 1rem;
   justify-content: flex-end;
   width: 100%;
 `;
 
-export const TaskPageHeader = ({
-  title,
-  children,
-  backTo,
-}: {
+interface TaskPageHeaderProps extends React.ComponentPropsWithoutRef<typeof Wrapper> {
   title: string;
-  children?: ReactNode;
   backTo?: string;
-}) => {
+}
+
+export const TaskPageHeader = ({ backTo, children, title, ...props }: TaskPageHeaderProps) => {
   const from = useFromLocation();
   return (
-    <Wrapper>
+    <Wrapper {...props}>
       <Container>
-        <BackButton to={from || backTo} variant="text" title="Back">
+        <BackButton to={from || backTo}>
           <ArrowLeftIcon />
         </BackButton>
         <HeadingContainer>

@@ -7,7 +7,6 @@ const MetricWrapper = styled.div`
   display: flex;
   border: max(0.0625rem, 1px) solid #3f5539;
   border-radius: 3px;
-  margin-inline: 0.5rem;
   margin-block-end: auto;
   text-wrap: balance;
 `;

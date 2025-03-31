@@ -43,7 +43,7 @@ export const TasksDashboardPage = () => {
         </StickyMobileHeader>
       )}
       <TaskPageHeader title="Tasks" backTo="/">
-        <TaskMetrics />
+        {!isMobile && <TaskMetrics />}
         {!isMobile && (
           <CreateButton onClick={toggleCreateModal}>
             <AddIcon /> Create task
