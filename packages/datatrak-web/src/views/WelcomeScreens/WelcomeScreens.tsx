@@ -32,7 +32,7 @@ const steps = [
     text: (
       <>
         Quickly see and access your recently submitted surveys under the{' '}
-        <strong>Submission history</strong> section on the dashboard
+        <strong>Submission history</strong> section on the dashboard.
       </>
     ),
     imgPath: 'images/digital-update.svg',
