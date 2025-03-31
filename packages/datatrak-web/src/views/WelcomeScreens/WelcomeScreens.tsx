@@ -57,7 +57,7 @@ const Container = styled.div`
   inline-size: 100dvi;
   margin-inline: auto;
   max-inline-size: 30rem;
-  padding-top: env(safe-area-inset-top, 0);
+  padding-top: max(env(safe-area-inset-top, 0), 1rem);
   text-align: center;
 `;
 
