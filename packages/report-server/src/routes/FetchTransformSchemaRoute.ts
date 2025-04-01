@@ -22,12 +22,10 @@ const removeRedundantConfigs = (fields: Record<string, any> | any[]) => {
 
   const updatedFields: Record<string, any> = {};
   for (const [key, value] of Object.entries(fields)) {
-    if (typeof value === 'object') {
-      if (!isEmptyArray(value)) {
-        updatedFields[key] = removeRedundantConfigs(value);
-      }
-    } else {
+    if (typeof value !== 'object') {
       updatedFields[key] = value;
+    } else if (!isEmptyArray(value)) {
+      updatedFields[key] = removeRedundantConfigs(value);
     }
   }
 
