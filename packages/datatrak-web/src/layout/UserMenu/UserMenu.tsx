@@ -14,9 +14,7 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const MenuButton = styled(IconButton).withConfig({
-  shouldForwardProp: prop => prop !== 'theme',
-})`
+const MenuButton = styled(IconButton)`
   margin-left: 1rem;
 `;
 
