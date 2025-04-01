@@ -1,3 +1,4 @@
+import type { ValueOf } from '@tupaia/tsutils';
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
@@ -15,8 +16,6 @@ const comparatorToOperator = {
   '>': '>' as const, // Greater than
   '>=': '>=' as const, // Greater than or equal
 };
-
-type ValueOf<T> = T extends Record<string, any> ? T[keyof T] : never;
 
 const isAdvancedFilter = (filter: any): boolean =>
   typeof filter === 'object' &&
