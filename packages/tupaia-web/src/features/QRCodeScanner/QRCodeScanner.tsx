@@ -5,14 +5,14 @@ import { QrReader } from 'react-qr-reader';
 import { get } from '../../api';
 // This import is the actual type that QrReader uses
 import { Result } from '@zxing/library';
-import { QRScanIcon } from './QRScanIcon';
+import { QrCodeScannerIcon } from '@tupaia/ui-components';
 import { ClickAwayListener, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { generatePath, useLocation, useNavigate, useParams } from 'react-router';
 import { ROUTE_STRUCTURE } from '../../constants';
 
 const QRScanButton = styled(Button).attrs({
-  startIcon: <QRScanIcon />,
+  startIcon: <QrCodeScannerIcon />,
   variant: 'text',
 })`
   background: ${({ theme }) => theme.palette.background.paper};
