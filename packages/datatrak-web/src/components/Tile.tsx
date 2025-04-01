@@ -12,12 +12,10 @@ const Wrapper = styled(Paper).attrs({
 })`
   align-items: stretch;
   border-radius: 0.625rem;
-  display: block flex;
-  flex-direction: column;
+  display: grid;
   font-size: 0.875rem;
   font-weight: 400;
   gap: 0.25rem 0.5rem;
-  inline-size: 14.75rem;
   justify-content: flex-start;
   line-height: 1.45;
   min-block-size: fit-content;
@@ -41,8 +39,12 @@ const Wrapper = styled(Paper).attrs({
       background-color: ${theme.palette.primaryHover};
     }
 
+    ${theme.breakpoints.down('sm')} {
+      grid-template-columns: 100%;
+      inline-size: 14.75rem;
+    }
     ${theme.breakpoints.up('md')} {
-      flex-direction: row;
+      grid-template-columns: auto minmax(0, 1fr);
       inline-size: 100%;
     }
   `}
@@ -61,11 +63,11 @@ const Header = styled.header`
   ${({ theme }) => {
     const { down, up } = theme.breakpoints;
     return css`
-      ${down('md')} {
+      ${down('lg')} {
         margin-block-end: 0.5rem;
         block-size: 1.5rem;
       }
-      ${up('md')} {
+      ${up('lg')} {
         flex-direction: column;
       }
     `;
@@ -82,11 +84,6 @@ const LeadingIconGroup = styled(IconGroup)`
 `;
 const TrailingIconGroup = styled(IconGroup)`
   align-self: flex-end;
-`;
-
-const BodyWrapper = styled.div`
-  min-inline-size: 0;
-  flex: 1;
 `;
 
 const Heading = styled(Typography).attrs({ variant: 'h3' })`
@@ -116,7 +113,7 @@ export const Tile = ({
   trailingIcons,
   ...props
 }: TileProps) => {
-  const Body = useIsMobile() ? Fragment : BodyWrapper;
+  const Body = useIsMobile() ? Fragment : 'div';
   return (
     <Wrapper {...props}>
       <Header>

@@ -4,38 +4,23 @@ import styled from 'styled-components';
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
-const Wrapper = styled(SnackbarContent)`
+const Wrapper = styled(SnackbarContent).withConfig({
+  shouldForwardProp: prop => !['anchorOrigin', 'iconVariant'].includes(prop),
+})`
   background-color: white;
   border-radius: 0.625rem;
-  max-width: 87vw;
-  min-height: 2.25rem;
-  @media screen and (min-width: 24rem) {
-    width: 21rem;
-  }
 `;
 
 const Container = styled.div<{
   $variant: CustomContentProps['variant'];
 }>`
-  background-color: ${({ theme, $variant }) => {
-    if ($variant === 'success') {
-      return theme.palette.success.light;
-    }
-    if ($variant === 'error') {
-      return theme.palette.error.light;
-    }
-    if ($variant === 'warning') {
-      return theme.palette.warning.light;
-    }
-    if ($variant === 'info') {
-      return theme.palette.info.light;
-    }
-  }};
-  padding: 0.5rem 0.58rem 0.5rem 0.88rem;
+  align-items: center;
+  background-color: ${({ theme, $variant }) => theme.palette[$variant].light};
   border-radius: 0.625rem;
   display: flex;
-  width: 100%;
-  align-items: center;
+  padding-block: 0.5rem;
+  padding-inline: 0.88rem 0.58rem;
+  inline-size: 100%;
 `;
 
 const IconWrapper = styled.div`
