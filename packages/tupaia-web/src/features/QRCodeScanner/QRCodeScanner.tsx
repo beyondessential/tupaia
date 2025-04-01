@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Button, IconButton, SmallAlert } from '@tupaia/ui-components';
-import { QrReader } from 'react-qr-reader';
-import { get } from '../../api';
-// This import is the actual type that QrReader uses
-import { Result } from '@zxing/library';
-import { QrCodeScannerIcon } from '@tupaia/ui-components';
 import { ClickAwayListener, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import React, { useState } from 'react';
+import { OnResultFunction, QrReader } from 'react-qr-reader';
 import { generatePath, useLocation, useNavigate, useParams } from 'react-router';
+import styled from 'styled-components';
+
+import { Button, IconButton, QrCodeScannerIcon, SmallAlert } from '@tupaia/ui-components';
+
+import { get } from '../../api';
 import { ROUTE_STRUCTURE } from '../../constants';
 
 const QRScanButton = styled(Button).attrs({
@@ -68,7 +67,7 @@ export const QRCodeScanner = ({ onCloseEntitySearch }: { onCloseEntitySearch: ()
     setErrorMessage(null);
   };
 
-  const handleScan = async (data?: Result | null, error?: Error | null) => {
+  const handleScan: OnResultFunction = async (data, error) => {
     if (error?.message) {
       setErrorMessage(error.message);
     }
