@@ -4,12 +4,12 @@ import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardGetPermissions } from '../dashboards';
 import { assertDashboardItemGetPermissions } from '../dashboardItems';
+import { assertDashboardRelationGetPermissions } from './assertDashboardRelationsPermissions';
 import {
-  assertDashboardRelationGetPermissions,
   createDashboardRelationsDBFilter,
   createDashboardRelationsViaParentDashboardDBFilter,
   createDashboardRelationsViaParentDashboardItemDBFilter,
-} from './assertDashboardRelationsPermissions';
+} from './createDashboardRelationsDBFilter';
 
 /**
  * Handles endpoints:

@@ -15,8 +15,8 @@
     "hoistingLimits": "workspaces"
   },
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test",
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@types/cli-progress": "^3.11.5",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.1"
   }
 }
