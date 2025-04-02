@@ -414,8 +414,4 @@ export class DatabaseModel {
     }
     return this.cache[cacheKey];
   }
-
-  async buildSyncLookupQueryDetails() {
-    throw new Error('buildSyncLookupQueryDetails must be implemented by the model');
-  }
 }
