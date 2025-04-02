@@ -8,7 +8,7 @@ import {
 import { DatabaseModel, TupaiaDatabase, DebugLogRecord } from '@tupaia/database';
 
 import { buildSyncLookupSelect } from './buildSyncLookupSelect';
-import { SyncLookupQueryDetails, SyncServerConfig, SyncServerModelRegistry } from '../types';
+import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
 const updateLookupTableForModel = async (
   model: DatabaseModel,
