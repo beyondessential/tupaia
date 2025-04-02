@@ -23,5 +23,10 @@
     "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "test": "yarn package:test"
+  },
+  "dependencies": {
+    "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
+    "@tupaia/sync": "workspace:*"
   }
 }

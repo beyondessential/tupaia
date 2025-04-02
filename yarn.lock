@@ -10657,9 +10657,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/sync@workspace:packages/sync":
+"@tupaia/sync@workspace:*, @tupaia/sync@workspace:packages/sync":
   version: 0.0.0-use.local
   resolution: "@tupaia/sync@workspace:packages/sync"
+  dependencies:
+    "@tupaia/database": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -35054,6 +35056,10 @@ __metadata:
 "sync-server@workspace:packages/sync-server":
   version: 0.0.0-use.local
   resolution: "sync-server@workspace:packages/sync-server"
+  dependencies:
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/server-utils": "workspace:*"
+    "@tupaia/sync": "workspace:*"
   languageName: unknown
   linkType: soft
 

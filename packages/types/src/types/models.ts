@@ -539,6 +539,10 @@ export interface DatatrakSessionUpdate {
   'id'?: string;
   'refresh_token'?: string;
 }
+export interface DebugLog {
+  'id': string;
+  'type': string;
+}
 export interface DhisInstance {
   'code': string;
   'config': {};
@@ -905,6 +909,11 @@ export interface LesmisSessionUpdate {
   'email'?: string;
   'id'?: string;
   'refresh_token'?: string;
+}
+export interface LocalSystemFact {
+  'id': string;
+  'key': string;
+  'value': string;
 }
 export interface LoginAttempts {
   'expire'?: string | null;

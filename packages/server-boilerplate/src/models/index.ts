@@ -26,6 +26,7 @@ export { DashboardRelationModel, DashboardRelationRecord } from './DashboardRela
 export { DashboardModel, DashboardRecord } from './Dashboard';
 export { DataElementModel, DataElementRecord } from './DataElement';
 export { DataTableModel, DataTableRecord } from './DataTable';
+export { DebugLogModel, DebugLogRecord } from './DebugLog';
 export { EntityHierarchyModel, EntityHierarchyRecord } from './EntityHierarchy';
 export { EntityModel, EntityRecord, EntityFilter, EntityFilterFields } from './Entity';
 export {

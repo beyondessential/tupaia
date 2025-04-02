@@ -420,7 +420,7 @@ export class BaseDatabase {
    * Use only for situations in which Knex is not able to assemble a query.
    *
    * @param {string} sqlString
-   * @param {any[]} [parametersToBind]
+   * @param {any[] || Record<string, any> || undefined} [parametersToBind]
    * @template Result
    * @returns {Promise<Result>} execution result
    */

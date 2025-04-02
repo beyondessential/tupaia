@@ -5,6 +5,8 @@ import { QUERY_CONJUNCTIONS } from './BaseDatabase';
 export class DatabaseModel {
   otherModels = {};
 
+  syncDirection = null;
+
   constructor(database, schema = null) {
     this.database = database;
 
@@ -40,6 +42,10 @@ export class DatabaseModel {
         this.schemaPromise = this.startSchemaFetch();
         this.fieldNames = null;
       });
+    }
+
+    if (!this.syncDirection) {
+      throw new Error('syncDirection must be set by the model');
     }
   }
 
@@ -407,5 +413,9 @@ export class DatabaseModel {
       this.cache[cacheKey] = fn(); // may be async, in which case we cache the promise to be awaited
     }
     return this.cache[cacheKey];
+  }
+
+  async buildSyncLookupQueryDetails() {
+    throw new Error('buildSyncLookupQueryDetails must be implemented by the model');
   }
 }
