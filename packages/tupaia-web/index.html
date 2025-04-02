@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -8,6 +8,19 @@
       name="description"
       content="Data aggregation, analysis, and visualisation for the most remote settings in the world"
     />
+
+    <% if ( process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
+    <link rel="preconnect" href="https://tupaia-web-api.tupaia.org" crossorigin />
+    <% } else if (process.env.NODE_ENV === 'production') { %>
+    <link
+      rel="preconnect"
+      href="https://%REACT_APP_DEPLOYMENT_NAME%-tupaia-web-api.tupaia.org"
+      crossorigin
+    />
+    <% } %>
+
+    <link rel="preconnect" href="https://api.mapbox.com" crossorigin />
+
     <!-- Open Graph for Facebook link preview -->
     <meta property="og:image" content="https://tupaia.org/images/social-preview.jpeg" />
     <meta
@@ -27,7 +40,6 @@
         dataLayer.push(arguments);
       }
       gtag('js', new Date());
-
       gtag('config', 'G-GH96FJFLWQ');
     </script>
     <!-- End Google Analytics -->
@@ -97,13 +109,12 @@
       window.loadTime = Date.now() - window.performance.timing.navigationStart;
     </script>
     <link rel="icon" type="image/png" href="/favicon.ico" />
- 
 
     <!-- Add media='print' and onload="this.media='all'" to stop the resource being render-blocking on load: see https://pagespeedchecklist.com/asynchronous-google-fonts -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
-      crossorigin="anonymous"
+      crossorigin
       media="print"
       onload="this.media='all'"
     />
@@ -111,8 +122,8 @@
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-      crossorigin="" 
-      media="print" 
+      crossorigin
+      media="print"
       onload="this.media='all'"
     />
     <!-- Add a noscript fallback for stylesheets -->
@@ -120,14 +131,14 @@
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
-        crossorigin="anonymous" 
+        crossorigin
       />
       <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-      crossorigin=""  
-    />
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin
+      />
     </noscript>
     <title>Tupaia</title>
   </head>
@@ -136,34 +147,34 @@
       background: #262834;
       color: white;
     }
-    @keyframes spinner {
-       to {
-           transform: rotate(360deg);
-       }
-     }
+    @keyframes --spinner {
+      to {
+        transform: rotate(360deg);
+      }
+    }
     #tupaia-spinner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 100vw;
-        z-index: 9999;
-        background: #262834;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      z-index: 9999;
+      background: #262834;
     }
     #tupaia-spinner:before {
-        content: '';
-        box-sizing: border-box;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 60px;
-        height: 60px;
-        margin-top: -30px;
-        margin-left: -30px;
-        border-radius: 50%;
-        border: 5px solid rgba(255, 255, 255, 0.3);
-        border-top-color: white;
-        animation: spinner 0.6s linear infinite;
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      height: 60px;
+      margin-top: -30px;
+      margin-left: -30px;
+      border-radius: 50%;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      animation: --spinner 0.6s linear infinite;
     }
   </style>
   <body>

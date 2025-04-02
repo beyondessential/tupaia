@@ -115,4 +115,5 @@ export const mapOverlayGroupRelations = {
   endpoint: RELATION_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
+  needsVizBuilderAccess: ['create'],
 };

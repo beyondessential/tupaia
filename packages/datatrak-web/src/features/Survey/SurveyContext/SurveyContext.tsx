@@ -171,6 +171,7 @@ export const useSurveyForm = () => {
   const numberOfScreens = visibleScreens?.length || 0;
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
@@ -206,6 +207,7 @@ export const useSurveyForm = () => {
     ...surveyFormContext,
     isLast,
     isSuccessScreen,
+    isResubmitSuccessScreen,
     numberOfScreens,
     toggleSideMenu,
     updateFormData,
