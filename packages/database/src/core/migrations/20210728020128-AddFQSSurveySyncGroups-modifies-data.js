@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateId, insertObject, deleteObject } from '../../core/utilities';
+import { generateId, insertObject, deleteObject } from '../utilities';
 import {
   FQS1_CODE_MAPPING,
   FQS2_CODE_MAPPING,

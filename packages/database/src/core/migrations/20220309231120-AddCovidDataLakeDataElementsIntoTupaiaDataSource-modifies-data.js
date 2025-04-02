@@ -1,7 +1,7 @@
 'use strict';
 
 import DATA_ELEMENT_CODES from './migrationData/20220309231120-AddCovidDataLakeDataElementsIntoTupaiaDataSource-modifies-data/DataElementCodes - DataLake.json';
-import { generateId } from '../../core/utilities/generateId';
+import { generateId } from '../utilities/generateId';
 
 var dbm;
 var type;

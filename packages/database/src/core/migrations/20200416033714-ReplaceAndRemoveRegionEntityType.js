@@ -1,8 +1,8 @@
 'use strict';
 
 import { TupaiaDatabase } from '@tupaia/database';
-import { arrayToDbString } from '../../core/utilities';
-import { replaceEnum } from '../../core/utilities/migration';
+import { arrayToDbString } from '../utilities';
+import { replaceEnum } from '../utilities/migration';
 
 var dbm;
 var type;

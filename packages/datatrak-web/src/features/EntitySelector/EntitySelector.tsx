@@ -33,7 +33,7 @@ const useSearchResults = (searchValue, filter, projectCode, disableSearch = fals
       searchString: debouncedSearch,
       pageSize: 100,
     },
-    !disableSearch,
+    { enabled: !disableSearch },
   );
 };
 
@@ -149,7 +149,7 @@ export const EntitySelector = ({
               invalid={invalid}
               required={required}
               inputProps={{
-                ['aria-labelledby']: showLegend && !label ? 'entity-selector-legend' : undefined,
+                'aria-labelledby': showLegend && !label ? 'entity-selector-legend' : undefined,
               }}
             />
           )}

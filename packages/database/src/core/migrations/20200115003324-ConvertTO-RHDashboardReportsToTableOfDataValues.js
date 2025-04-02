@@ -4,7 +4,7 @@ import {
   buildSingleColumnTableCells,
   build2DTableCells,
   build2dTableStringFormatCells,
-} from '../../core/utilities/migration';
+} from '../utilities/migration';
 
 ('use strict');
 

@@ -1,6 +1,6 @@
 'use strict';
 
-import { createForeignKeyConfig } from '../../core/utilities/migration';
+import { createForeignKeyConfig } from '../utilities/migration';
 
 var dbm;
 var type;

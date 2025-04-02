@@ -1,6 +1,6 @@
 'use strict';
 
-import { codeToId, arrayToDbString, generateId, insertObject } from '../../core/utilities';
+import { codeToId, arrayToDbString, generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;

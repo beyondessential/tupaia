@@ -6,7 +6,7 @@ import {
   generateId,
   findSingleRecord,
   updateValues,
-} from '../../core/utilities';
+} from '../utilities';
 
 var dbm;
 var type;

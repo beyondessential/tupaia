@@ -1,7 +1,7 @@
 'use strict';
 
-import { generateId } from '../../core/utilities';
-import { arrayToDbString } from '../../core/utilities/migration';
+import { generateId } from '../utilities';
+import { arrayToDbString } from '../utilities/migration';
 
 var dbm;
 var type;

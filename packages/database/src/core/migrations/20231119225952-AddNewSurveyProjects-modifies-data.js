@@ -1,7 +1,7 @@
 'use strict';
 
 import projectsToAdd from './migrationData/20231119225952-AddNewSurveyProjects/projectsToAdd.json';
-import { codeToId, insertObject, generateId, findSingleRecord, deleteObject } from '../../core/utilities';
+import { codeToId, insertObject, generateId, findSingleRecord, deleteObject } from '../utilities';
 
 var dbm;
 var type;

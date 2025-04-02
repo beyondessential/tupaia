@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 import { PageContainer } from '../../components';
 import { HEADER_HEIGHT, TABLET_BREAKPOINT } from '../../constants';
 import { UserMenu } from '../UserMenu';
 import { HeaderLeft } from './HeaderLeft';
 
-const Wrapper = styled(PageContainer).attrs({ component: 'header' })`
+export const HeaderRoot = styled(PageContainer).attrs({ component: 'header' })`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  display: flex;
   block-size: ${HEADER_HEIGHT};
+  display: flex;
   justify-content: space-between;
+  max-block-size: ${HEADER_HEIGHT};
   position: relative;
   width: 100%;
   z-index: 10;
@@ -20,11 +21,11 @@ const Wrapper = styled(PageContainer).attrs({ component: 'header' })`
   }
 `;
 
-export const Header = () => {
+export const Header = (props: ComponentPropsWithoutRef<typeof HeaderRoot>) => {
   return (
-    <Wrapper>
+    <HeaderRoot {...props}>
       <HeaderLeft />
       <UserMenu />
-    </Wrapper>
+    </HeaderRoot>
   );
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-const { generateId } = require('../../core/utilities');
+const { generateId } = require('../utilities');
 
 var dbm;
 var type;

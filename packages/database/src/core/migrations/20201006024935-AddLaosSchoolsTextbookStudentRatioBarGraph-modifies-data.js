@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, insertObject } from '../../core/utilities/migration';
+import { arrayToDbString, insertObject } from '../utilities/migration';
 
 var dbm;
 var type;

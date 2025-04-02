@@ -1,7 +1,7 @@
 'use strict';
 
 import SubDistricts from './migrationData/20220520063938-ExcludeBetioFromCovidKiribatiProject-modifies-data/kiribati-subdistrict.json';
-import { generateId, insertObject, nameToId, deleteObject } from '../../core/utilities';
+import { generateId, insertObject, nameToId, deleteObject } from '../utilities';
 
 var dbm;
 var type;

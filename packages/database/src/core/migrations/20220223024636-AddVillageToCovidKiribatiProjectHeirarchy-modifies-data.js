@@ -1,6 +1,6 @@
 'use strict';
 
-import { addArrayValue, removeArrayValue } from '../../core/utilities';
+import { addArrayValue, removeArrayValue } from '../utilities';
 
 var dbm;
 var type;

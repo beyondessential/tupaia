@@ -1,11 +1,11 @@
 import { Country, Entity, Survey, SurveyResponse } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 
-export type Params = {
+export interface Params {
   id: string;
-};
+}
 
-export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'data_time'>> {
+export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'data_time' | 'end_time'>> {
   answers: Record<string, string>;
   countryName: Country['name'];
   entityName: Entity['name'];
@@ -15,6 +15,8 @@ export interface ResBody extends KeysToCamelCase<Omit<SurveyResponse, 'data_time
   countryCode: Country['code'];
   /** ISO9075 format */
   dataTime: string;
+  /** ISO8601 format */
+  endTime: string;
   entityParentName: Entity['name'];
 }
 export type ReqBody = Record<string, never>;

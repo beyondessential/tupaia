@@ -1,7 +1,7 @@
 'use strict';
 
 import { cloneDeep } from 'lodash';
-import { generateId, insertObject } from '../../core/utilities';
+import { generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;

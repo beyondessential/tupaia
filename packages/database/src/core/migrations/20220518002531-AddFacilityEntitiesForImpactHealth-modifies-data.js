@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateId, codeToId, insertObject, nameToId, arrayToDbString } from '../../core/utilities';
+import { generateId, codeToId, insertObject, nameToId, arrayToDbString } from '../utilities';
 import Entities from './migrationData/20220518002531-AddFacilityEntitiesForImpactHealth-modifies-data.js/entities.json';
 
 var dbm;

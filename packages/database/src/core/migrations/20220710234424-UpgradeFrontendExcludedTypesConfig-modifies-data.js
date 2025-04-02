@@ -1,6 +1,6 @@
 'use strict';
 
-const { insertJsonEntry, removeJsonEntry } = require('../../core/utilities');
+const { insertJsonEntry, removeJsonEntry } = require('../utilities');
 
 var dbm;
 var type;

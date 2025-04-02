@@ -6,7 +6,7 @@ import {
   deleteObject,
   updateValues,
   findSingleRecord,
-} from '../../core/utilities';
+} from '../utilities';
 
 var dbm;
 var type;

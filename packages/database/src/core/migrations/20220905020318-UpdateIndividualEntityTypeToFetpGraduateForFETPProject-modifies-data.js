@@ -1,7 +1,7 @@
 'use strict';
 
 import ENTITIES from './migrationData/20220905020318-UpdateIndividualEntityTypeToFetpGraduateForFETPProject.json';
-import { updateValues, codeToId, nameToId, findSingleRecord } from '../../core/utilities';
+import { updateValues, codeToId, nameToId, findSingleRecord } from '../utilities';
 
 var dbm;
 var type;

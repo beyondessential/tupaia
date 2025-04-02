@@ -5,13 +5,13 @@ import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 
 export class TupaiaDatabase extends BaseDatabase {
-  static CHANGE_HANDLER_SUPPORTED = true;
+  static IS_CHANGE_HANDLER_SUPPORTED = true;
 
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
    */
-  constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
+  constructor(transactingConnection, transactingChangeChannel, useNumericStuff) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
 
     this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
@@ -25,8 +25,8 @@ export class TupaiaDatabase extends BaseDatabase {
     pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 
     if (useNumericStuff) {
-      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, parseFloat);
-      pgTypes.setTypeParser(20, parseInt); // bigInt type to Integer
+      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, Number.parseFloat);
+      pgTypes.setTypeParser(20, Number.parseInt); // bigInt type to Integer
     }
   }
 

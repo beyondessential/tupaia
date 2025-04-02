@@ -1,7 +1,7 @@
 import PGPubSub from 'pg-pubsub';
 import winston from 'winston';
-import { generateId } from '../core/utilities/generateId';
 
+import { generateId } from '../core/utilities/generateId';
 import { getConnectionConfig } from './getConnectionConfig';
 
 export class DatabaseChangeChannel extends PGPubSub {

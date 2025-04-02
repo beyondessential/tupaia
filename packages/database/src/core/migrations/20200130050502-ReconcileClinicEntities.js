@@ -1,4 +1,4 @@
-import { generateId } from '../../core/utilities/generateId';
+import { generateId } from '../utilities/generateId';
 import { newDistricts } from './20200130050502-ReconcileClinicEntities/districts';
 import { newCountries } from './20200130050502-ReconcileClinicEntities/countries';
 import countryDHIS2Data from './20200130050502-ReconcileClinicEntities/missingCountryDHIS2Data.json';

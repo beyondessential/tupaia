@@ -1,4 +1,4 @@
-import { configureEnv } from '../../configureEnv';
+import { configureEnv } from '../configureEnv';
 import { ModelRegistry } from '../../core/ModelRegistry';
 import { TupaiaDatabase } from '../TupaiaDatabase';
 

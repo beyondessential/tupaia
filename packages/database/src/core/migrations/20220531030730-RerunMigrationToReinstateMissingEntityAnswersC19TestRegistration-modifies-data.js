@@ -1,6 +1,6 @@
 'use strict';
 
-import { codeToId } from '../../core/utilities';
+import { codeToId } from '../utilities';
 
 // Note: This migration is just a copy of the below migration in order to rerun it for new data;
 // 20220513032539-ReinstateMissingEntityAnswersC19TestRegistration-modifies-data.js;

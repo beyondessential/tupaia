@@ -1,6 +1,6 @@
 'use strict';
 
-const { updateValues, findSingleRecord } = require('../../core/utilities');
+const { updateValues, findSingleRecord } = require('../utilities');
 
 var dbm;
 var type;

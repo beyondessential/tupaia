@@ -2,6 +2,20 @@ import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server
 import { QuestionType } from '@tupaia/types';
 import { DatabaseError, UploadError } from '@tupaia/utils';
 
+function isValidHttpUrl(str) {
+  try {
+    const url = new URL(str);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch (e) {
+    if (e instanceof TypeError) return false;
+    throw e;
+  }
+}
+
+function isValidFileId(str) {
+  return /^[a-f\d]{24}$/.test(str);
+}
+
 export async function upsertAnswers(models, answers, surveyResponseId) {
   const answerRecords = [];
 
@@ -13,13 +27,11 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       survey_response_id: surveyResponseId,
     };
     if (answer.type === QuestionType.Photo) {
-      const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
       const s3ImagePath = getS3ImageFilePath();
 
-      if (answer.body.includes('http')) {
+      if (isValidHttpUrl(answer.body)) {
         answerDocument.text = answer.body;
-      } else if (validFileIdRegex.test(answer.body)) {
-        // if this is passed a valid id in the answer body
+      } else if (isValidFileId(answer.body)) {
         answerDocument.text = `${S3_BUCKET_PATH}${s3ImagePath}${answer.body}.png`;
       } else {
         // included for backwards compatibility passing base64 strings for images, and for datatrak-web to upload images in answers

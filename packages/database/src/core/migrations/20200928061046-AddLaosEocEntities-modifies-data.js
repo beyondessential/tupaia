@@ -1,7 +1,7 @@
 'use strict';
 
-import { arrayToDbString, generateId, insertObject } from '../../core/utilities';
-import { insertEntity } from '../../core/utilities/migration';
+import { arrayToDbString, generateId, insertObject } from '../utilities';
+import { insertEntity } from '../utilities/migration';
 import { EntityModel } from '../modelClasses';
 
 var dbm;

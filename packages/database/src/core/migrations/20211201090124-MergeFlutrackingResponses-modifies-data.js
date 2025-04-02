@@ -3,7 +3,7 @@
 import assert from 'assert';
 import groupBy from 'lodash.groupby';
 
-import { arrayToDbString, insertObject } from '../../core/utilities';
+import { arrayToDbString, insertObject } from '../utilities';
 
 var dbm;
 var type;

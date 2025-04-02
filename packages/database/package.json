@@ -18,15 +18,15 @@
   },
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && run-p \"build:* {@}\" --",
+    "build": "rimraf dist && run-p \"build:* {@}\" --",
     "build:src": "npm run --prefix ../../ package:build:js:server && npm run --prefix ../../ package:build:js:browser",
     "build:types": "npm run --prefix ../../ package:build:types",
-    "build-dev": "npm run build",
-    "build-watch": "rm -rf dist && npm run build:types && npm run --prefix ../../ package:build:js-watch",
+    "build-dev": "yarn run build",
+    "build-watch": "rimraf dist && yarn run build:types && npm run --prefix ../../ package:build:js-watch",
     "dump-database": "./scripts/dumpDatabase.sh",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
+    "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/core/migrations -v --config-file \"../../babel.config.json\"",
     "migrate-create": "scripts/migrateCreate.sh",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v --config-file \"../../babel.config.json\"",
     "refresh-database": "node ./scripts/refreshDatabase.js",
@@ -45,6 +45,7 @@
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "bson-objectid": "^2.0.4",
     "date-fns": "^2.29.2",
     "date-fns-tz": "^2.0.1",
     "db-migrate": "^0.11.5",
@@ -67,6 +68,7 @@
   "devDependencies": {
     "@babel/node": "^7.10.5",
     "npm-run-all": "^4.1.5",
-    "pluralize": "^8.0.0"
+    "pluralize": "^8.0.0",
+    "rimraf": "^6.0.1"
   }
 }

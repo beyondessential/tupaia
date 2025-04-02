@@ -1,6 +1,6 @@
 ('use strict');
 
-import { generateId, codeToId, insertObject, deleteObject, updateValues } from '../../core/utilities';
+import { generateId, codeToId, insertObject, deleteObject, updateValues } from '../utilities';
 
 var dbm;
 var type;

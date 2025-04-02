@@ -1,7 +1,7 @@
 'use strict';
 
-import { insertObject } from '../../core/utilities/migration';
-import { arrayToDbString } from '../../core/utilities';
+import { insertObject } from '../utilities/migration';
+import { arrayToDbString } from '../utilities';
 
 var dbm;
 var type;

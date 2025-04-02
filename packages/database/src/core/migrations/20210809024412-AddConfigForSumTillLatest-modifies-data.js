@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, insertJsonEntry, updateJsonEntry } from '../../core/utilities';
+import { arrayToDbString, insertJsonEntry, updateJsonEntry } from '../utilities';
 
 var dbm;
 var type;

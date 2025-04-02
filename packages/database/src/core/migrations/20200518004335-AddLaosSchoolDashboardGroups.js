@@ -1,4 +1,4 @@
-import { insertObject, arrayToDbString } from '../../core/utilities';
+import { insertObject, arrayToDbString } from '../utilities';
 
 ('use strict');
 
