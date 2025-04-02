@@ -7,6 +7,8 @@ export class AccessRequestRecord extends DatabaseRecord {
 }
 
 export class AccessRequestModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return AccessRequestRecord;
   }

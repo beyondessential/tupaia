@@ -25,6 +25,8 @@ export class ReportRecord extends DatabaseRecord {
 }
 
 export class ReportModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return ReportRecord;
   }

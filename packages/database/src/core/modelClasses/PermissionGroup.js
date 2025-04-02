@@ -43,6 +43,8 @@ export class PermissionGroupRecord extends DatabaseRecord {
 }
 
 export class PermissionGroupModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return PermissionGroupRecord;
   }

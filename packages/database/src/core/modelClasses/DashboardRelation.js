@@ -45,6 +45,8 @@ export class DashboardRelationRecord extends DatabaseRecord {
 }
 
 export class DashboardRelationModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DashboardRelationRecord;
   }

@@ -278,6 +278,8 @@ export class TaskRecord extends DatabaseRecord {
 }
 
 export class TaskModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return TaskRecord;
   }

@@ -7,6 +7,8 @@ export class ApiRequestLogRecord extends DatabaseRecord {
 }
 
 export class ApiRequestLogModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return ApiRequestLogRecord;
   }

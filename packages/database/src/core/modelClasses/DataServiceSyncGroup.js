@@ -15,6 +15,8 @@ const syncStatuses = {
 };
 
 export class DataServiceSyncGroupRecord extends DatabaseRecord {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   static databaseRecord = RECORDS.DATA_SERVICE_SYNC_GROUP;
 
   async setSyncIdle() {

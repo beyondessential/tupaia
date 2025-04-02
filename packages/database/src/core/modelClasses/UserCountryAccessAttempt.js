@@ -23,6 +23,8 @@ export class UserCountryAccessAttemptRecord extends DatabaseRecord {
 }
 
 export class UserCountryAccessAttemptModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return UserCountryAccessAttemptRecord;
   }

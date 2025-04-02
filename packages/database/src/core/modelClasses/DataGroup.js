@@ -17,6 +17,8 @@ const CONFIG_SCHEMA_BY_SERVICE = {
 };
 
 export class DataGroupRecord extends DatabaseRecord {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   static databaseRecord = RECORDS.DATA_GROUP;
 
   sanitizeConfig() {

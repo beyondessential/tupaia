@@ -11,6 +11,8 @@ export class DataTableRecord extends DatabaseRecord {
 }
 
 export class DataTableModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   static DATA_TABLE_TYPES = DATA_TABLE_TYPES;
 
   get DatabaseRecordClass() {

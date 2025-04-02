@@ -7,6 +7,8 @@ export class DhisInstanceRecord extends DatabaseRecord {
 }
 
 export class DhisInstanceModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DhisInstanceRecord;
   }

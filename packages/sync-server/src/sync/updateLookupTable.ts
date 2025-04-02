@@ -8,7 +8,7 @@ import {
 import { DatabaseModel, TupaiaDatabase, DebugLogRecord } from '@tupaia/database';
 
 import { buildSyncLookupSelect } from './buildSyncLookupSelect';
-import { SyncLookupQueryDetails, SyncServerConfig, SyncServerModelRegistry } from '../types';
+import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
 const updateLookupTableForModel = async (
   model: DatabaseModel,
@@ -23,7 +23,9 @@ const updateLookupTableForModel = async (
 
   let fromId = '';
   let totalCount = 0;
-  const result: SyncLookupQueryDetails = (await model.buildSyncLookupQueryDetails()) || {};
+  const result: SyncLookupQueryDetails = Boolean(model.buildSyncLookupQueryDetails)
+    ? (await model.buildSyncLookupQueryDetails()) || {}
+    : {};
   const { select, joins, where } = result;
 
   while (fromId != null) {

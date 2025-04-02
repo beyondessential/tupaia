@@ -12,6 +12,8 @@ export class DebugLogRecord extends DatabaseRecord {
 }
 
 export class DebugLogModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DebugLogRecord;
   }

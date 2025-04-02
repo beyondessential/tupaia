@@ -7,6 +7,8 @@ class IndicatorRecord extends DatabaseRecord {
 }
 
 export class IndicatorModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   notifiers = [onChangeUpdateDataElement];
 
   get DatabaseRecordClass() {

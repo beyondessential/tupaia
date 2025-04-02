@@ -25,6 +25,8 @@ export class ApiClientRecord extends DatabaseRecord {
 }
 
 export class ApiClientModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return ApiClientRecord;
   }

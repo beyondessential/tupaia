@@ -10,6 +10,8 @@ export class MapOverlayGroupRecord extends DatabaseRecord {
 }
 
 export class MapOverlayGroupModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   notifiers = [onChangeDeleteRelation];
 
   get DatabaseRecordClass() {

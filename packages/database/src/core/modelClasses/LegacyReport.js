@@ -7,6 +7,8 @@ class LegacyReportRecord extends DatabaseRecord {
 }
 
 export class LegacyReportModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return LegacyReportRecord;
   }

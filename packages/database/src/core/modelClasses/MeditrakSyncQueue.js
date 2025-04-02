@@ -7,6 +7,8 @@ export class MeditrakSyncQueueRecord extends DatabaseRecord {
 }
 
 export class MeditrakSyncQueueModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return MeditrakSyncQueueRecord;
   }
