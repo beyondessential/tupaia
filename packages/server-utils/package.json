@@ -13,8 +13,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "copy-templates": "copyfiles -u 1 src/email/templates/**/**/* ./dist",
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts && npm run copy-templates",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts && yarn run copy-templates",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --passWithNoTests",
@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@types/nodemailer": "^6.4.15",
-    "@types/sha256": "^0.2.2"
+    "@types/sha256": "^0.2.2",
+    "rimraf": "^6.0.1"
   }
 }
