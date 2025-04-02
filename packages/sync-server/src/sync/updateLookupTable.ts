@@ -23,9 +23,10 @@ const updateLookupTableForModel = async (
 
   let fromId = '';
   let totalCount = 0;
-  const result: SyncLookupQueryDetails = Boolean(model.buildSyncLookupQueryDetails)
-    ? (await model.buildSyncLookupQueryDetails()) || {}
-    : {};
+  const result: SyncLookupQueryDetails =
+    typeof model.buildSyncLookupQueryDetails === 'function'
+      ? (await model.buildSyncLookupQueryDetails()) || {}
+      : {};
   const { select, joins, where } = result;
 
   while (fromId != null) {
