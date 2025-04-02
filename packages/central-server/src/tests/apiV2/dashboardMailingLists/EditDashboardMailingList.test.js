@@ -72,7 +72,10 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
   describe('PUT /dashboardMailingLists/:id', async () => {
     describe('Insufficient permission', async () => {
       it('Throw an exception when trying to edit a dashboard mailing list we do not have access to', async () => {
-        await app.grantAccess(DEFAULT_POLICY);
+        await app.grantAccess({
+          DL: ['Admin'],
+          KI: ['Admin'],
+        });
         const { body: result } = await app.put(
           `dashboardMailingLists/${nationalDashboard2MailingList.id}`,
           {
@@ -86,7 +89,11 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
       });
 
       it('Throw an exception when trying to edit a dashboard mailing list to a different dashboard we do not have edit access to', async () => {
-        await app.grantAccess(DEFAULT_POLICY);
+        await app.grantAccess({
+          DL: ['Public'],
+          KI: ['Public'],
+          LA: ['Public'],
+        });
         const { body: result } = await app.put(
           `dashboardMailingLists/${nationalDashboard1MailingList.id}`,
           {

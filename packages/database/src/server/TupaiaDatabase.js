@@ -11,7 +11,7 @@ export class TupaiaDatabase extends BaseDatabase {
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
    */
-  constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
+  constructor(transactingConnection, transactingChangeChannel, useNumericStuff) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
 
     this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
@@ -25,8 +25,8 @@ export class TupaiaDatabase extends BaseDatabase {
     pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 
     if (useNumericStuff) {
-      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, parseFloat);
-      pgTypes.setTypeParser(20, parseInt); // bigInt type to Integer
+      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, Number.parseFloat);
+      pgTypes.setTypeParser(20, Number.parseInt); // bigInt type to Integer
     }
   }
 
