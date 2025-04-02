@@ -1,7 +1,7 @@
 import { Button as MuiButton } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Button as UIButton } from '@tupaia/ui-components';
 
@@ -61,12 +61,30 @@ const Container = styled.div`
   text-align: center;
 `;
 
+const Header = styled.header`
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  translate: -50%;
+
+  padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
+  padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
+  padding-top: max(env(safe-area-inset-top, 0), 1rem);
+
+  align-items: center;
+  display: flex;
+  inline-size: 100%;
+  justify-content: flex-end;
+  max-inline-size: inherit;
+
+  // Header should be semantically ordered before carousel, but that causes the carousel to be
+  // painted over this element
+  z-index: 1;
+`;
+
 const TextButton = styled(MuiButton)`
   font-size: 0.75rem;
   font-weight: 400;
-  position: absolute;
-  right: max(env(safe-area-inset-right, 0), 1.25rem);
-  top: max(env(safe-area-inset-top, 0), 1rem);
 `;
 
 const Footer = styled(PageContainer).attrs({ as: 'footer' })`
@@ -111,7 +129,9 @@ export const WelcomeScreens = () => {
 
   return (
     <Container>
-      <TextButton onClick={onComplete}>Skip</TextButton>
+      <Header>
+        <TextButton onClick={onComplete}>Skip</TextButton>
+      </Header>
       <Carousel steps={steps} activeStep={activeStep} handleStepChange={handleStepChange} />
       <Footer>
         <StyledButton onClick={onComplete} fullWidth hidden={!isLastStep}>
