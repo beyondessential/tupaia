@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Select } from './Inputs';
 
-export const Wrapper = styled.div`
+export const PaginationRoot = styled.div`
   display: flex;
   font-size: 0.75rem;
   justify-content: space-between;
@@ -203,9 +203,10 @@ export const Pagination = ({
   const endOfPage = (page + 1) * pageSize;
   const currentDisplayEnd =
     typeof totalRecords === 'number' ? Math.min(endOfPage, totalRecords) : endOfPage;
+  console.log([endOfPage, totalRecords, currentDisplayEnd]);
 
   return (
-    <Wrapper className="pagination-wrapper" {...props}>
+    <PaginationRoot className="pagination-wrapper" {...props}>
       <ActionsWrapper>
         {showEntriesCount && (
           <Text>
@@ -223,6 +224,6 @@ export const Pagination = ({
         )}
         <PageSelectComponent onChangePage={onChangePage} page={page} pageCount={pageCount} />
       </RowWrapper>
-    </Wrapper>
+    </PaginationRoot>
   );
 };
