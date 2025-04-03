@@ -1,6 +1,6 @@
 import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
-import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 import { QUERY_CONJUNCTIONS } from './TupaiaDatabase';
+import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
   otherModels = {};
@@ -155,11 +155,8 @@ export class DatabaseModel {
   }
 
   getColumnSelector(fieldName, qualifiedName) {
-    const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
-    if (customSelector) {
-      return customSelector(qualifiedName);
-    }
-    return null;
+    const customSelector = this.customColumnSelectors?.[fieldName];
+    return typeof customSelector === 'function' ? customSelector(qualifiedName) : null;
   }
 
   async getDbConditions(dbConditions = {}) {
