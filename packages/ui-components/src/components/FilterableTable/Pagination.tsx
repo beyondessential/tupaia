@@ -1,9 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Pagination as UIPagination } from '../Pagination';
+import {
+  PaginationRoot,
+  Pagination as UIPagination,
+  PaginationProps as UIPaginationProps,
+} from '../Pagination';
 
 const Wrapper = styled.div`
-  .pagination-wrapper {
+  ${PaginationRoot} {
     border-top: 1px solid ${({ theme }) => theme.palette.divider};
     background-color: ${({ theme }) => theme.palette.background.paper};
   }

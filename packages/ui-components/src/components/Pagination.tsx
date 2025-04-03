@@ -206,7 +206,7 @@ export const Pagination = ({
   console.log([endOfPage, totalRecords, currentDisplayEnd]);
 
   return (
-    <PaginationRoot className="pagination-wrapper" {...props}>
+    <PaginationRoot {...props}>
       <ActionsWrapper>
         {showEntriesCount && (
           <Text>
