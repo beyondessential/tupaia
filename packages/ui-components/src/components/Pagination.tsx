@@ -47,13 +47,13 @@ const RowWrapper = styled(ActionsWrapper)`
 `;
 
 const Button = styled(IconButton)`
-  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   padding: 0.4rem;
   .MuiSvgIcon-root {
     font-size: 1.2rem;
   }
   & + & {
-    margin-left: 0.7rem;
+    margin-inline-start: 0.7rem;
   }
 `;
 
@@ -65,7 +65,7 @@ const ManualPageInputContainer = styled.div`
 `;
 
 const ManualPageInput = styled(Input)`
-  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   border-radius: 4px;
   padding-block: 0.5rem;
   padding-inline: 0.8rem 0.2rem;
