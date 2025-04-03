@@ -11,7 +11,7 @@ export class TupaiaDatabase extends BaseDatabase {
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
    */
-  constructor(transactingConnection, transactingChangeChannel, useNumericStuff) {
+  constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
 
     this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
