@@ -16,6 +16,11 @@ export class DatabaseModel {
     this.cache = {};
     this.cachedFunctionInvalidationCancellers = {};
 
+    /**
+     * @type {Record<string, (fieldName?: string) => unknown> | null}
+     */
+    this.customColumnSelectors = null;
+
     // If this model uses the singleton database, it is probably long running, so be sure to
     // invalidate the cache any time a change is detected. Non-singleton models are those created
     // during transactions, so are short lived and unlikely to need cache invalidation - thus we
