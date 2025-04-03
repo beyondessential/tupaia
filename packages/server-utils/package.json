@@ -24,6 +24,7 @@
     "@aws-sdk/client-s3": "^3.341.0",
     "@aws-sdk/credential-providers": "^3.341.0",
     "@aws-sdk/lib-storage": "^3.348.0",
+    "@tupaia/database": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "cookie": "^0.5.0",
     "copyfiles": "^2.4.1",
@@ -35,6 +36,7 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
+    "@types/node-schedule": "^2.1.7",
     "@types/nodemailer": "^6.4.15",
     "@types/sha256": "^0.2.2",
     "rimraf": "^6.0.1"

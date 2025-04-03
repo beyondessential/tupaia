@@ -10668,7 +10668,9 @@ __metadata:
     "@aws-sdk/client-s3": ^3.341.0
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
+    "@tupaia/database": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/node-schedule": ^2.1.7
     "@types/nodemailer": ^6.4.15
     "@types/sha256": ^0.2.2
     cookie: ^0.5.0
@@ -11770,6 +11772,15 @@ __metadata:
     "@types/node": "*"
     form-data: ^4.0.0
   checksum: 180e4d44c432839bdf8a25251ef8c47d51e37355ddd78c64695225de8bc5dc2b50b7bb855956d471c026bb84bd7295688a0960085e7158cbbba803053492568b
+  languageName: node
+  linkType: hard
+
+"@types/node-schedule@npm:^2.1.7":
+  version: 2.1.7
+  resolution: "@types/node-schedule@npm:2.1.7"
+  dependencies:
+    "@types/node": "*"
+  checksum: 663dc7aed859e819f39235cbaadf74ff51b27c82c213d456551d2c69804385c272f91127782bce7fc72fd1641f040ee67f0afe153eb53ae5455e5411376ef5a7
   languageName: node
   linkType: hard
 
