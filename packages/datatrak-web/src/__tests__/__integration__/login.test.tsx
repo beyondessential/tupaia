@@ -1,4 +1,4 @@
-import '../mocks/matchMedia.mock';
+import '../mocks/matchMedia.mock'; // Must be imported before components under test
 
 import { fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
