@@ -94,13 +94,15 @@ const Footer = styled(SafeAreaColumn).attrs({ as: 'footer' })`
 const StyledButton = styled(UIButton)`
   transform: translateY(0);
   transition-behavior: allow-discrete;
+  transition-duration: 200ms;
   transition-property: opacity, transform, visibility;
-  transition: 200ms var(--ease-out-quad);
+  transition-timing-function: var(--ease-out-quad);
 
   &[hidden] {
-    visibility: hidden;
     opacity: 25%;
     transform: translateY(20%);
+    transition-timing-function: var(--ease-in-quad);
+    visibility: hidden;
   }
 `;
 
