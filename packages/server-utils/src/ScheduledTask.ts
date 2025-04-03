@@ -22,7 +22,7 @@ export class ScheduledTask {
   /**
    * Holds the scheduled job object for the task
    */
-  job: Job;
+  job: Job | null = null;
 
   /**
    * Keeps track of start time for logging
