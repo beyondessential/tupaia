@@ -1,11 +1,13 @@
-import autobind from 'react-autobind';
+import knex, { KnexTimeoutError } from 'knex';
 import { types as pgTypes } from 'pg';
-import knex from 'knex';
+import autobind from 'react-autobind';
 import winston from 'winston';
-import { Multilock } from '@tupaia/utils';
+
 import { hashStringToInt } from '@tupaia/tsutils';
-import { getConnectionConfig } from './getConnectionConfig';
+import { Multilock } from '@tupaia/utils';
+
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
+import { getConnectionConfig } from './getConnectionConfig';
 import { generateId } from './utilities';
 import {
   MAX_BINDINGS_PER_QUERY,
@@ -326,8 +328,27 @@ export class TupaiaDatabase {
   }
 
   async count(recordType, where, options) {
-    // If just a simple query without options, use the more efficient knex count method
-    const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
+    // No special maths here. More often than not the, the `count()` takes longer than the `find()`,
+    // because it needs to read entire relations. (Especially slow when many permissions checks need
+    // to be made.)
+    const timeoutMs = 400;
+
+    let result;
+    try {
+      // If just a simple query without options, use the more efficient knex count method
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(timeoutMs, {
+        cancel: true,
+      });
+    } catch (error) {
+      if (error instanceof KnexTimeoutError) {
+        winston.info(
+          `Too many ${recordType} records to count. Timed out after ${timeoutMs} ms and returned “many” instead of a concrete number.`,
+        );
+        return 'many';
+      }
+      throw error;
+    }
+
     return Number.parseInt(result[0].count, 10);
   }
 
