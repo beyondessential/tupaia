@@ -59,9 +59,7 @@ const CountryWrapper = styled.div`
 `;
 
 export const TaskMetadata = ({ task }: { task?: SingleTaskResponse }) => {
-  const { data: country } = useEntityByCode(task?.entity?.countryCode, {
-    enabled: !!task?.entity?.countryCode,
-  });
+  const { data: country } = useEntityByCode(task?.entity?.countryCode);
   if (!task) return null;
   const { survey, entity, taskStatus } = task;
 
