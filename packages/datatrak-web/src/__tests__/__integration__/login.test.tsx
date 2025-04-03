@@ -1,3 +1,5 @@
+import '../mocks/matchMedia.mock';
+
 import { fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
