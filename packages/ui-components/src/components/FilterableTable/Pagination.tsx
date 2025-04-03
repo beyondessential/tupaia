@@ -22,13 +22,12 @@ const Wrapper = styled.div`
   }
 `;
 
-interface PaginationProps {
-  page: number;
-  pageCount: number;
-  onChangePage: (page: number) => void;
-  pageSize: number;
+interface PaginationProps
+  extends Pick<
+    UIPaginationProps,
+    'page' | 'pageCount' | 'onChangePage' | 'pageSize' | 'totalRecords'
+  > {
   onChangePageSize: (pageSize: number) => void;
-  totalRecords: number;
 }
 
 export const Pagination = ({
