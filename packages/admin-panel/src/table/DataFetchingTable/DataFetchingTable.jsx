@@ -269,7 +269,7 @@ DataFetchingTableComponent.propTypes = {
   pageSize: PropTypes.number.isRequired,
   sorting: PropTypes.array.isRequired,
   deleteConfig: PropTypes.object,
-  totalRecords: PropTypes.number,
+  totalRecords: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['many'])]),
   detailUrl: PropTypes.string,
   getHasNestedView: PropTypes.func,
   getNestedViewLink: PropTypes.func,
