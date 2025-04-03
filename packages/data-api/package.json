@@ -12,8 +12,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
-    "build-dev": "npm run build",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "yarn run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "setup-test": "yarn workspace @tupaia/database setup-test-database",
@@ -39,6 +39,7 @@
     "moment": "^2.24.0"
   },
   "devDependencies": {
+    "rimraf": "^6.0.1",
     "ts-node": "^10.7.0"
   }
 }

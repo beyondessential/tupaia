@@ -20,6 +20,7 @@ const DEFAULT_FIELDS = [
   'assessor_name',
   'country.name',
   'data_time',
+  'end_time',
   'entity.name',
   'entity.id',
   'id',
