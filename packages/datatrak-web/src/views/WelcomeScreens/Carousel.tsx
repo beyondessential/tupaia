@@ -2,10 +2,10 @@ import React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { SafeAreaColumn } from '@tupaia/ui-components';
 import { CarouselDots } from './CarouselDots';
-import { PageContainer } from '../../components';
 
-const Wrapper = styled(PageContainer).attrs({ as: 'main' })`
+const Wrapper = styled(SafeAreaColumn).attrs({ forwardedAs: 'main' })`
   display: flex;
   flex-direction: column;
   flex: 1;
