@@ -1,7 +1,7 @@
 import { Button as MuiButton } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { Button as UIButton } from '@tupaia/ui-components';
 
