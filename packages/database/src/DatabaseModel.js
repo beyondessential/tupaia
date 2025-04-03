@@ -239,8 +239,11 @@ export class DatabaseModel {
    * @returns {Promise<any[]>}
    */
   async find(dbConditions, customQueryOptions = {}) {
-    const queryOptions = await this.getQueryOptions(customQueryOptions);
-    const processedDbConditions = await this.getDbConditions(dbConditions);
+    const [queryOptions, processedDbConditions] = await Promise.all([
+      this.getQueryOptions(customQueryOptions),
+      this.getDbConditions(dbConditions),
+    ]);
+
     const dbResults = await this.database.find(
       this.databaseRecord,
       processedDbConditions,
