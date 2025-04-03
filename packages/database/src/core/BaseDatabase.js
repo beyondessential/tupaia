@@ -424,7 +424,7 @@ export class BaseDatabase {
    * @template Result
    * @returns {Promise<Result>} execution result
    */
-  async executeSql(sqlString, parametersToBind = []) {
+  async executeSql(sqlString, parametersToBind) {
     if (!this.connection) {
       await this.waitUntilConnected();
     }
