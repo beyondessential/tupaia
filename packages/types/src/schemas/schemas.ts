@@ -84712,6 +84712,8 @@ export const EntityTypeEnumSchema = {
 		"medical_area",
 		"msupply_store",
 		"nursing_zone",
+		"pacmossi_asset_facility",
+		"pacmossi_asset_sub_facility",
 		"pacmossi_district",
 		"pacmossi_insecticide_test",
 		"pacmossi_spraying_site",
