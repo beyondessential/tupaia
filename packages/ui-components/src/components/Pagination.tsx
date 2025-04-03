@@ -4,18 +4,20 @@ import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Select } from './Inputs';
 
-const Wrapper = styled.div`
-  font-size: 0.75rem;
+export const Wrapper = styled.div`
   display: flex;
+  font-size: 0.75rem;
   justify-content: space-between;
-  width: 100%;
-
   padding-block: 0.5rem;
   padding-inline: 1rem;
+  inline-size: 100%;
+
   label,
   p,
-  .MuiInputBase-input {
-    font-size: 0.75rem;
+  .MuiInputBase-input,
+  .MuiInputBase-root,
+  .MuiSelect-root {
+    font-size: inherit;
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
@@ -68,7 +70,7 @@ const ManualPageInput = styled(Input)`
   padding-block: 0.5rem;
   padding-inline: 0.8rem 0.2rem;
   margin-inline: 0.5rem;
-  font-size: 0.75rem;
+  font-size: inherit;
   .MuiInputBase-input {
     text-align: center;
     padding-block: 0;
@@ -77,7 +79,7 @@ const ManualPageInput = styled(Input)`
 `;
 
 const Text = styled(Typography)`
-  font-size: 0.75rem;
+  font-size: inherit;
 `;
 
 const RowsSelect = styled(Select)`
@@ -150,9 +152,10 @@ const RowsSelectComponent = ({
   setPageSize,
   pageSizeOptions,
 }: RowsSelectComponentProps) => {
-  const displayOptions = pageSizeOptions.map(size => {
-    return { label: `Rows per page: ${size}`, value: size };
-  });
+  const displayOptions = pageSizeOptions.map(size => ({
+    label: `${size} rows per page`,
+    value: size,
+  }));
 
   const handlePageSizeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     if (!setPageSize) return;
@@ -170,13 +173,13 @@ const RowsSelectComponent = ({
   );
 };
 
-interface PaginationProps {
+export interface PaginationProps {
   page: number;
   pageCount: number;
   onChangePage: PageSelectComponentProps['onChangePage'];
   pageSize: number;
   setPageSize?: RowsSelectComponentProps['setPageSize'];
-  totalRecords: number;
+  totalRecords: number | 'many';
   pageSizeOptions?: RowsSelectComponentProps['pageSizeOptions'];
   applyRowsPerPage?: boolean;
   showEntriesCount?: boolean;
@@ -193,21 +196,23 @@ export const Pagination = ({
   applyRowsPerPage = true,
   showEntriesCount = true,
   alwaysDisplay = false,
+  ...props
 }: PaginationProps) => {
   if (!totalRecords && !alwaysDisplay) return null;
   const currentDisplayStart = page * pageSize + 1;
-  const currentDisplayEnd = Math.min((page + 1) * pageSize, totalRecords);
-
-  const getEntriesText = () => {
-    if (!totalRecords) return '';
-    return `${currentDisplayStart} - ${currentDisplayEnd} of ${totalRecords} entries`;
-  };
-
-  const entriesText = getEntriesText();
+  const endOfPage = (page + 1) * pageSize;
+  const currentDisplayEnd =
+    typeof totalRecords === 'number' ? Math.min(endOfPage, totalRecords) : endOfPage;
 
   return (
-    <Wrapper className="pagination-wrapper">
-      <ActionsWrapper>{showEntriesCount && <Text>{entriesText}</Text>}</ActionsWrapper>
+    <Wrapper className="pagination-wrapper" {...props}>
+      <ActionsWrapper>
+        {showEntriesCount && (
+          <Text>
+            {currentDisplayStart}&ndash;{currentDisplayEnd} of {totalRecords}
+          </Text>
+        )}
+      </ActionsWrapper>
       <RowWrapper>
         {applyRowsPerPage && (
           <RowsSelectComponent
