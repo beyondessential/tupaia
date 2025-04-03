@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Button as UIButton, SafeAreaColumn } from '@tupaia/ui-components';
+import { Button as UIButton } from '@tupaia/ui-components';
 
 import { useCurrentUserContext, useEditUser } from '../../api';
+import { PageContainer } from '../../components';
 import { ROUTES } from '../../constants';
 import { Carousel } from './Carousel';
 
@@ -86,7 +87,8 @@ const TextButton = styled(MuiButton)`
   font-weight: 400;
 `;
 
-const Footer = styled(SafeAreaColumn).attrs({ as: 'footer' })`
+const Footer = styled(PageContainer).attrs({ as: 'footer' })`
+  flex: initial;
   margin-block-start: 0.5rem;
   padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1.5rem);
 `;
