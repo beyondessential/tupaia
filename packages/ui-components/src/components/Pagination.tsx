@@ -203,7 +203,6 @@ export const Pagination = ({
   const endOfPage = (page + 1) * pageSize;
   const currentDisplayEnd =
     typeof totalRecords === 'number' ? Math.min(endOfPage, totalRecords) : endOfPage;
-  console.log([endOfPage, totalRecords, currentDisplayEnd]);
 
   return (
     <PaginationRoot {...props}>
