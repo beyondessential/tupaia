@@ -208,12 +208,6 @@ export const Pagination = ({
 
   const totalRecordsDisplay = hasKnownRecordCount ? totalRecords : 'many';
 
-  console.log('ui-components/Pagination', {
-    isFinite: Number.isFinite(totalRecords),
-    totalRecords,
-    currentDisplayEnd,
-  });
-
   return (
     <PaginationRoot {...props}>
       <ActionsWrapper>
