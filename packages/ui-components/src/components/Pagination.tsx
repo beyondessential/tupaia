@@ -200,23 +200,24 @@ export const Pagination = ({
 }: PaginationProps) => {
   if (!totalRecords && !alwaysDisplay) return null;
 
-  const hasKnownRecordCount = Number.isFinite(totalRecords);
+  const renderEntriesCount = () => {
+    const hasKnownCount = Number.isFinite(totalRecords);
 
-  const currentDisplayStart = page * pageSize + 1;
-  const endOfPage = (page + 1) * pageSize;
-  const currentDisplayEnd = hasKnownRecordCount ? Math.min(endOfPage, totalRecords) : endOfPage;
+    const start = page * pageSize + 1;
+    const endOfThisPage = (page + 1) * pageSize;
+    const end = hasKnownCount ? Math.min(endOfThisPage, totalRecords) : endOfThisPage;
+    const total = hasKnownCount ? totalRecords : 'many';
 
-  const totalRecordsDisplay = hasKnownRecordCount ? totalRecords : 'many';
+    return (
+      <Text>
+        {start}&ndash;{end} of {total}
+      </Text>
+    );
+  };
 
   return (
     <PaginationRoot {...props}>
-      <ActionsWrapper>
-        {showEntriesCount && (
-          <Text>
-            {currentDisplayStart}&ndash;{currentDisplayEnd} of {totalRecordsDisplay}
-          </Text>
-        )}
-      </ActionsWrapper>
+      <ActionsWrapper>{showEntriesCount && renderEntriesCount()}</ActionsWrapper>
       <RowWrapper>
         {applyRowsPerPage && (
           <RowsSelectComponent
