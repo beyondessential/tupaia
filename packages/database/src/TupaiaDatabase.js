@@ -340,10 +340,7 @@ export class TupaiaDatabase {
         cancel: true,
       });
     } catch (error) {
-      if (error instanceof KnexTimeoutError) {
-        return null;
-        // return 'many';
-      }
+      if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
       throw error;
     }
 
