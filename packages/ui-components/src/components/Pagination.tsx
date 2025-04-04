@@ -179,7 +179,7 @@ export interface PaginationProps {
   onChangePage: PageSelectComponentProps['onChangePage'];
   pageSize: number;
   setPageSize?: RowsSelectComponentProps['setPageSize'];
-  totalRecords: number | 'many';
+  totalRecords: number;
   pageSizeOptions?: RowsSelectComponentProps['pageSizeOptions'];
   applyRowsPerPage?: boolean;
   showEntriesCount?: boolean;
