@@ -202,7 +202,9 @@ export const Pagination = ({
   const currentDisplayStart = page * pageSize + 1;
   const endOfPage = (page + 1) * pageSize;
   const currentDisplayEnd =
-    typeof totalRecords === 'number' ? Math.min(endOfPage, totalRecords) : endOfPage;
+    typeof totalRecords === 'number' && !Number.isNaN(totalRecords)
+      ? Math.min(endOfPage, totalRecords)
+      : endOfPage;
 
   return (
     <PaginationRoot {...props}>
