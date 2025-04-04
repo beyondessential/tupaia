@@ -52,7 +52,7 @@ TableMessageProvider.propTypes = {
   hasData: PropTypes.bool.isRequired,
   colSpan: PropTypes.number.isRequired,
   children: PropTypes.node.isRequired,
-  noDataMessage: PropTypes.string,
+  noDataMessage: PropTypes.node,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
 };
