@@ -1,8 +1,6 @@
 import { scheduleJob, Job } from 'node-schedule';
 import winston from 'winston';
 
-import { ModelRegistry } from '@tupaia/database';
-
 /**
  * Base class for scheduled tasks. Uses 'node-schedule' for scheduling based on cron tab syntax
  * Subclasses should implement the run method and need to be initialised by instantiating the
@@ -37,9 +35,9 @@ export class ScheduledTask {
   /**
    * Model registry for database access
    */
-  models: ModelRegistry;
+  models: any;
 
-  constructor(models: ModelRegistry, name: string, schedule: string) {
+  constructor(models: any, name: string, schedule: string) {
     if (!name) {
       throw new Error(`ScheduledTask has no name`);
     }
@@ -63,7 +61,7 @@ export class ScheduledTask {
     this.start = Date.now();
 
     try {
-      await this.models.wrapInTransaction(async (transactingModels: ModelRegistry) => {
+      await this.models.wrapInTransaction(async (transactingModels: any) => {
         // Acquire a database advisory lock for the transaction
         // Ensures no other server instance can execute its change handler at the same time
         await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
