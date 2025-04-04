@@ -341,10 +341,8 @@ export class TupaiaDatabase {
       });
     } catch (error) {
       if (error instanceof KnexTimeoutError) {
-        winston.info(
-          `Too many ${recordType} records to count. Timed out after ${timeoutMs} ms and returned “many” instead of a concrete number.`,
-        );
-        return 'many';
+        return null;
+        // return 'many';
       }
       throw error;
     }
