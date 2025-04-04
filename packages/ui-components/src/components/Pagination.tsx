@@ -121,7 +121,7 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectCompon
           id="page"
           disableUnderline
         />
-        <Text id="page-count">of {pageCount}</Text>
+        <Text id="page-count">of {Number.isFinite(pageCount) ? pageCount : 'many'}</Text>
       </ManualPageInputContainer>
       <Button
         onClick={() => onChangePage(page - 1)}
@@ -199,19 +199,27 @@ export const Pagination = ({
   ...props
 }: PaginationProps) => {
   if (!totalRecords && !alwaysDisplay) return null;
+
+  const hasKnownRecordCount = Number.isFinite(totalRecords);
+
   const currentDisplayStart = page * pageSize + 1;
   const endOfPage = (page + 1) * pageSize;
-  const currentDisplayEnd =
-    typeof totalRecords === 'number' && !Number.isNaN(totalRecords)
-      ? Math.min(endOfPage, totalRecords)
-      : endOfPage;
+  const currentDisplayEnd = hasKnownRecordCount ? Math.min(endOfPage, totalRecords) : endOfPage;
+
+  const totalRecordsDisplay = hasKnownRecordCount ? totalRecords : 'many';
+
+  console.log('ui-components/Pagination', {
+    isFinite: Number.isFinite(totalRecords),
+    totalRecords,
+    currentDisplayEnd,
+  });
 
   return (
     <PaginationRoot {...props}>
       <ActionsWrapper>
         {showEntriesCount && (
           <Text>
-            {currentDisplayStart}&ndash;{currentDisplayEnd} of {totalRecords}
+            {currentDisplayStart}&ndash;{currentDisplayEnd} of {totalRecordsDisplay}
           </Text>
         )}
       </ActionsWrapper>
