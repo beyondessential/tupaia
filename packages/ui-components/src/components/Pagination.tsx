@@ -65,16 +65,18 @@ const ManualPageInputContainer = styled.div`
 `;
 
 const ManualPageInput = styled(Input)`
+  --padding-inline-end: 0.2rem;
+  --padding-inline-start: 0.8rem;
+  border-radius: 0.25rem;
   border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
-  border-radius: 4px;
-  padding-block: 0.5rem;
-  padding-inline: 0.8rem 0.2rem;
-  margin-inline: 0.5rem;
   font-size: inherit;
+  font-variant-numeric: lining-nums tabular-nums;
+  margin-inline: 0.5rem;
+  min-inline-size: calc(4ch + var(--padding-inline-start) + var(--padding-inline-end));
+  padding-inline: var(--padding-inline-start) var(--padding-inline-end);
+
   .MuiInputBase-input {
     text-align: center;
-    padding-block: 0;
-    height: auto;
   }
 `;
 
