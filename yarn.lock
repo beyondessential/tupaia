@@ -10154,6 +10154,7 @@ __metadata:
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
+    "@tupaia/sync": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     bson-objectid: ^2.0.4
