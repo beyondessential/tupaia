@@ -1,4 +1,4 @@
-import { SYNC_DIRECTIONS } from '@tupaia/sync';
+// import { SYNC_DIRECTIONS } from '@tupaia/sync';
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -60,7 +60,7 @@ export class ProjectRecord extends DatabaseRecord {
 }
 
 export class ProjectModel extends DatabaseModel {
-  syncDirection = SYNC_DIRECTIONS.BIDIRECTIONAL;
+  syncDirection = 'bidirectional';
 
   get DatabaseRecordClass() {
     return ProjectRecord;

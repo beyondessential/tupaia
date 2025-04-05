@@ -19,7 +19,7 @@
     "test": "yarn package:test --passWithNoTests",
     "test:coverage": "yarn test --coverage"
   },
-  "devDependencies": {
+  "dependencies": {
     "@tupaia/database": "workspace:*"
   }
 }
