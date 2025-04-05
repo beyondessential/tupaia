@@ -1,4 +1,4 @@
-import { ModelRegistry } from '@tupaia/database';
+import type { ModelRegistry } from '@tupaia/database';
 import { FilteredModelRegistry, SyncDirectionValues, SyncSessionDirectionValues } from '../types';
 import { SYNC_DIRECTIONS } from '../constants';
 

@@ -1,4 +1,4 @@
-import { TupaiaDatabase } from '@tupaia/database';
+import type { TupaiaDatabase } from '@tupaia/database';
 
 export const getSyncTicksOfPendingEdits = async (database: TupaiaDatabase) => {
   // Get the keys (ie: syncTicks) of all the in-flight transaction locks of pending edits.
