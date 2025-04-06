@@ -9,10 +9,10 @@ import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
 
 const PageWrapper = styled.div`
+  background-color: ${props => props.theme.palette.background.default};
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.palette.background.default};
-  min-block-size: 100vb;
+  min-block-size: 100dvb;
 
   + .notistack-SnackbarContainer {
     align-items: stretch;
@@ -33,7 +33,6 @@ const PageWrapper = styled.div`
     inset-block-start: ${HEADER_HEIGHT};
   }
 `;
-
 
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();
