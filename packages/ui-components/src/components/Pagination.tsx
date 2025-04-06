@@ -123,7 +123,9 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectCompon
           id="page"
           disableUnderline
         />
-        <Text id="page-count">of {Number.isFinite(pageCount) ? pageCount : 'many'}</Text>
+        <Text id="page-count">
+          of {Number.isFinite(pageCount) ? pageCount.toLocaleString() : 'many'}
+        </Text>
       </ManualPageInputContainer>
       <Button
         onClick={() => onChangePage(page - 1)}
@@ -204,11 +206,13 @@ export const Pagination = ({
 
   const renderEntriesCount = () => {
     const hasKnownCount = Number.isFinite(totalRecords);
-
-    const start = page * pageSize + 1;
     const endOfThisPage = (page + 1) * pageSize;
-    const end = hasKnownCount ? Math.min(endOfThisPage, totalRecords) : endOfThisPage;
-    const total = hasKnownCount ? totalRecords : 'many';
+
+    const [start, end, total] = [
+      page * pageSize + 1,
+      hasKnownCount ? Math.min(endOfThisPage, totalRecords) : endOfThisPage,
+      hasKnownCount ? totalRecords : 'many',
+    ].map(num => num.toLocaleString());
 
     return (
       <Text>
