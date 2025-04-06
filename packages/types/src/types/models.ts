@@ -1880,6 +1880,8 @@ export enum EntityTypeEnum {
   'document_group' = 'document_group',
   'document' = 'document',
   'vehicle' = 'vehicle',
+  'pacmossi_asset_facility' = 'pacmossi_asset_facility',
+  'pacmossi_asset_sub_facility' = 'pacmossi_asset_sub_facility',
 }
 export enum DataTableType {
   'analytics' = 'analytics',

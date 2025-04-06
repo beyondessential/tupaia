@@ -32,6 +32,7 @@ export * from './PasswordStrengthBar';
 export * from './ProfileButton';
 export * from './QrCode';
 export * from './ReferenceTooltip';
+export * from './SafeArea';
 export * from './SplitButton';
 export * from './Table';
 export * from './Toast';
