@@ -1,13 +1,25 @@
 import { format, lastDayOfMonth } from 'date-fns';
+import { Frequency } from 'rrule';
+
 import { RRULE_FREQUENCIES } from '@tupaia/utils';
+
 import { SingleTaskResponse } from '../../types';
 
-export const getRepeatScheduleOptions = dueDate => {
-  const noRepeat = {
-    label: "Doesn't repeat",
-    value: null,
-  };
+const noRepeat = {
+  label: 'Doesn’t repeat',
+  value: null,
+} as const;
 
+interface RepeatingRepeatScheduleOption {
+  readonly label: string;
+  readonly value: Frequency;
+}
+
+export type RepeatScheduleOption = typeof noRepeat | RepeatingRepeatScheduleOption;
+
+type RepeatScheduleOptions = [typeof noRepeat, ...RepeatingRepeatScheduleOption[]];
+
+export const getRepeatScheduleOptions = (dueDate): RepeatScheduleOptions => {
   if (!dueDate) {
     return [noRepeat];
   }

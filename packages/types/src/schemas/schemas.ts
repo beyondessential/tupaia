@@ -86177,6 +86177,23 @@ export const UserResponseSchema = {
 	]
 } 
 
+export const CountriesResponseItemSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"name"
+	]
+} 
+
 export const MailingListSchema = {
 	"type": "object",
 	"properties": {

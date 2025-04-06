@@ -10,7 +10,7 @@ type User = DatatrakWebUsersRequest.ResBody[0];
 interface AssigneeInputProps {
   value: User | null;
   onChange: (value: User | null) => void;
-  inputRef?: React.Ref<any>;
+  inputRef?: React.Ref<HTMLInputElement>;
   countryCode?: Country['code'];
   surveyCode?: Survey['code'];
   required?: boolean;
