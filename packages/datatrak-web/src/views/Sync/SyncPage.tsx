@@ -9,7 +9,7 @@ import { LastSyncDate } from './LastSyncDate';
 import { SyncStatus } from './SyncStatus';
 
 const Wrapper = styled.div`
-  block-size: 100vb;
+  block-size: 100dvb;
   display: grid;
   grid-template-rows: auto 1fr;
 `;
