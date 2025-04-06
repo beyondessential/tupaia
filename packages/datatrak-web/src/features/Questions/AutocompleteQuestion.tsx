@@ -11,14 +11,13 @@ import { DESKTOP_BREAKPOINT } from '../../constants';
 import { SurveyQuestionInputProps } from '../../types';
 
 /**
- * Other properties from the {@link Option} model may be present in Option
- * objects returned by {@link useAutocompleteOptions}, but new options created
- * in this component will only have these two, which are compulsory for this
- * component’s functionality.
+ * Other properties from the {@link Option} model may be present in Option objects returned by
+ * {@link useAutocompleteOptions}, but new options created in this component will only have these
+ * two, which are compulsory for this component’s functionality.
  */
-interface AutocompleteQuestionOption extends Pick<Option, 'label' | 'value'> {}
+type AutocompleteQuestionOption = Pick<Option, 'label' | 'value'>;
 
-const Autocomplete = styled(BaseAutocomplete)`
+const Autocomplete = styled(BaseAutocomplete<AutocompleteQuestionOption>)`
   width: calc(100% - 3.5rem);
   max-width: 25rem;
 
@@ -95,13 +94,8 @@ export const AutocompleteQuestion = ({
 
   const canCreateNew = !!createNew;
 
-  const getOptionSelected = (
-    option: AutocompleteQuestionOption,
-    selectedOption?: string | null,
-  ) => {
-    const value = typeof option === 'string' ? option : option?.value;
-    return value === selectedOption;
-  };
+  const getOptionSelected = (option: AutocompleteQuestionOption, selectedOption?: string | null) =>
+    option?.value === selectedOption;
 
   const getOptions = (): AutocompleteQuestionOption[] => {
     const options = data || [];
@@ -144,7 +138,6 @@ export const AutocompleteQuestion = ({
   return (
     <>
       <Autocomplete
-        as={BaseAutocomplete<AutocompleteQuestionOption>}
         id={id}
         label={label!}
         name={name!}
@@ -172,7 +165,6 @@ export const AutocompleteQuestion = ({
             component: InputHelperText,
           },
         }}
-        placeholder="Search…" // TODO: Might be redundant?
         muiProps={{
           freeSolo: !!createNew,
           getOptionDisabled: (option: AutocompleteQuestionOption) =>
@@ -184,7 +176,7 @@ export const AutocompleteQuestion = ({
             if (params.inputValue !== '' && createNew) {
               filtered.push({
                 value: params.inputValue,
-                label: `Add "${params.inputValue}"`,
+                label: `Add “${params.inputValue}”`,
               });
             }
 
