@@ -3,7 +3,7 @@ import {
   populateTestData,
   clearTestData,
   upsertDummyRecord,
-} from '../../testUtilities';
+} from '../../server/testUtilities';
 import { EntityHierarchyCacher } from '../../changeHandlers';
 import { EntityHierarchySubtreeRebuilder } from '../../changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
 

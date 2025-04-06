@@ -2,8 +2,8 @@ import winston from 'winston';
 
 import { sleep } from '@tupaia/utils';
 import { ChangeHandler } from '../../changeHandlers/ChangeHandler';
-import { getTestModels, upsertDummyRecord } from '../../testUtilities';
-import { generateId } from '../../utilities';
+import { getTestModels, upsertDummyRecord } from '../../server/testUtilities';
+import { generateId } from '../../core/utilities';
 
 const DEBOUNCE_TIME = 100; // short debounce time so tests run more quickly
 

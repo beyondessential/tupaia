@@ -3,7 +3,7 @@ import {
   populateTestData,
   clearTestData,
   upsertDummyRecord,
-} from '../../testUtilities';
+} from '../../server/testUtilities';
 import { AnalyticsRefresher } from '../../changeHandlers/AnalyticsRefresher';
 
 import { TEST_DATA, ANALYTICS, ANSWER001_TEST_ANALYTIC } from './AnalyticsRefresher.fixtures';
