@@ -1,56 +1,25 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 DIR=$(dirname "$0")
+REPO_ROOT=$DIR/../..
 
-CONCURRENT_BUILD_BATCH_SIZE=1
-CONCURRENTLY_BIN="${DIR}/../../node_modules/.bin/concurrently"
+# Convert 'foo-bar baz' → '@tupaia/{foo-bar,baz}'.
+# Assume INTERNAL_DEPS is a valid space-separated list of package names, and use
+# Bash parameter expansion to replace spaces with commas.
+INTERNAL_DEPS=$("$DIR/getInternalDependencies.sh")
+INTERNAL_DEPS_CSV=${INTERNAL_DEPS// /,}
+PATTERN=@tupaia/{$INTERNAL_DEPS_CSV}
 
-USAGE="Usage: \033[1mbuildInternalDependencies.sh\033[m [\033[1m--watch\033[m] [\033[1m--packagePath\033[m|\033[1m-p\033[m]"
+# Build!
 
-watch=false
-package_path=""
-while [ "$1" != "" ]; do
-    case $1 in
-    --watch)
-        shift
-        watch=true
-        ;;
-    -p | --packagePath)
-        shift
-        package_path=$1
-        shift
-        ;;
-    -h | --help)
-        echo -e "$USAGE\n"
-        exit
-        ;;
-    *)
-        echo -e "$USAGE\n"
-        exit 1
-        ;;
-    esac
-done
-
-[[ $watch = "true" ]] && build_args="--watch" || build_args=""
-[[ $watch = "true" ]] && build_ts_args="--watch --preserveWatchOutput" || build_ts_args=""
-
-build_commands=()
-build_prefixes=()
-
-# Build dependencies
-for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
-    build_commands+=("\"NODE_ENV=production yarn workspace @tupaia/${PACKAGE} build-dev $build_args\"")
-    build_prefixes+=("${PACKAGE},")
-done
-
-if [[ $watch == "true" ]]; then
-    echo -e "\033[1mConcurrently building and watching all internal dependencies\033[m"
-    echo "> ${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
-    echo ""
-    eval   "${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
-else
-    echo -e "\033[1mConcurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}\033[m"
-    echo "> ${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
-    echo ""
-    eval   "${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
-fi
+set -x
+NODE_ENV=production \
+    yarn workspaces foreach \
+    --parallel \
+    --topological \
+    --verbose \
+    --jobs unlimited \
+    --include "$PATTERN" \
+    run build-dev \
+    $@ # Forward arguments (mostly for --watch flag)
