@@ -10697,6 +10697,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/sync-server@workspace:packages/sync-server":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/sync-server@workspace:packages/sync-server"
+  dependencies:
+    "@tupaia/server-boilerplate": "workspace:*"
+    "@tupaia/server-utils": "workspace:*"
+    "@tupaia/sync": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/sync@workspace:*, @tupaia/sync@workspace:packages/sync":
   version: 0.0.0-use.local
   resolution: "@tupaia/sync@workspace:packages/sync"
@@ -35264,16 +35274,6 @@ __metadata:
   checksum: 6e8fc7e1486b8b54bea91199d9535bb72f10842e40c79e882fc94fb7b14b89866adf2fd79efa5ebb5b658bc07fb459ccce5ac0e99ef3d72f474e74aaf284029d
   languageName: node
   linkType: hard
-
-"sync-server@workspace:packages/sync-server":
-  version: 0.0.0-use.local
-  resolution: "sync-server@workspace:packages/sync-server"
-  dependencies:
-    "@tupaia/server-boilerplate": "workspace:*"
-    "@tupaia/server-utils": "workspace:*"
-    "@tupaia/sync": "workspace:*"
-  languageName: unknown
-  linkType: soft
 
 "systeminformation@npm:^5.7":
   version: 5.21.20
