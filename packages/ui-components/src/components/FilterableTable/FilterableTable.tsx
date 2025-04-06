@@ -143,21 +143,17 @@ export const FilterableTable = ({
 
   const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
 
+  const getSortedConfig = (id: string) => sorting.find(sort => sort.id === id);
+
   const updateSorting = (id: string, isDesc?: boolean) => {
-    const currentSorting = sorting.find(sort => sort.id === id);
+    const currentSorting = getSortedConfig(id);
     if (!currentSorting) {
       return onChangeSorting([{ id, desc: false }]);
     }
-
     if (isDesc) {
       return onChangeSorting([]);
     }
-
     return onChangeSorting([{ id, desc: true }]);
-  };
-
-  const getSortedConfig = (id: string) => {
-    return sorting.find(sort => sort.id === id);
   };
 
   return (
