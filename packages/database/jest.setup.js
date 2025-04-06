@@ -1,4 +1,4 @@
-import { configureEnv } from './src/configureEnv';
+import { configureEnv } from './src/server/configureEnv';
 import { clearTestData, getTestDatabase } from './src/testUtilities';
 
 configureEnv();
