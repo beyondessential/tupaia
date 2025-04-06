@@ -30,6 +30,7 @@ export const ROUTES = {
   TASKS: '/tasks',
   TASK_DETAILS: '/tasks/:taskId',
   NOT_AUTHORISED: '/not-authorised',
+  WELCOME: '/welcome',
   EXPORT_SURVEY_RESPONSE: 'export/:surveyResponseId',
 };
 

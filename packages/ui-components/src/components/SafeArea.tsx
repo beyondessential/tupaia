@@ -34,23 +34,16 @@ export const SafeArea = styled.div<{
   `;
 });
 
-export const SafeAreaColumn = ({
-  as,
-  ...props
-}: React.ComponentPropsWithoutRef<typeof SafeArea>) => (
-  <SafeArea forwardedAs={as} {...props} left right />
+export const SafeAreaColumn = (props: React.ComponentPropsWithoutRef<typeof SafeArea>) => (
+  <SafeArea {...props} left right />
 );
 
-/** @privateRemarks Consider setting `as="header"` */
-export const SafeAreaHeader = ({
-  as,
-  ...props
-}: React.ComponentPropsWithoutRef<typeof SafeArea>) => <SafeArea forwardedAs={as} {...props} top />;
+/** @privateRemarks Consider setting `forwardedAs="header"` */
+export const SafeAreaHeader = (props: React.ComponentPropsWithoutRef<typeof SafeArea>) => (
+  <SafeArea {...props} top />
+);
 
-/** @privateRemarks Consider setting `as="footer"` */
-export const SafeAreaFooter = ({
-  as,
-  ...props
-}: React.ComponentPropsWithoutRef<typeof SafeArea>) => (
-  <SafeArea forwardedAs={as} {...props} bottom />
+/** @privateRemarks Consider setting `forwardedAs="footer"` */
+export const SafeAreaFooter = (props: React.ComponentPropsWithoutRef<typeof SafeArea>) => (
+  <SafeArea {...props} bottom />
 );

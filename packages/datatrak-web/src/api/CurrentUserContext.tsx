@@ -5,7 +5,9 @@ import { FullPageLoader } from '@tupaia/ui-components';
 
 import { useUser } from './queries';
 
-export type CurrentUserContextType = DatatrakWebUserRequest.ResBody & { isLoggedIn: boolean };
+export interface CurrentUserContextType extends DatatrakWebUserRequest.ResBody {
+  isLoggedIn: boolean;
+}
 
 const CurrentUserContext = createContext<CurrentUserContextType | null>(null);
 
