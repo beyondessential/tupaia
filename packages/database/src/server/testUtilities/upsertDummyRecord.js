@@ -1,7 +1,7 @@
 import pluralize from 'pluralize';
 import { generateValueOfType } from './generateValueOfType';
-import { generateId } from '../utilities';
-import { RECORDS } from '../records';
+import { generateId } from '../../core/utilities';
+import { RECORDS } from '../../core/records';
 
 const { ENTITY, SURVEY_RESPONSE } = RECORDS;
 
