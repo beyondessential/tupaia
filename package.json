@@ -19,8 +19,8 @@
   },
   "scripts": {
     "build": "yarn workspaces foreach -ptv --jobs unlimited --exclude tupaia run build",
-    "build:from": "./scripts/bash/buildSubtreeFromGlob.sh",
-    "build:only": "./scripts/bash/buildPackagesByGlob.sh",
+    "build:from": "./scripts/bash/buildPackagesByGlob.sh --from",
+    "build:only": "./scripts/bash/buildPackagesByGlob.sh --only",
     "build:internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "build:non-internal-dependencies": "./scripts/bash/buildNonInternalDependencies.sh",
     "build:admin-panel": "yarn workspace @tupaia/admin-panel build",
