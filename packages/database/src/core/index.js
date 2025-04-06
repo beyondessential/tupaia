@@ -5,5 +5,4 @@ export * from './analytics';
 export * from './records.js';
 export { SqlQuery } from './SqlQuery';
 export * from './utilities';
-export * from './testUtilities';
 export { DatabaseModel } from './DatabaseModel';
