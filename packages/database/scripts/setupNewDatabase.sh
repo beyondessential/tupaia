@@ -53,7 +53,7 @@ echo "Deleting migrations that target data modifications, as there is no data to
 rm -rf ./src/migrations-backup
 mkdir  ./src/migrations-backup
 cp -r ./src/core/migrations/* ./src/migrations-backup/
-rm ./src/coremigrations/*modifies-data.js
+rm ./src/core/migrations/*modifies-data.js
 DB_NAME="$DB_NAME" yarn migrate
 cp -r ./src/migrations-backup/* ./src/migrations/
 rm -rf ./src/migrations-backup
