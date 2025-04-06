@@ -1,4 +1,3 @@
-import React, { useMemo } from 'react';
 import {
   TableContainer as MuiTableContainer,
   Table,
@@ -6,19 +5,19 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  Typography,
 } from '@material-ui/core';
-import styled from 'styled-components';
-import { Column, useFlexLayout, useResizeColumns, useTable, SortingRule } from 'react-table';
 import { KeyboardArrowDown } from '@material-ui/icons';
+import React, { useMemo } from 'react';
+import { Column, SortingRule, useFlexLayout, useResizeColumns, useTable } from 'react-table';
+import styled from 'styled-components';
+
 import { SpinningLoader } from '../Loaders';
 import { HeaderDisplayCell, TableCell } from './Cells';
 import { FilterCell, FilterCellProps, Filters } from './FilterCell';
 import { Pagination } from './Pagination';
 
 /*
- * TODO: Move to @tupaia/tsutils when the package is safe to use as a dependency
- * in front-end packages
+ * TODO: Move to @tupaia/frontend-utils or @tupaia/react-utils once that exists
  */
 function isReactText(val: unknown): val is string | number {
   return typeof val === 'string' || typeof val === 'number';
@@ -52,7 +51,7 @@ const EmptyStateWrapper = styled.div.attrs(
   // If empty state message renders as a string, use semantic paragraph element
   props => isReactText(props.children) && { as: 'p' },
 )`
-  // Make this, and its two immediate ancestors, grow fill available space
+  // Make this, and its two immediate ancestors, fill available space
   .MuiTableContainer-root:has(&) :is(.MuiTable-root, .MuiTableBody-root, &) {
     block-size: 100%;
   }
