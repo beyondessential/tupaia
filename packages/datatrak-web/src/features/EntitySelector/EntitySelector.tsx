@@ -144,7 +144,7 @@ export const EntitySelector = ({
           </Label>
         )}
         <div className="entity-selector-content">
-          <QrCodeScanner />
+          <QrCodeScanner /> // TODO: Conditionally render this
           {showSearchInput && (
             <SearchField
               id={id}
