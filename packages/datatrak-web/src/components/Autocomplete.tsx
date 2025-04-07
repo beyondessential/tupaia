@@ -1,18 +1,22 @@
+import { Paper } from '@material-ui/core';
+import { Check as CheckIcon } from '@material-ui/icons';
 import React from 'react';
 import styled from 'styled-components';
-import { Check as CheckIcon } from '@material-ui/icons';
+
 import {
   Autocomplete as UiAutocomplete,
   AutocompleteProps as UiAutocompleteProps,
 } from '@tupaia/ui-components';
+
 import { DESKTOP_BREAKPOINT } from '../constants';
 import { InputHelperText } from './InputHelperText';
 
-const PopupBody = styled.div`
+const PopupBody = styled(Paper).attrs({
+  variant: 'outlined',
+})`
   margin-block: 0;
 
   .MuiAutocomplete-listbox {
-    padding-block: 0;
     max-block-size: 100%;
   }
 
