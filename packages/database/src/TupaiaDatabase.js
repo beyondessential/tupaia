@@ -4,7 +4,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { Multilock, requireEnv } from '@tupaia/utils';
+import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
 
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -74,7 +74,12 @@ const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
-  #countRecordTimeoutMs = Number.parseInt(requireEnv('SQL_COUNT_TIMEOUT_MS'));
+  /**
+   * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
+   * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
+   * without admin privileges are really expected to time out.
+   */
+  #countRecordTimeoutMs = Number.parseInt(getEnvVarOrDefault('SQL_COUNT_TIMEOUT_MS', '400'));
 
   /**
    * @param {TupaiaDatabase} [transactingConnection]
