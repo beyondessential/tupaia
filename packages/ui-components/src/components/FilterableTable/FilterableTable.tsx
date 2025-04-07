@@ -62,6 +62,7 @@ const EmptyStateWrapper = styled.div.attrs(
   place-content: center;
   place-items: center;
   text-align: center;
+  text-wrap: balance;
 `;
 
 const LoadingContainer = styled.div`
