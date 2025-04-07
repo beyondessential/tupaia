@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useFormContext } from 'react-hook-form';
 import { FormHelperText, FormLabel, FormLabelProps, TypographyProps } from '@material-ui/core';
+import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import styled from 'styled-components';
+
 import { Country, Project, SurveyScreenComponentConfig } from '@tupaia/types';
 import { SpinningLoader, useDebounce } from '@tupaia/ui-components';
+
 import { useEntityById, useProjectEntities } from '../../api';
+import { QrCodeScanner } from './QrCodeScanner';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters } from './useEntityBaseFilters';
@@ -141,6 +144,7 @@ export const EntitySelector = ({
           </Label>
         )}
         <div className="entity-selector-content">
+          <QrCodeScanner />
           {showSearchInput && (
             <SearchField
               id={id}

@@ -15,7 +15,7 @@ const CloseIcon = styled(MuiCloseIcon)`
   color: ${({ theme }) => theme.palette.text.primary};
 `;
 
-const CloseButton = styled(IconButton)`
+export const CloseButton = styled(IconButton)`
   position: absolute;
   top: 0.1rem;
   right: 0.1rem;
@@ -29,7 +29,6 @@ const Content = styled.div`
 interface ModalProps extends DialogProps {
   open: boolean;
   onClose: () => void;
-  children?: ReactNode;
 }
 
 export const Modal = ({ open, onClose, children, ...muiProps }: ModalProps) => {
