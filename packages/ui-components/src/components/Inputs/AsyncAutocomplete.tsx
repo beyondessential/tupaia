@@ -73,7 +73,7 @@ export const AsyncAutocomplete = ({
       required={required}
       helperText={helperText}
       loading={loading}
-      onInputChange={throttle((event, newValue) => {
+      onInputChange={throttle((_event, newValue) => {
         setQuery(newValue);
       }, 200)}
       muiProps={muiProps}
