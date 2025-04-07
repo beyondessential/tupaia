@@ -63,3 +63,4 @@ export {
 } from './UserCountryAccessAttempt';
 export { TaskModel, TaskRecord } from './Task';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
+export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';

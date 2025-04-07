@@ -1,3 +1,4 @@
+export * from '../core';
 export { TupaiaDatabase } from './TupaiaDatabase';
 export { getDbMigrator } from './getDbMigrator';
 export { getConnectionConfig } from './getConnectionConfig';
