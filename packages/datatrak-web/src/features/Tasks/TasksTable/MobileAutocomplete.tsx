@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Search as SearchIcon } from '@material-ui/icons';
 import { InputAdornment } from '@material-ui/core';
