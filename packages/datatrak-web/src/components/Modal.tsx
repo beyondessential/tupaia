@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Dialog, Paper, DialogProps } from '@material-ui/core';
 import MuiCloseIcon from '@material-ui/icons/Close';
@@ -22,7 +22,7 @@ export const CloseButton = styled(IconButton)`
   z-index: 1;
 `;
 
-const Content = styled.div`
+export const ModalContent = styled.div`
   padding-top: 1rem;
 `;
 
@@ -37,7 +37,7 @@ export const Modal = ({ open, onClose, children, ...muiProps }: ModalProps) => {
       <CloseButton onClick={onClose}>
         <CloseIcon />
       </CloseButton>
-      <Content>{children}</Content>
+      <ModalContent>{children}</ModalContent>
     </Dialog>
   );
 };

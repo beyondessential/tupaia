@@ -5,10 +5,10 @@ import styled from 'styled-components';
 import { QrCodeScannerIcon } from '@tupaia/ui-components';
 
 import { Button } from '../../components';
-import { CloseButton, Modal } from '../../components/Modal';
+import { CloseButton, Modal, ModalContent } from '../../components/Modal';
 import { isNullish } from '../../utils';
-
-const Wrapper = 'div';
+import { Typography } from '@material-ui/core';
+import { Entity } from '@tupaia/types';
 
 const StyledButton = styled(Button).attrs({
   fullWidth: true,
@@ -35,8 +35,9 @@ const OrDivider = styled.p`
 `;
 
 const ModalRoot = styled.div`
-  block-size: 100dvb;
-  inline-size: 100dvi;
+  --scanner-size: 85dvmin;
+  background-color: black; // Visible when video stream is loading
+
   ${CloseButton} {
     top: max(env(safe-area-inset-top, 0), 1rem);
     right: max(env(safe-area-inset-right, 0), 1.25rem);
@@ -44,23 +45,33 @@ const ModalRoot = styled.div`
       color: white;
     }
   }
+
+  ${ModalContent} {
+    color: white;
+    display: grid;
+    grid-template-areas: '--instruction' '--scanner' '--feedback';
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(min-content, 1fr) var(--scanner-size) minmax(min-content, 1fr);
+    padding-block-start: unset;
+    row-gap: 1.5rem;
+    text-align: center;
+    text-wrap: balance;
+  }
 `;
 
-const Instruction = styled.p`
-  color: white;
-  font-size: 1rem;
+const Paragraph = styled(Typography).attrs({ variant: 'h1' })`
+  align-self: end;
   font-weight: 500;
-  letter-spacing: 0.01em;
-  text-align: center;
-  text-wrap: balance;
+  grid-area: --instruction;
+  margin-block: 0;
   z-index: 1;
+`;
 
-  // @supports not (anchor-name: none) {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% calc(-100% - 85dvmin / 2 - 2lh);
-  // }
+const Feedback = styled(Typography)`
+  align-self: start;
+  grid-area: --feedback;
+  margin-block: 0;
+  z-index: 1;
 `;
 
 const StyledQrReader = (styled(QrReader)<{
@@ -83,14 +94,17 @@ const StyledQrReader = (styled(QrReader)<{
     objectFit: 'cover',
     objectPosition: 'center',
   },
-})``;
+})`
+	grid-column: 1 / -1;
+	grid-row: 1 / -1;
+`;
 
 const Overlay = styled.div.attrs({ 'aria-hidden': true })`
   // Rounded square that fits
   aspect-ratio: 1;
   border-radius: 1.25rem;
   box-sizing: content-box;
-  width: 85dvmin;
+  width: var(--scanner-size);
 
   // Centred on screen
   position: absolute;
@@ -108,31 +122,39 @@ const Overlay = styled.div.attrs({ 'aria-hidden': true })`
   pointer-events: none;
 `;
 
-export const QrCodeScanner = (props: React.ComponentPropsWithoutRef<typeof Wrapper>) => {
+interface QrCodeScannerProps extends React.ComponentPropsWithoutRef<'div'> {
+  onSuccess?: (entityId: Entity['id']) => void;
+}
+
+export const QrCodeScanner = ({ onSuccess, ...props }: QrCodeScannerProps) => {
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const openScanner = () => setIsScannerOpen(true);
   const closeScanner = () => setIsScannerOpen(false);
 
-  const onResult: OnResultFunction = (result, error) => {
-    // console.log('onResult');
-    // console.log('  result', result);
-    // console.log('  error', error);
+  const [message, setMessage] = useState<string | null>();
 
+  const onResult: OnResultFunction = (result, error) => {
     if (error?.message) {
+      setMessage(error.message);
+      return;
     }
 
     if (isNullish(result)) return;
 
     const text = result.getText();
-    console.log(' text', text);
+    const entityId = text.replace('entity-', '');
+    // TODO: Validate entity ID format
+    onSuccess?.(entityId);
+    closeScanner();
   };
 
   return (
     <div {...props}>
       <StyledButton onClick={openScanner}>Scan QR&nbsp;code</StyledButton>
       <Modal fullScreen open={isScannerOpen} onClose={closeScanner} PaperComponent={ModalRoot}>
-        <Instruction>Scan entity QR&nbsp;code</Instruction>
+        <Paragraph>Scan entity QR&nbsp;code</Paragraph>
         <StyledQrReader onResult={onResult} />
+        <Feedback>{message}</Feedback>
         <Overlay />
       </Modal>
       <OrDivider>or</OrDivider>
