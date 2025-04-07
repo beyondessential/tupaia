@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 import { Search as SearchIcon } from '@material-ui/icons';
 import { InputAdornment } from '@material-ui/core';
@@ -12,11 +12,28 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  row-gap: 1rem;
+  row-gap: 0.5rem;
+
+  overflow-y: auto; // Fallback
+  overflow-block: auto;
 
   &,
   .MuiOutlinedInput-notchedOutline {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  }
+`;
+
+const StyledPopper = styled.div`
+  flex: 1;
+  z-index: unset;
+
+  .MuiAutocomplete-paper {
+    border: none;
+  }
+
+  .MuiAutocomplete-listbox {
+    max-height: unset;
+    padding: 0;
   }
 `;
 
@@ -94,7 +111,7 @@ export const MobileAutocomplete = ({
           freeSolo: true,
           disableClearable: true,
           disablePortal: false,
-          PopperComponent: React.Fragment,
+          PopperComponent: StyledPopper,
         }}
       />
     </Container>
