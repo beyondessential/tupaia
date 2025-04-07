@@ -30,7 +30,7 @@ export const useProjectEntities = (
     getEntityDescendants,
     {
       ...useQueryOptions,
-      enabled: !!projectCode && useQueryOptions?.enabled,
+      enabled: !!projectCode && (useQueryOptions?.enabled ?? true),
       placeholderData: [] as DatatrakWebEntityDescendantsRequest.ResBody,
     },
   );
