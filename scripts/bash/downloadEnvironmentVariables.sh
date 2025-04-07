@@ -3,7 +3,7 @@ set -e +x # Do not output commands in this script, as some would show credential
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-REPO_ROOT="$DIR/../.."
+REPO_ROOT=$(realpath "$DIR/../..")
 . "$DIR/ansiControlSequences.sh"
 
 # Collection in BitWarden where .env vars are kept
