@@ -4,7 +4,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { Multilock } from '@tupaia/utils';
+import { Multilock, requireEnv } from '@tupaia/utils';
 
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -74,6 +74,8 @@ const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
+  #countRecordTimeoutMs = Number.parseInt(requireEnv('SQL_COUNT_TIMEOUT_MS'));
+
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
@@ -328,17 +330,14 @@ export class TupaiaDatabase {
   }
 
   async count(recordType, where, options) {
-    // No special maths here. More often than not the, the `count()` takes longer than the `find()`,
-    // because it needs to read entire relations. (Especially slow when many permissions checks need
-    // to be made.)
-    const timeoutMs = 400;
-
+    /** @type {number} */
     let result;
     try {
       // If just a simple query without options, use the more efficient knex count method
-      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(timeoutMs, {
-        cancel: true,
-      });
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(
+        this.#countRecordTimeoutMs,
+        { cancel: true },
+      );
     } catch (error) {
       if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
       throw error;
