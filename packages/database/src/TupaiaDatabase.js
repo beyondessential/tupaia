@@ -328,7 +328,7 @@ export class TupaiaDatabase {
   async count(recordType, where, options) {
     // If just a simple query without options, use the more efficient knex count method
     const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
-    return parseInt(result[0].count, 10);
+    return Number.parseInt(result[0].count, 10);
   }
 
   async create(recordType, record, where) {
