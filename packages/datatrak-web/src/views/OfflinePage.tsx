@@ -8,7 +8,7 @@ import { HEADER_HEIGHT } from '../constants';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  block-size: 100dvb;
 `;
 
 const HeaderContainer = styled.header`
