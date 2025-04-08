@@ -13,12 +13,12 @@ if [[ ! $(bw login --check) ]]; then
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
         bw login --apikey
 
-    elif [[ $BITWARDEN_EMAIL != '' && $BITWARDEN_PASSWORD != '' ]]; then
+    elif [[ $BITWARDEN_EMAIL != '' && $BW_PASSWORD != '' ]]; then
         # Legacy behaviour, kept for backward compatibility
         # On new devices, requires OTP which is emailed to Bitwarden account holder
         # See https://bitwarden.com/help/cli/#using-email-and-password
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using email ($BITWARDEN_EMAIL) and password${RESET}"
-        bw login "$BITWARDEN_EMAIL" "$BITWARDEN_PASSWORD"
+        bw login "$BITWARDEN_EMAIL" "$BW_PASSWORD"
 
     elif [[ -t 1 ]]; then
         # Requires manual intervention. Bitwarden will prompt for email & password
@@ -34,11 +34,11 @@ if [[ ! $(bw login --check) ]]; then
 fi
 
 # Unlock Bitwarden vault
-if [[ ! -t 1 && $BITWARDEN_PASSWORD = '' ]]; then
-    echo -e "${BOLD}${RED}Bitwarden password is missing.${RESET} BITWARDEN_PASSWORD environment variable must be set to unlock the vault."
+if [[ ! -t 1 && $BW_PASSWORD = '' ]]; then
+    echo -e "${BOLD}${RED}Bitwarden password is missing.${RESET} BW_PASSWORD environment variable must be set to unlock the vault."
     exit 1
 fi
-eval "$(bw unlock --passwordenv "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
+eval "$(bw unlock --passwordenv "$BW_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
 
 # Collection in BitWarden where .env vars are kept
 COLLECTION_PATH='Engineering/Tupaia General/Environment Variables'

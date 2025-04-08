@@ -21,8 +21,8 @@ if [[ ! -v BW_CLIENTSECRET ]]; then
     echo "BW_CLIENTSECRET must be set"
     exit 1
 fi
-if [[ ! -v BITWARDEN_PASSWORD ]]; then
-    echo "BITWARDEN_PASSWORD must be set"
+if [[ ! -v BW_PASSWORD ]]; then
+    echo "BW_PASSWORD must be set"
     exit 1
 fi
 if [[ ! -v GIT_REPO ]]; then

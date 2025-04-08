@@ -37,7 +37,7 @@ yarn install --immutable
 # Fetch env vars
 BW_CLIENTID=$BW_CLIENTID \
     BW_CLIENTSECRET=$BW_CLIENTSECRET \
-    BITWARDEN_PASSWORD=$BITWARDEN_PASSWORD \
+    BW_PASSWORD=$BW_PASSWORD \
     yarn run download-env-vars "$DEPLOYMENT_NAME"
 
 # Build
