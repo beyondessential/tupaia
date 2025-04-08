@@ -6,7 +6,6 @@ import { useCurrentUserContext } from '../../api';
 import { InstallPrompt } from './InstallPrompt';
 import { InstallInstructions } from './InstallInstructions';
 import { useBeforeInstallPrompt } from './useBeforeInstallPrompt';
-import { MobileAppPrompt } from '../MobileAppPrompt';
 import { OpenPrompt } from './OpenPrompt';
 
 const Container = styled.div`
@@ -25,7 +24,7 @@ const TopBar = styled.div`
   background: #d9d9d9;
 `;
 
-const Drawer = ({ children }) => {
+const Drawer = ({ children }: { children: Readonly<React.ReactNode> }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const togglePrompt = () => {
@@ -53,9 +52,6 @@ const Drawer = ({ children }) => {
   );
 };
 
-// In case this needs to be behind a feature flag
-const isLegacy = false;
-
 const isInstalled = true;
 
 export const WebAppPrompt = () => {
@@ -69,10 +65,6 @@ export const WebAppPrompt = () => {
 
   if (isInstalled) {
     return <OpenPrompt />;
-  }
-
-  if (isLegacy) {
-    return <MobileAppPrompt />;
   }
 
   if (deferredPrompt) {
