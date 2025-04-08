@@ -6,14 +6,14 @@ DIR=$(dirname "$0")
 REPO_ROOT="$DIR/../.."
 . "$DIR/ansiControlSequences.sh"
 
-# Collection in BitWarden where .env vars are kept
-COLLECTION_PATH='Engineering/Tupaia General/Environment Variables'
 
 # Log in to bitwarden
 echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden${RESET}"
 bw login --check || bw login "$BITWARDEN_EMAIL" "$BITWARDEN_PASSWORD"
 eval "$(bw unlock "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
 
+# Collection in BitWarden where .env vars are kept
+COLLECTION_PATH='Engineering/Tupaia General/Environment Variables'
 COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
 echo
