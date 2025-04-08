@@ -32,7 +32,13 @@ if [[ ! $(bw login --check) ]]; then
         exit 1
     fi
 fi
-eval "$(bw unlock "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
+
+# Unlock Bitwarden vault
+if [[ ! -t 1 && $BITWARDEN_PASSWORD = '' ]]; then
+    echo -e "${BOLD}${RED}Bitwarden password is missing.${RESET} BITWARDEN_PASSWORD environment variable must be set to unlock the vault."
+    exit 1
+fi
+eval "$(bw unlock --passwordenv "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
 
 # Collection in BitWarden where .env vars are kept
 COLLECTION_PATH='Engineering/Tupaia General/Environment Variables'
