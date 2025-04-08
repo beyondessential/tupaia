@@ -73,13 +73,13 @@ export BW_CLIENTSECRET=$("$AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh" B
 export BW_PASSWORD=$("$AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh" BW_PASSWORD)
 DB_DUMP=$HOME_DIR/dump.sql
 
-sudo -E -Hu ubuntu $AWS_DEPLOYMENT_SCRIPTS/downloadFromS3.sh $DB_DUMP_FILE $DB_DUMP.gz && sudo -E -Hu ubuntu gunzip $DB_DUMP.gz &>/home/ubuntu/logs/download_db.log
-sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-aws/setupSslCertificate.sh $DEPLOYMENT_NAME $DOMAIN $SUBDOMAINS &>/home/ubuntu/logs/setup_ssl_cert.log
-sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-app/setup.sh &>/home/ubuntu/logs/setup_app.log
-sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/setup.sh &>/home/ubuntu/logs/setup_db.log
-sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-app/install.sh &>/home/ubuntu/logs/install_app.log
-sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/initialiseDatabase.sh &>/home/ubuntu/logs/initialise_db.log
-sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/importDbDump.sh $DB_DUMP &>/home/ubuntu/logs/import_db.log
+sudo -E -Hu ubuntu $AWS_DEPLOYMENT_SCRIPTS/downloadFromS3.sh $DB_DUMP_FILE $DB_DUMP.gz && sudo -E -Hu ubuntu gunzip $DB_DUMP.gz &> /home/ubuntu/logs/download_db.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-aws/setupSslCertificate.sh $DEPLOYMENT_NAME $DOMAIN $SUBDOMAINS &> /home/ubuntu/logs/setup_ssl_cert.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-app/setup.sh &> /home/ubuntu/logs/setup_app.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/setup.sh &> /home/ubuntu/logs/setup_db.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-app/install.sh &> /home/ubuntu/logs/install_app.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/initialiseDatabase.sh &> /home/ubuntu/logs/initialise_db.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/importDbDump.sh $DB_DUMP &> /home/ubuntu/logs/import_db.log
 
 # Tag as complete so CI/CD system can use the tag as a health check
 aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=StartupBuildProgress,Value=complete
