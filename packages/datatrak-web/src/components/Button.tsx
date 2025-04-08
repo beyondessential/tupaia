@@ -1,17 +1,19 @@
 import React, { ReactNode } from 'react';
 import { Link as RouterLink, To } from 'react-router-dom';
 import { Button as UIButton, Tooltip } from '@tupaia/ui-components';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const StyledButton = styled(UIButton)<{
   $enabledDisabledHoverEvents: boolean;
 }>`
-  &.Mui-disabled {
-    pointer-events: ${({ $enabledDisabledHoverEvents }) =>
-      $enabledDisabledHoverEvents
-        ? 'auto'
-        : 'none'}; // this is to allow the hover effect of a tooltip to work
-  }
+  // this is to allow the hover effect of a tooltip to work
+  ${props =>
+    props.$enabledDisabledHoverEvents &&
+    css`
+      &.Mui-disabled {
+        pointer-events: auto;
+      }
+    `};
 `;
 
 export const TooltipButtonWrapper = styled.span`
@@ -20,10 +22,9 @@ export const TooltipButtonWrapper = styled.span`
   vertical-align: baseline;
 `;
 
-interface ButtonProps extends Record<string, any> {
-  tooltip?: ReactNode;
-  children?: ReactNode;
+interface ButtonProps extends React.ComponentPropsWithoutRef<typeof StyledButton> {
   to?: To;
+  tooltip?: ReactNode;
   tooltipDelay?: number;
 }
 
@@ -44,23 +45,15 @@ const ButtonWrapper = ({
     </Tooltip>
   );
 };
-export const Button = ({
-  tooltip,
-  children,
-  to,
-  tooltipDelay = 1000,
-  ...restOfProps
-}: ButtonProps) => {
+export const Button = ({ tooltip, to, tooltipDelay = 1000, ...props }: ButtonProps) => {
   return (
     <ButtonWrapper tooltip={tooltip} tooltipDelay={tooltipDelay}>
       <StyledButton
-        {...restOfProps}
+        {...props}
         component={to ? RouterLink : undefined}
         to={to}
         $enabledDisabledHoverEvents={!!tooltip}
-      >
-        {children}
-      </StyledButton>
+      />
     </ButtonWrapper>
   );
 };

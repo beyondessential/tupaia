@@ -14,7 +14,8 @@ import {
   useProjectUsersQuery,
 } from '../../../api';
 import { Button, FiltersIcon } from '../../../components';
-import { Modal } from '../../../components/Modal';
+import { Modal, ModalBody } from '../../../components/Modal';
+import { useIsMobile } from '../../../utils';
 import { MobileAutocomplete } from './MobileAutocomplete';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
@@ -22,9 +23,8 @@ const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   right: max(env(safe-area-inset-right, 0), 1.25rem);
   position: absolute;
 
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    display: none;
-  }
+  // TODO: Remove this override in RN-1551
+  bottom: calc(max(env(safe-area-inset-bottom, 0), 1rem) + 3.25rem);
 `;
 
 const FilterIndicator = styled.div`
@@ -37,8 +37,21 @@ const FilterIndicator = styled.div`
   width: 1.375rem;
 `;
 
-const StyledModal = styled(Modal)`
-  .MuiDialog-scrollPaper {
+const SlideTransition = React.forwardRef(function Transition(
+  props: TransitionProps & { children?: React.ReactElement },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const StyledModal = styled(Modal).attrs({
+  TransitionComponent: SlideTransition,
+  disablePortal: false,
+  fullScreen: true,
+})`
+  padding-top: calc(env(safe-area-inset-top, 0), 10rem);
+
+  .MuiDialog-container {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -46,16 +59,20 @@ const StyledModal = styled(Modal)`
     > .MuiPaper-root {
       border-start-end-radius: 0.625rem;
       border-start-start-radius: 0.625rem;
-      max-block-size: 37.5rem;
-      padding-block: 0;
-
-      > div {
-        display: flex;
-        height: 100%;
-        flex-direction: column;
-        justify-content: space-between;
-      }
+      margin-block-start: 2rem;
+      max-block-size: 50rem;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);
+      padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
+      padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
+      padding-top: 0;
     }
+  }
+
+  ${ModalBody} {
+    block-size: 100%;
+    display: grid;
+    grid-template-areas: '--header' '--tabs' '--autocomplete' '--actions';
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
   }
 `;
 
@@ -67,6 +84,7 @@ const StyledTabs = styled(Tabs).attrs({
   --border: max(0.0625rem, 1px) solid ${props => props.theme.palette.primary.main};
   border-radius: 0.3125rem;
   border: var(--border);
+  grid-area: --tabs;
   margin-block-end: 0.875rem;
   margin-block-start: 1.5rem;
   min-block-size: 2.4rem;
@@ -91,15 +109,19 @@ const StyledTabs = styled(Tabs).attrs({
   }
 `;
 
-const DialogActions = styled.div`
-  display: flex;
-  justify-content: center;
+const ButtonGroup = styled.div`
   align-items: center;
-  padding-inline: 0.5rem;
-  padding-block: 0.5rem;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.5rem;
+  grid-area: --actions;
+  justify-content: center;
+  margin-block-start: 1rem;
 
   .MuiButton-root {
-    min-width: 6rem;
+    flex: 1;
+    margin: 0;
+    max-inline-size: 12rem;
   }
 `;
 
@@ -107,25 +129,23 @@ const Title = styled(Typography).attrs({
   variant: 'h2',
 })`
   font-size: 1.125rem;
+  grid-area: --header;
 `;
 
-const SlideTransition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const TabLabel = styled.div`
-  display: flex;
-  align-items: center;
+const StyledTab = styled(Tab)`
+  .MuiTab-wrapper {
+    display: contents;
+  }
 `;
 
-const Dot = styled.div`
+const ActiveFilterIndicator = styled.div.attrs({
+  'aria-label': 'Filter is active',
+})`
   background-color: ${props => props.theme.palette.primary.main};
   border-radius: 50%;
+  display: inline-block;
   height: 0.4375rem;
-  margin-inline-start: 0.5rem;
+  margin-inline-start: 0.35rem;
   width: 0.4375rem;
 `;
 
@@ -148,13 +168,13 @@ interface FilterTabsProps extends Pick<TabsProps, 'value'> {
 const FilterTabs = ({ tabs, value, onChange }: FilterTabsProps) => (
   <StyledTabs value={value} onChange={onChange}>
     {tabs.map((tab, index) => (
-      <Tab
+      <StyledTab
         key={tab.id}
         label={
-          <TabLabel>
-            <span>{tab.label}</span>
-            {tab.active && <Dot aria-hidden />}
-          </TabLabel>
+          <>
+            {tab.label}
+            {tab.active && <ActiveFilterIndicator />}
+          </>
         }
         aria-controls={`tabpanel-${index}`}
         id={`tab-${index}`}
@@ -204,6 +224,7 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
 export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const isMobile = useIsMobile();
 
   const getHasFilter = key => filters.some(filter => filter.id === key);
   const tabs = [
@@ -242,22 +263,21 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
 
   return (
     <>
-      <FilterButton
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        <FiltersIcon />
-        {filters.length > 0 && <FilterIndicator />}
-      </FilterButton>
+      {isMobile && (
+        <FilterButton
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
+          <FiltersIcon />
+          {filters.length > 0 && <FilterIndicator />}
+        </FilterButton>
+      )}
       <StyledModal
         open={isOpen}
         onClose={() => {
           setIsOpen(false);
         }}
-        disablePortal={false}
-        fullScreen
-        TransitionComponent={SlideTransition}
       >
         <Title>Filter by</Title>
         <FilterTabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
@@ -289,10 +309,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
             value={getFilterValue('assignee.id')}
           />
         )}
-        <DialogActions>
-          <Button variant="text" color="default" onClick={clearFilters}>
-            Clear filters
-          </Button>
+        <ButtonGroup>
           <Button
             onClick={() => {
               setIsOpen(false);
@@ -300,7 +317,10 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           >
             Apply
           </Button>
-        </DialogActions>
+          <Button variant="text" color="default" onClick={clearFilters}>
+            Clear filters
+          </Button>
+        </ButtonGroup>
       </StyledModal>
     </>
   );

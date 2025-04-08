@@ -28,10 +28,11 @@ const FormGroup = styled(MuiFormGroup)`
 `;
 
 const FormControlLabel = styled(MuiFormControlLabel)`
-  margin-left: 0;
+  margin-inline-start: 0;
   .MuiFormControlLabel-label {
-    font-size: 0.625rem;
-    color: ${({ theme }) => theme.palette.text.secondary};
+    color: ${props => props.theme.palette.text.secondary};
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
     padding-inline-end: 0.5rem;
   }
 

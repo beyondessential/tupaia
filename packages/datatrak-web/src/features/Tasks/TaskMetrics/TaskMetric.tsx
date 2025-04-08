@@ -5,26 +5,27 @@ import styled from 'styled-components';
 const MetricWrapper = styled.div`
   flex: 1;
   display: flex;
-  border: 1px solid #3f5539;
+  border: max(0.0625rem, 1px) solid #3f5539;
   border-radius: 3px;
-  margin-inline: 0.5rem;
   margin-block-end: auto;
+  text-wrap: balance;
 `;
 
 const MetricText = styled.p`
-  font-size: 0.8rem;
-  line-height: 1rem;
-  padding: 0.1rem 0.7rem;
-  min-height: 40px;
-  min-width: 3rem;
   align-content: center;
-  text-align: center;
+  font-size: 0.8rem;
   font-weight: 500;
+  line-height: 1rem;
   margin: 0;
+  min-block-size: 2.5rem;
+  min-inline-size: 3rem;
+  padding-block: 0.1rem;
+  padding-inline: 0.7rem;
+  text-align: center;
 `;
 
 const MetricNumber = styled(MetricText)`
-  border-right: 1px solid ${({ theme }) => theme.palette.divider};
+  border-right: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
 `;
 
 export const TaskMetric = ({ number, text, isLoading }) => {

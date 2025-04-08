@@ -7,20 +7,33 @@ import { AutocompleteInputChangeReason } from '@material-ui/lab/useAutocomplete'
 import { Autocomplete } from '../../../components';
 
 const Container = styled.div`
-  height: 100%;
+  block-size: 100%;
+  border-radius: 0.1875rem;
   display: flex;
   flex-direction: column;
-  padding-inline: 1rem;
-  padding-block: 1rem;
-  border-radius: 3px;
+  padding: 1rem;
+  row-gap: 0.5rem;
+
+  overflow-y: auto; // Fallback
+  overflow-block: auto;
 
   &,
   .MuiOutlinedInput-notchedOutline {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   }
+`;
 
-  .MuiPaper-root {
+const StyledPopper = styled.div`
+  flex: 1;
+  z-index: unset;
+
+  .MuiAutocomplete-paper {
     border: none;
+  }
+
+  .MuiAutocomplete-listbox {
+    max-height: unset;
+    padding: 0;
   }
 `;
 
@@ -98,7 +111,7 @@ export const MobileAutocomplete = ({
           freeSolo: true,
           disableClearable: true,
           disablePortal: false,
-          PopperComponent: React.Fragment,
+          PopperComponent: StyledPopper,
         }}
       />
     </Container>
