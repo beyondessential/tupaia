@@ -1,10 +1,9 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { Button } from '@tupaia/ui-components';
-import { PageContainer } from '../../components';
+import { Button, SafeAreaColumn } from '@tupaia/ui-components';
 
-const Wrapper = styled(PageContainer)`
+const Wrapper = styled(SafeAreaColumn)`
   align-items: center;
   background-color: oklch(32% 0 0);
   color-scheme: dark only;
