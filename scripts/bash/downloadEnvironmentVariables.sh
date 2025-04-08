@@ -3,7 +3,7 @@ set -e +x # Do not output commands in this script, as some would show credential
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-REPO_ROOT="$DIR/../.."
+REPO_ROOT=$(realpath "$DIR/../..")
 . "$DIR/ansiControlSequences.sh"
 
 # Collection in BitWarden where .env vars are kept
@@ -14,7 +14,9 @@ echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden${RESET}"
 bw login --check || bw login "$BITWARDEN_EMAIL" "$BITWARDEN_PASSWORD"
 eval "$(bw unlock "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
 
+set -x
 COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
+set +x
 
 echo
 
@@ -28,14 +30,17 @@ else
 fi
 
 load_env_file_from_bw() {
+    set -x
     FILE_NAME=$1
     BASE_FILE_PATH=$2
     NEW_FILE_NAME=$3
     ENV_FILE_PATH=$BASE_FILE_PATH/$NEW_FILE_NAME.env
+    set +x
 
     echo -en "${YELLOW}🚚 Fetching variables for ${BOLD}${FILE_NAME}...${RESET}"
 
     # checkout deployment specific env vars, or dev as fallback
+    set -x
     DEPLOYMENT_ENV_VARS=$(bw list items --search "$FILE_NAME.$DEPLOYMENT_NAME.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
 
     if [[ -n $DEPLOYMENT_ENV_VARS ]]; then
@@ -44,9 +49,11 @@ load_env_file_from_bw() {
         DEV_ENV_VARS=$(bw list items --search "$FILE_NAME.dev.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
         echo "$DEV_ENV_VARS" >"$ENV_FILE_PATH"
     fi
+    set +x
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual
     # deployment name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
+
     sed -i -e "s/\[deployment-name\]/$DEPLOYMENT_NAME/g" "$ENV_FILE_PATH"
 
     if [[ -v DOMAIN ]]; then
@@ -67,6 +74,8 @@ load_env_file_from_bw() {
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
         sed -i -e 's/^###DEV_ONLY###//g' "$ENV_FILE_PATH"
     fi
+
+    set +x
 
     echo -en "$CLEAR_LINE"
     echo -e "${GREEN}✅ Downloaded variables for ${BOLD}${FILE_NAME}${RESET} → $ENV_FILE_PATH"

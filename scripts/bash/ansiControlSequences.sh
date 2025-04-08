@@ -28,7 +28,7 @@ export CLEAR_LINE="\033[2K${CURSOR_START_OF_LINE}"
 
 # Select graphic rendition (SGR) parameters
 
-if [[ $NO_COLOR != '' ]]; then
+if [[ ! -t 1 || $NO_COLOR != '' ]]; then
 	# See https://no-color.org
 	export RESET=''
 	export BOLD=''
