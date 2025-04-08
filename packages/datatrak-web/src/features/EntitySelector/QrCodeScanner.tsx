@@ -1,14 +1,14 @@
+import { Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import styled from 'styled-components';
 
+import { Entity } from '@tupaia/types';
 import { QrCodeScannerIcon } from '@tupaia/ui-components';
 
 import { Button } from '../../components';
 import { CloseButton, Modal, ModalContent } from '../../components/Modal';
 import { isNullish } from '../../utils';
-import { Typography } from '@material-ui/core';
-import { Entity } from '@tupaia/types';
 
 const StyledButton = styled(Button).attrs({
   fullWidth: true,
