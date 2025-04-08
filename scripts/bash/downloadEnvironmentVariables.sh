@@ -13,12 +13,12 @@ if [[ ! $(bw login --check) ]]; then
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
         bw login --apikey
 
-    elif [[ -v BITWARDEN_EMAIL && -v BW_PASSWORD ]]; then
+    elif [[ -v BW_EMAIL && -v BW_PASSWORD ]]; then
         # Legacy behaviour, kept for backward compatibility
         # On new devices, requires OTP which is emailed to Bitwarden account holder
         # See https://bitwarden.com/help/cli/#using-email-and-password
-        echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using email ($BITWARDEN_EMAIL) and password${RESET}"
-        bw login "$BITWARDEN_EMAIL" "$BW_PASSWORD"
+        echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using email ($BW_EMAIL) and password${RESET}"
+        bw login "$BW_EMAIL" "$BW_PASSWORD"
 
     elif [[ -t 1 ]]; then
         # Requires manual intervention. Bitwarden will prompt for email & password
