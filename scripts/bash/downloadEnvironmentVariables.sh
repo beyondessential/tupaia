@@ -8,12 +8,12 @@ REPO_ROOT="$DIR/../.."
 
 # Log into Bitwarden
 if [[ ! $(bw login --check) ]]; then
-    if [[ $BW_CLIENTID != '' && $BW_CLIENTSECRET != '' ]]; then
+    if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET ]]; then
         # See https://bitwarden.com/help/personal-api-key
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
         bw login --apikey
 
-    elif [[ $BITWARDEN_EMAIL != '' && $BW_PASSWORD != '' ]]; then
+    elif [[ -v BITWARDEN_EMAIL && -v BW_PASSWORD ]]; then
         # Legacy behaviour, kept for backward compatibility
         # On new devices, requires OTP which is emailed to Bitwarden account holder
         # See https://bitwarden.com/help/cli/#using-email-and-password
@@ -34,7 +34,7 @@ if [[ ! $(bw login --check) ]]; then
 fi
 
 # Unlock Bitwarden vault
-if [[ ! -t 1 && $BW_PASSWORD = '' ]]; then
+if [[ ! -t 1 && ! -v BW_PASSWORD ]]; then
     echo -e "${BOLD}${RED}Bitwarden password is missing.${RESET} BW_PASSWORD environment variable must be set to unlock the vault."
     exit 1
 fi
