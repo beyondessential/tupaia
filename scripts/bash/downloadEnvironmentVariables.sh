@@ -6,10 +6,32 @@ DIR=$(dirname "$0")
 REPO_ROOT="$DIR/../.."
 . "$DIR/ansiControlSequences.sh"
 
+# Log into Bitwarden
+if [[ ! $(bw login --check) ]]; then
+    if [[ $BW_CLIENTID != '' && $BW_CLIENTSECRET != '' ]]; then
+        # See https://bitwarden.com/help/personal-api-key
+        echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
+        bw login --apikey
 
-# Log in to bitwarden
-echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden${RESET}"
-bw login --check || bw login "$BITWARDEN_EMAIL" "$BITWARDEN_PASSWORD"
+    elif [[ $BITWARDEN_EMAIL != '' && $BITWARDEN_PASSWORD != '' ]]; then
+        # Legacy behaviour, kept for backward compatibility
+        # On new devices, requires OTP which is emailed to Bitwarden account holder
+        # See https://bitwarden.com/help/cli/#using-email-and-password
+        echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using email ($BITWARDEN_EMAIL) and password${RESET}"
+        bw login "$BITWARDEN_EMAIL" "$BITWARDEN_PASSWORD"
+
+    elif [[ -t 1 ]]; then
+        # Requires manual intervention. Bitwarden will prompt for email & password
+        # Recommended for interactive sessions
+        bw login
+
+    else
+        # Automated environment
+        echo -e "${BOLD}${RED}Login credentials for Bitwarden are missing.${RESET} Please ensure BW_CLIENTID and BW_CLIENTSECRET environment variables are set."
+        echo -e "See ${MAGENTA}https://bitwarden.com/help/personal-api-key${RESET}"
+        exit 1
+    fi
+fi
 eval "$(bw unlock "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
 
 # Collection in BitWarden where .env vars are kept
