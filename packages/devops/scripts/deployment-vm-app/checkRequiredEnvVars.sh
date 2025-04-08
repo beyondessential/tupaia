@@ -1,4 +1,5 @@
-#!/bin/bash -ex
+#!/usr/bin/env bash
+set -ex
 
 if [[ ! -v DOMAIN ]]; then
     echo "DOMAIN must be set"
@@ -12,8 +13,12 @@ if [[ ! -v USE_SSL ]]; then
     echo "USE_SSL must be set"
     exit 1
 fi
-if [[ ! -v BITWARDEN_EMAIL ]]; then
-    echo "BITWARDEN_EMAIL must be set"
+if [[ ! -v BW_CLIENTID ]]; then
+    echo "BW_CLIENTID must be set"
+    exit 1
+fi
+if [[ ! -v BW_CLIENTSECRET ]]; then
+    echo "BW_CLIENTSECRET must be set"
     exit 1
 fi
 if [[ ! -v BITWARDEN_PASSWORD ]]; then

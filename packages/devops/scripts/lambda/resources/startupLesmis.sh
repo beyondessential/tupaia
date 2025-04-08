@@ -68,8 +68,9 @@ export GIT_BRANCH=$BRANCH
 export DEPLOYMENT_NAME=$DEPLOYMENT_NAME
 export USE_SSL=true
 
-export BITWARDEN_EMAIL=$($AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh BITWARDEN_EMAIL)
-export BITWARDEN_PASSWORD=$($AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh BITWARDEN_PASSWORD)
+export BW_CLIENTID=$("$AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh" BW_CLIENTID)
+export BW_CLIENTSECRET=$("$AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh" BW_CLIENTSECRET)
+export BITWARDEN_PASSWORD=$("$AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh" BITWARDEN_PASSWORD)
 DB_DUMP=$HOME_DIR/dump.sql
 
 sudo -E -Hu ubuntu $AWS_DEPLOYMENT_SCRIPTS/downloadFromS3.sh $DB_DUMP_FILE $DB_DUMP.gz && sudo -E -Hu ubuntu gunzip $DB_DUMP.gz &> /home/ubuntu/logs/download_db.log
