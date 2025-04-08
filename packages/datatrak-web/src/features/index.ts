@@ -20,3 +20,4 @@ export { GroupedSurveyList } from './GroupedSurveyList';
 export { useGroupedSurveyList } from './useGroupedSurveyList';
 export { SurveyResponseModal } from './SurveyResponseModal';
 export { MobileSelectList } from './MobileSelectList';
+export { WebAppPrompt } from './WebAppPrompt';
