@@ -112,11 +112,11 @@ export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
   const openScanner = () => setIsScannerOpen(true);
   const closeScanner = () => setIsScannerOpen(false);
 
-  const [message, setMessage] = useState<string | null>();
+  const [feedback, setFeedback] = useState<React.ReactNode>();
 
   const onResult: OnResultFunction = (result, error) => {
     if (error?.message) {
-      setMessage(error.message);
+      setFeedback(error.message);
       return;
     }
 
@@ -135,7 +135,7 @@ export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
       <Modal fullScreen open={isScannerOpen} onClose={closeScanner} PaperComponent={ModalRoot}>
         <Paragraph>Scan entity QR&nbsp;code</Paragraph>
         <StyledQrReader onResult={onResult} />
-        <Feedback>{message}</Feedback>
+        <Feedback>{feedback}</Feedback>
         <Overlay />
       </Modal>
     </>
