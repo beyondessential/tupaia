@@ -1,7 +1,10 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { ArrowLeftIcon, Button, PageContainer, TaskIcon } from '../../components';
+
+import { SafeAreaColumn } from '@tupaia/ui-components';
+
+import { ArrowLeftIcon, Button, TaskIcon } from '../../components';
 import { useFromLocation, useIsMobile } from '../../utils';
 
 const BackButton = styled(Button).attrs({
@@ -17,7 +20,7 @@ const BackButton = styled(Button).attrs({
   }
 `;
 
-const Wrapper = styled(PageContainer)`
+const Wrapper = styled(SafeAreaColumn)`
   align-items: self-start;
   display: flex;
   flex: initial;
@@ -55,8 +58,8 @@ const ContentWrapper = styled.div`
   display: flex;
   flex: 1;
   gap: 1rem;
+  inline-size: 100%;
   justify-content: flex-end;
-  width: 100%;
 `;
 
 interface TaskPageHeaderProps extends React.ComponentPropsWithoutRef<typeof Wrapper> {
