@@ -65,6 +65,7 @@ const Paragraph = styled(Typography).attrs({ variant: 'h1' })`
   align-self: end;
   font-weight: 500;
   grid-area: --instruction;
+  letter-spacing: unset;
   margin-block: 0;
   z-index: 1;
 `;
@@ -73,6 +74,7 @@ const Feedback = styled(Typography)`
   align-self: start;
   grid-area: --feedback;
   margin-block: 0;
+  text-shadow: 0 0 1em black;
   z-index: 1;
 `;
 
