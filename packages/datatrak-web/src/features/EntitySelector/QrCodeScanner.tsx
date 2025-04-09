@@ -138,7 +138,12 @@ export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
   const openScanner = () => setIsScannerOpen(true);
   const closeScanner = () => setIsScannerOpen(false);
 
-  const [feedback, setFeedback] = useState<React.ReactNode>();
+  const [feedback, setFeedback] = useState<React.ReactNode>(null);
+
+  const onModalClose = () => {
+    setFeedback(null);
+    closeScanner();
+  };
 
   const onResult: OnResultFunction = (result, error) => {
     if (error?.message) {
@@ -149,8 +154,14 @@ export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
     if (isNullish(result)) return;
 
     const text = result.getText();
-    const entityId = text.replace('entity-', '');
-    // TODO: Validate entity ID format
+    const entityId = text.replace(/^entity-/, '');
+    if (!entityId.match(/^[a-f\d]{24}$/i)) {
+      setFeedback(
+        <>That doesn&rsquo;t look like a QR&nbsp;code for an entity. Please try again.</>,
+      );
+      return;
+    }
+
     onSuccess?.(entityId);
     closeScanner();
   };
@@ -161,7 +172,7 @@ export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
       <Modal
         fullScreen={isMobile}
         open={isScannerOpen}
-        onClose={closeScanner}
+        onClose={onModalClose}
         PaperComponent={ModalRoot}
       >
         <Paragraph>Scan entity QR&nbsp;code</Paragraph>
