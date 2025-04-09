@@ -55,7 +55,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
     });
     if (existingUsers.length > 0) {
       throw new UnauthenticatedError(
-        "An account already exists with this email. Please log in or click 'forgot password' if you have forgotten your password",
+        'An account already exists with this email. Please log in or click ’Forgot password?‘ if you have forgotten your password',
       );
     }
 
