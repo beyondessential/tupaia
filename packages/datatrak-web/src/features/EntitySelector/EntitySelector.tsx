@@ -163,7 +163,7 @@ export const EntitySelector = ({
           </Label>
         )}
         <div className="entity-selector-content">
-          {true && ( // TODO: Predicate on allowScanQrCode
+          {config?.entity?.allowScanQrCode && (
             <>
               <QrCodeScanner />
               <OrDivider />
