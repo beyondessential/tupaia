@@ -11,11 +11,11 @@ const TaskMetricsContainer = styled.div`
   max-inline-size: 60rem;
 `;
 
-export const TaskMetrics = () => {
+export const TaskMetrics = (props: React.ComponentPropsWithoutRef<typeof TaskMetricsContainer>) => {
   const { projectId } = useCurrentUserContext();
   const { data: metrics, isLoading } = useTaskMetrics(projectId);
   return (
-    <TaskMetricsContainer>
+    <TaskMetricsContainer {...props}>
       <TaskMetric text="Unassigned tasks" number={metrics?.unassignedTasks} isLoading={isLoading} />
       <TaskMetric text="Overdue tasks" number={metrics?.overdueTasks} isLoading={isLoading} />
       <TaskMetric
