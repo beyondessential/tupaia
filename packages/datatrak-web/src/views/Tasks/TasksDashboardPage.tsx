@@ -43,11 +43,13 @@ export const TasksDashboardPage = () => {
         </StickyMobileHeader>
       )}
       <TaskPageHeader title="Tasks" backTo="/">
-        {!isMobile && <TaskMetrics style={{ marginInlineEnd: 'auto' }} />}
         {!isMobile && (
-          <CreateButton onClick={toggleCreateModal}>
-            <AddIcon /> Create task
-          </CreateButton>
+          <>
+            <TaskMetrics style={{ marginInlineEnd: 'auto' }} />
+            <CreateButton onClick={toggleCreateModal}>
+              <AddIcon /> Create task
+            </CreateButton>
+          </>
         )}
       </TaskPageHeader>
       <ContentWrapper>
