@@ -9,11 +9,13 @@
     "directory": "packages/database"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
+  "main": "./dist/server/index.js",
+  "browser": "./dist/browser/index.js",
   "exports": {
     ".": {
       "node": "./dist/server/index.js",
       "browser": "./dist/browser/index.js",
-      "default": "./dist/browser/index.js"
+      "default": "./dist/server/index.js"
     }
   },
   "types": "dist/index.d.ts",
