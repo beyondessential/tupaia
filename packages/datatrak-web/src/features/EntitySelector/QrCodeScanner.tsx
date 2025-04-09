@@ -15,25 +15,6 @@ const StyledButton = styled(Button).attrs({
   startIcon: <QrCodeScannerIcon style={{ fontSize: '1.5rem' }} />,
 })``;
 
-const OrDivider = styled.p`
-  align-items: center;
-  column-gap: 1em;
-  display: grid;
-  font-size: inherit;
-  font-weight: 500;
-  grid-template-columns: minmax(0, 1fr) min-content minmax(0, 1fr);
-  inline-size: 100%;
-  margin-block-start: 1em;
-  text-box-edge: ex alphabetic; // Specific to the word “or”, which has no ascenders
-
-  &::before,
-  &::after {
-    block-size: 0;
-    border-block-end: max(0.0625rem, 1px) solid currentcolor;
-    content: '';
-  }
-`;
-
 const ModalRoot = styled.div`
   --scanner-size: 85dvmin;
   background-color: black; // Visible when video stream is loading
@@ -122,11 +103,11 @@ const Overlay = styled.div.attrs({ 'aria-hidden': true })`
   pointer-events: none;
 `;
 
-interface QrCodeScannerProps extends React.ComponentPropsWithoutRef<'div'> {
+interface QrCodeScannerProps {
   onSuccess?: (entityId: Entity['id']) => void;
 }
 
-export const QrCodeScanner = ({ onSuccess, ...props }: QrCodeScannerProps) => {
+export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const openScanner = () => setIsScannerOpen(true);
   const closeScanner = () => setIsScannerOpen(false);
@@ -149,7 +130,7 @@ export const QrCodeScanner = ({ onSuccess, ...props }: QrCodeScannerProps) => {
   };
 
   return (
-    <div {...props}>
+    <>
       <StyledButton onClick={openScanner}>Scan QR&nbsp;code</StyledButton>
       <Modal fullScreen open={isScannerOpen} onClose={closeScanner} PaperComponent={ModalRoot}>
         <Paragraph>Scan entity QR&nbsp;code</Paragraph>
@@ -157,7 +138,6 @@ export const QrCodeScanner = ({ onSuccess, ...props }: QrCodeScannerProps) => {
         <Feedback>{message}</Feedback>
         <Overlay />
       </Modal>
-      <OrDivider>or</OrDivider>
-    </div>
+    </>
   );
 };
