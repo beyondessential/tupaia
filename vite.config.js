@@ -38,7 +38,10 @@ export default defineConfig(({ command, mode }) => {
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({ jsxRuntime: 'classic' }),
-      nodePolyfills(),
+      nodePolyfills({
+        // Whether to polyfill specific node:* protocol imports
+        protocolImports: true,
+      }),
     ],
     define: { 'process.env': env, __dirname: JSON.stringify('/') },
     server: { open: true },
