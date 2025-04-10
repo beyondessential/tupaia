@@ -1,22 +1,26 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
-import { PageContainer as BasePageContainer } from '../components';
+
+import { SafeAreaColumn, SafeArea } from '@tupaia/ui-components';
+
 import { useIsMobile } from '../utils';
 
-const Container = styled.div`
+const Container = styled(SafeArea).attrs({
+  top: true,
+  left: true,
+  right: true,
+})`
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding-bottom: max(env(safe-area-inset-bottom, 0), 1rem);
 `;
 
-const PageContainer = styled(BasePageContainer)`
+const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   padding-block-start: 0.75rem;
-  padding-inline: 0.3rem;
   max-height: 100%;
   .loading-screen {
     border: none;
@@ -24,12 +28,10 @@ const PageContainer = styled(BasePageContainer)`
   }
 `;
 
-export const TasksContentWrapper = styled.div`
+export const TasksContentWrapper = styled(SafeAreaColumn)`
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding-left: max(env(safe-area-inset-left, 0), 1.25rem);
-  padding-right: max(env(safe-area-inset-right, 0), 1.25rem);
 `;
 
 export const TasksLayout = () => {
