@@ -60,8 +60,6 @@ export class ProjectRecord extends DatabaseRecord {
 }
 
 export class ProjectModel extends DatabaseModel {
-  syncDirection = 'bidirectional';
-
   get DatabaseRecordClass() {
     return ProjectRecord;
   }
@@ -119,9 +117,5 @@ export class ProjectModel extends DatabaseModel {
         joinCondition: ['entity.id', 'project.entity_id'],
       },
     );
-  }
-
-  buildSyncLookupQueryDetails() {
-    return null;
   }
 }
