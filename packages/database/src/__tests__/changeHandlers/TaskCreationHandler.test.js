@@ -1,4 +1,4 @@
-import { TaskCreationHandler } from '../../changeHandlers';
+import { TaskCreationHandler } from '../../core/changeHandlers';
 import {
   buildAndInsertSurvey,
   buildAndInsertSurveyResponses,

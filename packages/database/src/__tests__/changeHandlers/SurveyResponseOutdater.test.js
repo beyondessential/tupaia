@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import { SurveyResponseOutdater } from '../../changeHandlers';
+import { SurveyResponseOutdater } from '../../core/changeHandlers';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,

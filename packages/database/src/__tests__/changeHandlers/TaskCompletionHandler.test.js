@@ -1,4 +1,4 @@
-import { TaskCompletionHandler } from '../../changeHandlers';
+import { TaskCompletionHandler } from '../../core/changeHandlers';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,

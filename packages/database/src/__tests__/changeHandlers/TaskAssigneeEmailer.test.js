@@ -1,4 +1,4 @@
-import { TaskAssigneeEmailer } from '../../changeHandlers';
+import { TaskAssigneeEmailer } from '../../core/changeHandlers';
 import {
   buildAndInsertSurvey,
   findOrCreateDummyRecord,
