@@ -44,7 +44,6 @@ export default defineConfig(({ command, mode }) => {
     server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
-      browserField: true,
       conditions: ['browser'],
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
@@ -53,6 +52,8 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'moduleMock.js'),
         jsonwebtoken: path.resolve(__dirname, 'moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
+        'fs/promises': path.resolve(__dirname, 'moduleMock.js'),
+        'node:fs/promises': path.resolve(__dirname, 'moduleMock.js'),
       },
     },
     optimizeDeps: {
