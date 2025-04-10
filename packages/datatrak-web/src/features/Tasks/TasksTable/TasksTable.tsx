@@ -18,6 +18,7 @@ import { FilterToolbar } from './FilterToolbar';
 import { MobileTaskFilters } from './MobileTaskFilters';
 import { RepeatScheduleFilter } from './RepeatScheduleFilter';
 import { StatusFilter } from './StatusFilter';
+import { isFeatureEnabled } from '@tupaia/utils';
 
 const Container = styled.div`
   background-color: ${props => props.theme.palette.background.paper};
@@ -291,7 +292,11 @@ export const TasksTable = () => {
         filters={filters}
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
-        noDataMessage="No tasks to display. Click the ‘+ Create task’ button above to add a new task."
+        noDataMessage={
+          isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK')
+            ? 'No tasks to display. Click the ‘+ Create task’ button above to add a new task.'
+            : 'No tasks to display'
+        }
         isLoading={isLoading}
       />
       <MobileTaskFilters onChangeFilters={updateFilters} filters={filters} />

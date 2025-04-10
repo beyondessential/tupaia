@@ -7,6 +7,7 @@ import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
 import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
 import { useIsMobile } from '../../utils';
+import { isFeatureEnabled } from '@tupaia/utils';
 
 const CreateButton = styled(Button).attrs({
   color: 'primary',
@@ -43,7 +44,7 @@ export const TasksDashboardPage = () => {
         </StickyMobileHeader>
       )}
       <TaskPageHeader title="Tasks" backTo="/">
-        {!isMobile && (
+        {(!isMobile || isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK')) && (
           <>
             <TaskMetrics style={{ marginInlineEnd: 'auto' }} />
             <CreateButton onClick={toggleCreateModal}>
