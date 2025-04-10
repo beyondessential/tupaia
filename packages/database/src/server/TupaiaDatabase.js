@@ -4,6 +4,10 @@ import { BaseDatabase } from '../core';
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 
+// no math here, just hand-tuned to be as low as possible while
+// keeping all the tests passing
+const HANDLER_DEBOUNCE_DURATION = 250;
+
 export class TupaiaDatabase extends BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = true;
 
@@ -11,7 +15,7 @@ export class TupaiaDatabase extends BaseDatabase {
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
    */
-  constructor(transactingConnection, transactingChangeChannel, useNumericStuff) {
+  constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
     super(transactingConnection, transactingChangeChannel, 'pg', getConnectionConfig);
 
     this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
@@ -28,6 +32,45 @@ export class TupaiaDatabase extends BaseDatabase {
       pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, Number.parseFloat);
       pgTypes.setTypeParser(20, Number.parseInt); // bigInt type to Integer
     }
+  }
+
+  getHandlersForChange(change) {
+    const { handler_key: specificHandlerKey, record_type: recordType } = change;
+    const handlersForCollection = this.getChangeHandlersForCollection(recordType);
+    if (specificHandlerKey) {
+      return handlersForCollection[specificHandlerKey]
+        ? [handlersForCollection[specificHandlerKey]]
+        : [];
+    }
+    return Object.values(handlersForCollection);
+  }
+
+  async notifyChangeHandlers(change) {
+    const unlock = this.handlerLock.createLock(change.record_id);
+    const handlers = this.getHandlersForChange(change);
+    try {
+      for (let i = 0; i < handlers.length; i++) {
+        try {
+          await handlers[i](change);
+        } catch (e) {
+          winston.error(e);
+        }
+      }
+    } finally {
+      unlock();
+    }
+  }
+
+  async waitForAllChangeHandlers() {
+    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
+  }
+
+  getChangeHandlersForCollection(collectionName) {
+    // Instantiate the array if no change handlers currently exist for the collection
+    if (!this.changeHandlers[collectionName]) {
+      this.changeHandlers[collectionName] = {};
+    }
+    return this.changeHandlers[collectionName];
   }
 
   getOrCreateChangeChannel() {
@@ -64,7 +107,7 @@ export class TupaiaDatabase extends BaseDatabase {
     if (this.changeChannel) {
       await this.changeChannel.close();
     }
-    return super.getChangeHandlersForCollection();
+    return super.closeConnections();
   }
 
   addSchemaChangeHandler(handler) {
