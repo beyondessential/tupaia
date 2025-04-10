@@ -56,6 +56,6 @@ cp -r ./src/core/migrations/* ./src/core/migrations-backup/
 rm ./src/core/migrations/*modifies-data.js
 DB_NAME="$DB_NAME" yarn migrate
 cp -r ./src/core/migrations-backup/* ./src/core/migrations/
-rm -rf ./src/migrations-backup
+rm -rf ./src/core/migrations-backup
 
 echo "Done"
