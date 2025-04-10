@@ -6,7 +6,6 @@ import {
 } from '../../server/testUtilities';
 import { EntityHierarchyCacher } from '../../server/changeHandlers';
 import { EntityHierarchySubtreeRebuilder } from '../../server/changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
-
 import {
   TEST_DATA,
   INITIAL_HIERARCHY_OCEAN,
