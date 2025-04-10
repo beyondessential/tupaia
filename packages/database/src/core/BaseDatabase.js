@@ -64,14 +64,15 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
-// no math here, just hand-tuned to be as low as possible while
-// keeping all the tests passing
-const HANDLER_DEBOUNCE_DURATION = 250;
-
 export class BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = false;
 
-  constructor(transactingConnection, transactingChangeChannel, clientType = 'pg', getConnectionConfigFn) {
+  constructor(
+    transactingConnection,
+    transactingChangeChannel,
+    clientType = 'pg',
+    getConnectionConfigFn,
+  ) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
     }
@@ -111,45 +112,6 @@ export class BaseDatabase {
 
   async waitUntilConnected() {
     await this.connectionPromise;
-  }
-
-  getHandlersForChange(change) {
-    const { handler_key: specificHandlerKey, record_type: recordType } = change;
-    const handlersForCollection = this.getChangeHandlersForCollection(recordType);
-    if (specificHandlerKey) {
-      return handlersForCollection[specificHandlerKey]
-        ? [handlersForCollection[specificHandlerKey]]
-        : [];
-    }
-    return Object.values(handlersForCollection);
-  }
-
-  async notifyChangeHandlers(change) {
-    const unlock = this.handlerLock.createLock(change.record_id);
-    const handlers = this.getHandlersForChange(change);
-    try {
-      for (let i = 0; i < handlers.length; i++) {
-        try {
-          await handlers[i](change);
-        } catch (e) {
-          winston.error(e);
-        }
-      }
-    } finally {
-      unlock();
-    }
-  }
-
-  async waitForAllChangeHandlers() {
-    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
-  }
-
-  getChangeHandlersForCollection(collectionName) {
-    // Instantiate the array if no change handlers currently exist for the collection
-    if (!this.changeHandlers[collectionName]) {
-      this.changeHandlers[collectionName] = {};
-    }
-    return this.changeHandlers[collectionName];
   }
 
   async fetchSchemaForTable(databaseRecord) {
@@ -420,11 +382,11 @@ export class BaseDatabase {
    * Use only for situations in which Knex is not able to assemble a query.
    *
    * @param {string} sqlString
-   * @param {any[]} [parametersToBind]
+   * @param {any[] | Record<string, any> | undefined} [parametersToBind]
    * @template Result
    * @returns {Promise<Result>} execution result
    */
-  async executeSql(sqlString, parametersToBind) {
+  async executeSql(sqlString, parametersToBind = []) {
     if (!this.connection) {
       await this.waitUntilConnected();
     }
