@@ -5,7 +5,7 @@ import {
   upsertDummyRecord,
 } from '../../server/testUtilities';
 import { EntityHierarchyCacher } from '../../server/changeHandlers';
-import { EntityHierarchySubtreeRebuilder } from '../../core/changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
+import { EntityHierarchySubtreeRebuilder } from '../../server/changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
 
 import {
   TEST_DATA,

@@ -1,4 +1,4 @@
-import { removeArrayValue, replaceArrayValue, updateValues } from '../../utilities/migration';
+import { removeArrayValue, replaceArrayValue, updateValues } from '../../core/utilities/migration';
 
 const dbStub = {
   runSql: (query, replacementParams) => ({ query, replacementParams }),

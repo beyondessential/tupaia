@@ -4,7 +4,7 @@ import {
   clearTestData,
   upsertDummyRecord,
 } from '../../server/testUtilities';
-import { AnalyticsRefresher } from '../../changeHandlers/AnalyticsRefresher';
+import { AnalyticsRefresher } from '../../server/changeHandlers/AnalyticsRefresher';
 
 import { TEST_DATA, ANALYTICS, ANSWER001_TEST_ANALYTIC } from './AnalyticsRefresher.fixtures';
 

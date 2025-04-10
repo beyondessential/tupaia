@@ -1,7 +1,7 @@
 import winston from 'winston';
 
 import { sleep } from '@tupaia/utils';
-import { ChangeHandler } from '../../changeHandlers/ChangeHandler';
+import { ChangeHandler } from '../../server/changeHandlers/ChangeHandler';
 import { getTestModels, upsertDummyRecord } from '../../server/testUtilities';
 import { generateId } from '../../core/utilities';
 
