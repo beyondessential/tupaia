@@ -16,10 +16,6 @@ const PopupBody = styled(Paper).attrs({
 })`
   margin-block: 0;
 
-  .MuiAutocomplete-listbox {
-    max-block-size: 100%;
-  }
-
   .MuiAutocomplete-option {
     align-items: center;
     border-radius: 0.1875rem;
