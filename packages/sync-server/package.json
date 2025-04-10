@@ -15,7 +15,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -28,5 +28,8 @@
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/sync": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }
