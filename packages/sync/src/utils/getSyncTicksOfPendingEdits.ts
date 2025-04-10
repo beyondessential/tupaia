@@ -13,7 +13,6 @@ export const getSyncTicksOfPendingEdits = async (database: TupaiaDatabase) => {
       WHERE locktype = 'advisory'
       AND mode = 'ShareLock'
     `,
-    [],
   )) as unknown as any[]; // TODO: fix this
 
   return results?.map((r: any) => r.tick);

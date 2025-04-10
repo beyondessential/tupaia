@@ -9,3 +9,4 @@ export { generateValueOfType } from './generateValueOfType';
 export * from './upsertDummyRecord';
 export { findOrCreateDummyCountryEntity } from './findOrCreateDummyCountryEntity';
 export { addBaselineTestCountries } from './addBaselineTestCountries';
+export * from './changeHandler';

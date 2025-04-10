@@ -71,7 +71,12 @@ const HANDLER_DEBOUNCE_DURATION = 250;
 export class BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = false;
 
-  constructor(transactingConnection, transactingChangeChannel, clientType = 'pg', getConnectionConfigFn) {
+  constructor(
+    transactingConnection,
+    transactingChangeChannel,
+    clientType = 'pg',
+    getConnectionConfigFn,
+  ) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
     }
@@ -420,11 +425,11 @@ export class BaseDatabase {
    * Use only for situations in which Knex is not able to assemble a query.
    *
    * @param {string} sqlString
-   * @param {any[] || Record<string, any> || undefined} [parametersToBind]
+   * @param {any[] | Record<string, any> | undefined} [parametersToBind]
    * @template Result
    * @returns {Promise<Result>} execution result
    */
-  async executeSql(sqlString, parametersToBind) {
+  async executeSql(sqlString, parametersToBind = []) {
     if (!this.connection) {
       await this.waitUntilConnected();
     }
