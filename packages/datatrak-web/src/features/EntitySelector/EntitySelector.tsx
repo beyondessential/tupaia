@@ -118,7 +118,7 @@ export const EntitySelector = ({
   const [searchValue, setSearchValue] = useState('');
 
   // Display a previously selected value
-  useEntityById(value, {
+  void useEntityById(value, {
     staleTime: 0, // Needs to be 0 to make sure the entity is fetched on first render
     enabled: !!value && !searchValue,
     onSuccess: entityData => {
