@@ -20,7 +20,7 @@ import { RepeatScheduleFilter } from './RepeatScheduleFilter';
 import { StatusFilter } from './StatusFilter';
 
 const Container = styled.div`
-  background-color: ${({ theme }) => theme.palette.background.paper};
+  background-color: ${props => props.theme.palette.background.paper};
   border-radius: 0.1875rem;
   border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: flex;
@@ -32,7 +32,7 @@ const Container = styled.div`
     max-block-size: 100%;
   }
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
+  ${props => props.theme.breakpoints.down('sm')} {
     border: none;
     border-radius: 0;
     th.MuiTableCell-root {
