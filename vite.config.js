@@ -52,8 +52,6 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'moduleMock.js'),
         jsonwebtoken: path.resolve(__dirname, 'moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
-        'fs/promises': path.resolve(__dirname, 'moduleMock.js'),
-        'node:fs/promises': path.resolve(__dirname, 'moduleMock.js'),
       },
     },
     optimizeDeps: {
