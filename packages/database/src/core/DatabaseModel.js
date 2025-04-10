@@ -44,6 +44,7 @@ export class DatabaseModel {
       });
     }
 
+    // TODO: Remove this once we have a sync direction for all models
     // if (!this.syncDirection) {
     //   throw new Error('syncDirection must be set by the model');
     // }
