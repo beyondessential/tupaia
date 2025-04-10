@@ -1,4 +1,4 @@
-export { BaseDatabase } from './BaseDatabase';
+export * from './BaseDatabase';
 export { ModelRegistry } from './ModelRegistry';
 export * from './modelClasses';
 export * from './analytics';

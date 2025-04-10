@@ -24,6 +24,7 @@ const updateLookupTableForModel = async (
   let fromId = '';
   let totalCount = 0;
   const result: SyncLookupQueryDetails =
+    'buildSyncLookupQueryDetails' in model &&
     typeof model.buildSyncLookupQueryDetails === 'function'
       ? (await model.buildSyncLookupQueryDetails()) || {}
       : {};
