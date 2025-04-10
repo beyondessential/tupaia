@@ -22,4 +22,4 @@ NODE_ENV=production \
     --jobs unlimited \
     --include "$PATTERN" \
     run build-dev \
-    $@ # Forward arguments (mostly for --watch flag)
+    "$@" # Forward arguments (mostly for --watch flag)
