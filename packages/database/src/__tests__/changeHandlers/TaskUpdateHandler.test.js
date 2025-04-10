@@ -1,4 +1,4 @@
-import { TaskUpdateHandler } from '../../core/changeHandlers';
+import { TaskUpdateHandler } from '../../server/changeHandlers';
 import {
   buildAndInsertSurvey,
   buildAndInsertSurveyResponses,
