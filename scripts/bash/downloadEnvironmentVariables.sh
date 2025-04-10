@@ -3,7 +3,7 @@ set -e +x # Do not output commands in this script, as some would show credential
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-REPO_ROOT="$DIR/../.."
+REPO_ROOT=$(realpath "$DIR/../..")
 . "$DIR/ansiControlSequences.sh"
 
 # Collection in BitWarden where .env vars are kept
@@ -94,4 +94,6 @@ bw logout
 # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
 # that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
 # generate backup files which we don’t need.
-rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e
+if [[ $(uname) = 'Darwin' ]]; then
+    rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e
+fi
