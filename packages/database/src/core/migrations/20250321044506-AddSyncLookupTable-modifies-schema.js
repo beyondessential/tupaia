@@ -26,7 +26,10 @@ exports.up = async function (db) {
       project_ids             VARCHAR(255)[],
       pushed_by_device_id     VARCHAR(255),
       CONSTRAINT sync_lookup_record_id_record_type_unique UNIQUE (record_id, record_type)
-    );  
+    );
+
+    CREATE INDEX sync_lookup_updated_at_sync_tick_project_ids_index
+    ON sync_lookup (updated_at_sync_tick, project_ids);
   `);
 };
 
