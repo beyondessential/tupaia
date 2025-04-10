@@ -1,5 +1,8 @@
 import React, { ReactElement } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+
+import { isFeatureEnabled } from '@tupaia/utils';
+
 import { useCurrentUserContext } from '../api';
 import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
 import { isWebApp } from '../utils';
@@ -22,7 +25,12 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
   }
 
   // If the user is logged in and has not seen the welcome screen, redirect to the welcome screen
-  if (isWebApp() && !hideWelcomeScreen && pathname !== ROUTES.WELCOME) {
+  if (
+    isFeatureEnabled('DATATRAK_OFFLINE') &&
+    isWebApp() &&
+    !hideWelcomeScreen &&
+    pathname !== ROUTES.WELCOME
+  ) {
     return <Navigate to={ROUTES.WELCOME} replace={true} />;
   }
 
