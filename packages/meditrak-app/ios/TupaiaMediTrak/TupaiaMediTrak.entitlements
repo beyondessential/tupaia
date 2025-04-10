@@ -4,7 +4,6 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:datatrak.tupaia.org</string>
 		<string>webcredentials:datatrak.tupaia.org</string>
 		<string>webcredentials:tupaia.org</string>
 	</array>
