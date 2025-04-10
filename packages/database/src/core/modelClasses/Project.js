@@ -1,5 +1,3 @@
-// import { SYNC_DIRECTIONS } from '@tupaia/sync';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
