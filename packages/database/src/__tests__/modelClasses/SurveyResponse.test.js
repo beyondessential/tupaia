@@ -1,4 +1,4 @@
-import { getLeaderboard } from '../../modelClasses/SurveyResponse';
+import { getLeaderboard } from '../../core/modelClasses/SurveyResponse';
 
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'edmofro@gmail.com'",
