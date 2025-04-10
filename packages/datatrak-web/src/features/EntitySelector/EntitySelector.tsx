@@ -7,8 +7,8 @@ import { Country, Project, SurveyScreenComponentConfig } from '@tupaia/types';
 import { SpinningLoader, useDebounce } from '@tupaia/ui-components';
 
 import { useEntityById, useProjectEntities } from '../../api';
-import { QrCodeScanner } from './QrCodeScanner';
-import { ResultsList } from './ResultsList';
+import { QrCodeScanner, QrCodeScannerProps } from './QrCodeScanner';
+import { ResultsList, ResultsListProps } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters } from './useEntityBaseFilters';
 
@@ -127,14 +127,21 @@ export const EntitySelector = ({
       }
     },
   });
-  const onChangeSearch = newValue => {
+
+  const onChangeSearch = (newValue: string) => {
     setIsDirty(true);
     setSearchValue(newValue);
   };
 
-  const onSelect = entity => {
+  const onSelect: ResultsListProps['onSelect'] = entity => {
     setIsDirty(true);
     onChange(entity.value);
+  };
+
+  const onQrCodeScannerResult: QrCodeScannerProps['onSuccess'] = entity => {
+    setIsDirty(true);
+    setSearchValue(entity.name); // Unnecessary, but ensures selected entity is visible
+    onChange(entity.id);
   };
 
   const filters = useEntityBaseFilters(config, data, countryCode);
@@ -165,7 +172,7 @@ export const EntitySelector = ({
         <div className="entity-selector-content">
           {config?.entity?.allowScanQrCode && (
             <>
-              <QrCodeScanner />
+              <QrCodeScanner onSuccess={onQrCodeScannerResult} validEntities={searchResults} />
               <OrDivider />
             </>
           )}

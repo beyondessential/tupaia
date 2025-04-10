@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import styled from 'styled-components';
 
-import { Entity } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
 import { QrCodeScannerIcon } from '@tupaia/ui-components';
 
+import { get, useCurrentUserContext } from '../../api';
 import { Button } from '../../components';
 import { CloseButton, Modal, ModalContent } from '../../components/Modal';
 import { isNullish, useIsMobile } from '../../utils';
@@ -127,11 +128,12 @@ const Overlay = styled.div.attrs({ 'aria-hidden': true })`
   pointer-events: none;
 `;
 
-interface QrCodeScannerProps {
-  onSuccess?: (entityId: Entity['id']) => void;
+export interface QrCodeScannerProps {
+  onSuccess?: (entity: DatatrakWebEntityDescendantsRequest.EntityResponse) => void;
+  validEntities?: DatatrakWebEntityDescendantsRequest.ResBody[];
 }
 
-export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
+export const QrCodeScanner = ({ onSuccess, validEntities }: QrCodeScannerProps) => {
   const isMobile = useIsMobile();
 
   const [isScannerOpen, setIsScannerOpen] = useState(false);
@@ -145,7 +147,7 @@ export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
     closeScanner();
   };
 
-  const onResult: OnResultFunction = (result, error) => {
+  const onResult: OnResultFunction = async (result, error) => {
     if (error?.message) {
       setFeedback(error.message);
       return;
@@ -153,8 +155,7 @@ export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
 
     if (isNullish(result)) return;
 
-    const text = result.getText();
-    const entityId = text.replace(/^entity-/, '');
+    const entityId = result.getText().replace(/^entity-/, '');
     if (!entityId.match(/^[a-f\d]{24}$/i)) {
       setFeedback(
         <>That doesn&rsquo;t look like a QR&nbsp;code for an entity. Please try again.</>,
@@ -162,8 +163,15 @@ export const QrCodeScanner = ({ onSuccess }: QrCodeScannerProps) => {
       return;
     }
 
-    onSuccess?.(entityId);
+    const entity = validEntities?.find(entity => entity.id === entityId);
+    if (entity === undefined) {
+      setFeedback('No matching entity found. Is this entity a valid answer to this question?');
+      return;
+    }
+
+    onSuccess?.(entity);
     closeScanner();
+    setFeedback(null);
   };
 
   return (
