@@ -6,3 +6,4 @@ export * from './records.js';
 export { SqlQuery } from './SqlQuery';
 export * from './utilities';
 export { DatabaseModel } from './DatabaseModel';
+export { DatabaseRecord } from './DatabaseRecord';
