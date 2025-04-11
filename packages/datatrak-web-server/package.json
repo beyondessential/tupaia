@@ -33,7 +33,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "camelcase-keys": "^6.2.2",
-    "cookie": "^0.6.0",
+    "cookie": "^1.0.2",
     "date-fns": "^2.29.2",
     "date-fns-tz": "^2.0.1",
     "express": "^4.19.2",
