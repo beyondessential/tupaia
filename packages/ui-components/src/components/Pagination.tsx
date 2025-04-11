@@ -71,8 +71,8 @@ const ManualPageInput = styled(Input)`
   border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   font-size: inherit;
   font-variant-numeric: lining-nums tabular-nums;
+  inline-size: calc(8ch + var(--padding-inline-start) + var(--padding-inline-end));
   margin-inline: 0.5rem;
-  min-inline-size: calc(4ch + var(--padding-inline-start) + var(--padding-inline-end));
   padding-inline: var(--padding-inline-start) var(--padding-inline-end);
 
   .MuiInputBase-input {
