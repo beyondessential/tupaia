@@ -17,11 +17,15 @@ set -x
 # clone our repo
 mkdir -p "$TUPAIA_DIR"
 cd "$TUPAIA_DIR"
-git status || git clone --branch "$GIT_BRANCH" -- "$GIT_REPO" .
+git status ||
+    git clone \
+        --depth 1 \
+        --branch "$GIT_BRANCH" \
+        -- "$GIT_REPO" .
 git remote set-branches --add origin "$GIT_BRANCH"
 git fetch --all --prune
 git reset --hard # clear out any manual changes that have been made, which would cause checkout to fail
-git checkout "$GIT_BRANCH"
+git switch "$GIT_BRANCH"
 git reset --hard "origin/$GIT_BRANCH"
 
 # Yarn install
