@@ -1,16 +1,5 @@
-import { createUser } from './handlers/createUser';
 import { requestResendEmail, verifyEmail } from './handlers/verifyEmail';
 import { requestCountryAccess } from './handlers/requestCountryAccess';
-
-/**
- * /signup
- *
- * Sign a user up then log them in if successful.
- */
-export const appSignup = () => async (req, res) => {
-  const result = await createUser(req.body);
-  res.send(result);
-};
 
 export const appResendEmail = () => async (req, res) => {
   const result = await requestResendEmail(req);
