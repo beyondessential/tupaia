@@ -2,22 +2,22 @@
 set -e
 
 DEPLOYABLE_PACKAGES=(
+    'admin-panel-server'
     'admin-panel'
-    'lesmis'
-    'psss'
-    'datatrak-web'
-    'tupaia-web'
     'central-server'
     'data-table-server'
     'datatrak-web-server'
+    'datatrak-web'
     'entity-server'
     'lesmis-server'
+    'lesmis'
     'meditrak-app-server'
     'psss-server'
+    'psss'
     'report-server'
     'tupaia-web-server'
+    'tupaia-web'
     'web-config-server'
-    'admin-panel-server' # admin-panel-server last as it depends on report-server
 )
 echo "${DEPLOYABLE_PACKAGES[@]}"
 
