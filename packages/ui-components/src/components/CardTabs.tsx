@@ -43,7 +43,7 @@ export const CardTabList = ({
 }) => {
   const { activeIndex, setActiveIndex } = useContext(Context)!;
   const handleChange = useCallback(
-    (event: any, newValue: number) => {
+    (_event: any, newValue: number) => {
       setActiveIndex(newValue);
     },
     [setActiveIndex],

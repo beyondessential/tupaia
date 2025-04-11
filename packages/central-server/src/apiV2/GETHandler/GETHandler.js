@@ -129,8 +129,12 @@ export class GETHandler extends CRUDHandler {
         options,
       ));
     }
-    const pageOfRecords = await this.findRecords(criteria, options);
-    const totalNumberOfRecords = await this.countRecords(criteria, options);
+
+    const [pageOfRecords, totalNumberOfRecords] = await Promise.all([
+      this.findRecords(criteria, options),
+      this.countRecords(criteria, options),
+    ]);
+
     const { limit, page } = this.getPaginationParameters();
     const lastPage = Math.ceil(totalNumberOfRecords / limit);
     const linkHeader = generateLinkHeader(this.resource, page, lastPage, this.req.query);

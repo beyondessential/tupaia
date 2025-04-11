@@ -23,6 +23,7 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
+    "@aws-sdk/abort-controller": "^3.341.0",
     "@aws-sdk/client-s3": "^3.341.0",
     "@aws-sdk/credential-providers": "^3.341.0",
     "@aws-sdk/lib-storage": "^3.348.0",
