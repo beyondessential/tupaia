@@ -23,7 +23,7 @@ DEPLOYABLE_PACKAGES=(
 )
 
 if [[ $FLAG = --glob ]]; then
-    # 'foo bar baz' → 'foo,bar,baz'
+    # ('foo' 'bar' 'baz') → 'foo,bar,baz'
     PATTERN=$(
         IFS=,
         echo "${DEPLOYABLE_PACKAGES[*]}"
