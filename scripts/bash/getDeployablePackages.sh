@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+FLAG=$1 # Optional --glob flag
+
 DEPLOYABLE_PACKAGES=(
     'admin-panel-server'
     'admin-panel'
@@ -19,6 +21,17 @@ DEPLOYABLE_PACKAGES=(
     'tupaia-web'
     'web-config-server'
 )
-echo "${DEPLOYABLE_PACKAGES[@]}"
+
+if [[ $FLAG = --glob ]]; then
+    # 'foo bar baz' → 'foo,bar,baz'
+    PATTERN=$(
+        IFS=,
+        echo "${DEPLOYABLE_PACKAGES[*]}"
+    )
+    # 'foo,bar,baz' → '@tupaia/{foo,bar,baz}'
+    echo "@tupaia/{$PATTERN}"
+else
+    echo "${DEPLOYABLE_PACKAGES[@]}"
+fi
 
 exit 0
