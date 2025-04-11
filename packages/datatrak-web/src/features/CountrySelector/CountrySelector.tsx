@@ -22,7 +22,7 @@ const Select = styled(BaseSelect)`
     inset-inline-end: 0.5rem;
   }
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.grey['400']};
+    border-color: ${props => props.theme.palette.grey[400]};
     box-shadow: none;
   }
 `;
@@ -42,16 +42,14 @@ const Img = styled.img`
   block-size: 1.5rem;
   inline-size: auto;
 `;
-const Pin = (props: ComponentPropsWithoutRef<typeof Picture>) => (
-  <Picture aria-hidden {...props}>
-    <source srcSet="/tupaia-pin.svg" />
-    <Img aria-hidden src="/tupaia-pin.svg" width={24} height={24} />
+
+/** @privateRemarks Forwards props to <img> because <picture> is set to `display: contents`. */
+const Pin = (props: ComponentPropsWithoutRef<typeof Img>) => (
+  <Picture aria-hidden>
+    <source src="/datatrak-pin.svg" type="image/svg+xml" />
+    <Img aria-hidden src="/datatrak-pin.svg" width={24} height={24} {...props} />
   </Picture>
 );
-
-const StyledPin = styled(Pin)`
-  margin-inline-end: 0.5rem;
-`;
 
 export interface CountrySelectorProps
   extends Pick<UserCountriesType, 'countries' | 'selectedCountry'>,
@@ -77,7 +75,7 @@ export const CountrySelector = ({ countries, selectedCountry, onChange }: Countr
         <FullScreenSelect {...commonProps} icon={<Pin />} label="Select country" />
       ) : (
         <>
-          <StyledPin />
+          <Pin style={{ marginInlineEnd: '0.25rem' }} />
           <Select
             {...commonProps}
             placeholder="Select a country"
