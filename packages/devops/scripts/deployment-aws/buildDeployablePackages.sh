@@ -1,4 +1,5 @@
-#!/bin/bash -le
+#!/usr/bin/env bash
+set -le
 
 DIR=$(dirname "$0")
 TUPAIA_DIR=$DIR/../../../..
@@ -8,10 +9,10 @@ echo "Building deployable packages"
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
 # Initialise NVM (which sets the path for access to npm, yarn etc. as well)
-. $HOME/.nvm/nvm.sh
+source "$HOME/.nvm/nvm.sh"
 
 # Install external dependencies and build internal dependencies
-cd ${TUPAIA_DIR}
+cd "$TUPAIA_DIR"
 yarn install --immutable
 chmod 755 node_modules/@babel/cli/bin/babel.js
 
@@ -21,9 +22,14 @@ chmod 755 node_modules/@babel/cli/bin/babel.js
 yarn build:internal-dependencies
 
 # Inject environment variables from Bitwarden
-BITWARDEN_EMAIL=$($DIR/fetchParameterStoreValue.sh BITWARDEN_EMAIL)
-BITWARDEN_PASSWORD=$($DIR/fetchParameterStoreValue.sh BITWARDEN_PASSWORD)
-BITWARDEN_EMAIL=$BITWARDEN_EMAIL BITWARDEN_PASSWORD=$BITWARDEN_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
+BW_CLIENTID="$("$DIR/fetchParameterStoreValue.sh" BW_CLIENTID)"
+BW_CLIENTSECRET="$("$DIR/fetchParameterStoreValue.sh" BW_CLIENTSECRET)"
+BW_PASSWORD="$("$DIR/fetchParameterStoreValue.sh" BW_PASSWORD)"
+
+BW_CLIENTID="$BW_CLIENTID" \
+    BW_CLIENTSECRET="$BW_CLIENTSECRET" \
+    BW_PASSWORD="$BW_PASSWORD" \
+    yarn download-env-vars "$DEPLOYMENT_NAME"
 
 # Build each package
 for PACKAGE in ${PACKAGES[@]}; do
