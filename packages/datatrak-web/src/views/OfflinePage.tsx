@@ -40,7 +40,7 @@ const Header = () => {
     <HeaderContainer>
       <HeaderInner>
         <Logo component={RouterLink} to="/" title="Home" variant="text">
-          <img src="/datatrak-logo-black.svg" alt="Tupaia Datatrak logo" width={84} height={42} />
+          <img src="/datatrak-logotype.svg" alt="Tupaia Datatrak logo" width={84} height={42} />
         </Logo>
       </HeaderInner>
     </HeaderContainer>
