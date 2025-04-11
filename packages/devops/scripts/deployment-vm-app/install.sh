@@ -41,14 +41,11 @@ BW_CLIENTID="$BW_CLIENTID" \
     BW_PASSWORD="$BW_PASSWORD" \
     yarn run download-env-vars "$DEPLOYMENT_NAME"
 
-# Build
-yarn build:internal-dependencies
-
-echo "Building deployable packages"
-PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
-for PACKAGE in ${PACKAGES[@]}; do
-    echo "Building ${PACKAGE}"
-    REACT_APP_DEPLOYMENT_NAME=${DEPLOYMENT_NAME} yarn workspace @tupaia/${PACKAGE} build
-done
+# Build packages and their dependencies
+PACKAGE_NAMES_GLOB=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --glob)
+set -x
+REACT_APP_DEPLOYMENT_NAME="$DEPLOYMENT_NAME" \
+    yarn run build:from "$PACKAGE_NAMES_GLOB"
+set +x
 
 echo "Tupaia installed successfully"
