@@ -23,7 +23,7 @@ BW_PASSWORD="$("$DIR/fetchParameterStoreValue.sh" BW_PASSWORD)"
 BW_CLIENTID="$BW_CLIENTID" \
     BW_CLIENTSECRET="$BW_CLIENTSECRET" \
     BW_PASSWORD="$BW_PASSWORD" \
-    yarn download-env-vars "$DEPLOYMENT_NAME"
+    yarn run download-env-vars "$DEPLOYMENT_NAME"
 
 # Build packages and their dependencies
 PACKAGE_NAMES_GLOB=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --glob)

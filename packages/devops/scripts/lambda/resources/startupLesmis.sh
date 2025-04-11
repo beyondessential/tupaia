@@ -40,7 +40,7 @@ else
   BASH_PROMPT_COLOR="36"
 fi
 BASH_PROMPT="\\[\\e]0;\\u@${BASH_PROMPT_NAME}: \\w\\a\\]\\\${debian_chroot:+(\\\$debian_chroot)}\\[\\033[01;32m\\]\\u@\\033[01;${BASH_PROMPT_COLOR}m\\]${BASH_PROMPT_NAME}\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ "
-echo "PS1=\"${BASH_PROMPT}\"" >> $HOME_DIR/.bashrc
+echo "PS1=\"${BASH_PROMPT}\"" >>$HOME_DIR/.bashrc
 
 # Create a directory for logs to go
 mkdir -m 777 -p $LOGS_DIR
@@ -68,8 +68,9 @@ export GIT_BRANCH=$BRANCH
 export DEPLOYMENT_NAME=$DEPLOYMENT_NAME
 export USE_SSL=true
 
-export BITWARDEN_EMAIL=$($AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh BITWARDEN_EMAIL)
-export BITWARDEN_PASSWORD=$($AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh BITWARDEN_PASSWORD)
+export BW_CLIENTID=$("$AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh" BW_CLIENTID)
+export BW_CLIENTSECRET=$("$AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh" BW_CLIENTSECRET)
+export BW_PASSWORD=$("$AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh" BW_PASSWORD)
 DB_DUMP=$HOME_DIR/dump.sql
 
 sudo -E -Hu ubuntu $AWS_DEPLOYMENT_SCRIPTS/downloadFromS3.sh $DB_DUMP_FILE $DB_DUMP.gz && sudo -E -Hu ubuntu gunzip $DB_DUMP.gz &> /home/ubuntu/logs/download_db.log

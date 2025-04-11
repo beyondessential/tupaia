@@ -19,9 +19,9 @@ import { successToast, useBeforeUnload, useIsMobile } from '../utils';
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  block-size: 100%;
   .MuiBox-root {
-    height: 100%; // this is to fix the loader causing a scrollbar
+    block-size: 100%; // this is to fix the loader causing a scrollbar
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     .MuiContainer-root:has(&) {
@@ -38,16 +38,16 @@ const SurveyScreenContainer = styled.div<{
   overflow: ${({ $scrollable }) => ($scrollable ? 'auto' : 'hidden')};
   align-items: flex-start;
 
-  height: 100vh;
-  width: 100%;
+  block-size: 100dvb;
+  inline-size: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    height: ${({ $hasToolbar }) =>
+    block-size: ${({ $hasToolbar }) =>
       $hasToolbar
-        ? `calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT})`
-        : `calc(100vh - ${HEADER_HEIGHT})`};
-    margin-left: -1.25rem;
-    padding-top: ${({ $scrollable }) => ($scrollable ? '0' : '2rem')};
-    padding-bottom: 2rem;
+        ? `calc(100dvb - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT})`
+        : `calc(100dvb - ${HEADER_HEIGHT})`};
+    margin-inline-start: -1.25rem;
+    padding-block-start: ${({ $scrollable }) => ($scrollable ? '0' : '2rem')};
+    padding-block-end: 2rem;
   }
 `;
 
