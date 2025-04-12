@@ -11220,6 +11220,7 @@ __metadata:
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/multer": ^1.4.7
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
@@ -11228,6 +11229,7 @@ __metadata:
     client-sessions: ^0.8.0
     cors: ^2.8.5
     express: ^4.19.2
+    jest: ^29.7.0
     lodash: ^4.17.4
     multer: ^1.4.3
     rimraf: ^6.0.1
@@ -11251,6 +11253,7 @@ __metadata:
     "@tupaia/ui-chart-components": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     ace-builds: ^1.10.1
     axios: ^1.6.8
     case: ^1.5.3
@@ -11258,6 +11261,7 @@ __metadata:
     date-fns: ^2.29.2
     downloadjs: ^1.4.7
     file-saver: ^1.3.3
+    jest: ^29.7.0
     js-sql-parser: ^1.4.1
     jsoneditor: ^10.0.1
     localforage: ^1.5.0
@@ -11305,6 +11309,8 @@ __metadata:
     "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
+    jest: ^29.7.0
     lodash.groupby: ^4.6.0
     npm-run-all: ^4.1.5
     rimraf: ^6.0.1
@@ -11319,9 +11325,11 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.isequal": ^4.4.0
     "@types/lodash.pick": ^4.4.0
     "@types/node-fetch": ^2.6.11
+    jest: ^29.7.0
     lodash.isequal: ^4.5.0
     lodash.pick: ^4.4.0
     node-fetch: ^1.7.3
@@ -11427,10 +11435,12 @@ __metadata:
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.groupby": ^4.6.0
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     deep-equal-in-any-order: ^1.0.27
+    jest: ^29.7.0
     lodash.groupby: ^4.6.0
     moment: ^2.24.0
     rimraf: ^6.0.1
@@ -11453,6 +11463,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@tupaia/weather-api": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.flatten": ^4.4.0
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.isequal": ^4.5.0
@@ -11460,6 +11471,7 @@ __metadata:
     "@types/lodash.pickby": ^4.6.0
     case: ^1.5.5
     date-fns: ^2.30.0
+    jest: ^29.7.0
     lodash.flatten: ^4.4.0
     lodash.groupby: ^4.6.0
     lodash.isequal: ^4.5.0
@@ -11479,6 +11491,7 @@ __metadata:
     "@tupaia/database": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     deep-equal-in-any-order: ^1.0.27
@@ -11505,7 +11518,9 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     express: ^4.19.2
+    jest: ^29.7.0
     mockdate: ^3.0.5
     rimraf: ^6.0.1
     winston: ^3.3.3
@@ -11557,6 +11572,7 @@ __metadata:
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.keyby": ^4.6.0
     "@types/lodash.sortby": ^4.6.0
@@ -11565,6 +11581,7 @@ __metadata:
     date-fns: ^2.29.2
     date-fns-tz: ^2.0.1
     express: ^4.19.2
+    jest: ^29.7.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
     lodash.sortby: ^4.6.0
@@ -11594,6 +11611,7 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/leaflet": ^1.7.1
     "@types/material-ui": ^0.21.12
     "@types/react": 16.8.6
@@ -11605,6 +11623,7 @@ __metadata:
     date-fns: ^2.29.2
     downloadjs: 1.4.7
     esbuild: ^0.24.0
+    jest: ^29.7.0
     js-cookie: ^3.0.5
     leaflet: ^1.7.1
     lodash.throttle: ^4.1.1
@@ -11697,8 +11716,10 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.keyby": ^4.6.6
     express: ^4.19.2
+    jest: ^29.7.0
     lodash.keyby: ^4.6.0
     rimraf: ^6.0.1
     winston: ^3.3.3
@@ -11710,7 +11731,9 @@ __metadata:
   resolution: "@tupaia/expression-parser@workspace:packages/expression-parser"
   dependencies:
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     date-fns: ^2.16.1
+    jest: ^29.7.0
     lodash.startcase: ^4.4.0
     mathjs: ^11.11.0
     npm-run-all: ^4.1.5
@@ -11728,6 +11751,8 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
+    jest: ^29.7.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
     rimraf: ^6.0.1
@@ -11755,8 +11780,10 @@ __metadata:
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     camelcase-keys: ^6.2.2
     express: ^4.19.2
+    jest: ^29.7.0
     lodash.uniqby: ^4.7.0
     rimraf: ^6.0.1
     winston: ^3.3.3
@@ -11783,6 +11810,7 @@ __metadata:
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
     downloadjs: ^1.4.7
+    jest: ^29.7.0
     leaflet: ^1.7.1
     lodash.debounce: ^4.0.8
     lodash.keyby: ^4.6.0
@@ -11818,9 +11846,11 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.clonedeep": ^4.5.0
     "@types/semver-compare": ^1.0.1
     express: ^4.19.2
+    jest: ^29.7.0
     lodash.clonedeep: ^4.5.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -11914,11 +11944,13 @@ __metadata:
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
     client-sessions: ^0.8.0
     cors: ^2.8.5
     express: ^4.19.2
+    jest: ^29.7.0
     lodash.groupby: ^4.6.0
     rimraf: ^6.0.1
     winston: ^3.3.3
@@ -11945,6 +11977,7 @@ __metadata:
     date-fns: ^2.16.1
     faker: ^4.1.0
     history: ^5.0.0
+    jest: ^29.7.0
     lodash.groupby: ^4.6.0
     lodash.isequal: ^4.5.0
     lodash.keyby: ^4.6.0
@@ -11986,6 +12019,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.isplainobject": ^4.0.6
     "@types/lodash.keyby": ^4.6.6
     "@types/lodash.pick": ^4.4.0
@@ -11995,6 +12029,7 @@ __metadata:
     cors: ^2.8.5
     date-fns: ^2.29.3
     express: ^4.19.2
+    jest: ^29.7.0
     lodash.groupby: ^4.6.0
     lodash.isplainobject: ^4.0.6
     lodash.keyby: ^4.6.0
@@ -12023,6 +12058,7 @@ __metadata:
     "@types/client-sessions": ^0.8.0
     "@types/cors": ^2.8.8
     "@types/express": ^4.17.8
+    "@types/jest": ^29.5.14
     "@types/supertest": ^2.0.11
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
@@ -12032,6 +12068,7 @@ __metadata:
     express: ^4.19.2
     http-proxy-middleware: ^2.0.1
     i18n: ^0.13.3
+    jest: ^29.7.0
     morgan: ^1.9.0
     public-ip: 4.0.4
     rimraf: ^6.0.1
@@ -12048,12 +12085,14 @@ __metadata:
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/nodemailer": ^6.4.15
     "@types/sha256": ^0.2.2
     cookie: ^1.0.2
     copyfiles: ^2.4.1
     dotenv: ^16.4.5
     handlebars: ^4.7.8
+    jest: ^29.7.0
     nodemailer: ^6.9.12
     puppeteer: ^24.3.1
     rimraf: ^6.0.1
@@ -12066,8 +12105,10 @@ __metadata:
   resolution: "@tupaia/superset-api@workspace:packages/superset-api"
   dependencies:
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/needle": ^2.5.3
     https-proxy-agent: ^5.0.1
+    jest: ^29.7.0
     node-fetch: ^1.7.3
     rimraf: ^6.0.1
     winston: ^3.3.3
@@ -12080,11 +12121,13 @@ __metadata:
   dependencies:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.get": ^4.4.2
     ajv: ^8.12.0
     ajv-formats: v3.0.0-rc.0
     better-ajv-errors: ^1.2.0
     camelcase-keys: ^6.2.2
+    jest: ^29.7.0
     lodash.get: ^4.4.2
     moment: ^2.24.0
     moment-timezone: ^0.5.45
@@ -12106,9 +12149,11 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.keyby": ^4.6.0
     express: ^4.19.2
+    jest: ^29.7.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
     rimraf: ^6.0.1
@@ -12187,8 +12232,10 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
     "@types/lodash.get": ^4.4.7
     "@types/recharts": ^1.8.24
+    jest: ^29.7.0
     lodash.get: ^4.4.2
     moment: ^2.24.0
     prop-types: ^15.7.2
@@ -12220,7 +12267,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/downloadjs": ^1.4.3
-    "@types/jest": ^29.5.1
+    "@types/jest": ^29.5.14
     "@types/lodash.throttle": ^4.1.7
     "@types/markdown-to-jsx": ^6.4.1
     "@types/qrcode": ^1.5.1
@@ -12234,6 +12281,7 @@ __metadata:
     downloadjs: ^1.4.7
     faker: ^4.1.0
     fast-glob: ^3.2.5
+    jest: ^29.7.0
     js-sql-parser: ^1.4.1
     jszip: ^3.10.1
     lodash.throttle: ^4.1.1
@@ -12268,10 +12316,11 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    "@types/jest": ^29.5.1
+    "@types/jest": ^29.5.14
     "@types/leaflet": ^1.7.1
     "@types/react-dom": ^16.9.18
     "@types/styled-components": ^5.1.26
+    jest: ^29.7.0
     leaflet: ^1.7.1
     moment: ^2.24.0
     prop-types: ^15.7.2
@@ -12299,6 +12348,7 @@ __metadata:
     date-fns: ^2.29.2
     date-fns-tz: ^2.0.1
     fast-memoize: ^2.5.2
+    jest: ^29.7.0
     jsonwebtoken: ^9.0.0
     lodash.get: ^4.4.2
     lodash.pickby: ^4.6.0
@@ -12328,7 +12378,9 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/cli-progress": ^3.11.5
+    "@types/jest": ^29.5.14
     cli-progress: ^3.12.0
+    jest: ^29.7.0
     lodash.isequal: ^4.5.0
     rimraf: ^6.0.1
     ts-node: ^10.9.1
@@ -12340,6 +12392,8 @@ __metadata:
   resolution: "@tupaia/weather-api@workspace:packages/weather-api"
   dependencies:
     "@tupaia/utils": "workspace:*"
+    "@types/jest": ^29.5.14
+    jest: ^29.7.0
     rimraf: ^6.0.1
   languageName: unknown
   linkType: soft
@@ -12368,6 +12422,7 @@ __metadata:
     cors: ^2.8.4
     csvtojson: ^1.1.5
     express: ^4.19.2
+    jest: ^29.7.0
     lodash.difference: ^4.5.0
     lodash.flatten: ^4.4.0
     lodash.flattendeep: ^4.4.0
@@ -12849,13 +12904,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.5.1":
-  version: 29.5.3
-  resolution: "@types/jest@npm:29.5.3"
+"@types/jest@npm:^29.5.14":
+  version: 29.5.14
+  resolution: "@types/jest@npm:29.5.14"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: e36bb92e0b9e5ea7d6f8832baa42f087fc1697f6cd30ec309a07ea4c268e06ec460f1f0cfd2581daf5eff5763475190ec1ad8ac6520c49ccfe4f5c0a48bfa676
+  checksum: 18dba4623f26661641d757c63da2db45e9524c9be96a29ef713c703a9a53792df9ecee9f7365a0858ddbd6440d98fe6b65ca67895ca5884b73cbc7ffc11f3838
   languageName: node
   linkType: hard
 

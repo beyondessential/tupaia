@@ -28,6 +28,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "jest": "^29.7.0",
     "lodash.get": "^4.4.2",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
+    "@types/jest": "^29.5.14",
     "@types/lodash.get": "^4.4.7",
     "@types/recharts": "^1.8.24",
     "rimraf": "^6.0.1"

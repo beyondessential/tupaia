@@ -29,6 +29,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "jest": "^29.7.0",
     "leaflet": "^1.7.1",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
@@ -42,7 +43,7 @@
   "devDependencies": {
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
-    "@types/jest": "^29.5.1",
+    "@types/jest": "^29.5.14",
     "@types/leaflet": "^1.7.1",
     "@types/react-dom": "^16.9.18",
     "@types/styled-components": "^5.1.26",
