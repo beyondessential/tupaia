@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 
-import { SafeAreaColumn, SafeArea } from '@tupaia/ui-components';
+import { SafeAreaColumn } from '@tupaia/ui-components';
 
 import { useIsMobile } from '../utils';
 
