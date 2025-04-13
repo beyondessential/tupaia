@@ -2,6 +2,7 @@ export { ArrowLeftIcon } from './ArrowLeftIcon';
 export { Coconut } from './Coconut';
 export { CommentIcon } from './CommentIcon';
 export { CopyIcon } from './CopyIcon';
+export { DataTrakLogoType } from './DataTrakLogoType';
 export { DotIcon } from './Dot';
 export type { DotIconProps } from './Dot';
 export { DownloadIcon } from './DownloadIcon';
