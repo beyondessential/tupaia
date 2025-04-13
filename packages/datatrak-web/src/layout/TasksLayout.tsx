@@ -6,11 +6,7 @@ import { SafeAreaColumn, SafeArea } from '@tupaia/ui-components';
 
 import { useIsMobile } from '../utils';
 
-const Container = styled(SafeArea).attrs({
-  top: true,
-  left: true,
-  right: true,
-})`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
