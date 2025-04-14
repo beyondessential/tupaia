@@ -110,8 +110,8 @@ android {
     }
     splits {
         abi {
+            enable true
             reset()
-            enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
             include (*reactNativeArchitectures())
         }
