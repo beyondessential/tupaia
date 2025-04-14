@@ -31,7 +31,6 @@ jobs:
           cache: yarn
 
       - run: yarn
-      - run: yarn run build:from meditrak-app
 
       - name: Build release
         working-directory: packages/meditrak-app/android
