@@ -59,7 +59,7 @@ const TaskIconOutlined = ({ htmlColor = 'currentColor', ...props }: SvgIconProps
 );
 
 interface TaskIconProps extends SvgIconProps {
-  variant: 'filled' | 'outlined';
+  variant?: 'filled' | 'outlined';
 }
 
 export const TaskIcon = ({ variant = 'filled', ...props }: TaskIconProps) => {
