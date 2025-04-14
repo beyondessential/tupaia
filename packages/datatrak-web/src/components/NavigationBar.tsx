@@ -24,13 +24,6 @@ const NavigationBarRoot = styled.nav`
     --padding-y: 0.5rem;
     padding-bottom: max(env(safe-area-inset-bottom, 0), var(--padding-y));
     padding-top: var(--padding-y);
-
-    &:first-child {
-      padding-left: calc(env(safe-area-inset-left, 0) + 1.25rem);
-    }
-    &:last-child {
-      padding-right: calc(env(safe-area-inset-right, 0) + 1.25rem);
-    }
   }
 
   .MuiBottomNavigationAction-wrapper {
