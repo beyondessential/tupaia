@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { SafeArea, Button as UIButton } from '@tupaia/ui-components';
 
-import { DataTrakLogotype } from '../components';
+import { DataTrakLogotype, HomeLink } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
 const Container = styled.div`
@@ -38,12 +38,15 @@ const Logo = styled(UIButton)`
   }
 `;
 
+const Logotype = styled(DataTrakLogotype)`
+  block-size: 100%;
+  inline-size: auto;
+`;
+
 const Header = () => {
   return (
     <HeaderContainer>
-      <Logo component={RouterLink} to="/" variant="text">
-        <DataTrakLogotype titleAccess="Tupaia DataTrak – Home" width={84} height={41} />
-      </Logo>
+      <HomeLink />
     </HeaderContainer>
   );
 };

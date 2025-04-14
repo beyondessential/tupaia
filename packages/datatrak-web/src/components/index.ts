@@ -11,6 +11,7 @@ export { ChangeProjectButton } from './ChangeProjectButton';
 export { DataTrakLogotype } from './DataTrakLogotype';
 export { DateTimeDisplay } from './DateTimeDisplay';
 export { ErrorDisplay } from './ErrorDisplay';
+export { HomeLink } from './HomeLink';
 export { InputHelperText } from './InputHelperText';
 export { PageTitleBar } from './PageTitleBar';
 export { BlockScrollView, InlineScrollView } from './ScrollView';
