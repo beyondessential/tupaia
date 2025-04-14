@@ -11,6 +11,7 @@ export { ChangeProjectButton } from './ChangeProjectButton';
 export { DateTimeDisplay } from './DateTimeDisplay';
 export { ErrorDisplay } from './ErrorDisplay';
 export { InputHelperText } from './InputHelperText';
+export { NavigationBar } from './NavigationBar';
 export { PageTitleBar } from './PageTitleBar';
 export { BlockScrollView, InlineScrollView } from './ScrollView';
 export { SmallModal } from './SmallModal';
