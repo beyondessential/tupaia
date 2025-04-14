@@ -17,6 +17,8 @@ type TabValue = 'home' | 'surveys' | 'tasks' | 'more';
  * buttons (instead of this root element) to give the user a larger tap target.
  */
 const NavigationBarRoot = styled.div`
+  border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+
   .MuiBottomNavigationAction-root {
     padding-bottom: calc(env(safe-area-inset-bottom, 0) + 8px);
 
