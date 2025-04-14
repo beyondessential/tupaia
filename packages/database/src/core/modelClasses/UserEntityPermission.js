@@ -39,6 +39,8 @@ export class UserEntityPermissionRecord extends DatabaseRecord {
 }
 
 export class UserEntityPermissionModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return UserEntityPermissionRecord;
   }

@@ -7,6 +7,8 @@ export class DataServiceEntityRecord extends DatabaseRecord {
 }
 
 export class DataServiceEntityModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DataServiceEntityRecord;
   }

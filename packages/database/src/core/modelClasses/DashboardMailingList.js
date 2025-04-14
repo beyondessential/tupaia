@@ -7,6 +7,8 @@ export class DashboardMailingListRecord extends DatabaseRecord {
 }
 
 export class DashboardMailingListModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DashboardMailingListRecord;
   }

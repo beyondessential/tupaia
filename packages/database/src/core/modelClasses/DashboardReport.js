@@ -7,6 +7,8 @@ class DashboardReportRecord extends DatabaseRecord {
 }
 
 export class DashboardReportModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DashboardReportRecord;
   }

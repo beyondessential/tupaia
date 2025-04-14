@@ -8,6 +8,8 @@ export class LocalSystemFactRecord extends DatabaseRecord {
 }
 
 export class LocalSystemFactModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return LocalSystemFactRecord;
   }

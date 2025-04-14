@@ -7,6 +7,8 @@ export class DataElementDataServiceRecord extends DatabaseRecord {
 }
 
 export class DataElementDataServiceModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DataElementDataServiceRecord;
   }

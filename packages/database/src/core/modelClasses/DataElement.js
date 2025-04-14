@@ -27,6 +27,8 @@ const DHIS_DATA_TYPES = {
 };
 
 export class DataElementRecord extends DatabaseRecord {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   static databaseRecord = RECORDS.DATA_ELEMENT;
 
   SERVICE_TYPES = SERVICE_TYPES;

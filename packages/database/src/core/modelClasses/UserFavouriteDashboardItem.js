@@ -17,6 +17,8 @@ class UserFavouriteDashboardItemRecord extends DatabaseRecord {
 }
 
 export class UserFavouriteDashboardItemModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return UserFavouriteDashboardItemRecord;
   }

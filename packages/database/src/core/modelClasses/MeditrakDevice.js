@@ -7,6 +7,8 @@ export class MeditrakDeviceRecord extends DatabaseRecord {
 }
 
 export class MeditrakDeviceModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return MeditrakDeviceRecord;
   }

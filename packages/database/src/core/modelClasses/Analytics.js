@@ -7,6 +7,8 @@ class AnalyticsRecord extends DatabaseRecord {
 }
 
 export class AnalyticsModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return AnalyticsRecord;
   }

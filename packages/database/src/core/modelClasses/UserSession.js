@@ -7,6 +7,8 @@ class UserSessionRecord extends DatabaseRecord {
 }
 
 export class UserSessionModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return UserSessionRecord;
   }

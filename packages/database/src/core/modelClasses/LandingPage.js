@@ -7,6 +7,8 @@ class LandingPageRecord extends DatabaseRecord {
 }
 
 export class LandingPageModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return LandingPageRecord;
   }

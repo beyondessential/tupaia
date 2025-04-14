@@ -28,6 +28,8 @@ export class FacilityRecord extends DatabaseRecord {
 }
 
 export class FacilityModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return FacilityRecord;
   }

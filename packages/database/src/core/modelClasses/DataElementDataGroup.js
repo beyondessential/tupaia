@@ -19,6 +19,8 @@ class DataElementDataGroupRecord extends DatabaseRecord {
 }
 
 export class DataElementDataGroupModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return DataElementDataGroupRecord;
   }

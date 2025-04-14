@@ -18,6 +18,8 @@ export class OneTimeLoginRecord extends DatabaseRecord {
 }
 
 export class OneTimeLoginModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.DO_NOT_SYNC;
+
   get DatabaseRecordClass() {
     return OneTimeLoginRecord;
   }
