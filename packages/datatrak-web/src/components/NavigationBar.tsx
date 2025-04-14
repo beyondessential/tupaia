@@ -20,13 +20,29 @@ const NavigationBarRoot = styled.nav`
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
 
   .MuiBottomNavigationAction-root {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0) + 8px);
+    --padding-y: 0.5rem;
+    padding-top: var(--padding-y);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0) + var(--padding-y));
 
     &:first-child {
-      padding-left: calc(env(safe-area-inset-left, 0) + 12px);
+      padding-left: calc(env(safe-area-inset-left, 0) + 1.25rem);
     }
     &:last-child {
-      padding-right: calc(env(safe-area-inset-right, 0) + 12px);
+      padding-right: calc(env(safe-area-inset-right, 0) + 1.25rem);
+    }
+  }
+
+  .MuiBottomNavigationAction-wrapper {
+    row-gap: 0.125rem;
+  }
+
+  .MuiBottomNavigationAction-label {
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+
+    &.Mui-selected {
+      font-weight: 500;
     }
   }
 `;
