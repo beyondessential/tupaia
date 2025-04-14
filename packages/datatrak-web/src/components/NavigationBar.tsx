@@ -18,11 +18,12 @@ type TabValue = 'home' | 'surveys' | 'tasks' | 'more';
  */
 const NavigationBarRoot = styled.nav`
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  height: unset; // MUI hard-codes to 55px
 
   .MuiBottomNavigationAction-root {
     --padding-y: 0.5rem;
+    padding-bottom: max(env(safe-area-inset-bottom, 0), var(--padding-y));
     padding-top: var(--padding-y);
-    padding-bottom: calc(env(safe-area-inset-bottom, 0) + var(--padding-y));
 
     &:first-child {
       padding-left: calc(env(safe-area-inset-left, 0) + 1.25rem);
