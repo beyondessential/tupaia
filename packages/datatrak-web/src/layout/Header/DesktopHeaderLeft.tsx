@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
 import { Button } from '../../components';
 import { HEADER_HEIGHT } from '../../constants';
-import { DataTrakLogoType } from '../../components/Icons';
+import { DataTrakLogotype } from '../../components/Icons';
 
 const Logo = styled(Button)`
   height: ${HEADER_HEIGHT};
@@ -31,7 +31,7 @@ const Logo = styled(Button)`
 export const DesktopHeaderLeft = ({ onClickLogo }) => {
   return (
     <Logo component={RouterLink} onClick={onClickLogo} to="/" title="Home">
-      <DataTrakLogoType titleAccess="Tupaia Datatrak logo" width="100%" height="100%" />
+      <DataTrakLogotype titleAccess="Tupaia Datatrak logo" width="100%" height="100%" />
     </Logo>
   );
 };

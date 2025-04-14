@@ -18,7 +18,7 @@ const Svg = styled.svg`
   }
 `;
 
-export const DataTrakLogoType = ({
+export const DataTrakLogotype = ({
   titleAccess,
   ...props
 }: React.ComponentPropsWithoutRef<typeof Svg> & { titleAccess?: string }) => (

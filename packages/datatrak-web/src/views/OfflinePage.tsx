@@ -1,10 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import { SafeArea, Button as UIButton } from '@tupaia/ui-components';
-import { Link as RouterLink } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { SafeArea, Button as UIButton } from '@tupaia/ui-components';
+
+import { DataTrakLogotype } from '../components';
 import { HEADER_HEIGHT } from '../constants';
-import { DataTrakLogoType } from '../components';
 
 const Container = styled.div`
   display: flex;
@@ -39,8 +41,8 @@ const Logo = styled(UIButton)`
 const Header = () => {
   return (
     <HeaderContainer>
-      <Logo component={RouterLink} to="/" title="Home" variant="text">
-        <DataTrakLogoType titleAccess="Tupaia Datatrak logo" width={84} height={42} />
+      <Logo component={RouterLink} to="/" variant="text">
+        <DataTrakLogotype titleAccess="Tupaia DataTrak – Home" width={84} height={41} />
       </Logo>
     </HeaderContainer>
   );
