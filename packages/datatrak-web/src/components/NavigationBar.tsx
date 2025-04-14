@@ -3,8 +3,10 @@ import SurveyIcon from '@material-ui/icons/DescriptionRounded';
 import DashboardIcon from '@material-ui/icons/HomeRounded';
 import MoreIcon from '@material-ui/icons/MoreHorizRounded';
 import React, { useState } from 'react';
+import { matchPath, useLocation } from 'react-router';
 import styled from 'styled-components';
 
+import { ROUTES } from '../constants';
 import { TaskIcon } from './Icons';
 
 type TabValue = 'home' | 'surveys' | 'tasks' | 'more';
@@ -28,7 +30,14 @@ const NavigationBarRoot = styled.div`
 `;
 
 export const NavigationBar = (props: BottomNavigationProps) => {
-  const [activeTab, setActiveTab] = useState<TabValue>('home');
+  const { pathname } = useLocation();
+  const [activeTab, setActiveTab] = useState<TabValue | null>(() => {
+    if (matchPath(ROUTES.HOME, pathname)) return 'home';
+    if (matchPath(`${ROUTES.SURVEY_SELECT}/* `, pathname)) return 'surveys';
+    if (matchPath(`${ROUTES.TASKS}/*`, pathname)) return 'tasks';
+
+    return null;
+  });
   const onChange = (_event: unknown, value: TabValue) => {
     setActiveTab(value);
   };
