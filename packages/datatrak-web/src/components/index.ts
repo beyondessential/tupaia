@@ -8,6 +8,7 @@ export { Button } from './Button';
 export { ButtonAnchor, ButtonLink } from './ButtonLink';
 export { CancelConfirmModal } from './CancelConfirmModal';
 export { ChangeProjectButton } from './ChangeProjectButton';
+export { DataTrakLogotype } from './DataTrakLogotype';
 export { DateTimeDisplay } from './DateTimeDisplay';
 export { ErrorDisplay } from './ErrorDisplay';
 export { InputHelperText } from './InputHelperText';
