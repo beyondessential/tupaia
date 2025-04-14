@@ -2,8 +2,8 @@ import { BottomNavigation, BottomNavigationAction, BottomNavigationProps } from 
 import SurveyIcon from '@material-ui/icons/DescriptionRounded';
 import DashboardIcon from '@material-ui/icons/HomeRounded';
 import MoreIcon from '@material-ui/icons/MoreHorizRounded';
-import React, { useState } from 'react';
-import { matchPath, useLocation } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Pathname, matchPath, useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { ROUTES } from '../constants';
@@ -36,18 +36,43 @@ const NavigationBarRoot = styled.nav`
   }
 `;
 
+function getTabFromPathname(pathname: Pathname): TabValue | null {
+  if (matchPath(`${ROUTES.SURVEY_SELECT}/*`, pathname)) return 'surveys';
+  if (matchPath(`${ROUTES.TASKS}/*`, pathname)) return 'tasks';
+  if (matchPath(ROUTES.HOME, pathname)) return 'home';
+  // return 'more'; // TODO
+  return null;
+}
+
 export const NavigationBar = (props: BottomNavigationProps) => {
   const { pathname } = useLocation();
-  const [activeTab, setActiveTab] = useState<TabValue | null>(() => {
-    if (matchPath(ROUTES.HOME, pathname)) return 'home';
-    if (matchPath(`${ROUTES.SURVEY_SELECT}/* `, pathname)) return 'surveys';
-    if (matchPath(`${ROUTES.TASKS}/*`, pathname)) return 'tasks';
+  const [activeTab, setActiveTab] = useState<TabValue | null>(getTabFromPathname(pathname));
 
-    return null;
-  });
+  const navigate = useNavigate();
   const onChange = (_event: unknown, value: TabValue) => {
-    setActiveTab(value);
+    switch (value) {
+      case 'home':
+        navigate(ROUTES.HOME);
+        break;
+      case 'surveys':
+        navigate(ROUTES.SURVEY_SELECT);
+        break;
+      case 'tasks':
+        navigate(ROUTES.TASKS);
+        break;
+      case 'more':
+        break;
+      default:
+        break;
+    }
   };
+
+  useEffect(() => {
+    const newTab = getTabFromPathname(pathname);
+    if (newTab !== activeTab) setActiveTab(newTab);
+
+    return () => void setActiveTab(null);
+  }, [pathname]);
 
   return (
     <BottomNavigation
