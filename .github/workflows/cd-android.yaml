@@ -40,10 +40,12 @@ jobs:
           ANDROID_SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
         run: ./gradlew app:assembleRelease
 
+      - run: ls -R packages/meditrak-app/android/app/build/outputs
+
       - name: Upload final build
         id: artifact-upload
         uses: actions/upload-artifact@v4
         with:
           name: android-release-${{github.run_number}}
-          path: packages/meditrak-app/android/app/build/outputs/apk/release/app-release.apk
+          path: packages/meditrak-app/android/app/build/outputs/**/*.apk
           retention-days: 7
