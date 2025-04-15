@@ -67,12 +67,17 @@ export const NavigationBar = (props: BottomNavigationProps) => {
     }
   };
 
-  useEffect(() => {
-    const newTab = getTabFromPathname(pathname);
-    if (newTab !== activeTab) setActiveTab(newTab);
+  useEffect(
+    () => {
+      const newTab = getTabFromPathname(pathname);
+      if (newTab !== activeTab) setActiveTab(newTab);
 
-    return () => void setActiveTab(null);
-  }, [pathname]);
+      return () => void setActiveTab(null);
+    },
+    // Despite being primitive, including `activeTab` can cause this hook to fire endlessly 😵‍💫. Fine
+    // to exclude, however, as the check against it is technically redundant (just for performance).
+    [pathname],
+  );
 
   return (
     <BottomNavigation
