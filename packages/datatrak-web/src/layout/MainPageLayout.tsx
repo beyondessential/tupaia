@@ -65,8 +65,9 @@ export const MainPageLayout = () => {
     <PageWrapper>
       {showHeader && <Header />}
       <Outlet />
-      <SurveyResponseModal />
       <Nav />
+
+      <SurveyResponseModal />
     </PageWrapper>
   );
 };
