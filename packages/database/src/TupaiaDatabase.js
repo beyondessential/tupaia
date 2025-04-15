@@ -4,7 +4,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
+import { Multilock } from '@tupaia/utils';
 
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -74,13 +74,6 @@ const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
-  /**
-   * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
-   * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
-   * without admin privileges are really expected to time out.
-   */
-  #countRecordTimeoutMs = Number.parseInt(getEnvVarOrDefault('SQL_COUNT_TIMEOUT_MS', '400'));
-
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
@@ -335,14 +328,22 @@ export class TupaiaDatabase {
   }
 
   async count(recordType, where, options) {
-    /** @type {number} */
+    // If just a simple query without options, use the more efficient knex count method
+    const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
+    return Number.parseInt(result[0].count, 10);
+  }
+
+  /**
+   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact recores
+   * count is merely an enhancement, not critical information in the context. A return value of
+   * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
+   */
+  async countFast(recordType, where, options, timeoutMs = 400) {
     let result;
     try {
-      // If just a simple query without options, use the more efficient knex count method
-      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(
-        this.#countRecordTimeoutMs,
-        { cancel: true },
-      );
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(timeoutMs, {
+        cancel: true,
+      });
     } catch (error) {
       if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
       throw error;
