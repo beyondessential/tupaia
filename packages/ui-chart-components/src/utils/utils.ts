@@ -5,7 +5,6 @@ import {
   ChartData,
   ChartReport,
   ChartType,
-  DashboardItemReport,
   ViewDataItem,
   VizPeriodGranularity,
 } from '@tupaia/types';
@@ -60,7 +59,7 @@ export const getIsChartData = (chartType: ChartType, report: ChartReport): boole
   if (
     chartType === ChartType.Pie &&
     report?.data &&
-    report?.data.every(segment => segment.value === 0)
+    report?.data?.every(segment => segment.value === 0)
   ) {
     return false;
   }

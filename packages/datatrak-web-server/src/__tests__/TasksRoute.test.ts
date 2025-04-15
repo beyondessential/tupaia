@@ -1,4 +1,4 @@
-import { NextFunction, Request } from 'express';
+import { NextFunction } from 'express';
 import { TasksRoute } from '../routes';
 
 const mockFunc = jest.fn(() => []);

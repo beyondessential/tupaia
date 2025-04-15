@@ -1,8 +1,9 @@
-import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import { Request } from 'express';
 import sortBy from 'lodash.sortby';
+
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
 type SingleSurveyResponse = DatatrakWebSurveyRequest.ResBody;
 
