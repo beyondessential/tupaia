@@ -54,7 +54,7 @@ const mockS3Bucket: { images: string[]; files: string[] } = {
 };
 
 const S3ClientMock = {
-  uploadImage: (data: string, id: string) => {
+  uploadImage: (_data: string, id: string) => {
     if (mockS3Bucket.images.includes(id)) {
       throw new Error(`Image ${id} already exists`);
     }
