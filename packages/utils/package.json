@@ -17,6 +17,7 @@
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "yarn run build",
     "build-watch": "rimraf dist && yarn run build:types && npm run --prefix ../../ package:build:js-watch",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test",
