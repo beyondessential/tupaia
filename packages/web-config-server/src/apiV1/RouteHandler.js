@@ -85,7 +85,7 @@ export class RouteHandler {
       ({ exceptions }) => !exceptions,
     );
 
-    const excludedTypes = frontendExcludedWithoutExceptions.map(({ types }) => types).flat();
+    const excludedTypes = frontendExcludedWithoutExceptions.flatMap(({ types }) => types);
 
     await Promise.all(
       frontendExcludedWithExceptions.map(async ({ types, exceptions }) => {
