@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, generateId, insertObject } from '../utilities';
+import { arrayToDbString, } from '../utilities';
 
 var dbm;
 var type;

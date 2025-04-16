@@ -4,7 +4,7 @@ import isEqual from 'lodash.isequal';
 import orderBy from 'lodash.orderby';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
+import { reduceToDictionary, } from '@tupaia/utils';
 
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 const INFO = 'info';

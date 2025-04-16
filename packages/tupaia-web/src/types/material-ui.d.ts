@@ -1,4 +1,4 @@
-import { PaletteOptions, Palette } from '@material-ui/core/styles/createPalette';
+
 
 type CustomPalette = {
   tooltip?: string;

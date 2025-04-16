@@ -1,9 +1,5 @@
 import React, { useRef, useState } from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { SqlEditor } from '@tupaia/ui-components';
-import { SelectedOptionWithEditor } from './SelectedOptionWithEditor';
-import { JsonEditor } from '../../../../widgets';
 import { TransformModal } from './TransformModal';
 import { TransformEditor } from './TransformEditor';
 
@@ -22,24 +18,6 @@ const getDefaultValueByType = type => {
   }
 };
 
-const EditorPanel = styled.div`
-  display: flex;
-  flex: 1;
-  width: 100%;
-
-  > div {
-    width: 100%;
-  }
-
-  .jsoneditor {
-    border: none;
-    cursor: text;
-  }
-
-  .ace_editor {
-    width: 100%;
-  }
-`;
 
 export const TransformSelectedOptionWithEditor = ({
   option,
