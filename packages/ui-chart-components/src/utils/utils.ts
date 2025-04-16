@@ -56,11 +56,7 @@ export const getContrastTextColor = () => {
 
 export const getIsChartData = (chartType: ChartType, report: ChartReport): boolean => {
   // If all segments of a pie chart are "0", display the no data message
-  if (
-    chartType === ChartType.Pie &&
-    report?.data &&
-    report?.data?.every(segment => segment.value === 0)
-  ) {
+  if (chartType === ChartType.Pie && report?.data?.every(segment => segment.value === 0)) {
     return false;
   }
 
