@@ -64,12 +64,14 @@
     "esbuild": "^0.24.0",
     "msw": "^1.3.1",
     "npm-run-all": "^4.1.5",
+    "rimraf": "^6.0.1",
     "vite": "^4.5.3",
     "workbox-cli": "^7.1.0"
   },
   "scripts": {
     "build:worker": "esbuild --outfile=dist/sw.js --bundle service-worker.ts && workbox injectManifest workbox-config.js",
     "build": "yarn package:build:types && yarn package:build:vite && yarn build:worker",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "preview": "vite preview",

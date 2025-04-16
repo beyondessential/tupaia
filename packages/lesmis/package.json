@@ -12,6 +12,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run --prefix ../../ package:build:vite",
+    "clean:build": "rimraf -- dist",
     "preview": "vite preview",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
