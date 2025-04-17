@@ -5,7 +5,16 @@ import { Autocomplete } from '../../components';
 import { useSurveyUsers } from '../../api';
 import { Survey } from '../../types';
 
-type User = DatatrakWebUsersRequest.ResBody[0];
+type User = DatatrakWebUsersRequest.UserResponse;
+
+/**
+ * @privateRemarks Not sure why the properties are duplicated under different keys. This type was
+ * introduced retroactively to meet existing behaviour. Refactor as you see fit.
+ */
+interface AssigneeInputAutocompleteOption extends User {
+  label: User['name'];
+  value: User['id'];
+}
 
 interface AssigneeInputProps {
   value: User | null;
@@ -53,7 +62,7 @@ export const AssigneeInput = ({
   }, [JSON.stringify(selectedValue)]);
 
   return (
-    <Autocomplete
+    <Autocomplete<AssigneeInputAutocompleteOption>
       label="Assignee"
       options={options}
       value={selectedValue}
@@ -67,7 +76,6 @@ export const AssigneeInput = ({
       inputValue={selectedValue?.name ?? searchValue}
       getOptionLabel={option => option.label}
       getOptionSelected={(option, selected) => option.id === selected?.id}
-      placeholder="Search..."
       loading={isLoading}
       required={required}
       error={error}
