@@ -1,7 +1,6 @@
-import { ButtonProps } from '@material-ui/core';
 import { endOfToday } from 'date-fns';
 import React, { useEffect } from 'react';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
@@ -142,13 +141,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     });
   };
 
-  const buttons: {
-    text: string;
-    onClick: () => void;
-    variant?: ButtonProps['variant']; // typing here because simply giving 'outlined' as default value is causing a type mismatch error
-    id: string;
-    disabled?: boolean;
-  }[] = [
+  const buttons = [
     {
       text: 'Cancel',
       onClick: onClose,
@@ -190,109 +183,107 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     >
       <Wrapper>
         <LoadingContainer isLoading={isLoadingData} heading="Loading data for project" text="">
-          <FormProvider {...formContext}>
-            <TaskForm onSubmit={handleSubmit(createTask)}>
-              <CountrySelectorWrapper>
-                <CountrySelector
-                  countries={countries}
-                  onChange={updateSelectedCountry}
-                  selectedCountry={selectedCountry}
-                />
-              </CountrySelectorWrapper>
-              <Controller
-                name="survey_code"
-                control={control}
-                rules={{ required: '*Required' }}
-                render={({ onChange, value }, { invalid }) => (
+          <TaskForm formContext={formContext} onSubmit={createTask}>
+            <CountrySelectorWrapper>
+              <CountrySelector
+                countries={countries}
+                onChange={updateSelectedCountry}
+                selectedCountry={selectedCountry}
+              />
+            </CountrySelectorWrapper>
+            <Controller
+              name="survey_code"
+              control={control}
+              rules={{ required: '*Required' }}
+              render={({ onChange, value }, { invalid }) => (
+                <ListSelectWrapper>
+                  <GroupedSurveyList
+                    selectedCountry={selectedCountry}
+                    selectedSurvey={value}
+                    setSelectedSurvey={onChange}
+                    label="Select survey"
+                    labelProps={{
+                      required: true,
+                      color: 'primary',
+                      component: 'label',
+                      error: invalid,
+                    }}
+                    error={invalid ? '*Required' : undefined}
+                  />
+                </ListSelectWrapper>
+              )}
+            />
+            <Controller
+              name="entity_id"
+              control={control}
+              rules={{ required: '*Required' }}
+              render={({ onChange, value, ref, name }, { invalid }) => {
+                return (
                   <ListSelectWrapper>
-                    <GroupedSurveyList
+                    <EntityInput
+                      onChange={onChange}
+                      value={value}
                       selectedCountry={selectedCountry}
-                      selectedSurvey={value}
-                      setSelectedSurvey={onChange}
-                      label="Select survey"
-                      labelProps={{
-                        required: true,
-                        color: 'primary',
-                        component: 'label',
-                        error: invalid,
-                      }}
-                      error={invalid ? '*Required' : undefined}
+                      inputRef={ref}
+                      name={name}
+                      invalid={invalid}
+                      surveyCode={surveyCode}
                     />
                   </ListSelectWrapper>
-                )}
-              />
+                );
+              }}
+            />
+            <InputRow>
               <Controller
-                name="entity_id"
-                control={control}
+                name="due_date"
                 rules={{ required: '*Required' }}
-                render={({ onChange, value, ref, name }, { invalid }) => {
+                control={control}
+                defaultValue={defaultDueDate}
+                render={({ ref, value, onChange, ...field }, { invalid }) => {
                   return (
-                    <ListSelectWrapper>
-                      <EntityInput
-                        onChange={onChange}
-                        value={value}
-                        selectedCountry={selectedCountry}
-                        inputRef={ref}
-                        name={name}
-                        invalid={invalid}
-                        surveyCode={surveyCode}
-                      />
-                    </ListSelectWrapper>
-                  );
-                }}
-              />
-              <InputRow>
-                <Controller
-                  name="due_date"
-                  rules={{ required: '*Required' }}
-                  control={control}
-                  defaultValue={defaultDueDate}
-                  render={({ ref, value, onChange, ...field }, { invalid }) => {
-                    return (
-                      <DueDatePicker
-                        {...field}
-                        value={value}
-                        onChange={onChange}
-                        inputRef={ref}
-                        label="Due date"
-                        disablePast
-                        fullWidth
-                        required
-                        invalid={invalid}
-                        helperText={invalid ? '*Required' : undefined}
-                      />
-                    );
-                  }}
-                />
-                <Controller
-                  name="repeat_frequency"
-                  control={control}
-                  render={({ onChange, value }) => (
-                    <RepeatScheduleInput value={value} onChange={onChange} dueDate={dueDate} />
-                  )}
-                />
-              </InputRow>
-
-              <InputRow>
-                <Controller
-                  name="assignee"
-                  control={control}
-                  render={({ ref, value, onChange, ...field }) => (
-                    <AssigneeInput
+                    <DueDatePicker
                       {...field}
                       value={value}
                       onChange={onChange}
                       inputRef={ref}
-                      countryCode={selectedCountry?.code}
-                      surveyCode={surveyCode}
+                      label="Due date"
+                      disablePast
+                      fullWidth
+                      required
+                      invalid={invalid}
+                      helperText={invalid ? '*Required' : undefined}
                     />
-                  )}
-                />
-              </InputRow>
+                  );
+                }}
+              />
+              <Controller
+                name="repeat_frequency"
+                control={control}
+                render={({ onChange, value }) => (
+                  <RepeatScheduleInput value={value} onChange={onChange} dueDate={dueDate} />
+                )}
+              />
+            </InputRow>
 
-              <CommentsInput label="Comments" name="comment" inputRef={register} />
-            </TaskForm>
-          </FormProvider>
+            <InputRow>
+              <Controller
+                name="assignee"
+                control={control}
+                render={({ ref, value, onChange, ...field }) => (
+                  <AssigneeInput
+                    {...field}
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    countryCode={selectedCountry?.code}
+                    surveyCode={surveyCode}
+                  />
+                )}
+              />
+            </InputRow>
+
+            <CommentsInput label="Comments" name="comment" inputRef={register} />
+          </TaskForm>
         </LoadingContainer>
       </Wrapper>
     </Modal>

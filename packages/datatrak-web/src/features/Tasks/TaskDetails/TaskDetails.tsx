@@ -153,7 +153,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   });
   const {
     control,
-    handleSubmit,
     watch,
     formState: { dirtyFields },
     reset,
@@ -195,7 +194,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
           <SideColumn>
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form formContext={formContext} onSubmit={onSubmit}>
               <ItemWrapper>
                 <TaskMetadata task={task} />
               </ItemWrapper>

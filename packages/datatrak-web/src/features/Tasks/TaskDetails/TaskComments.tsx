@@ -193,16 +193,16 @@ const SingleComment = ({ comment }: { comment: Comments[0] }) => {
 export const TaskComments = ({ comments }: { comments: Comments }) => {
   const { taskId } = useParams();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isDirty },
-  } = useForm({
+  const formContext = useForm({
     defaultValues: {
       comment: '',
     },
   });
+  const {
+    register,
+    reset,
+    formState: { isDirty },
+  } = formContext;
 
   const { mutate: createTaskComment, isLoading: isSaving } = useCreateTaskComment(taskId, reset);
 
@@ -211,7 +211,7 @@ export const TaskComments = ({ comments }: { comments: Comments }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form formContext={formContext} onSubmit={onSubmit}>
       <TaskCommentsDisplayContainer>
         {comments.map(comment => (
           <SingleComment key={comment.id} comment={comment} />
