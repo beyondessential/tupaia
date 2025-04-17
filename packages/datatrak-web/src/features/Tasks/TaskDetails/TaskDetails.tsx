@@ -21,36 +21,33 @@ import { TaskMetadata } from './TaskMetadata';
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
-  padding: 1.5rem;
+  column-gap: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: min(2.5rem, 2%);
+  padding: 1rem;
+  row-gap: 0;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     padding: 2.5rem;
   }
 `;
 
-const MainColumn = styled.div`
+const MainColumn = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   flex: 1;
-  margin-block: 1.2rem;
-  border-color: ${({ theme }) => theme.palette.divider};
-  border-style: solid;
-  border-width: 1px 0;
   padding-block: 1.2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 50%;
+    border-inline: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     margin-block: 0;
-    padding-inline: 1.2rem;
     padding-block: 0;
-    border-width: 0 1px;
+    padding-inline: 1.25rem;
+    width: 50%;
   }
 `;
 
-const SideColumn = styled.div`
+const SideColumn = styled.section`
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -267,7 +264,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
             <TaskComments comments={task.comments} />
           </MainColumn>
           <SideColumn>
-            <SectionHeading>Initial request </SectionHeading>
+            <SectionHeading>Initial request</SectionHeading>
             {task.initialRequestId && <InitialRequest initialRequestId={task.initialRequestId} />}
           </SideColumn>
         </Container>
