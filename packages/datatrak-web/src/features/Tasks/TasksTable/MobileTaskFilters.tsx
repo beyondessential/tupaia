@@ -224,7 +224,6 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
 export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabValue, setTabValue] = useState(0);
-  const isMobile = useIsMobile();
 
   const getHasFilter = key => filters.some(filter => filter.id === key);
   const tabs = [
@@ -263,22 +262,11 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
 
   return (
     <>
-      {isMobile && (
-        <FilterButton
-          onClick={() => {
-            setIsOpen(true);
-          }}
-        >
-          <FiltersIcon />
-          {filters.length > 0 && <FilterIndicator />}
-        </FilterButton>
-      )}
-      <StyledModal
-        open={isOpen}
-        onClose={() => {
-          setIsOpen(false);
-        }}
-      >
+      <FilterButton onClick={() => void setIsOpen(true)}>
+        <FiltersIcon />
+        {filters.length > 0 && <FilterIndicator />}
+      </FilterButton>
+      <StyledModal open={isOpen} onClose={() => void setIsOpen(false)}>
         <Title>Filter by</Title>
         <FilterTabs tabs={tabs} value={tabValue} onChange={onChangeTab} />
         {tabValue === 0 && (
@@ -310,13 +298,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           />
         )}
         <ButtonGroup>
-          <Button
-            onClick={() => {
-              setIsOpen(false);
-            }}
-          >
-            Apply
-          </Button>
+          <Button onClick={() => void setIsOpen(false)}>Apply</Button>
           <Button variant="text" color="default" onClick={clearFilters}>
             Clear filters
           </Button>
