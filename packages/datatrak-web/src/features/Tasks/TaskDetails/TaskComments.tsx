@@ -212,8 +212,8 @@ export const TaskComments = ({ comments }: { comments: Comments }) => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <TaskCommentsDisplayContainer>
-        {comments.map((comment, index) => (
-          <SingleComment key={index} comment={comment} />
+        {comments.map(comment => (
+          <SingleComment key={comment.id} comment={comment} />
         ))}
       </TaskCommentsDisplayContainer>
       <CommentsInput label="Add comment" name="comment" inputRef={register} />
