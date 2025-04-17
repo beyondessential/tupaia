@@ -148,9 +148,9 @@ export class GETHandler extends CRUDHandler {
     };
   }
 
-  async countRecords(criteria, { multiJoin }) {
+  async countRecords(criteria, { multiJoin }, countFastOptions) {
     const options = { multiJoin }; // only the join option is required for count
-    return this.database.countFast(this.recordType, criteria, options);
+    return this.database.countFast(this.recordType, criteria, options, countFastOptions);
   }
 
   async findRecords(criteria, options) {

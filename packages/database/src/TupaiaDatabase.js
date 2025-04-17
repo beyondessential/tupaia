@@ -4,7 +4,7 @@ import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
-import { Multilock } from '@tupaia/utils';
+import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
 
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -74,6 +74,12 @@ const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
+  /**
+   * If true, always uses `count()` method, even when `countFast()` is called.
+   * @type {boolean}
+   */
+  #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
+
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
@@ -334,22 +340,42 @@ export class TupaiaDatabase {
   }
 
   /**
-   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact recores
-   * count is merely an enhancement, not critical information in the context. A return value of
-   * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
+   * Same as {@link count}, but returns early if a limit or timeout is reached – whichever occurs
+   * first. Uses a strategy which is less efficient on lightweight COUNT queries, but aborts early
+   * from a heavy COUNT query by either:
+   *
+   *   - returning early after its index scan if `countFastOptions.limit` is reached; or
+   *   - aborting the query if `countFastOptions.timeoutMs` is reached.
+   *
+   * A return value of `Number.POSITIVE_INFINITY` indicates one of those occurred.
+   *
+   * @param {number} countFastOptions.countUpTo - The maximum number of records to count.
+   * @param {number} countFastOptions.timeoutMs - The maximum time to wait for the query to complete.
    */
-  async countFast(recordType, where, options, timeoutMs = 400) {
-    let result;
+  async countFast(recordType, where, options, countFastOptions = {}) {
+    if (this.#forceTrueCount) return await this.count(recordType, where, options);
+
+    const { countUpTo = 1000, timeoutMs = 500 } = countFastOptions;
+
+    const constrainedOptions = {
+      ...options,
+      // Project down to single (arbitrary) column, needed only for count
+      columns: [`${recordType}.id`],
+      // +1 so downstream consumers can report there are, say, “1000+ records”
+      limit: countUpTo + 1,
+    };
+
+    let limitedCount;
     try {
-      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(timeoutMs, {
-        cancel: true,
-      });
+      limitedCount = (
+        await this.find(recordType, where, constrainedOptions).timeout(timeoutMs, { cancel: true })
+      ).length;
     } catch (error) {
       if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
       throw error;
     }
 
-    return Number.parseInt(result[0].count, 10);
+    return limitedCount <= countUpTo ? limitedCount : Number.POSITIVE_INFINITY;
   }
 
   async create(recordType, record, where) {
