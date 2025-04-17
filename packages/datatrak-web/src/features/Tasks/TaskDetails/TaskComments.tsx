@@ -100,7 +100,7 @@ const formatValue = (field, value) => {
     }
     case 'repeat_schedule': {
       if (value === null || value === undefined) {
-        return "Doesn't repeat";
+        return 'Doesn’t repeat';
       }
 
       const frequency = Object.keys(RRULE_FREQUENCIES).find(
@@ -108,7 +108,7 @@ const formatValue = (field, value) => {
       );
 
       if (!frequency) {
-        return "Doesn't repeat";
+        return 'Doesn’t repeat';
       }
 
       // format the frequency to be more human-readable
