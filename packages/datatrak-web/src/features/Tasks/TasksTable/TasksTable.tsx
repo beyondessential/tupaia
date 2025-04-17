@@ -259,6 +259,8 @@ export const useTasksTable = () => {
   };
 };
 
+const canCreateTaskOnMobile = isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK');
+
 export const TasksTable = () => {
   const {
     columns,
@@ -294,7 +296,7 @@ export const TasksTable = () => {
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
         noDataMessage={
-          !isMobile || isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK')
+          !isMobile || canCreateTaskOnMobile
             ? 'No tasks to display. Click the ‘+ Create task’ button above to add a new task.'
             : 'No tasks to display'
         }

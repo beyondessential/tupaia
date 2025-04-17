@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
+import styled from 'styled-components';
+
+import { isFeatureEnabled } from '@tupaia/utils';
+
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
-import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
 import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
+import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
 import { useIsMobile } from '../../utils';
-import { isFeatureEnabled } from '@tupaia/utils';
+
+const canCreateTaskOnMobile = isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK');
 
 const CreateButton = styled(Button).attrs({
   color: 'primary',
@@ -44,7 +48,7 @@ export const TasksDashboardPage = () => {
         </StickyMobileHeader>
       )}
       <TaskPageHeader title="Tasks" backTo="/">
-        {(!isMobile || isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK')) && (
+        {(!isMobile || canCreateTaskOnMobile) && (
           <>
             <TaskMetrics style={{ marginInlineEnd: 'auto' }} />
             <CreateButton onClick={toggleCreateModal}>
