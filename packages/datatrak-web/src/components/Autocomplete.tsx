@@ -28,13 +28,19 @@ const PopupBody = styled(Paper).attrs({
     padding-inline: 1.1rem; // Align with search input
     text-wrap: balance;
 
-    &:hover,
+    &[aria-selected='true']:not(:focus-visible, :hover, [data-focus='true']) {
+      background-color: transparent;
+    }
+
+    &:focus-visible,
     &[data-focus='true'] {
       background-color: ${props => props.theme.palette.primaryHover};
     }
 
-    &[aria-selected='true']:not(:hover) {
-      background-color: transparent;
+    @media (hover: hover) {
+      &:hover {
+        background-color: ${props => props.theme.palette.primaryHover};
+      }
     }
 
     &[aria-selected='true'] {
