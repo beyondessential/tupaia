@@ -302,7 +302,7 @@ export const TasksTable = () => {
         }
         isLoading={isLoading}
       />
-      <MobileTaskFilters onChangeFilters={updateFilters} filters={filters} />
+      {isMobile && <MobileTaskFilters onChangeFilters={updateFilters} filters={filters} />}
     </Container>
   );
 };
