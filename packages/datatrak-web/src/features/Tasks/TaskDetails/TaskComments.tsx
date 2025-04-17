@@ -173,7 +173,7 @@ const SingleComment = ({ comment }: { comment: Comments[0] }) => {
   return (
     <CommentContainer>
       <CommentDetails>
-        {displayDateTime(createdAt)} - {userName} {!userId ? '(user deleted)' : ''}
+        {displayDateTime(createdAt)} &ndash; {userName} {!userId ? '(user deleted)' : ''}
       </CommentDetails>
 
       {type === TaskCommentType.system ? (
