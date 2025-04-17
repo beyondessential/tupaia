@@ -4,10 +4,11 @@ import styled from 'styled-components';
 
 import { DatatrakWebTasksRequest } from '@tupaia/types';
 import { FilterableTable } from '@tupaia/ui-components';
+import { isFeatureEnabled } from '@tupaia/utils';
 
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { TaskStatusType } from '../../../types';
-import { displayDate, isNotNullish } from '../../../utils';
+import { displayDate, isNotNullish, useIsMobile } from '../../../utils';
 import { CommentsCount } from '../CommentsCount';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusDot, StatusPill } from '../StatusPill';
@@ -18,7 +19,6 @@ import { FilterToolbar } from './FilterToolbar';
 import { MobileTaskFilters } from './MobileTaskFilters';
 import { RepeatScheduleFilter } from './RepeatScheduleFilter';
 import { StatusFilter } from './StatusFilter';
-import { isFeatureEnabled } from '@tupaia/utils';
 
 const Container = styled.div`
   background-color: ${props => props.theme.palette.background.paper};
@@ -275,6 +275,7 @@ export const TasksTable = () => {
     onChangePageSize,
     isLoading,
   } = useTasksTable();
+  const isMobile = useIsMobile();
 
   return (
     <Container>
@@ -293,7 +294,7 @@ export const TasksTable = () => {
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
         noDataMessage={
-          isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK')
+          !isMobile || isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK')
             ? 'No tasks to display. Click the ‘+ Create task’ button above to add a new task.'
             : 'No tasks to display'
         }
