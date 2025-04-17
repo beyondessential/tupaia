@@ -42,11 +42,7 @@ export const TasksDashboardPage = () => {
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
     <>
-      {isMobile && (
-        <StickyMobileHeader title="Tasks" onBack={onBack}>
-          All tasks
-        </StickyMobileHeader>
-      )}
+      {isMobile && <StickyMobileHeader onBack={onBack}>Tasks</StickyMobileHeader>}
       <TaskPageHeader title="Tasks" backTo="/">
         {(!isMobile || canCreateTaskOnMobile) && (
           <>
