@@ -15,7 +15,7 @@ import { TextField } from '@tupaia/ui-components';
 import { RRULE_FREQUENCIES } from '@tupaia/utils';
 
 import { useCreateTaskComment } from '../../../api';
-import { Button, DateTimeDisplay } from '../../../components';
+import { Button } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { TaskForm } from '../TaskForm';
 import { capsToSentenceCase } from '../utils';
