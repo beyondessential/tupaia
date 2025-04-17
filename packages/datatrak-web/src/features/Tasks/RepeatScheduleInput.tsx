@@ -34,10 +34,9 @@ export const RepeatScheduleInput = ({
       <Autocomplete<RepeatScheduleOption>
         id="repeatFrequency"
         value={selectedOption}
-        onChange={(_event: React.ChangeEvent<{}>, newValue: RepeatScheduleOption | null) => {
-          console.log('RepeatScheduleInput:38 onChange', { _event, newValue });
-          return onChange(newValue?.value ?? null);
-        }}
+        onChange={(_event: React.ChangeEvent<{}>, newValue: RepeatScheduleOption | null) =>
+          void onChange(newValue?.value ?? null)
+        }
         disabled={!dueDate || disabled}
         options={repeatScheduleOptions}
         getOptionLabel={(option: RepeatScheduleOption) => option.label}
