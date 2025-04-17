@@ -1,23 +1,25 @@
+import { Typography } from '@material-ui/core';
+import { format, parseISO } from 'date-fns';
 import React from 'react';
-import { format } from 'date-fns';
-import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
-import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
+
 import {
-  TaskCommentType,
   SystemCommentSubType,
-  TaskCommentTemplateVariables,
   TaskComment,
+  TaskCommentTemplateVariables,
+  TaskCommentType,
 } from '@tupaia/types';
-import { RRULE_FREQUENCIES } from '@tupaia/utils';
 import { TextField } from '@tupaia/ui-components';
-import { displayDateTime } from '../../../utils';
+import { RRULE_FREQUENCIES } from '@tupaia/utils';
+
+import { useCreateTaskComment } from '../../../api';
+import { Button, DateTimeDisplay } from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { TaskForm } from '../TaskForm';
-import { Button } from '../../../components';
-import { useCreateTaskComment } from '../../../api';
 import { capsToSentenceCase } from '../utils';
+import { displayDateTime } from '../../../utils';
 
 const TaskCommentsDisplayContainer = styled.div`
   width: 100%;
@@ -169,11 +171,13 @@ const UserComment = ({ message }: { message: Comments[0]['message'] }) => {
 
 const SingleComment = ({ comment }: { comment: Comments[0] }) => {
   const { createdAt, type, userName, message, templateVariables, userId } = comment;
+  const createdAtDate = parseISO(createdAt);
 
   return (
     <CommentContainer>
       <CommentDetails>
-        {displayDateTime(createdAt)} &ndash; {userName} {!userId ? '(user deleted)' : ''}
+        <time dateTime={createdAtDate.toISOString()}>{displayDateTime(createdAt)}</time> &ndash;{' '}
+        {userName} {!userId ? '(user deleted)' : ''}
       </CommentDetails>
 
       {type === TaskCommentType.system ? (
