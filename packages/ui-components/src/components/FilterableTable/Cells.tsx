@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
-import styled from 'styled-components';
 import { TableCell as MuiTableCell } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import React, { ReactNode } from 'react';
+import { LinkProps } from 'react-router-dom';
 import { TableResizerProps } from 'react-table';
+import styled from 'styled-components';
 
 const Cell = styled(MuiTableCell)<{
   $maxWidth?: number;
@@ -114,7 +114,7 @@ interface TableCellProps {
   column?: Record<string, any>;
 }
 export const TableCell = ({ children, width, row, maxWidth, column, ...props }: TableCellProps) => {
-  const getRowUrl = () => {
+  const getRowUrl = (): Partial<Pick<LinkProps, 'to' | 'state'>> => {
     if (!row) return {};
     if (row.url) return { to: row.url };
     if (column?.generateUrl) return column.generateUrl(row);
