@@ -6,14 +6,42 @@ DIR=$(dirname "$0")
 REPO_ROOT=$(realpath "$DIR/../..")
 . "$DIR/ansiControlSequences.sh"
 
+# Log into Bitwarden
+if [[ ! $(bw login --check) ]]; then
+    if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET ]]; then
+        # See https://bitwarden.com/help/personal-api-key
+        echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
+        bw login --apikey
+
+    elif [[ -v BW_EMAIL && -v BW_PASSWORD ]]; then
+        # Legacy behaviour, kept for backward compatibility
+        # On new devices, requires OTP which is emailed to Bitwarden account holder
+        # See https://bitwarden.com/help/cli/#using-email-and-password
+        echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using email ($BW_EMAIL) and password${RESET}"
+        bw login "$BW_EMAIL" "$BW_PASSWORD"
+
+    elif [[ -t 1 ]]; then
+        # Requires manual intervention. Bitwarden will prompt for email & password
+        # Recommended for interactive sessions
+        bw login
+
+    else
+        # Automated environment
+        echo -e "${BOLD}${RED}Login credentials for Bitwarden are missing.${RESET} Please ensure BW_CLIENTID and BW_CLIENTSECRET environment variables are set."
+        echo -e "See ${MAGENTA}https://bitwarden.com/help/personal-api-key${RESET}"
+        exit 1
+    fi
+fi
+
+# Unlock Bitwarden vault
+if [[ ! -t 1 && ! -v BW_PASSWORD ]]; then
+    echo -e "${BOLD}${RED}Bitwarden password is missing.${RESET} BW_PASSWORD environment variable must be set to unlock the vault."
+    exit 1
+fi
+eval "$(bw unlock --passwordenv BW_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
+
 # Collection in BitWarden where .env vars are kept
 COLLECTION_PATH='Engineering/Tupaia General/Environment Variables'
-
-# Log in to bitwarden
-echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden${RESET}"
-bw login --check || bw login "$BITWARDEN_EMAIL" "$BITWARDEN_PASSWORD"
-eval "$(bw unlock "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
-
 COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
 echo
@@ -94,4 +122,6 @@ bw logout
 # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
 # that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
 # generate backup files which we don’t need.
-rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e
+if [[ $(uname) = 'Darwin' ]]; then
+    rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e
+fi

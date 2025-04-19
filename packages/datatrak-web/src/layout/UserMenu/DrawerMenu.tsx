@@ -11,7 +11,7 @@ import { MenuButton, MenuList } from './MenuList';
 
 const Paper = styled(MuiPaper)`
   border-radius: 0;
-  min-inline-size: 70vw;
+  min-inline-size: 70dvi;
   padding-inline: 1rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding-inline: 1.5rem;
@@ -37,6 +37,7 @@ const CloseButton = styled(IconButton).attrs({
   color: 'default',
 })`
   color: ${props => props.theme.palette.text.primary};
+  padding: 0.8rem;
 `;
 
 interface DrawerMenuProps {
