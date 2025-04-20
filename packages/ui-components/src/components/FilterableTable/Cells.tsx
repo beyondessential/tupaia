@@ -1,17 +1,21 @@
 import { TableCell as MuiTableCell } from '@material-ui/core';
 import React, { ReactNode } from 'react';
-import { LinkProps } from 'react-router-dom';
+import { Link, LinkProps } from 'react-router-dom';
 import { TableResizerProps } from 'react-table';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Cell = styled(MuiTableCell)<{
   $maxWidth?: number;
 }>`
+  ${props =>
+    props.$maxWidth &&
+    css`
+      max-width: ${props.$maxWidth}px;
+    `};
   font-size: 0.75rem;
   padding: 0;
   border: none;
   position: relative;
-  max-width: ${({ $maxWidth }) => ($maxWidth ? `${$maxWidth}px` : 'auto')};
   &:first-child {
     padding-inline-start: 1.5rem;
   }
@@ -84,8 +88,7 @@ const ColResize = styled.div.attrs({
   cursor: col-resize;
 `;
 
-export interface HeaderDisplayCellProps {
-  children?: ReactNode;
+export interface HeaderDisplayCellProps extends React.ComponentPropsWithoutRef<typeof HeaderCell> {
   canResize?: boolean;
   getResizerProps?: (props?: Partial<TableResizerProps>) => TableResizerProps;
   maxWidth?: number;
