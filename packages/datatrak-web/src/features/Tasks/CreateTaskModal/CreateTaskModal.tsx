@@ -201,7 +201,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
                     selectedCountry={selectedCountry}
                     selectedSurvey={value}
                     setSelectedSurvey={onChange}
-                    label="Select survey"
+                    label="Survey"
                     labelProps={{
                       required: true,
                       color: 'primary',
