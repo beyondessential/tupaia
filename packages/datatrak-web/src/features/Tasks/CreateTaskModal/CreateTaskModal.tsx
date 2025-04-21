@@ -1,5 +1,5 @@
 import { endOfToday } from 'date-fns';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
@@ -157,16 +157,19 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
     },
   ];
 
-  useEffect(() => {
-    if (!selectedCountry?.code) return;
-    // reset surveyCode and entityId when country changes, if they are dirty
+  const onChangeCountry = event => {
+    console.debug('onChangeCountry', event);
+    updateSelectedCountry(event);
+
     if (dirtyFields.survey_code) {
+      console.debug('  Survey Code dirty, resetting');
       setValue('survey_code', null, { shouldValidate: true });
     }
     if (dirtyFields.entity_id) {
+      console.debug('  Entity ID dirty, resetting');
       setValue('entity_id', null, { shouldValidate: true });
     }
-  }, [dirtyFields.survey_code, dirtyFields.entity_id, selectedCountry?.code, setValue]);
+  };
 
   const surveyCode = watch('survey_code');
   const dueDate = watch('due_date');
@@ -187,7 +190,7 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
             <CountrySelectorWrapper>
               <CountrySelector
                 countries={countries}
-                onChange={updateSelectedCountry}
+                onChange={onChangeCountry}
                 selectedCountry={selectedCountry}
               />
             </CountrySelectorWrapper>
