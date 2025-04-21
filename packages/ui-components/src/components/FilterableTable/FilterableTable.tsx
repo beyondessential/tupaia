@@ -1,4 +1,3 @@
-import React, { useMemo } from 'react';
 import {
   TableContainer as MuiTableContainer,
   Table,
@@ -6,15 +5,23 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  Typography,
 } from '@material-ui/core';
-import styled from 'styled-components';
-import { Column, useFlexLayout, useResizeColumns, useTable, SortingRule } from 'react-table';
 import { KeyboardArrowDown } from '@material-ui/icons';
+import React, { useMemo } from 'react';
+import { Column, SortingRule, useFlexLayout, useResizeColumns, useTable } from 'react-table';
+import styled from 'styled-components';
+
 import { SpinningLoader } from '../Loaders';
 import { HeaderDisplayCell, TableCell } from './Cells';
 import { FilterCell, FilterCellProps, Filters } from './FilterCell';
 import { Pagination } from './Pagination';
+
+/*
+ * TODO: Move to @tupaia/frontend-utils or @tupaia/react-utils once that exists
+ */
+function isReactText(val: unknown): val is string | number {
+  return typeof val === 'string' || typeof val === 'number';
+}
 
 const TableContainer = styled(MuiTableContainer)`
   position: relative;
@@ -40,11 +47,24 @@ const TableContainer = styled(MuiTableContainer)`
   }
 `;
 
-const NoDataMessage = styled.div`
-  width: 100%;
-  text-align: center;
+const EmptyStateWrapper = styled.div.attrs(
+  // If empty state message renders as a string, use semantic paragraph element
+  props => isReactText(props.children) && { as: 'p' },
+)`
+  // Make this, and its two immediate ancestors, fill available space
+  .MuiTableContainer-root:has(&) :is(.MuiTable-root, .MuiTableBody-root, &) {
+    block-size: 100%;
+  }
+
+  display: flex;
+  margin: auto;
+  padding-block: 1rem 2rem; // Taller on bottom to optically appear centred
   padding-block: 2.5rem;
   padding-inline: 2rem;
+  place-content: center;
+  place-items: center;
+  text-align: center;
+  text-wrap: balance;
 `;
 
 const LoadingContainer = styled.div`
@@ -54,18 +74,18 @@ const LoadingContainer = styled.div`
   align-items: center;
 `;
 
-type SortBy = {
+interface SortBy {
   id: string;
   desc: boolean;
-};
+}
 
-type ColumnInstance = Record<string, any> & {
+interface ColumnInstance extends Record<string, any> {
   CellContentComponent?: React.ComponentType<any>;
-};
+}
 
 interface FilterableTableProps {
   columns: Column<ColumnInstance>[];
-  data?: Record<string, any>[];
+  data?: Record<string, unknown>[];
   pageIndex?: number;
   pageSize?: number;
   sorting?: SortBy[];
@@ -77,7 +97,7 @@ interface FilterableTableProps {
   onChangeFilters: FilterCellProps['onChangeFilters'];
   filters?: Filters;
   totalRecords: number;
-  noDataMessage?: string;
+  noDataMessage?: React.ReactNode;
   isLoading?: boolean;
 }
 
@@ -198,34 +218,33 @@ export const FilterableTable = ({
             )}
           </TableHead>
           <TableBody {...getTableBodyProps()}>
-            {rows.map(row => {
-              prepareRow(row);
-              return (
-                <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
-                  {row.cells.map(({ getCellProps, render }, i) => {
-                    const col = visibleColumns[i] as ColumnInstance;
-                    return (
-                      <TableCell
-                        {...getCellProps()}
-                        key={`table-row-${row.id}-cell-${col.id}`}
-                        row={row.original}
-                        maxWidth={col.maxWidth}
-                        column={col}
-                      >
-                        {render('Cell')}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
+            {rows.length === 0 && noDataMessage && !isLoading ? (
+              <EmptyStateWrapper>{noDataMessage}</EmptyStateWrapper>
+            ) : (
+              rows.map(row => {
+                prepareRow(row);
+                return (
+                  <TableRow {...row.getRowProps()} key={`table-row-${row.id}`}>
+                    {row.cells.map(({ getCellProps, render }, i) => {
+                      const col = visibleColumns[i] as ColumnInstance;
+                      return (
+                        <TableCell
+                          {...getCellProps()}
+                          key={`table-row-${row.id}-cell-${col.id}`}
+                          row={row.original}
+                          maxWidth={col.maxWidth}
+                          column={col}
+                        >
+                          {render('Cell')}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
-        {rows.length === 0 && noDataMessage && !isLoading && (
-          <NoDataMessage>
-            <Typography variant="body2">{noDataMessage}</Typography>
-          </NoDataMessage>
-        )}
         {isLoading && (
           <LoadingContainer>
             <SpinningLoader />

@@ -85244,6 +85244,34 @@ export const ProjectResponseSchema = {
 	]
 } 
 
+export const EntitiesResponseItemSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"parentId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"id",
+		"name",
+		"type"
+	]
+} 
+
 export const VisibilityCriteriaSchema = {
 	"additionalProperties": false,
 	"type": "object",

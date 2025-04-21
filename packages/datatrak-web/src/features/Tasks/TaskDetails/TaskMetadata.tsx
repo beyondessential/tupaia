@@ -45,7 +45,7 @@ const Row = styled(DataWrapper)`
 `;
 
 const Pin = styled.img.attrs({
-  src: '/tupaia-pin.svg',
+  src: '/datatrak-pin.svg',
   'aria-hidden': true, // this pin is not of any use to the screen reader, so hide from the screen reader
 })`
   width: auto;
@@ -60,9 +60,7 @@ const CountryWrapper = styled.div`
 `;
 
 export const TaskMetadata = ({ task }: { task?: SingleTaskResponse }) => {
-  const { data: country } = useEntityByCode(task?.entity?.countryCode, {
-    enabled: !!task?.entity?.countryCode,
-  });
+  const { data: country } = useEntityByCode(task?.entity?.countryCode);
   if (!task) return null;
   const { survey, entity, taskStatus } = task;
 

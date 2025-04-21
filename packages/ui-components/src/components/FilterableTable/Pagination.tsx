@@ -1,9 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Pagination as UIPagination } from '../Pagination';
+import {
+  PaginationRoot,
+  Pagination as UIPagination,
+  PaginationProps as UIPaginationProps,
+} from '../Pagination';
 
 const Wrapper = styled.div`
-  .pagination-wrapper {
+  ${PaginationRoot} {
     border-top: 1px solid ${({ theme }) => theme.palette.divider};
     background-color: ${({ theme }) => theme.palette.background.paper};
   }
@@ -18,13 +22,12 @@ const Wrapper = styled.div`
   }
 `;
 
-interface PaginationProps {
-  page: number;
-  pageCount: number;
-  onChangePage: (page: number) => void;
-  pageSize: number;
+interface PaginationProps
+  extends Pick<
+    UIPaginationProps,
+    'page' | 'pageCount' | 'onChangePage' | 'pageSize' | 'totalRecords'
+  > {
   onChangePageSize: (pageSize: number) => void;
-  totalRecords: number;
 }
 
 export const Pagination = ({
