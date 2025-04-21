@@ -1,11 +1,13 @@
-import autobind from 'react-autobind';
+import knex, { KnexTimeoutError } from 'knex';
 import { types as pgTypes } from 'pg';
-import knex from 'knex';
+import autobind from 'react-autobind';
 import winston from 'winston';
-import { Multilock } from '@tupaia/utils';
+
 import { hashStringToInt } from '@tupaia/tsutils';
-import { getConnectionConfig } from './getConnectionConfig';
+import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
+
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
+import { getConnectionConfig } from './getConnectionConfig';
 import { generateId } from './utilities';
 import {
   MAX_BINDINGS_PER_QUERY,
@@ -72,6 +74,13 @@ const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
+  /**
+   * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
+   * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
+   * without admin privileges are really expected to time out.
+   */
+  #countRecordTimeoutMs = Number.parseInt(getEnvVarOrDefault('SQL_COUNT_TIMEOUT_MS', '400'));
+
   /**
    * @param {TupaiaDatabase} [transactingConnection]
    * @param {DatabaseChangeChannel} [transactingChangeChannel]
@@ -326,8 +335,19 @@ export class TupaiaDatabase {
   }
 
   async count(recordType, where, options) {
-    // If just a simple query without options, use the more efficient knex count method
-    const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
+    /** @type {number} */
+    let result;
+    try {
+      // If just a simple query without options, use the more efficient knex count method
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(
+        this.#countRecordTimeoutMs,
+        { cancel: true },
+      );
+    } catch (error) {
+      if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
+      throw error;
+    }
+
     return Number.parseInt(result[0].count, 10);
   }
 
