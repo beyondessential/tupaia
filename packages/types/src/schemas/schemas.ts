@@ -86164,6 +86164,114 @@ export const TaskResponseSchema = {
 	]
 } 
 
+export const TaskResponseItemSchema = {
+	"type": "object",
+	"properties": {
+		"createdAt": {
+			"description": "ISO 8601 format (e.g. '2025-04-21T21:30:48.344Z')",
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"system",
+				"user"
+			],
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"taskId": {
+			"type": "string"
+		},
+		"templateVariables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"update"
+							]
+						},
+						"originalValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"newValue": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"field": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"create"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"complete"
+							]
+						},
+						"taskId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"userId": {
+			"type": "string"
+		},
+		"userName": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"createdAt",
+		"id",
+		"taskId",
+		"templateVariables",
+		"type",
+		"userName"
+	]
+} 
+
 export const UserResponseSchema = {
 	"type": "object",
 	"properties": {
