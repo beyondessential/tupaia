@@ -114,9 +114,9 @@ export class BaseDatabase {
     await this.connectionPromise;
   }
 
-  async fetchSchemaForTable(databaseRecord) {
+  async fetchSchemaForTable(databaseRecord, schemaName) {
     await this.waitUntilConnected();
-    return this.connection(databaseRecord).columnInfo();
+    return this.connection(databaseRecord).withSchema(schemaName).columnInfo();
   }
 
   /**
@@ -238,7 +238,7 @@ export class BaseDatabase {
     return parseInt(result[0].count, 10);
   }
 
-  async create(recordType, record, where) {
+  async create(recordType, record, where, schemaName) {
     if (!record.id) {
       record.id = this.generateId();
     }
@@ -249,6 +249,7 @@ export class BaseDatabase {
         queryMethodParameter: record,
       },
       where,
+      { schemaName },
     );
 
     return record;
@@ -273,7 +274,7 @@ export class BaseDatabase {
    * @param {object} where          Records matching this criteria will be updated
    * @param {object} updatedFields  The new values that should be in the record
    */
-  async update(recordType, where, updatedFields) {
+  async update(recordType, where, updatedFields, schemaName) {
     return this.query(
       {
         recordType,
@@ -281,6 +282,7 @@ export class BaseDatabase {
         queryMethodParameter: updatedFields,
       },
       where,
+      { schemaName },
     );
   }
 
@@ -416,6 +418,10 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   const { recordType, queryMethod, queryMethodParameter } = queryConfig;
 
   let query = connection(recordType); // Query starts as just the table, but will be built up
+
+  if (options.schemaName) {
+    query = query.withSchema(options.schemaName);
+  }
 
   // If an innerQuery is defined, make the outer query wrap it
   if (options.innerQuery) {

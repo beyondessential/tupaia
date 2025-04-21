@@ -44,7 +44,7 @@ export class CentralSyncManager {
     );
 
     // wait for any in-flight transactions of pending edits
-    // that we don't miss any changes that are in progress
+    // so that we don't miss any changes that are in progress
     await Promise.all(
       pendingSyncTicks.map((t: number) => waitForPendingEditsUsingSyncTick(this.database, t)),
     );
@@ -71,7 +71,7 @@ export class CentralSyncManager {
 
       await debugObject.addInfo({ since: previouslyUpToTick });
 
-      const isInitialBuildOfLookupTable = parseInt(previouslyUpToTick, 10) === -1;
+      const isInitialBuildOfLookupTable = Number.parseInt(previouslyUpToTick, 10) === -1;
 
       await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
         // When it is initial build of sync lookup table, by setting it to null,
@@ -82,13 +82,13 @@ export class CentralSyncManager {
         // See more details in the 'await updateSyncLookupPendingRecords' call
         const syncLookupTick = isInitialBuildOfLookupTable ? null : SYNC_LOOKUP_PENDING_UPDATE_FLAG;
 
-        await updateLookupTable(
+        void (await updateLookupTable(
           getModelsForDirection(this.models, SYNC_DIRECTIONS.PULL_FROM_CENTRAL),
           previouslyUpToTick,
           this.config,
           syncLookupTick,
           debugObject,
-        );
+        ));
 
         // update the last successful lookup table in the same transaction - if updating the cursor fails,
         // we want to roll back the rest of the saves so that the next update can still detect the records that failed
@@ -99,10 +99,10 @@ export class CentralSyncManager {
         await this.models.localSystemFact.set(FACT_LOOKUP_UP_TO_TICK, currentTick);
       });
 
-      // An edge case if we use the global clock to update the sync lookup table:
-      // 1. Global clock is = 1, encounter A is updated
-      // 2. Sync lookup table is being updated, transferring encounter A to sync_lookup, using the global clock = 1
-      // 3. New sync session A is started, and global clock is incremented to = 3
+      // If we used the current sync tick to record against each update to the sync lookup table, we would hit an edge case:
+      // 1. Current sync tick is = 1, encounter A is updated
+      // 2. Sync lookup table is being updated, transferring encounter A to sync_lookup, using updated_at_sync_tick = 1
+      // 3. New sync session A is started, and current sync tick is incremented to = 3
       // 4. Sync lookup table is still being updated
       // 5. Sync session A is finished, and lastSuccessfulPullTick is set to = 3
       // 6. Sync lookup table is finished. Encounter A is transferred to sync_lookup table
@@ -112,7 +112,7 @@ export class CentralSyncManager {
       // 1. When starting updating lookup table, use fixed -1 as the tick and treat them as pending updates (SYNC_LOOKUP_PENDING_UPDATE_FLAG)
       // 2. After updating lookup table is finished, update all the records with tick = -1 to the latest sync tick
       // => That way, sync sessions will never miss any records due to timing issue.
-      // Note:Do not need to update pending records when it is initial build
+      // Note: We do not need to update pending records when it is the initial build
       // because it uses ticks from the actual tables for updated_at_sync_tick
       if (!isInitialBuildOfLookupTable) {
         await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {

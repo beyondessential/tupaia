@@ -10,7 +10,6 @@ export async function buildSyncLookupSelect(model: DatabaseModel, columns: Colum
   const { projectIds } = columns;
   const table = model.databaseRecord;
 
-  console.log('attributessss', attributes);
   return `
     SELECT
       ${table}.id,

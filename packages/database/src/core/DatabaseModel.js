@@ -1,6 +1,7 @@
 import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
+import { SCHEMA_NAMES } from './constants';
 
 export class DatabaseModel {
   otherModels = {};
@@ -60,8 +61,12 @@ export class DatabaseModel {
     return [];
   }
 
+  get schemaName() {
+    return SCHEMA_NAMES.PUBLIC;
+  }
+
   startSchemaFetch = () =>
-    this.database.fetchSchemaForTable(this.DatabaseRecordClass.databaseRecord);
+    this.database.fetchSchemaForTable(this.DatabaseRecordClass.databaseRecord, this.schemaName);
 
   // functionArguments should receive the 'arguments' object
   getCacheKey = (functionName, functionArguments) =>
@@ -338,7 +343,7 @@ export class DatabaseModel {
     const data = await this.getDatabaseSafeData(fields);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    const fieldValues = await this.database.create(this.databaseRecord, data);
+    const fieldValues = await this.database.create(this.databaseRecord, data, {}, this.schemaName);
 
     return this.generateInstance(fieldValues);
   }
@@ -376,7 +381,7 @@ export class DatabaseModel {
     const data = await this.getDatabaseSafeData(fieldsToUpdate);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    return this.database.update(this.databaseRecord, whereCondition, data);
+    return this.database.update(this.databaseRecord, whereCondition, data, this.schemaName);
   }
 
   async updateOrCreate(whereCondition, fieldsToUpsert) {

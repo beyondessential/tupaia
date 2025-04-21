@@ -67,7 +67,7 @@ const updateLookupTableForModel = async (
           RETURNING record_id
         )
         SELECT MAX(record_id) as "maxId",
-          count(*) as "count"
+          COUNT(*)::int as "count"
         FROM inserted;
       `,
       {
@@ -79,7 +79,7 @@ const updateLookupTableForModel = async (
       },
     );
 
-    const chunkCount = parseInt(count, 10); // count should always be default to '0'
+    const chunkCount = count; // count should always be default to '0'
     fromId = maxId;
     totalCount += chunkCount;
   }

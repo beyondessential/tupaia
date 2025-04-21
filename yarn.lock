@@ -10704,6 +10704,7 @@ __metadata:
     "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/sync": "workspace:*"
+    rimraf: ^6.0.1
   languageName: unknown
   linkType: soft
 
@@ -10712,6 +10713,7 @@ __metadata:
   resolution: "@tupaia/sync@workspace:packages/sync"
   dependencies:
     "@tupaia/database": "workspace:*"
+    rimraf: ^6.0.1
   languageName: unknown
   linkType: soft
 
