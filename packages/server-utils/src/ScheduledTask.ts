@@ -1,6 +1,26 @@
 import { scheduleJob, Job } from 'node-schedule';
 import winston from 'winston';
 
+export interface DatabaseInterface {
+  /**
+   * Wraps a callback in a database transaction
+   * @param callback Function to execute within the transaction
+   * @returns Promise that resolves when the transaction is complete
+   */
+  wrapInTransaction<T>(callback: (transactingModels: DatabaseInterface) => Promise<T>): Promise<T>;
+
+  /**
+   * Database instance with advisory lock functionality
+   */
+  database: {
+    /**
+     * Acquires an advisory lock for the current transaction
+     * @param lockKey Unique key for the lock
+     */
+    acquireAdvisoryLockForTransaction(lockKey: string): Promise<void>;
+  };
+}
+
 /**
  * Base class for scheduled tasks. Uses 'node-schedule' for scheduling based on cron tab syntax
  * Subclasses should implement the run method and need to be initialised by instantiating the
@@ -35,9 +55,9 @@ export class ScheduledTask {
   /**
    * Model registry for database access
    */
-  models: any;
+  models: DatabaseInterface;
 
-  constructor(models: any, name: string, schedule: string) {
+  constructor(models: DatabaseInterface, name: string, schedule: string) {
     if (!name) {
       throw new Error(`ScheduledTask has no name`);
     }
@@ -61,7 +81,7 @@ export class ScheduledTask {
     this.start = Date.now();
 
     try {
-      await this.models.wrapInTransaction(async (transactingModels: any) => {
+      await this.models.wrapInTransaction(async (transactingModels: DatabaseInterface) => {
         // Acquire a database advisory lock for the transaction
         // Ensures no other server instance can execute its change handler at the same time
         await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);

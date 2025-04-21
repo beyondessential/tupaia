@@ -1,5 +1,9 @@
 import type { TupaiaDatabase } from '@tupaia/database';
 
+interface PendingEditTickResult {
+  tick: number;
+}
+
 export const getSyncTicksOfPendingEdits = async (database: TupaiaDatabase) => {
   // Get the keys (ie: syncTicks) of all the in-flight transaction locks of pending edits.
   // Since advisory locks are global, and:
@@ -13,7 +17,7 @@ export const getSyncTicksOfPendingEdits = async (database: TupaiaDatabase) => {
       WHERE locktype = 'advisory'
       AND mode = 'ShareLock'
     `,
-  )) as unknown as any[]; // TODO: fix this
+  )) as PendingEditTickResult[];
 
-  return results?.map((r: any) => r.tick);
+  return results?.map((r: PendingEditTickResult) => r.tick);
 };

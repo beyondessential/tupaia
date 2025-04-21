@@ -17,9 +17,10 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return db.runSql(`
     CREATE TABLE sync_device_tick (
-      id                     BIGINT GENERATED ALWAYS AS ("persisted_at_sync_tick") STORED,
-      persisted_at_sync_tick BIGINT NOT NULL PRIMARY KEY,
-      device_id              TEXT   NOT NULL
+      id                      BIGINT GENERATED ALWAYS AS ("persisted_at_sync_tick") STORED,
+      persisted_at_sync_tick  BIGINT NOT NULL PRIMARY KEY,
+      device_id               TEXT   NOT NULL,
+      created_at              TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL
     );
   `);
 };
