@@ -20,7 +20,7 @@ export class DatabaseModel {
     // invalidate the cache any time a change is detected. Non-singleton models are those created
     // during transactions, so are short lived and unlikely to need cache invalidation - thus we
     // avoid making an additional connection to pubsub and just leave their cache untouched
-    if (this.database.IS_CHANGE_HANDLER_SUPPORTED && this.database.isSingleton) {
+    if (this.database.constructor.IS_CHANGE_HANDLER_SUPPORTED && this.database.isSingleton) {
       if (this.cacheEnabled) {
         // fully reset cache on any change to this model's records
         this.database.addChangeHandlerForCollection(this.DatabaseRecordClass.databaseRecord, () => {
