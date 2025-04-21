@@ -21,9 +21,9 @@ interface UseTasksOptions {
 }
 
 export const useTasks = ({ projectId, pageSize, page, filters = [], sortBy }: UseTasksOptions) => {
-  return useQuery(
+  return useQuery<DatatrakWebTasksRequest.ResBody>(
     ['tasks', projectId, pageSize, page, filters, sortBy],
-    (): Promise<DatatrakWebTasksRequest.ResBody> =>
+    () =>
       get('tasks', {
         params: {
           pageSize,
