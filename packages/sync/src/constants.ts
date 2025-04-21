@@ -10,7 +10,7 @@ export const SYNC_SESSION_DIRECTION = {
   OUTGOING: 'outgoing',
 };
 
-export const SYNC_LOOKUP_PENDING_UPDATE_FLAG = -1;
+export const SYNC_LOOKUP_PENDING_UPDATE_SYNC_TICK = -1;
 
 export const DEBUG_LOG_TYPES = {
   SYNC_LOOKUP_UPDATE: 'syncLookupUpdate',
