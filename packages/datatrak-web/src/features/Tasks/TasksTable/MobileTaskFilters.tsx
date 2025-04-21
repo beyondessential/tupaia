@@ -15,7 +15,6 @@ import {
 } from '../../../api';
 import { Button, FiltersIcon } from '../../../components';
 import { Modal, ModalBody } from '../../../components/Modal';
-import { useIsMobile } from '../../../utils';
 import { MobileAutocomplete } from './MobileAutocomplete';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
