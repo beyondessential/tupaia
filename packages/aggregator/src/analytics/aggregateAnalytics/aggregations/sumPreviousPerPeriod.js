@@ -3,6 +3,9 @@ import groupBy from 'lodash.groupby';
 import { convertToPeriod, EARLIEST_DATA_DATE_STRING, getPeriodsInRange } from '@tupaia/utils';
 import { getContinuousPeriodsForAnalytics } from './utils';
 
+/**
+ * @returns {Analytic[]}
+ */
 export const sumPreviousPerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
   const { requestedPeriod, sumTillLatestData } = aggregationConfig;
   const periods = calculatePeriodsFromAnalytics(
@@ -15,10 +18,11 @@ export const sumPreviousPerPeriod = (analytics, aggregationConfig, aggregationPe
     convertToPeriod(analytic.period, aggregationPeriod),
   );
 
+  /** @type {Analytic[][]} */
   const summedAnalyticsInPeriods = periods.reduce((summedAnalytics, period) => {
     const analyticsForPeriod = analyticsByPeriod[period] || [];
 
-    if (!summedAnalytics.length) {
+    if (summedAnalytics.length === 0) {
       // for the first period, sum all analytics up to it.
       let analyticsForFirstPeriod = analyticsForPeriod;
       Object.entries(analyticsByPeriod).forEach(([analyticPeriod, analytic]) => {
@@ -26,14 +30,16 @@ export const sumPreviousPerPeriod = (analytics, aggregationConfig, aggregationPe
           analyticsForFirstPeriod = sumByAnalytic(analyticsForFirstPeriod, analytic, period);
         }
       });
-      return [analyticsForFirstPeriod];
+      summedAnalytics.push(analyticsForFirstPeriod);
+      return summedAnalytics;
     }
 
     const previousPeriodAnalytics = summedAnalytics[summedAnalytics.length - 1];
-    return [...summedAnalytics, sumByAnalytic(previousPeriodAnalytics, analyticsForPeriod, period)];
+    summedAnalytics.push(sumByAnalytic(previousPeriodAnalytics, analyticsForPeriod, period));
+    return summedAnalytics;
   }, []);
 
-  return [].concat(...summedAnalyticsInPeriods); // Flatten array
+  return summedAnalyticsInPeriods.flat();
 };
 
 /**
