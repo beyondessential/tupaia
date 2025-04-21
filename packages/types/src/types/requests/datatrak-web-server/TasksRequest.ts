@@ -3,15 +3,14 @@ import { Entity, Survey, Task, TaskStatus } from '../../models';
 
 export type Params = Record<string, never>;
 
-interface Assignee {
+type Assignee = {
   id?: string | null;
   name?: string | null;
-}
+};
 
-export interface TaskResponse
-  extends KeysToCamelCase<
-    Partial<Omit<Task, 'entity_id' | 'survey_id' | 'created_at' | 'repeat_schedule' | 'due_date'>>
-  > {
+export type TaskResponse = KeysToCamelCase<
+  Partial<Omit<Task, 'entity_id' | 'survey_id' | 'created_at' | 'repeat_schedule' | 'due_date'>>
+> & {
   assignee?: Assignee;
   taskStatus: TaskStatus | 'overdue' | 'repeating';
   survey: {
@@ -28,15 +27,15 @@ export interface TaskResponse
   };
   repeatSchedule?: Record<string, unknown> | null;
   taskDueDate?: Date | null;
-}
+};
 
-export interface ResBody {
+export type ResBody = {
   tasks: (TaskResponse & {
     commentsCount: number;
   })[];
   count: number;
   numberOfPages: number;
-}
+};
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
