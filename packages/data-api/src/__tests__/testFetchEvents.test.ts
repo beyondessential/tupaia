@@ -21,13 +21,10 @@ const getEventsFromResponses = (
     eventDate: r.data_time,
     dataValues: Object.entries(r.answers)
       .filter(([code]) => dataElementsToInclude.includes(code))
-      .reduce(
-        (values, [code, answer]) => ({
-          ...values,
-          [code]: isNaN(answer as any) ? answer : parseFloat(answer),
-        }),
-        {},
-      ),
+      .reduce((values, [code, answer]) => {
+        values[code] = isNaN(answer as any) ? answer : parseFloat(answer);
+        return values;
+      }, {}),
   }));
 
 describe('fetchEvents()', () => {
