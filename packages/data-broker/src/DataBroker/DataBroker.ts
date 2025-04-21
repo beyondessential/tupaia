@@ -233,7 +233,7 @@ export class DataBroker {
     const organisationUnitCodes = getOrganisationUnitCodes(options);
     const pulls = await this.getPulls(syncGroups, organisationUnitCodes);
 
-    const nestedResults = await Promise.all(
+    const nestedResults: SyncGroupResults[] = await Promise.all(
       pulls.map(({ dataSources, serviceType, dataServiceMapping }) => {
         const service = this.createService(serviceType);
         return service.pullSyncGroupResults(dataSources, {
@@ -244,11 +244,8 @@ export class DataBroker {
       }),
     );
 
-    return (nestedResults as SyncGroupResults[]).reduce(
-      (results, resultsForService) => ({
-        ...results,
-        ...resultsForService,
-      }),
+    return nestedResults.reduce(
+      (results, resultsForService) => Object.assign(results, resultsForService),
       {},
     );
   }

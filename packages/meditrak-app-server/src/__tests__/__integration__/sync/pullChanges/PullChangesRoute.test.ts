@@ -49,16 +49,17 @@ const expectMatchingChangeRecords = (
   // Can't match timestamp, just just assert the field is there and check it's a number
   actual.forEach(changeRecord => expect(typeof changeRecord.timestamp).toBe('number'));
   const timestampFilteredActual: Record<string, any> = actual.map(changeRecord =>
-    Object.entries(changeRecord).reduce((obj, [fieldName, fieldValue]) => {
-      if (fieldName === 'timestamp') {
-        return obj;
-      }
+    Object.entries(changeRecord).reduce<Record<string, any>>((obj, [fieldName, fieldValue]) => {
+      if (fieldName === 'timestamp') return obj;
 
       if (fieldName === 'record' && typeof fieldValue === 'object') {
         const { updated_at_sync_tick, ...newFieldValue } = fieldValue;
-        return { ...obj, [fieldName]: newFieldValue };
+        obj[fieldName] = newFieldValue;
+      } else {
+        obj[fieldName] = fieldValue;
       }
-      return { ...obj, [fieldName]: fieldValue };
+
+      return obj;
     }, {}),
   );
   expect(timestampFilteredActual.sort(sortByRecordId)).toEqual(expected.sort(sortByRecordId));

@@ -1,7 +1,7 @@
-import { filterEntities } from '@tupaia/utils';
 import { DataBroker } from '@tupaia/data-broker';
-import { RouteHandler } from './RouteHandler';
+import { filterEntities } from '@tupaia/utils';
 import { Aggregator } from '/aggregator';
+import { RouteHandler } from './RouteHandler';
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -92,10 +92,10 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     const countryAccessList = await Promise.all(
       countryCodes.map(countryCode => this.permissionsChecker.checkHasEntityAccess(countryCode)),
     );
-    const countryAccess = countryCodes.reduce(
-      (obj, countryCode, i) => ({ ...obj, [countryCode]: countryAccessList[i] }),
-      {},
-    );
+    const countryAccess = countryCodes.reduce((obj, countryCode, i) => {
+      obj[countryCode] = countryAccessList[i];
+      return obj;
+    }, {});
     return entities.filter(e => countryAccess[e.country_code]);
   };
 }
