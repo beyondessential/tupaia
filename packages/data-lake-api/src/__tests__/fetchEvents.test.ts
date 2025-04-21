@@ -8,25 +8,28 @@ import {
   TWENTY_TWENTY_ANALYTICS,
 } from './testData/fixtures';
 import { getTestWriteDatabase, clearTestData, importTestData } from './utilities';
+import { DataElement } from '@tupaia/types';
 
 const getEventsFromAnalytics = (analytics: Analytic[], dataElementsToInclude: string[] = []) => {
   const analyticsById = groupBy(analytics, 'event_id');
   const events = Object.values(analyticsById).map(analyticGroup => {
     const analytic = analyticGroup[0];
+    const dataValues = analyticGroup
+      .filter(({ data_element_code }) => dataElementsToInclude.includes(data_element_code))
+      .reduce<Record<DataElement['code'], string | number>>(
+        (values, { data_element_code, value }) => {
+          values[data_element_code] = isNaN(value) ? value : parseFloat(value);
+          return values;
+        },
+        {},
+      );
+
     return {
       event: analytic.event_id,
       orgUnit: analytic.entity_code,
       orgUnitName: '',
       eventDate: analytic.date,
-      dataValues: analyticGroup
-        .filter(({ data_element_code }) => dataElementsToInclude.includes(data_element_code))
-        .reduce(
-          (values, { data_element_code, value }) => ({
-            ...values,
-            [data_element_code]: isNaN(value as any) ? value : parseFloat(value),
-          }),
-          {},
-        ),
+      dataValues,
     };
   });
 

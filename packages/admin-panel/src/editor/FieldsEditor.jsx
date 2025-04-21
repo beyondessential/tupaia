@@ -130,15 +130,15 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
     if (field.type === SECTION_FIELD_TYPE) {
       const visibleSubfields = filterVisibleFields(field.fields);
       if (!visibleSubfields.length) return result;
-      return [
-        ...result,
-        {
-          ...field,
-          fields: visibleSubfields,
-        },
-      ];
+      result.push({
+        ...field,
+        fields: visibleSubfields,
+      });
+      return result;
     }
-    return [...result, field];
+
+    result.push(field);
+    return result;
   }, []);
 
   return <EditorWrapper className="fields">{visibleFormItems.map(getFieldInput)}</EditorWrapper>;

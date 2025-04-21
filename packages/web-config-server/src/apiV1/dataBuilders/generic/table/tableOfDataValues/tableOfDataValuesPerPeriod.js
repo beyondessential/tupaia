@@ -111,11 +111,12 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
   buildBaseRows(rows = this.tableConfig.rows, parent = undefined) {
     return rows.reduce((baseRows, row) => {
       if (typeof row === 'string') {
-        return { ...baseRows, [row]: { dataElement: row, categoryId: parent } };
+        baseRows[row] = { dataElement: row, categoryId: parent };
+        return baseRows;
       }
 
       const next = this.buildBaseRows(row.rows, row.category);
-      return { ...baseRows, ...next };
+      return Object.assign(baseRows, next);
     }, {});
   }
 

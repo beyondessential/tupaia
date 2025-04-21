@@ -1,5 +1,5 @@
-import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
+import keyBy from 'lodash.keyby';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES } from '@tupaia/tsutils';
@@ -102,7 +102,8 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
     const hasMultipleClasses = Object.keys(this.config.dataClasses).length > 1;
     return Object.entries(this.config.dataClasses).reduce((result, [name, dataClass]) => {
       const key = hasMultipleClasses ? name : 'value';
-      return { ...result, [key]: { ...dataClass, analytics } };
+      result[key] = { ...dataClass, analytics };
+      return result;
     }, {});
   };
 }

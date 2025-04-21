@@ -12,11 +12,11 @@ import { DataLakeDatabase } from './DataLakeDatabase';
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
 const buildEventDataValues = (resultsForEvent: Event[]) =>
-  resultsForEvent.reduce(
-    (values, { dataElementCode, type, value }) => ({
-      ...values,
-      [dataElementCode ?? '']: sanitizeAnalyticsTableValue(value, type),
-    }),
+  resultsForEvent.reduce<Record<string, string | number>>(
+    (values, { dataElementCode, type, value }) => {
+      values[dataElementCode ?? ''] = sanitizeAnalyticsTableValue(value, type);
+      return values;
+    },
     {},
   );
 

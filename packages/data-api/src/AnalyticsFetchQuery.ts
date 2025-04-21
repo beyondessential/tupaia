@@ -75,10 +75,10 @@ const orgUnitMapValidator = yup.lazy((entityMap: unknown) => {
   const fieldValidator = yup.object().shape({ code: yup.string().required() });
   return yup.object().shape(
     Object.keys(validatedMap).reduce<Record<string, typeof fieldValidator>>(
-      (mapValidator, key: string) => ({
-        ...mapValidator,
-        [key]: fieldValidator,
-      }),
+      (mapValidator, key) => {
+        mapValidator[key] = fieldValidator;
+        return mapValidator;
+      },
       {},
     ),
   );
@@ -302,8 +302,8 @@ export class AnalyticsFetchQuery {
     const baseAnalyticsParams = this.entityCodes.concat(this.dataElementCodes).concat(whereParams);
 
     const wrapAnalyticsInAggregation = (analytics: string, aggregation: QueryAggregation) =>
-      `(${this.getAggregationSelect(aggregation)} 
-      FROM 
+      `(${this.getAggregationSelect(aggregation)}
+      FROM
       ${analytics}
       ${this.getAggregationJoin(aggregation)}
       ${this.getAggregationGroupByClause(aggregation)}) as a${aggregation.stackId}`;

@@ -221,10 +221,8 @@ export class MockEntityApi implements EntityApiInterface {
     descendantQueryOptions: { field?: string; filter?: { type: string } } = {},
   ) {
     const { field: queryField, ...restOfQueryOptions } = queryOptions;
-    const {
-      field: ancestorField = queryField || 'code',
-      ...restOfAncestorQueryOptions
-    } = ancestorQueryOptions;
+    const { field: ancestorField = queryField || 'code', ...restOfAncestorQueryOptions } =
+      ancestorQueryOptions;
     const ancestorOptions = {
       ...restOfQueryOptions,
       ...restOfAncestorQueryOptions,
@@ -240,14 +238,12 @@ export class MockEntityApi implements EntityApiInterface {
       : this.getEntitiesStub(hierarchyName, entityCodes, ancestorOptions);
     const descendantsGroupedByAncestor: Record<string, any[]> = ancestorEntities.reduce(
       (obj, ancestor) => {
-        return {
-          ...obj,
-          [ancestor[ancestorField]]: this.getDescendants(
-            hierarchyName,
-            [ancestor.code],
-            descendantOptions,
-          ),
-        };
+        [ancestor[ancestorField]] = this.getDescendants(
+          hierarchyName,
+          [ancestor.code],
+          descendantOptions,
+        );
+        return obj;
       },
       {} as Record<string, any[]>,
     );

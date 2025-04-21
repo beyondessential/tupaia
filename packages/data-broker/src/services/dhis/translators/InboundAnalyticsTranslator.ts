@@ -3,7 +3,7 @@
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import pickBy from 'lodash.pickby';
-import { DataElement, DhisAnalyticDimension, DhisAnalytics } from '../types';
+import { DataElement, DataSource, DhisAnalyticDimension, DhisAnalytics } from '../types';
 import { Values } from '../../../types';
 import { formatInboundDataElementName } from './formatDataElementName';
 
@@ -58,11 +58,15 @@ export class InboundAnalyticsTranslator {
   }
 
   private getDataElementKeyToSourceCode() {
-    return this.dataSources!.reduce((keyToSourceCode, dataSource) => {
-      const { dataElementCode, config } = dataSource;
-      const key = createDataElementKey(dataElementCode, config.categoryOptionCombo);
-      return { ...keyToSourceCode, [key]: dataSource.code };
-    }, {});
+    return this.dataSources!.reduce<Record<string, DataSource['code']>>(
+      (keyToSourceCode, dataSource) => {
+        const { dataElementCode, config } = dataSource;
+        const key = createDataElementKey(dataElementCode, config.categoryOptionCombo);
+        keyToSourceCode[key] = dataSource.code;
+        return keyToSourceCode;
+      },
+      {},
+    );
   }
 
   private translateHeaders() {

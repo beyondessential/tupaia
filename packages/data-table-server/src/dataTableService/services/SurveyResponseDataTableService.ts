@@ -1,6 +1,7 @@
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { yup } from '@tupaia/utils';
+import { isNullish } from '@tupaia/tsutils';
 import { Country, Entity, Survey, SurveyResponse } from '@tupaia/types';
+import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 
 const requiredParamsSchema = yup.object().shape({
@@ -82,16 +83,22 @@ export class SurveyResponseDataTableService extends DataTableService<
   }
 
   protected getFilter(params: Params) {
-    const filter = Object.entries(BaseFilters).reduce((acc, [filterKey, filterField]) => {
+    const filter = Object.entries(BaseFilters).reduce<
+      Record<
+        string,
+        | boolean
+        | StringParam[]
+        | { comparator: '<=' | '>='; comparisonValue: Date }
+        | { comparator: 'between'; comparisonValue: [Date, Date] }
+      >
+    >((acc, [filterKey, filterField]) => {
       const filterValue = params[filterKey as keyof Omit<Params, 'startDate' | 'endDate'>];
 
-      if (filterValue === undefined || filterValue === null) return acc;
+      if (isNullish(filterValue)) return acc;
 
-      return {
-        ...acc,
-        [filterField]: filterValue,
-      };
-    }, {} as Record<string, any>);
+      acc[filterField] = filterValue;
+      return acc;
+    }, {});
 
     if (params.startDate && !params.endDate) {
       // set the start date to the beginning of the day to include all responses on that day

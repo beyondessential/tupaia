@@ -21,17 +21,14 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       const facilityEntities = await this.fetchDescendantsOfType(this.models.entity.types.FACILITY);
       const facilityCodes = facilityEntities.map(facility => facility.code);
       const facilityMetaDatas = await this.models.facility.find({ code: facilityCodes });
-      const facilitiesByCode = facilityMetaDatas.reduce(
-        (array, metadata) => [
-          ...array,
-          {
-            organisationUnitCode: metadata.code,
-            facilityTypeCode: metadata[facilityTypeCodeMetadataKey],
-            facilityTypeName: metadata.type_name,
-          },
-        ],
-        [],
-      );
+      const facilitiesByCode = facilityMetaDatas.reduce((array, metadata) => {
+        array.push({
+          organisationUnitCode: metadata.code,
+          facilityTypeCode: metadata[facilityTypeCodeMetadataKey],
+          facilityTypeName: metadata.type_name,
+        });
+        return array;
+      }, []);
       return {
         data: facilitiesByCode,
       };

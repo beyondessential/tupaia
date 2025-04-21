@@ -14,13 +14,14 @@ export const cellBuilderModelsStub = questions => {
     .callsFake(inputId => questions.find(({ id }) => id === inputId) || null);
 
   const findIdByCodeStub = sinon.stub().returns(null);
-  findIdByCodeStub
-    .withArgs(sinon.match(sinon.match.any))
-    .callsFake(inputCodes =>
-      questions
-        .filter(({ code }) => inputCodes.includes(code))
-        .reduce((acc, { code, id }) => ({ ...acc, [code]: id }), {}),
-    );
+  findIdByCodeStub.withArgs(sinon.match(sinon.match.any)).callsFake(inputCodes =>
+    questions
+      .filter(({ code }) => inputCodes.includes(code))
+      .reduce((acc, { code, id }) => {
+        acc[code] = id;
+        return acc;
+      }, {}),
+  );
 
   const findOneStub = sinon.stub().returns(null);
   findOneStub

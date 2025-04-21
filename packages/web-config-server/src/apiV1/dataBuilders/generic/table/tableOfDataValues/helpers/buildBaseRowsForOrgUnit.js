@@ -1,5 +1,5 @@
-import flatten from 'lodash.flatten';
 import { stripFromString } from '@tupaia/utils';
+import flatten from 'lodash.flatten';
 
 /**
  * @returns {
@@ -15,11 +15,13 @@ export const buildBaseRowsForOrgUnit = (rows, parent, baseCellIndex, config) => 
       const dataElement = stripFromString(row, stripFromDataElementNames);
       const dataCode = flatCells[currentCellIndex];
       currentCellIndex++;
-      return [...baseRows, { dataCode, dataElement, categoryId: parent }];
+      baseRows.push({ dataCode, dataElement, categoryId: parent });
+      return baseRows;
     }
 
     const next = buildBaseRowsForOrgUnit(row.rows, row.category, currentCellIndex, config);
     currentCellIndex += next.length;
-    return [...baseRows, ...next];
+    baseRows.push(...next);
+    return baseRows;
   }, []);
 };

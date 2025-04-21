@@ -46,13 +46,14 @@ const validateData = (fields, data) => {
         return data[editKey];
       };
       const parsedValue = parseValue();
-      return {
-        ...errors,
-        ...validateData(jsonFields, {
+
+      return Object.assign(
+        errors,
+        validateData(jsonFields, {
           ...data,
           ...parsedValue,
         }),
-      };
+      );
     }
 
     const isFieldVisible = getIsFieldVisible(fieldInfo, data);
@@ -66,10 +67,7 @@ const validateData = (fields, data) => {
       value === '' ||
       (Array.isArray(value) && value.length === 0)
     ) {
-      return {
-        ...errors,
-        [editKey]: REQUIRED_FIELD_ERROR,
-      };
+      errors[editKey] = REQUIRED_FIELD_ERROR;
     }
 
     return errors;
@@ -90,16 +88,9 @@ const extractData = (editedFields, recordData, explodedFields) => {
   return explodedFields.reduce((result, field) => {
     const editKey = getFieldEditKey(field);
     const { source } = field;
-    if (combinedData.hasOwnProperty(editKey)) {
-      return {
-        ...result,
-        [editKey]: combinedData[editKey],
-      };
-    }
-    return {
-      ...result,
-      [editKey]: combinedData[source],
-    };
+    result[editKey] = combinedData[combinedData.hasOwnProperty(editKey) ? editKey : source];
+
+    return result;
   }, {});
 };
 

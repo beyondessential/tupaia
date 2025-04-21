@@ -66,13 +66,10 @@ class SumPerSeriesDataBuilder extends DataBuilder {
   }
 
   calculateSumByDataElement = results =>
-    results.reduce(
-      (sum, { dataElement, value }) => ({
-        ...sum,
-        [dataElement]: (sum[dataElement] || 0) + value,
-      }),
-      {},
-    );
+    results.reduce((sum, { dataElement, value }) => {
+      sum[dataElement] = (sum[dataElement] || 0) + value;
+      return sum;
+    }, {});
 }
 
 export const sumLatestPerSeries = async (

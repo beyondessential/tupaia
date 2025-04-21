@@ -8,12 +8,11 @@ export const latestAchievedVsTargetPercentage = async (
   if (results.length < 1) return { data: results };
 
   const totals = results.reduce(
-    (currentTotals, result) => {
-      const newTotals = { ...currentTotals };
+    (totals, result) => {
       const code = result.dataElement;
-      if (code === achievedDataElementCode) newTotals.achieved += result.value;
-      if (code === targetDataElementCode) newTotals.target += result.value;
-      return newTotals;
+      if (code === achievedDataElementCode) totals.achieved += result.value;
+      if (code === targetDataElementCode) totals.target += result.value;
+      return totals;
     },
     {
       achieved: 0,

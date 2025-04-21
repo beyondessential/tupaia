@@ -1,6 +1,6 @@
-import { getCategoryPresentationOption } from '/apiV1/dataBuilders/helpers';
-import { CONDITION, AVERAGE } from '/apiV1/dataBuilders/constants';
 import groupBy from 'lodash.groupby';
+import { AVERAGE, CONDITION } from '/apiV1/dataBuilders/constants';
+import { getCategoryPresentationOption } from '/apiV1/dataBuilders/helpers';
 
 const CATEGORY_AGGREGATION_TYPES = [AVERAGE, CONDITION];
 
@@ -16,17 +16,17 @@ const calculateCategoryTotals = rows => {
         categoryTotals[key] = (categoryTotals[key] || 0) + (row[key] || 0);
       }
     });
-
-    return { ...columnAggregates, [categoryId]: categoryTotals };
+    columnAggregates[categoryId] = categoryTotals;
+    return columnAggregates;
   }, {});
 };
 
 const average = rows => {
   const totals = calculateCategoryTotals(rows);
-  const categoryRowLengths = rows.reduce(
-    (lengths, row) => ({ ...lengths, [row.categoryId]: lengths[row.categoryId] + 1 || 1 }),
-    {},
-  );
+  const categoryRowLengths = rows.reduce((lengths, row) => {
+    lengths[row.categoryId] = lengths[row.categoryId] + 1 || 1;
+    return lengths;
+  }, {});
 
   return Object.entries(totals).reduce((averages, [category, columns]) => {
     const averagedColumns = {};
@@ -34,8 +34,8 @@ const average = rows => {
     Object.keys(columns).forEach(column => {
       averagedColumns[column] = Math.round(columns[column] / categoryRowLengths[category]);
     });
-
-    return { ...averages, [category]: averagedColumns };
+    averages[category] = averagedColumns;
+    return averages;
   }, {});
 };
 
