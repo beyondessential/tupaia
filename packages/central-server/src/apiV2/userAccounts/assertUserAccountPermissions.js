@@ -44,13 +44,10 @@ const buildUserAccountRawSqlFilter = accessPolicy => {
   const accessibleCountryCodes = accessPolicy.getEntitiesAllowed(
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
-  const permissionsByCountryCode = accessibleCountryCodes.reduce(
-    (obj, countryCode) => ({
-      ...obj,
-      [countryCode]: accessPolicy.getPermissionGroups([countryCode]),
-    }),
-    {},
-  );
+  const permissionsByCountryCode = accessibleCountryCodes.reduce((obj, countryCode) => {
+    obj[countryCode] = accessPolicy.getPermissionGroups([countryCode]);
+    return obj;
+  }, {});
 
   /**
    * Here we're building up an inner query to work out which user permissions exist that we don't

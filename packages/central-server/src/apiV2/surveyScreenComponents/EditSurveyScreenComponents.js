@@ -18,16 +18,19 @@ export class EditSurveyScreenComponents extends EditHandler {
         return current;
       }
       if (fieldName === 'config') {
-        return { ...current, config: JSON.stringify(this.updatedFields.config) };
+        current.config = JSON.stringify(this.updatedFields.config);
+        return current;
       }
-      return { ...current, [fieldName]: this.updatedFields[fieldName] };
+      current[fieldName] = this.updatedFields[fieldName];
+      return current;
     }, {});
     const questionFields = await this.models.question.fetchFieldNames();
     const updatedQuestionData = questionFields.reduce((current, fieldName) => {
       const columnName = `question.${fieldName}`;
-      return columnName in this.updatedFields
-        ? { ...current, [fieldName]: this.updatedFields[columnName] }
-        : current;
+      if (columnName in this.updatedFields) {
+        current[fieldName] = this.updatedFields[columnName];
+      }
+      return current;
     }, {});
     const updates = [];
     if (Object.entries(updatedScreenComponentData).length > 0) {

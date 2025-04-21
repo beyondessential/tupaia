@@ -13,7 +13,8 @@ const createWorkBookParser = () => {
   const constructKeyMapper = keyMapping => input => mapKeys(input, keyMapping);
 
   const mappers = Object.entries(SURVEYS).reduce((result, [surveyName, keyMapping]) => {
-    return { ...result, [surveyName]: constructKeyMapper(keyMapping) };
+    result[surveyName] = constructKeyMapper(keyMapping);
+    return result;
   }, {});
   const parser = new WorkBookParser(mappers);
   parser.setSheetNameFilter(SURVEY_NAMES);
@@ -41,7 +42,8 @@ const createImporter = models => {
   };
 
   const responseExtractors = SURVEY_NAMES.reduce((result, surveyName) => {
-    return { ...result, [surveyName]: constructResponseExtractor() };
+    result[surveyName] = constructResponseExtractor();
+    return result;
   }, {});
 
   return new SurveyResponseImporter(models, responseExtractors);

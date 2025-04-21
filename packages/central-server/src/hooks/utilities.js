@@ -16,14 +16,7 @@ export async function getHookAnswerValues(surveyResponse, baseHookName, defaultF
     }),
   );
 
-  // flatten the array of { key: val }s into { keyA: val, keyB: val }
-  return valueArray.reduce(
-    (all, value) => ({
-      ...all,
-      ...value,
-    }),
-    {},
-  );
+  return valueArray.reduce((all, value) => Object.assign(all, value), {});
 }
 
 export function parseCoordinates(answerText) {
