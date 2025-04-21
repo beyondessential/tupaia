@@ -91,11 +91,11 @@ export class DhisTranslator {
       ({ options, ...restOfDataElement }) => ({
         options:
           options &&
-          Object.entries(options).reduce(
-            (translatedOptions, [code, name]) => ({
-              ...translatedOptions,
-              [name.toLowerCase()]: code,
-            }),
+          Object.entries(options).reduce<Record<string, string>>(
+            (translatedOptions, [code, name]) => {
+              translatedOptions[name.toLowerCase()] = code;
+              return translatedOptions;
+            },
             {},
           ),
         ...restOfDataElement,

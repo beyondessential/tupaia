@@ -151,7 +151,8 @@ class TableOfEventsBuilder extends DataBuilder {
       }
 
       const { options } = this.dataSources[key];
-      return [...formattedValues, options ? options[value] : value];
+      formattedValues.push(options ? options[value] : value);
+      return formattedValues;
     }, []);
   }
 

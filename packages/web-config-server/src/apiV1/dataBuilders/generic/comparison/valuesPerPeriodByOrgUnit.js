@@ -1,4 +1,4 @@
-import { periodToTimestamp, periodToDisplayString } from '@tupaia/utils';
+import { periodToDisplayString, periodToTimestamp } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class ValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
@@ -21,17 +21,14 @@ class ValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
       });
     }
 
-    const data = Object.entries(resultsPerPeriod).reduce(
-      (previousData, [period, periodData]) => [
-        ...previousData,
-        {
-          name: periodToDisplayString(period),
-          timestamp: periodToTimestamp(period),
-          ...periodData,
-        },
-      ],
-      [],
-    );
+    const data = Object.entries(resultsPerPeriod).reduce((previousData, [period, periodData]) => {
+      previousData.push({
+        name: periodToDisplayString(period),
+        timestamp: periodToTimestamp(period),
+        ...periodData,
+      });
+      return previousData;
+    }, []);
 
     return { data, period };
   }

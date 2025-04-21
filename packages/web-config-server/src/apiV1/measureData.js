@@ -71,10 +71,9 @@ const accessDeniedForMeasure = /** @type {const} */ ({
  * }
  */
 const buildMeasureData = (overlays = [], resultData) => {
-  const measureDataResponsesByMeasureCode = resultData.reduce((dataResponse, current) => ({
-    ...dataResponse,
-    ...current,
-  }));
+  const measureDataResponsesByMeasureCode = resultData.reduce((dataResponse, current) =>
+    Object.assign(dataResponse, current),
+  );
   const measureDataResponses = overlays.map(
     ({ code, data_builder_config: measureBuilderConfig }) => {
       const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
