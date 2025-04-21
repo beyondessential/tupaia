@@ -45,10 +45,10 @@ const mapOrgUnitCodeToUniqueOrgUnitName = (allOrgUnits, eventsByOrgUnitCode) => 
 const groupByAllOrgUnitNames = async (models, events, options, hierarchyId) => {
   const orgUnits = await getOrgUnits(models, { ...options, hierarchyId });
 
-  const eventsByOrgUnitCode = orgUnits.reduce(
-    (results, { code }) => ({ ...results, [code]: [] }),
-    {},
-  );
+  const eventsByOrgUnitCode = orgUnits.reduce((results, { code }) => {
+    results[code] = [];
+    return results;
+  }, {});
 
   events.forEach(event => {
     const { orgUnit: orgUnitCode } = event;
@@ -64,10 +64,10 @@ const groupByAllOrgUnitParentNames = async (models, events, options, hierarchyId
   const { aggregationLevel } = options;
   const orgUnits = await getOrgUnits(models, { ...options, hierarchyId });
 
-  const eventsByOrgUnitCode = orgUnits.reduce(
-    (results, { code }) => ({ ...results, [code]: [] }),
-    {},
-  );
+  const eventsByOrgUnitCode = orgUnits.reduce((results, { code }) => {
+    results[code] = [];
+    return results;
+  }, {});
 
   const allOrgUnitCodesByParentOrgUnitCode = {};
   /* format:

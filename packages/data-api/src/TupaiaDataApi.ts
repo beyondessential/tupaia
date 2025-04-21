@@ -35,10 +35,10 @@ type DataElementMetadataQueryFields = {
 
 const buildDataValuesFromAnswers = (answersForEvent: EventAnswer[]) =>
   answersForEvent.reduce<Record<string, string | number>>(
-    (values, { dataElementCode, type, value }) => ({
-      ...values,
-      [dataElementCode]: sanitizeAnalyticsTableValue(value, type),
-    }),
+    (values, { dataElementCode, type, value }) => {
+      values[dataElementCode] = sanitizeAnalyticsTableValue(value, type);
+      return values;
+    },
     {},
   );
 

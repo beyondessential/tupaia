@@ -46,16 +46,13 @@ const processXlsxRow = (row, { countryName }) => {
 
 const xlsxParser = filePath => {
   const workbook = xlsx.readFile(filePath, { raw: false });
-  return Object.entries(workbook.Sheets).reduce(
-    (entitiesByCountry, [countryName, sheet]) => ({
-      ...entitiesByCountry,
-      [countryName]: xlsx.utils
-        .sheet_to_json(sheet, { defval: null, raw: false })
-        .filter(row => Object.values(row).some(value => value !== null))
-        .map(row => processXlsxRow(row, { countryName })),
-    }),
-    {},
-  );
+  return Object.entries(workbook.Sheets).reduce((entitiesByCountry, [countryName, sheet]) => {
+    entitiesByCountry[countryName] = xlsx.utils
+      .sheet_to_json(sheet, { defval: null, raw: false })
+      .filter(row => Object.values(row).some(value => value !== null))
+      .map(row => processXlsxRow(row, { countryName }));
+    return entitiesByCountry;
+  }, {});
 };
 
 const EXTENSION_TO_FILE_PARSER = {

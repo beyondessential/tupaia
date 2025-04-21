@@ -87,14 +87,7 @@ const collectionToArray = collection =>
  */
 export const flattenToObject = objectCollection => {
   const objects = collectionToArray(objectCollection);
-
-  return objects.reduce(
-    (result, object) => ({
-      ...result,
-      ...object,
-    }),
-    {},
-  );
+  return objects.reduce((acc, object) => Object.assign(acc, object), {});
 };
 
 const buildKeyAndValueFunctions = (keyMapper, valueMapper) => {

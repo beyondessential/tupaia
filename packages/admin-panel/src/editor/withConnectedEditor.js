@@ -23,8 +23,10 @@ const processRecordData = (recordData, fields) => {
   if (Array.isArray(recordData) && Array.isArray(fields)) {
     const [firstRecord] = recordData;
     return fields.reduce((obj, field) => {
-      const value = field.bulkAccessor ? field.bulkAccessor(recordData) : firstRecord[field.source];
-      return { [field.source]: value, ...obj };
+      obj[field.source] = field.bulkAccessor
+        ? field.bulkAccessor(recordData)
+        : firstRecord[field.source];
+      return obj;
     }, {});
   }
 

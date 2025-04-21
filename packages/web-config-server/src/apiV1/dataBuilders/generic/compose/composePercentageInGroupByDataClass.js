@@ -1,4 +1,5 @@
 import flattenDeep from 'lodash.flattendeep';
+
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 export const composePercentageInGroupByDataClass = async (
@@ -21,7 +22,10 @@ export const composePercentageInGroupByDataClass = async (
     { filter, aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP },
   );
 
-  const groupMap = Object.keys(groups).reduce((map, group) => ({ ...map, [group]: 0 }), {});
+  const groupMap = Object.keys(groups).reduce((map, group) => {
+    map[group] = 0;
+    return map;
+  }, {});
   const orgUnitCount =
     new Set(filter.organisationUnit.in).size ||
     new Set(results.map(res => res.organisationUnit)).size;

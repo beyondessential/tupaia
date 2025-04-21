@@ -36,7 +36,10 @@ const metadataKeyToDataElement = key => {
 };
 
 export const metadataKeysToDataElementMap = (keys = []) =>
-  keys.reduce((map, key) => ({ ...map, [key]: metadataKeyToDataElement(key) }), {});
+  keys.reduce((map, key) => {
+    map[key] = metadataKeyToDataElement(key);
+    return map;
+  }, {});
 
 class EventMetadataValueAdder {
   constructor(event, metadataKeys, cache) {

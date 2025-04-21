@@ -123,8 +123,8 @@ export class ModelRegistry {
     return Object.values(this).reduce((result, model) => {
       const { databaseRecord, meditrakConfig } = model;
       const { minAppVersion = MAX_APP_VERSION } = meditrakConfig || {};
-
-      return { ...result, [databaseRecord]: minAppVersion };
+      result[databaseRecord] = minAppVersion;
+      return result;
     }, {});
   }
 

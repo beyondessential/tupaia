@@ -27,7 +27,8 @@ export async function getCountryAccessList(req, res, next) {
         const hasPendingAccess = countriesPendingAccess.includes(id);
 
         const countryAccessListItem = { id, name, hasAccess, hasPendingAccess };
-        return [...listSoFar, countryAccessListItem];
+        listSoFar.push(countryAccessListItem);
+        return listSoFar;
       }, [])
       .sort((a, b) => a.name.localeCompare(b.name));
 

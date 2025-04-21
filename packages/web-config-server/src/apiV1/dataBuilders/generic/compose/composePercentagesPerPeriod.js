@@ -37,11 +37,9 @@ import { divideValues } from '/apiV1/dataBuilders/helpers';
  */
 const getValueKeyMap = percentages =>
   Object.entries(percentages).reduce((result, [dataKey, { numerator, denominator }]) => {
-    return {
-      ...result,
-      [numerator]: { dataKey, type: 'numerator' },
-      [denominator]: { dataKey, type: 'denominator' },
-    };
+    result[numerator] = { dataKey, type: 'numerator' };
+    result[denominator] = { dataKey, type: 'denominator' };
+    return result;
   }, {});
 
 const removeEmptyPercentages = (dataKeys, data) =>
