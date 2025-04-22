@@ -27,44 +27,44 @@ import { TileRoot } from '../../../components/Tile';
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
-  column-gap: 1.25rem;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 5rem 1.25rem;
+  grid-template-areas: '--initial-request' '--edit' '--comment';
+  padding-block: 1.2rem;
   padding: 1rem;
-  row-gap: 0;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-areas: '--edit --comment --initial-request';
+    grid-template-rows: 1fr;
     padding: 2.5rem;
   }
 `;
 
-const MainColumn = styled.section`
+const Column = styled.section`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-  padding-block: 1.2rem;
+`;
+
+const EditColumn = styled(Column)`
+  grid-area: --edit;
+`;
+
+const MainColumn = styled(Column)`
+  grid-area: --comment;
   ${({ theme }) => theme.breakpoints.up('md')} {
     border-inline: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     margin-block: 0;
     padding-block: 0;
     padding-inline: 1.25rem;
-    width: 50%;
-  }
-`;
-
-const SideColumn = styled.section`
-  display: flex;
-  flex-direction: column;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 25%;
   }
 `;
 
 /**
  * @privateRemarks Awkward type chain here is to “undo” {@link TileRoot}’s cast where it’s defined.
  */
-const InitialRequestColumn = styled(SideColumn)`
+const InitialRequestColumn = styled(Column)`
+  grid-area: --initial-request;
   ${TileRoot as unknown as CSSObject} {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     inline-size: 100%;
@@ -207,7 +207,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     <Wrapper>
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
-          <SideColumn>
+          <EditColumn>
             <Form formContext={formContext} onSubmit={onSubmit}>
               <ItemWrapper>
                 <TaskMetadata task={task} />
@@ -272,7 +272,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                 </ButtonWrapper>
               )}
             </Form>
-          </SideColumn>
+          </EditColumn>
           <MainColumn>
             <TaskComments comments={task.comments} />
           </MainColumn>
