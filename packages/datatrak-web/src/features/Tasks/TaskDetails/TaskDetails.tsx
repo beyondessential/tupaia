@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import styled, { CSSObject } from 'styled-components';
 
 import { Task, TaskStatus } from '@tupaia/types';
-import { LoadingContainer } from '@tupaia/ui-components';
+import { LoadingContainer, VisuallyHidden } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
 import {
@@ -27,11 +27,12 @@ import { TileRoot } from '../../../components/Tile';
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
+  column-gap: 1.25rem;
   display: grid;
-  gap: 5rem 1.25rem;
   grid-template-areas: '--initial-request' '--edit' '--comment';
   padding-block: 1.2rem;
   padding: 1rem;
+  row-gap: 2.5rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
@@ -208,6 +209,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
           <EditColumn>
+            <VisuallyHidden as="h2">Key details</VisuallyHidden>
             <Form formContext={formContext} onSubmit={onSubmit}>
               <ItemWrapper>
                 <TaskMetadata task={task} />
@@ -274,6 +276,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
             </Form>
           </EditColumn>
           <MainColumn>
+            <VisuallyHidden as="h2">Comments</VisuallyHidden>
             <TaskComments comments={task.comments} />
           </MainColumn>
           <InitialRequestColumn>
