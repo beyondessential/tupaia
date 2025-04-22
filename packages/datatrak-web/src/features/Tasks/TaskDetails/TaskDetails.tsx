@@ -2,14 +2,19 @@ import { Paper, Typography } from '@material-ui/core';
 import { parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import styled from 'styled-components';
+import styled, { CSSObject } from 'styled-components';
 
-import { TaskStatus } from '@tupaia/types';
+import { Task, TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
-import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
-import { DateTimeDisplay } from '../../../components';
+import {
+  Button as BaseButton,
+  DateTimeDisplay,
+  SurveyTickIcon,
+  Tile,
+  TileSkeleton,
+} from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { DueDatePicker } from '../DueDatePicker';
@@ -17,6 +22,7 @@ import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { TaskForm } from '../TaskForm';
 import { TaskComments } from './TaskComments';
 import { TaskMetadata } from './TaskMetadata';
+import { TileRoot } from '../../../components/Tile';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -53,9 +59,15 @@ const SideColumn = styled.section`
   ${({ theme }) => theme.breakpoints.up('md')} {
     width: 25%;
   }
+`;
 
-  a.MuiButton-root {
-    border: 1px solid ${({ theme }) => theme.palette.divider};
+/**
+ * @privateRemarks Awkward type chain here is to “undo” {@link TileRoot}’s cast where it’s defined.
+ */
+const InitialRequestColumn = styled(SideColumn)`
+  ${TileRoot as unknown as CSSObject} {
+    border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+    inline-size: 100%;
   }
 `;
 
@@ -108,13 +120,15 @@ const SectionHeading = styled(Typography).attrs({
   margin-bottom: 0.25rem;
 `;
 
-const InitialRequest = ({ initialRequestId }) => {
-  const { data: surveyResponse, isLoading } = useSurveyResponse(initialRequestId, {
+const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_request_id'] }) => {
+  const { data: surveyResponse, isFetching } = useSurveyResponse(initialRequestId, {
     meta: { applyCustomErrorHandling: true },
   });
-  if (isLoading || !surveyResponse) {
-    return null;
-  }
+
+  if (isFetching) return <TileSkeleton aria-busy />;
+
+  if (!surveyResponse) return null;
+
   const { id, countryName, dataTime, surveyName, entityName } = surveyResponse;
   return (
     <Tile
@@ -262,10 +276,10 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
           <MainColumn>
             <TaskComments comments={task.comments} />
           </MainColumn>
-          <SideColumn>
+          <InitialRequestColumn>
             <SectionHeading>Initial request</SectionHeading>
             {task.initialRequestId && <InitialRequest initialRequestId={task.initialRequestId} />}
-          </SideColumn>
+          </InitialRequestColumn>
         </Container>
       </LoadingContainer>
     </Wrapper>

@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import { useIsMobile } from '../utils';
 import { Button } from './Button';
 
-const Wrapper = styled(Paper).attrs({
+export const TileRoot = styled(Paper).attrs({
   elevation: 0,
   component: Button,
 })`
@@ -115,7 +115,7 @@ export const Tile = ({
 }: TileProps) => {
   const Body = useIsMobile() ? Fragment : 'div';
   return (
-    <Wrapper {...props}>
+    <TileRoot {...props}>
       <Header>
         {leadingIcons && <LeadingIconGroup>{leadingIcons}</LeadingIconGroup>}
         {trailingIcons && <TrailingIconGroup>{trailingIcons}</TrailingIconGroup>}
@@ -124,7 +124,7 @@ export const Tile = ({
         {heading && <Heading>{heading}</Heading>}
         {children}
       </Body>
-    </Wrapper>
+    </TileRoot>
   );
 };
 
