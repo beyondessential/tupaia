@@ -33,9 +33,6 @@ const HeadingContainer = styled.div`
   display: flex;
   align-items: center;
   margin-inline-end: 1.2rem;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 const Title = styled(Typography).attrs({
