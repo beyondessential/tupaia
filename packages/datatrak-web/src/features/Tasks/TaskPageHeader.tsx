@@ -75,7 +75,7 @@ export const TaskPageHeader = ({ backTo, children, title, ...props }: TaskPageHe
             <ArrowLeftIcon />
           </BackButton>
           <HeadingContainer>
-            <TaskIcon />
+            <TaskIcon aria-hidden />
             <Title>{title}</Title>
           </HeadingContainer>
         </Container>

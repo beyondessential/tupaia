@@ -48,7 +48,7 @@ export const TasksDashboardPage = () => {
           <>
             <TaskMetrics style={{ marginInlineEnd: 'auto' }} />
             <CreateButton onClick={toggleCreateModal}>
-              <AddIcon /> Create task
+              <AddIcon aria-hidden /> Create task
             </CreateButton>
           </>
         )}
