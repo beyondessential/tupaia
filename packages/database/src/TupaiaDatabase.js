@@ -75,6 +75,13 @@ const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
   /**
+   * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
+   * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
+   * without admin privileges are really expected to time out.
+   */
+  #fastCountTimeoutMs = Number.parseInt(getEnvVarOrDefault('FAST_DB_COUNT_TIMEOUT_MS', '400'));
+
+  /**
    * If true, always uses `count()` method, even when `countFast()` is called.
    * @type {boolean}
    */
@@ -344,14 +351,15 @@ export class TupaiaDatabase {
    * count is merely an enhancement, not critical information in the context. A return value of
    * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
    */
-  async countFast(recordType, where, options, timeoutMs = 400) {
+  async countFast(recordType, where, options) {
     if (this.#forceTrueCount) return await this.count(recordType, where, options);
 
     let result;
     try {
-      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(timeoutMs, {
-        cancel: true,
-      });
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(
+        this.#fastCountTimeoutMs,
+        { cancel: true },
+      );
     } catch (error) {
       if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
       throw error;
