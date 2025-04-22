@@ -54,27 +54,9 @@ const ViewMoreButton = styled(Button).attrs({ variant: 'text', color: 'default' 
   margin-block-end: 0.75rem;
   margin-inline: 0;
 
-  .MuiButton-label {
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    color: #4e3838;
-    font-size: 0.75rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    .MuiButton-label {
-      font-size: 0.875rem;
-    }
-  }
-
   &:hover {
     text-decoration: underline;
-    background-color: initial;
-  }
-`;
-
-const TopViewMoreButton = styled(ViewMoreButton)`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
+    background-color: unset;
   }
 `;
 
@@ -138,9 +120,9 @@ export const TasksSection = () => {
       <FlexSpaceBetween as="header">
         <SectionHeading>My tasks</SectionHeading>
         {hasTasks && (
-          <TopViewMoreButton component={Link} to={ROUTES.TASKS}>
+          <ViewMoreButton component={Link} to={ROUTES.TASKS}>
             View more
-          </TopViewMoreButton>
+          </ViewMoreButton>
         )}
       </FlexSpaceBetween>
       <Paper $hasTasks={hasTasks}>{renderContents()}</Paper>
