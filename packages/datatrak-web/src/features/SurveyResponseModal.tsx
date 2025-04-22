@@ -11,7 +11,7 @@ import { SurveyContext } from '.';
 import { useExportSurveyResponse } from '../api';
 import { useSurveyResponse } from '../api/queries';
 import { Button, DownloadIcon, SurveyTickIcon } from '../components';
-import { displayDate } from '../utils';
+import { displayDate, useIsMobile } from '../utils';
 import { SurveyReviewSection, useSurveyResponseWithForm } from './Survey';
 
 const Header = styled.header`
@@ -142,6 +142,7 @@ const SurveyResponseModalContent = ({
 
 export const SurveyResponseModal = () => {
   const formContext = useForm();
+  const isMobile = useIsMobile();
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
   const surveyResponseId = urlSearchParams.get('responseId');
@@ -164,7 +165,7 @@ export const SurveyResponseModal = () => {
   if (!surveyResponseId) return null;
 
   return (
-    <Dialog open onClose={onClose} maxWidth="md">
+    <Dialog open onClose={onClose} maxWidth="md" fullScreen={isMobile}>
       <FormProvider {...formContext}>
         <SurveyContext
           surveyCode={surveyResponse?.surveyCode}
