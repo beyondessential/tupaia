@@ -157,6 +157,12 @@ const InitialRequestEmptyState = styled(Typography).attrs({ children: 'None' })`
   font-style: italic;
 `;
 
+interface UpdateTaskFormFields {
+  due_date: unknown;
+  repeat_frequency: unknown;
+  assignee: unknown;
+}
+
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const generateDefaultValues = (task: SingleTaskResponse) => {
     return {
@@ -167,7 +173,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   };
   const [defaultValues, setDefaultValues] = useState(generateDefaultValues(task));
 
-  const formContext = useForm({
+  const formContext = useForm<UpdateTaskFormFields>({
     mode: 'onChange',
     defaultValues,
   });
@@ -200,7 +206,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
 
   const dueDate = watch('due_date');
 
-  const onSubmit = data => {
+  const onSubmit = (data: UpdateTaskFormFields) => {
     const updatedFields = Object.keys(dirtyFields).reduce((acc, key) => {
       acc[key] = data[key];
       return acc;
