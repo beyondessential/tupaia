@@ -6,9 +6,8 @@ import { RECORDS } from '../records';
 export class DebugLogRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.DEBUG_LOG;
 
-  async addInfo(info) {
-    this.info = { ...this.info, ...info };
-    await this.save();
+  async addInfo(newInfo) {
+    return this.model.update({ id: this.id }, { info: { ...this.info, ...newInfo } });
   }
 }
 
