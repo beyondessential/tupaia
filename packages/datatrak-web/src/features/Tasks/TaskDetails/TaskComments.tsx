@@ -33,9 +33,10 @@ const TaskCommentsDisplayContainer = styled.div`
 `;
 
 const CommentContainer = styled.div`
-  padding-block: 0.4rem;
-  &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+  & + & {
+    border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+    margin-block-start: 1em;
+    padding-block-start: 0.5em;
   }
 `;
 
