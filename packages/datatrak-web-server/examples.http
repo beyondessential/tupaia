@@ -7,7 +7,7 @@
 @authorization  = Basic {{email}}:{{password}}
 
 ### Sign up
-POST {{host}}/signup HTTP/1.1
+POST {{host}}/user HTTP/1.1
 content-type: application/json
 
 {
@@ -34,6 +34,11 @@ content-type: application/json
 
 ### Get Activity feed
 GET {{host}}/activityFeed?projectId=64df18f22ecffb2ac901a2b3 HTTP/1.1
+content-type: application/json
+
+
+### Get entities
+GET {{host}}/entities HTTP/1.1
 content-type: application/json
 
 
