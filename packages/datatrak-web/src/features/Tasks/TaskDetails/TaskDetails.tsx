@@ -152,6 +152,11 @@ const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_
   );
 };
 
+const InitialRequestEmptyState = styled(Typography).attrs({ children: 'None' })`
+  color: ${props => props.theme.palette.text.secondary};
+  font-style: italic;
+`;
+
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const generateDefaultValues = (task: SingleTaskResponse) => {
     return {
@@ -281,7 +286,11 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
           </MainColumn>
           <InitialRequestColumn>
             <SectionHeading>Initial request</SectionHeading>
-            {task.initialRequestId && <InitialRequest initialRequestId={task.initialRequestId} />}
+            {task.initialRequestId ? (
+              <InitialRequest initialRequestId={task.initialRequestId} />
+            ) : (
+              <InitialRequestEmptyState />
+            )}
           </InitialRequestColumn>
         </Container>
       </LoadingContainer>
