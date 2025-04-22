@@ -26,7 +26,6 @@ const Wrapper = styled(SafeAreaColumn)`
   flex: initial;
   gap: 1rem;
   padding-block: 0.7rem;
-  position: initial;
 `;
 
 const HeadingContainer = styled.div`

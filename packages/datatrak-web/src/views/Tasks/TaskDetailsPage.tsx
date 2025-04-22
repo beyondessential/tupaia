@@ -17,16 +17,6 @@ const ContentWrapper = styled(TasksContentWrapper)`
   padding-block-end: 2rem;
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex: 1;
-
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline: 0.2rem 0;
-  }
-`;
-
 const ErrorModal = ({ isOpen, onClose }) => {
   return (
     <Modal
@@ -50,6 +40,12 @@ const ErrorModal = ({ isOpen, onClose }) => {
     </Modal>
   );
 };
+
+const StyledButton = styled(Button)`
+  ${props => props.theme.breakpoints.up('md')} {
+    margin-inline-end: auto;
+  }
+`;
 
 const ButtonComponent = ({
   task,
@@ -76,20 +72,20 @@ const ButtonComponent = ({
   if (taskStatus === TaskStatus.completed) {
     if (!surveyResponseId)
       return (
-        <Button onClick={openErrorModal} variant="outlined">
+        <StyledButton onClick={openErrorModal} variant="outlined">
           View completed survey
-        </Button>
+        </StyledButton>
       );
     return (
-      <Button to={`?responseId=${surveyResponseId}`} variant="outlined">
+      <StyledButton to={`?responseId=${surveyResponseId}`} variant="outlined">
         View completed survey
-      </Button>
+      </StyledButton>
     );
   }
   return (
-    <Button to={surveyLink} state={{ from }}>
+    <StyledButton to={surveyLink} state={{ from }}>
       Complete task
-    </Button>
+    </StyledButton>
   );
 };
 
@@ -111,10 +107,8 @@ export const TaskDetailsPage = () => {
         </StickyMobileHeader>
       )}
       <TaskPageHeader title="Task details" backTo={ROUTES.TASKS}>
-        <ButtonWrapper>
-          <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
-          {task && <TaskActionsMenu task={task} />}
-        </ButtonWrapper>
+        <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
+        {task && <TaskActionsMenu task={task} />}
       </TaskPageHeader>
       <ContentWrapper>
         {isLoading && <SpinningLoader />}
