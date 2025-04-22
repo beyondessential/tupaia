@@ -222,7 +222,7 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
 
 export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState<0 | 1 | 2>(0);
 
   const getHasFilter = key => filters.some(filter => filter.id === key);
   const tabs = [
