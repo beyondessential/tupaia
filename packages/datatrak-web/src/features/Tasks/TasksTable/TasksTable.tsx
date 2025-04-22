@@ -114,12 +114,12 @@ export const useTasksTable = () => {
     setSearchParams(searchParams);
   };
 
-  const onChangePage = newPage => {
+  const onChangePage = (newPage: number) => {
     searchParams.set('page', newPage.toString());
     setSearchParams(searchParams);
   };
 
-  const onChangePageSize = newPageSize => {
+  const onChangePageSize = (newPageSize: number) => {
     searchParams.set('pageSize', newPageSize.toString());
     searchParams.set('page', '0');
     setSearchParams(searchParams);
