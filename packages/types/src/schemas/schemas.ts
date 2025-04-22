@@ -41283,29 +41283,6 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -41350,29 +41327,6 @@ export const AnalyticsCreateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -41417,29 +41371,6 @@ export const AnalyticsUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate",
-				"Task",
-				"User"
-			],
 			"type": "string"
 		},
 		"value": {
@@ -71598,6 +71529,58 @@ export const LesmisSessionUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const LocalSystemFactSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"key"
+	]
+} 
+
+export const LocalSystemFactCreateSchema = {
+	"type": "object",
+	"properties": {
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"key"
+	]
+} 
+
+export const LocalSystemFactUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const LoginAttemptsSchema = {
 	"type": "object",
 	"properties": {
@@ -84712,6 +84695,10 @@ export const EntityTypeEnumSchema = {
 		"medical_area",
 		"msupply_store",
 		"nursing_zone",
+		"pacmossi_asset",
+		"pacmossi_asset_facility",
+		"pacmossi_asset_sub_facility",
+		"pacmossi_consumable",
 		"pacmossi_district",
 		"pacmossi_insecticide_test",
 		"pacmossi_spraying_site",
@@ -84765,6 +84752,63 @@ export const ApprovalStatusSchema = {
 		"rejected"
 	],
 	"type": "string"
+} 
+
+export const DebugLogSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"info": {
+			"type": "object",
+			"properties": {}
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"info",
+		"type"
+	]
+} 
+
+export const DebugLogCreateSchema = {
+	"type": "object",
+	"properties": {
+		"info": {
+			"type": "object",
+			"properties": {}
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"info",
+		"type"
+	]
+} 
+
+export const DebugLogUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"info": {
+			"type": "object",
+			"properties": {}
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
 } 
 
 export const ParamsSchema = {

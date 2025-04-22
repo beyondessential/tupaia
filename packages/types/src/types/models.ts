@@ -82,7 +82,7 @@ export interface Analytics {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -96,7 +96,7 @@ export interface AnalyticsCreate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -110,7 +110,7 @@ export interface AnalyticsUpdate {
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'type'?: QuestionType | null;
+  'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
@@ -539,10 +539,6 @@ export interface DatatrakSessionUpdate {
   'id'?: string;
   'refresh_token'?: string;
 }
-export interface DebugLog {
-  'id': string;
-  'type': string;
-}
 export interface DhisInstance {
   'code': string;
   'config': {};
@@ -913,7 +909,16 @@ export interface LesmisSessionUpdate {
 export interface LocalSystemFact {
   'id': string;
   'key': string;
-  'value': string;
+  'value'?: string | null;
+}
+export interface LocalSystemFactCreate {
+  'key': string;
+  'value'?: string | null;
+}
+export interface LocalSystemFactUpdate {
+  'id'?: string;
+  'key'?: string;
+  'value'?: string | null;
 }
 export interface LoginAttempts {
   'expire'?: string | null;
@@ -1886,9 +1891,13 @@ export enum EntityTypeEnum {
   'pacmossi_village' = 'pacmossi_village',
   'pacmossi_spraying_site' = 'pacmossi_spraying_site',
   'pacmossi_insecticide_test' = 'pacmossi_insecticide_test',
-  'document_group' = 'document_group',
   'document' = 'document',
+  'document_group' = 'document_group',
   'vehicle' = 'vehicle',
+  'pacmossi_asset_facility' = 'pacmossi_asset_facility',
+  'pacmossi_asset_sub_facility' = 'pacmossi_asset_sub_facility',
+  'pacmossi_asset' = 'pacmossi_asset',
+  'pacmossi_consumable' = 'pacmossi_consumable',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
@@ -1910,4 +1919,18 @@ export enum ApprovalStatus {
   'pending' = 'pending',
   'rejected' = 'rejected',
   'approved' = 'approved',
+}
+export interface DebugLog {
+  'id': string;
+  'info': {};
+  'type': string;
+}
+export interface DebugLogCreate {
+  'info': {};
+  'type': string;
+}
+export interface DebugLogUpdate {
+  'id'?: string;
+  'info'?: {};
+  'type'?: string;
 }
