@@ -340,42 +340,24 @@ export class TupaiaDatabase {
   }
 
   /**
-   * Same as {@link count}, but returns early if a limit or timeout is reached – whichever occurs
-   * first. Uses a strategy which is less efficient on lightweight COUNT queries, but aborts early
-   * from a heavy COUNT query by either:
-   *
-   *   - returning early after its index scan if `countFastOptions.limit` is reached; or
-   *   - aborting the query if `countFastOptions.timeoutMs` is reached.
-   *
-   * A return value of `Number.POSITIVE_INFINITY` indicates one of those occurred.
-   *
-   * @param {number} countFastOptions.countUpTo - The maximum number of records to count.
-   * @param {number} countFastOptions.timeoutMs - The maximum time to wait for the query to complete.
+   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact recores
+   * count is merely an enhancement, not critical information in the context. A return value of
+   * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
    */
-  async countFast(recordType, where, options, countFastOptions = {}) {
+  async countFast(recordType, where, options, timeoutMs = 400) {
     if (this.#forceTrueCount) return await this.count(recordType, where, options);
 
-    const { countUpTo = 1000, timeoutMs = 500 } = countFastOptions;
-
-    const constrainedOptions = {
-      ...options,
-      // Project down to single (arbitrary) column, needed only for count
-      columns: [`${recordType}.id`],
-      // +1 so downstream consumers can report there are, say, “1000+ records”
-      limit: countUpTo + 1,
-    };
-
-    let limitedCount;
+    let result;
     try {
-      limitedCount = (
-        await this.find(recordType, where, constrainedOptions).timeout(timeoutMs, { cancel: true })
-      ).length;
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(timeoutMs, {
+        cancel: true,
+      });
     } catch (error) {
       if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
       throw error;
     }
 
-    return limitedCount <= countUpTo ? limitedCount : Number.POSITIVE_INFINITY;
+    return Number.parseInt(result[0].count, 10);
   }
 
   async create(recordType, record, where) {
