@@ -64,6 +64,8 @@ const ButtonComponent = ({
 
   const { entity, survey, surveyResponseId, taskStatus } = task;
 
+  if (taskStatus === TaskStatus.cancelled) return null;
+
   const surveyUrl = generatePath(ROUTES.SURVEY_SCREEN, {
     countryCode: entity?.countryCode,
     surveyCode: survey?.code,
@@ -71,7 +73,6 @@ const ButtonComponent = ({
   });
   const surveyLink = `${surveyUrl}?${PRIMARY_ENTITY_CODE_PARAM}=${entity?.code}`;
 
-  if (taskStatus === TaskStatus.cancelled) return null;
   if (taskStatus === TaskStatus.completed) {
     if (!surveyResponseId)
       return (
