@@ -1,11 +1,10 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { SafeArea, Button as UIButton } from '@tupaia/ui-components';
 
-import { DataTrakLogotype, HomeLink } from '../components';
+import { HomeLink } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
 const Container = styled.div`
@@ -25,22 +24,6 @@ const HeaderContainer = styled(SafeArea).attrs({
   block-size: ${HEADER_HEIGHT};
   display: flex;
   padding-block-end: 1rem;
-`;
-
-const Logo = styled(UIButton)`
-  padding: 0;
-  .MuiButton-label {
-    block-size: 2.1rem;
-
-    ${({ theme }) => theme.breakpoints.up('md')} {
-      block-size: 2.6rem;
-    }
-  }
-`;
-
-const Logotype = styled(DataTrakLogotype)`
-  block-size: 100%;
-  inline-size: auto;
 `;
 
 const Header = () => {
