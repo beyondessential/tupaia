@@ -31,6 +31,7 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
+        external: ['stream/promises', 'fs/promises'],
       },
     },
     plugins: [
@@ -42,7 +43,7 @@ export default defineConfig(({ command, mode }) => {
         protocolImports: true,
       }),
     ],
-    define: { 'process.env': env, __dirname: JSON.stringify('/') },
+    define: { __dirname: JSON.stringify('/') },
     server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
