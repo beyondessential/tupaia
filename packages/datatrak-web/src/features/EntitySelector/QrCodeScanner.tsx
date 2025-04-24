@@ -8,7 +8,7 @@ import { QrCodeScannerIcon } from '@tupaia/ui-components';
 
 import { Button } from '../../components';
 import { CloseButton, Modal, ModalContent } from '../../components/Modal';
-import { isNullish, useIsMobile } from '../../utils';
+import { isNullish, useHasVideoInput, useIsMobile } from '../../utils';
 
 const StyledButton = styled(Button).attrs({
   fullWidth: true,
@@ -128,11 +128,13 @@ const Overlay = styled.div.attrs({ 'aria-hidden': true })`
 `;
 
 export interface QrCodeScannerProps {
+  disabled?: boolean;
   onSuccess?: (entity: DatatrakWebEntityDescendantsRequest.EntityResponse) => void;
   validEntities?: DatatrakWebEntityDescendantsRequest.ResBody;
 }
 
-export const QrCodeScanner = ({ onSuccess, validEntities }: QrCodeScannerProps) => {
+export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScannerProps) => {
+  const hasVideoInput = useHasVideoInput();
   const isMobile = useIsMobile();
 
   const [isScannerOpen, setIsScannerOpen] = useState(false);
@@ -182,7 +184,9 @@ export const QrCodeScanner = ({ onSuccess, validEntities }: QrCodeScannerProps) 
 
   return (
     <>
-      <StyledButton onClick={openScanner}>Scan QR&nbsp;code</StyledButton>
+      <StyledButton disabled={disabled || !hasVideoInput} onClick={openScanner}>
+        {hasVideoInput ? <>Scan QR&nbsp;code</> : 'No camera found'}
+      </StyledButton>
       <Modal
         fullScreen={isMobile}
         open={isScannerOpen}
