@@ -104,7 +104,9 @@ const run = async () => {
   if (failOnChanges) {
     const currentTsString = fs.readFileSync(config.filename, { encoding: 'utf8' });
     if (currentTsString !== tsString) {
-      console.log(
+      console.log('old', currentTsString);
+      console.log('new', tsString);
+      console.error(
         '❌ There are changes in the db schema which are not reflected in @tupaia/types.',
       );
       console.log("Run 'yarn workspace @tupaia/types generate' to fix");
