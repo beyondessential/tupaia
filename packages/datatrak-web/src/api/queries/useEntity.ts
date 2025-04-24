@@ -4,23 +4,19 @@ import { get } from '../api';
 
 export const useEntityByCode = (
   entityCode: Entity['code'] | undefined,
-  useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.ResBody[0]>,
+  useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
-  return useQuery<DatatrakWebEntitiesRequest.ResBody[0]>(
-    ['entity', entityCode],
-    () => get(`entity/${entityCode}`),
-    {
-      enabled: !!entityCode && (useQueryOptions?.enabled ?? true),
-      ...useQueryOptions,
-    },
-  );
+  return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>({
+    ...useQueryOptions,
+    enabled: !!entityCode && (useQueryOptions?.enabled ?? true),
+  });
 };
 
 export const useEntityById = (
   entityId: Entity['id'] | undefined,
-  useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.ResBody[0]>,
+  useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
-  return useQuery<DatatrakWebEntitiesRequest.ResBody[0]>(
+  return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
     ['entities', entityId],
     async () => {
       const response = await get('entities', {
@@ -29,8 +25,8 @@ export const useEntityById = (
       return response[0];
     },
     {
-      enabled: !!entityId && (useQueryOptions?.enabled ?? true),
       ...useQueryOptions,
+      enabled: !!entityId && (useQueryOptions?.enabled ?? true),
     },
   );
 };

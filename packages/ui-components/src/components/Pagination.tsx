@@ -4,18 +4,20 @@ import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Select } from './Inputs';
 
-const Wrapper = styled.div`
-  font-size: 0.75rem;
+export const PaginationRoot = styled.div`
   display: flex;
+  font-size: 0.75rem;
   justify-content: space-between;
-  width: 100%;
-
   padding-block: 0.5rem;
   padding-inline: 1rem;
+  inline-size: 100%;
+
   label,
   p,
-  .MuiInputBase-input {
-    font-size: 0.75rem;
+  .MuiInputBase-input,
+  .MuiInputBase-root,
+  .MuiSelect-root {
+    font-size: inherit;
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
@@ -45,13 +47,13 @@ const RowWrapper = styled(ActionsWrapper)`
 `;
 
 const Button = styled(IconButton)`
-  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   padding: 0.4rem;
   .MuiSvgIcon-root {
     font-size: 1.2rem;
   }
   & + & {
-    margin-left: 0.7rem;
+    margin-inline-start: 0.7rem;
   }
 `;
 
@@ -63,21 +65,23 @@ const ManualPageInputContainer = styled.div`
 `;
 
 const ManualPageInput = styled(Input)`
-  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
-  border-radius: 4px;
-  padding-block: 0.5rem;
-  padding-inline: 0.8rem 0.2rem;
+  --padding-inline-end: 0.2rem;
+  --padding-inline-start: 0.8rem;
+  border-radius: 0.25rem;
+  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  font-size: inherit;
+  font-variant-numeric: lining-nums tabular-nums;
+  inline-size: calc(8ch + var(--padding-inline-start) + var(--padding-inline-end));
   margin-inline: 0.5rem;
-  font-size: 0.75rem;
+  padding-inline: var(--padding-inline-start) var(--padding-inline-end);
+
   .MuiInputBase-input {
     text-align: center;
-    padding-block: 0;
-    height: auto;
   }
 `;
 
 const Text = styled(Typography)`
-  font-size: 0.75rem;
+  font-size: inherit;
 `;
 
 const RowsSelect = styled(Select)`
@@ -119,7 +123,9 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }: PageSelectCompon
           id="page"
           disableUnderline
         />
-        <Text id="page-count">of {pageCount}</Text>
+        <Text id="page-count">
+          of {Number.isFinite(pageCount) ? pageCount.toLocaleString() : 'many'}
+        </Text>
       </ManualPageInputContainer>
       <Button
         onClick={() => onChangePage(page - 1)}
@@ -150,9 +156,10 @@ const RowsSelectComponent = ({
   setPageSize,
   pageSizeOptions,
 }: RowsSelectComponentProps) => {
-  const displayOptions = pageSizeOptions.map(size => {
-    return { label: `Rows per page: ${size}`, value: size };
-  });
+  const displayOptions = pageSizeOptions.map(size => ({
+    label: `${size} rows per page`,
+    value: size,
+  }));
 
   const handlePageSizeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     if (!setPageSize) return;
@@ -170,7 +177,7 @@ const RowsSelectComponent = ({
   );
 };
 
-interface PaginationProps {
+export interface PaginationProps {
   page: number;
   pageCount: number;
   onChangePage: PageSelectComponentProps['onChangePage'];
@@ -193,21 +200,30 @@ export const Pagination = ({
   applyRowsPerPage = true,
   showEntriesCount = true,
   alwaysDisplay = false,
+  ...props
 }: PaginationProps) => {
   if (!totalRecords && !alwaysDisplay) return null;
-  const currentDisplayStart = page * pageSize + 1;
-  const currentDisplayEnd = Math.min((page + 1) * pageSize, totalRecords);
 
-  const getEntriesText = () => {
-    if (!totalRecords) return '';
-    return `${currentDisplayStart} - ${currentDisplayEnd} of ${totalRecords} entries`;
+  const renderEntriesCount = () => {
+    const hasKnownCount = Number.isFinite(totalRecords);
+    const endOfThisPage = (page + 1) * pageSize;
+
+    const [start, end, total] = [
+      page * pageSize + 1,
+      hasKnownCount ? Math.min(endOfThisPage, totalRecords) : endOfThisPage,
+      hasKnownCount ? totalRecords : 'many',
+    ].map(num => num.toLocaleString());
+
+    return (
+      <Text>
+        {start}&ndash;{end} of {total}
+      </Text>
+    );
   };
 
-  const entriesText = getEntriesText();
-
   return (
-    <Wrapper className="pagination-wrapper">
-      <ActionsWrapper>{showEntriesCount && <Text>{entriesText}</Text>}</ActionsWrapper>
+    <PaginationRoot {...props}>
+      <ActionsWrapper>{showEntriesCount && renderEntriesCount()}</ActionsWrapper>
       <RowWrapper>
         {applyRowsPerPage && (
           <RowsSelectComponent
@@ -218,6 +234,6 @@ export const Pagination = ({
         )}
         <PageSelectComponent onChangePage={onChangePage} page={page} pageCount={pageCount} />
       </RowWrapper>
-    </Wrapper>
+    </PaginationRoot>
   );
 };

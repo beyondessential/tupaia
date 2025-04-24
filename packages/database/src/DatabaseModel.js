@@ -1,6 +1,6 @@
 import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
-import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 import { QUERY_CONJUNCTIONS } from './TupaiaDatabase';
+import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
   otherModels = {};
@@ -15,6 +15,11 @@ export class DatabaseModel {
 
     this.cache = {};
     this.cachedFunctionInvalidationCancellers = {};
+
+    /**
+     * @type {Record<string, (fieldName?: string) => unknown> | null}
+     */
+    this.customColumnSelectors = null;
 
     // If this model uses the singleton database, it is probably long running, so be sure to
     // invalidate the cache any time a change is detected. Non-singleton models are those created
@@ -150,11 +155,8 @@ export class DatabaseModel {
   }
 
   getColumnSelector(fieldName, qualifiedName) {
-    const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
-    if (customSelector) {
-      return customSelector(qualifiedName);
-    }
-    return null;
+    const customSelector = this.customColumnSelectors?.[fieldName];
+    return typeof customSelector === 'function' ? customSelector(qualifiedName) : null;
   }
 
   async getDbConditions(dbConditions = {}) {
@@ -239,8 +241,11 @@ export class DatabaseModel {
    * @returns {Promise<any[]>}
    */
   async find(dbConditions, customQueryOptions = {}) {
-    const queryOptions = await this.getQueryOptions(customQueryOptions);
-    const processedDbConditions = await this.getDbConditions(dbConditions);
+    const [queryOptions, processedDbConditions] = await Promise.all([
+      this.getQueryOptions(customQueryOptions),
+      this.getDbConditions(dbConditions),
+    ]);
+
     const dbResults = await this.database.find(
       this.databaseRecord,
       processedDbConditions,
