@@ -6,10 +6,14 @@ export const useEntityByCode = (
   entityCode: Entity['code'] | undefined,
   useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
-  return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>({
-    ...useQueryOptions,
-    enabled: !!entityCode && (useQueryOptions?.enabled ?? true),
-  });
+  return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
+    ['entity', entityCode],
+    () => get(`entity/${entityCode}`),
+    {
+      ...useQueryOptions,
+      enabled: !!entityCode && (useQueryOptions?.enabled ?? true),
+    },
+  );
 };
 
 export const useEntityById = (
