@@ -14,7 +14,6 @@ export function useHasVideoInput(): boolean | undefined {
 
   const onDeviceChange = useCallback(async () => {
     const newValue = await isVideoInputAvailable();
-    console.log({ newValue, hasVideoInput });
     if (newValue !== hasVideoInput) setHasVideoInput(newValue);
   }, [hasVideoInput]);
 
