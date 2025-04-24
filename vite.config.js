@@ -43,7 +43,7 @@ export default defineConfig(({ command, mode }) => {
         protocolImports: true,
       }),
     ],
-    define: { 'process.env': JSON.stringify(env), __dirname: JSON.stringify('/') },
+    define: { 'process.env': env, __dirname: JSON.stringify('/') },
     server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
