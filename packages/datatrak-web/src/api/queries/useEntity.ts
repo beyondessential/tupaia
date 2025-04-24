@@ -3,7 +3,7 @@ import { DatatrakWebEntitiesRequest, Entity } from '@tupaia/types';
 import { get } from '../api';
 
 export const useEntityByCode = (
-  entityCode: Entity['code'] | undefined,
+  entityCode?: Entity['code'],
   useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
   return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
@@ -17,7 +17,7 @@ export const useEntityByCode = (
 };
 
 export const useEntityById = (
-  entityId: Entity['id'] | undefined,
+  entityId?: Entity['id'],
   useQueryOptions?: UseQueryOptions<DatatrakWebEntitiesRequest.EntitiesResponseItem>,
 ) => {
   return useQuery<DatatrakWebEntitiesRequest.EntitiesResponseItem>(
