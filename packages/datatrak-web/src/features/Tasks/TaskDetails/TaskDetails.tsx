@@ -42,16 +42,16 @@ const Container = styled(Paper).attrs({
   }
 `;
 
-const Column = styled.section`
+const Section = styled.section`
   display: flex;
   flex-direction: column;
 `;
 
-const EditColumn = styled(Column)`
+const EditSection = styled(Section)`
   grid-area: --edit;
 `;
 
-const MainColumn = styled(Column)`
+const MainSection = styled(Section)`
   grid-area: --comment;
   ${({ theme }) => theme.breakpoints.up('md')} {
     border-inline: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
@@ -64,7 +64,7 @@ const MainColumn = styled(Column)`
 /**
  * @privateRemarks Awkward type chain here is to “undo” {@link TileRoot}’s cast where it’s defined.
  */
-const InitialRequestColumn = styled(Column)`
+const InitialRequestSection = styled(Section)`
   grid-area: --initial-request;
   ${TileRoot as unknown as CSSObject} {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
@@ -115,10 +115,8 @@ const Wrapper = styled.div`
 const SectionHeading = styled(Typography).attrs({
   variant: 'h2',
 })`
-  font-size: 0.875rem;
-  line-height: 1.3;
   font-weight: 500;
-  margin-bottom: 0.25rem;
+  margin-block-end: 0.5rem;
 `;
 
 const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_request_id'] }) => {
@@ -219,7 +217,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     <Wrapper>
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
-          <EditColumn>
+          <EditSection>
             <VisuallyHidden as="h2">Key details</VisuallyHidden>
             <Form formContext={formContext} onSubmit={onSubmit}>
               <ItemWrapper>
@@ -285,19 +283,19 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                 </ButtonWrapper>
               )}
             </Form>
-          </EditColumn>
-          <MainColumn>
+          </EditSection>
+          <MainSection>
             <VisuallyHidden as="h2">Comments</VisuallyHidden>
             <TaskComments comments={task.comments} />
-          </MainColumn>
-          <InitialRequestColumn>
+          </MainSection>
+          <InitialRequestSection>
             <SectionHeading>Initial request</SectionHeading>
             {task.initialRequestId ? (
               <InitialRequest initialRequestId={task.initialRequestId} />
             ) : (
               <InitialRequestEmptyState />
             )}
-          </InitialRequestColumn>
+          </InitialRequestSection>
         </Container>
       </LoadingContainer>
     </Wrapper>
