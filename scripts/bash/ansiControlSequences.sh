@@ -28,8 +28,8 @@ export CLEAR_LINE="\033[2K${CURSOR_START_OF_LINE}"
 
 # Select graphic rendition (SGR) parameters
 
-if [[ $NO_COLOR != '' ]]; then
-	# See https://no-color.org
+# Print colour only if outputting to a terminal, and NO_COLOR is unset (see https://no-color.org)
+if [[ ! -t 1 || $NO_COLOR != '' ]]; then
 	export RESET=''
 	export BOLD=''
 	export UNDERLINE=''
