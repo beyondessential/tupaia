@@ -184,7 +184,11 @@ export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScan
 
   return (
     <>
-      <StyledButton disabled={disabled || !hasVideoInput} onClick={openScanner}>
+      <StyledButton
+        aria-busy={hasVideoInput === undefined}
+        disabled={disabled || !hasVideoInput}
+        onClick={openScanner}
+      >
         {hasVideoInput ? <>Scan QR&nbsp;code</> : 'No camera found'}
       </StyledButton>
       <Modal
