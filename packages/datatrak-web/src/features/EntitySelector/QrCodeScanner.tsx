@@ -148,6 +148,13 @@ export const QrCodeScanner = ({ onSuccess, validEntities }: QrCodeScannerProps) 
 
   const onResult: OnResultFunction = async (result, error) => {
     if (error?.message) {
+      if (error.name === 'NotAllowedError') {
+        setFeedback(
+          'Please allow camera access. Or, close the scanner and select an entity from the list.',
+        );
+        return;
+      }
+
       setFeedback(error.message);
       return;
     }
