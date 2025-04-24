@@ -60,21 +60,6 @@ const ViewMoreButton = styled(Button).attrs({ variant: 'text', color: 'default' 
   }
 `;
 
-const DesktopButton = Button;
-const MobileButton = styled(ViewMoreButton)`
-  float: right;
-`;
-
-const ViewMoreTasksButton = ({ numberOfPages }) => {
-  if (numberOfPages <= 1) return null;
-  const Button = useIsMobile() ? MobileButton : DesktopButton;
-  return (
-    <Button component={Link} to={ROUTES.TASKS}>
-      View more
-    </Button>
-  );
-};
-
 export const TasksSection = () => {
   const { id: userId, projectId } = useCurrentUserContext();
   const filters = [
@@ -105,14 +90,7 @@ export const TasksSection = () => {
       return <NoTasksSection />;
     }
 
-    return (
-      <>
-        {tasks.map(task => (
-          <TaskTile key={task.id} task={task} />
-        ))}
-        <ViewMoreTasksButton numberOfPages={data.numberOfPages} />
-      </>
-    );
+    return tasks.map(task => <TaskTile key={task.id} task={task} />);
   };
 
   return (
