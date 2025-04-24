@@ -81,10 +81,9 @@ const ImageContainer = styled.div`
   margin-block-end: 7%;
 `;
 
+const refreshPage = () => location.reload();
+
 export const OfflinePage = () => {
-  const refreshPage = () => {
-    location.reload();
-  };
   return (
     <Container>
       <Header />
@@ -94,7 +93,7 @@ export const OfflinePage = () => {
         </ImageContainer>
         <Heading>You are currently offline</Heading>
         <Text>
-          We are trying to reconnect you now, please check you are connected to the internet.
+          We are trying to reconnect you now. Please check you are connected to the internet.
         </Text>
         <Button onClick={refreshPage}>Refresh page</Button>
       </Body>
