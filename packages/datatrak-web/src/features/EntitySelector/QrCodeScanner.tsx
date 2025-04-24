@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import styled from 'styled-components';
 
-import { DatatrakWebEntityDescendantsRequest, Entity } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { QrCodeScannerIcon } from '@tupaia/ui-components';
 
-import { get, useCurrentUserContext } from '../../api';
 import { Button } from '../../components';
 import { CloseButton, Modal, ModalContent } from '../../components/Modal';
 import { isNullish, useIsMobile } from '../../utils';
@@ -130,7 +129,7 @@ const Overlay = styled.div.attrs({ 'aria-hidden': true })`
 
 export interface QrCodeScannerProps {
   onSuccess?: (entity: DatatrakWebEntityDescendantsRequest.EntityResponse) => void;
-  validEntities?: DatatrakWebEntityDescendantsRequest.ResBody[];
+  validEntities?: DatatrakWebEntityDescendantsRequest.ResBody;
 }
 
 export const QrCodeScanner = ({ onSuccess, validEntities }: QrCodeScannerProps) => {
