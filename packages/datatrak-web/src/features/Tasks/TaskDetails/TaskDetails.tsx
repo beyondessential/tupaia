@@ -35,8 +35,8 @@ const Container = styled(Paper).attrs({
   row-gap: 2.5rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
     grid-template-areas: '--edit --comment --initial-request';
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
     grid-template-rows: 1fr;
     padding: 2.5rem;
   }
