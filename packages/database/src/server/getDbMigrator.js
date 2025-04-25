@@ -49,6 +49,9 @@ export const getDbMigrator = (forCli = false) =>
           ...getConnectionConfig(),
         },
       },
+      cmdOptions: {
+        'migrations-dir': '../core/migrations',
+      },
     },
     forCli ? cliCallback : appCallback,
   );
