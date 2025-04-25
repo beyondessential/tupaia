@@ -14,6 +14,10 @@ export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
+  const clientEnv = Object.fromEntries(
+    Object.entries(env).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
+
   const baseConfig = {
     build: {
       rollupOptions: {
@@ -31,7 +35,7 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
-        external: ['stream/promises', 'fs/promises', 'knex'],
+        external: ['stream/promises', 'fs/promises'],
       },
     },
     plugins: [
@@ -43,7 +47,7 @@ export default defineConfig(({ command, mode }) => {
         protocolImports: true,
       }),
     ],
-    define: { 'process.env': env, __dirname: JSON.stringify('/') },
+    define: { ...clientEnv, __dirname: JSON.stringify('/') },
     server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
