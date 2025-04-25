@@ -1,4 +1,5 @@
 import DBMigrate from 'db-migrate';
+import path from 'path';
 
 import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
@@ -50,7 +51,7 @@ export const getDbMigrator = (forCli = false) =>
         },
       },
       cmdOptions: {
-        'migrations-dir': './core/migrations',
+        'migrations-dir': path.join(__dirname, '../core/migrations'),
       },
     },
     forCli ? cliCallback : appCallback,
