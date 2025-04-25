@@ -50,7 +50,7 @@ export const getDbMigrator = (forCli = false) =>
         },
       },
       cmdOptions: {
-        'migrations-dir': '../core/migrations',
+        'migrations-dir': './core/migrations',
       },
     },
     forCli ? cliCallback : appCallback,
