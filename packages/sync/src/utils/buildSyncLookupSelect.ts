@@ -1,4 +1,3 @@
-import { snake } from 'case';
 import { DatabaseModel } from '@tupaia/database';
 import { COLUMNS_EXCLUDED_FROM_SYNC } from '@tupaia/sync';
 interface Columns {
