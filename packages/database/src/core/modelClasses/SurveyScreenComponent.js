@@ -35,10 +35,7 @@ export class SurveyScreenComponentModel extends DatabaseModel {
       select: buildSyncLookupSelect(this, {
         projectIds: `ARRAY[survey.project_id]`,
       }),
-      joins: `
-        LEFT JOIN survey ON survey.id = survey_screens.survey_id
-        LEFT JOIN survey_screen ON survey_screen.id = survey_screen_component.survey_screen_id
-      `,
+      joins: buildSyncLookupTraverseJoins([this.databaseRecord, 'survey_screen', 'survey']),
     };
   }
 }
