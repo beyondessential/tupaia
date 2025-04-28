@@ -18,7 +18,7 @@ const LayoutManager = styled.div`
   display: grid;
   grid-row-start: 2;
   grid-template-areas: '.' '--content' '.';
-  grid-template-rows: 3fr auto 4fr;
+  grid-template-rows: minmax(0, 2fr) auto minmax(0, 3fr);
 `;
 
 const Content = styled.div`
@@ -66,7 +66,7 @@ export const SyncPage = () => {
         <Content>
           <picture>
             <source srcSet="/datatrak-pin.svg" type="image/svg+xml" />
-            <img aria-hidden src="/datatrak-pin.svg" height={52} width={37} />
+            <img aria-hidden src="/datatrak-pin.svg" height={80} width={80} />
           </picture>
           <StyledSyncStatus value={syncProgress} />
           <StyledLastSyncDate date={lastSyncDate} />
