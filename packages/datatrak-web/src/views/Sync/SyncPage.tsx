@@ -65,7 +65,7 @@ export const SyncPage = () => {
       <LayoutManager>
         <Content>
           <picture>
-            <source srcSet="/datatrak-pin.svg" />
+            <source srcSet="/datatrak-pin.svg" type="image/svg+xml" />
             <img aria-hidden src="/datatrak-pin.svg" height={52} width={37} />
           </picture>
           <StyledSyncStatus value={syncProgress} />
