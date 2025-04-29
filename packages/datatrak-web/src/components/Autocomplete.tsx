@@ -18,8 +18,10 @@ const PopupBody = styled(Paper).attrs({
 
   .MuiAutocomplete-option {
     align-items: center;
+    border-color: transparent;
     border-radius: 0.1875rem;
-    border: max(0.0625rem, 1px) solid transparent;
+    border-style: solid;
+    border-width: max(0.0625rem, 1px);
     display: grid;
     grid-template-columns: minmax(min-content, 1fr) auto;
     inline-size: 100%;
@@ -28,23 +30,16 @@ const PopupBody = styled(Paper).attrs({
     padding-inline: 1.1rem; // Align with search input
     text-wrap: balance;
 
-    &[aria-selected='true']:not(:focus-visible, :hover, [data-focus='true']) {
+    &[aria-selected='true']:not([data-focus='true']) {
       background-color: transparent;
     }
 
-    &:focus-visible,
     &[data-focus='true'] {
       background-color: ${props => props.theme.palette.primaryHover};
     }
 
-    @media (hover: hover) {
-      &:hover {
-        background-color: ${props => props.theme.palette.primaryHover};
-      }
-    }
-
     &[aria-selected='true'] {
-      border: max(0.0625rem, 1px) solid ${props => props.theme.palette.primary.main};
+      border-color: ${props => props.theme.palette.primary.main};
     }
 
     &[aria-disabled='true'] {
