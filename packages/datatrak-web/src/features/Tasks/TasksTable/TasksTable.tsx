@@ -179,7 +179,7 @@ export const useTasksTable = () => {
       width: 180,
     },
     {
-      Header: 'Due Date',
+      Header: 'Due date',
       accessor: row => displayDate(row.taskDueDate),
       // use the due_date field to sort (unix timestamp) and the taskDueDate field to display (date string)
       id: 'due_date',
