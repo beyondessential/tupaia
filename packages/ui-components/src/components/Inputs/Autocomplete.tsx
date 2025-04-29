@@ -17,6 +17,10 @@ const StyledPaper = styled(Paper).attrs({ elevation: 0, variant: 'outlined' })`
   .MuiAutocomplete-option {
     padding-block: 0.6rem;
     padding-inline: 1.2rem;
+
+    &[data-focus='true'] {
+      background-color: ${props => props.theme.palette.primaryHover};
+    }
   }
 `;
 
