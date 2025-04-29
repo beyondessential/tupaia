@@ -45,7 +45,7 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   }
 `;
 
-const FilterCheckbox = ({ name, label }) => {
+const FilterCheckbox = ({ name, label }: { name: TaskFilterType; label: React.ReactNode }) => {
   const queryClient = useQueryClient();
   const { onChangePage } = useTasksTable();
 
