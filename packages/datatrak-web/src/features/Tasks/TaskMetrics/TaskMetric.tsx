@@ -35,8 +35,8 @@ export const TaskMetric = ({
   ...props
 }: {
   isLoading?: boolean;
-  number: string | number | undefined | null;
-  text: string | number | undefined | null;
+  number?: string | number | undefined | null;
+  text?: string | number | undefined | null;
 }) => {
   return (
     <MetricWrapper {...props}>
