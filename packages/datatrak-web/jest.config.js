@@ -11,4 +11,5 @@ module.exports = async () => ({
     '^axios$': require.resolve('axios'),
   },
   transformIgnorePatterns: ['/node_modules/(?!(msw)/).*/'],
+  setupFiles: ['./jest.setup.js'],
 });

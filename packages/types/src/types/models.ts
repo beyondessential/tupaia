@@ -906,6 +906,20 @@ export interface LesmisSessionUpdate {
   'id'?: string;
   'refresh_token'?: string;
 }
+export interface LocalSystemFact {
+  'id': string;
+  'key': string;
+  'value'?: string | null;
+}
+export interface LocalSystemFactCreate {
+  'key': string;
+  'value'?: string | null;
+}
+export interface LocalSystemFactUpdate {
+  'id'?: string;
+  'key'?: string;
+  'value'?: string | null;
+}
 export interface LoginAttempts {
   'expire'?: string | null;
   'key': string;
@@ -1901,4 +1915,18 @@ export enum ApprovalStatus {
   'pending' = 'pending',
   'rejected' = 'rejected',
   'approved' = 'approved',
+}
+export interface DebugLog {
+  'id': string;
+  'info': {};
+  'type': string;
+}
+export interface DebugLogCreate {
+  'info': {};
+  'type': string;
+}
+export interface DebugLogUpdate {
+  'id'?: string;
+  'info'?: {};
+  'type'?: string;
 }

@@ -1,5 +1,25 @@
-import { scheduleJob } from 'node-schedule';
+import { scheduleJob, Job } from 'node-schedule';
 import winston from 'winston';
+
+export interface DatabaseInterface {
+  /**
+   * Wraps a callback in a database transaction
+   * @param callback Function to execute within the transaction
+   * @returns Promise that resolves when the transaction is complete
+   */
+  wrapInTransaction<T>(callback: (transactingModels: DatabaseInterface) => Promise<T>): Promise<T>;
+
+  /**
+   * Database instance with advisory lock functionality
+   */
+  database: {
+    /**
+     * Acquires an advisory lock for the current transaction
+     * @param lockKey Unique key for the lock
+     */
+    acquireAdvisoryLockForTransaction(lockKey: string): Promise<void>;
+  };
+}
 
 /**
  * Base class for scheduled tasks. Uses 'node-schedule' for scheduling based on cron tab syntax
@@ -10,34 +30,34 @@ export class ScheduledTask {
   /**
    * Cron tab config for scheduling the task
    */
-  schedule = null;
+  schedule: string;
 
   /**
    * Name of the task for logging
    */
-  name = null;
+  name: string;
 
   /**
    * Holds the scheduled job object for the task
    */
-  job = null;
+  job: Job | null = null;
 
   /**
    * Keeps track of start time for logging
    */
-  start = null;
+  start: number | null = null;
 
   /**
    * Lock key for database advisory lock
    */
-  lockKey = null;
+  lockKey: string;
 
   /**
    * Model registry for database access
    */
-  models = null;
+  models: DatabaseInterface;
 
-  constructor(models, name, schedule) {
+  constructor(models: DatabaseInterface, name: string, schedule: string) {
     if (!name) {
       throw new Error(`ScheduledTask has no name`);
     }
@@ -61,16 +81,16 @@ export class ScheduledTask {
     this.start = Date.now();
 
     try {
-      await this.models.wrapInTransaction(async transactingModels => {
+      await this.models.wrapInTransaction(async (transactingModels: DatabaseInterface) => {
         // Acquire a database advisory lock for the transaction
         // Ensures no other server instance can execute its change handler at the same time
         await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
         await this.run();
-        const durationMs = Date.now() - this.start;
+        const durationMs = Date.now() - (this.start as number);
         winston.info(`ScheduledTask: ${this.name}: Succeeded in ${durationMs}`);
         return true;
       });
-    } catch (e) {
+    } catch (e: any) {
       const durationMs = Date.now() - this.start;
       winston.error(`ScheduledTask: ${this.name}: Failed`, { durationMs });
       winston.error(e.stack);
