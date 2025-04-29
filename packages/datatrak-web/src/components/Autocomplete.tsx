@@ -127,14 +127,21 @@ export const Autocomplete = <
   <StyledBaseAutocomplete as={UiAutocomplete<T, Multiple, DisableClearable, FreeSolo>} {...props} />
 );
 
-const StyledAutocomplete = styled(Autocomplete).attrs({
+const StyledAutocomplete = styled(Autocomplete).attrs(props => ({
   textFieldProps: {
     FormHelperTextProps: {
       component: InputHelperText,
     },
   },
+  muiProps: {
+    renderOption: (option: DisplayOptionProps['option'], state: DisplayOptionProps['state']) => (
+      <DisplayOption option={option} state={state} />
+    ),
+    PaperComponent: PopupBody,
+    ...props.muiProps,
+  },
   placeholder: 'Search…',
-})`
+}))`
   .MuiFormLabel-root {
     font-size: 0.875rem;
     line-height: 1.2;
