@@ -3,7 +3,8 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DatatrakWebTasksRequest } from '@tupaia/types';
-import { FilterableTable } from '@tupaia/ui-components';
+import { FilterableTable, FilterableTableProps } from '@tupaia/ui-components';
+
 import { isFeatureEnabled } from '@tupaia/utils';
 
 import { useCurrentUserContext, useTasks } from '../../../api';
@@ -19,6 +20,7 @@ import { FilterToolbar } from './FilterToolbar';
 import { MobileTaskFilters } from './MobileTaskFilters';
 import { RepeatScheduleFilter } from './RepeatScheduleFilter';
 import { StatusFilter } from './StatusFilter';
+import { UseTasksQueryParams } from '../../../api/queries/useTasks';
 
 const Container = styled.div`
   background-color: ${props => props.theme.palette.background.paper};
@@ -82,47 +84,46 @@ export const useTasksTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number.parseInt(searchParams.get('page') || '0', 10);
-
   const pageSize = Number.parseInt(searchParams.get('pageSize') || '20', 10);
-  const URLSortBy = searchParams.get('sortBy');
-  const sortBy = URLSortBy ? JSON.parse(URLSortBy) : [];
+
+  const urlSortBy = searchParams.get('sortBy');
+  const sortBy: UseTasksQueryParams['sortBy'] = urlSortBy ? JSON.parse(urlSortBy) : [];
 
   const urlFilters = searchParams.get('filters');
   const filters = urlFilters ? JSON.parse(urlFilters) : [];
 
   const { data, isLoading } = useTasks({ projectId, pageSize, page, filters, sortBy });
 
-  const updateSorting = newSorting => {
+  const updateSorting = (newSorting: UseTasksQueryParams['sortBy']) => {
     searchParams.set('sortBy', JSON.stringify(newSorting));
-    setSearchParams(searchParams);
+    setSearchParams(searchParams, { replace: true });
   };
 
-  const updateFilters = newFilters => {
+  const updateFilters: FilterableTableProps['onChangeFilters'] = newFilters => {
     const nonEmptyFilters = newFilters.filter(({ value }) => isNotNullish(value) && value !== '');
+    const nonEmptyFiltersStr = JSON.stringify(nonEmptyFilters);
 
-    if (JSON.stringify(nonEmptyFilters) === JSON.stringify(filters)) return;
+    if (nonEmptyFiltersStr === JSON.stringify(filters)) return;
 
     if (nonEmptyFilters.length === 0) {
       searchParams.delete('filters');
-      setSearchParams(searchParams);
-      return;
+    } else {
+      searchParams.set('filters', nonEmptyFiltersStr);
+      searchParams.set('page', '0');
     }
 
-    searchParams.set('filters', JSON.stringify(nonEmptyFilters));
-    searchParams.set('page', '0');
-
-    setSearchParams(searchParams);
+    setSearchParams(searchParams, { replace: true });
   };
 
-  const onChangePage = (newPage: number) => {
+  const onChangePage: FilterableTableProps['onChangePage'] = newPage => {
     searchParams.set('page', newPage.toString());
-    setSearchParams(searchParams);
+    setSearchParams(searchParams, { replace: true });
   };
 
-  const onChangePageSize = (newPageSize: number) => {
+  const onChangePageSize: FilterableTableProps['onChangePageSize'] = newPageSize => {
     searchParams.set('pageSize', newPageSize.toString());
     searchParams.set('page', '0');
-    setSearchParams(searchParams);
+    setSearchParams(searchParams, { replace: true });
   };
 
   const { tasks = [], count = 0, numberOfPages } = data || {};
