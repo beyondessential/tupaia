@@ -282,7 +282,7 @@ export const TasksTable = () => {
 
   return (
     <Container>
-      <FilterToolbar />
+      {!isMobile && <FilterToolbar />}
       <FilterableTable
         columns={columns}
         data={isLoading ? [] : data}

@@ -16,10 +16,6 @@ const Container = styled.div`
   justify-content: flex-end;
   padding: 0.1rem 0 0;
   border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 const FormGroup = styled(MuiFormGroup)`
