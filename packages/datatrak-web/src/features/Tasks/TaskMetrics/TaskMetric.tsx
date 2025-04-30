@@ -28,9 +28,18 @@ const MetricNumber = styled(MetricText)`
   border-right: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
 `;
 
-export const TaskMetric = ({ number, text, isLoading }) => {
+export const TaskMetric = ({
+  isLoading,
+  number,
+  text,
+  ...props
+}: {
+  isLoading?: boolean;
+  number?: string | number | undefined | null;
+  text?: string | number | undefined | null;
+}) => {
   return (
-    <MetricWrapper>
+    <MetricWrapper {...props}>
       <MetricNumber>{isLoading ? <SpinningLoader spinnerSize={14} /> : number}</MetricNumber>
       <MetricText>{text}</MetricText>
     </MetricWrapper>

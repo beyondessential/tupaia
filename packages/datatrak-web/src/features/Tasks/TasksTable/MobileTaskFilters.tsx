@@ -220,9 +220,11 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
   );
 };
 
+type MobileTaskFilterTab = 0 | 1 | 2;
+
 export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tabValue, setTabValue] = useState<0 | 1 | 2>(0);
+  const [tabValue, setTabValue] = useState<MobileTaskFilterTab>(0);
 
   const getHasFilter = key => filters.some(filter => filter.id === key);
   const tabs = [
@@ -231,7 +233,7 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
     { id: 'assignee', label: 'Assignee', active: getHasFilter('assignee.id') },
   ] as const;
 
-  const onChangeTab = (_event, newValue) => {
+  const onChangeTab = (_event: React.ChangeEvent<{}>, newValue: MobileTaskFilterTab) => {
     setTabValue(newValue);
   };
 

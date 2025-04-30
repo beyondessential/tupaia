@@ -16,10 +16,6 @@ const Container = styled.div`
   justify-content: flex-end;
   padding: 0.1rem 0 0;
   border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 const FormGroup = styled(MuiFormGroup)`
@@ -45,7 +41,7 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   }
 `;
 
-const FilterCheckbox = ({ name, label }) => {
+const FilterCheckbox = ({ name, label }: { name: TaskFilterType; label: React.ReactNode }) => {
   const queryClient = useQueryClient();
   const { onChangePage } = useTasksTable();
 
