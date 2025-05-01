@@ -4,7 +4,7 @@ import { UseQueryResult } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { useDebounce } from '@tupaia/ui-components';
+import { FilterableTableProps, useDebounce } from '@tupaia/ui-components';
 
 import {
   CurrentUserContextType,
@@ -220,9 +220,26 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
   );
 };
 
+const getShowResultsButtonLabel = (resultCount: number | undefined) =>
+  resultCount === undefined ? (
+    'Show results'
+  ) : (
+    <>
+      Show {resultCount}&nbsp;{resultCount === 1 ? 'result' : 'results'}
+    </>
+  );
+
+interface MobileTaskFiltersProps extends Pick<FilterableTableProps, 'filters' | 'onChangeFilters'> {
+  resultCount?: number;
+}
+
 type MobileTaskFilterTab = 0 | 1 | 2;
 
-export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
+export const MobileTaskFilters = ({
+  filters = [],
+  onChangeFilters,
+  resultCount,
+}: MobileTaskFiltersProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabValue, setTabValue] = useState<MobileTaskFilterTab>(0);
 
@@ -299,7 +316,9 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           />
         )}
         <ButtonGroup>
-          <Button onClick={() => void setIsOpen(false)}>Apply</Button>
+          <Button onClick={() => void setIsOpen(false)}>
+            {getShowResultsButtonLabel(resultCount)}
+          </Button>
           <Button variant="text" color="default" onClick={clearFilters}>
             Clear filters
           </Button>
