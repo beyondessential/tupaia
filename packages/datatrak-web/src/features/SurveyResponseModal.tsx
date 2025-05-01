@@ -163,7 +163,8 @@ export const SurveyResponseModal = () => {
   const onClose = () => {
     // Redirect to the previous page by removing all the query params
     urlSearchParams.delete('responseId');
-    setUrlSearchParams(urlSearchParams);
+
+    setUrlSearchParams(urlSearchParams, { replace: true });
   };
 
   if (!surveyResponseId) return null;
