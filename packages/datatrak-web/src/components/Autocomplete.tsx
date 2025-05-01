@@ -14,6 +14,7 @@ import { InputHelperText } from './InputHelperText';
 const PopupBody = styled(Paper).attrs({
   variant: 'outlined',
 })`
+  border-color: ${props => props.theme.palette.primary.main};
   margin-block: 0;
 
   .MuiAutocomplete-option {
