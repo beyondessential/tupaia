@@ -61,9 +61,6 @@ const SideColumn = styled.section`
   }
 `;
 
-/**
- * @privateRemarks Awkward type chain here is to “undo” {@link TileRoot}’s cast where it’s defined.
- */
 const InitialRequestColumn = styled(SideColumn)`
   ${TileRoot} {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
