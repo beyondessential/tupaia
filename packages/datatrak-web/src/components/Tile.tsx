@@ -111,7 +111,6 @@ export const Tile = ({
   trailingIcons,
   ...props
 }: TileProps) => {
-  console.log('Rendering <Tile>', props);
   const Body = useIsMobile() ? Fragment : 'div';
   return (
     <TileRoot {...props}>
