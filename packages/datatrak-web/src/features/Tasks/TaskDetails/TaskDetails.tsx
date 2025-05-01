@@ -151,14 +151,13 @@ const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_
   );
 };
 
+const generateDefaultValues = (task: SingleTaskResponse) => ({
+  due_date: task.taskDueDate ?? null,
+  repeat_frequency: task.repeatSchedule?.freq ?? null,
+  assignee: task.assignee?.id ? task.assignee : null,
+});
+
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
-  const generateDefaultValues = (task: SingleTaskResponse) => {
-    return {
-      due_date: task.taskDueDate ?? null,
-      repeat_frequency: task.repeatSchedule?.freq ?? null,
-      assignee: task.assignee?.id ? task.assignee : null,
-    };
-  };
   const [defaultValues, setDefaultValues] = useState(generateDefaultValues(task));
 
   const formContext = useForm({
