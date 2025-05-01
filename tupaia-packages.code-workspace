@@ -208,6 +208,7 @@
       "ilike",
       "imms",
       "isequal",
+      "psql",
       "jsonb",
       "keyby",
       "Kobo",
