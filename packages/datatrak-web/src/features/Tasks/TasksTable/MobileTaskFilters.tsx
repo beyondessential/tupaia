@@ -15,7 +15,7 @@ import {
 } from '../../../api';
 import { Button, FiltersIcon } from '../../../components';
 import { Modal, ModalBody } from '../../../components/Modal';
-import { MobileAutocomplete } from './MobileAutocomplete';
+import { MobileAutocomplete, MobileAutocompleteProps } from './MobileAutocomplete';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   bottom: max(env(safe-area-inset-bottom, 0), 1rem);
@@ -204,7 +204,7 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
     label: item.name,
   }));
 
-  const handleChange = (event, newValue) => {
+  const handleChange: MobileAutocompleteProps['onChange'] = (event, newValue) => {
     onChange(event, { id: filterKey, value: newValue.value });
   };
 

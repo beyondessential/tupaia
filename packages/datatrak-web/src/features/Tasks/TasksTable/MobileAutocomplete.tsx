@@ -48,7 +48,7 @@ interface TaskAutocompleteOption {
   value: string;
 }
 
-interface MobileAutocompleteProps {
+export interface MobileAutocompleteProps {
   isLoading: boolean;
   onChange?: (event: React.ChangeEvent<{}>, value: any) => void;
   options: {

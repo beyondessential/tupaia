@@ -1,21 +1,22 @@
+import {
+  Checkbox as MuiCheckbox,
+  CheckboxProps as MuiCheckboxProps,
+  FormControlLabel as MuiFormControlLabel,
+  FormGroup as MuiFormGroup,
+} from '@material-ui/core';
+import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import styled from 'styled-components';
-import { useQueryClient } from '@tanstack/react-query';
-import {
-  FormGroup as MuiFormGroup,
-  FormControlLabel as MuiFormControlLabel,
-  Checkbox as MuiCheckbox,
-} from '@material-ui/core';
-import { getTaskFilterSetting, setTaskFilterSetting } from '../../../utils';
 import { TaskFilterType } from '../../../types';
+import { getTaskFilterSetting, setTaskFilterSetting } from '../../../utils';
 import { useTasksTable } from './TasksTable';
 
 const Container = styled.div`
-  display: flex;
   align-items: center;
+  border-bottom: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  display: flex;
   justify-content: flex-end;
-  padding: 0.1rem 0 0;
-  border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+  padding-block: 0.125rem;
 `;
 
 const FormGroup = styled(MuiFormGroup)`
@@ -45,7 +46,7 @@ const FilterCheckbox = ({ name, label }: { name: TaskFilterType; label: React.Re
   const queryClient = useQueryClient();
   const { onChangePage } = useTasksTable();
 
-  const onChange = (event: React.ChangeEvent<{ name: string; checked: boolean }>) => {
+  const onChange: MuiCheckboxProps['onChange'] = event => {
     const { name: taskFilterName, checked: value } = event.target;
     setTaskFilterSetting(taskFilterName as TaskFilterType, value);
     // reset the page to 0 when the filter changes
