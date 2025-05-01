@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
-import { MobileTaskFilters } from '../src/features/Tasks/TasksTable/MobileTaskFilters';
+import { MobileTaskFilters } from './MobileTaskFilters';
 
 const Container = styled.div`
   position: relative;
