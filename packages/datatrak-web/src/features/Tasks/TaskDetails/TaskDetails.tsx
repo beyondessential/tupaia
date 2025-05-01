@@ -202,7 +202,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
           <SideColumn>
             <Form formContext={formContext} onSubmit={onSubmit}>
               <TaskMetadata task={task} />
-
               <Controller
                 name="due_date"
                 control={control}
@@ -220,7 +219,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                   />
                 )}
               />
-
               <Controller
                 name="repeat_frequency"
                 control={control}
@@ -233,7 +231,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                   />
                 )}
               />
-
               <Controller
                 name="assignee"
                 control={control}
@@ -248,7 +245,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                   />
                 )}
               />
-
               {canEditFields && (
                 <ButtonWrapper>
                   <ClearButton disabled={!isDirty} onClick={onClearEdit}>
