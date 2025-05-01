@@ -68,12 +68,6 @@ const InitialRequestColumn = styled(SideColumn)`
   }
 `;
 
-const ItemWrapper = styled.div`
-  &:not(:last-child) {
-    margin-block-end: 1.2rem;
-  }
-`;
-
 const Button = styled(BaseButton).attrs({
   variant: 'outlined',
 })`
@@ -100,6 +94,7 @@ const ButtonWrapper = styled.div`
 const Form = styled(TaskForm)`
   display: flex;
   flex-direction: column;
+  gap: 1.2rem;
 `;
 
 const Wrapper = styled.div`
@@ -206,58 +201,54 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
         <Container>
           <SideColumn>
             <Form formContext={formContext} onSubmit={onSubmit}>
-              <ItemWrapper>
-                <TaskMetadata task={task} />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="due_date"
-                  control={control}
-                  render={({ value, onChange, ref }, { invalid }) => (
-                    <DueDatePicker
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      label="Due date"
-                      disablePast
-                      fullWidth
-                      required
-                      invalid={invalid}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="repeat_frequency"
-                  control={control}
-                  render={({ value, onChange }) => (
-                    <RepeatScheduleInput
-                      value={value}
-                      onChange={onChange}
-                      disabled={!canEditFields}
-                      dueDate={dueDate}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="assignee"
-                  control={control}
-                  render={({ value, onChange, ref }) => (
-                    <AssigneeInput
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      countryCode={task.entity.countryCode}
-                      surveyCode={task.survey.code}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
+              <TaskMetadata task={task} />
+
+              <Controller
+                name="due_date"
+                control={control}
+                render={({ value, onChange, ref }, { invalid }) => (
+                  <DueDatePicker
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    label="Due date"
+                    disablePast
+                    fullWidth
+                    required
+                    invalid={invalid}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
+
+              <Controller
+                name="repeat_frequency"
+                control={control}
+                render={({ value, onChange }) => (
+                  <RepeatScheduleInput
+                    value={value}
+                    onChange={onChange}
+                    disabled={!canEditFields}
+                    dueDate={dueDate}
+                  />
+                )}
+              />
+
+              <Controller
+                name="assignee"
+                control={control}
+                render={({ value, onChange, ref }) => (
+                  <AssigneeInput
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    countryCode={task.entity.countryCode}
+                    surveyCode={task.survey.code}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
+
               {canEditFields && (
                 <ButtonWrapper>
                   <ClearButton disabled={!isDirty} onClick={onClearEdit}>
