@@ -1,14 +1,13 @@
-import { ButtonProps, Paper, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import React, { Fragment, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useIsMobile } from '../utils';
-import { Button } from './Button';
+import { Button, ButtonProps } from './Button';
 
-export const TileRoot = styled(Paper).attrs({
+export const TileRoot = styled(Button).attrs({
   elevation: 0,
-  component: Button,
 })`
   align-items: stretch;
   border-radius: 0.625rem;
@@ -52,7 +51,7 @@ export const TileRoot = styled(Paper).attrs({
   .MuiButton-label {
     display: contents;
   }
-` as typeof Button;
+`;
 
 const Header = styled.header`
   align-items: start;
@@ -101,7 +100,6 @@ export interface TileProps extends ButtonProps {
   description?: ReactNode;
   leadingIcons?: ReactNode;
   trailingIcons?: ReactNode;
-  to?: string;
   tooltip?: ReactNode;
 }
 
@@ -113,6 +111,7 @@ export const Tile = ({
   trailingIcons,
   ...props
 }: TileProps) => {
+  console.log('Rendering <Tile>', props);
   const Body = useIsMobile() ? Fragment : 'div';
   return (
     <TileRoot {...props}>

@@ -2,7 +2,7 @@ import { Paper, Typography } from '@material-ui/core';
 import { parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import styled, { CSSObject } from 'styled-components';
+import styled from 'styled-components';
 
 import { Task, TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
@@ -65,7 +65,7 @@ const SideColumn = styled.section`
  * @privateRemarks Awkward type chain here is to “undo” {@link TileRoot}’s cast where it’s defined.
  */
 const InitialRequestColumn = styled(SideColumn)`
-  ${TileRoot as unknown as CSSObject} {
+  ${TileRoot} {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     inline-size: 100%;
   }
@@ -133,6 +133,7 @@ const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_
   return (
     <Tile
       heading={surveyName}
+      replace
       to={`?responseId=${id}`}
       tooltip={
         <>
