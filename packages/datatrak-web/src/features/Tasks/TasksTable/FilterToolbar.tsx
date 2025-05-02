@@ -73,7 +73,9 @@ const FilterCheckbox = ({ name, label }: { name: TaskFilterType; label: React.Re
 };
 
 export const FilterToolbar = () => {
+  // This component doesn’t currently use the filters that this hook resets, but just to be safe
   useResetTasksTableFiltersOnUnmount();
+
   return (
     <Container>
       <FormGroup>
