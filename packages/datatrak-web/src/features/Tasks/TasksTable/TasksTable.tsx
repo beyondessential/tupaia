@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,7 +9,7 @@ import { isFeatureEnabled } from '@tupaia/utils';
 
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { TaskStatusType } from '../../../types';
-import { displayDate, isNotNullish, useIsMobile } from '../../../utils';
+import { displayDate, isNotNullish, isNullish, useIsMobile } from '../../../utils';
 import { CommentsCount } from '../CommentsCount';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusDot, StatusPill } from '../StatusPill';
@@ -90,41 +90,59 @@ export const useTasksTable = () => {
   const sortBy: UseTasksQueryParams['sortBy'] = urlSortBy ? JSON.parse(urlSortBy) : [];
 
   const urlFilters = searchParams.get('filters');
-  const filters = urlFilters ? JSON.parse(urlFilters) : [];
+  const filters = useMemo(() => (urlFilters ? JSON.parse(urlFilters) : []), [urlFilters]);
 
   const { data, isLoading } = useTasks({ projectId, pageSize, page, filters, sortBy });
 
-  const updateSorting = (newSorting: UseTasksQueryParams['sortBy']) => {
-    searchParams.set('sortBy', JSON.stringify(newSorting));
-    setSearchParams(searchParams, { replace: true });
-  };
+  const updateSorting = useCallback(
+    (newSorting: UseTasksQueryParams['sortBy']) => {
+      if (isNullish(newSorting) || newSorting.length === 0) {
+        searchParams.delete('sortBy');
+      } else {
+        searchParams.set('sortBy', JSON.stringify(newSorting));
+      }
+      setSearchParams(searchParams, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
 
-  const updateFilters: FilterableTableProps['onChangeFilters'] = newFilters => {
-    const nonEmptyFilters = newFilters.filter(({ value }) => isNotNullish(value) && value !== '');
-    const nonEmptyFiltersStr = JSON.stringify(nonEmptyFilters);
+  const updateFilters: FilterableTableProps['onChangeFilters'] = useCallback(
+    newFilters => {
+      console.log('updateFilters', newFilters);
+      const nonEmptyFilters = newFilters.filter(({ value }) => isNotNullish(value) && value !== '');
+      const nonEmptyFiltersStr = JSON.stringify(nonEmptyFilters);
 
-    if (nonEmptyFiltersStr === JSON.stringify(filters)) return;
+      if (nonEmptyFiltersStr === JSON.stringify(filters)) return;
 
-    if (nonEmptyFilters.length === 0) {
-      searchParams.delete('filters');
-    } else {
-      searchParams.set('filters', nonEmptyFiltersStr);
+      if (nonEmptyFilters.length === 0) {
+        searchParams.delete('filters');
+      } else {
+        searchParams.set('filters', nonEmptyFiltersStr);
+        searchParams.set('page', '0');
+      }
+      console.log('setting', searchParams.toString());
+
+      setSearchParams(searchParams, { replace: true });
+    },
+    [filters, searchParams, setSearchParams],
+  );
+
+  const onChangePage: FilterableTableProps['onChangePage'] = useCallback(
+    newPage => {
+      searchParams.set('page', newPage.toString());
+      setSearchParams(searchParams, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
+
+  const onChangePageSize: FilterableTableProps['onChangePageSize'] = useCallback(
+    newPageSize => {
+      searchParams.set('pageSize', newPageSize.toString());
       searchParams.set('page', '0');
-    }
-
-    setSearchParams(searchParams, { replace: true });
-  };
-
-  const onChangePage: FilterableTableProps['onChangePage'] = newPage => {
-    searchParams.set('page', newPage.toString());
-    setSearchParams(searchParams, { replace: true });
-  };
-
-  const onChangePageSize: FilterableTableProps['onChangePageSize'] = newPageSize => {
-    searchParams.set('pageSize', newPageSize.toString());
-    searchParams.set('page', '0');
-    setSearchParams(searchParams, { replace: true });
-  };
+      setSearchParams(searchParams, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
 
   const { tasks = [], count = 0, numberOfPages } = data || {};
 
