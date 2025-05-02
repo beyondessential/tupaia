@@ -5,14 +5,17 @@ import { theme } from '../../theme';
 import { TaskStatusType } from '../../types';
 
 const Pill = styled.span<{
-  $color: string;
+  $color: React.CSSProperties['color'];
 }>`
-  background-color: ${({ $color }) => `${$color}22`};
+  background-color: oklch(from currentColor l c h/ 15%);
+  @supports not (color: oklch(from black l c h)) {
+    background-color: ${({ $color }) => `${$color}22`};
+  }
   color: ${({ $color }) => $color};
   font-size: 0.625rem;
   padding-inline: 0.7rem;
   padding-block: 0.2rem;
-  border-radius: 20px;
+  border-radius: 2em;
   .cell-content > div:has(&) {
     overflow: visible;
   }
