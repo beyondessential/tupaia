@@ -16,6 +16,7 @@ import {
 import { Button, FiltersIcon } from '../../../components';
 import { Modal, ModalBody } from '../../../components/Modal';
 import { MobileAutocomplete, MobileAutocompleteProps } from './MobileAutocomplete';
+import { useDisableDesktopTaskFiltersWhileMounted } from './useDisableDesktopTaskFiltersWhileMounted';
 import { useResetTasksTableFiltersOnUnmount } from './useResetTasksTableFiltersOnUnmount';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
@@ -244,6 +245,7 @@ export const MobileTaskFilters = ({
   const [isOpen, setIsOpen] = useState(false);
   const [tabValue, setTabValue] = useState<MobileTaskFilterTab>(0);
 
+  useDisableDesktopTaskFiltersWhileMounted();
   useResetTasksTableFiltersOnUnmount();
 
   const getHasFilter = key => filters.some(filter => filter.id === key);
