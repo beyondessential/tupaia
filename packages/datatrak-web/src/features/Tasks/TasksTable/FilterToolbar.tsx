@@ -9,8 +9,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { TaskFilterType } from '../../../types';
 import { getTaskFilterSetting, setTaskFilterSetting } from '../../../utils';
-import { useTasksTable } from './TasksTable';
 import { useResetTasksTableFiltersOnUnmount } from './useResetTasksTableFiltersOnUnmount';
+import { useTasksTable } from './useTasksTable';
 
 const Container = styled.div`
   align-items: center;
