@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { TaskFilterType } from '../../../types';
 import { getTaskFilterSetting, setTaskFilterSetting } from '../../../utils';
 import { useTasksTable } from './TasksTable';
+import { useResetTasksTableFiltersOnUnmount } from './useResetTasksTableFiltersOnUnmount';
 
 const Container = styled.div`
   align-items: center;
@@ -71,12 +72,15 @@ const FilterCheckbox = ({ name, label }: { name: TaskFilterType; label: React.Re
   );
 };
 
-export const FilterToolbar = () => (
-  <Container>
-    <FormGroup>
-      <FilterCheckbox name="all_assignees_tasks" label="Show all assignees" />
-      <FilterCheckbox name="show_completed_tasks" label="Show completed tasks" />
-      <FilterCheckbox name="show_cancelled_tasks" label="Show cancelled tasks" />
-    </FormGroup>
-  </Container>
-);
+export const FilterToolbar = () => {
+  useResetTasksTableFiltersOnUnmount();
+  return (
+    <Container>
+      <FormGroup>
+        <FilterCheckbox name="all_assignees_tasks" label="Show all assignees" />
+        <FilterCheckbox name="show_completed_tasks" label="Show completed tasks" />
+        <FilterCheckbox name="show_cancelled_tasks" label="Show cancelled tasks" />
+      </FormGroup>
+    </Container>
+  );
+};
