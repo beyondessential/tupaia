@@ -1,8 +1,5 @@
 'use strict';
 
-import { TupaiaDatabase } from '@tupaia/database';
-import { arrayToDbString } from '../utilities/migration';
-
 var dbm;
 var type;
 var seed;
@@ -17,10 +14,8 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function () {
-  const db = new TupaiaDatabase();
-  await db.executeSql(`ALTER TYPE data_table_type ADD VALUE 'entity_attributes'`);
-  return db.closeConnections();
+exports.up = async function (db) {
+  await db.runSql(`ALTER TYPE data_table_type ADD VALUE 'entity_attributes'`);
 };
 
 exports.down = async function () {};

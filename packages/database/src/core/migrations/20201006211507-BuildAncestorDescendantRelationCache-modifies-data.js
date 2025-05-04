@@ -1,6 +1,6 @@
 'use strict';
 
-import { TupaiaDatabase, ModelRegistry, EntityHierarchyCacher } from '@tupaia/database';
+// import { TupaiaDatabase, ModelRegistry, EntityHierarchyCacher } from '../../server';
 
 var dbm;
 var type;
@@ -17,12 +17,12 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function () {
-  const db = new TupaiaDatabase();
-  const models = new ModelRegistry(db);
-  const hierarchyCacher = new EntityHierarchyCacher(models);
-  await hierarchyCacher.buildAndCacheHierarchies();
-  db.closeConnections();
-  return null;
+  // const db = new TupaiaDatabase();
+  // const models = new ModelRegistry(db);
+  // const hierarchyCacher = new EntityHierarchyCacher(models);
+  // await hierarchyCacher.buildAndCacheHierarchies();
+  // db.closeConnections();
+  // return null;
 };
 
 exports.down = function (db) {
