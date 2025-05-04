@@ -4,25 +4,19 @@ import {
   FormControlLabel as MuiFormControlLabel,
   FormGroup as MuiFormGroup,
 } from '@material-ui/core';
-import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import styled from 'styled-components';
 import { TaskFilterType } from '../../../types';
-import { getTaskFilterSetting, setTaskFilterSetting } from '../../../utils';
 import { useResetTasksTableFiltersOnUnmount } from './useResetTasksTableFiltersOnUnmount';
 import { useTasksTable } from './useTasksTable';
 
-const Container = styled.div`
+const FormGroup = styled(MuiFormGroup)`
   align-items: center;
   border-bottom: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: flex;
+  flex-direction: row;
   justify-content: flex-end;
   padding-block: 0.125rem;
-`;
-
-const FormGroup = styled(MuiFormGroup)`
-  display: flex;
-  flex-direction: row;
 `;
 
 const FormControlLabel = styled(MuiFormControlLabel)`
@@ -44,23 +38,39 @@ const FormControlLabel = styled(MuiFormControlLabel)`
 `;
 
 const FilterCheckbox = ({ name, label }: { name: TaskFilterType; label: React.ReactNode }) => {
-  const queryClient = useQueryClient();
-  const { onChangePage } = useTasksTable();
+  const {
+    onChangePage,
+    showAllAssignees,
+    setShowAllAssignees,
+    showCancelled,
+    setShowCancelled,
+    showCompleted,
+    setShowCompleted,
+  } = useTasksTable();
+
+  const toggleGetter = {
+    all_assignees_tasks: showAllAssignees,
+    show_completed_tasks: showCompleted,
+    show_cancelled_tasks: showCancelled,
+  } as const;
+  const toggleSetter = {
+    all_assignees_tasks: setShowAllAssignees,
+    show_completed_tasks: setShowCompleted,
+    show_cancelled_tasks: setShowCancelled,
+  } as const;
 
   const onChange: MuiCheckboxProps['onChange'] = event => {
     const { name: taskFilterName, checked: value } = event.target;
-    setTaskFilterSetting(taskFilterName as TaskFilterType, value);
+    toggleSetter[taskFilterName as TaskFilterType](value);
     // reset the page to 0 when the filter changes
     onChangePage(0);
-    // Clear the cache so that the task data is re-fetched
-    queryClient.invalidateQueries(['tasks']);
   };
 
   return (
     <FormControlLabel
       control={
         <MuiCheckbox
-          checked={getTaskFilterSetting(name)}
+          checked={toggleGetter[name]}
           onChange={onChange}
           name={name}
           color="primary"
@@ -77,12 +87,10 @@ export const FilterToolbar = () => {
   useResetTasksTableFiltersOnUnmount();
 
   return (
-    <Container>
-      <FormGroup>
-        <FilterCheckbox name="all_assignees_tasks" label="Show all assignees" />
-        <FilterCheckbox name="show_completed_tasks" label="Show completed tasks" />
-        <FilterCheckbox name="show_cancelled_tasks" label="Show cancelled tasks" />
-      </FormGroup>
-    </Container>
+    <FormGroup>
+      <FilterCheckbox name="all_assignees_tasks" label="Show all assignees" />
+      <FilterCheckbox name="show_completed_tasks" label="Show completed tasks" />
+      <FilterCheckbox name="show_cancelled_tasks" label="Show cancelled tasks" />
+    </FormGroup>
   );
 };

@@ -1,26 +1,40 @@
 import { useEffect, useState } from 'react';
-import { getTaskFilterSetting, setTaskFilterSetting } from '../../../utils';
+import { useTasksTable } from './useTasksTable';
 
-/** Use this effectful hook when these filters aren’t visible or configurable in the GUI. */
+/**
+ * Use this effectful hook when these filters aren’t visible or configurable in the GUI. This hook
+ * prevents the scenario where the toggles’ effect are applied (with state stored in search params)
+ * whilst the toggles aren’t mounted (e.g. due to a change to the viewport’s size class).
+ */
 export function useDisableDesktopTaskFiltersWhileMounted() {
-  // Get current settings, to be restored upon unmount
-  const [allAssignees] = useState(getTaskFilterSetting('all_assignees_tasks'));
-  const [showCancelled] = useState(getTaskFilterSetting('show_cancelled_tasks'));
-  const [showCompleted] = useState(getTaskFilterSetting('show_completed_tasks'));
+  const {
+    showAllAssignees,
+    setShowAllAssignees,
+    showCancelled,
+    setShowCancelled,
+    showCompleted,
+    setShowCompleted,
+  } = useTasksTable();
 
-  // When calling component mounts, set sensible defaults
+  // Get current settings, to be restored upon unmount
+  const [allAssignees] = useState(showAllAssignees);
+  const [cancelled] = useState(showCancelled);
+  const [completed] = useState(showCompleted);
+
+  // When calling component mounts, set sensible defaults. (Exhaustively declaring dependencies
+  // optional here because Effect is known to be idempotent.)
   useEffect(() => {
-    setTaskFilterSetting('all_assignees_tasks', false);
-    setTaskFilterSetting('show_cancelled_tasks', true);
-    setTaskFilterSetting('show_completed_tasks', true);
-  }, []);
+    setShowAllAssignees(false);
+    setShowCancelled(true);
+    setShowCompleted(true);
+  }, [setShowAllAssignees, setShowCancelled, setShowCompleted]);
 
   useEffect(() => {
     return () => {
       // Restore previous settings
-      setTaskFilterSetting('all_assignees_tasks', allAssignees);
-      setTaskFilterSetting('show_cancelled_tasks', showCancelled);
-      setTaskFilterSetting('show_completed_tasks', showCompleted);
+      setShowAllAssignees(allAssignees);
+      setShowCancelled(cancelled);
+      setShowCompleted(completed);
     };
-  }, [allAssignees, showCancelled, showCompleted]);
+  }, [allAssignees, cancelled, completed, setShowAllAssignees, setShowCancelled, setShowCompleted]);
 }

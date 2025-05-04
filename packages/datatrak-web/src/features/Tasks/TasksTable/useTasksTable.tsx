@@ -54,16 +54,58 @@ export function useTasksTable() {
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const page = Number.parseInt(searchParams.get('page') || '0', 10);
-  const pageSize = Number.parseInt(searchParams.get('pageSize') || '20', 10);
+  const setBooleanSearchParam = useCallback(
+    (param: string, value: boolean) => {
+      if (value) searchParams.set(param, '1');
+      else searchParams.delete(param);
+      setSearchParams(searchParams, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
 
-  const urlSortBy = searchParams.get('sortBy');
-  const sortBy: UseTasksQueryParams['sortBy'] = urlSortBy ? JSON.parse(urlSortBy) : [];
+  const _page = Number.parseInt(searchParams.get('page') || '0', 10);
+  const page = Number.isNaN(_page) ? _page : 0;
 
-  const urlFilters = searchParams.get('filters');
-  const filters = useMemo(() => (urlFilters ? JSON.parse(urlFilters) : []), [urlFilters]);
+  const _pageSize = Number.parseInt(searchParams.get('pageSize') || '20', 10);
+  const pageSize = Number.isNaN(_pageSize) ? _pageSize : 20;
 
-  const { data, isLoading } = useTasks({ filters, page, pageSize, projectId, sortBy });
+  const _sortBy = searchParams.get('sortBy');
+  const sorting: UseTasksQueryParams['sortBy'] = useMemo(
+    () => (_sortBy ? JSON.parse(_sortBy) : []),
+    [_sortBy],
+  );
+
+  const showAllAssignees = searchParams.get('allAssignees') === '1';
+  const setShowAllAssignees = useCallback(
+    (value: boolean) => setBooleanSearchParam('allAssignees', value),
+    [setBooleanSearchParam],
+  );
+
+  const showCancelled = searchParams.get('cancelled') === '1';
+  const setShowCancelled = useCallback(
+    (value: boolean) => setBooleanSearchParam('cancelled', value),
+    [setBooleanSearchParam],
+  );
+
+  const showCompleted = searchParams.get('completed') === '1';
+  const setShowCompleted = useCallback(
+    (value: boolean) => setBooleanSearchParam('completed', value),
+    [setBooleanSearchParam],
+  );
+
+  const _filters = searchParams.get('filters');
+  const filters = useMemo(() => (_filters ? JSON.parse(_filters) : []), [_filters]);
+
+  const { data, isFetching, isLoading } = useTasks({
+    allAssignees: showAllAssignees,
+    filters,
+    includeCancelled: showCancelled,
+    includeCompleted: showCompleted,
+    page,
+    pageSize,
+    projectId,
+    sortBy: sorting,
+  });
 
   const updateSorting = useCallback(
     (newSorting: UseTasksQueryParams['sortBy']) => {
@@ -117,7 +159,7 @@ export function useTasksTable() {
 
   const location = useLocation();
 
-  const COLUMNS = [
+  const columns = [
     {
       // only the survey name can be resized
       Header: 'Survey',
@@ -231,18 +273,26 @@ export function useTasksTable() {
   });
 
   return {
-    columns: COLUMNS,
+    columns,
     data: tasks,
-    totalRecords: count,
-    pageIndex: page,
-    pageSize,
-    sorting: sortBy,
-    updateSorting,
+    isFetching,
+    isLoading,
     numberOfPages,
-    filters,
-    updateFilters,
     onChangePage,
     onChangePageSize,
-    isLoading: isLoading,
+    pageIndex: page,
+    pageSize,
+    totalRecords: count,
+
+    sorting,
+    updateSorting,
+    filters,
+    updateFilters,
+    showAllAssignees,
+    setShowAllAssignees,
+    showCancelled,
+    setShowCancelled,
+    showCompleted,
+    setShowCompleted,
   };
 }
