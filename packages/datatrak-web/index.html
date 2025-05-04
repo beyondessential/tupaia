@@ -12,6 +12,17 @@
     />
     <meta name="theme-color" content="#ffffff" />
     <title>Tupaia DataTrak</title>
+
+    <% if ( process.env.REACT_APP_DEPLOYMENT_NAME === 'production') { %>
+    <link rel="preconnect" href="https://datatrak-web-api.tupaia.org" crossorigin />
+    <% } else if (process.env.NODE_ENV === 'production') { %>
+    <link
+      rel="preconnect"
+      href="https://%REACT_APP_DEPLOYMENT_NAME%-datatrak-web-api.tupaia.org"
+      crossorigin
+    />
+    <% } %>
+
     <!-- Open Graph for shared links -->
     <meta property="og:title" content="Tupaia DataTrak" />
     <meta property="og:type" content="website" />
@@ -40,7 +51,6 @@
         dataLayer.push(arguments);
       }
       gtag('js', new Date());
-
       gtag('config', 'G-P5KF6SLGKR');
     </script>
     <!-- End Google Analytics -->
@@ -87,13 +97,13 @@
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
-        crossorigin="anonymous"
+        crossorigin
       />
       <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin=""
+        crossorigin
       />
     </noscript>
   </head>

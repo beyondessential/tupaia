@@ -55,7 +55,7 @@ def create_server_instance_from_image(
     setup_dns=False,
 ):
     tupaia_server_iam_role_arn = 'arn:aws:iam::843218180240:instance-profile/TupaiaServerRole'
-    tupaia_subdomains = ['','admin','admin-api','api','config','psss','report-api','psss-api','entity-api','lesmis-api','lesmis', 'meditrak-api', 'data-table-api', 'tupaia-web-api', 'tupaia-web', 'datatrak-web-api', 'datatrak']
+    tupaia_subdomains = ['','admin','admin-api','api','config','psss','report-api','psss-api','entity-api','lesmis-api','lesmis', 'meditrak-api', 'data-table-api', 'sync-api', 'tupaia-web-api', 'tupaia-web', 'datatrak-web-api', 'datatrak']
 
     return create_instance_from_image(
         deployment_name,

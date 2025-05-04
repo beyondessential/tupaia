@@ -126,6 +126,5 @@ export async function createApp() {
   await builder.initialiseApiClient(API_CLIENT_PERMISSIONS);
 
   const app = builder.build();
-
   return app;
 }

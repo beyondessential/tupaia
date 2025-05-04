@@ -11,7 +11,7 @@ export const useSurveyResponse = (
     () => get(`surveyResponse/${surveyResponseId}`),
     {
       ...useQueryOptions,
-      enabled: !!surveyResponseId && useQueryOptions?.enabled,
+      enabled: !!surveyResponseId && (useQueryOptions?.enabled ?? true),
     },
   );
 };
