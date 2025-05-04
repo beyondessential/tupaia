@@ -1,6 +1,5 @@
 'use strict';
 
-import { TupaiaDatabase } from '@tupaia/database';
 import { arrayToDbString } from '../utilities/migration';
 
 var dbm;
@@ -19,29 +18,24 @@ exports.setup = function (options, seedLink) {
 
 const newTypes = ['data_group_metadata', 'data_element_metadata'];
 
-exports.up = async function () {
-  const db = new TupaiaDatabase();
-
+exports.up = async function (db) {
   const query = newTypes
     .map(t => `ALTER TYPE public.data_table_type ADD VALUE IF NOT EXISTS '${t}'`)
     .join(';');
-  await db.executeSql(query);
-  return db.closeConnections();
+  await db.runSql(query);
 };
 
-exports.down = async function () {
-  const db = new TupaiaDatabase();
-
-  const dataTableTypesResults = await db.executeSql(
+exports.down = async function (db) {
+  const { rows: dataTableTypesResults } = await db.runSql(
     `SELECT unnest(enum_range(NULL::data_table_type));`,
   );
   const existingDataTableTypes = dataTableTypesResults.flatMap(r => Object.values(r));
 
-  const dataTableRecords = await db.executeSql(
+  const { rows: dataTableRecords } = await db.runSql(
     `SELECT * FROM data_table WHERE type NOT IN (${arrayToDbString(newTypes)});`,
   );
 
-  await db.executeSql(
+  await db.runSql(
     `
       ALTER TYPE data_table_type RENAME TO data_table_type_temp$;
       CREATE TYPE data_table_type AS ENUM(${arrayToDbString(
@@ -54,7 +48,7 @@ exports.down = async function () {
   );
 
   for (const dataTableRecord of dataTableRecords) {
-    await db.executeSql(
+    await db.runSql(
       `
       UPDATE data_table 
       SET type = '${dataTableRecord.type}'
@@ -63,13 +57,11 @@ exports.down = async function () {
     );
   }
 
-  await db.executeSql(
+  await db.runSql(
     `
       ALTER TABLE data_table ALTER COLUMN type SET NOT NULL;
     `,
   );
-
-  return db.closeConnections();
 };
 
 exports._meta = {
