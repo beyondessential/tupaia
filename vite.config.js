@@ -14,6 +14,7 @@ export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
+  // Work around for process.env not being loaded correctly in knex library
   const clientEnv = Object.fromEntries(
     Object.entries(env).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
   );
