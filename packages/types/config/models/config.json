@@ -12,9 +12,7 @@
     "public.log$_survey",
     "public.log$_survey_response",
     "public.migrations",
-    "public.spatial_ref_sys",
-    "public.sync_lookup",
-    "public.sync_device_tick"
+    "public.spatial_ref_sys"
   ],
   "schemas": ["public", "log"],
   "enumNameCasing": "pascal",
