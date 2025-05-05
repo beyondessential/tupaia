@@ -181,7 +181,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     reset,
   } = formContext;
 
-  useEffect(() => console.log(getValues()));
 
   const { mutate: editTask, isLoading: isSaving } = useEditTask(task.id);
 
