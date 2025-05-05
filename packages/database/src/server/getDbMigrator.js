@@ -26,7 +26,7 @@ const resetMigrationFolder = () => {
 /**
  * Removes all migrations that are not server migrations
  */
-export const removeNonServerMigrations = async () => {
+export const removeNonServerMigrations = () => {
   const migrationFiles = fs
     .readdirSync(SERVER_MIGRATION_DIR)
     .filter(file => path.extname(file) === '.js');
@@ -106,7 +106,7 @@ export const getDbMigrator = (forCli = false) => {
     // ie: excluding migrations that have _meta.targets.includes('browser')
     // This hook is called BEFORE the migrations are run,
     // so we temporarily remove non-server migrations before they are run
-    instance.registerAPIHook(async () => {
+    instance.registerAPIHook(() => {
       removeDirectoryIfExists(SERVER_MIGRATION_DIR);
       createDirectory(SERVER_MIGRATION_DIR);
       copyDirectory(MIGRATIONS_DIR, SERVER_MIGRATION_DIR);
