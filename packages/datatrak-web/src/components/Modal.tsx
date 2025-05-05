@@ -9,7 +9,7 @@ const Wrapper = styled(Paper)`
   max-inline-size: 100%;
 `;
 
-const CloseButton = styled(IconButton)`
+export const ModalCloseButton = styled(IconButton)`
   color: ${({ theme }) => theme.palette.text.primary};
   position: absolute;
   inset-block-start: 0.1rem;
@@ -28,9 +28,9 @@ interface ModalProps extends DialogProps {
 export const Modal = ({ open, onClose, children, ...props }: ModalProps) => {
   return (
     <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal {...props}>
-      <CloseButton onClick={onClose}>
+      <ModalCloseButton onClick={onClose}>
         <CloseIcon color="inherit" style={{ fontSize: '2rem' }} />
-      </CloseButton>
+      </ModalCloseButton>
       <ModalBody>{children}</ModalBody>
     </Dialog>
   );
