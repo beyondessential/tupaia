@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 /**
  * Could alternatively be named `ScreenReaderOnly`.
- * @see https://www.a11yproject.com/posts/how-to-hide-content/
+ * @see https://www.a11yproject.com/posts/how-to-hide-content
  */
 export const VisuallyHidden = styled.span`
   &:not(:active, :focus-visible, :focus-within) {
