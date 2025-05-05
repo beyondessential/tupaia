@@ -9,9 +9,9 @@ import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
 
 const MIGRATIONS_DIR = path.resolve(process.cwd(), 'src/core/migrations');
-const MIGRATIONS_BACKUP_DIR = path.resolve(
+const SERVER_MIGRATION_DIR = path.resolve(
   process.cwd(),
-  `src/core/server-migrations-backup-${new Date().toISOString()}`,
+  `src/core/server-migrations-${new Date().toISOString()}`,
 );
 
 const exitWithError = error => {
@@ -20,7 +20,7 @@ const exitWithError = error => {
 };
 
 const resetMigrationFolder = () => {
-  removeDirectoryIfExists(MIGRATIONS_BACKUP_DIR);
+  removeDirectoryIfExists(SERVER_MIGRATION_DIR);
 };
 
 /**
@@ -28,12 +28,12 @@ const resetMigrationFolder = () => {
  */
 export const removeNonServerMigrations = async () => {
   const migrationFiles = fs
-    .readdirSync(MIGRATIONS_BACKUP_DIR)
+    .readdirSync(SERVER_MIGRATION_DIR)
     .filter(file => path.extname(file) === '.js');
 
   // Read each file's contents
   for (const file of migrationFiles) {
-    const filePath = path.join(MIGRATIONS_BACKUP_DIR, file);
+    const filePath = path.join(SERVER_MIGRATION_DIR, file);
     const migrationModule = require(filePath);
     // Some migrations don't have a _meta object
     const targets = migrationModule._meta?.targets || [];
@@ -93,7 +93,7 @@ export const getDbMigrator = (forCli = false) => {
         },
       },
       cmdOptions: {
-        'migrations-dir': MIGRATIONS_BACKUP_DIR,
+        'migrations-dir': SERVER_MIGRATION_DIR,
       },
     },
     forCli ? cliCallback : appCallback,
@@ -107,9 +107,9 @@ export const getDbMigrator = (forCli = false) => {
     // This hook is called BEFORE the migrations are run,
     // so we temporarily remove non-server migrations before they are run
     instance.registerAPIHook(async () => {
-      removeDirectoryIfExists(MIGRATIONS_BACKUP_DIR);
-      createDirectory(MIGRATIONS_BACKUP_DIR);
-      copyDirectory(MIGRATIONS_DIR, MIGRATIONS_BACKUP_DIR);
+      removeDirectoryIfExists(SERVER_MIGRATION_DIR);
+      createDirectory(SERVER_MIGRATION_DIR);
+      copyDirectory(MIGRATIONS_DIR, SERVER_MIGRATION_DIR);
       removeNonServerMigrations();
     });
   }
