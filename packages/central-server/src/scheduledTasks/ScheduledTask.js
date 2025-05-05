@@ -83,9 +83,7 @@ export class ScheduledTask {
   init() {
     if (!this.job) {
       winston.info(`ScheduledTask: ${this.name}: Scheduled for ${this.schedule}`);
-      this.job = scheduleJob(this.schedule, async () => {
-        await this.runTask();
-      });
+      this.job = scheduleJob(this.schedule, this.runTask);
     }
   }
 }
