@@ -407,6 +407,10 @@ export class BaseDatabase {
       batchSize,
     );
   }
+
+  wrapInTransaction(wrappedFunction) {
+    throw new Error('wrapInTransaction should be implemented by the child class');
+  }
 }
 
 /**
