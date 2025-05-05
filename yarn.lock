@@ -10185,6 +10185,7 @@ __metadata:
     "@electric-sql/pglite": ^0.2.17
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
+    "@tupaia/expression-parser": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
