@@ -2,9 +2,10 @@ import { Paper, Typography } from '@material-ui/core';
 import { parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { Frequency } from 'rrule';
 import styled from 'styled-components';
 
-import { Task, TaskStatus } from '@tupaia/types';
+import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
 import { LoadingContainer, VisuallyHidden } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
@@ -15,6 +16,7 @@ import {
   Tile,
   TileSkeleton,
 } from '../../../components';
+import { TileRoot } from '../../../components/Tile';
 import { SingleTaskResponse } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { DueDatePicker } from '../DueDatePicker';
@@ -22,7 +24,6 @@ import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { TaskForm } from '../TaskForm';
 import { TaskComments } from './TaskComments';
 import { TaskMetadata } from './TaskMetadata';
-import { TileRoot } from '../../../components/Tile';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -149,9 +150,10 @@ const InitialRequestEmptyState = styled(Typography).attrs({ children: 'None' })`
 `;
 
 interface UpdateTaskFormFields {
-  due_date: unknown;
-  repeat_frequency: unknown;
-  assignee: unknown;
+  /** ISO 8601 format */
+  due_date: string;
+  repeat_frequency: Frequency;
+  assignee: DatatrakWebTasksRequest.TaskAssignee;
 }
 
 const generateDefaultValues = (task: SingleTaskResponse) => ({
@@ -170,9 +172,12 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const {
     control,
     watch,
+    getValues,
     formState: { dirtyFields },
     reset,
   } = formContext;
+
+  useEffect(() => console.log(getValues()));
 
   const { mutate: editTask, isLoading: isSaving } = useEditTask(task.id);
 
