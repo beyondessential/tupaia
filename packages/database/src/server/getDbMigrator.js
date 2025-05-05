@@ -97,17 +97,17 @@ export const getDbMigrator = (forCli = false) => {
     forCli ? cliCallback : appCallback,
   );
 
-  // 'core/migrations' folder is shared between server and browser
-  // We need to exclude non-server migrations before they are run
-  // ie: excluding migrations that have _meta.targets.includes('browser')
-  // This hook is called BEFORE the migrations are run,
-  // so we temporarily remove non-server migrations before they are run
-  instance.registerAPIHook(async () => {
-    removeDirectoryIfExists(MIGRATIONS_BACKUP_DIR);
-    createDirectory(MIGRATIONS_BACKUP_DIR);
-    copyDirectory(MIGRATIONS_DIR, MIGRATIONS_BACKUP_DIR);
-    removeNonServerMigrations();
-  });
+  // // 'core/migrations' folder is shared between server and browser
+  // // We need to exclude non-server migrations before they are run
+  // // ie: excluding migrations that have _meta.targets.includes('browser')
+  // // This hook is called BEFORE the migrations are run,
+  // // so we temporarily remove non-server migrations before they are run
+  // instance.registerAPIHook(async () => {
+  //   removeDirectoryIfExists(MIGRATIONS_BACKUP_DIR);
+  //   createDirectory(MIGRATIONS_BACKUP_DIR);
+  //   copyDirectory(MIGRATIONS_DIR, MIGRATIONS_BACKUP_DIR);
+  //   removeNonServerMigrations();
+  // });
 
   return instance;
 };
