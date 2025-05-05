@@ -48,12 +48,7 @@ const Section = styled.section`
   flex-direction: column;
 `;
 
-const EditSection = styled(Section)`
-  grid-area: --edit;
-`;
-
 const MainSection = styled(Section)`
-  grid-area: --comment;
   ${({ theme }) => theme.breakpoints.up('md')} {
     border-inline: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     margin-block: 0;
@@ -63,7 +58,6 @@ const MainSection = styled(Section)`
 `;
 
 const InitialRequestSection = styled(Section)`
-  grid-area: --initial-request;
   ${TileRoot} {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     inline-size: 100%;
@@ -214,7 +208,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     <Wrapper>
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
-          <EditSection>
+          <Section style={{ gridArea: '--edit' }}>
             <VisuallyHidden as="h2">Key details</VisuallyHidden>
             <Form formContext={formContext} onSubmit={onSubmit}>
               <TaskMetadata task={task} />
@@ -272,12 +266,12 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                 </ButtonWrapper>
               )}
             </Form>
-          </EditSection>
-          <MainSection>
+          </Section>
+          <MainSection style={{ gridArea: '--comment' }}>
             <VisuallyHidden as="h2">Comments</VisuallyHidden>
             <TaskComments comments={task.comments} />
           </MainSection>
-          <InitialRequestSection>
+          <InitialRequestSection style={{ gridArea: '--initial-request' }}>
             <SectionHeading>Initial request</SectionHeading>
             {task.initialRequestId ? (
               <InitialRequest initialRequestId={task.initialRequestId} />
