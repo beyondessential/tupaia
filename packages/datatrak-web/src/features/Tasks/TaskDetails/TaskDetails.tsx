@@ -28,12 +28,12 @@ import { TaskMetadata } from './TaskMetadata';
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
-  column-gap: 1.25rem;
   display: grid;
+  gap: 1.25rem;
   grid-template-areas: '--initial-request' '--edit' '--comment';
   padding-block: 1.2rem;
   padding: 1rem;
-  row-gap: 2.5rem;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     grid-template-areas: '--edit --comment --initial-request';
@@ -46,9 +46,14 @@ const Container = styled(Paper).attrs({
 const Section = styled.section`
   display: flex;
   flex-direction: column;
+
+  ${props => props.theme.breakpoints.down('sm')} {
+    border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+    padding-block-start: 1.25rem;
+  }
 `;
 
-const MainSection = styled(Section)`
+const CommentSection = styled(Section)`
   ${({ theme }) => theme.breakpoints.up('md')} {
     border-inline: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     margin-block: 0;
@@ -61,6 +66,11 @@ const InitialRequestSection = styled(Section)`
   ${TileRoot} {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     inline-size: 100%;
+  }
+
+  ${props => props.theme.breakpoints.down('sm')} {
+    border-block-start: unset;
+    padding-block-start: unset;
   }
 `;
 
@@ -267,10 +277,10 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
               )}
             </Form>
           </Section>
-          <MainSection style={{ gridArea: '--comment' }}>
+          <CommentSection style={{ gridArea: '--comment' }}>
             <VisuallyHidden as="h2">Comments</VisuallyHidden>
             <TaskComments comments={task.comments} />
-          </MainSection>
+          </CommentSection>
           <InitialRequestSection style={{ gridArea: '--initial-request' }}>
             <SectionHeading>Initial request</SectionHeading>
             {task.initialRequestId ? (
