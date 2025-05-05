@@ -1,4 +1,4 @@
-import { NextFunction, Request } from 'express';
+import { NextFunction } from 'express';
 import { TasksRoute } from '../routes';
 
 const mockFunc = jest.fn(() => []);
@@ -49,11 +49,7 @@ describe('TaskRoute', () => {
     const testData = [
       [
         'Default filter settings',
-        {
-          headers: {
-            cookie: 'show_completed_tasks=true;show_cancelled_tasks=true;all_assignees_tasks=true',
-          },
-        },
+        {},
         {
           filter: {},
         },
@@ -93,10 +89,15 @@ describe('TaskRoute', () => {
         },
       ],
       [
-        'All completed tasks setting false',
+        'Exclude completed tasks',
         {
-          headers: {
-            cookie: 'show_completed_tasks=false;show_cancelled_tasks=true;all_assignees_tasks=true',
+          query: {
+            filters: [
+              {
+                id: 'task_status',
+                value: { comparator: 'NOT IN', comparisonValue: ['completed'] },
+              },
+            ],
           },
         },
         {
@@ -106,24 +107,26 @@ describe('TaskRoute', () => {
         },
       ],
       [
-        'All assignee filter setting false',
+        'with specified assignee',
         {
-          headers: {
-            cookie: 'show_completed_tasks=true;show_cancelled_tasks=true;all_assignees_tasks=false',
+          query: {
+            filters: [
+              {
+                id: 'assignee_id',
+                value: 'foobar_baz',
+              },
+            ],
           },
         },
         {
           filter: {
-            assignee_id: 'test',
+            assignee_id: 'foobar_baz',
           },
         },
       ],
       [
         'All completed tasks setting false and completed status filter',
         {
-          headers: {
-            cookie: 'show_completed_tasks=false;show_cancelled_tasks=true;all_assignees_tasks=true',
-          },
           query: {
             filters: [
               {
@@ -140,32 +143,8 @@ describe('TaskRoute', () => {
         },
       ],
       [
-        'All completed tasks setting false and to_do status filter',
-        {
-          headers: {
-            cookie: 'show_completed_tasks=false;show_cancelled_tasks=true;all_assignees_tasks=true',
-          },
-          query: {
-            filters: [
-              {
-                id: 'task_status',
-                value: 'to_do',
-              },
-            ],
-          },
-        },
-        {
-          filter: {
-            task_status: 'to_do',
-          },
-        },
-      ],
-      [
         'Due date filter is between start and end of day',
         {
-          headers: {
-            cookie: 'show_completed_tasks=true;show_cancelled_tasks=true;all_assignees_tasks=true',
-          },
           query: {
             filters: [
               {

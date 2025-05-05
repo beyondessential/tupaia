@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
-import { MobileTaskFilters } from '../src/features/Tasks/TasksTable/MobileTaskFilters';
+import { MobileTaskFilters } from './MobileTaskFilters';
 
 const Container = styled.div`
   position: relative;
@@ -29,5 +29,5 @@ export default meta;
 type Story = StoryObj<typeof MobileTaskFilters>;
 
 export const Simple: Story = {
-  render: () => <MobileTaskFilters filters={undefined} onChangeFilters={undefined} />,
+  render: () => <MobileTaskFilters filters={[]} onChangeFilters={() => {}} />,
 };

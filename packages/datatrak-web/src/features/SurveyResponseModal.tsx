@@ -1,4 +1,5 @@
 import { Dialog, Typography, useMediaQuery, useTheme } from '@material-ui/core';
+import { parseISO } from 'date-fns';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
@@ -10,8 +11,8 @@ import { ModalContentProvider, ModalFooter, SpinningLoader } from '@tupaia/ui-co
 import { SurveyContext } from '.';
 import { useExportSurveyResponse } from '../api';
 import { useSurveyResponse } from '../api/queries';
-import { Button, DownloadIcon, SurveyTickIcon } from '../components';
-import { displayDate, useIsMobile } from '../utils';
+import { Button, DateTimeDisplay, DownloadIcon, SurveyTickIcon } from '../components';
+import { useIsMobile } from '../utils';
 import { SurveyReviewSection, useSurveyResponseWithForm } from './Survey';
 
 const Header = styled.header`
@@ -75,10 +76,13 @@ const getSubHeadingText = surveyResponse => {
   if (!surveyResponse) {
     return null;
   }
-  const date = displayDate(surveyResponse.dataTime);
   const { entityName, entityParentName } = surveyResponse;
   const location = [entityName, entityParentName].filter(Boolean).join(' | ');
-  return `${location} ${date}`;
+  return (
+    <>
+      {location} <DateTimeDisplay date={parseISO(surveyResponse.dataTime)} variant="date" />
+    </>
+  );
 };
 interface SurveyResponseModalContentProps {
   onClose: () => void;
@@ -159,7 +163,8 @@ export const SurveyResponseModal = () => {
   const onClose = () => {
     // Redirect to the previous page by removing all the query params
     urlSearchParams.delete('responseId');
-    setUrlSearchParams(urlSearchParams);
+
+    setUrlSearchParams(urlSearchParams, { replace: true });
   };
 
   if (!surveyResponseId) return null;

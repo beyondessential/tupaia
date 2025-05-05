@@ -4,7 +4,7 @@ import { UseQueryResult } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { useDebounce } from '@tupaia/ui-components';
+import { FilterableTableProps, useDebounce } from '@tupaia/ui-components';
 
 import {
   CurrentUserContextType,
@@ -15,7 +15,9 @@ import {
 } from '../../../api';
 import { Button, FiltersIcon } from '../../../components';
 import { Modal, ModalBody } from '../../../components/Modal';
-import { MobileAutocomplete } from './MobileAutocomplete';
+import { MobileAutocomplete, MobileAutocompleteProps } from './MobileAutocomplete';
+import { useDisableDesktopTaskFiltersWhileMounted } from './useDisableDesktopTaskFiltersWhileMounted';
+import { useResetTasksTableFiltersOnUnmount } from './useResetTasksTableFiltersOnUnmount';
 
 const FilterButton = styled(Fab).attrs({ color: 'primary' })`
   bottom: max(env(safe-area-inset-bottom, 0), 1rem);
@@ -204,7 +206,7 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
     label: item.name,
   }));
 
-  const handleChange = (event, newValue) => {
+  const handleChange: MobileAutocompleteProps['onChange'] = (event, newValue) => {
     onChange(event, { id: filterKey, value: newValue.value });
   };
 
@@ -220,11 +222,31 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
   );
 };
 
+const getShowResultsButtonLabel = (resultCount: number | undefined) =>
+  resultCount === undefined ? (
+    'Show results'
+  ) : (
+    <>
+      Show {resultCount}&nbsp;{resultCount === 1 ? 'result' : 'results'}
+    </>
+  );
+
+interface MobileTaskFiltersProps extends Pick<FilterableTableProps, 'filters' | 'onChangeFilters'> {
+  resultCount?: number;
+}
+
 type MobileTaskFilterTab = 0 | 1 | 2;
 
-export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
+export const MobileTaskFilters = ({
+  filters = [],
+  onChangeFilters,
+  resultCount,
+}: MobileTaskFiltersProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabValue, setTabValue] = useState<MobileTaskFilterTab>(0);
+
+  useDisableDesktopTaskFiltersWhileMounted();
+  useResetTasksTableFiltersOnUnmount();
 
   const getHasFilter = key => filters.some(filter => filter.id === key);
   const tabs = [
@@ -299,7 +321,9 @@ export const MobileTaskFilters = ({ filters, onChangeFilters }) => {
           />
         )}
         <ButtonGroup>
-          <Button onClick={() => void setIsOpen(false)}>Apply</Button>
+          <Button onClick={() => void setIsOpen(false)}>
+            {getShowResultsButtonLabel(resultCount)}
+          </Button>
           <Button variant="text" color="default" onClick={clearFilters}>
             Clear filters
           </Button>

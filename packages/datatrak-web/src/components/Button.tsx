@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Link as RouterLink, To } from 'react-router-dom';
+import { LinkProps, Link as RouterLink } from 'react-router-dom';
 import { Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import styled, { css } from 'styled-components';
 
@@ -22,8 +22,9 @@ export const TooltipButtonWrapper = styled.span`
   vertical-align: baseline;
 `;
 
-interface ButtonProps extends React.ComponentPropsWithoutRef<typeof StyledButton> {
-  to?: To;
+export interface ButtonProps
+  extends React.ComponentPropsWithoutRef<typeof StyledButton>,
+    Partial<Omit<LinkProps, 'onClick'>> {
   tooltip?: ReactNode;
   tooltipDelay?: number;
 }
@@ -45,13 +46,13 @@ const ButtonWrapper = ({
     </Tooltip>
   );
 };
-export const Button = ({ tooltip, to, tooltipDelay = 1000, ...props }: ButtonProps) => {
+
+export const Button = ({ tooltip, tooltipDelay = 1000, ...props }: ButtonProps) => {
   return (
     <ButtonWrapper tooltip={tooltip} tooltipDelay={tooltipDelay}>
       <StyledButton
         {...props}
-        component={to ? RouterLink : undefined}
-        to={to}
+        component={props.to ? RouterLink : undefined}
         $enabledDisabledHoverEvents={!!tooltip}
       />
     </ButtonWrapper>

@@ -2,7 +2,7 @@ import { Paper, Typography } from '@material-ui/core';
 import { parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import styled, { CSSObject } from 'styled-components';
+import styled from 'styled-components';
 
 import { Task, TaskStatus } from '@tupaia/types';
 import { LoadingContainer, VisuallyHidden } from '@tupaia/ui-components';
@@ -61,20 +61,11 @@ const MainSection = styled(Section)`
   }
 `;
 
-/**
- * @privateRemarks Awkward type chain here is to “undo” {@link TileRoot}’s cast where it’s defined.
- */
 const InitialRequestSection = styled(Section)`
   grid-area: --initial-request;
-  ${TileRoot as unknown as CSSObject} {
+  ${TileRoot} {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     inline-size: 100%;
-  }
-`;
-
-const ItemWrapper = styled.div`
-  &:not(:last-child) {
-    margin-block-end: 1.2rem;
   }
 `;
 
@@ -104,6 +95,7 @@ const ButtonWrapper = styled.div`
 const Form = styled(TaskForm)`
   display: flex;
   flex-direction: column;
+  gap: 1.2rem;
 `;
 
 const Wrapper = styled.div`
@@ -132,6 +124,7 @@ const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_
   return (
     <Tile
       heading={surveyName}
+      replace
       to={`?responseId=${id}`}
       tooltip={
         <>
@@ -161,14 +154,13 @@ interface UpdateTaskFormFields {
   assignee: unknown;
 }
 
+const generateDefaultValues = (task: SingleTaskResponse) => ({
+  due_date: task.taskDueDate ?? null,
+  repeat_frequency: task.repeatSchedule?.freq ?? null,
+  assignee: task.assignee?.id ? task.assignee : null,
+});
+
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
-  const generateDefaultValues = (task: SingleTaskResponse) => {
-    return {
-      due_date: task.taskDueDate ?? null,
-      repeat_frequency: task.repeatSchedule?.freq ?? null,
-      assignee: task.assignee?.id ? task.assignee : null,
-    };
-  };
   const [defaultValues, setDefaultValues] = useState(generateDefaultValues(task));
 
   const formContext = useForm<UpdateTaskFormFields>({
@@ -220,58 +212,50 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
           <EditSection>
             <VisuallyHidden as="h2">Key details</VisuallyHidden>
             <Form formContext={formContext} onSubmit={onSubmit}>
-              <ItemWrapper>
-                <TaskMetadata task={task} />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="due_date"
-                  control={control}
-                  render={({ value, onChange, ref }, { invalid }) => (
-                    <DueDatePicker
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      label="Due date"
-                      disablePast
-                      fullWidth
-                      required
-                      invalid={invalid}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="repeat_frequency"
-                  control={control}
-                  render={({ value, onChange }) => (
-                    <RepeatScheduleInput
-                      value={value}
-                      onChange={onChange}
-                      disabled={!canEditFields}
-                      dueDate={dueDate}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="assignee"
-                  control={control}
-                  render={({ value, onChange, ref }) => (
-                    <AssigneeInput
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      countryCode={task.entity.countryCode}
-                      surveyCode={task.survey.code}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
+              <TaskMetadata task={task} />
+              <Controller
+                name="due_date"
+                control={control}
+                render={({ value, onChange, ref }, { invalid }) => (
+                  <DueDatePicker
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    label="Due date"
+                    disablePast
+                    fullWidth
+                    required
+                    invalid={invalid}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
+              <Controller
+                name="repeat_frequency"
+                control={control}
+                render={({ value, onChange }) => (
+                  <RepeatScheduleInput
+                    value={value}
+                    onChange={onChange}
+                    disabled={!canEditFields}
+                    dueDate={dueDate}
+                  />
+                )}
+              />
+              <Controller
+                name="assignee"
+                control={control}
+                render={({ value, onChange, ref }) => (
+                  <AssigneeInput
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    countryCode={task.entity.countryCode}
+                    surveyCode={task.survey.code}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
               {canEditFields && (
                 <ButtonWrapper>
                   <ClearButton disabled={!isDirty} onClick={onClearEdit}>
