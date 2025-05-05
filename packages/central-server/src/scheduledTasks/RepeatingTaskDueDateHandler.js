@@ -21,7 +21,9 @@ export class RepeatingTaskDueDateHandler extends ScheduledTask {
       },
     );
 
-    winston.info(`Found ${repeatingTasks.length} repeating task(s)`);
+    winston.info(
+      `Found ${repeatingTasks.length} repeating ${repeatingTasks.length === 1 ? 'task' : 'tasks'}`,
+    );
 
     // update the due date for each repeating task to the next occurrence
     for (const repeatingTask of repeatingTasks) {

@@ -39,7 +39,7 @@ export class ScheduledTask {
 
   constructor(models, name, schedule) {
     if (!name) {
-      throw new Error(`ScheduledTask has no name`);
+      throw new Error('ScheduledTask has no name');
     }
 
     if (!schedule) {
@@ -58,7 +58,7 @@ export class ScheduledTask {
   }
 
   async runTask() {
-    this.start = Date.now();
+    this.start = performance.now();
 
     try {
       await this.models.wrapInTransaction(async transactingModels => {
@@ -66,13 +66,13 @@ export class ScheduledTask {
         // Ensures no other server instance can execute its change handler at the same time
         await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
         await this.run();
-        const durationMs = Date.now() - this.start;
-        winston.info(`ScheduledTask: ${this.name}: Succeeded in ${durationMs}`);
+        const durationMs = performance.now() - this.start;
+        winston.info(`ScheduledTask: ${this.name}: Succeeded in ${durationMs} ms`);
         return true;
       });
     } catch (e) {
-      const durationMs = Date.now() - this.start;
-      winston.error(`ScheduledTask: ${this.name}: Failed`, { durationMs });
+      const durationMs = performance.now() - this.start;
+      winston.error(`ScheduledTask: ${this.name}: Failed after ${durationMs} ms`);
       winston.error(e.stack);
       return false;
     } finally {
