@@ -102,8 +102,11 @@ export const TaskDetailsPage = () => {
   return (
     <>
       {isMobile && (
-        <StickyMobileHeader title="Tasks" onBack={onBack}>
-          Task details
+        <StickyMobileHeader onBack={onBack}>
+          <Typography variant="h1">Task details</Typography>
+          <Typography variant="body2" color="textSecondary">
+            {task?.survey?.name}
+          </Typography>
         </StickyMobileHeader>
       )}
       <TaskPageHeader title="Task details" backTo={ROUTES.TASKS}>
