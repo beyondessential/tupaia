@@ -62,7 +62,7 @@ export const AssignTaskModal = ({ task, Button }: AssignTaskModalProps) => {
       >
         <Container>
           <TaskSummary task={task} />
-          <TaskForm onSubmit={handleSubmit(editTask)}>
+          <TaskForm formContext={formContext} onSubmit={editTask}>
             <Controller
               name="assignee"
               control={control}

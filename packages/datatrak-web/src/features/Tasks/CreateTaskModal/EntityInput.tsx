@@ -62,7 +62,7 @@ export const EntityInput = ({
       disableSearch={!survey || !primaryEntityQuestionConfig}
       isLoading={isLoadingSurvey}
       showSearchInput
-      legend="Select entity"
+      legend="Entity"
       legendProps={{
         required: true,
         color: 'primary',

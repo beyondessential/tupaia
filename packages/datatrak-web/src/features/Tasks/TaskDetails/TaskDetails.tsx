@@ -4,12 +4,17 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
-import { TaskStatus } from '@tupaia/types';
+import { Task, TaskStatus } from '@tupaia/types';
 import { LoadingContainer } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
-import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
-import { DateTimeDisplay } from '../../../components';
+import {
+  Button as BaseButton,
+  DateTimeDisplay,
+  SurveyTickIcon,
+  Tile,
+  TileSkeleton,
+} from '../../../components';
 import { SingleTaskResponse } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { DueDatePicker } from '../DueDatePicker';
@@ -17,54 +22,49 @@ import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { TaskForm } from '../TaskForm';
 import { TaskComments } from './TaskComments';
 import { TaskMetadata } from './TaskMetadata';
+import { TileRoot } from '../../../components/Tile';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
-  padding: 1.5rem;
+  column-gap: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: min(2.5rem, 2%);
+  padding: 1rem;
+  row-gap: 0;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     padding: 2.5rem;
   }
 `;
 
-const MainColumn = styled.div`
+const MainColumn = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   flex: 1;
-  margin-block: 1.2rem;
-  border-color: ${({ theme }) => theme.palette.divider};
-  border-style: solid;
-  border-width: 1px 0;
   padding-block: 1.2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 50%;
+    border-inline: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     margin-block: 0;
-    padding-inline: 1.2rem;
     padding-block: 0;
-    border-width: 0 1px;
+    padding-inline: 1.25rem;
+    width: 50%;
   }
 `;
 
-const SideColumn = styled.div`
+const SideColumn = styled.section`
   display: flex;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
     width: 25%;
   }
-
-  a.MuiButton-root {
-    border: 1px solid ${({ theme }) => theme.palette.divider};
-  }
 `;
 
-const ItemWrapper = styled.div`
-  &:not(:last-child) {
-    margin-block-end: 1.2rem;
+const InitialRequestColumn = styled(SideColumn)`
+  ${TileRoot} {
+    border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+    inline-size: 100%;
   }
 `;
 
@@ -94,6 +94,7 @@ const ButtonWrapper = styled.div`
 const Form = styled(TaskForm)`
   display: flex;
   flex-direction: column;
+  gap: 1.2rem;
 `;
 
 const Wrapper = styled.div`
@@ -111,17 +112,20 @@ const SectionHeading = styled(Typography).attrs({
   margin-bottom: 0.25rem;
 `;
 
-const InitialRequest = ({ initialRequestId }) => {
-  const { data: surveyResponse, isLoading } = useSurveyResponse(initialRequestId, {
+const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_request_id'] }) => {
+  const { data: surveyResponse, isFetching } = useSurveyResponse(initialRequestId, {
     meta: { applyCustomErrorHandling: true },
   });
-  if (isLoading || !surveyResponse) {
-    return null;
-  }
+
+  if (isFetching) return <TileSkeleton aria-busy />;
+
+  if (!surveyResponse) return null;
+
   const { id, countryName, dataTime, surveyName, entityName } = surveyResponse;
   return (
     <Tile
       heading={surveyName}
+      replace
       to={`?responseId=${id}`}
       tooltip={
         <>
@@ -140,14 +144,13 @@ const InitialRequest = ({ initialRequestId }) => {
   );
 };
 
+const generateDefaultValues = (task: SingleTaskResponse) => ({
+  due_date: task.taskDueDate ?? null,
+  repeat_frequency: task.repeatSchedule?.freq ?? null,
+  assignee: task.assignee?.id ? task.assignee : null,
+});
+
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
-  const generateDefaultValues = (task: SingleTaskResponse) => {
-    return {
-      due_date: task.taskDueDate ?? null,
-      repeat_frequency: task.repeatSchedule?.freq ?? null,
-      assignee: task.assignee?.id ? task.assignee : null,
-    };
-  };
   const [defaultValues, setDefaultValues] = useState(generateDefaultValues(task));
 
   const formContext = useForm({
@@ -156,7 +159,6 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   });
   const {
     control,
-    handleSubmit,
     watch,
     formState: { dirtyFields },
     reset,
@@ -198,59 +200,51 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
           <SideColumn>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-              <ItemWrapper>
-                <TaskMetadata task={task} />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="due_date"
-                  control={control}
-                  render={({ value, onChange, ref }, { invalid }) => (
-                    <DueDatePicker
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      label="Due date"
-                      disablePast
-                      fullWidth
-                      required
-                      invalid={invalid}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="repeat_frequency"
-                  control={control}
-                  render={({ value, onChange }) => (
-                    <RepeatScheduleInput
-                      value={value}
-                      onChange={onChange}
-                      disabled={!canEditFields}
-                      dueDate={dueDate}
-                    />
-                  )}
-                />
-              </ItemWrapper>
-              <ItemWrapper>
-                <Controller
-                  name="assignee"
-                  control={control}
-                  render={({ value, onChange, ref }) => (
-                    <AssigneeInput
-                      value={value}
-                      onChange={onChange}
-                      inputRef={ref}
-                      countryCode={task.entity.countryCode}
-                      surveyCode={task.survey.code}
-                      disabled={!canEditFields}
-                    />
-                  )}
-                />
-              </ItemWrapper>
+            <Form formContext={formContext} onSubmit={onSubmit}>
+              <TaskMetadata task={task} />
+              <Controller
+                name="due_date"
+                control={control}
+                render={({ value, onChange, ref }, { invalid }) => (
+                  <DueDatePicker
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    label="Due date"
+                    disablePast
+                    fullWidth
+                    required
+                    invalid={invalid}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
+              <Controller
+                name="repeat_frequency"
+                control={control}
+                render={({ value, onChange }) => (
+                  <RepeatScheduleInput
+                    value={value}
+                    onChange={onChange}
+                    disabled={!canEditFields}
+                    dueDate={dueDate}
+                  />
+                )}
+              />
+              <Controller
+                name="assignee"
+                control={control}
+                render={({ value, onChange, ref }) => (
+                  <AssigneeInput
+                    value={value}
+                    onChange={onChange}
+                    inputRef={ref}
+                    countryCode={task.entity.countryCode}
+                    surveyCode={task.survey.code}
+                    disabled={!canEditFields}
+                  />
+                )}
+              />
               {canEditFields && (
                 <ButtonWrapper>
                   <ClearButton disabled={!isDirty} onClick={onClearEdit}>
@@ -266,10 +260,10 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
           <MainColumn>
             <TaskComments comments={task.comments} />
           </MainColumn>
-          <SideColumn>
-            <SectionHeading>Initial request </SectionHeading>
+          <InitialRequestColumn>
+            <SectionHeading>Initial request</SectionHeading>
             {task.initialRequestId && <InitialRequest initialRequestId={task.initialRequestId} />}
-          </SideColumn>
+          </InitialRequestColumn>
         </Container>
       </LoadingContainer>
     </Wrapper>

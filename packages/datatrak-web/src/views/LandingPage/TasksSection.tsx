@@ -54,44 +54,11 @@ const ViewMoreButton = styled(Button).attrs({ variant: 'text', color: 'default' 
   margin-block-end: 0.75rem;
   margin-inline: 0;
 
-  .MuiButton-label {
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    color: #4e3838;
-    font-size: 0.75rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    .MuiButton-label {
-      font-size: 0.875rem;
-    }
-  }
-
   &:hover {
     text-decoration: underline;
-    background-color: initial;
+    background-color: unset;
   }
 `;
-
-const TopViewMoreButton = styled(ViewMoreButton)`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
-`;
-
-const DesktopButton = Button;
-const MobileButton = styled(ViewMoreButton)`
-  float: right;
-`;
-
-const ViewMoreTasksButton = ({ numberOfPages }) => {
-  if (numberOfPages <= 1) return null;
-  const Button = useIsMobile() ? MobileButton : DesktopButton;
-  return (
-    <Button component={Link} to={ROUTES.TASKS}>
-      View more
-    </Button>
-  );
-};
 
 export const TasksSection = () => {
   const { id: userId, projectId } = useCurrentUserContext();
@@ -123,14 +90,7 @@ export const TasksSection = () => {
       return <NoTasksSection />;
     }
 
-    return (
-      <>
-        {tasks.map(task => (
-          <TaskTile key={task.id} task={task} />
-        ))}
-        <ViewMoreTasksButton numberOfPages={data.numberOfPages} />
-      </>
-    );
+    return tasks.map(task => <TaskTile key={task.id} task={task} />);
   };
 
   return (
@@ -138,9 +98,9 @@ export const TasksSection = () => {
       <FlexSpaceBetween as="header">
         <SectionHeading>My tasks</SectionHeading>
         {hasTasks && (
-          <TopViewMoreButton component={Link} to={ROUTES.TASKS}>
+          <ViewMoreButton component={Link} to={ROUTES.TASKS}>
             View more
-          </TopViewMoreButton>
+          </ViewMoreButton>
         )}
       </FlexSpaceBetween>
       <Paper $hasTasks={hasTasks}>{renderContents()}</Paper>

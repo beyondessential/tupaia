@@ -16,13 +16,9 @@ const meta: Meta<typeof SurveyQuestion> = {
   decorators: [
     Story => {
       const formContext = useForm();
-      const onSubmit = (data: any) => {
-        console.log(data);
-      };
-
       return (
         <FormProvider {...formContext}>
-          <Form onSubmit={onSubmit}>
+          <Form onSubmit={console.log}>
             <Story />
           </Form>
         </FormProvider>

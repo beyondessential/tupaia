@@ -1,15 +1,18 @@
-import React from 'react';
-import styled from 'styled-components';
-import { DatatrakWebLeaderboardRequest, DatatrakWebUserRequest } from '@tupaia/types';
 import {
+  TableContainer as MuiTableContainer,
   Table,
   TableBody,
   TableCell,
-  TableContainer as MuiTableContainer,
   TableFooter,
   TableHead,
   TableRow,
 } from '@material-ui/core';
+import React from 'react';
+import styled from 'styled-components';
+
+import { DatatrakWebLeaderboardRequest } from '@tupaia/types';
+
+import { CurrentUserContextType } from '../../api';
 import { UserRewards } from '../../types';
 
 const TableContainer = styled(MuiTableContainer)`
@@ -104,9 +107,7 @@ const FooterCell = styled(Cell)`
 
 interface LeaderboardTableProps {
   userRewards?: UserRewards;
-  user?: DatatrakWebUserRequest.ResBody & {
-    isLoggedIn: boolean;
-  };
+  user?: CurrentUserContextType;
   leaderboard?: DatatrakWebLeaderboardRequest.ResBody;
 }
 

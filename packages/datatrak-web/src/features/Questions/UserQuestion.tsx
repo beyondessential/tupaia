@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
-import { SurveyQuestionInputProps } from '../../types';
+import React, { useEffect, useState } from 'react';
+
+import { DatatrakWebUsersRequest } from '@tupaia/types';
+
 import { usePermissionGroupUsers } from '../../api';
-import { useSurveyForm } from '../Survey';
 import { InputHelperText, QuestionAutocomplete } from '../../components';
+import { SurveyQuestionInputProps } from '../../types';
+import { useSurveyForm } from '../Survey';
+
+interface UserQuestionAutocompleteOption extends DatatrakWebUsersRequest.UserResponse {
+  label: string;
+  value: string;
+}
 
 export const UserQuestion = ({
   id,
@@ -24,7 +32,7 @@ export const UserQuestion = ({
     error,
   } = usePermissionGroupUsers(countryCode, config?.user?.permissionGroup, searchValue);
 
-  const options =
+  const options: UserQuestionAutocompleteOption[] =
     users?.map(user => ({
       ...user,
       label: user.name,

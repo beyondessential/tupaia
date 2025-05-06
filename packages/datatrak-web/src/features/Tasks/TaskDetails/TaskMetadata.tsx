@@ -19,6 +19,7 @@ const Title = styled(Typography).attrs({
 })`
   font-size: 0.875rem;
   font-weight: normal;
+  letter-spacing: 0.02em;
   margin-block-end: 0.2rem;
 `;
 
