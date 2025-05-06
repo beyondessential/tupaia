@@ -54,7 +54,7 @@ export function useTasksTable() {
   const isMobile = useIsMobile();
 
   const setBooleanSearchParam = useCallback(
-    (param: string, value: boolean) => {
+    (param: 'allAssignees' | 'cancelled' | 'completed', value: boolean) => {
       if (value) searchParams.set(param, '1');
       else searchParams.delete(param);
       setSearchParams(searchParams, { replace: true });
