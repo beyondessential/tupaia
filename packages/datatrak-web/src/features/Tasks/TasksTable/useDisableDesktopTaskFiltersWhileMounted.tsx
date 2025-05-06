@@ -21,20 +21,28 @@ export function useDisableDesktopTaskFiltersWhileMounted() {
   const [cancelled] = useState(showCancelled);
   const [completed] = useState(showCompleted);
 
-  // When calling component mounts, set sensible defaults. (Exhaustively declaring dependencies
-  // optional here because Effect is known to be idempotent.)
-  useEffect(() => {
-    setShowAllAssignees(false);
-    setShowCancelled(true);
-    setShowCompleted(true);
-  }, [setShowAllAssignees, setShowCancelled, setShowCompleted]);
+  // When calling component mounts, set sensible defaults
+  useEffect(
+    () => {
+      setShowAllAssignees(false);
+      setShowCancelled(true);
+      setShowCompleted(true);
+    },
+    // Effect is idempotent, so exhaustively declaring dependencies is actually optional
+    [setShowAllAssignees, setShowCancelled, setShowCompleted],
+  );
 
-  useEffect(() => {
-    return () => {
-      // Restore previous settings
-      setShowAllAssignees(allAssignees);
-      setShowCancelled(cancelled);
-      setShowCompleted(completed);
-    };
-  }, [allAssignees, cancelled, completed, setShowAllAssignees, setShowCancelled, setShowCompleted]);
+  useEffect(
+    () => {
+      return () => {
+        // Restore previous settings
+        setShowAllAssignees(allAssignees);
+        setShowCancelled(cancelled);
+        setShowCompleted(completed);
+      };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Expressly want cleanup function to run only when caller unmounts
+    [],
+  );
 }
