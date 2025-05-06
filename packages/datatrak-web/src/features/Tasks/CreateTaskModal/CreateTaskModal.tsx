@@ -158,15 +158,12 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   ];
 
   const onChangeCountry = event => {
-    console.debug('onChangeCountry', event);
     updateSelectedCountry(event);
 
     if (dirtyFields.survey_code) {
-      console.debug('  Survey Code dirty, resetting');
       setValue('survey_code', null, { shouldValidate: true });
     }
     if (dirtyFields.entity_id) {
-      console.debug('  Entity ID dirty, resetting');
       setValue('entity_id', null, { shouldValidate: true });
     }
   };
