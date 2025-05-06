@@ -8,7 +8,7 @@ import { FilterableTableProps } from '@tupaia/ui-components';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { UseTasksQueryParams } from '../../../api/queries/useTasks';
 import { TaskStatusType } from '../../../types';
-import { displayDate, isNotNullish, isNullish } from '../../../utils';
+import { displayDate, isNotNullish, isNullish, useIsMobile } from '../../../utils';
 import { CommentsCount } from '../CommentsCount';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusDot, StatusPill } from '../StatusPill';
@@ -33,26 +33,25 @@ const StatusCellContent = styled.div`
   }
 `;
 
-const StatusPillContent = styled.div`
-  display: flex;
-  align-items: center;
-  > div {
-    margin-inline-end: 0.5rem;
-    ${({ theme }) => theme.breakpoints.up('sm')} {
-      display: none;
-    }
-  }
+const StyledStatusDot = styled(StatusDot).attrs({
+  // Table still has task status column, so this indicator is redundant
+  'aria-hidden': true,
+})`
+  display: inline-block;
+  margin-inline-end: 0.5rem;
+`;
 
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+const SurveyName = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export function useTasksTable() {
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const isMobile = useIsMobile();
 
   const setBooleanSearchParam = useCallback(
     (param: string, value: boolean) => {
@@ -170,13 +169,12 @@ export function useTasksTable() {
           original: DatatrakWebTasksRequest.ResBody['tasks'][0];
         };
       }) => {
-        const value = row?.original?.survey?.name || '';
         const status = row?.original?.taskStatus || '';
         return (
-          <StatusPillContent>
-            <StatusDot $status={status} />
-            <span>{value}</span>
-          </StatusPillContent>
+          <>
+            {isMobile && <StyledStatusDot $status={status} />}
+            <SurveyName>{row?.original?.survey?.name}</SurveyName>
+          </>
         );
       },
       id: 'survey.name',
