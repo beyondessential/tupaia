@@ -12,7 +12,7 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.palette.background.default};
-  min-block-size: 100vb;
+  min-block-size: 100dvb;
 
   + .notistack-SnackbarContainer {
     align-items: stretch;

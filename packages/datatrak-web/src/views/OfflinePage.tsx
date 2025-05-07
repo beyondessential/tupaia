@@ -1,8 +1,10 @@
+import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Button as UIButton } from '@tupaia/ui-components';
-import { Link as RouterLink } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
+
+import { SafeArea, Button as UIButton } from '@tupaia/ui-components';
+
+import { HomeLink } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
 const Container = styled.div`
@@ -11,38 +13,23 @@ const Container = styled.div`
   block-size: 100dvb;
 `;
 
-const HeaderContainer = styled.header`
-  background: ${({ theme }) => theme.palette.background.paper};
-`;
-
-const HeaderInner = styled.div`
-  display: flex;
+const HeaderContainer = styled(SafeArea).attrs({
+  as: 'header',
+  top: true,
+  left: true,
+  right: true,
+})`
   align-items: center;
+  background: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
-  padding: 0 1.5rem;
-  margin-inline: auto;
-  max-inline-size: 75rem;
-`;
-
-const Logo = styled(UIButton)`
-  padding: 0;
-  .MuiButton-label {
-    block-size: 2.1rem;
-
-    ${({ theme }) => theme.breakpoints.up('md')} {
-      block-size: 2.6rem;
-    }
-  }
+  display: flex;
+  padding-block-end: 1rem;
 `;
 
 const Header = () => {
   return (
     <HeaderContainer>
-      <HeaderInner>
-        <Logo component={RouterLink} to="/" title="Home" variant="text">
-          <img src="/datatrak-logo-black.svg" alt="Tupaia Datatrak logo" width={84} height={42} />
-        </Logo>
-      </HeaderInner>
+      <HomeLink />
     </HeaderContainer>
   );
 };
@@ -94,10 +81,9 @@ const ImageContainer = styled.div`
   margin-block-end: 7%;
 `;
 
+const refreshPage = () => location.reload();
+
 export const OfflinePage = () => {
-  const refreshPage = () => {
-    location.reload();
-  };
   return (
     <Container>
       <Header />
@@ -107,7 +93,7 @@ export const OfflinePage = () => {
         </ImageContainer>
         <Heading>You are currently offline</Heading>
         <Text>
-          We are trying to reconnect you now, please check you are connected to the internet.
+          We are trying to reconnect you now. Please check you are connected to the internet.
         </Text>
         <Button onClick={refreshPage}>Refresh page</Button>
       </Body>
