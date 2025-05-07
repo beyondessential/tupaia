@@ -1,6 +1,9 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
+
+import { LoadingScreen } from '@tupaia/ui-components';
+
 import { PageContainer as BasePageContainer } from '../components';
 import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
 
@@ -17,7 +20,7 @@ const PageContainer = styled(BasePageContainer)`
   padding-block-start: 0.75rem;
   padding-inline: 0.3rem;
   max-height: 100%;
-  .loading-screen {
+  ${LoadingScreen} {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
   }

@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { TaskStatus } from '@tupaia/types';
-import { LoadingContainer } from '@tupaia/ui-components';
+import { LoadingContainer, LoadingScreen } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
 import { Button as BaseButton, SurveyTickIcon, Tile } from '../../../components';
@@ -97,7 +97,7 @@ const Form = styled(TaskForm)`
 `;
 
 const Wrapper = styled.div`
-  .loading-screen {
+  ${LoadingScreen} {
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 `;
