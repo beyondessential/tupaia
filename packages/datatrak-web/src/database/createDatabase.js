@@ -1,4 +1,5 @@
-import { ModelRegistry } from '../core';
+import { ModelRegistry } from '@tupaia/database';
+
 import { DatatrakDatabase } from './DatatrakDatabase';
 
 export const createDatabase = async () => {
