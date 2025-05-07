@@ -24,3 +24,21 @@ export const FACT_LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate';
 export const FACT_SYNC_TRIGGER_CONTROL = 'syncTrigger';
 
 export const COLUMNS_EXCLUDED_FROM_SYNC = ['updatedAtSyncTick'];
+
+export const NON_SYNCING_TABLES = [
+  'analytics',
+  'superset_instance',
+  'log$_answer',
+  'log$_data_element',
+  'log$_entity',
+  'log$_question',
+  'log$_survey',
+  'log$_survey_response',
+  'spatial_ref_sys',
+  'local_system_facts',
+  'migrations',
+  'sync_sessions',
+  'sync_lookup',
+  'debug_logs',
+  'sync_device_ticks',
+];
