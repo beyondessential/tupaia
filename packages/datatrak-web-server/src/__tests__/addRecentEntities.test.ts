@@ -19,8 +19,8 @@ const mockUser = {
 
 const mockModels = {
   user: {
-    findById: (id: string) => mockUser,
-    updateById: (id: string, update: any) => {
+    findById: (_id: string) => mockUser,
+    updateById: (_id: string, update: any) => {
       mockUser.preferences = update.preferences;
     },
   },

@@ -1,13 +1,7 @@
 import React from 'react';
 import { Bar, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
-import {
-  BarChartConfig,
-  ChartConfigObject,
-  ChartData,
-  ChartReport,
-  ChartType,
-} from '@tupaia/types';
+import { BarChartConfig, ChartConfigObject, ChartData, ChartType } from '@tupaia/types';
 import { BLUE } from '../../constants';
 import { getIsTimeSeries } from '../../utils';
 

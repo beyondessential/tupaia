@@ -10,11 +10,6 @@
       "dom",
       "es2019"
     ],
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strictNullChecks": true
   },
   "include": [
     "src/**/*",

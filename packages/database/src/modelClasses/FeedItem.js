@@ -1,5 +1,4 @@
 import moment from 'moment';
-import { AccessPolicy } from '@tupaia/access-policy';
 import { FeedItemTypes } from '@tupaia/types';
 import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';

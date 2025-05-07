@@ -1,7 +1,5 @@
 'use strict';
 
-import { generateId } from '../utilities/generateId';
-
 var dbm;
 var type;
 var seed;
