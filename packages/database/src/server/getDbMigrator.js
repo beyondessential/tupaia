@@ -11,7 +11,7 @@ import { getConnectionConfig } from './getConnectionConfig';
 const MIGRATIONS_DIR = path.resolve(process.cwd(), 'src/core/migrations');
 const SERVER_MIGRATION_DIR = path.resolve(
   process.cwd(),
-  `src/core/server-migrations-${new Date().toISOString()}`,
+  `src/core/server-migrations-${Date.now()}`,
 );
 
 const exitWithError = error => {
@@ -48,14 +48,14 @@ export const removeNonServerMigrations = () => {
 };
 
 const cliCallback = async (migrator, _internals, originalError, migrationError) => {
+  resetMigrationFolder();
+
   if (originalError) {
     exitWithError(new Error(`db-migrate error: ${migrationError.message}`));
   }
   if (migrationError) {
     exitWithError(new Error(`Migration error: ${migrationError.message}`));
   }
-
-  resetMigrationFolder();
 
   try {
     const { driver } = migrator;
@@ -66,11 +66,11 @@ const cliCallback = async (migrator, _internals, originalError, migrationError) 
 };
 
 const appCallback = async (migrator, internals, callback, error) => {
+  resetMigrationFolder();
+
   if (error) {
     throw error;
   }
-
-  resetMigrationFolder();
 
   const { driver } = migrator;
   await runPostMigration(driver);
