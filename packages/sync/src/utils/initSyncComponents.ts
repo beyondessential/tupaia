@@ -1,5 +1,12 @@
 import { NON_SYNCING_TABLES } from '../constants';
 
+interface Row {
+  [key: string]: string | number | boolean | null;
+}
+interface DatabaseDriver {
+  runSql: (sql: string) => Promise<{ rows: Row[] }>;
+}
+
 const TABLES_WITHOUT_COLUMN_QUERY = `
   SELECT
     pg_class.relname as table
@@ -54,11 +61,11 @@ const TABLES_WITHOUT_TRIGGER_QUERY = `
 `;
 
 // TODO: fix type for driver
-export async function initSyncComponents(driver: any, isBrowser: boolean = false) {
-  // add column: holds last update tick, default to -999 (not marked for sync) on facility,
+export async function initSyncComponents(driver: DatabaseDriver, isClient: boolean = false) {
+  // add column: holds last update tick, default to -999 (not marked for sync) on client,
   // and 0 (will be caught in any initial sync) on central server
   // triggers will overwrite the default for future data, but this works for existing data
-  const initialValue = isBrowser ? -999 : 0; // -999 on facility, 0 on central server
+  const initialValue = isClient ? -999 : 0; // -999 on client, 0 on central server
   const { rows: tablesWithoutColumn } = await driver.runSql(TABLES_WITHOUT_COLUMN_QUERY);
   for (const { table } of tablesWithoutColumn) {
     console.log(`Adding updated_at_sync_tick column to ${table}`);
