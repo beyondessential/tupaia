@@ -73,9 +73,7 @@ export class TaskCreationHandler extends ChangeHandler {
 
       const taskQuestions = questions.filter(question => question.type === 'Task');
 
-      if (!taskQuestions) {
-        continue;
-      }
+      if (!taskQuestions.length === 0) continue;
 
       const answers = await sr.getAnswers();
 
