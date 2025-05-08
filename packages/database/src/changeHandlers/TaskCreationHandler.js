@@ -42,6 +42,15 @@ const getQuestions = (models, surveyId) => {
   );
 };
 
+const dateAnswerToTimestamp = (dateStr, tz) => {
+  if (!dateStr) return null;
+
+  // Convert the due date to the timezone of the survey response and set the time to the last second
+  // of the day
+  const dateInTimezone = formatInTimeZone(dateStr, tz, "yyyy-MM-dd'T23:59:59'XXX");
+  return new Date(dateInTimezone).getTime();
+};
+
 export class TaskCreationHandler extends ChangeHandler {
   constructor(models) {
     super(models, 'task-creation-handler');
@@ -74,7 +83,6 @@ export class TaskCreationHandler extends ChangeHandler {
         models.surveyResponse.findById(response.id),
         getQuestions(models, response.survey_id),
       ]);
-      const { timezone, user_id: userId } = sr;
 
       const taskQuestions = questions.filter(q => q.type === QuestionType.Task);
 
@@ -88,6 +96,7 @@ export class TaskCreationHandler extends ChangeHandler {
         if (!config) continue;
 
         const getAnswer = getAnswerWrapper(config, answers);
+
         const shouldCreateTask = getAnswer('shouldCreateTask');
         if (shouldCreateTask === null || shouldCreateTask === 'No') continue;
 
@@ -97,34 +106,21 @@ export class TaskCreationHandler extends ChangeHandler {
           ? response.entity_id
           : getAnswer('entityId');
         const surveyId = await getSurveyId(models, config);
+        const assigneeId = getAnswer('assignee');
+        const _dueDate = getAnswer('dueDate');
+        const dueDate = dateAnswerToTimestamp(_dueDate, sr.timezone);
 
-        const dueDateAnswer = getAnswer('dueDate');
-
-        let dueDate = null;
-        if (dueDateAnswer) {
-          // Convert the due date to the timezone of the survey response and set the time to the last second of the day
-          const dateInTimezone = formatInTimeZone(
-            dueDateAnswer,
-            timezone,
-            "yyyy-MM-dd'T23:59:59'XXX",
-          );
-
-          // Convert the date to a timestamp
-          const timestamp = new Date(dateInTimezone).getTime();
-
-          dueDate = timestamp;
-        }
 
         await models.task.create(
           {
             initial_request_id: response.id,
             survey_id: surveyId,
             entity_id: entityId,
-            assignee_id: getAnswer('assignee'),
+            assignee_id: assigneeId,
             due_date: dueDate,
             status: 'to_do',
           },
-          userId,
+          sr.userId,
         );
       }
     }
