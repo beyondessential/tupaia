@@ -70,9 +70,11 @@ export class TaskCreationHandler extends ChangeHandler {
     if (changedResponses.length === 0) return;
 
     for (const response of changedResponses) {
-      const sr = await models.surveyResponse.findById(response.id);
+      const [sr, questions] = await Promise.all([
+        models.surveyResponse.findById(response.id),
+        getQuestions(models, response.survey_id),
+      ]);
       const { timezone, user_id: userId } = sr;
-      const questions = await getQuestions(models, response.survey_id);
 
       const taskQuestions = questions.filter(q => q.type === QuestionType.Task);
 
