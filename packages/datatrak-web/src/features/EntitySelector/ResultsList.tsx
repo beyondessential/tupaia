@@ -75,7 +75,7 @@ type ListItemType = Record<string, unknown> & {
 };
 
 type SearchResults = DatatrakWebEntityDescendantsRequest.ResBody;
-interface ResultsListProps {
+export interface ResultsListProps {
   value?: string;
   searchValue?: string;
   searchResults?: SearchResults;
