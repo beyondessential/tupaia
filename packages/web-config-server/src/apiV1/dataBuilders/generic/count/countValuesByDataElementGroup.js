@@ -1,8 +1,3 @@
-/**
- * Tupaia Config Server
- * * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
-
 import { getSortByKey } from '@tupaia/utils';
 import { getDataElementsInGroupSet } from '/apiV1/utils';
 
