@@ -70,7 +70,7 @@ export class BaseDatabase {
   constructor(
     transactingConnection,
     transactingChangeChannel,
-    clientType = 'pg',
+    clientType,
     getConnectionConfigFn,
   ) {
     if (this.constructor === BaseDatabase) {
