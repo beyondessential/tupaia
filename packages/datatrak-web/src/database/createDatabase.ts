@@ -1,7 +1,6 @@
 import { ModelRegistry } from '@tupaia/database';
 
 import { DatatrakDatabase } from './DatatrakDatabase';
-// import { MigrationManager } from './MigrationManager';
 
 export const createDatabase = async () => {
   const database = new DatatrakDatabase();
