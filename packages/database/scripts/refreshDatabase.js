@@ -11,7 +11,7 @@ require('dotenv').config({
 const fs = require('fs');
 const path = require('path');
 
-const { requireEnv, Script } = require('@tupaia/utils');
+const { requireEnv, Script, getEnvVarOrDefault } = require('@tupaia/utils');
 
 class RefreshDatabaseScript extends Script {
   config = {
@@ -26,6 +26,12 @@ class RefreshDatabaseScript extends Script {
         alias: 'r',
         type: 'string',
         description: 'Root for provided paths (relative to packages/database)',
+      },
+      gis: {
+        alias: 'g',
+        default: true,
+        type: 'boolean',
+        description: 'Create postgis extension',
       },
     },
     version: '1.0.0',
@@ -42,6 +48,9 @@ class RefreshDatabaseScript extends Script {
     const dbName = requireEnv('DB_NAME');
     const dbUser = requireEnv('DB_USER');
     const dbPgUser = requireEnv('DB_PG_USER');
+    const dbPort = getEnvVarOrDefault('DB_PORT', '');
+    const dbHost = getEnvVarOrDefault('DB_URL', '');
+
 
     this.logInfo(`Refreshing the ${dbName} database (owner: ${dbUser})...`);
 
@@ -51,18 +60,24 @@ class RefreshDatabaseScript extends Script {
     }
 
     this.verifyPsql();
-    this.execDbCommand(`DROP DATABASE IF EXISTS ${dbName}`, { user: dbPgUser });
-    this.execDbCommand(`CREATE DATABASE ${dbName} WITH OWNER ${dbUser}`, { user: dbPgUser });
-    this.execDbCommand('CREATE EXTENSION postgis', { db: dbName, user: dbPgUser });
-    this.execDbCommand(`ALTER USER ${dbUser} WITH SUPERUSER`, { user: dbPgUser });
-    this.exec(`psql -U ${dbUser} -d ${dbName} -f "${dumpPath}"`);
-    this.execDbCommand(`ALTER USER ${dbUser} WITH NOSUPERUSER`, { user: dbPgUser });
+    const dbArgs = { user: dbPgUser, port: dbPort, host: dbHost };
+    this.execDbCommand(`DROP DATABASE IF EXISTS ${dbName}`, dbArgs);
+    this.execDbCommand(`CREATE DATABASE ${dbName} WITH OWNER ${dbUser}`, dbArgs);
+    // Loading GIS extension is optional. Its already loaded in the
+    // postgis/postgis Docker image. Loading an extension thats already loaded
+    // fails.
+    if (this.args.gis) {
+      this.execDbCommand('CREATE EXTENSION postgis', dbArgs);
+    }
+    this.execDbCommand(`ALTER USER ${dbUser} WITH SUPERUSER`, dbArgs);
+    this.exec(`psql -U ${dbUser} -d ${dbName} -h "${dbHost}" -p ${dbPort} -f "${dumpPath}"`);
+    this.execDbCommand(`ALTER USER ${dbUser} WITH NOSUPERUSER`, dbArgs);
   }
 
   resolvePath = relativePath =>
     path.resolve([this.args.root, relativePath].filter(x => !!x).join('/'));
 
-  execDbCommand = (dbCommand, { user, db } = {}) => {
+  execDbCommand = (dbCommand, { user, db, host, port } = {}) => {
     const parts = ['psql'];
     if (user) {
       parts.push('-U', user);
@@ -72,6 +87,13 @@ class RefreshDatabaseScript extends Script {
     }
     if (db) {
       parts.push('-d', db);
+    }
+
+    if (host) {
+      parts.push('-h', host);
+    }
+    if (port) {
+      parts.push('-p', port);
     }
     parts.push('-c', `"${dbCommand}"`);
 

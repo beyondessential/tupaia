@@ -1,0 +1,16 @@
+---
+version: "3.9"
+services:
+  db:
+    image: "postgis/postgis:13-3.3"
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "${PG_PORT:-5432}:5432"
+
+volumes:
+  db:
