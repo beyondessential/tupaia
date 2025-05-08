@@ -82,15 +82,12 @@ export class TaskCreationHandler extends ChangeHandler {
 
       for (const taskQuestion of taskQuestions) {
         const config = taskQuestion.config.task;
-        const getAnswer = getAnswerWrapper(config, answers);
 
-        if (
-          !config ||
-          getAnswer('shouldCreateTask') === null ||
-          getAnswer('shouldCreateTask') === 'No'
-        ) {
-          continue;
-        }
+        if (!config) continue;
+
+        const getAnswer = getAnswerWrapper(config, answers);
+        const shouldCreateTask = getAnswer('shouldCreateTask');
+        if (shouldCreateTask === null || shouldCreateTask === 'No') continue;
 
         // PrimaryEntity question is a special case, where the entity_id is saved against the survey
         // response directly rather than the answers
