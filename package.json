@@ -32,7 +32,6 @@
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
     "migrate-down": "yarn workspace @tupaia/database migrate-down",
     "package-json-lint": "npmPkgJsonLint --configFile .npmpackagejsonlintrc.json .",
-    "postinstall": "test -n \"$SKIP_BUILD_INTERNAL_DEPENDENCIES\" || yarn build:internal-dependencies",
     "refresh-database": "yarn workspace @tupaia/database refresh-database --root ../../",
     "test-all": "node ./scripts/node/testAll --silent",
     "validate": "./scripts/bash/validate.sh",
