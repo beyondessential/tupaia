@@ -11,4 +11,8 @@ jest.mock('@tupaia/database', () => ({
     connection: jest.fn(),
   })),
   ModelRegistry: jest.fn().mockImplementation(() => ({})),
+  MigrationManager: jest.fn().mockImplementation(() => ({
+    initialize: jest.fn(),
+    migrate: jest.fn(),
+  })),
 }));
