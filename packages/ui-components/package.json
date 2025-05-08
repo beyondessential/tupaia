@@ -15,6 +15,7 @@
   "scripts": {
     "build": "rimraf dist && yarn package:build:ts",
     "build-dev": "yarn run build",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --env=jsdom",

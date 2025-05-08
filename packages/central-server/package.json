@@ -16,6 +16,7 @@
     "build:src": "yarn package:build:js",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "yarn run build",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "scheduled-task": "babel-node ./scripts/scheduledTask.js --config-file '../../babel.config.json'",
