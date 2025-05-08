@@ -1,5 +1,8 @@
-import keyBy from 'lodash.keyby';
 import { formatInTimeZone } from 'date-fns-tz';
+import keyBy from 'lodash.keyby';
+
+import { QuestionType } from '@tupaia/types';
+
 import { ChangeHandler } from './ChangeHandler';
 
 const getAnswerWrapper = (config, answers) => {
@@ -15,7 +18,7 @@ const getAnswerWrapper = (config, answers) => {
 };
 
 const isPrimaryEntityQuestion = (config, questions) => {
-  const primaryEntityQuestion = questions.find(question => question.type === 'PrimaryEntity');
+  const primaryEntityQuestion = questions.find(q => q.type === QuestionType.PrimaryEntity);
   const { questionId } = config.entityId;
   return primaryEntityQuestion.id === questionId;
 };
@@ -71,7 +74,7 @@ export class TaskCreationHandler extends ChangeHandler {
       const { timezone, user_id: userId } = sr;
       const questions = await getQuestions(models, response.survey_id);
 
-      const taskQuestions = questions.filter(question => question.type === 'Task');
+      const taskQuestions = questions.filter(q => q.type === QuestionType.Task);
 
       if (!taskQuestions.length === 0) continue;
 
