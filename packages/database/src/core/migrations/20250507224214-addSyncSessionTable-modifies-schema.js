@@ -19,7 +19,7 @@ exports.up = function (db) {
     `
       CREATE TABLE sync_session
       (
-          id                    VARCHAR(255) PRIMARY KEY,
+          id                    VARCHAR(24) PRIMARY KEY,
           start_time            TIMESTAMPTZ,
           last_connection_time  TIMESTAMPTZ,
           snapshot_completed_at TIMESTAMPTZ,
