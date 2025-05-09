@@ -1,3 +1,5 @@
+import { initSyncComponents } from '@tupaia/sync';
+
 import { arrayToDbString } from '../core/utilities';
 
 const TABLES_REQUIRING_TRIGGER_CREATION = [
@@ -95,6 +97,8 @@ export const runPostMigration = async driver => {
       `),
     ),
   );
+
+  await initSyncComponents(driver);
 
   driver.close(err => {
     if (tablesWithoutNotifier.length > 0) {

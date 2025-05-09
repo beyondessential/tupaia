@@ -2,7 +2,7 @@ import log from 'winston';
 
 import {
   SYNC_DIRECTIONS,
-  SYNC_LOOKUP_PENDING_UPDATE_SYNC_TICK,
+  SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK,
   FilteredModelRegistry,
 } from '@tupaia/sync';
 import { DatabaseModel, TupaiaDatabase, DebugLogRecord } from '@tupaia/database';
@@ -23,11 +23,13 @@ const updateLookupTableForModel = async (
 
   let fromId = '';
   let totalCount = 0;
-  const result: SyncLookupQueryDetails =
+  const hasCustomLookupQuery =
     'buildSyncLookupQueryDetails' in model &&
-    typeof model.buildSyncLookupQueryDetails === 'function'
-      ? (await model.buildSyncLookupQueryDetails()) || {}
-      : {};
+    typeof model.buildSyncLookupQueryDetails === 'function';
+  const result: SyncLookupQueryDetails = hasCustomLookupQuery
+    ? await (model.buildSyncLookupQueryDetails as Function)()
+    : {};
+    
   const { select, joins, where } = result;
 
   while (fromId != null) {
@@ -149,6 +151,6 @@ export const updateSyncLookupPendingRecords = async (
       SET updated_at_sync_tick = :currentTick
       WHERE updated_at_sync_tick = :pendingUpdateSyncTick;
     `,
-    { currentTick, pendingUpdateSyncTick: SYNC_LOOKUP_PENDING_UPDATE_SYNC_TICK },
+    { currentTick, pendingUpdateSyncTick: SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK },
   );
 };

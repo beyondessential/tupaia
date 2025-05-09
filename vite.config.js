@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import dns from 'dns';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import commonjs from 'vite-plugin-commonjs';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -14,6 +15,7 @@ export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
+  // Work around for process.env not being loaded correctly in knex library for browser builds
   const clientEnv = Object.fromEntries(
     Object.entries(env).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
   );
@@ -43,9 +45,13 @@ export default defineConfig(({ command, mode }) => {
       viteCompression(),
       react({ jsxRuntime: 'classic' }),
       nodePolyfills({
-        // Whether to polyfill specific node:* protocol imports
         protocolImports: true,
+        overrides: {
+          // Since `fs` is not supported in browsers, we can use the `memfs` package to polyfill it.
+          fs: 'memfs',
+        },
       }),
+      commonjs(),
     ],
     define: { ...clientEnv, __dirname: JSON.stringify('/') },
     server: { open: true },
@@ -59,6 +65,7 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'moduleMock.js'),
         jsonwebtoken: path.resolve(__dirname, 'moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
+        'pg-pubsub': path.resolve(__dirname, 'moduleMock.js'),
       },
     },
     optimizeDeps: {
@@ -87,6 +94,7 @@ export default defineConfig(({ command, mode }) => {
           ),
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
+          '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
         },
       },
     };
