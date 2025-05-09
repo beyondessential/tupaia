@@ -7000,10 +7000,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electric-sql/pglite@npm:^0.2.14, @electric-sql/pglite@npm:^0.2.17":
+"@electric-sql/pglite@npm:^0.2.14":
   version: 0.2.17
   resolution: "@electric-sql/pglite@npm:0.2.17"
   checksum: 4c78d2beea408209cbd00e2cd888daa1def35ba406d2195d32acf8bad6d404df3215e0739bfd7f246c0c98e19fb2f0bded87736767fe8fc10d78789b565dfa93
+  languageName: node
+  linkType: hard
+
+"@electric-sql/pglite@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@electric-sql/pglite@npm:0.3.0"
+  checksum: dcf679c90da61e6ac968f93da92d877c03ff5abdc184884850a27ca58ea06794df2ec9c10c9671f729d536ddf46f5760e58359df586ca79ed3bc6cf955458568
   languageName: node
   linkType: hard
 
@@ -10150,7 +10157,6 @@ __metadata:
   resolution: "@tupaia/database@workspace:packages/database"
   dependencies:
     "@babel/node": ^7.10.5
-    "@electric-sql/pglite": ^0.2.17
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
@@ -10163,7 +10169,6 @@ __metadata:
     db-migrate-pg: ^1.2.2
     dotenv: ^16.4.5
     knex: ^3.1.0
-    knex-pglite: ^0.11.0
     lodash.clonedeep: ^4.5.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -10212,6 +10217,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/datatrak-web@workspace:packages/datatrak-web"
   dependencies:
+    "@electric-sql/pglite": ^0.3.0
     "@hookform/resolvers": 1.3.8
     "@material-ui/core": ^4.9.11
     "@material-ui/icons": ^4.9.1
