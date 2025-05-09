@@ -15,13 +15,22 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build": "rimraf dist && npm run --prefix ../../ package:build:ts",
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",
     "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
+    "setup-test": "yarn workspace @tupaia/database setup-test-database",
     "test": "yarn package:test"
+  },
+  "dependencies": {
+    "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
+    "@tupaia/sync": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }

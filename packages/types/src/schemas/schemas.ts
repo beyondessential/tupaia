@@ -71598,6 +71598,58 @@ export const LesmisSessionUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const LocalSystemFactSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"key"
+	]
+} 
+
+export const LocalSystemFactCreateSchema = {
+	"type": "object",
+	"properties": {
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"key"
+	]
+} 
+
+export const LocalSystemFactUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const LoginAttemptsSchema = {
 	"type": "object",
 	"properties": {
@@ -84765,6 +84817,63 @@ export const ApprovalStatusSchema = {
 		"rejected"
 	],
 	"type": "string"
+} 
+
+export const DebugLogSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"info": {
+			"type": "object",
+			"properties": {}
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"info",
+		"type"
+	]
+} 
+
+export const DebugLogCreateSchema = {
+	"type": "object",
+	"properties": {
+		"info": {
+			"type": "object",
+			"properties": {}
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"info",
+		"type"
+	]
+} 
+
+export const DebugLogUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"info": {
+			"type": "object",
+			"properties": {}
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
 } 
 
 export const ParamsSchema = {

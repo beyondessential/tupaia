@@ -14,6 +14,11 @@ export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
+  // Work around for process.env not being loaded correctly in knex library
+  const clientEnv = Object.fromEntries(
+    Object.entries(env).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
+
   const baseConfig = {
     build: {
       rollupOptions: {
@@ -31,15 +36,19 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
+        external: ['stream/promises', 'fs/promises'],
       },
     },
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({ jsxRuntime: 'classic' }),
-      nodePolyfills(),
+      nodePolyfills({
+        // Whether to polyfill specific node:* protocol imports
+        protocolImports: true,
+      }),
     ],
-    define: { 'process.env': env, __dirname: JSON.stringify('/') },
+    define: { ...clientEnv, __dirname: JSON.stringify('/') },
     server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
