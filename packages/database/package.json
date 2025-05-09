@@ -41,6 +41,7 @@
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
+    "@tupaia/expression-parser": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
@@ -50,6 +51,7 @@
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.4.5",
+    "fs-extra": "^11.3.0",
     "knex": "^3.1.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",
