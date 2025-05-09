@@ -39,7 +39,6 @@
     "setup-new-database": "./scripts/setupNewDatabase.sh"
   },
   "dependencies": {
-    "@electric-sql/pglite": "^0.2.17",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
     "@tupaia/expression-parser": "workspace:*",
@@ -54,7 +53,6 @@
     "dotenv": "^16.4.5",
     "fs-extra": "^11.3.0",
     "knex": "^3.1.0",
-    "knex-pglite": "^0.11.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
