@@ -1,7 +1,6 @@
 import pluralize from 'pluralize';
 import { generateValueOfType } from './generateValueOfType';
-import { generateId } from '../utilities';
-import { RECORDS } from '../records';
+import { generateId, RECORDS } from '../../core';
 
 const { ENTITY, SURVEY_RESPONSE } = RECORDS;
 

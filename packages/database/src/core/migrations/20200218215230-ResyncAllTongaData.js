@@ -1,6 +1,6 @@
 'use strict';
 
-import { DatabaseChangeChannel } from '@tupaia/database';
+import { DatabaseChangeChannel } from '../../server/DatabaseChangeChannel';
 
 var dbm;
 var type;

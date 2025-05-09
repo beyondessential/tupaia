@@ -3,10 +3,9 @@ import {
   populateTestData,
   clearTestData,
   upsertDummyRecord,
-} from '../../testUtilities';
-import { EntityHierarchyCacher } from '../../changeHandlers';
-import { EntityHierarchySubtreeRebuilder } from '../../changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
-
+} from '../../server/testUtilities';
+import { EntityHierarchyCacher } from '../../server/changeHandlers';
+import { EntityHierarchySubtreeRebuilder } from '../../server/changeHandlers/entityHierarchyCacher/EntityHierarchySubtreeRebuilder';
 import {
   TEST_DATA,
   INITIAL_HIERARCHY_OCEAN,

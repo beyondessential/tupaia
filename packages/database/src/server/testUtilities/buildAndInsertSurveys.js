@@ -1,4 +1,4 @@
-import { generateId } from '../utilities';
+import { generateId } from '../../core/utilities';
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
 const buildAndInsertQuestion = async (

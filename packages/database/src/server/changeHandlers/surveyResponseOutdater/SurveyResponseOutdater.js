@@ -3,7 +3,7 @@ import keyBy from 'lodash.keyby';
 
 import { getUniqueEntries, haveSameFields } from '@tupaia/utils';
 import { ChangeHandler } from '../ChangeHandler';
-import { isMarkedChange } from '../../utilities';
+import { isMarkedChange } from '../../../core/utilities';
 import { OutdatedResponseFlagger } from './OutdatedResponseFlagger';
 
 /**

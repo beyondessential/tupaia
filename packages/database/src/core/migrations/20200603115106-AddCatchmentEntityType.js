@@ -1,7 +1,5 @@
 'use strict';
 
-import { TupaiaDatabase } from '@tupaia/database';
-
 var dbm;
 var type;
 var seed;
@@ -16,12 +14,9 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function () {
-  const db = new TupaiaDatabase();
-  await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'catchment';`);
-  await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'sub_catchment';`);
-  db.closeConnections();
-  return null;
+exports.up = async function (db) {
+  await db.runSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'catchment';`);
+  await db.runSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'sub_catchment';`);
 };
 
 exports.down = function (db) {

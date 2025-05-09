@@ -1,4 +1,5 @@
 import DBMigrate from 'db-migrate';
+
 import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
 

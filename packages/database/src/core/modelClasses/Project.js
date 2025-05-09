@@ -1,6 +1,6 @@
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
-import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { RECORDS } from '../records';
 
 const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';

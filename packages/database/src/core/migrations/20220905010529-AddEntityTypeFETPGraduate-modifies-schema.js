@@ -1,7 +1,5 @@
 'use strict';
 
-import { TupaiaDatabase } from '../TupaiaDatabase';
-
 var dbm;
 var type;
 var seed;
@@ -12,12 +10,10 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function () {
-  const db = new TupaiaDatabase();
-  await db.executeSql(`
+exports.up = async function (db) {
+  await db.runSql(`
     ALTER TYPE public.entity_type ADD VALUE 'fetp_graduate';
   `);
-  return db.closeConnections();
 };
 
 exports.down = function (db) {

@@ -4,6 +4,7 @@ import viteCompression from 'vite-plugin-compression';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import dns from 'dns';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -32,22 +33,17 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
-
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
-      react({
-        jsxRuntime: 'classic',
-      }),
+      react({ jsxRuntime: 'classic' }),
+      nodePolyfills(),
     ],
-    define: {
-      'process.env': env,
-    },
-    server: {
-      open: true,
-    },
+    define: { 'process.env': env, __dirname: JSON.stringify('/') },
+    server: { open: true },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
+      conditions: ['browser'],
       preserveSymlinks: true, // use the yarn workspace symlinks
       dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
@@ -57,16 +53,16 @@ export default defineConfig(({ command, mode }) => {
         'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
       },
     },
+    optimizeDeps: {
+      exclude: ['@electric-sql/pglite'],
+    },
   };
 
   // Dev specific config. This is because `define.global` breaks the build
   if (command === 'serve') {
     return {
       ...baseConfig,
-      define: {
-        ...baseConfig.define,
-        global: {},
-      },
+      define: { ...baseConfig.define, global: {} },
       resolve: {
         ...baseConfig.resolve,
         alias: {
@@ -82,6 +78,7 @@ export default defineConfig(({ command, mode }) => {
             './packages/ui-map-components/src/index.ts',
           ),
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
+          '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
         },
       },
     };
