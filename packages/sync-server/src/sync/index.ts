@@ -1,3 +1,4 @@
 export * from './CentralSyncManager';
-export * from './buildSyncLookupSelect';
 export * from './updateLookupTable';
+export * from './buildSyncLookupSelect';
+export * from './buildSyncLookupTraverseJoins';
