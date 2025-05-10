@@ -1,4 +1,8 @@
-import { buildSyncLookupSurveyProjectIdSelect } from '@tupaia/sync';
+import {
+  buildSyncLookupSurveyProjectIdSelect,
+  buildSyncLookupTraverseJoins,
+  SYNC_DIRECTIONS,
+} from '@tupaia/sync';
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -16,7 +20,7 @@ export class SurveyScreenModel extends DatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     return {
-      select: await buildSyncLookupSurveyProjectIdSelect(),
+      select: await buildSyncLookupSurveyProjectIdSelect(this),
       joins: buildSyncLookupTraverseJoins([this.databaseRecord, 'survey']),
     };
   }
