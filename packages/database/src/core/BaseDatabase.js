@@ -70,7 +70,7 @@ export class BaseDatabase {
   constructor(
     transactingConnection,
     transactingChangeChannel,
-    clientType = 'pg',
+    clientType,
     getConnectionConfigFn,
   ) {
     if (this.constructor === BaseDatabase) {
@@ -406,6 +406,10 @@ export class BaseDatabase {
       },
       batchSize,
     );
+  }
+
+  wrapInTransaction(wrappedFunction) {
+    throw new Error('wrapInTransaction should be implemented by the child class');
   }
 }
 

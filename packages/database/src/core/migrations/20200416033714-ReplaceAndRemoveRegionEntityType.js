@@ -1,7 +1,5 @@
 'use strict';
 
-import { TupaiaDatabase } from '@tupaia/database';
-import { arrayToDbString } from '../utilities';
 import { replaceEnum } from '../utilities/migration';
 
 var dbm;
@@ -46,11 +44,11 @@ const entityTypes = {
 
 const addEntityTypes = (db, types) =>
   Promise.all(
-    types.map(type => db.executeSql(`ALTER TYPE entity_type ADD VALUE IF NOT EXISTS '${type}';`)),
+    types.map(type => db.runSql(`ALTER TYPE entity_type ADD VALUE IF NOT EXISTS '${type}';`)),
   );
 
 const replaceRegionWithSubDistrictForNestedRegions = db =>
-  db.executeSql(`
+  db.runSql(`
     UPDATE
       entity
     SET
@@ -62,25 +60,19 @@ const replaceRegionWithSubDistrictForNestedRegions = db =>
       AND type = 'region';
 `);
 
-exports.up = async function () {
-  const db = new TupaiaDatabase();
-
+exports.up = async function (db) {
   await addEntityTypes(db, ['district', 'sub_district']);
   await replaceRegionWithSubDistrictForNestedRegions(db);
-  await db.executeSql(`UPDATE entity SET type = 'district' WHERE type = 'region';`);
+  await db.runSql(`UPDATE entity SET type = 'district' WHERE type = 'region';`);
   await replaceEnum(db, 'entity_type', entityTypes.new);
-  db.closeConnections();
 };
 
-exports.down = async function () {
-  const db = new TupaiaDatabase();
-
+exports.down = async function (db) {
   await addEntityTypes(db, ['region']);
-  await db.executeSql(
+  await db.runSql(
     `UPDATE entity SET type = 'region' WHERE type IN ('district', 'sub_district');`,
   );
   await replaceEnum(db, 'entity_type', entityTypes.old);
-  db.closeConnections();
 };
 
 exports._meta = {
