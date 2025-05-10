@@ -2,6 +2,7 @@ import {
   buildSyncLookupSurveyProjectIdSelect,
   buildSyncLookupTraverseJoins,
   surveyScreenComponentToSurveyJoins,
+  SYNC_DIRECTIONS,
 } from '@tupaia/sync';
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
@@ -21,10 +22,11 @@ export class QuestionModel extends MaterializedViewLogDatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     return {
-      select: await buildSyncLookupSurveyProjectIdSelect(),
+      select: await buildSyncLookupSurveyProjectIdSelect(this),
       joins: `
-        ${buildSyncLookupTraverseJoins([this.databaseRecord, 'survey_screen_component'])}
-        ${surveyScreenComponentToSurveyJoins()}
+        LEFT JOIN survey_screen_component ON survey_screen_component.question_id = question.id
+        LEFT JOIN survey_screen ON survey_screen.id = survey_screen_component.screen_id
+        LEFT JOIN survey ON survey.id = survey_screen.survey_id
       `,
     };
   }

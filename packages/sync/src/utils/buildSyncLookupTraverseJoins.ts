@@ -1,7 +1,3 @@
-import { DatabaseModel } from '@tupaia/database';
-
-import { buildSyncLookupSelect } from './buildSyncLookupSelect';
-
 export function buildSyncLookupTraverseJoins(
   tablesToTraverse: string[],
   customForeignKeys?: Record<
@@ -25,7 +21,7 @@ export function buildSyncLookupTraverseJoins(
 
       // Default to standard naming convention
       return `
-        LEFT JOIN ${table} ON ${previousTable}.${table}_id = ${table}.id
+        LEFT JOIN ${table} ON ${table}.id = ${previousTable}.${table}_id
       `;
     })
     .join('\n');

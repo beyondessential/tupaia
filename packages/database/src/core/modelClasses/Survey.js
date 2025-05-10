@@ -11,8 +11,6 @@ import { SqlQuery } from '../SqlQuery';
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
 
-  syncDirection = SYNC_DIRECTIONS.BIDIRECTIONAL;
-
   /**
    * @returns {Promise<import('./DataGroup').DataGroupRecord>} data group for survey
    */
@@ -124,6 +122,8 @@ export class SurveyRecord extends DatabaseRecord {
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.BIDIRECTIONAL;
+
   get DatabaseRecordClass() {
     return SurveyRecord;
   }

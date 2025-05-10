@@ -4,10 +4,10 @@ import {
   SYNC_DIRECTIONS,
   SYNC_LOOKUP_PENDING_UPDATE_SYNC_TICK,
   FilteredModelRegistry,
+  buildSyncLookupSelect,
 } from '@tupaia/sync';
 import { DatabaseModel, TupaiaDatabase, DebugLogRecord } from '@tupaia/database';
 
-import { buildSyncLookupSelect } from './buildSyncLookupSelect';
 import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
 const updateLookupTableForModel = async (
@@ -127,9 +127,9 @@ export const updateLookupTable = async (
 
       changesCount += modelChangesCount || 0;
     } catch (e: any) {
-      log.error(`Failed to update ${model.name} for lookup table`);
+      log.error(`Failed to update ${model.databaseRecord} for lookup table`);
       log.debug(e);
-      throw new Error(`Failed to update ${model.name} for lookup table: ${e.message}`);
+      throw new Error(`Failed to update ${model.databaseRecord} for lookup table: ${e.message}`);
     }
   }
 
