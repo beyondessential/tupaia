@@ -85,7 +85,7 @@ export class ChangeHandler {
   }
 
   stopListeningForChanges() {
-    this.changeHandlerCancellers.forEach(c => c());
+    for (const c of this.changeHandlerCancellers) c();
     this.changeHandlerCancellers = [];
   }
 
