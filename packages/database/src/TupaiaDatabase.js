@@ -1,4 +1,4 @@
-import knex, { KnexTimeoutError } from 'knex';
+import knex, { Knex, KnexTimeoutError } from 'knex';
 import { types as pgTypes } from 'pg';
 import autobind from 'react-autobind';
 import winston from 'winston';
@@ -216,9 +216,15 @@ export class TupaiaDatabase {
     return changeChannel.addSchemaChangeHandler(handler);
   }
 
-  wrapInTransaction(wrappedFunction) {
-    return this.connection.transaction(transaction =>
-      wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.connection.transaction(
+      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+      transactionConfig,
     );
   }
 
