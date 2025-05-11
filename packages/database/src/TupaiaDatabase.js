@@ -347,7 +347,7 @@ export class TupaiaDatabase {
   }
 
   /**
-   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact recores
+   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact record
    * count is merely an enhancement, not critical information in the context. A return value of
    * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
    */
