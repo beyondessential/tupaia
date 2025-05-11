@@ -125,21 +125,28 @@ export class ChangeHandler {
       success = true;
 
       try {
-        await this.models.wrapInTransaction(async transactingModels => {
-          // Acquire a database advisory lock for the transaction
-          // Ensures no other server instance can execute its change handler at the same time
-          winston.info(`Acquiring lock for ${this.lockKey} change handler`);
-          await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+        await this.models.wrapInTransaction(
+          async transactingModels => {
+            // Acquire a database advisory lock for the transaction
+            // Ensures no other server instance can execute its change handler at the same time
+            winston.info(`Acquiring advisory lock for ${this.lockKey} change handler`);
+            const profiler1 = winston.startTimer();
+            await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+            profiler1.done({
+              message: `Acquired advisory lock for ${this.lockKey} change handler`,
+            });
 
-          winston.info(`Running ${this.lockKey} change handler with ${currentQueue.length} jobs`);
-          const start = performance.now();
-          await this.handleChanges(transactingModels, currentQueue);
-          const end = performance.now();
-
-          winston.info(
-            `Completed ${this.lockKey} change handler. ${currentQueue.length} jobs, took ${end - start}ms`,
-          );
-        });
+            winston.info(
+              `Running ${this.lockKey} change handler (${currentQueue.length} job(s) in queue)`,
+            );
+            const profiler2 = winston.startTimer();
+            await this.handleChanges(transactingModels, currentQueue);
+            profiler2.done({
+              message: `Completed ${this.lockKey} change handler (${currentQueue.length} job(s) in queue)`,
+            });
+          },
+          { isolationLevel: 'serializable' },
+        );
       } catch (error) {
         winston.warn(
           [
