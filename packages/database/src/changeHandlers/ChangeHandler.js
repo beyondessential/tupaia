@@ -130,22 +130,26 @@ export class ChangeHandler {
             // Acquire a database advisory lock for the transaction
             // Ensures no other server instance can execute its change handler at the same time
             winston.info(`Acquiring advisory lock for ${this.lockKey} change handler`);
-            const profiler1 = winston.startTimer();
+            let profiler = winston.startTimer();
             await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
-            profiler1.done({
+            profiler.done({
               message: `Acquired advisory lock for ${this.lockKey} change handler`,
             });
 
             winston.info(
-              `Running ${this.lockKey} change handler (${currentQueue.length} job(s) in queue)`,
+              `Running ${this.lockKey} change handler (${currentQueue.length} ${
+                currentQueue.length === 1 ? 'job' : 'jobs'
+              } in queue)`,
             );
-            const profiler2 = winston.startTimer();
+            profiler = winston.startTimer();
             await this.handleChanges(transactingModels, currentQueue);
-            profiler2.done({
-              message: `Completed ${this.lockKey} change handler (${currentQueue.length} job(s) in queue)`,
+            profiler.done({
+              message: `Completed ${this.lockKey} change handler (${currentQueue.length} ${
+                currentQueue.length === 1 ? 'job' : 'jobs'
+              } in queue)`,
             });
           },
-          { isolationLevel: 'serializable' },
+          // { isolationLevel: 'serializable' },
         );
       } catch (error) {
         winston.warn(
