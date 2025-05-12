@@ -16,7 +16,7 @@ const StyledButton = styled(Button).attrs({
 })``;
 
 const ModalRoot = styled(Paper)`
-  --scanner-size: min(85cqw, 70cqh);
+  --scanner-size: min(80cqw, 70cqh);
   container: --qr-code-scanner-modal / size;
   background-color: black; // Visible when video stream is loading
   block-size: 100lvb;
