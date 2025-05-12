@@ -48,9 +48,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         : transactingModels.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
 
       surveyResponse = await transactingModels.surveyResponse.updateOrCreate(
-        {
-          id: surveyResponseId,
-        },
+        { id: surveyResponseId },
         {
           id: surveyResponseId,
           approval_status: approvalStatus,
