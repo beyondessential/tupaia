@@ -120,7 +120,7 @@ export class TaskCreationHandler extends ChangeHandler {
             due_date: dueDate,
             status: 'to_do',
           },
-          sr.userId,
+          sr.user_id,
         );
       }
     }
