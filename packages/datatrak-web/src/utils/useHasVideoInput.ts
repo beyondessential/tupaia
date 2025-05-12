@@ -25,7 +25,7 @@ export function useHasVideoInput(): boolean | undefined {
   // Keep synchronised with browser
   useEffect(() => {
     window.addEventListener('devicechange', onDeviceChange);
-    return window.removeEventListener('devicechange', onDeviceChange);
+    return () => window.removeEventListener('devicechange', onDeviceChange);
   }, [onDeviceChange]);
 
   return hasVideoInput;
