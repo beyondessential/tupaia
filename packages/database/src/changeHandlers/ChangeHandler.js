@@ -149,7 +149,7 @@ export class ChangeHandler {
               } in queue)`,
             });
           },
-          // { isolationLevel: 'serializable' },
+          { isolationLevel: 'serializable' },
         );
       } catch (error) {
         winston.warn(
