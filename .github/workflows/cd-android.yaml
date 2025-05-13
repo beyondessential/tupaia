@@ -39,6 +39,7 @@ jobs:
           ANDROID_SIGNING_KEY_ALIAS: ${{ vars.ANDROID_SIGNING_KEY_ALIAS }}
           ANDROID_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
           ANDROID_SIGNING_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+          BETA_BRANCH: ${{ github.ref_name }}
         run: ./gradlew app:assembleRelease
 
       - run: ls -R packages/meditrak-app/android/app/build/outputs
