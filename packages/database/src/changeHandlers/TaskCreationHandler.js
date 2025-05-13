@@ -98,7 +98,7 @@ export class TaskCreationHandler extends ChangeHandler {
         const getAnswer = getAnswerWrapper(config, answers);
 
         const shouldCreateTask = getAnswer('shouldCreateTask');
-        if (shouldCreateTask === null || shouldCreateTask === 'No') continue;
+        if (!shouldCreateTask || shouldCreateTask === 'No') continue;
 
         // PrimaryEntity question is a special case, where the entity_id is saved against the survey
         // response directly rather than the answers
@@ -109,7 +109,6 @@ export class TaskCreationHandler extends ChangeHandler {
         const assigneeId = getAnswer('assignee');
         const _dueDate = getAnswer('dueDate');
         const dueDate = dateAnswerToTimestamp(_dueDate, sr.timezone);
-
 
         await models.task.create(
           {
