@@ -176,11 +176,9 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const {
     control,
     watch,
-    getValues,
     formState: { dirtyFields },
     reset,
   } = formContext;
-
 
   const { mutate: editTask, isLoading: isSaving } = useEditTask(task.id);
 
