@@ -12,26 +12,6 @@ import { FlexStart } from '../Layout';
 import { StyledTable } from './StyledTable';
 import { DataTableCell } from './DataTableCell';
 
-const getColumnId = ({
-  id,
-  accessor,
-  Header,
-}: {
-  id: string;
-  accessor?: string | ((row: any) => any);
-  Header: string;
-}) => {
-  if (id) {
-    return id;
-  }
-
-  if (typeof accessor === 'string') {
-    return accessor;
-  }
-
-  return Header;
-};
-
 interface DataTableProps {
   columns: any[];
   data?: Record<string, unknown>[];

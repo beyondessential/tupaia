@@ -1,10 +1,14 @@
-#!/bin/bash -ex
+#!/usr/bin/env bash
+set -ex
 
 HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
 LOGS_DIR=$HOME_DIR/logs
 
-SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+SCRIPT_DIR=$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd -P
+)
 cd "$SCRIPT_DIR"
 
 ./checkRequiredEnvVars.sh
@@ -25,13 +29,16 @@ git reset --hard origin/${GIT_BRANCH}
 
 # Yarn install
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 nvm use
 corepack enable yarn
 yarn install --immutable
 
 # Fetch env vars
-BITWARDEN_EMAIL=$BITWARDEN_EMAIL BITWARDEN_PASSWORD=$BITWARDEN_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
+BW_CLIENTID=$BW_CLIENTID \
+    BW_CLIENTSECRET=$BW_CLIENTSECRET \
+    BW_PASSWORD=$BW_PASSWORD \
+    yarn run download-env-vars "$DEPLOYMENT_NAME"
 
 # Build
 yarn build:internal-dependencies

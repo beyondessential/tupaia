@@ -84712,6 +84712,10 @@ export const EntityTypeEnumSchema = {
 		"medical_area",
 		"msupply_store",
 		"nursing_zone",
+		"pacmossi_asset",
+		"pacmossi_asset_facility",
+		"pacmossi_asset_sub_facility",
+		"pacmossi_consumable",
 		"pacmossi_district",
 		"pacmossi_insecticide_test",
 		"pacmossi_spraying_site",
@@ -84727,6 +84731,7 @@ export const EntityTypeEnumSchema = {
 		"trap",
 		"vehicle",
 		"village",
+		"visiting_specialist",
 		"water_sample",
 		"wish_sub_district",
 		"world"
@@ -85237,6 +85242,34 @@ export const ProjectResponseSchema = {
 		"id",
 		"name",
 		"permissionGroups"
+	]
+} 
+
+export const EntitiesResponseItemSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"parentId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"id",
+		"name",
+		"type"
 	]
 } 
 
