@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { FlexCenter, FlexStart } from '../Layout';
+import { FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
 import { Avatar } from '../Avatar';
 import { InputLabel } from './InputLabel';

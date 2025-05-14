@@ -28,7 +28,7 @@ const InfiniteListWrapper = styled.div`
   display: flex;
   overflow: hidden;
   flex-direction: column;
-  max-height: calc(100vh - ${HEADER_HEIGHT});
+  max-block-size: calc(100dvb - ${HEADER_HEIGHT});
   background-color: ${({ theme }) => theme.palette.background.default};
 `;
 
