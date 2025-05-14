@@ -1,5 +1,5 @@
 import { reduceToDictionary } from '@tupaia/utils';
-import { ORG_UNIT_ENTITY_TYPES } from '../../modelClasses/Entity';
+import { ORG_UNIT_ENTITY_TYPES } from '../../../core/modelClasses/Entity';
 
 export class EntityHierarchySubtreeRebuilder {
   constructor(models) {

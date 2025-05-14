@@ -1,7 +1,7 @@
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../BaseDatabase';
 
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 

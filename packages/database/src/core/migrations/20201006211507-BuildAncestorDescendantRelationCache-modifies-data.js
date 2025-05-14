@@ -1,6 +1,8 @@
 'use strict';
 
-import { TupaiaDatabase, ModelRegistry, EntityHierarchyCacher } from '@tupaia/database';
+import { TupaiaDatabase } from '../../server/TupaiaDatabase';
+import { ModelRegistry } from '../ModelRegistry';
+import { EntityHierarchyCacher } from '../../server/changeHandlers/entityHierarchyCacher/EntityHierarchyCacher';
 
 var dbm;
 var type;

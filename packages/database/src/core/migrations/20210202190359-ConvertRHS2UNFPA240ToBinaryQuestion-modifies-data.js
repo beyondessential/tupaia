@@ -1,7 +1,7 @@
 'use strict';
 
 import path from 'path';
-import { DatabaseChangeChannel } from '../DatabaseChangeChannel';
+import { DatabaseChangeChannel } from '../../server/DatabaseChangeChannel';
 import { arrayToDbString, markRecordsForResync } from '../utilities';
 
 var dbm;
