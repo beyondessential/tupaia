@@ -16,6 +16,7 @@ import { DataElementModel } from './DataElement';
 import { DataGroupModel } from './DataGroup';
 import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DataTableModel } from './DataTable';
+import { DebugLogModel } from './DebugLog';
 import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
@@ -26,6 +27,7 @@ import { GeographicalAreaModel } from './GeographicalArea';
 import { IndicatorModel } from './Indicator';
 import { LandingPageModel } from './LandingPage';
 import { LegacyReportModel } from './LegacyReport';
+import { LocalSystemFactModel } from './LocalSystemFact';
 import { UserFavouriteDashboardItemModel } from './UserFavouriteDashboardItem';
 import { MapOverlayGroupModel } from './MapOverlayGroup';
 import { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
@@ -80,6 +82,7 @@ export const modelClasses = {
   DataServiceEntity: DataServiceEntityModel,
   DataServiceSyncGroup: DataServiceSyncGroupModel,
   DataTable: DataTableModel,
+  DebugLog: DebugLogModel,
   DhisInstance: DhisInstanceModel,
   Entity: EntityModel,
   EntityHierarchy: EntityHierarchyModel,
@@ -91,6 +94,7 @@ export const modelClasses = {
   Indicator: IndicatorModel,
   LandingPage: LandingPageModel,
   LegacyReport: LegacyReportModel,
+  LocalSystemFact: LocalSystemFactModel,
   MapOverlay: MapOverlayModel,
   MapOverlayGroup: MapOverlayGroupModel,
   MapOverlayGroupRelation: MapOverlayGroupRelationModel,
@@ -140,6 +144,7 @@ export { DataElementModel, DataElementRecord } from './DataElement';
 export { DataGroupModel, DataGroupRecord } from './DataGroup';
 export { DataServiceSyncGroupModel, DataServiceSyncGroupRecord } from './DataServiceSyncGroup';
 export { DataTableModel, DataTableRecord } from './DataTable';
+export { DebugLogModel, DebugLogRecord } from './DebugLog';
 export { EntityModel, EntityRecord } from './Entity';
 export { EntityHierarchyModel, EntityHierarchyRecord } from './EntityHierarchy';
 export { EntityRelationModel, EntityRelationRecord } from './EntityRelation';
@@ -188,3 +193,4 @@ export {
   UserCountryAccessAttemptRecord,
 } from './UserCountryAccessAttempt';
 export { TaskCommentModel, TaskCommentRecord } from './TaskComment';
+export { LocalSystemFactModel, LocalSystemFactRecord } from './LocalSystemFact';

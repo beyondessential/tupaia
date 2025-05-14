@@ -1,9 +1,12 @@
 import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 import { QUERY_CONJUNCTIONS } from './BaseDatabase';
+import { SCHEMA_NAMES } from './constants';
 
 export class DatabaseModel {
   otherModels = {};
+
+  syncDirection = null;
 
   constructor(database, schema = null) {
     this.database = database;
@@ -46,6 +49,11 @@ export class DatabaseModel {
         this.fieldNames = null;
       });
     }
+
+    // TODO: Remove this once we have a sync direction for all models
+    // if (!this.syncDirection) {
+    //   throw new Error('syncDirection must be set by the model');
+    // }
   }
 
   // cache disabled by default. If enabling remember to update the TABLES_REQUIRING_TRIGGER_CREATION to include this table in @tupaia/database/src/runPostMigration.js.
@@ -58,8 +66,12 @@ export class DatabaseModel {
     return [];
   }
 
+  get schemaName() {
+    return SCHEMA_NAMES.PUBLIC;
+  }
+
   startSchemaFetch = () =>
-    this.database.fetchSchemaForTable(this.DatabaseRecordClass.databaseRecord);
+    this.database.fetchSchemaForTable(this.DatabaseRecordClass.databaseRecord, this.schemaName);
 
   // functionArguments should receive the 'arguments' object
   getCacheKey = (functionName, functionArguments) =>
@@ -336,7 +348,7 @@ export class DatabaseModel {
     const data = await this.getDatabaseSafeData(fields);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    const fieldValues = await this.database.create(this.databaseRecord, data);
+    const fieldValues = await this.database.create(this.databaseRecord, data, {}, this.schemaName);
 
     return this.generateInstance(fieldValues);
   }
@@ -374,7 +386,7 @@ export class DatabaseModel {
     const data = await this.getDatabaseSafeData(fieldsToUpdate);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    return this.database.update(this.databaseRecord, whereCondition, data);
+    return this.database.update(this.databaseRecord, whereCondition, data, this.schemaName);
   }
 
   async updateOrCreate(whereCondition, fieldsToUpsert) {
