@@ -89,10 +89,22 @@ const overrides = {
         accentColor: palette.primary.main,
         interpolateSize: 'allow-keywords',
       },
+      'button, figcaption, h1, h2, h3, h4, h5, h6, input, label': {
+        textWrap: 'balance',
+      },
+      'button, input, textarea, select': {
+        touchAction: 'manipulation',
+      },
       ":is(ol, ul)[role='list']": {
         listStyleType: 'none',
         marginBlock: 0,
         paddingInlineStart: 0,
+      },
+      picture: {
+        display: 'contents',
+      },
+      source: {
+        display: 'none',
       },
       time: {
         fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
