@@ -56,8 +56,8 @@ const Wrapper = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-top: 1rem;
-    height: calc(100vh - ${PAGE_PADDING}px);
+    margin-block-start: 1rem;
+    block-size: calc(100dvb - ${PAGE_PADDING}px);
   }
 `;
 

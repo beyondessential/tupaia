@@ -14,7 +14,7 @@ const Drawer = styled(MuiDrawer)`
 `;
 
 const Paper = styled(MuiPaper)`
-  min-width: 70vw;
+  min-inline-size: 70dvi;
   border-radius: 0;
   padding: 0 1rem;
   ${({ theme }) => theme.breakpoints.up('sm')} {
@@ -40,7 +40,7 @@ const CloseButton = styled(IconButton).attrs({
   color: 'default',
   disableRipple: true,
 })`
-    color: ${({ theme }) => theme.palette.text.primary};
+  color: ${({ theme }) => theme.palette.text.primary};
   padding: 0.8rem;
 `;
 

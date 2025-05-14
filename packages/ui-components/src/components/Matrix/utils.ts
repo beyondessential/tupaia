@@ -27,7 +27,7 @@ export const findByKey = (
   caseSensitive = true,
 ) =>
   (isString(key) || isNumber(key)) &&
-  find(collection, (value, valueKey) => areStringsEqual(key, valueKey, caseSensitive));
+  find(collection, (_value, valueKey) => areStringsEqual(key, valueKey, caseSensitive));
 
 /** Functions used to get matrix chart dot colors from presentation options */
 

@@ -76,6 +76,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
     "@babel/node": "^7.10.5",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
