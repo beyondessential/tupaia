@@ -54,7 +54,9 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       email: { comparisonValue: emailAddress, comparator: 'ilike' },
     });
     if (existingUsers.length > 0) {
-      throw new UnauthenticatedError('Existing user found with same email address.');
+      throw new UnauthenticatedError(
+        'An account already exists with this email. Please log in or click ’Forgot password?‘ if you have forgotten your password',
+      );
     }
 
     return true;
