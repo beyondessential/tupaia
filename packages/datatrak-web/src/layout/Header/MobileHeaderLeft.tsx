@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useCurrentUserContext } from '../../api';
-import { ChangeProjectButton } from '../../components';
+import { ChangeProjectButton, HomeLink } from '../../components';
 import { HEADER_HEIGHT } from '../../constants';
 
 const Wrapper = styled.div`
@@ -53,7 +53,7 @@ export const MobileHeaderLeft = ({ onClickLogo }) => {
     return (
       <Wrapper>
         <Logo onClick={onClickLogo} component={RouterLink} to="/">
-          <img src="/tupaia-pin.svg" alt="Tupaia DataTrak" width="100%" height="100%" />
+          <img src="/datatrak-pin.svg" alt="Tupaia DataTrak – Home" width="100%" height="100%" />
         </Logo>
         {isLoggedIn && (
           <UserDetailsContainer>
@@ -67,9 +67,7 @@ export const MobileHeaderLeft = ({ onClickLogo }) => {
 
   return (
     <Wrapper>
-      <Logo onClick={onClickLogo} component={RouterLink} to="/">
-        <img src="/datatrak-logo-black.svg" alt="Tupaia DataTrak" width="100%" height="100%" />
-      </Logo>
+      <HomeLink onClick={onClickLogo} />
     </Wrapper>
   );
 };

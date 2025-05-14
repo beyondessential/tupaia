@@ -117,7 +117,6 @@ export async function createApp() {
       handleWith(ExportSurveyResponseRoute),
     )
     // Forward auth requests to web-config
-    .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('verifyEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server
