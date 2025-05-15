@@ -36,7 +36,7 @@ jobs:
 
       - name: Install dependencies
         # TODO: Fix dependency issues, replace with yarn workspaces focus tupaia @tupaia/meditrak-app
-        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
+        run: yarn install --immutable
 
       # TODO: Replace with Bitwarden GitHub Actions: https://bitwarden.com/help/github-actions-integration
       - name: Write .env file
