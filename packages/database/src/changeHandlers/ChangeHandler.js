@@ -129,7 +129,6 @@ export class ChangeHandler {
           async transactingModels => {
             // Acquire a database advisory lock for the transaction
             // Ensures no other server instance can execute its change handler at the same time
-            winston.info(`Acquiring advisory lock for ${this.lockKey} change handler`);
             let profiler = winston.startTimer();
             await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
             profiler.done({
