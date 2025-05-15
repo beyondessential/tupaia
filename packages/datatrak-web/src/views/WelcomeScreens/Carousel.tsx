@@ -80,7 +80,7 @@ export const Carousel = ({ steps, activeStep, handleStepChange }: CarouselProps)
         {steps.map((step, index) => (
           <Inner key={index}>
             <picture aria-hidden>
-              <source src={step.imgPath} type={step.imgMediaType} />
+              <source srcSet={step.imgPath} type={step.imgMediaType} />
               <Image
                 aria-hidden
                 src={step.imgPath}
