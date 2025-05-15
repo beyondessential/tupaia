@@ -49,7 +49,7 @@ jobs:
 
       - name: Append BETA_BRANCH environment variable (if non-production branch)
         if: github.head_ref != 'master'
-        run: echo -e "\nBETA_BRANCH=\"$(git branch --show-current)\"" >>packages/meditrak-app/.env
+        run: echo -e "\nBETA_BRANCH=\"${{ github.head_ref }}\"" >>'packages/meditrak-app/.env'
 
       - name: Build release
         working-directory: packages/meditrak-app/android
