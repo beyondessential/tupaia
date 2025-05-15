@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
 
 /**
@@ -34,16 +33,8 @@ export const SafeArea = styled.div<{
   `;
 });
 
-export const SafeAreaColumn = (props: React.ComponentPropsWithoutRef<typeof SafeArea>) => (
-  <SafeArea {...props} left right />
-);
-
-/** @privateRemarks Consider setting `forwardedAs="header"` */
-export const SafeAreaHeader = (props: React.ComponentPropsWithoutRef<typeof SafeArea>) => (
-  <SafeArea {...props} top />
-);
-
-/** @privateRemarks Consider setting `forwardedAs="footer"` */
-export const SafeAreaFooter = (props: React.ComponentPropsWithoutRef<typeof SafeArea>) => (
-  <SafeArea {...props} bottom />
-);
+export const SafeAreaColumn = styled.div`
+  --safe-area-min-padding-x: 1.25rem;
+  padding-left: max(env(safe-area-inset-left, 0), var(--safe-area-min-padding-x));
+  padding-right: max(env(safe-area-inset-right, 0), var(--safe-area-min-padding-x));
+`;

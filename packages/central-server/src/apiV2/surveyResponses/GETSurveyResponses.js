@@ -1,11 +1,11 @@
+import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
 import { GETHandler } from '../GETHandler';
+import { getQueryOptionsForColumns } from '../GETHandler/helpers';
+import { assertEntityPermissions } from '../entities';
 import {
   assertSurveyResponsePermissions,
   createSurveyResponseDBFilter,
 } from './assertSurveyResponsePermissions';
-import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
-import { assertEntityPermissions } from '../entities';
-import { getQueryOptionsForColumns } from '../GETHandler/helpers';
 
 /**
  * Handles endpoints:
@@ -74,6 +74,6 @@ export class GETSurveyResponses extends GETHandler {
       this.defaultJoinType,
     );
 
-    return this.database.count(this.recordType, criteria, { multiJoin });
+    return this.database.countFast(this.recordType, criteria, { multiJoin });
   }
 }
