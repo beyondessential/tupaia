@@ -41,8 +41,8 @@ jobs:
           BW_CLIENTSECRET: ${{ secrets.BW_CLIENTSECRET }}
         run: yarn run download-env-vars meditrak-app
 
-      - name: Append BETA_BRANCH environment variable
-        working-directory:
+      - name: Append BETA_BRANCH environment variable (if non-production branch)
+        if: github.head_ref != 'master'
         run: echo -e "\nBETA_BRANCH=\"${{ github.head_ref }}\"" >>'packages/meditrak-app/.env'
 
       - name: Build release
