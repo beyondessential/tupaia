@@ -31,9 +31,12 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
 
+      - name: Set up Yarn
+        run: corepack enable yarn
+
       - name: Install dependencies
         # TODO: Fix dependency issues, replace with yarn workspaces focus tupaia @tupaia/meditrak-app
-        run: yarn install
+        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
 
       - name: Write .env file
         run: |
