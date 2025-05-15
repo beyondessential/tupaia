@@ -38,13 +38,16 @@ jobs:
         # TODO: Fix dependency issues, replace with yarn workspaces focus tupaia @tupaia/meditrak-app
         run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
 
-      - name: Write .env file
-        run: |
-          echo "BUGSNAG_API_KEY=${{ secrets.BUGSNAG_API_KEY }}\"
-          CLIENT_BASIC_AUTH_HEADER=\"${{ secrets.CLIENT_BASIC_AUTH_HEADER }}\"
-          MIXPANEL_ID=\"${{ secrets.MIXPANEL_ID }}\"
-          SECRET_SALT=\"${{ secrets.SECRET_SALT }}\"
-          " >packages/meditrak-app/.env
+      # TODO: Update to Bitwarden GitHub Action: https://bitwarden.com/help/github-actions-integration
+      - name: Install Bitwarden CLI
+        run: npm install --global @bitwarden/cli
+
+      - name: Download MediTrak environment variables
+        env:
+          BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
+          BW_CLIENTSECRET: ${{ secrets.BW_CLIENTSECRET }}
+          BW_PASSWORD: ${{ secrets.BW_PASSWORD }}
+        run: yarn run download-env-vars meditrak-app
 
       - name: Append BETA_BRANCH environment variable (if non-production branch)
         if: github.head_ref != 'master'
