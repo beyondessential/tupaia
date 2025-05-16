@@ -134,7 +134,6 @@ export interface QrCodeScannerProps {
 }
 
 export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScannerProps) => {
-  console.log(validEntities);
   const hasVideoInput = useHasVideoInput();
   const isMobile = useIsMobile();
 
