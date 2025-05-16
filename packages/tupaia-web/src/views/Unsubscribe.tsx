@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useSearchParams } from 'react-router-dom';
-import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { Typography } from '@material-ui/core';
 import BaseSuccessIcon from '@material-ui/icons/CheckCircle';
 import BaseErrorIcon from '@material-ui/icons/ErrorOutline';
+import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { Button, LoadingContainer, LoadingScreen } from '@tupaia/ui-components';
+
 import { useUnsubscribeDashboardMailingList } from '../api/mutations';
-import { Logo } from '../layout';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../constants';
+import { Logo } from '../layout';
 
 const StatusContainer = styled.div`
   display: flex;
@@ -56,7 +58,7 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
 
-  .loading-screen {
+  ${LoadingScreen} {
     border: 0;
     background-color: ${() =>
       window.getComputedStyle(document.body, null).getPropertyValue('background-color')};
