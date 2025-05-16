@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@tupaia/ui-components';
-import { QRScanIcon } from './QRScanIcon';
+import { Button, QrCodeScannerIcon } from '@tupaia/ui-components';
 
 export const QrScanButton = styled(Button).attrs({
-  startIcon: <QRScanIcon />,
+  startIcon: <QrCodeScannerIcon />,
   variant: 'text',
 })`
   background: ${({ theme }) => theme.palette.background.paper};

@@ -1,13 +1,16 @@
 import { Country, Entity, Project } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 
-type EntityResponse = Entity & {
-  isRecent?: boolean;
-  parent_name?: Entity['name'];
-};
+export interface EntityResponse
+  extends KeysToCamelCase<
+    Entity & {
+      isRecent?: boolean;
+      parent_name?: Entity['name'];
+    }
+  > {}
 
 export type Params = Record<string, never>;
-export type ResBody = KeysToCamelCase<EntityResponse>[];
+export type ResBody = EntityResponse[];
 
 export type ReqBody = Record<string, unknown> & {
   filter: Record<string, unknown>;

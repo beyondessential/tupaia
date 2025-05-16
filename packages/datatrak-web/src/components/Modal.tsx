@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Dialog, Paper, DialogProps } from '@material-ui/core';
 import MuiCloseIcon from '@material-ui/icons/Close';
@@ -15,21 +15,20 @@ const CloseIcon = styled(MuiCloseIcon)`
   color: ${({ theme }) => theme.palette.text.primary};
 `;
 
-const CloseButton = styled(IconButton)`
+export const CloseButton = styled(IconButton)`
   position: absolute;
   top: 0.1rem;
   right: 0.1rem;
   z-index: 1;
 `;
 
-const Content = styled.div`
+export const ModalContent = styled.div`
   padding-top: 1rem;
 `;
 
 interface ModalProps extends DialogProps {
   open: boolean;
   onClose: () => void;
-  children?: ReactNode;
 }
 
 export const Modal = ({ open, onClose, children, ...muiProps }: ModalProps) => {
@@ -38,7 +37,7 @@ export const Modal = ({ open, onClose, children, ...muiProps }: ModalProps) => {
       <CloseButton onClick={onClose}>
         <CloseIcon />
       </CloseButton>
-      <Content>{children}</Content>
+      <ModalContent>{children}</ModalContent>
     </Dialog>
   );
 };
