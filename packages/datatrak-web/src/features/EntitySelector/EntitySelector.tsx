@@ -145,7 +145,10 @@ export const EntitySelector = ({
   };
 
   const filters = useEntityBaseFilters(config, data, countryCode);
-
+  const { data: validEntities } = useProjectEntities(projectCode, {
+    fields: ['id', 'name'], // Only these are used by `onQrCodeScannerResult`
+    filter: filters,
+  });
   const {
     data: searchResults,
     isFetching: isFetchingSearchResults,
@@ -172,7 +175,7 @@ export const EntitySelector = ({
         <div className="entity-selector-content">
           {config?.entity?.allowScanQrCode && (
             <>
-              <QrCodeScanner onSuccess={onQrCodeScannerResult} validEntities={searchResults} />
+              <QrCodeScanner onSuccess={onQrCodeScannerResult} validEntities={validEntities} />
               <OrDivider />
             </>
           )}
