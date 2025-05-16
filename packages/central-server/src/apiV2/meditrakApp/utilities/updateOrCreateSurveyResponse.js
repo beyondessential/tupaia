@@ -21,41 +21,48 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
 
   const newAndUpdatedEntities = surveyResponseObject.entities_upserted || [];
   const optionsCreated = surveyResponseObject.options_created || [];
-  let surveyResponse;
-  try {
-    await upsertEntities(models, newAndUpdatedEntities, surveyResponseObject.survey_id);
-    await createOptions(models, optionsCreated);
-    const survey = await models.survey.findById(surveyResponseObject.survey_id);
 
-    // Ensure entity_id is populated, supporting legacy versions of MediTrak
-    if (clinicId) {
-      const entityId = await getEntityIdFromClinicId(models, clinicId);
-      surveyResponseProperties.entity_id = entityId;
+  models.wrapInTransaction(async transactingModels => {
+    let surveyResponse;
+    try {
+      await upsertEntities(
+        transactingModels,
+        newAndUpdatedEntities,
+        surveyResponseObject.survey_id,
+      );
+      await createOptions(transactingModels, optionsCreated);
+      const survey = await transactingModels.survey.findById(surveyResponseObject.survey_id);
+
+      // Ensure entity_id is populated, supporting legacy versions of MediTrak
+      if (clinicId) {
+        const entityId = await getEntityIdFromClinicId(transactingModels, clinicId);
+        surveyResponseProperties.entity_id = entityId;
+      }
+
+      // Ensure data_time is populated, supporting legacy versions of MediTrak
+      surveyResponseProperties.data_time = getDataTime(surveyResponseObject);
+
+      // If the response is for a survey where approval is required, set approval to pending
+      const approvalStatus = survey.requires_approval
+        ? transactingModels.surveyResponse.approvalStatusTypes.PENDING
+        : transactingModels.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
+
+      surveyResponse = await transactingModels.surveyResponse.updateOrCreate(
+        { id: surveyResponseId },
+        {
+          id: surveyResponseId,
+          approval_status: approvalStatus,
+          ...surveyResponseProperties,
+        },
+      );
+    } catch (error) {
+      throw new DatabaseError(
+        `creating/updating survey response with id ${surveyResponseId}`,
+        error,
+      );
     }
-
-    // Ensure data_time is populated, supporting legacy versions of MediTrak
-    surveyResponseProperties.data_time = getDataTime(surveyResponseObject);
-
-    // If the response is for a survey where approval is required, set approval to pending
-    let approvalStatus = models.surveyResponse.approvalStatusTypes.NOT_REQUIRED;
-    if (survey.requires_approval) {
-      approvalStatus = models.surveyResponse.approvalStatusTypes.PENDING;
-    }
-
-    surveyResponse = await models.surveyResponse.updateOrCreate(
-      {
-        id: surveyResponseId,
-      },
-      {
-        id: surveyResponseId,
-        approval_status: approvalStatus,
-        ...surveyResponseProperties,
-      },
-    );
-  } catch (error) {
-    throw new DatabaseError(`creating/updating survey response with id ${surveyResponseId}`, error);
-  }
-  await upsertAnswers(models, answers, surveyResponse.id);
+    await upsertAnswers(transactingModels, answers, surveyResponse.id);
+  });
 }
 
 const createOptions = async (models, optionsCreated) => {

@@ -1,7 +1,7 @@
 import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
-import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
+import { DatabaseError, requireEnv, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
 import { encryptPassword } from './utils';
@@ -43,7 +43,7 @@ export class Authenticator {
    * @param {{ username: string, secretKey: string }} apiClientCredentials
    */
   async authenticateApiClient({ username, secretKey }) {
-    const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
+    const secretKeyHash = encryptPassword(secretKey, requireEnv('API_CLIENT_SALT'));
     const apiClient = await this.models.apiClient.findOne({
       username,
       secret_key_hash: secretKeyHash,
