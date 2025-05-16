@@ -130,10 +130,11 @@ const Overlay = styled.div.attrs({ 'aria-hidden': true })`
 export interface QrCodeScannerProps {
   disabled?: boolean;
   onSuccess?: (entity: DatatrakWebEntityDescendantsRequest.EntityResponse) => void;
-  validEntities?: DatatrakWebEntityDescendantsRequest.ResBody;
+  validEntities: DatatrakWebEntityDescendantsRequest.ResBody | undefined;
 }
 
 export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScannerProps) => {
+  console.log(validEntities);
   const hasVideoInput = useHasVideoInput();
   const isMobile = useIsMobile();
 
