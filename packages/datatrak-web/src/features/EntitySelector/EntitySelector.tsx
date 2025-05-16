@@ -148,7 +148,7 @@ export const EntitySelector = ({
 
   const {
     data: searchResults,
-    isLoading: isLoadingSearchResults,
+    isFetching: isFetchingSearchResults,
     isFetched,
   } = useSearchResults(searchValue, filters, projectCode, disableSearch);
 
@@ -159,7 +159,7 @@ export const EntitySelector = ({
     return entityName === searchValue;
   });
 
-  const showLoader = isLoading || ((isLoadingSearchResults || !isFetched) && !disableSearch);
+  const showLoader = isLoading || ((isFetchingSearchResults || !isFetched) && !disableSearch);
 
   return (
     <>
