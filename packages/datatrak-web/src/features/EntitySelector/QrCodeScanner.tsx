@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@material-ui/core';
+import { CircularProgress, Paper, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
 import styled from 'styled-components';
@@ -61,7 +61,7 @@ const ModalRoot = styled(Paper)`
   }
 `;
 
-const Paragraph = styled(Typography).attrs({ variant: 'h1' })`
+const Heading = styled(Typography).attrs({ variant: 'h1' })`
   align-self: end;
   font-weight: 500;
   grid-area: --instruction;
@@ -127,13 +127,23 @@ const Overlay = styled.div.attrs({ 'aria-hidden': true })`
   pointer-events: none;
 `;
 
+const loadingText = (
+  <>
+    <CircularProgress color="inherit" size="1em" style={{ marginInlineEnd: '0.5em' }} />
+    Loading scanner…
+  </>
+);
+
 export interface QrCodeScannerProps {
   disabled?: boolean;
   onSuccess?: (entity: DatatrakWebEntityDescendantsRequest.EntityResponse) => void;
+  /** Pass `undefined` when data is pending */
   validEntities: DatatrakWebEntityDescendantsRequest.ResBody | undefined;
 }
 
 export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScannerProps) => {
+  const isFetchingEntities = validEntities === undefined;
+
   const hasVideoInput = useHasVideoInput();
   const isMobile = useIsMobile();
 
@@ -197,7 +207,7 @@ export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScan
         onClose={onModalClose}
         PaperComponent={ModalRoot}
       >
-        <Paragraph>Scan entity QR&nbsp;code</Paragraph>
+        <Heading>{isFetchingEntities ? loadingText : <>Scan entity QR&nbsp;code</>}</Heading>
         <StyledQrReader onResult={onResult} />
         <Feedback>{feedback}</Feedback>
         <Overlay />
