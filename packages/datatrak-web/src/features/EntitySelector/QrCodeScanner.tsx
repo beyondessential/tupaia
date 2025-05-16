@@ -19,8 +19,8 @@ const ModalRoot = styled(Paper)`
   --scanner-size: min(80cqw, 70cqh);
   container: --qr-code-scanner-modal / size;
   background-color: black; // Visible when video stream is loading
-  block-size: 100lvb;
-  inline-size: 100lvi;
+  block-size: 100dvb;
+  inline-size: 100dvi;
 
   ${CloseButton} {
     &.MuiIconButton-root:hover {
