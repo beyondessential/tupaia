@@ -4,7 +4,7 @@ import winston from 'winston';
 
 export const handleError = (
   err: RespondingError | Error,
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) => {

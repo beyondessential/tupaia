@@ -1,4 +1,3 @@
-import moment from 'moment';
 import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';

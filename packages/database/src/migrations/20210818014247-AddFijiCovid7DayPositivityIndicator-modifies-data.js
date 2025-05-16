@@ -3,8 +3,6 @@
 import {
   insertObject,
   generateId,
-  findSingleRecord,
-  findSingleRecordBySql,
   deleteObject,
 } from '../utilities';
 

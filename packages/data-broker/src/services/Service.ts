@@ -74,7 +74,9 @@ export abstract class Service {
    */
   public async pullMetadata(
     dataSources: DataSource[],
+    // @ts-ignore
     type: DataSourceType,
+    // @ts-ignore
     options: PullMetadataOptions,
   ): Promise<{ code: string }[]> {
     return dataSources.map(ds => ({ code: ds.code }));

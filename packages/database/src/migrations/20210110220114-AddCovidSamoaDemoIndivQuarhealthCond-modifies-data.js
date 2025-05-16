@@ -1,7 +1,6 @@
 'use strict';
 
 import {
-  generateId,
   insertObject,
   addReportToGroups,
   deleteReport,

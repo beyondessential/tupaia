@@ -2,7 +2,6 @@
 
 import {
   insertObject,
-  deleteObject,
   generateId,
   findSingleRecord,
   findSingleRecordBySql,
