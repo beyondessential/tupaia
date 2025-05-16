@@ -9,7 +9,7 @@ export const RequestCountryAccessSection = () => {
   const title = (
     <>
       Request country access
-      <ChangeProjectButton />
+      <ChangeProjectButton leadingBorder style={{ marginInlineStart: '0.5rem' }} />
     </>
   );
 

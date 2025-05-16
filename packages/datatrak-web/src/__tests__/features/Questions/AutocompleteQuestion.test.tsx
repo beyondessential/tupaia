@@ -120,15 +120,15 @@ describe('Autocomplete Question', () => {
     );
 
     const searchInput = screen.getByRole('textbox');
-    await userEvent.type(searchInput, 'Purple');
+    userEvent.type(searchInput, 'Purple');
 
     const displayOptions = await screen.findAllByRole('option');
     expect(displayOptions.length).toBe(1);
 
-    expect(displayOptions[0]).toHaveTextContent('Add "Purple"');
+    expect(displayOptions[0]).toHaveTextContent('Add “Purple”');
   });
 
-  it('Calls the onChange method with a new option when "Add ..." option is selected', async () => {
+  it('Calls the onChange method with a new option when “Add…” option is selected', async () => {
     renderComponent(
       <AutocompleteQuestion
         {...props}
@@ -141,9 +141,9 @@ describe('Autocomplete Question', () => {
     );
 
     const searchInput = screen.getByRole('textbox');
-    await userEvent.type(searchInput, 'Purple');
+    userEvent.type(searchInput, 'Purple');
 
-    const displayOption = await screen.findByRole('option', { name: 'Add "Purple"' });
+    const displayOption = await screen.findByRole('option', { name: 'Add “Purple”' });
     userEvent.click(displayOption);
 
     expect(onChange).toHaveBeenCalledWith('Purple');

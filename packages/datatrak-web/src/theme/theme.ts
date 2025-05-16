@@ -176,8 +176,18 @@ const overrides = {
   },
 } as const;
 
+const transitions = {
+  /* These custom CSS properties defined immediately above in `overrides.MuiCssBaseline['root']` */
+  easing: {
+    easeIn: 'var(--ease-in-quart)',
+    easeInOut: 'var(--ease-in-out-quart)',
+    easeOut: 'var(--ease-out-quart)',
+  },
+};
+
 export const theme = createMuiTheme({
-  palette,
-  typography,
   overrides,
+  palette,
+  transitions,
+  typography,
 });

@@ -62,7 +62,7 @@ export const UserInfo = () => {
       {isLoggedIn ? (
         <UserDetails>
           <UserName>{fullName}</UserName>
-          {projectId && <ChangeProjectButton />}
+          {projectId && <ChangeProjectButton leadingBorder />}
         </UserDetails>
       ) : (
         <AuthButtons>

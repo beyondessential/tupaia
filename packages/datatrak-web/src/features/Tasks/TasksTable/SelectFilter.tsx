@@ -1,6 +1,10 @@
-import React, { ReactNode, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { MenuItem as MuiMenuItem, Select as MuiSelect } from '@material-ui/core';
+import {
+  MenuItem as MuiMenuItem,
+  Select as MuiSelect,
+  SelectProps as MuiSelectProps,
+} from '@material-ui/core';
 import { KeyboardArrowDown } from '@material-ui/icons';
 import { TaskFilterType } from '../../../types';
 
@@ -25,18 +29,17 @@ const MenuItemText = styled.span`
   padding: 0.3rem;
 `;
 
-type Option = {
+interface Option {
   value: string | number;
-  label?: string;
-};
+  label?: React.ReactNode;
+}
 
-interface SelectFilterProps {
+interface SelectFilterProps extends Omit<MuiSelectProps, 'onChange'> {
   onChange: (value: string) => void;
   filter: { value: TaskFilterType } | undefined;
-  renderValue?: (value: Option['value']) => ReactNode;
   options: Option[];
   placeholderValue?: string;
-  renderOption?: (option: Option) => ReactNode;
+  renderOption?: (option: Option) => React.ReactNode;
 }
 
 export const SelectFilter = ({

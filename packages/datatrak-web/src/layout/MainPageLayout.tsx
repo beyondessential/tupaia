@@ -34,21 +34,21 @@ const PageWrapper = styled.div`
   }
 `;
 
+const mobileHeaderlessRoutes = [
+  `${ROUTES.SURVEY}/*`,
+  ROUTES.ACCOUNT_SETTINGS,
+  ROUTES.SURVEY_SELECT,
+  ROUTES.SYNC,
+  ROUTES.TASK_DETAILS,
+  ROUTES.TASKS,
+  ROUTES.WELCOME,
+];
+const desktopHeaderlessRoutes = [ROUTES.WELCOME];
+
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();
-
-  const mobileHeaderlessRoutes = [
-    `${ROUTES.SURVEY}/*`,
-    ROUTES.SURVEY_SELECT,
-    ROUTES.ACCOUNT_SETTINGS,
-    ROUTES.WELCOME,
-  ];
-  if (useIsMobile()) {
-    return !mobileHeaderlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
-  }
-  const desktopHeaderlessRoutes = [ROUTES.WELCOME];
-
-  return !desktopHeaderlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
+  const headerlessRoutes = useIsMobile() ? mobileHeaderlessRoutes : desktopHeaderlessRoutes;
+  return !headerlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
 };
 
 export const MainPageLayout = () => {

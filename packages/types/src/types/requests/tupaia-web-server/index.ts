@@ -1,3 +1,4 @@
+export * as TupaiaWebCountriesRequest from './CountriesRequest';
 export * as TupaiaWebChangePasswordRequest from './ChangePasswordRequest';
 export * as TupaiaWebDashboardsRequest from './DashboardsRequest';
 export * as TupaiaWebEmailDashboardRequest from './EmailDashboardRequest';

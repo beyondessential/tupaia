@@ -1,7 +1,4 @@
 /*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
- *
  * This file contains any utils that useful for the matrix component. This is mainly used for
  * presentation options.
  */

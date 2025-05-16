@@ -27,3 +27,17 @@ export function isEmptyArray(val: unknown): val is [] {
 export function isNonEmptyArray<T = unknown>(val: unknown): val is [T, ...T[]] {
   return Array.isArray(val) && val.length > 0;
 }
+
+type Primitive = null | undefined | boolean | number | string | bigint | symbol;
+
+export function isPrimitive(val: unknown): val is Primitive {
+  return (
+    val === null ||
+    val === undefined ||
+    typeof val === 'boolean' ||
+    typeof val === 'number' ||
+    typeof val === 'string' ||
+    typeof val === 'bigint' ||
+    typeof val === 'symbol'
+  );
+}
