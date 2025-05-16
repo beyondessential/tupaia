@@ -16,4 +16,5 @@ export type UserAccountDetails = {
   projectId?: Project['id'] | null;
   countryId?: Entity['id'] | null;
   deleteAccountRequested?: boolean;
+  hideWelcomeScreen?: boolean;
 };
