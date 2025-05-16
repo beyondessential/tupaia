@@ -18,6 +18,7 @@ const USER_PREFERENCES_FIELDS = [
   'country_id',
   'delete_account_requested',
   'recent_entities',
+  'hide_welcome_screen',
 ];
 
 export class EditUserAccounts extends EditHandler {
