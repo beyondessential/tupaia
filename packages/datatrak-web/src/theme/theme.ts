@@ -85,9 +85,12 @@ const overrides = {
         padding: 0,
       },
       ':root': {
-        '--ease-in-out-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
+        '--ease-in-quad': 'cubic-bezier(0.11, 0, 0.5, 0)',
+        '--ease-out-quad': 'cubic-bezier(0.5, 1, 0.89, 1)',
+        '--ease-in-out-quad': 'cubic-bezier(0.45, 0, 0.55, 1)',
         '--ease-in-quart': 'cubic-bezier(0.5, 0, 0.75, 0)',
         '--ease-out-quart': 'cubic-bezier(0.25, 1, 0.5, 1)',
+        '--ease-in-out-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
         accentColor: palette.primary.main,
         interpolateSize: 'allow-keywords',
       },

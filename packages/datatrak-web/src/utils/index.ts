@@ -1,5 +1,6 @@
 export * from './date';
 export * from './detectDevice';
+export { isWebApp } from './displayMode';
 export { formatNumberWithTrueMinus } from './formatNumbers';
 export { gaEvent } from './ga';
 export { innerText } from './innerText';

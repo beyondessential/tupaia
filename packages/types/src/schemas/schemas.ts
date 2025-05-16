@@ -84731,6 +84731,7 @@ export const EntityTypeEnumSchema = {
 		"trap",
 		"vehicle",
 		"village",
+		"visiting_specialist",
 		"water_sample",
 		"wish_sub_district",
 		"world"
