@@ -1,12 +1,16 @@
 {
   "id": "datatrak",
   "name": "Tupaia DataTrak",
+  "short_name": "Tupaia DataTrak",
+  "description": "Tupaia DataTrak is a free and open-source tool that can be used for data collection, managing tasking and generating reports.",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
   "display": "standalone",
+  "orientation": "natural",
   "scope": "/",
   "start_url": "/",
-  "description": "Tupaia DataTrak is a free and open-source tool that can be used for data collection, managing tasking and generating reports.",
+  "lang": "en",
+  "categories": ["health"],
   "screenshots": [
     {
       "src": "screenshots/desktop__dashboard.png",
