@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography, useTheme } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { ArrowLeftIcon, Button, TaskIcon } from '../../components';
@@ -74,6 +74,7 @@ export const TaskPageHeader = ({
   backTo?: string;
 }) => {
   const from = useFromLocation();
+  const primaryColor = useTheme().palette.primary.main;
   return (
     <Wrapper>
       <Container>
@@ -81,7 +82,7 @@ export const TaskPageHeader = ({
           <ArrowLeftIcon />
         </BackButton>
         <HeadingContainer>
-          <TaskIcon />
+          <TaskIcon htmlColor={primaryColor} />
           <Title>{title}</Title>
         </HeadingContainer>
       </Container>

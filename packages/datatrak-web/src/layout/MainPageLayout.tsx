@@ -7,6 +7,7 @@ import { SurveyResponseModal } from '../features';
 import { useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
+import { NavigationBar } from '../components/NavigationBar';
 
 const PageWrapper = styled.div`
   background-color: ${props => props.theme.palette.background.default};
@@ -34,6 +35,13 @@ const PageWrapper = styled.div`
   }
 `;
 
+const Nav = styled(NavigationBar)`
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  position: absolute;
+`;
+
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();
 
@@ -57,6 +65,8 @@ export const MainPageLayout = () => {
     <PageWrapper>
       {showHeader && <Header />}
       <Outlet />
+      <Nav />
+
       <SurveyResponseModal />
     </PageWrapper>
   );
