@@ -1,15 +1,16 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebUsersRequest, Project } from '@tupaia/types';
+import { DatatrakWebUsersRequest, Project, UserAccount } from '@tupaia/types';
 import { getFilteredUsers } from '../utils';
 import { DatatrakWebServerModelRegistry } from '../types';
 
-export type ProjectUsersRequest = Request<
-  DatatrakWebUsersRequest.Params,
-  DatatrakWebUsersRequest.ResBody,
-  DatatrakWebUsersRequest.ReqBody,
-  DatatrakWebUsersRequest.ReqQuery
->;
+export interface ProjectUsersRequest
+  extends Request<
+    DatatrakWebUsersRequest.Params,
+    DatatrakWebUsersRequest.ResBody,
+    DatatrakWebUsersRequest.ReqBody,
+    DatatrakWebUsersRequest.ReqQuery
+  > {}
 
 const getFilterUsersForProject = async (
   models: DatatrakWebServerModelRegistry,
@@ -17,16 +18,16 @@ const getFilterUsersForProject = async (
   searchTerm?: string,
 ) => {
   const usersQuery = `
-    WITH 
+    WITH
     country_list AS (
       SELECT DISTINCT country_entity.code::TEXT
       FROM entity country_entity
       JOIN entity_relation ON entity_relation.child_id = country_entity.id
       WHERE entity_relation.parent_id IN (
-          SELECT e.id 
-          FROM entity e 
-          JOIN project p ON p.entity_id = e.id 
-          WHERE p.code = ?
+        SELECT e.id
+        FROM entity e
+        JOIN project p ON p.entity_id = e.id
+        WHERE p.code = ?
       )
     )
     SELECT u.id
@@ -35,11 +36,11 @@ const getFilterUsersForProject = async (
     JOIN entity country ON uep.entity_id = country.id
     WHERE country.code IN (SELECT code FROM country_list)
     GROUP BY u.id;
-      `;
+  `;
 
   const bindings = [projectCode];
 
-  const users = (await models.database.executeSql(usersQuery, bindings)) as { id: string }[];
+  const users: { id: UserAccount['id'] }[] = await models.database.executeSql(usersQuery, bindings);
   const userIds = users.map(user => user.id);
 
   return getFilteredUsers(models, searchTerm, userIds);
