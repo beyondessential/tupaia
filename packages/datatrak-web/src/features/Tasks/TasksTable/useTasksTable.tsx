@@ -66,7 +66,7 @@ export function useTasksTable() {
   const page = Number.isNaN(_page) ? _page : 0;
 
   const _pageSize = Number.parseInt(searchParams.get('pageSize') || '20', 10);
-  const pageSize = Number.isNaN(_pageSize) ? _pageSize : 20;
+  const pageSize = !Number.isNaN(_pageSize) ? _pageSize : 20;
 
   const _sortBy = searchParams.get('sortBy');
   const sorting: UseTasksQueryParams['sortBy'] = useMemo(
