@@ -111,6 +111,9 @@ const overrides = {
       source: {
         display: 'none',
       },
+      table: {
+        fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
+      },
       time: {
         fontVariantNumeric: 'lining-nums slashed-zero tabular-nums',
       },
