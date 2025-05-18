@@ -46,7 +46,7 @@ export const TasksDashboardPage = () => {
       <TaskPageHeader title="Tasks" backTo="/">
         {(!isMobile || canCreateTaskOnMobile) && (
           <>
-            <TaskMetrics style={{ marginInlineEnd: 'auto' }} />
+            {!isMobile && <TaskMetrics style={{ marginInlineEnd: 'auto' }} />}
             <CreateButton onClick={toggleCreateModal}>
               <AddIcon aria-hidden />
               Create task
