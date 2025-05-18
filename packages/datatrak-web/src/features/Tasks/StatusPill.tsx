@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { TaskStatus } from '@tupaia/types';
+import { FilterableTableCellContent } from '@tupaia/ui-components';
+
 import { theme } from '../../theme';
 import { TaskStatusType } from '../../types';
 
@@ -16,7 +19,7 @@ const Pill = styled.span<{
   padding-inline: 0.7rem;
   padding-block: 0.2rem;
   border-radius: 2em;
-  .cell-content > div:has(&) {
+  ${FilterableTableCellContent} > div:has(&) {
     overflow: visible;
   }
 `;
