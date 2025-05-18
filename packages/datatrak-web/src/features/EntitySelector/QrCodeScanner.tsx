@@ -159,6 +159,8 @@ export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScan
   };
 
   const onResult: OnResultFunction = async (result, error) => {
+    if (isFetchingEntities) return;
+
     if (error?.message) {
       if (error instanceof DOMException && error.name === 'NotAllowedError') {
         setFeedback(
