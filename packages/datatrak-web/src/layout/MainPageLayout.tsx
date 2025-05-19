@@ -2,25 +2,12 @@ import React from 'react';
 import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { NavigationBar } from '../components/NavigationBar';
 import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { SurveyResponseModal } from '../features';
-import { useIsMobile } from '../utils';
+import { useBottomNavigationBarVisibility, useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
-import { NavigationBar } from '../components/NavigationBar';
-
-const bottomNavigationBarBlocklist = [
-  ROUTES.EXPORT_SURVEY_RESPONSE,
-  ROUTES.FORGOT_PASSWORD,
-  ROUTES.LOGIN,
-  ROUTES.REGISTER,
-  ROUTES.REPORTS,
-  ROUTES.RESET_PASSWORD,
-  ROUTES.SYNC,
-  ROUTES.VERIFY_EMAIL_RESEND,
-  ROUTES.VERIFY_EMAIL,
-  ROUTES.WELCOME,
-];
 
 const PageWrapper = styled.div`
   background-color: ${props => props.theme.palette.background.default};
@@ -70,14 +57,6 @@ const useHeaderVisibility = () => {
   const desktopHeaderlessRoutes = [ROUTES.WELCOME];
 
   return !desktopHeaderlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
-};
-
-const useBottomNavigationBarVisibility = () => {
-  const { pathname } = useLocation();
-  const isMobile = useIsMobile();
-  return isMobile
-    ? !bottomNavigationBarBlocklist.some(pathPattern => matchPath(pathPattern, pathname))
-    : false;
 };
 
 export const MainPageLayout = () => {
