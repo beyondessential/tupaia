@@ -118,23 +118,26 @@ const SurveysImage = styled.img.attrs({
 `;
 
 export const SurveySelectSection = () => {
-  const SupplementalText = useIsMobile() ? VisuallyHidden : Fragment;
+  const isMobile = useIsMobile();
+  const SupplementalText = isMobile ? VisuallyHidden : Fragment;
 
   return (
     <SectionContainer>
       <SectionContent>
-        <ButtonWrapper>
-          <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
-          <ButtonAnchor
-            fullWidth
-            variant="outlined"
-            href={TUPAIA_REDIRECT_URL}
-            rel="noreferrer"
-            target="_blank"
-          >
-            Explore data
-          </ButtonAnchor>
-        </ButtonWrapper>
+        {!isMobile && (
+          <ButtonWrapper>
+            <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
+            <ButtonAnchor
+              fullWidth
+              variant="outlined"
+              href={TUPAIA_REDIRECT_URL}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Explore data
+            </ButtonAnchor>
+          </ButtonWrapper>
+        )}
         <Text>
           Tupaia DataTrak makes data collection easy!
           <SupplementalText>
