@@ -84,7 +84,7 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
     return css`
       ${up('md')} {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 23.33333333%)) minmax(min-content, 30%);
+        grid-template-columns: repeat(3, minmax(0, 3fr)) minmax(0, 4fr);
         padding-block: 1rem;
         margin-block: 0;
       }
@@ -96,7 +96,7 @@ const Grid = styled.div<{ $hasMultiple?: boolean }>`
               '--surveySelect    --surveySelect  --surveySelect  --tasks'
               '--recentSurveys   --recentSurveys --recentSurveys --tasks'
               '--recentResponses --activityFeed  --activityFeed  --leaderboard';
-            grid-template-rows: repeat(3, auto);
+            grid-template-rows: repeat(3, minmax(0, auto));
           `
         : css`
             grid-template-areas:
