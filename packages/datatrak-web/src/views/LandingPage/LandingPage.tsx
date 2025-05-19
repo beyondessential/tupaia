@@ -1,8 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+import { SafeAreaColumn } from '@tupaia/ui-components';
+
 import { useCurrentUserRecentSurveys } from '../../api';
-import { PageContainer as BasePageContainer } from '../../components';
 import { HEADER_HEIGHT } from '../../constants';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { LeaderboardSection } from './LeaderboardSection';
@@ -11,7 +12,7 @@ import { SurveyResponsesSection } from './SurveyResponsesSection';
 import { SurveySelectSection } from './SurveySelectSection';
 import { TasksSection } from './TasksSection';
 
-const PageContainer = styled(BasePageContainer).attrs({ component: 'main' })`
+const PageContainer = styled(SafeAreaColumn).attrs({ component: 'main' })`
   --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
   //                                                 ^~~~~~~~~~~~~~~~~~~ Header’s border-block-end-width
   block-size: 100%;
