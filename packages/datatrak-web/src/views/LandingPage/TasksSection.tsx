@@ -80,8 +80,7 @@ const MobileButton = styled(ViewMoreButton)`
   float: right;
 `;
 
-const ViewMoreTasksButton = ({ numberOfPages }) => {
-  if (numberOfPages <= 1) return null;
+const ViewMoreTasksButton = () => {
   const Button = useIsMobile() ? MobileButton : DesktopButton;
   return (
     <Button component={Link} to={ROUTES.TASKS}>
@@ -129,7 +128,7 @@ export const TasksSection = () => {
         {tasks.map(task => (
           <TaskTile key={task.id} task={task} />
         ))}
-        <ViewMoreTasksButton numberOfPages={data.numberOfPages} />
+        {data?.numberOfPages >= 1 && <ViewMoreTasksButton />}
       </>
     );
   };
