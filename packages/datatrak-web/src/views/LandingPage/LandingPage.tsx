@@ -53,7 +53,7 @@ const PageBody = styled.div`
   inline-size: 100%;
   margin-block: 0;
   margin-inline: auto;
-  max-inline-size: 85rem;
+  max-inline-size: 88rem;
   padding-block-start: 1rem;
   padding-bottom: max(env(safe-area-inset-bottom), 1rem);
 
