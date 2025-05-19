@@ -24,7 +24,7 @@ const Paper = styled.div<{ $hasTasks?: boolean }>`
   background: ${({ theme }) => theme.palette.background.paper};
   padding-block: 1rem;
   padding-inline: 1.25rem;
-  border-radius: 10px;
+  border-radius: 0.625rem;
 
   ${({ theme, $hasTasks }) =>
     $hasTasks &&
