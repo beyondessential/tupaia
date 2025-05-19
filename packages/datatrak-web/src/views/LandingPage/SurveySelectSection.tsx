@@ -29,11 +29,8 @@ const SectionContainer = styled.section`
 const SectionContent = styled.div`
   align-items: center;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: row;
   gap: 1rem 1.25rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: row;
-  }
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
