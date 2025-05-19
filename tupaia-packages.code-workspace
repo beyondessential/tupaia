@@ -244,8 +244,10 @@
       "Tupaia",
       "updaters",
       "upsert",
-      "Upserts",
-      "vars"
+      "upserted",
+      "upserting",
+      "upserts",
+      "vars",
     ],
     "eslint.validate": ["typescript", "typescriptreact"],
     "editor.defaultFormatter": "esbenp.prettier-vscode",
