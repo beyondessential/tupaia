@@ -13,6 +13,7 @@ const SectionContainer = styled.section`
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
   column-gap: 1rem;
+  font-size: 1rem;
   display: flex;
   grid-area: --surveySelect;
   justify-content: space-between;
@@ -36,7 +37,7 @@ const SectionContent = styled.div`
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
-  font-size: 1rem;
+  font-size: inherit;
   padding-inline: 0.5rem;
   & ~ .MuiButtonBase-root {
     margin-inline-start: 0; // override default margin from ui-components
@@ -66,7 +67,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const Text = styled(Typography)`
-  font-size: 1rem;
+  font-size: inherit;
   line-height: 1.5;
   max-inline-size: 38rem;
 `;
