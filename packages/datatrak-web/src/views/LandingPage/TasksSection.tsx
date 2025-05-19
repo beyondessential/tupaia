@@ -15,9 +15,6 @@ const SectionContainer = styled.section`
   grid-area: --tasks;
   display: flex;
   flex-direction: column;
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    max-height: 21.5rem;
-  }
 `;
 
 const Paper = styled.div<{ $hasTasks?: boolean }>`
