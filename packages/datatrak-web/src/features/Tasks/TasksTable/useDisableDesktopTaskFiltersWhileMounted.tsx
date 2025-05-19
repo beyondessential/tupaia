@@ -10,13 +10,9 @@ export function useDisableDesktopTaskFiltersWhileMounted() {
   const { setShowAllAssignees, setShowCancelled, setShowCompleted } = useTasksTable();
 
   // When calling component mounts, set sensible defaults
-  useEffect(
-    () => {
-      setShowAllAssignees(false);
-      setShowCancelled(true);
-      setShowCompleted(true);
-    },
-    // Effect is idempotent, so exhaustively declaring dependencies is actually optional
-    [setShowAllAssignees, setShowCancelled, setShowCompleted],
-  );
+  useEffect(() => {
+    setShowAllAssignees(false);
+    setShowCancelled(true);
+    setShowCompleted(true);
+  }, [setShowAllAssignees, setShowCancelled, setShowCompleted]);
 }
