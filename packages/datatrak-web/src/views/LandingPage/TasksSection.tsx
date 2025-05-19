@@ -103,13 +103,17 @@ export const TasksSection = () => {
   ];
 
   const isMobile = useIsMobile();
-  const { data, isFetching, isSuccess } = useTasks({
+  const {
+    data = { tasks: [], numberOfPages: 0 },
+    isFetching,
+    isSuccess,
+  } = useTasks({
     projectId,
     filters,
     pageSize: isMobile ? 3 : 15,
   });
 
-  const tasks = data?.tasks ?? [];
+  const tasks = data.tasks ?? [];
   const hasTasks = isSuccess && tasks?.length > 0;
 
   // Tasks view accessible via bottom navigation bar in mobile
@@ -128,7 +132,7 @@ export const TasksSection = () => {
         {tasks.map(task => (
           <TaskTile key={task.id} task={task} />
         ))}
-        {data?.numberOfPages >= 1 && <ViewMoreTasksButton />}
+        {data.numberOfPages >= 1 && <ViewMoreTasksButton />}
       </>
     );
   };
