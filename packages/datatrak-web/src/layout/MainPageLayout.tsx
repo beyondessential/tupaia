@@ -39,7 +39,7 @@ const Nav = styled(NavigationBar)`
   inset-block-end: 0;
   inset-inline-end: 0;
   inset-inline-start: 0;
-  position: absolute;
+  position: fixed;
 `;
 
 const useHeaderVisibility = () => {
