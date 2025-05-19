@@ -5,10 +5,11 @@ import { FilterableTable } from '@tupaia/ui-components';
 
 import { isFeatureEnabled } from '@tupaia/utils';
 
-import { useIsMobile } from '../../../utils';
+import { useIsDesktop, useIsMobile } from '../../../utils';
 import { FilterToolbar } from './FilterToolbar';
 import { MobileTaskFilters } from './MobileTaskFilters';
 import { useTasksTable } from './useTasksTable';
+import { useIsDesktopMediaQuery } from '../../../utils/useIsMobileSizeClass';
 
 const Container = styled.div`
   background-color: ${props => props.theme.palette.background.paper};
@@ -53,11 +54,13 @@ export const TasksTable = () => {
     onChangePageSize,
     isLoading,
   } = useTasksTable();
+
   const isMobile = useIsMobile();
+  const isDesktop = useIsDesktop();
 
   return (
     <Container>
-      {!isMobile && <FilterToolbar />}
+      {isDesktop && <FilterToolbar />}
       <FilterableTable
         columns={columns}
         data={isLoading ? [] : data}
@@ -72,7 +75,7 @@ export const TasksTable = () => {
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
         noDataMessage={
-          !isMobile || canCreateTaskOnMobile
+          isDesktop || canCreateTaskOnMobile
             ? 'No tasks to display. Click the ‘+ Create task’ button above to add a new task.'
             : 'No tasks to display'
         }
