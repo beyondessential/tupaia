@@ -5,11 +5,11 @@ import styled, { css } from 'styled-components';
 import { FlexSpaceBetween, Button as UIButton } from '@tupaia/ui-components';
 
 import { useCurrentUserContext, useTasks } from '../../api';
+import { TileSkeletons } from '../../components';
 import { ROUTES } from '../../constants';
 import { NoTasksSection, TaskTile } from '../../features/Tasks';
 import { useIsMobile } from '../../utils';
 import { SectionHeading } from './SectionHeading';
-import { TileSkeletons } from '../../components';
 
 const SectionContainer = styled.section`
   grid-area: --tasks;
@@ -104,16 +104,20 @@ export const TasksSection = () => {
   ];
 
   const isMobile = useIsMobile();
-  const {
-    data = { tasks: [], numberOfPages: 0 },
-    isLoading,
-    isSuccess,
-  } = useTasks({ projectId, filters, pageSize: isMobile ? 3 : 15 });
-  const tasks = data.tasks;
+  const { data, isFetching, isSuccess } = useTasks({
+    projectId,
+    filters,
+    pageSize: isMobile ? 3 : 15,
+  });
+
+  const tasks = data?.tasks ?? [];
   const hasTasks = isSuccess && tasks?.length > 0;
 
+  // Tasks view accessible via bottom navigation bar in mobile
+  if (isMobile && !hasTasks) return null;
+
   const renderContents = () => {
-    if (isLoading) {
+    if (isFetching) {
       return <TileSkeletons count={4} tileSkeletonProps={{ lineCount: 1 }} />;
     }
     if (!hasTasks) {
