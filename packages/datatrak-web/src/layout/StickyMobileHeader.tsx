@@ -10,6 +10,7 @@ export const MobileHeaderRoot = styled.header`
   align-items: center;
   background-color: ${({ theme }) => theme.palette.background.paper};
   block-size: ${HEADER_HEIGHT};
+  border-block-end: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   display: grid;
   gap: 1rem;
   grid-template-areas: '--leading --title --trailing';
