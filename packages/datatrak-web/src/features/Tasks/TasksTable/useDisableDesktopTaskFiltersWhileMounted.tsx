@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router';
+import { ROUTES } from '../../../constants';
 import { useTasksTable } from './useTasksTable';
 
 /**
@@ -21,28 +23,21 @@ export function useDisableDesktopTaskFiltersWhileMounted() {
   const [cancelled] = useState(showCancelled);
   const [completed] = useState(showCompleted);
 
-  // When calling component mounts, set sensible defaults
-  useEffect(
-    () => {
-      setShowAllAssignees(false);
-      setShowCancelled(true);
-      setShowCompleted(true);
-    },
-    // Effect is idempotent, so exhaustively declaring dependencies is actually optional
-    [setShowAllAssignees, setShowCancelled, setShowCompleted],
-  );
+  useEffect(() => {
+    setShowAllAssignees(false);
+    setShowCancelled(true);
+    setShowCompleted(true);
 
-  useEffect(
-    () => {
-      return () => {
+    return () => {
+      // HACK: We’re after the pathname’s value when this cleanup function runs, not when it’s
+      // scheduled. Using `useLocation` or `useMatch` gives us an outdated value.
+      if (window.location.pathname.startsWith(ROUTES.TASKS)) {
         // Restore previous settings
+        console.log('cleaning up');
         setShowAllAssignees(allAssignees);
         setShowCancelled(cancelled);
         setShowCompleted(completed);
-      };
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // Expressly want cleanup function to run only when caller unmounts
-    [],
-  );
+      }
+    };
+  }, [setShowAllAssignees, setShowCancelled, setShowCompleted]);
 }
