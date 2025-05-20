@@ -1,5 +1,4 @@
-const { startDevConfigs } = require('./base.config');
+import { startDevConfigs } from './base.config';
+import serverStacks from '../server-stacks.json';
 
-module.exports = {
-  apps: startDevConfigs(['central-server', 'entity-server', 'report-server', 'data-table-server']),
-};
+export const apps = startDevConfigs(serverStacks['viz-test-tool']);
