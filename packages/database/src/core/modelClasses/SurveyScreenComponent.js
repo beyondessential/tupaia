@@ -1,3 +1,9 @@
+import {
+  buildSyncLookupSurveyProjectIdSelect,
+  buildSyncLookupTraverseJoins,
+  SYNC_DIRECTIONS,
+} from '@tupaia/sync';
+
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
@@ -24,7 +30,23 @@ export class SurveyScreenComponentRecord extends DatabaseRecord {
 }
 
 export class SurveyScreenComponentModel extends DatabaseModel {
+  syncDirection = SYNC_DIRECTIONS.BIDIRECTIONAL;
+
   get DatabaseRecordClass() {
     return SurveyScreenComponentRecord;
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return {
+      select: await buildSyncLookupSurveyProjectIdSelect(this),
+      joins: buildSyncLookupTraverseJoins([this.databaseRecord, 'survey_screen', 'survey'], {
+        survey_screen_component_survey_screen: {
+          fromTable: 'survey_screen_component',
+          fromKey: 'screen_id',
+          toTable: 'survey_screen',
+          toKey: 'id',
+        },
+      }),
+    };
   }
 }
