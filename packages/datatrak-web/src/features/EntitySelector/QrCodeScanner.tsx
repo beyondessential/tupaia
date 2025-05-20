@@ -164,7 +164,7 @@ export const QrCodeScanner = ({ disabled, onSuccess, validEntities }: QrCodeScan
     if (error?.message) {
       if (error instanceof DOMException && error.name === 'NotAllowedError') {
         setFeedback(
-          'Please allow camera access. Or, close the scanner and select an entity from the list.',
+          'Please allow camera access, or close the scanner and select an entity from the list',
         );
         return;
       }
