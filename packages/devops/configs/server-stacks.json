@@ -1,0 +1,46 @@
+{
+  "admin-panel": [
+    "admin-panel-server",
+    "admin-panel",
+    "central-server",
+    "data-table-server",
+    "entity-server",
+    "report-server"
+  ],
+  "tupaia-web": [
+    "central-server",
+    "data-table-server",
+    "entity-server",
+    "report-server",
+    "tupaia-web-server",
+    "tupaia-web",
+    "web-config-server"
+  ],
+  "datatrak": [
+    "central-server",
+    "datatrak-web-server",
+    "datatrak-web",
+    "entity-server",
+    "report-server",
+    "web-config-server"
+  ],
+  "lesmis": [
+    "admin-panel-server",
+    "central-server",
+    "data-table-server",
+    "entity-server",
+    "lesmis-server",
+    "lesmis",
+    "report-server",
+    "web-config-server"
+  ],
+  "psss": [
+    "central-server",
+    "data-table-server",
+    "entity-server",
+    "psss-server",
+    "psss",
+    "report-server"
+  ],
+  "viz-test-tool": ["central-server", "entity-server", "report-server", "data-table-server"]
+}
