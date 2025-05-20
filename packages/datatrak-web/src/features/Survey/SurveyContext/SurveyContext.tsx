@@ -168,10 +168,14 @@ export const useSurveyForm = () => {
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
-  const numberOfScreens = visibleScreens?.length || 0;
+  const numberOfScreens = visibleScreens?.length ?? 0;
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
+  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
+
+  const [urlSearchParams] = useSearchParams();
+  const isResponseScreen = !!urlSearchParams.get('responseId');
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
@@ -208,6 +212,8 @@ export const useSurveyForm = () => {
     isLast,
     isSuccessScreen,
     isResubmitSuccessScreen,
+    isResponseScreen,
+    isReviewScreen,
     numberOfScreens,
     toggleSideMenu,
     updateFormData,
