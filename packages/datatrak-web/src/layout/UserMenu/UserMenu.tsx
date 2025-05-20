@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 import { IconButton } from '@tupaia/ui-components';
-import { DrawerMenu } from './DrawerMenu';
 import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
+import { useIsMobile } from '../../utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -30,18 +30,19 @@ export const UserMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const onCloseMenu = () => setMenuOpen(false);
   const toggleUserMenu = () => setMenuOpen(!menuOpen);
+  const isDesktop = !useIsMobile();
 
   return (
     <Wrapper>
       <UserInfo />
-      <MenuButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu">
-        <MenuIcon />
-      </MenuButton>
-      <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
-      <DrawerMenu
-        menuOpen={menuOpen}
-        onCloseMenu={onCloseMenu}
-      />
+      {isDesktop && (
+        <>
+          <MenuButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu">
+            <MenuIcon />
+          </MenuButton>
+          <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
+        </>
+      )}
     </Wrapper>
   );
 };

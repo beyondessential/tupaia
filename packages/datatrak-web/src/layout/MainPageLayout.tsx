@@ -47,8 +47,9 @@ const useHeaderVisibility = () => {
 
   const mobileHeaderlessRoutes = [
     `${ROUTES.SURVEY}/*`,
-    ROUTES.SURVEY_SELECT,
     ROUTES.ACCOUNT_SETTINGS,
+    ROUTES.MOBILE_USER_MENU,
+    ROUTES.SURVEY_SELECT,
     ROUTES.WELCOME,
   ];
   if (useIsMobile()) {
