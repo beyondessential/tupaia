@@ -128,6 +128,7 @@ export const MenuList = ({
             <MenuButton
               component={component || 'button'}
               underline="none"
+              rel={isExternal ? 'external' : null}
               target={isExternal ? '_blank' : null}
               onClick={onClick || onCloseMenu}
               to={to}

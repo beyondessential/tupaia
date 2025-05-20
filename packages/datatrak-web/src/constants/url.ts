@@ -32,7 +32,7 @@ export const ROUTES = {
   NOT_AUTHORISED: '/not-authorised',
   WELCOME: '/welcome',
   EXPORT_SURVEY_RESPONSE: 'export/:surveyResponseId',
-  MOBILE_MORE_MENU: 'more',
+  MOBILE_USER_MENU: '/more',
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
