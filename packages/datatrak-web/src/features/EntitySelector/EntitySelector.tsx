@@ -7,6 +7,7 @@ import { Country, Project, SurveyScreenComponentConfig } from '@tupaia/types';
 import { SpinningLoader, useDebounce } from '@tupaia/ui-components';
 
 import { useEntityById, useProjectEntities } from '../../api';
+import { useSurveyForm } from '../Survey';
 import { QrCodeScanner, QrCodeScannerProps } from './QrCodeScanner';
 import { ResultsList, ResultsListProps } from './ResultsList';
 import { SearchField } from './SearchField';
@@ -155,6 +156,9 @@ export const EntitySelector = ({
     isFetched,
   } = useSearchResults(searchValue, filters, projectCode, disableSearch);
 
+  const { isResponseScreen, isReviewScreen } = useSurveyForm();
+  const showQrCodeScanner = config?.entity?.allowScanQrCode && !isResponseScreen && !isReviewScreen;
+
   const displayResults = searchResults?.filter(({ name: entityName }) => {
     if (isDirty || !value) {
       return true;
@@ -173,7 +177,7 @@ export const EntitySelector = ({
           </Label>
         )}
         <div className="entity-selector-content">
-          {config?.entity?.allowScanQrCode && (
+          {showQrCodeScanner && (
             <>
               <QrCodeScanner onSuccess={onQrCodeScannerResult} validEntities={validEntities} />
               <OrDivider />
