@@ -38,9 +38,8 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
       const firstError = Object.values(errors)[0] as {
         ref: { focus: () => void };
       };
-      if (firstError?.ref) {
-        firstError.ref.focus();
-      }
+
+      firstError.ref?.focus();
     }
   }, [JSON.stringify(errors)]);
   return (
