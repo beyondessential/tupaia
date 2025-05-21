@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { MenuList } from './MenuList';
+
 import { SafeAreaColumn } from '@tupaia/ui-components';
+
+import { MenuList } from './MenuList';
 
 const Wrapper = styled(SafeAreaColumn).attrs({ as: 'article' })`
   block-size: 100dvb;
