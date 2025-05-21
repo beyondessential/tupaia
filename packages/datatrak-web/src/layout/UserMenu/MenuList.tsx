@@ -87,6 +87,7 @@ export const MenuList = ({
       onClick: e => onClickInternalLink(e, ROUTES.ACCOUNT_SETTINGS),
       to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
       hidden: !isLoggedIn || !hasProjectSelected,
+      icon: chevronRight,
     },
     {
       label: 'Reports',
@@ -94,18 +95,21 @@ export const MenuList = ({
       onClick: e => onClickInternalLink(e, ROUTES.REPORTS),
       to: shouldShowCancelModal ? null : ROUTES.REPORTS,
       hidden: !isLoggedIn || !hasAdminPanelAccess,
+      icon: chevronRight,
     },
     {
       label: 'Help centre',
       component: Link,
       href: 'https://bes-support.zendesk.com',
       isExternal: true,
+      icon: externalIcon,
     },
     {
       label: 'Visit Tupaia.org',
       component: Link,
       href: process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org',
       isExternal: true,
+      icon: externalIcon,
     },
     {
       label: 'Log out',
@@ -114,6 +118,7 @@ export const MenuList = ({
         onCloseMenu?.();
       },
       hidden: !isLoggedIn,
+      icon: logoutIcon,
     },
   ];
 
@@ -123,10 +128,11 @@ export const MenuList = ({
         {children}
         {allItems
           .filter(item => !item.hidden)
-          .map(({ label, to, href, isExternal, onClick, component }) => (
+          .map(({ label, to, href, isExternal, onClick, component, icon }) => (
             <MenuListItem key={label} button>
               <MenuButton
                 component={component || 'button'}
+                endIcon={icon}
                 underline="none"
                 rel={isExternal ? 'external' : null}
                 target={isExternal ? '_blank' : null}

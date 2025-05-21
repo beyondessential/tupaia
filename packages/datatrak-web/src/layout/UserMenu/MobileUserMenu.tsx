@@ -5,15 +5,18 @@ import { SafeAreaColumn } from '@tupaia/ui-components';
 
 import { MenuList } from './MenuList';
 
-const Wrapper = styled(SafeAreaColumn).attrs({ as: 'article' })`
+export const MobileUserMenuRoot = styled(SafeAreaColumn).attrs({ as: 'article' })`
   block-size: 100dvb;
   inline-size: 100%;
+  font-size: 1.125rem;
 `;
 
-export const MobileUserMenu = () => {
+export const MobileUserMenu = (
+  props: React.ComponentPropsWithoutRef<typeof MobileUserMenuRoot>,
+) => {
   return (
-    <Wrapper>
+    <MobileUserMenuRoot {...props}>
       <MenuList />
-    </Wrapper>
+    </MobileUserMenuRoot>
   );
 };

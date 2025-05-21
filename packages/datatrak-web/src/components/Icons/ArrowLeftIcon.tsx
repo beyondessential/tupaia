@@ -1,5 +1,6 @@
-import React from 'react';
 import { SvgIcon, SvgIconProps } from '@material-ui/core';
+import React from 'react';
+import styled from 'styled-components';
 
 export const ArrowLeftIcon = ({ htmlColor = 'currentColor', ...props }: SvgIconProps) => {
   return (
@@ -18,3 +19,11 @@ export const ArrowLeftIcon = ({ htmlColor = 'currentColor', ...props }: SvgIconP
     </SvgIcon>
   );
 };
+
+export const ArrowRightIcon = styled(ArrowLeftIcon)`
+  // Assert this is the only direct <path> child, and rotate it so the SVG’s can still be
+  // transformed as expected
+  > path:first-of-type:last-of-type {
+    transform: rotate(0.5turn);
+  }
+`;

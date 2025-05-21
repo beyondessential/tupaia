@@ -1,4 +1,4 @@
-export { ArrowLeftIcon } from './ArrowLeftIcon';
+export { ArrowLeftIcon, ArrowRightIcon } from './ArrowLeftIcon';
 export { Coconut } from './Coconut';
 export { CommentIcon } from './CommentIcon';
 export { CopyIcon } from './CopyIcon';
