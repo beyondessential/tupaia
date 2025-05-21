@@ -3,6 +3,7 @@ import { ROUTES } from '../constants';
 import { useIsMobile } from '.';
 
 const bottomNavigationBarBlocklist = [
+  ROUTES.ACCOUNT_SETTINGS,
   ROUTES.EXPORT_SURVEY_RESPONSE,
   ROUTES.FORGOT_PASSWORD,
   ROUTES.LOGIN,
@@ -11,6 +12,7 @@ const bottomNavigationBarBlocklist = [
   ROUTES.RESET_PASSWORD,
   ROUTES.SURVEY_SCREEN,
   ROUTES.SYNC,
+  ROUTES.TASK_DETAILS,
   ROUTES.VERIFY_EMAIL_RESEND,
   ROUTES.VERIFY_EMAIL,
   ROUTES.WELCOME,
