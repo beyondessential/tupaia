@@ -63,14 +63,10 @@ export const MenuButton = styled(Button).attrs({
 
   .MuiButton-endIcon {
     display: none;
-    margin-inline-start: auto;
-    display: flex;
-    place-items: center;
-    place-content: center;
-    align-self: center;
   }
   ${MobileUserMenuRoot} & .MuiButton-endIcon {
-    display: unset;
+    display: flex;
+    margin-inline-start: auto;
   }
 `;
 
