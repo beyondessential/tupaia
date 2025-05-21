@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
 import { ROUTES } from '../../../constants';
 import { useTasksTable } from './useTasksTable';
 
