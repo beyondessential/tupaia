@@ -40,8 +40,7 @@ function getTabFromPathname(pathname: Pathname): TabValue | null {
   if (matchPath(`${ROUTES.SURVEY_SELECT}/*`, pathname)) return 'surveys';
   if (matchPath(`${ROUTES.TASKS}/*`, pathname)) return 'tasks';
   if (matchPath(ROUTES.HOME, pathname)) return 'home';
-  if (matchPath(ROUTES.MOBILE_USER_MENU, pathname)) return 'more';
-  return null;
+  return 'more';
 }
 
 export const NavigationBar = (props: BottomNavigationProps) => {
