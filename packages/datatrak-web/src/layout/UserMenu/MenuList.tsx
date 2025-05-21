@@ -62,6 +62,7 @@ export const MenuButton = styled(Button).attrs({
   }
 
   .MuiButton-endIcon {
+    color: ${props => props.theme.palette.text.secondary};
     display: none;
   }
   ${MobileUserMenuRoot} & .MuiButton-endIcon {
