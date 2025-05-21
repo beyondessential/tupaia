@@ -6,6 +6,9 @@ import { Button, RouterLink } from '@tupaia/ui-components';
 import { useCurrentUserContext, useLogout } from '../../api';
 import { ROUTES } from '../../constants';
 import { CancelConfirmModal } from '../../components';
+import { ArrowRightIcon } from '../../components/Icons/ArrowLeftIcon';
+import LaunchIcon from '@material-ui/icons/Launch';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 interface MenuItem {
   label: string;
@@ -18,10 +21,8 @@ interface MenuItem {
   icon?: React.ReactNode;
 }
 
-const Menu = styled.ul`
-  list-style: none;
-  padding-inline-start: 0;
-  margin: 0.5rem 0;
+const Menu = styled.ul.attrs({ role: 'list' })`
+  margin-block: 0.5rem;
 `;
 
 const MenuListItem = styled(ListItem)`
@@ -35,19 +36,22 @@ export const MenuButton = styled(Button).attrs({
   width: 100%;
   justify-content: flex-start;
   padding: 0.8rem 0.5rem;
-  font-size: 1rem;
+
   margin: 0;
   font-weight: ${props => props.theme.typography.fontWeightRegular};
   & ~ .MuiButtonBase-root {
     margin-left: 0;
   }
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    .MuiButton-label {
-      font-size: 1.125rem;
-    }
+  &,
+  .MuiButton-label {
+    font-size: inherit;
   }
 `;
+
+const chevronRight = <ArrowRightIcon />;
+const externalIcon = <LaunchIcon />;
+const logoutIcon = <LogoutIcon />;
 
 /**
  * The menu list that appears in both the drawer and popover menus. It shows different options depending on whether the
