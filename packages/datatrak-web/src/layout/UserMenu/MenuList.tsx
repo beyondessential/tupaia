@@ -1,14 +1,17 @@
-import React, { ComponentType, ReactNode, useState } from 'react';
-import styled from 'styled-components';
-import { useMatch } from 'react-router';
 import { Link, ListItem } from '@material-ui/core';
-import { Button, RouterLink } from '@tupaia/ui-components';
-import { useCurrentUserContext, useLogout } from '../../api';
-import { ROUTES } from '../../constants';
-import { CancelConfirmModal } from '../../components';
-import { ArrowRightIcon } from '../../components/Icons/ArrowLeftIcon';
 import LaunchIcon from '@material-ui/icons/Launch';
 import LogoutIcon from '@mui/icons-material/Logout';
+import React, { ComponentType, ReactNode, useState } from 'react';
+import { useMatch } from 'react-router';
+import styled from 'styled-components';
+
+import { Button, RouterLink } from '@tupaia/ui-components';
+
+import { useCurrentUserContext, useLogout } from '../../api';
+import { CancelConfirmModal } from '../../components';
+import { ArrowRightIcon } from '../../components/Icons/ArrowLeftIcon';
+import { ROUTES } from '../../constants';
+import { MobileUserMenuRoot } from './MobileUserMenu';
 
 interface MenuItem {
   label: string;
@@ -23,29 +26,51 @@ interface MenuItem {
 
 const Menu = styled.ul.attrs({ role: 'list' })`
   margin-block: 0.5rem;
+  margin-inline: auto;
+  max-inline-size: 30rem;
+
+  ${MobileUserMenuRoot} & {
+    margin-block: 2rem;
+  }
 `;
 
 const MenuListItem = styled(ListItem)`
   padding: 0;
+
+  ${MobileUserMenuRoot} & {
+    border-block-end: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  }
+  ${MobileUserMenuRoot} & + & {
+    margin-block-start: 1em;
+  }
 `;
 
 export const MenuButton = styled(Button).attrs({
   variant: 'text',
   color: 'default',
 })`
-  width: 100%;
-  justify-content: flex-start;
-  padding: 0.8rem 0.5rem;
-
-  margin: 0;
   font-weight: ${props => props.theme.typography.fontWeightRegular};
-  & ~ .MuiButtonBase-root {
-    margin-left: 0;
-  }
+  inline-size: 100%;
+  justify-content: flex-start;
+  margin: 0;
+  padding-block: 0.8rem;
+  padding-inline: 0.5rem;
 
   &,
   .MuiButton-label {
     font-size: inherit;
+  }
+
+  .MuiButton-endIcon {
+    display: none;
+    margin-inline-start: auto;
+    display: flex;
+    place-items: center;
+    place-content: center;
+    align-self: center;
+  }
+  ${MobileUserMenuRoot} & .MuiButton-endIcon {
+    display: unset;
   }
 `;
 
