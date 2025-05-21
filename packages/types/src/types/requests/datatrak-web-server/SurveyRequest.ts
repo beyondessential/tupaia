@@ -74,4 +74,5 @@ export interface ReqQuery {
   fields?: string[];
   projectId?: string;
   countryCode?: string;
+  searchTerm?: string;
 }

@@ -1,4 +1,5 @@
 import { Request } from 'express';
+
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   attachSessionIfAvailable,
@@ -8,6 +9,8 @@ import {
   SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
+
+import { API_CLIENT_PERMISSIONS } from '../constants';
 import { DataTrakSessionModel } from '../models';
 import {
   ActivityFeedRequest,
@@ -18,10 +21,12 @@ import {
   EditTaskRoute,
   EntitiesRequest,
   EntitiesRoute,
-  EntityDescendantsRequest,
-  EntityDescendantsRoute,
   EntityAncestorsRequest,
   EntityAncestorsRoute,
+  EntityDescendantsRequest,
+  EntityDescendantsRoute,
+  ExportSurveyResponseRequest,
+  ExportSurveyResponseRoute,
   GenerateLoginTokenRequest,
   GenerateLoginTokenRoute,
   LeaderboardRequest,
@@ -32,8 +37,12 @@ import {
   ProjectRoute,
   ProjectsRequest,
   ProjectsRoute,
+  ProjectUsersRequest,
+  ProjectUsersRoute,
   RecentSurveysRequest,
   RecentSurveysRoute,
+  ResubmitSurveyResponseRequest,
+  ResubmitSurveyResponseRoute,
   SingleEntityRequest,
   SingleEntityRoute,
   SingleSurveyResponseRequest,
@@ -56,13 +65,8 @@ import {
   TasksRoute,
   UserRequest,
   UserRoute,
-  ResubmitSurveyResponseRequest,
-  ResubmitSurveyResponseRoute,
-  ExportSurveyResponseRequest,
-  ExportSurveyResponseRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
-import { API_CLIENT_PERMISSIONS } from '../constants';
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
@@ -92,6 +96,7 @@ export async function createApp() {
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<LeaderboardRequest>('leaderboard', handleWith(LeaderboardRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
+    .get<ProjectUsersRequest>('project/:projectCode/users', handleWith(ProjectUsersRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<TaskMetricsRequest>('taskMetrics/:projectId', handleWith(TaskMetricsRoute))
