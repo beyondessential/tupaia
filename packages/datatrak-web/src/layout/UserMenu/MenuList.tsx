@@ -34,7 +34,7 @@ const Menu = styled.ul.attrs({ role: 'list' })`
   }
 `;
 
-const MenuListItem = styled(ListItem)`
+const MenuListItem = styled(ListItem).attrs({ component: 'li' })`
   padding: 0;
 
   ${MobileUserMenuRoot} & {
@@ -46,8 +46,9 @@ const MenuListItem = styled(ListItem)`
 `;
 
 export const MenuButton = styled(Button).attrs({
-  variant: 'text',
   color: 'default',
+  size: 'large',
+  variant: 'text',
 })`
   font-weight: ${props => props.theme.typography.fontWeightRegular};
   inline-size: 100%;
@@ -65,9 +66,18 @@ export const MenuButton = styled(Button).attrs({
     color: ${props => props.theme.palette.text.secondary};
     display: none;
   }
-  ${MobileUserMenuRoot} & .MuiButton-endIcon {
-    display: flex;
-    margin-inline-start: auto;
+
+  ${MobileUserMenuRoot} & {
+    padding-inline: 0;
+
+    .MuiSvgIcon-root {
+      font-size: 1.5rem;
+    }
+
+    .MuiButton-endIcon {
+      display: flex;
+      margin-inline-start: auto;
+    }
   }
 `;
 
