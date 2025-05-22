@@ -19,7 +19,7 @@ const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
   component: 'nav',
 })`
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
-  height: unset; // MUI hard-codes to 55px
+  height: unset; // MUI hard-codes to 55px and ignores safe area insets
 
   .MuiBottomNavigationAction-root {
     --padding-y: 0.5rem;
