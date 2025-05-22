@@ -73,7 +73,7 @@
     "s3urls": "^1.5.2",
     "string-similarity": "^1.2.2",
     "urlencode": "^1.1.0",
-    "winston": "^3.3.3",
+    "winston": "^3.17.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

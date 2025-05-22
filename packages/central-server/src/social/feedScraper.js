@@ -8,8 +8,7 @@ let isRunning = false;
 export const startFeedScraper = models => {
   // Start recursive sync loop (enabled by default)
   if (process.env.FEED_SCRAPER_DISABLE === 'true') {
-    // eslint-disable-next-line no-console
-    console.log('Feed scraper is disabled');
+    winston.info('Feed scraper is disabled');
     return;
   }
 

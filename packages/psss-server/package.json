@@ -40,7 +40,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
-    "winston": "^3.3.3"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "rimraf": "^6.0.1"
