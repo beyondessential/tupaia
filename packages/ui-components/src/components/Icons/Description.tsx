@@ -1,7 +1,7 @@
 import { SvgIcon, SvgIconProps } from '@material-ui/core';
 import React from 'react';
 
-interface HomeIconProps extends SvgIconProps {
+interface DescriptionIconProps extends SvgIconProps {
   variant?: 'filled' | 'outlined';
 }
 
@@ -13,7 +13,7 @@ interface HomeIconProps extends SvgIconProps {
  * font-variation-settings: 'wght' 400, 'GRAD' 0, 'opsz' 24;
  * ```
  */
-export const Description = ({ variant = 'filled', ...props }: HomeIconProps) => (
+export const Description = ({ variant = 'filled', ...props }: DescriptionIconProps) => (
   <SvgIcon
     fill="currentColor"
     height="24"
