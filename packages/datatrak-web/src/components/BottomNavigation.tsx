@@ -76,8 +76,8 @@ export const BottomNavigation = (props: BottomNavigationProps) => {
 
   useEffect(() => {
     const newTab = getTabFromPathname(pathname);
-    if (newTab !== activeTab) setActiveTab(newTab);
-  }, [activeTab, pathname]);
+    setActiveTab(newTab);
+  }, [pathname]);
 
   useEffect(() => {
     return () => setActiveTab(null);
