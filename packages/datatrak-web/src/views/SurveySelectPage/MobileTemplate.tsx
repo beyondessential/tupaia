@@ -1,9 +1,7 @@
 import React, { ReactElement } from 'react';
-import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { PageContainer } from '../../components';
-import { ROUTES } from '../../constants';
 import { MobileSelectList, useGroupedSurveyList } from '../../features';
 import {
   CountrySelector,
