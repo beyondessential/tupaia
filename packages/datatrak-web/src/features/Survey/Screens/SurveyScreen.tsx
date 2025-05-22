@@ -32,7 +32,7 @@ const ScreenHeader = styled.div<{
   padding: 0.5rem 0;
 
   /*
-   * Ensure that vertical centring when there are no questions to display, by targeting the warpper
+   * Ensure that vertical centring when there are no questions to display, by targeting the wrapper
    * of this element
    */
   ${ScrollableBody}:has(> &) {
