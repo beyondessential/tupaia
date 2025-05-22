@@ -2,12 +2,12 @@ import React from 'react';
 import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { BottomNavigation } from '../components/BottomNavigation';
 import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { SurveyResponseModal } from '../features';
 import { useBottomNavigationVisibility, useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
+import { BottomNavigation } from '../components';
 
 const PageWrapper = styled.div`
   background-color: ${props => props.theme.palette.background.default};
