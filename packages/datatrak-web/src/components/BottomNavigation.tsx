@@ -1,4 +1,8 @@
-import { BottomNavigation, BottomNavigationAction, BottomNavigationProps } from '@material-ui/core';
+import {
+  BottomNavigation as MuiBottomNavigation,
+  BottomNavigationAction,
+  BottomNavigationProps,
+} from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreHorizRounded';
 import React, { useEffect, useState } from 'react';
 import { Pathname, matchPath, useLocation, useNavigate } from 'react-router';
@@ -11,7 +15,9 @@ import { TaskIcon } from './Icons';
 
 type TabValue = 'home' | 'surveys' | 'tasks' | 'more';
 
-const NavigationBarRoot = styled.nav`
+const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
+  component: 'nav',
+})`
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   height: unset; // MUI hard-codes to 55px
 
@@ -44,7 +50,7 @@ function getTabFromPathname(pathname: Pathname): TabValue | null {
   return 'more';
 }
 
-export const NavigationBar = (props: BottomNavigationProps) => {
+export const BottomNavigation = (props: BottomNavigationProps) => {
   const { pathname } = useLocation();
   const [activeTab, setActiveTab] = useState<TabValue | null>(getTabFromPathname(pathname));
 
@@ -78,13 +84,7 @@ export const NavigationBar = (props: BottomNavigationProps) => {
   }, []);
 
   return (
-    <BottomNavigation
-      component={NavigationBarRoot}
-      onChange={onChange}
-      showLabels
-      value={activeTab}
-      {...props}
-    >
+    <BottomNavigationRoot onChange={onChange} showLabels value={activeTab} {...props}>
       <BottomNavigationAction
         icon={<HomeIcon variant={activeTab === 'home' ? 'filled' : 'outlined'} />}
         label="Home"
@@ -101,6 +101,6 @@ export const NavigationBar = (props: BottomNavigationProps) => {
         value="tasks"
       />
       <BottomNavigationAction icon={<MoreIcon />} label="More" value="more" />
-    </BottomNavigation>
+    </BottomNavigationRoot>
   );
 };

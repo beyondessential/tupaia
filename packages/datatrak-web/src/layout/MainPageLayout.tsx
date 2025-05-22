@@ -2,10 +2,10 @@ import React from 'react';
 import { Outlet, matchPath, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { NavigationBar } from '../components/NavigationBar';
+import { BottomNavigation } from '../components/BottomNavigation';
 import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { SurveyResponseModal } from '../features';
-import { useBottomNavigationBarVisibility, useIsMobile } from '../utils';
+import { useBottomNavigationVisibility, useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
 
@@ -35,7 +35,7 @@ const PageWrapper = styled.div`
   }
 `;
 
-const Nav = styled(NavigationBar)`
+const Nav = styled(BottomNavigation)`
   inset-block-end: 0;
   inset-inline-end: 0;
   inset-inline-start: 0;
@@ -62,7 +62,7 @@ const useHeaderVisibility = () => {
 
 export const MainPageLayout = () => {
   const showHeader = useHeaderVisibility();
-  const showBottomNavigation = useBottomNavigationBarVisibility();
+  const showBottomNavigation = useBottomNavigationVisibility();
   return (
     <PageWrapper>
       {showHeader && <Header />}

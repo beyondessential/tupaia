@@ -19,7 +19,7 @@ const bottomNavigationBarBlocklist = [
   ROUTES.WELCOME,
 ] as const;
 
-export function useBottomNavigationBarVisibility() {
+export function useBottomNavigationVisibility() {
   const { pathname } = useLocation();
   const isMobile = useIsMobile();
   return isMobile

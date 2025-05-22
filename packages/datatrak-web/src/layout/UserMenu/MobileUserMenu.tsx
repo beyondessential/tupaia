@@ -17,9 +17,9 @@ export const MobileUserMenuRoot = styled(SafeAreaColumn).attrs({ as: 'article' }
 export const MobileUserMenu = (
   props: React.ComponentPropsWithoutRef<typeof MobileUserMenuRoot>,
 ) => {
-  // `useBottomNavigationBarVisibility` is more semantically appropriate, but it uses `useIsMobile`
+  // `useBottomNavigationVisibility` is more semantically appropriate, but it uses `useIsMobile`
   // under the hood, which incorrectly returns false while it’s still evaluating. Here, that would
-  // invoke the redirect before the return value of `useBottomNavigationBarVisibility` settles.
+  // invoke the redirect before the return value of `useBottomNavigationVisibility` settles.
   const isDesktop = useIsDesktop();
   const { pathname } = useLocation();
 
