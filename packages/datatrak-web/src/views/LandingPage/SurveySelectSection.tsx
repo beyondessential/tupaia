@@ -13,13 +13,16 @@ const SectionContainer = styled.section`
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
   column-gap: 1rem;
-  font-size: 1rem;
   display: flex;
+  font-size: 1rem;
   grid-area: --surveySelect;
   justify-content: space-between;
   overflow: visible !important;
   padding: 1rem;
-  position: relative;
+
+  // HACK: Parent’s grid-template-rows currently defined in a way that causes horizontal track to
+  // sometimes shrink smaller than this element. The 4lh is just empirically hand-tuned. 2em is the
+  // block padding.
   min-block-size: calc(4lh + 2rem);
 
   ${({ theme }) => theme.breakpoints.up('md')} {
