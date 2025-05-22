@@ -6,8 +6,8 @@ interface HomeIconProps extends SvgIconProps {
 }
 
 /**
- * @privateRemarks This is the `home` Material Symbol, but Material UI only supports the legacy
- * Material Icons. The <path>s are equivalent to using the icon font with:
+ * @privateRemarks This is the `description` Material Symbol, but Material UI only supports the
+ * legacy Material Icons. The <path>s are equivalent to using the icon font with:
  *
  * ```
  * font-variation-settings: 'wght' 400, 'GRAD' 0, 'opsz' 24;
