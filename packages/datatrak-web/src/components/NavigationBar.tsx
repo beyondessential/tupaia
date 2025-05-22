@@ -1,10 +1,10 @@
 import { BottomNavigation, BottomNavigationAction, BottomNavigationProps } from '@material-ui/core';
-import SurveyIcon from '@material-ui/icons/DescriptionRounded';
-import DashboardIcon from '@material-ui/icons/HomeRounded';
 import MoreIcon from '@material-ui/icons/MoreHorizRounded';
 import React, { useEffect, useState } from 'react';
 import { Pathname, matchPath, useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
+
+import { Home as HomeIcon, Description as DescriptionIcon } from '@tupaia/ui-components';
 
 import { ROUTES } from '../constants';
 import { TaskIcon } from './Icons';
@@ -84,9 +84,21 @@ export const NavigationBar = (props: BottomNavigationProps) => {
       value={activeTab}
       {...props}
     >
-      <BottomNavigationAction icon={<DashboardIcon />} label="Home" value="home" />
-      <BottomNavigationAction icon={<SurveyIcon />} label="Surveys" value="surveys" />
-      <BottomNavigationAction icon={<TaskIcon />} label="Tasks" value="tasks" />
+      <BottomNavigationAction
+        icon={<HomeIcon variant={activeTab === 'home' ? 'filled' : 'outlined'} />}
+        label="Home"
+        value="home"
+      />
+      <BottomNavigationAction
+        icon={<DescriptionIcon variant={activeTab === 'surveys' ? 'filled' : 'outlined'} />}
+        label="Surveys"
+        value="surveys"
+      />
+      <BottomNavigationAction
+        icon={<TaskIcon variant={activeTab === 'tasks' ? 'filled' : 'outlined'} />}
+        label="Tasks"
+        value="tasks"
+      />
       <BottomNavigationAction icon={<MoreIcon />} label="More" value="more" />
     </BottomNavigation>
   );
