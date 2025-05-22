@@ -110,6 +110,11 @@ export class ApiBuilder {
     return this;
   }
 
+  public useMiddleware<T extends ExpressRequest<T> = Request>(middleware: RequestHandler) {
+    this.app.use(middleware);
+    return this;
+  }
+
   public get<T extends ExpressRequest<T> = Request>(
     path: string,
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
@@ -122,6 +127,13 @@ export class ApiBuilder {
     ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
   ) {
     return this.addRoute('post', path, ...handlers);
+  }
+
+  public delete<T extends ExpressRequest<T> = Request>(
+    path: string,
+    ...handlers: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>[]
+  ) {
+    return this.addRoute('delete', path, ...handlers);
   }
 
   private addRoute<T extends ExpressRequest<T> = Request>(

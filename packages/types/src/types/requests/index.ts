@@ -43,3 +43,13 @@ export {
   TupaiaWebExportSurveyDataRequest,
 } from './tupaia-web-server';
 export { ProjectResponse, WebServerEntityRequest, WebServerProjectRequest } from './web-server';
+export {
+  SyncSessionRequest,
+  SyncSessionReadyRequest,
+  SyncSessionMetadataRequest,
+  SyncSessionInitiatePullRequest,
+  SyncSessionPullReadyRequest,
+  SyncSessionPullMetadataRequest,
+  SyncSessionPullRequest,
+  EndSyncSessionRequest,
+} from './sync-server';

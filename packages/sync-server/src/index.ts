@@ -28,12 +28,12 @@ const config = {
   },
 };
 
-const syncManager = new CentralSyncManager(database, models, config);
+const syncManager = new CentralSyncManager(models);
 
 /**
  * Set up app with routes etc.
  */
-const app = createApp(database);
+const app = createApp(database, syncManager);
 
 
 initializeScheduledTasks(models, syncManager);

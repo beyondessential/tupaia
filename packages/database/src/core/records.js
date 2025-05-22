@@ -66,4 +66,5 @@ export const RECORDS = {
   USER_ENTITY_PERMISSION: 'user_entity_permission',
   USER_FAVOURITE_DASHBOARD_ITEM: 'user_favourite_dashboard_item',
   USER_SESSION: 'userSession',
+  SYNC_SESSION: 'sync_session',
 };

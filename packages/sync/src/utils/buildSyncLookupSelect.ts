@@ -1,5 +1,6 @@
 import { DatabaseModel } from '@tupaia/database';
 import { COLUMNS_EXCLUDED_FROM_SYNC } from '../constants';
+
 interface Columns {
   projectIds?: string;
 }
