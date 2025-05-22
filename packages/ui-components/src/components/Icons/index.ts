@@ -6,6 +6,7 @@ export * from './Error';
 export * from './ExportIcon';
 export * from './FilePicker';
 export * from './Home';
+export { QrCodeScannerIcon } from './QrCodeScannerIcon';
 export * from './SaveAlt';
 export * from './TupaiaIcon';
 export * from './Virus';

@@ -17,4 +17,5 @@ export { errorToast, infoToast, successToast } from './toast';
 export { isEmptyArray, isNonEmptyArray, isNotNullish, isNullish } from './typeGuards';
 export { useBeforeUnload } from './useBeforeUnload';
 export { useBottomNavigationVisibility } from './useBottomNavigationVisibility';
+export { useHasVideoInput } from './useHasVideoInput';
 export { useFromLocation } from './useLocationState';
