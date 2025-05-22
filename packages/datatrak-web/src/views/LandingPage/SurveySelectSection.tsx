@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 
@@ -20,17 +20,11 @@ const SectionContainer = styled.section`
   overflow: visible !important;
   padding: 1rem;
   position: relative;
+  min-block-size: calc(4lh + 2rem);
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-block-start: 1.9375rem;
   }
-`;
-
-const SectionContent = styled.div`
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  gap: 1rem 1.25rem;
 `;
 
 const ButtonLink = styled(BaseButtonLink)`
@@ -110,41 +104,40 @@ const SurveysImage = styled.img.attrs({
   width: 108,
   height: 207,
 })`
-  height: 13rem;
+  height: 12rem;
   width: auto;
 `;
 
 export const SurveySelectSection = () => {
   const isMobile = useIsMobile();
-  const SupplementalText = isMobile ? VisuallyHidden : Fragment;
+  const verbose = useMediaQuery(useTheme().breakpoints.up('lg'));
+  const SupplementalText = verbose ? Fragment : VisuallyHidden;
 
   return (
     <SectionContainer>
-      <SectionContent>
-        {!isMobile && (
-          <ButtonWrapper>
-            <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
-            <ButtonAnchor
-              fullWidth
-              variant="outlined"
-              href={TUPAIA_REDIRECT_URL}
-              rel="noreferrer"
-              target="_blank"
-            >
-              Explore data
-            </ButtonAnchor>
-          </ButtonWrapper>
-        )}
-        <Text>
-          Tupaia DataTrak makes data collection easy!
-          <SupplementalText>
-            {' '}
-            You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
-            stories and information with the Tupaia community. To collect data offline, please
-            download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
-          </SupplementalText>
-        </Text>
-      </SectionContent>
+      {!isMobile && (
+        <ButtonWrapper>
+          <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
+          <ButtonAnchor
+            fullWidth
+            variant="outlined"
+            href={TUPAIA_REDIRECT_URL}
+            rel="noreferrer"
+            target="_blank"
+          >
+            Explore data
+          </ButtonAnchor>
+        </ButtonWrapper>
+      )}
+      <Text>
+        Tupaia DataTrak makes data collection easy!
+        <SupplementalText>
+          {' '}
+          You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
+          stories and information with the Tupaia community. To collect data offline, please
+          download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
+        </SupplementalText>
+      </Text>
       <ImageWrapper>
         <SurveysImage />
       </ImageWrapper>
