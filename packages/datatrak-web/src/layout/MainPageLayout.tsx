@@ -4,9 +4,10 @@ import styled from 'styled-components';
 
 import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { SurveyResponseModal } from '../features';
-import { useIsMobile } from '../utils';
+import { useBottomNavigationVisibility, useIsMobile } from '../utils';
 import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
+import { BottomNavigation } from '../components/BottomNavigation';
 
 const PageWrapper = styled.div`
   background-color: ${props => props.theme.palette.background.default};
@@ -34,13 +35,21 @@ const PageWrapper = styled.div`
   }
 `;
 
+const Nav = styled(BottomNavigation)`
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  position: fixed;
+`;
+
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();
 
   const mobileHeaderlessRoutes = [
     `${ROUTES.SURVEY}/*`,
-    ROUTES.SURVEY_SELECT,
     ROUTES.ACCOUNT_SETTINGS,
+    ROUTES.MOBILE_USER_MENU,
+    ROUTES.SURVEY_SELECT,
     ROUTES.WELCOME,
   ];
   if (useIsMobile()) {
@@ -53,10 +62,13 @@ const useHeaderVisibility = () => {
 
 export const MainPageLayout = () => {
   const showHeader = useHeaderVisibility();
+  const showBottomNavigation = useBottomNavigationVisibility();
   return (
     <PageWrapper>
       {showHeader && <Header />}
       <Outlet />
+      {showBottomNavigation && <Nav />}
+
       <SurveyResponseModal />
     </PageWrapper>
   );

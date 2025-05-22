@@ -1,27 +1,25 @@
-import React from 'react';
-import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { QuestionType } from '@tupaia/types';
-import { useSurveyForm } from '../SurveyContext';
+import React from 'react';
+import styled from 'styled-components';
+import { BOTTOM_NAVIGATION_HEIGHT_SMALL } from '../../../constants';
+import { useIsMobile } from '../../../utils';
 import {
-  SurveyPaginator,
-  SurveyQuestionGroup,
   MobileSurveyHeader,
   MobileSurveyMenu,
+  SurveyPaginator,
+  SurveyQuestionGroup,
 } from '../Components';
-import { useIsMobile } from '../../../utils';
+import { useSurveyForm } from '../SurveyContext';
 
 const ScrollableBody = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
   flex: 1;
+  height: calc(100% - ${BOTTOM_NAVIGATION_HEIGHT_SMALL}); // Padding accounts for safe area inset
   overflow-y: auto;
-  padding-block: 1rem 4rem;
+  padding-block: 1rem calc(env(safe-area-inset-bottom, 0) + 4rem);
   padding-inline: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding-inline: 5rem 1rem;
-  }
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding-block: 1rem;
     padding-inline: 2.5rem;
@@ -35,7 +33,7 @@ const ScreenHeader = styled.div<{
   padding: 0.5rem 0;
 
   /*
-   * Ensure that vertical centring when there are no questions to display, by targeting the warpper
+   * Ensure that vertical centring when there are no questions to display, by targeting the wrapper
    * of this element
    */
   ${ScrollableBody}:has(> &) {

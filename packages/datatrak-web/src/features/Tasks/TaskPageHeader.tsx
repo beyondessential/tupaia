@@ -1,7 +1,8 @@
-import { Typography } from '@material-ui/core';
+import { Typography, useTheme } from '@material-ui/core';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { ArrowLeftIcon, Button, TaskIcon } from '../../components';
+import { Button, TaskIcon } from '../../components';
 import { useFromLocation } from '../../utils';
 
 const BackButton = styled(Button)`
@@ -74,14 +75,15 @@ export const TaskPageHeader = ({
   backTo?: string;
 }) => {
   const from = useFromLocation();
+  const primaryColor = useTheme().palette.primary.main;
   return (
     <Wrapper>
       <Container>
         <BackButton to={from || backTo} variant="text" title="Back">
-          <ArrowLeftIcon />
+          <ArrowBackIosNewRoundedIcon />
         </BackButton>
         <HeadingContainer>
-          <TaskIcon />
+          <TaskIcon htmlColor={primaryColor} />
           <Title>{title}</Title>
         </HeadingContainer>
       </Container>

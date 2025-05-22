@@ -15,7 +15,7 @@ export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactEl
   if (!isLoggedIn) {
     return (
       <Navigate
-        to="/login"
+        to={ROUTES.LOGIN}
         replace={true}
         state={{
           from: `${pathname}${search}`,

@@ -100,7 +100,7 @@ const overrides = {
       'button, input, textarea, select': {
         touchAction: 'manipulation',
       },
-      ":is(ol, ul)[role='list']": {
+      ":where(ol, ul)[role='list']": {
         listStyleType: 'none',
         marginBlock: 0,
         paddingInlineStart: 0,

@@ -5,6 +5,10 @@ export { formatNumberWithTrueMinus } from './formatNumbers';
 export { gaEvent } from './ga';
 export { innerText } from './innerText';
 export {
+  useIsDesktopSizeClass as useIsDesktop,
+  useIsMobileSizeClass as useIsMobile,
+} from './sizeClasses';
+export {
   getTaskFilterSetting,
   removeTaskFilterSetting,
   setTaskFilterSetting,
@@ -12,6 +16,6 @@ export {
 export { errorToast, infoToast, successToast } from './toast';
 export { isEmptyArray, isNonEmptyArray, isNotNullish, isNullish } from './typeGuards';
 export { useBeforeUnload } from './useBeforeUnload';
+export { useBottomNavigationVisibility } from './useBottomNavigationVisibility';
 export { useHasVideoInput } from './useHasVideoInput';
-export { useIsMobileMediaQuery as useIsMobile } from './useIsMobileMediaQuery';
 export { useFromLocation } from './useLocationState';

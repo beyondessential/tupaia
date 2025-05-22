@@ -1,6 +1,7 @@
 export * from './CalendarToday';
 export * from './Clipboard';
 export * from './Dashboard';
+export * from './Description';
 export * from './Error';
 export * from './ExportIcon';
 export * from './FilePicker';

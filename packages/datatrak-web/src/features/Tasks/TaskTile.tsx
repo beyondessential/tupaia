@@ -40,12 +40,10 @@ const TileContainer = styled(Link)`
     }
   }
 
+  &:focus-visible,
+  &:focus-within,
   &:hover {
     background-color: ${({ theme }) => theme.palette.primaryHover};
-    border-color: ${({ theme }) => theme.palette.primary.main};
-  }
-  &:focus-within {
-    border-color: ${({ theme }) => theme.palette.primary.main};
   }
 `;
 
@@ -111,7 +109,7 @@ export const TaskTile = ({ task }) => {
         </TileContent>
       </TileLeft>
       <TileRight>
-        <ButtonLink to={surveyLink}>Complete task</ButtonLink>
+        <ButtonLink to={surveyLink}>Complete</ButtonLink>
       </TileRight>
     </TileContainer>
   );

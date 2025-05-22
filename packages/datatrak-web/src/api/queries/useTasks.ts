@@ -21,9 +21,9 @@ interface UseTasksOptions {
 }
 
 export const useTasks = ({ projectId, pageSize, page, filters = [], sortBy }: UseTasksOptions) => {
-  return useQuery(
+  return useQuery<DatatrakWebTasksRequest.ResBody>(
     ['tasks', projectId, pageSize, page, filters, sortBy],
-    (): Promise<DatatrakWebTasksRequest.ResBody> =>
+    () =>
       get('tasks', {
         params: {
           pageSize,
@@ -42,6 +42,11 @@ export const useTasks = ({ projectId, pageSize, page, filters = [], sortBy }: Us
       enabled: !!projectId,
       // This needs to be true so that when changing the page number, the total number of records is not reset
       keepPreviousData: true,
+      placeholderData: {
+        count: 0,
+        numberOfPages: 0,
+        tasks: [],
+      },
     },
   );
 };

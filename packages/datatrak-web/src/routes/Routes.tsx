@@ -28,6 +28,7 @@ import { SyncPage } from '../views/Sync/SyncPage';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout, TasksLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
+import { MobileUserMenu } from '../layout/UserMenu/MobileUserMenu';
 
 /**
  * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
@@ -59,7 +60,9 @@ export const Routes = () => {
     <RouterRoutes>
       <Route path={ROUTES.OFFLINE} element={<OfflinePage />} />
       <Route path={ROUTES.EXPORT_SURVEY_RESPONSE} element={<ExportSurveyResponsePage />} />
+
       <Route path="/" element={<MainPageLayout />}>
+        <Route path={ROUTES.MOBILE_USER_MENU} element={<MobileUserMenu />} />
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<LandingPage />} />
