@@ -1,11 +1,11 @@
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Skeleton } from '@material-ui/lab';
-import React, { useState, ReactNode } from 'react';
+import ArrowForwardIosRounded from '@mui/icons-material/ArrowForwardIosRounded';
+import React, { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Dialog, ListItem as MuiListItem, Slide } from '@material-ui/core';
-import { ArrowLeftIcon } from '../../components';
 import { ROUTES } from '../../constants';
 import { StickyMobileHeader } from '../../layout';
 import { ListItemType } from '../useGroupedSurveyList';
@@ -14,10 +14,9 @@ const Content = styled.div`
   flex: 1;
 `;
 
-const Arrow = styled(ArrowLeftIcon)`
+const Arrow = styled(ArrowForwardIosRounded)`
   font-size: 1rem;
   color: ${({ theme }) => theme.palette.primary.main};
-  transform: rotate(180deg);
 `;
 
 export const BaseListItem = styled(MuiListItem).attrs({ button: true })`
