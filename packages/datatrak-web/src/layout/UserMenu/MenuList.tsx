@@ -1,5 +1,6 @@
 import { Link, ListItem } from '@material-ui/core';
-import LaunchIcon from '@material-ui/icons/Launch';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import LaunchIcon from '@mui/icons-material/Launch';
 import LogoutIcon from '@mui/icons-material/Logout';
 import React, { ComponentType, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router';
@@ -9,7 +10,6 @@ import { Button, RouterLink } from '@tupaia/ui-components';
 
 import { useCurrentUserContext, useLogout } from '../../api';
 import { CancelConfirmModal } from '../../components';
-import { ArrowRightIcon } from '../../components/Icons/ArrowLeftIcon';
 import { ROUTES } from '../../constants';
 import { MobileUserMenuRoot } from './MobileUserMenu';
 
@@ -71,7 +71,7 @@ export const MenuButton = styled(Button).attrs({
   }
 `;
 
-const chevronRight = <ArrowRightIcon />;
+const chevronRight = <ArrowForwardIosRoundedIcon />;
 const externalIcon = <LaunchIcon />;
 const logoutIcon = <LogoutIcon />;
 
@@ -94,7 +94,7 @@ export const MenuList = ({
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const { mutate: logout } = useLogout();
 
-  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
+  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen; // TODO factor in bottom nav bar
 
   const onClickInternalLink = (e: any, confirmLink: string) => {
     if (shouldShowCancelModal) {

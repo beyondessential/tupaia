@@ -1,9 +1,9 @@
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import ArrowBackIosNewRounded from '@mui/icons-material/ArrowBackIosNewRounded';
 import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
-import { ArrowLeftIcon } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 
 export const MobileHeaderRoot = styled.header`
@@ -40,11 +40,6 @@ const TrailingIconButton = styled(Button)`
   grid-area: --trailing;
 `;
 
-const BackIcon = styled(ArrowLeftIcon)`
-  width: 1rem;
-  height: 1rem;
-`;
-
 const Title = styled(Typography).attrs({ variant: 'h2' })`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 1rem;
@@ -75,12 +70,12 @@ export const StickyMobileHeader = ({
     >
       {onBack && (
         <LeadingIconButton onClick={onBack}>
-          <BackIcon />
+          <ArrowBackIosNewRounded />
         </LeadingIconButton>
       )}
       <Title>{children}</Title>
       {onClose && (
-        <TrailingIconButton aria-label="Close sync view" onClick={onClose}>
+        <TrailingIconButton aria-label="Close" onClick={onClose}>
           <Close />
         </TrailingIconButton>
       )}
