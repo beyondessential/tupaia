@@ -31,6 +31,7 @@ const NavigationBarRoot = styled.nav`
     letter-spacing: 0.02em;
 
     &.Mui-selected {
+      color: ${props => props.theme.palette.text.primary};
       font-weight: 500;
     }
   }
