@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { FormatListBulleted, KeyboardArrowRight } from '@material-ui/icons';
 
 import { ShareIcon, Button as UIButton } from '../../../components';
+import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useShare } from '../utils/useShare';
 import { CopyUrlButton } from './CopyUrlButton';
@@ -24,7 +25,7 @@ const Container = styled.nav`
 
   & > .MuiButtonBase-root {
     --min-padding: 0.75rem;
-    block-size: calc(env(safe-area-inset-bottom, 0) + 3.5rem);
+    block-size: ${BOTTOM_NAVIGATION_HEIGHT_DYNAMIC};
     border-radius: 0;
     height: 100%;
     padding: var(--min-padding);

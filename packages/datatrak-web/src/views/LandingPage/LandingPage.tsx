@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
 import { useCurrentUserRecentSurveys } from '../../api';
-import { HEADER_HEIGHT } from '../../constants';
+import { BOTTOM_NAVIGATION_HEIGHT_SMALL, HEADER_HEIGHT } from '../../constants';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { LeaderboardSection } from './LeaderboardSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
@@ -51,7 +51,7 @@ const PageBody = styled.div`
   display: flex;
   flex-direction: column;
   inline-size: 100%;
-  margin-block: 0;
+  margin-block-end: ${BOTTOM_NAVIGATION_HEIGHT_SMALL}; // Padding accounts for safe area insets
   margin-inline: auto;
   max-inline-size: 88rem;
   padding-block-start: 1rem;
@@ -60,6 +60,7 @@ const PageBody = styled.div`
   // make the body fixed height on large screens
   ${({ theme }) => theme.breakpoints.up('md')} {
     block-size: var(--body-block-size);
+    margin-block-end: 0;
   }
 `;
 
