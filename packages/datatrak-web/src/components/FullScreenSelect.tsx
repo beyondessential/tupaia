@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
 import CheckIcon from '@material-ui/icons/CheckRounded';
-import ChevronIcon from '@material-ui/icons/ChevronRightRounded';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import React, {
   ChangeEventHandler,
   ComponentPropsWithoutRef,
@@ -31,7 +31,7 @@ import { innerText } from '../utils';
 const StyledButton = styled(Button).attrs({
   disableElevation: true,
   fullWidth: true,
-  endIcon: <ChevronIcon />,
+  endIcon: <ArrowForwardIosRoundedIcon />,
   size: 'large',
 })`
   display: grid;
