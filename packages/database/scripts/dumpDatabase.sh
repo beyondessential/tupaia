@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 function print_help() {
     cat <<EOF
@@ -13,32 +14,33 @@ EOF
 
 # https://stackoverflow.com/questions/12498304/using-bash-to-display-a-progress-indicator
 function show_loading_spinner() {
-    eval $2 &
+    eval "$2" &
     pid=$! # Process Id of the previous running command
 
     spin='-\|/'
 
     i=0
-    while kill -0 $pid 2>/dev/null
+    while kill -0 "$pid" 2>/dev/null
     do
     i=$(( (i+1) %4 ))
     printf "\r$1 ${spin:$i:1}"
     sleep .5
     done
     printf "\r$1  "
-    echo "" # reset prompt
+    echo # reset prompt
 }
 
 DIR=$(pwd "$0")
-source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
+. "$DIR/../../scripts/bash/mergeEnvForDB.sh"
+. "$DIR/../../scripts/bash/ansiControlSequences.sh"
 
-DUMP_FILE_NAME="dump.sql"
+DUMP_FILE_NAME='dump.sql'
 
-identity_file=""
-server="dev"
-target_dir="."
+identity_file=''
+server='dev'
+target_dir='.'
 
-while [ "$1" != "" ]; do
+while [[ $1 != '' ]]; do
     case $1 in
     -s | --server)
         shift
@@ -55,7 +57,7 @@ while [ "$1" != "" ]; do
         exit
         ;;
     *)
-        if [ "$identity_file" == "" ]; then
+        if [[ $identity_file = '' ]]; then
             identity_file=$1
             shift
         else
@@ -66,13 +68,13 @@ while [ "$1" != "" ]; do
     esac
 done
 
-if [ "$identity_file" == "" ]; then
+if [[ $identity_file = '' ]]; then
     print_help
     exit 1
 fi
 
-if [ "$DB_PG_USER" == "" ] || [ "$DB_PG_PASSWORD" == "" ]; then
-    echo "Missing postgres user credential env vars in @tupaia/database .env file. Check Bitwarden for variables and add them to the .env file"
+if [[ $DB_PG_USER = '' || $DB_PG_PASSWORD = '' ]]; then
+    echo -e "${RED}Missing Postgres user credential env vars in @tupaia/database .env file.${RESET} Check Bitwarden for variables and add them to the .env file"
     exit 1
 fi
 
@@ -86,6 +88,5 @@ target_zip_path="$target_path.gz"
 show_loading_spinner "Dumping database to $target_zip_path" "PGPASSWORD=$DB_PG_PASSWORD pg_dump \"host=$host user=$DB_PG_USER dbname=tupaia sslmode=require sslkey=$identity_file\" -Z1 -f $target_zip_path"
 show_loading_spinner "Unzipping $target_zip_path" "gunzip -f $target_zip_path"
 
-echo "Dump file available at $target_path"
-
-echo "Done!"
+echo    "Dump file available at $target_path"
+echo -e "${GREEN}Done!${RESET}"
