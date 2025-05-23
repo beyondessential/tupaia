@@ -1,5 +1,8 @@
-import keyBy from 'lodash.keyby';
 import { formatInTimeZone } from 'date-fns-tz';
+import keyBy from 'lodash.keyby';
+
+import { QuestionType } from '@tupaia/types';
+
 import { ChangeHandler } from './ChangeHandler';
 
 const getAnswerWrapper = (config, answers) => {
@@ -15,7 +18,7 @@ const getAnswerWrapper = (config, answers) => {
 };
 
 const isPrimaryEntityQuestion = (config, questions) => {
-  const primaryEntityQuestion = questions.find(question => question.type === 'PrimaryEntity');
+  const primaryEntityQuestion = questions.find(q => q.type === QuestionType.PrimaryEntity);
   const { questionId } = config.entityId;
   return primaryEntityQuestion.id === questionId;
 };
@@ -37,6 +40,15 @@ const getQuestions = (models, surveyId) => {
       `,
     [surveyId],
   );
+};
+
+const dateAnswerToTimestamp = (dateStr, tz) => {
+  if (!dateStr) return null;
+
+  // Convert the due date to the timezone of the survey response and set the time to the last second
+  // of the day
+  const dateInTimezone = formatInTimeZone(dateStr, tz, "yyyy-MM-dd'T23:59:59'XXX");
+  return new Date(dateInTimezone).getTime();
 };
 
 export class TaskCreationHandler extends ChangeHandler {
@@ -67,29 +79,26 @@ export class TaskCreationHandler extends ChangeHandler {
     if (changedResponses.length === 0) return;
 
     for (const response of changedResponses) {
-      const sr = await models.surveyResponse.findById(response.id);
-      const { timezone, user_id: userId } = sr;
-      const questions = await getQuestions(models, response.survey_id);
+      const [sr, questions] = await Promise.all([
+        models.surveyResponse.findById(response.id),
+        getQuestions(models, response.survey_id),
+      ]);
 
-      const taskQuestions = questions.filter(question => question.type === 'Task');
+      const taskQuestions = questions.filter(q => q.type === QuestionType.Task);
 
-      if (!taskQuestions) {
-        continue;
-      }
+      if (taskQuestions.length === 0) continue;
 
       const answers = await sr.getAnswers();
 
       for (const taskQuestion of taskQuestions) {
         const config = taskQuestion.config.task;
+
+        if (!config) continue;
+
         const getAnswer = getAnswerWrapper(config, answers);
 
-        if (
-          !config ||
-          getAnswer('shouldCreateTask') === null ||
-          getAnswer('shouldCreateTask') === 'No'
-        ) {
-          continue;
-        }
+        const shouldCreateTask = getAnswer('shouldCreateTask');
+        if (!shouldCreateTask || shouldCreateTask === 'No') continue;
 
         // PrimaryEntity question is a special case, where the entity_id is saved against the survey
         // response directly rather than the answers
@@ -97,34 +106,20 @@ export class TaskCreationHandler extends ChangeHandler {
           ? response.entity_id
           : getAnswer('entityId');
         const surveyId = await getSurveyId(models, config);
-
-        const dueDateAnswer = getAnswer('dueDate');
-
-        let dueDate = null;
-        if (dueDateAnswer) {
-          // Convert the due date to the timezone of the survey response and set the time to the last second of the day
-          const dateInTimezone = formatInTimeZone(
-            dueDateAnswer,
-            timezone,
-            "yyyy-MM-dd'T23:59:59'XXX",
-          );
-
-          // Convert the date to a timestamp
-          const timestamp = new Date(dateInTimezone).getTime();
-
-          dueDate = timestamp;
-        }
+        const assigneeId = getAnswer('assignee');
+        const _dueDate = getAnswer('dueDate');
+        const dueDate = dateAnswerToTimestamp(_dueDate, sr.timezone);
 
         await models.task.create(
           {
             initial_request_id: response.id,
             survey_id: surveyId,
             entity_id: entityId,
-            assignee_id: getAnswer('assignee'),
+            assignee_id: assigneeId,
             due_date: dueDate,
             status: 'to_do',
           },
-          userId,
+          sr.user_id,
         );
       }
     }

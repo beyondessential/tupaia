@@ -1,7 +1,6 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query';
-import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+import { DatatrakWebEntitiesRequest, Entity } from '@tupaia/types';
 import { get } from '../api';
-import { Entity } from '@tupaia/types';
 
 export const useEntityByCode = (
   entityCode?: Entity['code'],
