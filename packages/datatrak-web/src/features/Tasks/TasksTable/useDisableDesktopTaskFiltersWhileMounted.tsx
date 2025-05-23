@@ -32,11 +32,10 @@ export function useDisableDesktopTaskFiltersWhileMounted() {
       // scheduled. Using `useLocation` or `useMatch` gives us an outdated value.
       if (window.location.pathname.startsWith(ROUTES.TASKS)) {
         // Restore previous settings
-        console.log('cleaning up');
         setShowAllAssignees(allAssignees);
         setShowCancelled(cancelled);
         setShowCompleted(completed);
       }
     };
-  }, [setShowAllAssignees, setShowCancelled, setShowCompleted]);
+  }, [allAssignees, cancelled, completed, setShowAllAssignees, setShowCancelled, setShowCompleted]);
 }
