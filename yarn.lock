@@ -12119,6 +12119,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     "@types/needle": ^2.5.3
+    "@types/node-fetch": ^2.6.11
     https-proxy-agent: ^5.0.1
     jest: ^29.7.0
     node-fetch: ^1.7.3
