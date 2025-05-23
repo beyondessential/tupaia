@@ -67,7 +67,7 @@ export const AssigneeInput = ({
       inputValue={selectedValue?.name ?? searchValue}
       getOptionLabel={option => option.label}
       getOptionSelected={(option, selected) => option.id === selected?.id}
-      placeholder="Search..."
+      placeholder="Search…"
       loading={isLoading}
       required={required}
       error={error}
