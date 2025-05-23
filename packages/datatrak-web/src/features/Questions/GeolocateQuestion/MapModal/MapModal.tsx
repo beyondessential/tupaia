@@ -79,7 +79,7 @@ export const MapModal = ({
       <Container>
         <Heading>Drop pin on map</Heading>
         <Typography color="textSecondary">
-          Click to drop the pin in a new position on the map and click 'Confirm'
+          Click to drop the pin in a new position on the map and click &lsquo;Confirm&rsquo;
         </Typography>
         <Map
           lng={currentLongitude}
