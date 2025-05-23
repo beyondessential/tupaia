@@ -3,6 +3,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderPage } from '../helpers/render';
 import { handlers } from '../mocks/handlers';
+import '../mocks/matchMedia.mock'; // Must be imported before components under test
 
 const doLogin = async () => {
   const userInput = await screen.findByLabelText(/Email*/);

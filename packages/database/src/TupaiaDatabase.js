@@ -1,4 +1,4 @@
-import knex, { KnexTimeoutError } from 'knex';
+import knex, { Knex, KnexTimeoutError } from 'knex';
 import { types as pgTypes } from 'pg';
 import autobind from 'react-autobind';
 import winston from 'winston';
@@ -79,7 +79,13 @@ export class TupaiaDatabase {
    * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
    * without admin privileges are really expected to time out.
    */
-  #countRecordTimeoutMs = Number.parseInt(getEnvVarOrDefault('SQL_COUNT_TIMEOUT_MS', '400'));
+  #fastCountTimeoutMs = Number.parseInt(getEnvVarOrDefault('FAST_DB_COUNT_TIMEOUT_MS', '400'));
+
+  /**
+   * If true, always uses `count()` method, even when `countFast()` is called.
+   * @type {boolean}
+   */
+  #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
 
   /**
    * @param {TupaiaDatabase} [transactingConnection]
@@ -210,9 +216,15 @@ export class TupaiaDatabase {
     return changeChannel.addSchemaChangeHandler(handler);
   }
 
-  wrapInTransaction(wrappedFunction) {
-    return this.connection.transaction(transaction =>
-      wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.connection.transaction(
+      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+      transactionConfig,
     );
   }
 
@@ -236,7 +248,7 @@ export class TupaiaDatabase {
    */
   async acquireAdvisoryLockForTransaction(lockKey) {
     const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
-    return this.executeSql(`SELECT pg_advisory_xact_lock(?)`, [lockKeyInt]);
+    return this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
   }
 
   /**
@@ -335,12 +347,23 @@ export class TupaiaDatabase {
   }
 
   async count(recordType, where, options) {
-    /** @type {number} */
+    // If just a simple query without options, use the more efficient knex count method
+    const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
+    return Number.parseInt(result[0].count, 10);
+  }
+
+  /**
+   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact record
+   * count is merely an enhancement, not critical information in the context. A return value of
+   * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
+   */
+  async countFast(recordType, where, options) {
+    if (this.#forceTrueCount) return await this.count(recordType, where, options);
+
     let result;
     try {
-      // If just a simple query without options, use the more efficient knex count method
       result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(
-        this.#countRecordTimeoutMs,
+        this.#fastCountTimeoutMs,
         { cancel: true },
       );
     } catch (error) {
