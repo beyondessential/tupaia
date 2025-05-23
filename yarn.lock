@@ -12396,6 +12396,7 @@ __metadata:
     rimraf: ^6.0.1
     rrule: ^2.8.1
     sanitize-filename: ^1.6.3
+    sinon: ^9.0.2
     validator: ^13.11.0
     winston: ^3.3.3
     xlsx: ^0.18.5
