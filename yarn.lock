@@ -11588,6 +11588,7 @@ __metadata:
     lodash.keyby: ^4.6.0
     lodash.sortby: ^4.6.0
     rimraf: ^6.0.1
+    supertest: ^3.1.0
     winston: ^3.2.1
   languageName: unknown
   linkType: soft
@@ -11726,6 +11727,7 @@ __metadata:
     jest: ^29.7.0
     lodash.keyby: ^4.6.0
     rimraf: ^6.0.1
+    supertest: ^3.1.0
     winston: ^3.3.3
   languageName: unknown
   linkType: soft
