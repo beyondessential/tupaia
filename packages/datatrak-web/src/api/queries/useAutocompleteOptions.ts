@@ -1,17 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { Option } from '@tupaia/types';
+import { Option, OptionSet } from '@tupaia/types';
 import { get } from '../api';
 import { useSurveyForm } from '../../features';
 
 export const useAutocompleteOptions = (
-  optionSetId?: string | null,
+  optionSetId?: OptionSet['id'] | null,
   attributeFilters?: Record<string, any>,
   searchText?: string,
 ) => {
   const { getAnswerByQuestionId } = useSurveyForm();
-  return useQuery(
+  return useQuery<Option[]>(
     ['autocompleteOptions', optionSetId, searchText],
-    (): Promise<Option[]> =>
+    () =>
       get(`optionSets/${optionSetId}/options`, {
         params: {
           filter: searchText

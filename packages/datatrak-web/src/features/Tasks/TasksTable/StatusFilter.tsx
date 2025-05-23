@@ -1,9 +1,9 @@
-import React from 'react';
 import { TaskStatus } from '@tupaia/types';
-import { STATUS_VALUES, StatusPill } from '../StatusPill';
-import { getTaskFilterSetting } from '../../../utils';
+import React from 'react';
 import { TaskFilterType } from '../../../types';
+import { STATUS_VALUES, StatusPill } from '../StatusPill';
 import { SelectFilter } from './SelectFilter';
+import { useTasksTable } from './useTasksTable';
 
 interface StatusFilterProps {
   onChange: (value: string) => void;
@@ -11,19 +11,15 @@ interface StatusFilterProps {
 }
 
 export const StatusFilter = ({ onChange, filter }: StatusFilterProps) => {
-  const includeCompletedTasks = getTaskFilterSetting('show_completed_tasks');
-  const includeCancelledTasks = getTaskFilterSetting('show_cancelled_tasks');
+  const { showCompleted, showCancelled } = useTasksTable();
 
   const options = Object.keys(STATUS_VALUES)
     .filter(value => {
       // Filter out completed and cancelled tasks if the user has disabled them
-      if (
-        (!includeCompletedTasks && value === TaskStatus.completed) ||
-        (!includeCancelledTasks && value === TaskStatus.cancelled)
-      ) {
-        return false;
-      }
-      return true;
+      return !(
+        (!showCompleted && value === TaskStatus.completed) ||
+        (!showCancelled && value === TaskStatus.cancelled)
+      );
     })
     .map(value => ({ value }));
 

@@ -6,12 +6,12 @@ export type Params = {
   taskId: string;
 };
 
-type Comment = Omit<KeysToCamelCase<TaskComment>, 'createdAt'> & {
-  // handle the fact that KeysToCamelCase changes Date keys to to camelCase as well
-  createdAt: Date;
-};
-export type ResBody = TaskResponse & {
-  comments: Comment[];
-};
+export interface TaskResponseItem extends Omit<KeysToCamelCase<TaskComment>, 'createdAt'> {
+  /** ISO 8601 format (e.g. '2025-04-21T21:30:48.344Z') */
+  createdAt: string;
+}
+export interface ResBody extends TaskResponse {
+  comments: TaskResponseItem[];
+}
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;

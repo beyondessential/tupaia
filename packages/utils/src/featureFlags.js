@@ -10,6 +10,9 @@ const FLAGS = {
   SERVER_CHANGE_ENQUEUER: {
     default: FEATURE_FLAG_OFF,
   },
+  DATATRAK_MOBILE_CREATE_TASK: {
+    default: FEATURE_FLAG_OFF,
+  },
   DATATRAK_OFFLINE: {
     default: FEATURE_FLAG_OFF,
   },

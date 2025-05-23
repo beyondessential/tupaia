@@ -59,6 +59,8 @@ const EmptyStateWrapper = styled.div.attrs(
   display: flex;
   margin: auto;
   padding-block: 1rem 2rem; // Taller on bottom to optically appear centred
+  padding-block: 2.5rem;
+  padding-inline: 2rem;
   place-content: center;
   place-items: center;
   text-align: center;
@@ -72,26 +74,22 @@ const LoadingContainer = styled.div`
   align-items: center;
 `;
 
-interface SortBy {
-  id: string;
-  desc: boolean;
-}
-
 interface ColumnInstance extends Record<string, any> {
   CellContentComponent?: React.ComponentType<any>;
 }
 
-interface FilterableTableProps {
+// TODO: Refactor our these `unknown`s by making `<FilterableTable>` generic
+export interface FilterableTableProps {
   columns: Column<ColumnInstance>[];
   data?: Record<string, unknown>[];
   pageIndex?: number;
   pageSize?: number;
-  sorting?: SortBy[];
+  sorting?: SortingRule<unknown>[];
   numberOfPages?: number;
   hiddenColumns?: string[];
   onChangePage: (pageIndex: number) => void;
   onChangePageSize: (pageSize: number) => void;
-  onChangeSorting: (sorting: SortingRule<Record<string, any>>[]) => void;
+  onChangeSorting: (sorting: SortingRule<unknown>[]) => void;
   onChangeFilters: FilterCellProps['onChangeFilters'];
   filters?: Filters;
   totalRecords: number;

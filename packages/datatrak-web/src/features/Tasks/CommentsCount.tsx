@@ -21,8 +21,14 @@ const CommentCountText = styled(Typography)`
 
 export const CommentsCount = ({ commentsCount }: { commentsCount: number }) => {
   if (!commentsCount) return null;
+  const unit = commentsCount === 1 ? 'comment' : 'comments';
+  const title = (
+    <>
+      {commentsCount}&nbsp;{unit}
+    </>
+  );
   return (
-    <Tooltip title="Number of user generated comments on this task">
+    <Tooltip title={title}>
       <CommentsCountWrapper>
         <CommentIcon />
         <CommentCountText>{commentsCount}</CommentCountText>

@@ -1,5 +1,5 @@
 import React, { createContext, Dispatch, useContext, useReducer, useState, useMemo } from 'react';
-import { useMatch, useParams, useSearchParams } from 'react-router-dom';
+import { To, useMatch, useParams, useSearchParams } from 'react-router-dom';
 import { QuestionType } from '@tupaia/types';
 import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
@@ -195,7 +195,7 @@ export const useSurveyForm = () => {
     return surveyFormContext.formData[questionId];
   };
 
-  const openCancelConfirmation = ({ confirmPath }: { confirmPath?: string | number }) => {
+  const openCancelConfirmation = ({ confirmPath }: { confirmPath?: To | number }) => {
     dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION, payload: confirmPath });
   };
 
