@@ -49,6 +49,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/lodash.clonedeep": "^4.5.0",
+    "@types/lodash.keyby": "^4.6.0",
     "@types/semver-compare": "^1.0.1",
     "rimraf": "^6.0.1"
   }
