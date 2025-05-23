@@ -63,7 +63,7 @@ export const TasksTable = () => {
       {
         // FilterToolbar internally has a cleanup function. Simply using isDesktop causes
         // FilterToolbar to unmount until its value settles after hydration (until which it will be
-        // undefined). By FilterToolbar’s render on the negation of `false | undefined`, we ensure
+        // undefined). By predicating FilterToolbar’s render on the negation of `false | undefined`, we ensure
         // the cleanup function only runs when it “actually” unmounts, and not “between renders”
         // when isDesktop is briefly undefined.
         !isMobile && <FilterToolbar />
@@ -88,13 +88,12 @@ export const TasksTable = () => {
         }
         isLoading={isFetching}
       />
-
       {
         // MobileTaskFilters internally has a cleanup function. Simply using isMobile causes
-        // MobileTaskFilters to unmount until its value settles after hydration (until which it will be
-        // undefined). By MobileTaskFilters’s render on the negation of `false | undefined`, we ensure
-        // the cleanup function only runs when it “actually” unmounts, and not “between renders”
-        // when isMobile is briefly undefined.
+        // MobileTaskFilters to unmount until its value settles after hydration (until which it will
+        // be undefined). By predicating MobileTaskFilters’s render on the negation of
+        // `false | undefined`, we ensure the cleanup function only runs when it “actually”
+        // unmounts, and not “between renders” when isMobile is briefly undefined.
         !isDesktop && (
           <MobileTaskFilters
             filters={filters}
