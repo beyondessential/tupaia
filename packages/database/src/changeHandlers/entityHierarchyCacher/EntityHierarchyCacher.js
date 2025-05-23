@@ -1,4 +1,3 @@
-
 import { RECORDS } from '../../records';
 import { generateId } from '../../utilities';
 import { ChangeHandler } from '../ChangeHandler';
