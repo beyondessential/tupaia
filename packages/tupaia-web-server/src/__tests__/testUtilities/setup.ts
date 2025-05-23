@@ -8,7 +8,6 @@ import {
   getTestModels,
   EntityHierarchyCacher,
   getTestDatabase,
-  findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 
 import { createApp } from '../../app';

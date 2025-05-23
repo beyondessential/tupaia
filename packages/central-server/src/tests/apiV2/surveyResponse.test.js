@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import moment from 'moment';
 
 import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';

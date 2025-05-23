@@ -1,6 +1,6 @@
 'use strict';
 
-import { generateId, insertObject, addReportToGroups } from '../utilities';
+import { insertObject, addReportToGroups } from '../utilities';
 
 var dbm;
 var type;

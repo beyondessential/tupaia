@@ -1,5 +1,3 @@
-import { AGGREGATION_TYPES } from '@tupaia/aggregator/src/aggregationTypes';
-
 ('use strict');
 
 var dbm;

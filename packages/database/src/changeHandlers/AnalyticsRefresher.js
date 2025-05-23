@@ -1,4 +1,4 @@
-import winston from 'winston';
+
 import { ChangeHandler } from './ChangeHandler';
 
 export class AnalyticsRefresher extends ChangeHandler {

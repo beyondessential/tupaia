@@ -8,7 +8,7 @@ import { validatePermissions } from './helpers';
  */
 export const attachDataTableToContext = async (
   req: Request<{ dataTableCode: string }, any, any, any>,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {

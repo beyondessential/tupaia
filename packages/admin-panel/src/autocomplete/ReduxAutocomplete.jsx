@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { getAutocompleteState } from './selectors';
 import { changeSelection, changeSearchTerm, clearState } from './actions';
 import { Autocomplete } from './Autocomplete';
-import { EntityOptionLabel } from '../widgets';
 
 const getPlaceholder = (placeholder, selection) => {
   if (selection && selection.length) {

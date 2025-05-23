@@ -1,7 +1,5 @@
 'use strict';
 
-import { removeJsonEntry } from '../utilities';
-
 var dbm;
 var type;
 var seed;

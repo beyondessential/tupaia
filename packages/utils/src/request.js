@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import nodeFetch, { Response as NodeFetchResponse } from 'node-fetch';
+import nodeFetch from 'node-fetch';
 import { CustomError } from './errors';
 
 const DEFAULT_MAX_WAIT_TIME = 120 * 1000; // 120 seconds in milliseconds
