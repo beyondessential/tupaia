@@ -85840,7 +85840,7 @@ export const EntityResponseSchema = {
 	]
 } 
 
-export const AssigneeSchema = {
+export const TaskAssigneeSchema = {
 	"type": "object",
 	"properties": {
 		"id": {
