@@ -1,11 +1,27 @@
 import { useMediaQuery, useTheme } from '@material-ui/core';
 
-export const useIsMobileSizeClass = () => {
+/**
+ * Thin wrapper around {@link useMediaQuery}, but returns `undefined` until the true value has
+ * settled.
+ */
+export const useIsMobileSizeClass = (): boolean | undefined => {
   const theme = useTheme();
-  return useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  return isMobile === isDesktop // Both report false negative until hydration
+    ? undefined
+    : isMobile;
 };
 
-export const useIsDesktopSizeClass = () => {
+/**
+ * Thin wrapper around {@link useMediaQuery}, but returns `undefined` until the true value has
+ * settled.
+ */
+export const useIsDesktopSizeClass = (): boolean | undefined => {
   const theme = useTheme();
-  return useMediaQuery(theme.breakpoints.up('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  return isMobile === isDesktop // Both report false negative until hydration
+    ? undefined
+    : isDesktop;
 };
