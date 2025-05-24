@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 set -e +x # Do not output commands in this script, as some would show credentials in plain text
 
-DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-REPO_ROOT=$(realpath "$DIR/../..")
+"$DIR"/requireCommands.sh bw jq
+
 . "$DIR/ansiControlSequences.sh"
+DEPLOYMENT_NAME=$1
+REPO_ROOT=$(realpath "$DIR/../..")
 
 # Log into Bitwarden
 if [[ ! $(bw login --check) ]]; then
