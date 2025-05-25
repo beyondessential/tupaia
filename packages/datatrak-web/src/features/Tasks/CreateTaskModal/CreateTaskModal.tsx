@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { LoadingContainer, Modal, TextField } from '@tupaia/ui-components';
+import { LoadingContainer, LoadingScreen, Modal, TextField } from '@tupaia/ui-components';
 
 import { useCreateTask, useEditUser, useUser } from '../../../api';
 import { ROUTES } from '../../../constants';
@@ -73,7 +73,7 @@ const CommentsInput = styled(TextField).attrs({
 `;
 
 const Wrapper = styled.div`
-  .loading-screen {
+  ${LoadingScreen} {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
     .MuiTypography-h5 {
@@ -158,15 +158,12 @@ export const CreateTaskModal = ({ onClose }: CreateTaskModalProps) => {
   ];
 
   const onChangeCountry = event => {
-    console.debug('onChangeCountry', event);
     updateSelectedCountry(event);
 
     if (dirtyFields.survey_code) {
-      console.debug('  Survey Code dirty, resetting');
       setValue('survey_code', null, { shouldValidate: true });
     }
     if (dirtyFields.entity_id) {
-      console.debug('  Entity ID dirty, resetting');
       setValue('entity_id', null, { shouldValidate: true });
     }
   };

@@ -21,13 +21,7 @@ const Button = styled(BaseButton)`
   }
 
   &.MuiButton-outlined {
-    ${({ theme }) => theme.breakpoints.down('sm')} {
-      background: white;
-    }
-  }
-
-  &.MuiButton-outlined {
-    ${({ theme }) => theme.breakpoints.down('sm')} {
+    ${props => props.theme.breakpoints.down('sm')} {
       background: white;
     }
   }

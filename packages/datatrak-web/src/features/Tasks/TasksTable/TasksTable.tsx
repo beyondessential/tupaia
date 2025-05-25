@@ -5,7 +5,7 @@ import { FilterableTable } from '@tupaia/ui-components';
 
 import { isFeatureEnabled } from '@tupaia/utils';
 
-import { useIsMobile } from '../../../utils';
+import { useIsDesktop, useIsMobile } from '../../../utils';
 import { FilterToolbar } from './FilterToolbar';
 import { MobileTaskFilters } from './MobileTaskFilters';
 import { useTasksTable } from './useTasksTable';
@@ -52,12 +52,22 @@ export const TasksTable = () => {
     onChangePage,
     onChangePageSize,
     isLoading,
+    isFetching,
   } = useTasksTable();
+
   const isMobile = useIsMobile();
+  const isDesktop = useIsDesktop();
 
   return (
     <Container>
-      {!isMobile && <FilterToolbar />}
+      {
+        // FilterToolbar internally has a cleanup function. Simply using isDesktop causes
+        // FilterToolbar to unmount until its value settles after hydration (until which it will be
+        // undefined). By predicating FilterToolbar’s render on the negation of `false | undefined`,
+        // we ensure the cleanup function only runs when it “actually” unmounts, and not “between
+        // renders” when isDesktop is briefly undefined.
+        !isMobile && <FilterToolbar />
+      }
       <FilterableTable
         columns={columns}
         data={isLoading ? [] : data}
@@ -72,19 +82,26 @@ export const TasksTable = () => {
         onChangePage={onChangePage}
         onChangePageSize={onChangePageSize}
         noDataMessage={
-          !isMobile || canCreateTaskOnMobile
+          isDesktop || canCreateTaskOnMobile
             ? 'No tasks to display. Click the ‘+ Create task’ button above to add a new task.'
             : 'No tasks to display'
         }
-        isLoading={isLoading}
+        isLoading={isFetching}
       />
-      {isMobile && (
-        <MobileTaskFilters
-          filters={filters}
-          onChangeFilters={updateFilters}
-          resultCount={totalRecords}
-        />
-      )}
+      {
+        // MobileTaskFilters internally has a cleanup function. Simply using isMobile causes
+        // MobileTaskFilters to unmount until its value settles after hydration (until which it will
+        // be undefined). By predicating MobileTaskFilters’s render on the negation of
+        // `false | undefined`, we ensure the cleanup function only runs when it “actually”
+        // unmounts, and not “between renders” when isMobile is briefly undefined.
+        !isDesktop && (
+          <MobileTaskFilters
+            filters={filters}
+            onChangeFilters={updateFilters}
+            resultCount={totalRecords}
+          />
+        )
+      }
     </Container>
   );
 };

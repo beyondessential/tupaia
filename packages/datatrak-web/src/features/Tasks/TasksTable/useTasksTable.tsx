@@ -8,7 +8,7 @@ import { FilterableTableProps } from '@tupaia/ui-components';
 import { useCurrentUserContext, useTasks } from '../../../api';
 import { UseTasksQueryParams } from '../../../api/queries/useTasks';
 import { TaskStatusType } from '../../../types';
-import { displayDate, isNotNullish, isNullish } from '../../../utils';
+import { displayDate, isNotNullish, isNullish, useIsMobile } from '../../../utils';
 import { CommentsCount } from '../CommentsCount';
 import { DueDatePicker } from '../DueDatePicker';
 import { StatusDot, StatusPill } from '../StatusPill';
@@ -33,29 +33,28 @@ const StatusCellContent = styled.div`
   }
 `;
 
-const StatusPillContent = styled.div`
-  display: flex;
-  align-items: center;
-  > div {
-    margin-inline-end: 0.5rem;
-    ${({ theme }) => theme.breakpoints.up('sm')} {
-      display: none;
-    }
-  }
+const StyledStatusDot = styled(StatusDot).attrs({
+  // Table still has task status column, so this indicator is redundant
+  'aria-hidden': true,
+})`
+  display: inline-block;
+  margin-inline-end: 0.5rem;
+`;
 
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+const SurveyName = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export function useTasksTable() {
   const { projectId } = useCurrentUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const isMobile = useIsMobile();
+
   const setBooleanSearchParam = useCallback(
-    (param: string, value: boolean) => {
+    (param: 'allAssignees' | 'cancelled' | 'completed', value: boolean) => {
       if (value) searchParams.set(param, '1');
       else searchParams.delete(param);
       setSearchParams(searchParams, { replace: true });
@@ -64,10 +63,10 @@ export function useTasksTable() {
   );
 
   const _page = Number.parseInt(searchParams.get('page') || '0', 10);
-  const page = Number.isNaN(_page) ? _page : 0;
+  const page = Number.isNaN(_page) ? 0 : _page;
 
   const _pageSize = Number.parseInt(searchParams.get('pageSize') || '20', 10);
-  const pageSize = Number.isNaN(_pageSize) ? _pageSize : 20;
+  const pageSize = Number.isNaN(_pageSize) ? 20 : _pageSize;
 
   const _sortBy = searchParams.get('sortBy');
   const sorting: UseTasksQueryParams['sortBy'] = useMemo(
@@ -170,13 +169,12 @@ export function useTasksTable() {
           original: DatatrakWebTasksRequest.ResBody['tasks'][0];
         };
       }) => {
-        const value = row?.original?.survey?.name || '';
         const status = row?.original?.taskStatus || '';
         return (
-          <StatusPillContent>
-            <StatusDot $status={status} />
-            <span>{value}</span>
-          </StatusPillContent>
+          <>
+            {isMobile && <StyledStatusDot $status={status} />}
+            <SurveyName>{row?.original?.survey?.name}</SurveyName>
+          </>
         );
       },
       id: 'survey.name',

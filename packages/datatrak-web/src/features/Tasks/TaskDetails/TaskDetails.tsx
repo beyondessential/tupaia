@@ -6,7 +6,7 @@ import { Frequency } from 'rrule';
 import styled from 'styled-components';
 
 import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
-import { LoadingContainer, VisuallyHidden } from '@tupaia/ui-components';
+import { LoadingContainer, LoadingScreen, VisuallyHidden } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
 import {
@@ -104,7 +104,7 @@ const Form = styled(TaskForm)`
 `;
 
 const Wrapper = styled.div`
-  .loading-screen {
+  ${LoadingScreen} {
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 `;

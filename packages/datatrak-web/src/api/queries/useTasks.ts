@@ -41,21 +41,10 @@ export const useTasks = (
   const consolidateFilters = () => {
     const augmented = [...filters];
 
-    // `projectId` should be truthy because useQuery is otherwise disabled
-    if (projectId) {
-      augmented.push({
-        id: 'survey.project_id',
-        value: projectId,
-      });
-    }
-
-    // `userId` should be truthy because useQuery is otherwise disabled
-    if (!allAssignees && userId) {
-      augmented.push({
-        id: 'assignee_id',
-        value: userId,
-      });
-    }
+    // `projectId` and `userId` should be truthy because useQuery is otherwise disabled, but TS
+    // server doesn’t know
+    if (projectId) augmented.push({ id: 'survey.project_id', value: projectId });
+    if (!allAssignees && userId) augmented.push({ id: 'assignee_id', value: userId });
 
     if (!filters.some(f => f.id === 'task_status')) {
       // If task status filter is already present, don’t override it

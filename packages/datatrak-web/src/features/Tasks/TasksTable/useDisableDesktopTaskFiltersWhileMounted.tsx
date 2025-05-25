@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ROUTES } from '../../../constants';
 import { useTasksTable } from './useTasksTable';
 
 /**
@@ -21,20 +22,20 @@ export function useDisableDesktopTaskFiltersWhileMounted() {
   const [cancelled] = useState(showCancelled);
   const [completed] = useState(showCompleted);
 
-  // When calling component mounts, set sensible defaults. (Exhaustively declaring dependencies
-  // optional here because Effect is known to be idempotent.)
   useEffect(() => {
     setShowAllAssignees(false);
     setShowCancelled(true);
     setShowCompleted(true);
-  }, [setShowAllAssignees, setShowCancelled, setShowCompleted]);
 
-  useEffect(() => {
     return () => {
-      // Restore previous settings
-      setShowAllAssignees(allAssignees);
-      setShowCancelled(cancelled);
-      setShowCompleted(completed);
+      // HACK: We’re after the pathname’s value when this cleanup function runs, not when it’s
+      // scheduled. Using `useLocation` or `useMatch` gives us an outdated value.
+      if (window.location.pathname === ROUTES.TASKS) {
+        // Restore previous settings
+        setShowAllAssignees(allAssignees);
+        setShowCancelled(cancelled);
+        setShowCompleted(completed);
+      }
     };
   }, [allAssignees, cancelled, completed, setShowAllAssignees, setShowCancelled, setShowCompleted]);
 }

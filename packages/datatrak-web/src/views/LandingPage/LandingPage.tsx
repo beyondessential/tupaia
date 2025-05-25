@@ -12,7 +12,7 @@ import { SurveySelectSection } from './SurveySelectSection';
 import { TasksSection } from './TasksSection';
 
 const PageContainer = styled(BasePageContainer).attrs({ component: 'main' })`
-  --body-block-size: calc(100vb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
+  --body-block-size: calc(100dvb - ${HEADER_HEIGHT} - max(0.0625rem, 1px));
   //                                                 ^~~~~~~~~~~~~~~~~~~ Header’s border-block-end-width
   block-size: 100%;
   display: flex;
@@ -25,7 +25,8 @@ const PageContainer = styled(BasePageContainer).attrs({ component: 'main' })`
     const primaryColor = theme.palette.primary.main;
     const backgroundColor = theme.palette.background.default;
     return css`
-      background-image: linear-gradient(
+      background-image:
+        linear-gradient(
           252deg,
           oklch(from ${primaryColor} l c h / 14%) 2%,
           oklch(from ${backgroundColor} l c h / 20%) 29%
@@ -36,7 +37,8 @@ const PageContainer = styled(BasePageContainer).attrs({ component: 'main' })`
           oklch(from ${primaryColor} l c h / 16%) 100%
         );
       @supports not (color: oklch(from black l c h)) {
-        background-image: linear-gradient(252deg, ${primaryColor}24 2%, ${backgroundColor}33 29%),
+        background-image:
+          linear-gradient(252deg, ${primaryColor}24 2%, ${backgroundColor}33 29%),
           linear-gradient(242deg, ${backgroundColor}4d 68%, ${primaryColor}28 100%);
       }
     `;

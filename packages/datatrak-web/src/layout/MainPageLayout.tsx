@@ -9,9 +9,9 @@ import { Header, HeaderRoot } from './Header/Header';
 import { MobileHeaderRoot } from './StickyMobileHeader';
 
 const PageWrapper = styled.div`
+  background-color: ${props => props.theme.palette.background.default};
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.palette.background.default};
   min-block-size: 100dvb;
 
   + .notistack-SnackbarContainer {
@@ -34,23 +34,21 @@ const PageWrapper = styled.div`
   }
 `;
 
+const mobileHeaderlessRoutes = [
+  `${ROUTES.SURVEY}/*`,
+  ROUTES.ACCOUNT_SETTINGS,
+  ROUTES.SURVEY_SELECT,
+  ROUTES.SYNC,
+  ROUTES.TASK_DETAILS,
+  ROUTES.TASKS,
+  ROUTES.WELCOME,
+];
+const desktopHeaderlessRoutes = [ROUTES.WELCOME];
+
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();
-  // Always show header if not mobile
-  if (!useIsMobile()) {
-    return true;
-  }
-  // Some routes on mobile don't have header
-  const headerLessRoutePatterns = [
-    `${ROUTES.SURVEY}/*`,
-    ROUTES.ACCOUNT_SETTINGS,
-    ROUTES.TASKS,
-    ROUTES.TASK_DETAILS,
-    ROUTES.SURVEY_SELECT,
-    ROUTES.SYNC,
-  ];
-
-  return !headerLessRoutePatterns.some(pathPattern => matchPath(pathPattern, pathname));
+  const headerlessRoutes = useIsMobile() ? mobileHeaderlessRoutes : desktopHeaderlessRoutes;
+  return !headerlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
 };
 
 export const MainPageLayout = () => {

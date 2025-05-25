@@ -14,7 +14,7 @@ import {
   useProjectUsersQuery,
 } from '../../../api';
 import { Button, FiltersIcon } from '../../../components';
-import { Modal, ModalBody } from '../../../components/Modal';
+import { Modal, ModalBody, ModalCloseButton } from '../../../components/Modal';
 import { MobileAutocomplete, MobileAutocompleteProps } from './MobileAutocomplete';
 import { useDisableDesktopTaskFiltersWhileMounted } from './useDisableDesktopTaskFiltersWhileMounted';
 import { useResetTasksTableFiltersOnUnmount } from './useResetTasksTableFiltersOnUnmount';
@@ -74,6 +74,10 @@ const StyledModal = styled(Modal).attrs({
     display: grid;
     grid-template-areas: '--header' '--tabs' '--autocomplete' '--actions';
     grid-template-rows: auto auto minmax(0, 1fr) auto;
+  }
+
+  ${ModalCloseButton} {
+    display: none;
   }
 `;
 
@@ -222,15 +226,6 @@ const Filter = ({ fetchFunction, filterKey, onChange, value }: FilterProps) => {
   );
 };
 
-const getShowResultsButtonLabel = (resultCount: number | undefined) =>
-  resultCount === undefined ? (
-    'Show results'
-  ) : (
-    <>
-      Show {resultCount}&nbsp;{resultCount === 1 ? 'result' : 'results'}
-    </>
-  );
-
 interface MobileTaskFiltersProps extends Pick<FilterableTableProps, 'filters' | 'onChangeFilters'> {
   resultCount?: number;
 }
@@ -322,7 +317,10 @@ export const MobileTaskFilters = ({
         )}
         <ButtonGroup>
           <Button onClick={() => void setIsOpen(false)}>
-            {getShowResultsButtonLabel(resultCount)}
+            Show results{' '}
+            {resultCount !== undefined ? (
+              <span style={{ marginInlineStart: '.5ch', opacity: 0.65 }}>({resultCount})</span>
+            ) : null}
           </Button>
           <Button variant="text" color="default" onClick={clearFilters}>
             Clear filters

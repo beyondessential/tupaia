@@ -13,6 +13,9 @@ const FLAGS = {
   DATATRAK_MOBILE_CREATE_TASK: {
     default: FEATURE_FLAG_OFF,
   },
+  DATATRAK_OFFLINE: {
+    default: FEATURE_FLAG_OFF,
+  },
 };
 
 /**

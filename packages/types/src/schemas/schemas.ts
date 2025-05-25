@@ -84731,6 +84731,7 @@ export const EntityTypeEnumSchema = {
 		"trap",
 		"vehicle",
 		"village",
+		"visiting_specialist",
 		"water_sample",
 		"wish_sub_district",
 		"world"
@@ -85776,17 +85777,16 @@ export const CamelCaseFeedItemSchema = {
 } 
 
 export const EntityResponseSchema = {
-	"additionalProperties": false,
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"type": {
 					"type": "string"
 				}
-			}
+			},
+			"additionalProperties": false
 		},
 		"bounds": {
 			"type": "string"
@@ -85794,23 +85794,23 @@ export const EntityResponseSchema = {
 		"code": {
 			"type": "string"
 		},
-		"country_code": {
+		"countryCode": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"image_url": {
+		"imageUrl": {
 			"type": "string"
 		},
 		"metadata": {
 			"type": "object",
-			"properties": {}
+			"additionalProperties": false
 		},
 		"name": {
 			"type": "string"
 		},
-		"parent_id": {
+		"parentId": {
 			"type": "string"
 		},
 		"point": {
@@ -85825,10 +85825,11 @@ export const EntityResponseSchema = {
 		"isRecent": {
 			"type": "boolean"
 		},
-		"parent_name": {
+		"parentName": {
 			"type": "string"
 		}
 	},
+	"additionalProperties": false,
 	"required": [
 		"attributes",
 		"code",

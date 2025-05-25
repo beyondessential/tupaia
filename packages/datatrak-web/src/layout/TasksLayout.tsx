@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 
-import { SafeAreaColumn } from '@tupaia/ui-components';
+import { LoadingScreen, SafeAreaColumn } from '@tupaia/ui-components';
 
 import { useIsMobile } from '../utils';
 
@@ -18,7 +18,7 @@ const PageContainer = styled.div`
   flex: 1;
   padding-block-start: 0.75rem;
   max-height: 100%;
-  .loading-screen {
+  ${LoadingScreen} {
     border: none;
     background-color: ${({ theme }) => theme.palette.background.paper};
   }
