@@ -58,7 +58,7 @@ done
 echo -e "${BOLD}${RED}Missing commands.${RESET} To run this script, ensure the following commands are available:" >&2
 echo
 echo -e "$summary" |
-	column -t -s ',' | # Pretty print CSV as table
-	sed 's/^/  /'      # Indent by two wordspaces
+	column -t -s , | # Pretty print CSV as table
+	sed 's/^/  /'    # Indent by two wordspaces
 
 exit 1
