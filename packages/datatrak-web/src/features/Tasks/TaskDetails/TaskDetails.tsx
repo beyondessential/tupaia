@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { Task, TaskStatus } from '@tupaia/types';
-import { LoadingContainer } from '@tupaia/ui-components';
+import { LoadingContainer, LoadingScreen } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
 import {
@@ -15,6 +15,7 @@ import {
   Tile,
   TileSkeleton,
 } from '../../../components';
+import { TileRoot } from '../../../components/Tile';
 import { SingleTaskResponse } from '../../../types';
 import { AssigneeInput } from '../AssigneeInput';
 import { DueDatePicker } from '../DueDatePicker';
@@ -22,7 +23,6 @@ import { RepeatScheduleInput } from '../RepeatScheduleInput';
 import { TaskForm } from '../TaskForm';
 import { TaskComments } from './TaskComments';
 import { TaskMetadata } from './TaskMetadata';
-import { TileRoot } from '../../../components/Tile';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -98,7 +98,7 @@ const Form = styled(TaskForm)`
 `;
 
 const Wrapper = styled.div`
-  .loading-screen {
+  ${LoadingScreen} {
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 `;

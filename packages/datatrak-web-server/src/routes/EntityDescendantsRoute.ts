@@ -125,7 +125,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
               };
             })
             .filter(Boolean),
-          ...entities.sort((a: any, b: any) => a.name.localeCompare(b.name)),
+          ...entities.sort((a: any, b: any) => a.name?.localeCompare(b.name) ?? 0), // SQL projection may exclude `name` attribute
         ];
 
     return camelcaseKeys(sortedEntities, { deep: true });
