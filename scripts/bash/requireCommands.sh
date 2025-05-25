@@ -32,6 +32,9 @@ if (($any_missing == 0)); then
 	exit 0
 fi
 
+# Subsequent outputs to stderr
+exec 1>&2
+
 is_builtin() {
 	if [[ $(type "$1") = *' is a shell builtin' ]]; then
 		return 0
@@ -55,7 +58,7 @@ for cmd in "${required[@]}"; do
 	fi
 done
 
-echo -e "${BOLD}${RED}Missing commands.${RESET} To run this script, ensure the following commands are available:" >&2
+echo -e "${BOLD}${RED}Missing commands.${RESET} To run this script, ensure the following commands are available:"
 echo
 echo -e "$summary" |
 	column -t -s , | # Pretty print CSV as table
