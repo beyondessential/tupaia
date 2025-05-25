@@ -6,10 +6,12 @@ import styled from 'styled-components';
  */
 export const VisuallyHidden = styled.span`
   &:not(:active, :focus-visible, :focus-within) {
+    border: 0;
     clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    height: 1px;
+    height: auto;
+    margin: 0;
     overflow: hidden;
+    padding: 0;
     position: absolute;
     white-space: nowrap;
     width: 1px;
