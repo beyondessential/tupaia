@@ -1,5 +1,6 @@
 import { Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
+import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -39,9 +40,7 @@ const Wrapper = styled.fieldset`
   }
 `;
 
-const StyledButton = styled(Button).attrs({
-  startIcon: <MapIcon />,
-})`
+const StyledButton = styled(Button)`
   ${props => props.theme.breakpoints.up('md')} {
     &.MuiButton-root {
       text-decoration: underline;
@@ -59,6 +58,7 @@ export const GeolocateQuestion = ({
   const [mapModalOpen, setMapModalOpen] = useState(false);
 
   const isMobile = useIsMobile();
+  const isOnline = window.navigator.onLine;
 
   const toggleMapModal = () => {
     setMapModalOpen(!mapModalOpen);
@@ -85,8 +85,9 @@ export const GeolocateQuestion = ({
               onClick={toggleMapModal}
               fullWidth={isMobile}
               variant={isMobile ? 'contained' : 'text'}
+              startIcon={isOnline ? <MapIcon /> : <LocationSearchingIcon />}
             >
-              Drop pin on map
+              {isOnline ? 'Drop pin on map' : 'Detect current location'}
             </StyledButton>
           </>
         )}
