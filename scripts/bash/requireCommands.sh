@@ -37,7 +37,7 @@ exec 1>&2
 
 summary='' # Table in CSV format
 for cmd in "${required[@]}"; do
-	if executable=$(command -v "$cmd" 2>&1); then
+	if executable=$(command -v "$cmd"); then
 		if [[ $(type -t "$cmd") = builtin ]]; then
 			executable='shell builtin'
 		fi
