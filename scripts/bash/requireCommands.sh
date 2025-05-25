@@ -28,7 +28,7 @@ for cmd in "${required[@]}"; do
 done
 
 # Short-circuit with silent output on success
-if (($any_missing == 0)); then
+if ((any_missing == 0)); then
 	exit 0
 fi
 
