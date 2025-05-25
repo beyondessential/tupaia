@@ -40,14 +40,18 @@ jobs:
       - name: Build dependencies
         run: yarn run build:from meditrak-app
 
-      # TODO: Replace with Bitwarden GitHub Actions: https://bitwarden.com/help/github-actions-integration
-      - name: Write .env file
+      # The next two steps could be refactored to use Bitwarden’s GitHub Action. That approach is
+      # technically preferable, but for now we use the Bitwarden CLI as a cost savings. (The GitHub
+      # action requires a Machine Account, which requires a different subscription.)
+      # https://bitwarden.com/help/github-actions-integration
+      - name: Install Bitwarden CLI
         run: |
-          echo "BUGSNAG_API_KEY=\"${{ secrets.BUGSNAG_API_KEY }}\"
-          CLIENT_BASIC_AUTH_HEADER=\"${{ secrets.CLIENT_BASIC_AUTH_HEADER }}\"
-          MIXPANEL_ID=\"${{ secrets.MIXPANEL_ID }}\"
-          SECRET_SALT=\"${{ secrets.SECRET_SALT }}\"
-          " >packages/meditrak-app/.env
+          if ! command -v bw &>/dev/null; then
+            npm install --global @bitwarden/cli
+          fi
+
+      - name: Write .env file
+        run: yarn run download-env-vars meditrak-app
 
       - name: Append BETA_BRANCH environment variable (if non-production branch)
         if: github.head_ref != 'master'
