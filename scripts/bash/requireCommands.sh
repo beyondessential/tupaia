@@ -35,17 +35,10 @@ fi
 # Subsequent outputs to stderr
 exec 1>&2
 
-is_builtin() {
-	if [[ $(type "$1") = *' is a shell builtin' ]]; then
-		return 0
-	fi
-	return 1
-}
-
 summary='' # Table in CSV format
 for cmd in "${required[@]}"; do
 	if executable=$(command -v "$cmd" 2>&1); then
-		if is_builtin "$cmd"; then
+		if [[ $(type -t "$cmd") = builtin ]]; then
 			executable='shell builtin'
 		fi
 		summary+="${BOLD}${GREEN}✓${RESET},"
