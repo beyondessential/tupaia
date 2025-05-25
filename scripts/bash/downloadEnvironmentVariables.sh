@@ -2,7 +2,7 @@
 set -e +x # Do not output commands in this script, as some would show credentials in plain text
 
 DIR=$(dirname "$0")
-"$DIR"/requireCommands.sh bw jq
+"$DIR/requireCommands.sh" bw jq
 
 . "$DIR/ansiControlSequences.sh"
 DEPLOYMENT_NAME=$1
