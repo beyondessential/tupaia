@@ -12,7 +12,7 @@
 #   ✓  python3  /opt/homebrew/bin/python3
 #
 # REMARK
-#  Can be called with no arguments, but has no effect and exits with code 0.
+#   Can be called with no arguments, but has no effect and exits with code 0.
 
 dir=$(dirname "$0")
 . "$dir/ansiControlSequences.sh"
