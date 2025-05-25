@@ -1,21 +1,35 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
-import { SurveyQuestionInputProps } from '../../../types';
-import { Button, InputHelperText, OrDivider } from '../../../components';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+
 import { useSurveyForm } from '../..';
-import { MapModal } from './MapModal';
+import { Button, InputHelperText } from '../../../components';
+// Implicit import from components/ causes ReferenceError (probably circular import)
+import { OrDivider } from '../../../components/OrDivider';
+import { SurveyQuestionInputProps } from '../../../types';
+import { useIsMobile } from '../../../utils';
 import { LatLongFields } from './LatLongFields';
+import { MapModal } from './MapModal';
 
 const Container = styled.div`
   display: flex;
-  align-items: flex-end;
+  flex-direction: column-reverse;
   margin-top: 1.4rem;
 
-  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    align-items: flex-start;
-    flex-direction: column;
+  ${props => props.theme.breakpoints.up('md')} {
+    column-gap: 1.125rem;
+    flex-direction: row;
+    margin-inline-start: 1.125rem;
+
+    ${OrDivider} {
+      display: unset;
+      inline-size: unset;
+      &::before,
+      &::after {
+        content: unset;
+      }
+    }
   }
 `;
 
@@ -25,24 +39,14 @@ const Wrapper = styled.fieldset`
   }
 `;
 
-const SeparatorText = styled(Typography)`
-  font-size: 1rem;
-  margin-block: 0.8rem 0.3rem;
-  margin-inline: 1.5rem;
-`;
-
-const ModalButton = styled(Button).attrs({
-  variant: 'text',
+const StyledButton = styled(Button).attrs({
+  startIcon: <MapIcon />,
 })`
-  padding-block-end: 0;
-  padding-inline-start: 0.1rem;
-`;
-
-const ButtonText = styled.span`
-  font-size: 1rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  margin-inline-start: 0.56rem;
-  text-decoration: underline;
+  ${props => props.theme.breakpoints.up('md')} {
+    &.MuiButton-root {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const GeolocateQuestion = ({
@@ -53,6 +57,8 @@ export const GeolocateQuestion = ({
 }: SurveyQuestionInputProps) => {
   const { isReviewScreen, isResponseScreen } = useSurveyForm();
   const [mapModalOpen, setMapModalOpen] = useState(false);
+
+  const isMobile = useIsMobile();
 
   const toggleMapModal = () => {
     setMapModalOpen(!mapModalOpen);
@@ -74,11 +80,14 @@ export const GeolocateQuestion = ({
 
         {displayMapModalButton && (
           <>
-            <ModalButton onClick={toggleMapModal}>
-              <MapIcon />
             <OrDivider />
-              <ButtonText>Drop pin on map</ButtonText>
-            </ModalButton>
+            <StyledButton
+              onClick={toggleMapModal}
+              fullWidth={isMobile}
+              variant={isMobile ? 'contained' : 'text'}
+            >
+              Drop pin on map
+            </StyledButton>
           </>
         )}
         <MapModal
