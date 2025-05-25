@@ -10,7 +10,7 @@ REPO_ROOT=$(realpath "$DIR/../..")
 
 # Log into Bitwarden
 if [[ ! $(bw login --check) ]]; then
-    if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET ]]; then
+    if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET && -v BW_PASSWORD ]]; then
         # See https://bitwarden.com/help/personal-api-key
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
         bw login --apikey
@@ -29,7 +29,7 @@ if [[ ! $(bw login --check) ]]; then
 
     else
         # Automated environment
-        echo -e "${BOLD}${RED}Login credentials for Bitwarden are missing.${RESET} Please ensure BW_CLIENTID and BW_CLIENTSECRET environment variables are set."
+        echo -e "${BOLD}${RED}Login credentials for Bitwarden are missing.${RESET} Ensure BW_CLIENTID, BW_CLIENTSECRET and BW_PASSWORD environment variables are set."
         echo -e "See ${MAGENTA}https://bitwarden.com/help/personal-api-key${RESET}"
         exit 1
     fi
