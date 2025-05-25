@@ -17,7 +17,7 @@
 dir=$(dirname "$0")
 . "$dir/ansiControlSequences.sh"
 
-required=($(printf "%s\n" "$@" | sort))
+readarray -t required < <(printf "%s\n" "$@" | sort)
 
 any_missing=0
 for cmd in "${required[@]}"; do
