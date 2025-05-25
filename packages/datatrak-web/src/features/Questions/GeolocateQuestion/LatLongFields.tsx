@@ -59,7 +59,7 @@ export const LatLongFields = ({
         label="Longitude"
         onChange={(e: ChangeEvent<{}>) => handleChange(e, 'longitude')}
         textInputProps={{
-          placeholder: 'e.g. -122.4',
+          placeholder: 'e.g. −122.4', // True minus sign U+2212
           type: 'number',
           inputProps: {
             min: -180,
