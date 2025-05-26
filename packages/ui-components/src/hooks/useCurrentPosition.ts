@@ -1,4 +1,7 @@
-/* Adapted from https://github.com/bsonntag/react-use-geolocation */
+/*
+ * Adapted from https://github.com/bsonntag/react-use-geolocation, which is distributed under the
+ * MIT License.
+ */
 
 import { useEffect, useState } from 'react';
 
