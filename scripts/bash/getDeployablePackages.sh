@@ -26,8 +26,8 @@ if [[ $1 = --as-glob ]]; then
         IFS=,
         echo "${deployable_packages[*]}"
     )
-    # 'foo,bar,baz' → '@tupaia/{foo,bar,baz}'
-    echo "@tupaia/{$pattern}"
+    # 'foo,bar,baz' → '{foo,bar,baz}'
+    echo "{$pattern}"
 else
     echo "${deployable_packages[@]}"
 fi
