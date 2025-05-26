@@ -17,10 +17,10 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 arg_count=${#@}
 if ((arg_count == 0)); then
 	this_script=$(basename "${BASH_SOURCE[0]}")
-	echo -en "${BOLD}${YELLOW}Missing arguments.${RESET} "
-	echo -e "${BOLD}$this_script${RESET} was called with no arguments, which does nothing. Example usage:"
-	echo
-	echo -e "  ${GREEN}path/to/$this_script${REST} ${BLUE}readarray python3 yarn${RESET}"
+	echo -en "${BOLD}${YELLOW}Missing arguments.${RESET} " >&2
+	echo -e "${BOLD}$this_script${RESET} was called with no arguments, which does nothing. Example usage:" >&2
+	echo >&2
+	echo -e "  ${GREEN}path/to/$this_script${REST} ${BLUE}readarray python3 yarn${RESET}" >&2
 	exit 2
 fi
 
