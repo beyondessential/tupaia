@@ -1,6 +1,6 @@
 #!/bin/bash -le
 
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 TUPAIA_DIR=$DIR/../../../..
 PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 
@@ -28,7 +28,7 @@ for PACKAGE in ${PACKAGES[@]}; do
         echo "Starting ${PACKAGE}"
         cd ${TUPAIA_DIR}/packages/$PACKAGE
         REPLICATION_PM2_CONFIG=''
-        if [[ $PACKAGE = web-config-server || $PACKAGE = report-server ]] ; then
+        if [[ $PACKAGE = web-config-server || $PACKAGE = report-server ]]; then
             # as many replicas as cpu cores - 1
             REPLICATION_PM2_CONFIG='-i -1'
         fi

@@ -16,9 +16,9 @@ get_caller_package_directory() {
 
 # Get the directory of the package that's calling this script
 CALLING_SCRIPT_DIR=$(get_caller_package_directory)
- 
+
 # Get the directory of this script
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 # Fixed paths to the .env files for the test db
 common_files=(
@@ -30,11 +30,11 @@ common_files=(
 
 # Load environment variables from .env files (if they exist)
 merged_content=$(
-	for file in "${common_files[@]}"; do
-		if [[ -f $file ]]; then
-			cat "$file"
-		fi
-	done
+    for file in "${common_files[@]}"; do
+        if [[ -f $file ]]; then
+            cat "$file"
+        fi
+    done
 )
 
 # Process command line arguments, overwriting values if present
@@ -49,4 +49,4 @@ $key=\"$value\""
 done
 
 # Evaluate merged content to set variables
-eval "$merged_content" 
+eval "$merged_content"

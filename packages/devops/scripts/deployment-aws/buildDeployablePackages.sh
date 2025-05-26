@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -le
 
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 TUPAIA_DIR=$DIR/../../../..
 DEPLOYMENT_NAME=$1
 

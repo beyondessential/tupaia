@@ -30,8 +30,7 @@ set +x # do not output commands in this script, as some would show credentials i
 
 DEPLOYMENT_NAME=$1
 ENV_DEST=$2
-DIR=$(dirname "$0")
-
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 # can provide one or more packages as command line arguments, or will default to all
 if [[ -z $3 ]]; then
@@ -49,7 +48,7 @@ for PACKAGE in $PACKAGES; do
     mkdir -p "$ENV_FILE_DIR"
     ENV_FILE_PATH="${ENV_FILE_DIR}/.env"
     # checkout deployment specific env vars
-    lpass show --notes ${PACKAGE}.${DEPLOYMENT_NAME}.env > ${ENV_FILE_PATH}
+    lpass show --notes ${PACKAGE}.${DEPLOYMENT_NAME}.env >${ENV_FILE_PATH}
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)

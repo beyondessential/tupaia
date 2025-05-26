@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 . "$DIR/ansiControlSequences.sh"
 
 CONCURRENT_BUILD_BATCH_SIZE=1
@@ -49,10 +49,10 @@ if [[ $watch = true ]]; then
     echo -e "${BOLD}Concurrently building and watching all internal dependencies${RESET}"
     echo "> ${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
     echo
-    eval   "${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
+    eval "${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
 else
     echo -e "${BOLD}Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}${RESET}"
     echo "> $CONCURRENTLY_BIN -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
     echo
-    eval   "$CONCURRENTLY_BIN -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
+    eval "$CONCURRENTLY_BIN -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
 fi

@@ -2,7 +2,7 @@
 set -e
 
 # Get latest code and dependencies
-DIR=$(dirname "$0")
+DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 TUPAIA_DIR=$DIR/../../../..
 BRANCH=$1
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
