@@ -38,7 +38,11 @@ export const TaskActionsMenu = ({ task }: { task: SingleTaskResponse }) => {
 
   return (
     <>
-      <ActionsMenu options={actions} IconButton={MenuButton} />
+      <ActionsMenu
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        options={actions}
+        IconButton={MenuButton}
+      />
       <CancelTaskModal
         isOpen={isOpen}
         onClose={onClose}
