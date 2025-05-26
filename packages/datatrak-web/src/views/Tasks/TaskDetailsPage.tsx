@@ -84,7 +84,7 @@ const ButtonComponent = ({
   }
   return (
     <StyledButton to={surveyLink} state={{ from }}>
-      Complete task
+      Complete
     </StyledButton>
   );
 };
