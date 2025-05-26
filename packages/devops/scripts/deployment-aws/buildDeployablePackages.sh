@@ -2,7 +2,7 @@
 set -e
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-root_script_dir=$script_dir/../../../..
+root_dir=$script_dir/../../../..
 deployment_name=$1
 
 echo "Building deployable packages"
@@ -11,7 +11,7 @@ echo "Building deployable packages"
 source "$HOME/.nvm/nvm.sh"
 
 # Install external dependencies
-cd "$root_script_dir"
+cd "$root_dir"
 yarn install --immutable
 chmod 755 node_modules/@babel/cli/bin/babel.js
 
@@ -29,7 +29,7 @@ BW_CLIENTID="$BW_CLIENTID" \
     yarn run download-env-vars "$deployment_name"
 
 # Build packages and their dependencies
-package_names_glob=$("$root_script_dir/scripts/bash/getDeployablePackages.sh" --as-glob)
+package_names_glob=$("$root_dir/scripts/bash/getDeployablePackages.sh" --as-glob)
 
 set -x
 REACT_APP_DEPLOYMENT_NAME="$deployment_name" \
