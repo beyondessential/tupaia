@@ -51,7 +51,7 @@ jobs:
           fi
 
       - name: Write .env file
-        run: yarn run download-env-vars meditrak-app
+        run: yarn run download-env-vars '${{ github.head_ref }}' meditrak-app
 
       - name: Append BETA_BRANCH environment variable (if non-production branch)
         if: github.head_ref != 'master'
