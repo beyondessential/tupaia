@@ -20,7 +20,7 @@ if ((arg_count == 0)); then
 	echo -en "${BOLD}${YELLOW}Missing arguments.${RESET} " >&2
 	echo -e "${BOLD}$this_script${RESET} was called with no arguments, which does nothing. Example usage:" >&2
 	echo >&2
-	echo -e "  ${GREEN}path/to/$this_script${REST} ${BLUE}readarray python3 yarn${RESET}" >&2
+	echo -e "  ${GREEN}path/to/$this_script ${BLUE}readarray python3 yarn${RESET}" >&2
 	exit 2
 fi
 
