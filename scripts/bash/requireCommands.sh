@@ -10,12 +10,19 @@
 #   ✓  echo     shell builtin
 #   ×  jq       not found
 #   ✓  python3  /opt/homebrew/bin/python3
-#
-# REMARK
-#   Can be called with no arguments, but has no effect and exits with code 0.
 
-dir=$(dirname "$0")
-. "$dir/ansiControlSequences.sh"
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+. "$script_dir/ansiControlSequences.sh"
+
+arg_count=${#@}
+if ((arg_count == 0)); then
+	this_script=$(basename "${BASH_SOURCE[0]}")
+	echo -en "${BOLD}${YELLOW}Missing arguments.${RESET} "
+	echo -e "${BOLD}$this_script${RESET} was called with no arguments, which does nothing. Example usage:"
+	echo
+	echo -e "  ${GREEN}path/to/$this_script${REST} ${BLUE}readarray python3 yarn${RESET}"
+	exit 2
+fi
 
 readarray -t required < <(printf "%s\n" "$@" | sort)
 
