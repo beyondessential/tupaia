@@ -1,35 +1,35 @@
 #!/usr/bin/env bash
 set -e
 
-DEPLOYABLE_PACKAGES=(
-    'admin-panel-server'
-    'admin-panel'
-    'central-server'
-    'data-table-server'
-    'datatrak-web-server'
-    'datatrak-web'
-    'entity-server'
-    'lesmis-server'
-    'lesmis'
-    'meditrak-app-server'
-    'psss-server'
-    'psss'
-    'report-server'
-    'tupaia-web-server'
-    'tupaia-web'
-    'web-config-server'
+deployable_packages=(
+    admin-panel-server
+    admin-panel
+    central-server
+    data-table-server
+    datatrak-web-server
+    datatrak-web
+    entity-server
+    lesmis-server
+    lesmis
+    meditrak-app-server
+    psss-server
+    psss
+    report-server
+    tupaia-web-server
+    tupaia-web
+    web-config-server
 )
 
 if [[ $1 = --as-glob ]]; then
     # ('foo' 'bar' 'baz') → 'foo,bar,baz'
-    PATTERN=$(
+    pattern=$(
         IFS=,
-        echo "${DEPLOYABLE_PACKAGES[*]}"
+        echo "${deployable_packages[*]}"
     )
     # 'foo,bar,baz' → '@tupaia/{foo,bar,baz}'
-    echo "@tupaia/{$PATTERN}"
+    echo "@tupaia/{$pattern}"
 else
-    echo "${DEPLOYABLE_PACKAGES[@]}"
+    echo "${deployable_packages[@]}"
 fi
 
 exit 0
