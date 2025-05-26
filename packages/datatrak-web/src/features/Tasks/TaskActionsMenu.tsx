@@ -10,7 +10,7 @@ import { CancelTaskModal } from './CancelTaskModal';
 const MenuButton = styled(IconButton)`
   &.MuiIconButton-root {
     padding: 0.4rem;
-    margin-left: 0;
+    margin-left: unset;
   }
 `;
 
