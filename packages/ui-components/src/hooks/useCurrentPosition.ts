@@ -22,7 +22,6 @@ export function useCurrentPosition({
     let aborted = false;
 
     if (!('geolocation' in navigator)) {
-      if (aborted) return;
       setError(noSupportError);
     } else {
       const successCallback: PositionCallback = pos => {
