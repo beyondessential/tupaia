@@ -35,6 +35,22 @@ if [[ ! $(bw login --check) ]]; then
     fi
 fi
 
+cleanup() {
+    echo
+    echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
+    bw logout
+
+    # Clean up detritus on macOS
+    # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a
+    # way that’s compatible to both (by not supplying a suffix for the -i flag), but this causes
+    # macOS to generate backup files which we don’t need.
+    if [[ $(uname) = 'Darwin' ]]; then
+        rm -f "$script_dir"/../../env/*.env-e "$script_dir"/../../packages/*/.env-e
+    fi
+}
+
+trap cleanup EXIT
+
 # Unlock Bitwarden vault
 if [[ ! -t 1 && ! -v BW_PASSWORD ]]; then
     echo -e "${BOLD}${RED}Bitwarden password is missing.${RESET} BW_PASSWORD environment variable must be set to unlock the vault."
@@ -115,15 +131,4 @@ for file_name in "$REPO_ROOT"/env/*.env.example; do
     load_env_file_from_bw "$package_name" "$REPO_ROOT/env" "$package_name"
 done
 
-# Log out of Bitwarden
-echo
-echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
-bw logout
-
-# Clean up detritus on macOS
-# macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
-# that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
-# generate backup files which we don’t need.
-if [[ $(uname) = 'Darwin' ]]; then
-    rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e
-fi
+cleanup
