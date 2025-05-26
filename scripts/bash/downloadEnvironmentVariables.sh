@@ -9,7 +9,7 @@ DEPLOYMENT_NAME=$1
 REPO_ROOT=$(realpath "$DIR/../..")
 
 # Log into Bitwarden
-if [[ ! $(bw login --check) ]]; then
+if ! bw login --check &>/dev/null; then
     if [[ -v BW_CLIENTID && -v BW_CLIENTSECRET && -v BW_PASSWORD ]]; then
         # See https://bitwarden.com/help/personal-api-key
         echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden using API key${RESET}"
