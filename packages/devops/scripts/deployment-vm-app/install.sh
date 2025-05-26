@@ -10,8 +10,6 @@ cd "$SCRIPT_DIR"
 
 ./checkRequiredEnvVars.sh
 
-set -x
-
 ../deployment-common/configureNginx.sh
 
 # clone our repo
@@ -36,16 +34,17 @@ corepack enable yarn
 yarn install --immutable
 
 # Fetch env vars
+set +x # Suppress output of Bitwarden secrets
 BW_CLIENTID="$BW_CLIENTID" \
     BW_CLIENTSECRET="$BW_CLIENTSECRET" \
     BW_PASSWORD="$BW_PASSWORD" \
     yarn run download-env-vars "$DEPLOYMENT_NAME"
+set -x
 
 # Build packages and their dependencies
-PACKAGE_NAMES_GLOB=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --glob)
-set -x
+package_names_glob=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --as-glob)
+
 REACT_APP_DEPLOYMENT_NAME="$DEPLOYMENT_NAME" \
-    yarn run build:from "$PACKAGE_NAMES_GLOB"
-set +x
+    yarn run build:from "$package_names_glob"
 
 echo "Tupaia installed successfully"

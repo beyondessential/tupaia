@@ -15,6 +15,9 @@ cd "$TUPAIA_DIR"
 yarn install --immutable
 chmod 755 node_modules/@babel/cli/bin/babel.js
 
+# Suppress output of secrets
+set +x
+
 # Inject environment variables from Bitwarden
 BW_CLIENTID="$("$DIR/fetchParameterStoreValue.sh" BW_CLIENTID)"
 BW_CLIENTSECRET="$("$DIR/fetchParameterStoreValue.sh" BW_CLIENTSECRET)"
@@ -26,7 +29,7 @@ BW_CLIENTID="$BW_CLIENTID" \
     yarn run download-env-vars "$DEPLOYMENT_NAME"
 
 # Build packages and their dependencies
-PACKAGE_NAMES_GLOB=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --glob)
+PACKAGE_NAMES_GLOB=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --as-glob)
 
 set -x
 REACT_APP_DEPLOYMENT_NAME="$DEPLOYMENT_NAME" \
