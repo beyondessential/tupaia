@@ -7,7 +7,7 @@ export function useCurrentPosition({
   timeout,
   maximumAge,
 }: PositionOptions) {
-  const [position, setPosition] = useState<GeolocationPosition | null | undefined>(undefined);
+  const [position, setPosition] = useState<GeolocationPosition | null>(null);
   const [error, setError] = useState<GeolocationPositionError | null>(null);
 
   useEffect(() => {
