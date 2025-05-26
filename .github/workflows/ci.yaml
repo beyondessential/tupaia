@@ -77,8 +77,9 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: corepack enable yarn
-      - run: yarn install
-      - run: yarn build:internal-dependencies
+      - name: Install dependencies
+        run: yarn workspaces focus tupaia @tupaia/database @tupaia/types
+      - run: yarn run build:from '{database,types}'
       - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
 
   run_tests:
