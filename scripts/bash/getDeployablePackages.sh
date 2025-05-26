@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-FLAG=$1 # Optional --glob flag
-
 DEPLOYABLE_PACKAGES=(
     'admin-panel-server'
     'admin-panel'
@@ -22,7 +20,7 @@ DEPLOYABLE_PACKAGES=(
     'web-config-server'
 )
 
-if [[ $FLAG = --glob ]]; then
+if [[ $1 = --as-glob ]]; then
     # ('foo' 'bar' 'baz') → 'foo,bar,baz'
     PATTERN=$(
         IFS=,

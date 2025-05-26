@@ -42,7 +42,7 @@ BW_CLIENTID="$BW_CLIENTID" \
     yarn run download-env-vars "$DEPLOYMENT_NAME"
 
 # Build packages and their dependencies
-PACKAGE_NAMES_GLOB=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --glob)
+PACKAGE_NAMES_GLOB=$("$TUPAIA_DIR/scripts/bash/getDeployablePackages.sh" --as-glob)
 set -x
 REACT_APP_DEPLOYMENT_NAME="$DEPLOYMENT_NAME" \
     yarn run build:from "$PACKAGE_NAMES_GLOB"
