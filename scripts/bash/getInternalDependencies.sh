@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-dir=$(dirname "$0")
-flag=$1 # Optional --as-glob flag
-
 internal_deps=(
   access-policy
   admin-panel
