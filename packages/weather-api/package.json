@@ -18,11 +18,11 @@
     "test-coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@tupaia/utils": "workspace:*",
-    "jest": "^29.7.0"
+    "@tupaia/utils": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
     "rimraf": "^6.0.1"
   }
 }
