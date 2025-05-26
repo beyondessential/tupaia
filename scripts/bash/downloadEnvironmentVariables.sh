@@ -29,8 +29,8 @@ if [[ ! $(bw login --check) ]]; then
 
     else
         # Automated environment
-        echo -e "${BOLD}${RED}Login credentials for Bitwarden are missing.${RESET} Ensure BW_CLIENTID, BW_CLIENTSECRET and BW_PASSWORD environment variables are set."
-        echo -e "See ${MAGENTA}https://bitwarden.com/help/personal-api-key${RESET}"
+        echo -e "${BOLD}${RED}Login credentials for Bitwarden are missing.${RESET} Ensure BW_CLIENTID, BW_CLIENTSECRET and BW_PASSWORD environment variables are set." >&2
+        echo -e "See ${MAGENTA}https://bitwarden.com/help/personal-api-key${RESET}" >&2
         exit 1
     fi
 fi
