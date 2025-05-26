@@ -34,12 +34,6 @@ const Container = styled.div`
   }
 `;
 
-const Wrapper = styled.fieldset`
-  legend {
-    padding: 0;
-  }
-`;
-
 const StyledButton = styled(Button)`
   ${props => props.theme.breakpoints.up('md')} {
     &.MuiButton-root {
@@ -66,7 +60,7 @@ export const GeolocateQuestion = ({
 
   const displayMapModalButton = !isReviewScreen && !isResponseScreen;
   return (
-    <Wrapper>
+    <fieldset>
       {text && <Typography component="legend">{text}</Typography>}
       {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       <Container>
@@ -98,6 +92,6 @@ export const GeolocateQuestion = ({
           mapModalOpen={mapModalOpen}
         />
       </Container>
-    </Wrapper>
+    </fieldset>
   );
 };
