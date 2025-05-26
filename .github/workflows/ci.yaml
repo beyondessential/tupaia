@@ -183,7 +183,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: corepack enable yarn
-      - run: yarn workspaces focus tupaia @tupaia/${{ matrix.package }}
+      - run: yarn install
       - name: Build subtree
         run: yarn run build:from ${{ matrix.package }}
       - run: yarn workspace @tupaia/${{ matrix.package }} setup-test || echo "No setup needed"
