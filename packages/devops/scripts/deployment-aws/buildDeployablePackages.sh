@@ -15,6 +15,9 @@ cd "$TUPAIA_DIR"
 yarn install --immutable
 chmod 755 node_modules/@babel/cli/bin/babel.js
 
+# Suppress output of secrets
+set +x
+
 # Inject environment variables from Bitwarden
 BW_CLIENTID="$("$DIR/fetchParameterStoreValue.sh" BW_CLIENTID)"
 BW_CLIENTSECRET="$("$DIR/fetchParameterStoreValue.sh" BW_CLIENTSECRET)"
