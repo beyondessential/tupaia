@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-script_dir=$(dirname "$0")
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 package_names_glob=$("$script_dir/getInternalDependencies.sh" --as-glob)
 
 # Build!
