@@ -104,7 +104,7 @@ export const TaskDetailsPage = () => {
       {isMobile && (
         <StickyMobileHeader onBack={onBack}>
           <Typography variant="h1">Task details</Typography>
-          <Typography variant="body2" color="textSecondary">
+          <Typography color="textSecondary" noWrap variant="body2">
             {task?.survey?.name}
           </Typography>
         </StickyMobileHeader>
