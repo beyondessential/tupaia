@@ -67,6 +67,8 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
 export class BaseDatabase {
+  static IS_CHANGE_HANDLER_SUPPORTED = false;
+
   /**
    * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
    * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
@@ -79,8 +81,6 @@ export class BaseDatabase {
    * @type {boolean}
    */
   #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
-
-  static IS_CHANGE_HANDLER_SUPPORTED = false;
 
   constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {

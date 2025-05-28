@@ -11378,6 +11378,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/api-client@workspace:packages/api-client"
   dependencies:
+    "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
