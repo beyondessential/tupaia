@@ -52,7 +52,6 @@ export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: s
 
 export const createClientSnapshotTable = async (database: TupaiaDatabase, sessionId: string) => {
   const tableName = getSnapshotTableName(sessionId);
-  console.log('createClientSnapshotTable', { tableName });
   await database.executeSql(`
       CREATE TABLE ${tableName} (
         id BIGSERIAL PRIMARY KEY,
@@ -62,7 +61,6 @@ export const createClientSnapshotTable = async (database: TupaiaDatabase, sessio
         autovacuum_enabled = off
       );
     `);
-  console.log('createClientSnapshotTablehihihi');
 };
 
 export const dropSnapshotTable = async (database: TupaiaDatabase, sessionId: string) => {

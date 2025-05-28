@@ -33,7 +33,6 @@ export const findSyncSnapshotRecords = async (
     },
   )) as SyncSnapshotAttributes[];
 
-  console.log('recordssss', records);
   return records.map(r =>
     Object.fromEntries(Object.entries(r).map(([key, value]) => [camel(key), value])),
   ) as SyncSnapshotAttributes[];
