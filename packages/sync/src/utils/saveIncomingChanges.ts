@@ -96,7 +96,6 @@ const saveChangesForModelInBatches = async (
 ) => {
   let fromId;
   let batchRecords: SyncSnapshotAttributes[] | null = null;
-  console.log('modellll', model);
   while (!batchRecords || batchRecords.length > 0) {
     batchRecords = await findSyncSnapshotRecords(
       model.database,
@@ -124,7 +123,6 @@ const saveChangesForModelInBatches = async (
 
 export const saveIncomingSnapshotChanges = async (models: FilteredModelRegistry, sessionId: string) => {
   for (const model of Object.values(models)) {
-    console.log('yyyy');
     await saveChangesForModelInBatches(model, sessionId, model.databaseRecord);
   }
 };
@@ -136,7 +134,6 @@ export const saveIncomingInMemoryChanges = async (
   const groupedChanges = groupBy(changes, 'record_type');
   for (const [recordType, modelChanges] of Object.entries(groupedChanges)) {
     const model = models.getModelForDatabaseRecord(recordType);
-    console.log('xxxx')
     await saveChangesForModel(model, modelChanges);
   }
 };

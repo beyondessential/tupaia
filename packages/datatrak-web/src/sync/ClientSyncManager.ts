@@ -144,7 +144,6 @@ export class ClientSyncManager {
           ? await this.models.wrapInTransaction(async models => runPull(models))
           : await runPull(this.models);
 
-      console.log('pullVolumeType', pullVolumeType);
       await this.models.wrapInTransaction(async models => {
         const incomingModels = getModelsForDirection(models, SYNC_DIRECTIONS.PULL_FROM_CENTRAL);
         if (pullVolumeType === PullVolumeType.IncrementalLow) {

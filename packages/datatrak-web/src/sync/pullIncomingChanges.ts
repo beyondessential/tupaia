@@ -23,38 +23,28 @@ export const pullIncomingChanges = async (
   const decoder = new TextDecoder();
   const totalObjects: any[] = [];
 
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      const batch = decoder.decode(value, { stream: true });
-      const lines = batch.split('\n').filter(line => line.trim());
+  while (true) {
+    const { done, value } = await reader.read();
+    const batch = decoder.decode(value, { stream: true });
+    const lines = batch.split('\n').filter(line => line.trim());
 
-      const objects: any[] = [];
+    const objects: any[] = [];
 
-      for (const line of lines) {
-        try {
-          const obj = JSON.parse(line);
-          // mark updatedAtSyncTick as never updated, so we don't push it back to the central server until the next local update
-          objects.push({ ...obj, data: { ...obj.data, updatedAtSyncTick: -1 } });
-        } catch (e) {
-          console.error('Failed to parse JSON:', e);
-        }
-      }
-
-      console.log('objects', objects);
-
-      await processStreamedDataFunction({ models, sessionId, objects, totalObjects });
-
-      if (done) {
-        break;
+    for (const line of lines) {
+      try {
+        const obj = JSON.parse(line);
+        // mark updatedAtSyncTick as never updated, so we don't push it back to the central server until the next local update
+        objects.push({ ...obj, data: { ...obj.data, updatedAtSyncTick: -1 } });
+      } catch (e) {
+        console.error('Failed to parse JSON:', e);
       }
     }
-  } finally {
-    // TODO: Remove test code
-    console.log(
-      'Option set records in database ',
-      await models.getModelForDatabaseRecord('option_set').find({}),
-    );
+
+    await processStreamedDataFunction({ models, sessionId, objects, totalObjects });
+
+    if (done) {
+      break;
+    }
   }
 
   return { totalObjects };
