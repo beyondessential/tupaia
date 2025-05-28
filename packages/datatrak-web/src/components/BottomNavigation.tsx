@@ -1,14 +1,14 @@
 import {
-  BottomNavigation as MuiBottomNavigation,
   BottomNavigationAction,
   BottomNavigationProps,
+  BottomNavigation as MuiBottomNavigation,
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreHorizRounded';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Pathname, matchPath, useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
-import { Home as HomeIcon, Description as DescriptionIcon } from '@tupaia/ui-components';
+import { Description as DescriptionIcon, Home as HomeIcon } from '@tupaia/ui-components';
 
 import { ROUTES } from '../constants';
 import { TaskIcon } from './Icons';
@@ -51,7 +51,7 @@ function getTabFromPathname(pathname: Pathname): TabValue | null {
 
 export const BottomNavigation = (props: BottomNavigationProps) => {
   const { pathname } = useLocation();
-  const [activeTab, setActiveTab] = useState<TabValue | null>(getTabFromPathname(pathname));
+  const activeTab = getTabFromPathname(pathname);
 
   const navigate = useNavigate();
   const onChange = (_event: unknown, value: TabValue) => {
@@ -72,15 +72,6 @@ export const BottomNavigation = (props: BottomNavigationProps) => {
         break;
     }
   };
-
-  useEffect(() => {
-    const newTab = getTabFromPathname(pathname);
-    setActiveTab(newTab);
-  }, [pathname]);
-
-  useEffect(() => {
-    return () => setActiveTab(null);
-  }, []);
 
   return (
     <BottomNavigationRoot onChange={onChange} showLabels value={activeTab} {...props}>
