@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreHorizRounded';
 import React from 'react';
-import { Pathname, matchPath, useLocation, useNavigate } from 'react-router';
+import { Pathname, useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { Description as DescriptionIcon, Home as HomeIcon } from '@tupaia/ui-components';
@@ -50,9 +50,9 @@ const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
 `;
 
 function getTabFromPathname(pathname: Pathname): TabValue | null {
-  if (matchPath(`${ROUTES.SURVEY_SELECT}/*`, pathname)) return 'surveys';
-  if (matchPath(`${ROUTES.TASKS}/*`, pathname)) return 'tasks';
-  if (matchPath(ROUTES.HOME, pathname)) return 'home';
+  if (pathname.startsWith(ROUTES.SURVEY_SELECT)) return 'surveys';
+  if (pathname.startsWith(ROUTES.TASKS)) return 'tasks';
+  if (pathname.startsWith(ROUTES.HOME)) return 'home';
   return 'more';
 }
 
