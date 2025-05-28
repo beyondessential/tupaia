@@ -112,6 +112,33 @@ export class ClientSyncManager {
   }
 
   async pullChanges(sessionId: string) {
-    // TODO: Implement
+    try {
+      console.log('ClientSyncManager.pullChanges', {
+        sessionId,
+      });
+      const pullSince =
+        (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
+
+      console.log('ClientSyncManager.createClientSnapshotTable', {
+        sessionId,
+      });
+      await createClientSnapshotTable(this.database, sessionId);
+
+      console.log('ClientSyncManager.initiatePull', {
+        sessionId,
+      });
+      const { totalToPull, pullUntil } = await initiatePull(
+        sessionId,
+        pullSince,
+        this.projectIds,
+        this.deviceId,
+      );
+    } catch (error) {
+      console.error('ClientSyncManager.pullChanges', {
+        sessionId,
+        error,
+      });
+      throw error;
+    }
   }
 }
