@@ -15,6 +15,13 @@ import { TaskIcon } from './Icons';
 
 type TabValue = 'home' | 'surveys' | 'tasks' | 'more';
 
+const tabRoutes: Record<TabValue, string> = {
+  home: ROUTES.HOME,
+  surveys: ROUTES.SURVEY_SELECT,
+  tasks: ROUTES.TASKS,
+  more: ROUTES.MOBILE_USER_MENU,
+};
+
 const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
   component: 'nav',
 })`
@@ -54,23 +61,9 @@ export const BottomNavigation = (props: BottomNavigationProps) => {
   const activeTab = getTabFromPathname(pathname);
 
   const navigate = useNavigate();
-  const onChange = (_event: unknown, value: TabValue) => {
-    switch (value) {
-      case 'home':
-        navigate(ROUTES.HOME);
-        break;
-      case 'surveys':
-        navigate(ROUTES.SURVEY_SELECT);
-        break;
-      case 'tasks':
-        navigate(ROUTES.TASKS);
-        break;
-      case 'more':
-        navigate(ROUTES.MOBILE_USER_MENU);
-        break;
-      default:
-        break;
-    }
+  const onChange = (_event: unknown, newTab: TabValue) => {
+    const newRoute = tabRoutes[newTab];
+    if (newRoute) navigate(newRoute);
   };
 
   return (
