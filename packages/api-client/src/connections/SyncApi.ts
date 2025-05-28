@@ -44,6 +44,24 @@ export class SyncApi extends BaseApi {
     }
     throw new Error(`Did not get a truthy response after ${maxAttempts} attempts for ${endpoint}`);
   }
+
+  async initiatePull(sessionId: string, since: number, projectIds: string[], deviceId: string) {
+    // first, set the pull filter on the central server, which will kick of a snapshot of changes
+    // to pull
+    const data = { since, projectIds, deviceId };
+    await this.connection.post(`sync/${sessionId}/pull/initiate`, {}, data);
+
+    // then, poll the pull/ready endpoint until we get a valid response - it takes a while for
+    // pull/initiate to finish populating the snapshot of changes
+    await this.pollUntilTrue(`sync/${sessionId}/pull/ready`);
+
+    // finally, fetch the metadata for the changes we're about to pull
+    return this.connection.get(`sync/${sessionId}/pull/metadata`);
+  }
+
+  async pull(response: ExpressResponse<Request>, sessionId: string) {
+    return this.connection.pipeStream(response, `sync/${sessionId}/pull`);
+  }
 }
 
 export interface SyncApiInterface extends PublicInterface<SyncApi> {}
