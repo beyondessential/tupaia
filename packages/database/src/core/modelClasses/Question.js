@@ -1,7 +1,5 @@
 import {
   buildSyncLookupSurveyProjectIdSelect,
-  buildSyncLookupTraverseJoins,
-  surveyScreenComponentToSurveyJoins,
   SYNC_DIRECTIONS,
 } from '@tupaia/sync';
 

@@ -3,6 +3,7 @@ import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
 import { CustomError } from '@tupaia/utils';
 import { QueryParameters, AuthHandler } from '../types';
+import { ExpressResponse } from '@tupaia/server-boilerplate';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
@@ -51,7 +52,16 @@ export class ApiConnection {
     return this.request('DELETE', endpoint, queryParameters);
   }
 
-  private async request(
+  public async pipeStream(
+    response: ExpressResponse<Request>,
+    endpoint: string,
+    queryParameters?: QueryParameters | null,
+  ) {
+    const fetchedResponse = await this.fetchResponse('GET', endpoint, queryParameters);
+    return fetchedResponse.body.pipe(response);
+  }
+
+  private async fetchResponse(
     requestMethod: string,
     endpoint: string,
     queryParameters?: QueryParameters | null,
@@ -69,7 +79,16 @@ export class ApiConnection {
       fetchConfig.body = JSON.stringify(body);
     }
 
-    const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
+    return this.fetchWithTimeout(queryUrl, fetchConfig);
+  }
+
+  private async request(
+    requestMethod: string,
+    endpoint: string,
+    queryParameters?: QueryParameters | null,
+    body?: RequestBody | null,
+  ) {
+    const response = await this.fetchResponse(requestMethod, endpoint, queryParameters, body);
     await this.verifyResponse(response);
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.indexOf('application/json') !== -1) {
