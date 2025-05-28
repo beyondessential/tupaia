@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreHorizRounded';
 import React from 'react';
-import { Pathname, useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { Description as DescriptionIcon, Home as HomeIcon } from '@tupaia/ui-components';
