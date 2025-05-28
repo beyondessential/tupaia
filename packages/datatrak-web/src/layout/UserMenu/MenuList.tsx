@@ -104,7 +104,7 @@ export const MenuList = ({
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const { mutate: logout } = useLogout();
 
-  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen; // TODO factor in bottom nav bar
+  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
   const onClickInternalLink = (e: any, confirmLink: string) => {
     if (shouldShowCancelModal) {
