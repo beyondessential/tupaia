@@ -133,6 +133,18 @@ export class ClientSyncManager {
         this.projectIds,
         this.deviceId,
       );
+
+      // Get the pull volume type to determine how to proces the stream data.
+      // This is
+      // 1. If the pull is initial, we wrap the whole pull in a transaction and persist the stream data straight to the actual tables
+      //    When leaving a long running transaction open, any user trying to update those same records in Tamanu will be blocked until the sync finishes.
+      //    This is not a problem for initial sync because there is no local data, so it is fine to leave a long running transaction open.
+      // 2. If the pull is incremental, but higher than a set threshold, we save the stream data to a temporary table and then use a transaction to persist the data to the actual tables
+      //    This is because we don't want to block the user from updating the records in Tamanu while a long sync is running.
+      //    Also, we don't want to cause memory issues by saving all the data to memory.
+      // 3. If the pull is incremental, but lower than a set threshold, we store the stream data in memory and then use a transaction to persist the data to the actual tables
+      //    This is because we don't want to block the user from updating the records in Tamanu while a long sync is running.
+      //    And since it has low volume of records, it is fine to store all the data in memory.
       const pullVolumeType = getPullVolumeType(pullSince, totalToPull);
       const processStreamedDataFunction = PROCESS_STREAM_DATA_FUNCTIONS[pullVolumeType];
 

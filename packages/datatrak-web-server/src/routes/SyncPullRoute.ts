@@ -11,7 +11,6 @@ export type SyncPullRequest = Request<
 >;
 
 export class SyncPullRoute extends Route<SyncPullRequest> {
-
   // Pipe the stream data from sync server to the client
   protected readonly type = 'pipe';
 
