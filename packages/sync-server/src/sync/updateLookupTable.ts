@@ -30,7 +30,7 @@ const updateLookupTableForModel = async (
     ? await (model.buildSyncLookupQueryDetails as Function)()
     : {};
     
-  const { select, joins, where } = result;
+  const { select, joins, where } = result || {};
 
   while (fromId != null) {
     const [{ maxId, count }] = await model.database.executeSql(

@@ -1,17 +1,48 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2025 Beyond Essential Systems Pty Ltd
- */
+import { Request, Response, NextFunction } from 'express';
+
 import { ForwardingAuthHandler } from '@tupaia/api-client';
 import { TupaiaDatabase } from '@tupaia/database';
-import { MicroServiceApiBuilder } from '@tupaia/server-boilerplate';
+import { MicroServiceApiBuilder, handleWith } from '@tupaia/server-boilerplate';
+
+import { CentralSyncManager } from '../sync';
+import { SyncStartSessionRequest, SyncStartSessionRoute } from '../routes/SyncStartSessionRoute';
+import { SyncReadyRequest, SyncReadyRoute } from '../routes/SyncReadyRoute';
+import { SyncPullReadyRequest, SyncPullReadyRoute } from '../routes/SyncPullReadyRoute';
+import { SyncMetadataRequest, SyncMetadataRoute } from '../routes/SyncMetadataRoute';
+import { SyncInitiatePullRequest, SyncInitiatePullRoute } from '../routes/SyncInitiatePullRoute';
+import { SyncPullMetadataRequest, SyncPullMetadataRoute } from '../routes/SyncPullMetadataRoute';
+import { SyncPullRequest, SyncPullRoute } from '../routes/SyncPullRoute';
+import { SyncEndSessionRequest, SyncEndSessionRoute } from '../routes/SyncEndSessionRoute';
+
+export const initializeCentralSyncManager =
+  (centralSyncManager: CentralSyncManager) =>
+  (req: Request, _res: Response, next: NextFunction) => {
+    req.ctx.centralSyncManager = centralSyncManager;
+    next();
+  };
 
 /**
  * Set up express server with middleware,
  */
-export function createApp(database = new TupaiaDatabase()) {
+export function createApp(database = new TupaiaDatabase(), syncManager: CentralSyncManager) {
   const app = new MicroServiceApiBuilder(database, 'sync')
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
+    .useMiddleware(initializeCentralSyncManager(syncManager))
+    .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
+    .get<SyncReadyRequest>('sync/:sessionId/ready', handleWith(SyncReadyRoute))
+    .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))
+    .post<SyncInitiatePullRequest>(
+      'sync/:sessionId/pull/initiate',
+      handleWith(SyncInitiatePullRoute),
+    )
+    .get<SyncPullReadyRequest>('sync/:sessionId/pull/ready', handleWith(SyncPullReadyRoute))
+    .get<SyncPullMetadataRequest>(
+      'sync/:sessionId/pull/metadata',
+      handleWith(SyncPullMetadataRoute),
+    )
+    .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
+    .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
+
     .useBasicBearerAuth()
     .build();
 
