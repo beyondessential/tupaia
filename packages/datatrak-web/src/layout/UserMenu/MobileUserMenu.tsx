@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
-import { useIsDesktop } from '../../utils';
-import { MenuList } from './MenuList';
 import { ROUTES } from '../../constants';
+import { useBottomNavigationVisibility } from '../../utils';
+import { MenuList } from './MenuList';
 
 export const MobileUserMenuRoot = styled(SafeAreaColumn).attrs({ as: 'article' })`
   block-size: 100dvb;
@@ -17,13 +17,11 @@ export const MobileUserMenuRoot = styled(SafeAreaColumn).attrs({ as: 'article' }
 export const MobileUserMenu = (
   props: React.ComponentPropsWithoutRef<typeof MobileUserMenuRoot>,
 ) => {
-  // `useBottomNavigationVisibility` is more semantically appropriate, but it uses `useIsMobile`
-  // under the hood, which incorrectly returns false while it’s still evaluating. Here, that would
-  // invoke the redirect before the return value of `useBottomNavigationVisibility` settles.
-  const isDesktop = useIsDesktop();
+  const isBottomNavVisible = useBottomNavigationVisibility();
   const { pathname } = useLocation();
 
-  if (isDesktop) {
+  // Wait until hydration so we don’t prematurely redirect
+  if (isBottomNavVisible === false) {
     return <Navigate to={ROUTES.HOME} replace state={{ from: pathname }} />;
   }
 

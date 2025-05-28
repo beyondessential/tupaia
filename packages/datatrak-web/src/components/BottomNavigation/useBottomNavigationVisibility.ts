@@ -19,9 +19,16 @@ const bottomNavigationBarBlocklist = [
   ROUTES.WELCOME,
 ] as const;
 
+/**
+ * Returns true if and only if the bottom navigation bar should be visible on the current page.
+ * Otherwise returns `undefined` until hydration, after which the return value will be a boolean.
+ */
 export function useBottomNavigationVisibility() {
   const { pathname } = useLocation();
   const isMobile = useIsMobile();
+
+  if (isMobile === undefined) return undefined;
+
   return isMobile
     ? !bottomNavigationBarBlocklist.some(pathPattern => matchPath(pathPattern, pathname))
     : false;
