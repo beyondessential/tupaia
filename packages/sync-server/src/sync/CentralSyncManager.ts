@@ -444,7 +444,7 @@ export class CentralSyncManager {
     log.info('CentralSyncManager.completedSession', {
       sessionId,
       durationMs,
-      facilityIds: session.debugInfo.facilityIds,
+      projectIds: session.debugInfo.projectIds,
       deviceId: session.debugInfo.deviceId,
     });
   }
