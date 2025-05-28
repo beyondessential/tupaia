@@ -1,8 +1,10 @@
 import autobind from 'react-autobind';
 import knex from 'knex';
 import winston from 'winston';
-import { Multilock } from '@tupaia/utils';
+
+import { getEnvVarOrDefault, Multilock } from '@tupaia/utils';
 import { hashStringToInt } from '@tupaia/tsutils';
+
 import { generateId } from './utilities';
 import {
   MAX_BINDINGS_PER_QUERY,
@@ -65,14 +67,22 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
 export class BaseDatabase {
+  /**
+   * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
+   * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
+   * without admin privileges are really expected to time out.
+   */
+  #fastCountTimeoutMs = Number.parseInt(getEnvVarOrDefault('FAST_DB_COUNT_TIMEOUT_MS', '400'));
+
+  /**
+   * If true, always uses `count()` method, even when `countFast()` is called.
+   * @type {boolean}
+   */
+  #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
+
   static IS_CHANGE_HANDLER_SUPPORTED = false;
 
-  constructor(
-    transactingConnection,
-    transactingChangeChannel,
-    clientType,
-    getConnectionConfigFn,
-  ) {
+  constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
     }
@@ -235,7 +245,29 @@ export class BaseDatabase {
   async count(recordType, where, options) {
     // If just a simple query without options, use the more efficient knex count method
     const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
-    return parseInt(result[0].count, 10);
+    return Number.parseInt(result[0].count, 10);
+  }
+
+  /**
+   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact recores
+   * count is merely an enhancement, not critical information in the context. A return value of
+   * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
+   */
+  async countFast(recordType, where, options) {
+    if (this.#forceTrueCount) return await this.count(recordType, where, options);
+
+    let result;
+    try {
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(
+        this.#fastCountTimeoutMs,
+        { cancel: true },
+      );
+    } catch (error) {
+      if (error.name === 'KnexTimeoutError') return Number.POSITIVE_INFINITY;
+      throw error;
+    }
+
+    return Number.parseInt(result[0].count, 10);
   }
 
   async create(recordType, record, where, schemaName) {
@@ -255,15 +287,19 @@ export class BaseDatabase {
     return record;
   }
 
-  async createMany(recordType, records) {
+  async createMany(recordType, records, schemaName) {
     // generate ids for any records that don't have them
     const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
     await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>
-      this.query({
-        recordType,
-        queryMethod: QUERY_METHODS.INSERT,
-        queryMethodParameter: batchOfRecords,
-      }),
+      this.query(
+        {
+          recordType,
+          queryMethod: QUERY_METHODS.INSERT,
+          queryMethodParameter: batchOfRecords,
+        },
+        {},
+        { schemaName },
+      ),
     );
     return sanitizedRecords;
   }
@@ -410,6 +446,10 @@ export class BaseDatabase {
 
   wrapInTransaction(wrappedFunction) {
     throw new Error('wrapInTransaction should be implemented by the child class');
+  }
+
+  commitTransaction() {
+    return this.connection.commit();
   }
 }
 

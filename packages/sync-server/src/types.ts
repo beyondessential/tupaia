@@ -1,4 +1,4 @@
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, SyncSessionModel } from '@tupaia/database';
 import {
   ProjectModel,
   EntityModel,
@@ -15,6 +15,7 @@ export interface SyncServerModelRegistry extends ModelRegistry {
   readonly answer: AnswerModel;
   readonly localSystemFact: LocalSystemFactModel;
   readonly debugLog: DebugLogModel;
+  readonly syncSession: SyncSessionModel;
 }
 
 export type SyncServerConfig = {
@@ -23,10 +24,71 @@ export type SyncServerConfig = {
     perModelUpdateTimeoutMs: number;
     avoidRepull: boolean;
   };
+  snapshotTransactionTimeoutMs: number;
+  syncSessionTimeoutMs: number;
 };
 
 export interface SyncLookupQueryDetails {
   select?: string[];
   joins?: string[];
   where?: any;
+}
+
+export interface SnapshotParams {
+  since: number;
+  projectIds: string[];
+  deviceId: string;
+}
+
+export interface SessionIsProcessingResponse {
+  session_is_processing: boolean;
+}
+
+export interface GlobalClockResult {
+  tick: number;
+  tock: number;
+}
+
+export interface StartSessionResult {
+  sessionId: string;
+}
+
+export interface SyncSessionMetadata {
+  startedAtTick: number;
+}
+
+export interface PullMetadata {
+  totalToPull: number;
+  pullUntil: number;
+}
+
+export interface PrepareSessionResult {
+  sessionId: string;
+  tick: number;
+}
+
+export interface PullInitiationResult {
+  sessionId: string;
+  totalToPull: number;
+  pullUntil: number;
+}
+
+export type UnmarkSessionAsProcessingFunction = () => Promise<void>;
+
+export interface SyncSnapshotData {
+  id: number;
+  [key: string]: any;
+}
+
+export interface SyncSnapshotAttributes {
+  id: number;
+  direction: string;
+  recordType: string;
+  recordId: string;
+  isDeleted: boolean;
+  data: SyncSnapshotData;
+  savedAtSyncTick: number;
+  updatedAtByFieldSum?: number; // only for merged records
+  syncLookupId?: number; // no syncLookupId if it is an incoming record
+  requiresRepull?: boolean;
 }

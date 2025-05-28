@@ -13,3 +13,4 @@ export { isEmptyArray, isNonEmptyArray, isNotNullish, isNullish } from './typeGu
 export { useBeforeUnload } from './useBeforeUnload';
 export { useIsMobileMediaQuery as useIsMobile } from './useIsMobileMediaQuery';
 export { useFromLocation } from './useLocationState';
+export { sleepAsync } from './sleepAsync';

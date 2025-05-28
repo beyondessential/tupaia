@@ -60,6 +60,14 @@ import {
   ResubmitSurveyResponseRoute,
   ExportSurveyResponseRequest,
   ExportSurveyResponseRoute,
+  SyncStartSessionRequest,
+  SyncStartSessionRoute,
+  SyncInitiatePullRequest,
+  SyncInitiatePullRoute,
+  SyncPullRequest,
+  SyncPullRoute,
+  SyncEndSessionRequest,
+  SyncEndSessionRoute,
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 import { API_CLIENT_PERMISSIONS } from '../constants';
@@ -116,6 +124,13 @@ export async function createApp() {
       'export/:surveyResponseId',
       handleWith(ExportSurveyResponseRoute),
     )
+
+    // Sync routes
+    .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
+    .post<SyncInitiatePullRequest>('sync/:sessionId/pull/initiate', handleWith(SyncInitiatePullRoute))
+    .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
+    .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
+
     // Forward auth requests to web-config
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
