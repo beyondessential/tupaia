@@ -11,7 +11,7 @@ import {
   useSurveyForm,
   useValidationResolver,
 } from '../features';
-import { CancelConfirmationToken } from '../features/Survey/Components';
+import { CancelSurveyConfirmationToken } from '../features/Survey/Components';
 import { SurveyParams } from '../types';
 import { successToast, useIsMobile } from '../utils';
 
@@ -103,7 +103,7 @@ const SurveyPageInner = () => {
           <Outlet key={screenNumber} />
         </SurveyScreenContainer>
 
-        <CancelConfirmationToken />
+        <CancelSurveyConfirmationToken />
       </FormProvider>
     </PageWrapper>
   );

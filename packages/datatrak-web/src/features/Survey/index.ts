@@ -1,5 +1,5 @@
 export {
-  CancelConfirmationToken,
+  CancelSurveyConfirmationToken,
   DesktopSurveyHeader,
   MobileSurveyHeader,
   SurveyReviewSection,

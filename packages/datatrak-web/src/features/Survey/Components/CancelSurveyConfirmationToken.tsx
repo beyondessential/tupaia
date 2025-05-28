@@ -5,7 +5,7 @@ import { CancelConfirmModal } from '../../../components';
 import { useBeforeUnload } from '../../../utils';
 import { useSurveyForm } from '../SurveyContext';
 
-export const CancelConfirmationToken = () => {
+export const CancelSurveyConfirmationToken = () => {
   const {
     cancelModalConfirmLink,
     cancelModalOpen,
