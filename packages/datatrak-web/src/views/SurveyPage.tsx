@@ -53,7 +53,7 @@ const SurveyScreenContainer = styled.div<{
 
 const SurveyPageInner = () => {
   const { screenNumber } = useParams<SurveyParams>();
-  const { formData, isSuccessScreen, isResponseScreen, isResubmit, countryCode, surveyCode } =
+  const { countryCode, formData, isResponseScreen, isResubmit, isSuccessScreen, surveyCode } =
     useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
