@@ -197,6 +197,40 @@ export class CentralSyncManager {
     return true;
   }
 
+  async checkPullReady(sessionId: string): Promise<boolean> {
+    await this.connectToSession(sessionId);
+
+    // if this snapshot still processing, return false to tell the client to keep waiting
+    const snapshotIsProcessing = await this.checkSessionIsProcessing(sessionId);
+    if (snapshotIsProcessing) {
+      return false;
+    }
+
+    // if this snapshot is not marked as processing, but also never completed, record an error
+    const session = await this.connectToSession(sessionId);
+    if (session.snapshot_completed_at === null) {
+      await session.markErrored(
+        'Snapshot processing incomplete, likely because the central server restarted during the snapshot',
+      );
+      throw new Error(errorMessageFromSession(session));
+    }
+
+    // snapshot processing complete!
+    return true;
+  }
+
+  async fetchPullMetadata(sessionId: string): Promise<PullMetadata> {
+    const session = await this.connectToSession(sessionId);
+    const totalToPull = await countSyncSnapshotRecords(
+      this.database,
+      sessionId,
+      SYNC_SESSION_DIRECTION.OUTGOING,
+    );
+    await this.models.syncSession.addDebugInfo(sessionId, { totalToPull });
+    const { pull_until: pullUntil } = session;
+    return { totalToPull, pullUntil };
+  }
+
   async setupSnapshotForPull(
     sessionId: string,
     snapshotParams: SnapshotParams,
