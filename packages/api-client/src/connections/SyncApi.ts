@@ -5,11 +5,9 @@ import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
 export class SyncApi extends BaseApi {
-  async startSyncSession(lastSyncedTick: number) {
+  async startSyncSession() {
     // start a sync session
-    const { sessionId } = await this.connection.post('sync', {}, {
-      lastSyncedTick,
-    });
+    const { sessionId } = await this.connection.post('sync');
 
     // TODO: Implement sync queue RN-1667
 
