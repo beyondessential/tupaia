@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Pagination } from '../Pagination';
+import { Pagination, PaginationRoot } from '../Pagination';
 
 const Wrapper = styled.div`
   .MuiSelect-root {
     text-align: left;
   }
-  .pagination-wrapper {
+  ${PaginationRoot} {
     border-width: 0 1px 1px 1px;
     border-color: ${({ theme }) => theme.palette.divider};
     border-style: solid;
