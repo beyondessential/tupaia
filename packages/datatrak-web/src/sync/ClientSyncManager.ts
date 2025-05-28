@@ -112,59 +112,6 @@ export class ClientSyncManager {
   }
 
   async pullChanges(sessionId: string) {
-    try {
-      console.log('ClientSyncManager.pullChanges', {
-        sessionId,
-      });
-      const pullSince =
-        (await this.models.localSystemFact.get(FACT_LAST_SUCCESSFUL_SYNC_PULL)) || -1;
-
-      console.log('ClientSyncManager.createClientSnapshotTable', {
-        sessionId,
-      });
-      await createClientSnapshotTable(this.database, sessionId);
-
-      console.log('ClientSyncManager.initiatePull', {
-        sessionId,
-      });
-      const { totalToPull, pullUntil } = await initiatePull(
-        sessionId,
-        pullSince,
-        this.projectIds,
-        this.deviceId,
-      );
-      const pullVolumeType = getPullVolumeType(pullSince, totalToPull);
-      const processStreamedDataFunction = PROCESS_STREAM_DATA_FUNCTIONS[pullVolumeType];
-
-      const runPull = async (models: ModelRegistry) =>
-        pullIncomingChanges(models, sessionId, processStreamedDataFunction);
-
-      const { totalObjects } =
-        pullVolumeType === PullVolumeType.Initial
-          ? await this.models.wrapInTransaction(async models => runPull(models))
-          : await runPull(this.models);
-
-      console.log('pullVolumeType', pullVolumeType);
-      await this.models.wrapInTransaction(async models => {
-        const incomingModels = getModelsForDirection(models, SYNC_DIRECTIONS.PULL_FROM_CENTRAL);
-        if (pullVolumeType === PullVolumeType.IncrementalLow) {
-          saveIncomingInMemoryChanges(models, totalObjects);
-        } else if (pullVolumeType === PullVolumeType.IncrementalHigh) {
-          saveIncomingSnapshotChanges(incomingModels, sessionId);
-        }
-
-        // update the last successful sync in the same save transaction - if updating the cursor fails,
-        // we want to roll back the rest of the saves so that we don't end up detecting them as
-        // needing a sync up to the central server when we attempt to resync from the same old cursor
-        console.log('FacilitySyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-        await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
-      });
-    } catch (error) {
-      console.error('ClientSyncManager.pullChanges', {
-        sessionId,
-        error,
-      });
-      throw error;
-    }
+    // TODO: Implement
   }
 }
