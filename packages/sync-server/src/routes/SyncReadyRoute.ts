@@ -1,4 +1,5 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { SyncServerSyncReadyRequest } from '@tupaia/types';
 

@@ -1,20 +1,15 @@
-import { sleepAsync } from '@tupaia/utils';
+import { sleep } from '@tupaia/utils';
 import { ExpressResponse } from '@tupaia/server-boilerplate';
 
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
 
 export class SyncApi extends BaseApi {
-  async startSyncSession(lastSyncedTick: number) {
-    // start a sync session (or refresh our position in the queue)
-    const { sessionId, status } = await this.connection.post('sync', {}, {
-      lastSyncedTick,
-    });
+  async startSyncSession() {
+    // start a sync session
+    const { sessionId } = await this.connection.post('sync');
 
-    if (!sessionId) {
-      // we're waiting in a queue
-      return { status };
-    }
+    // TODO: Implement sync queue RN-1667
 
     // then, poll the sync/:sessionId/ready endpoint until we get a valid response
     // this is because POST /sync (especially the tickTockGlobalClock action) might get blocked
@@ -40,14 +35,14 @@ export class SyncApi extends BaseApi {
       if (response) {
         return response;
       }
-      await sleepAsync(waitTime);
+      await sleep(waitTime);
     }
     throw new Error(`Did not get a truthy response after ${maxAttempts} attempts for ${endpoint}`);
   }
 
   async initiatePull(sessionId: string, since: number, projectIds: string[], deviceId: string) {
-    // first, set the pull filter on the central server, which will kick of a snapshot of changes
-    // to pull
+    // first, set the pull filter on the central server, 
+    // which will kick of a snapshot of changes to pull
     const data = { since, projectIds, deviceId };
     await this.connection.post(`sync/${sessionId}/pull/initiate`, {}, data);
 

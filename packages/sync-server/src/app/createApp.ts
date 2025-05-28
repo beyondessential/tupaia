@@ -14,7 +14,7 @@ import { SyncPullMetadataRequest, SyncPullMetadataRoute } from '../routes/SyncPu
 import { SyncPullRequest, SyncPullRoute } from '../routes/SyncPullRoute';
 import { SyncEndSessionRequest, SyncEndSessionRoute } from '../routes/SyncEndSessionRoute';
 
-export const initializeCentralSyncManager =
+export const addCentralSyncManagerToContext =
   (centralSyncManager: CentralSyncManager) =>
   (req: Request, _res: Response, next: NextFunction) => {
     req.ctx.centralSyncManager = centralSyncManager;
@@ -27,7 +27,7 @@ export const initializeCentralSyncManager =
 export function createApp(database = new TupaiaDatabase(), syncManager: CentralSyncManager) {
   const app = new MicroServiceApiBuilder(database, 'sync')
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
-    .useMiddleware(initializeCentralSyncManager(syncManager))
+    .useMiddleware(addCentralSyncManagerToContext(syncManager))
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
     .get<SyncReadyRequest>('sync/:sessionId/ready', handleWith(SyncReadyRoute))
     .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))

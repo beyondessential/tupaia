@@ -110,6 +110,7 @@ export class ApiBuilder {
     return this;
   }
 
+  // To add a custom middleware without a path
   public useMiddleware<T extends ExpressRequest<T> = Request>(middleware: RequestHandler) {
     this.app.use(middleware);
     return this;

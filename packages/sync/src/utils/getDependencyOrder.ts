@@ -48,11 +48,8 @@ export async function getDependencyOrder(database: TupaiaDatabase): Promise<stri
     ),
   );
 
-  console.log('groupedDependencies', groupedDependencies);
   while (groupedDependencies.size > 0) {
     for (const [modelName, dependsOn] of groupedDependencies) {
-      // console.log('modelName', modelName);
-      // console.log('sorted', sorted);
       const dependenciesStillToSort = dependsOn.filter(
         d => groupedDependencies.has(d) && d !== modelName,
       );
@@ -62,8 +59,6 @@ export async function getDependencyOrder(database: TupaiaDatabase): Promise<stri
       }
     }
   }
-
-  console.log('sorted', sorted);
 
   return sorted;
 }

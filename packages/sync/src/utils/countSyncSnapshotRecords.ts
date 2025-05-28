@@ -8,10 +8,10 @@ export const countSyncSnapshotRecords = async (
   sessionId: string,
   direction: SyncSessionDirectionValues,
   recordType?: RecordType,
-) => {
+): Promise<number> => {
   const tableName = getSnapshotTableName(sessionId);
 
-  const rows = (await database.executeSql(
+  const [{ total }] = (await database.executeSql(
     `
       SELECT count(*) AS total FROM ${tableName}
       WHERE direction = :direction
@@ -22,5 +22,5 @@ export const countSyncSnapshotRecords = async (
       direction,
     },
   )) as { total?: number }[];
-  return rows[0]?.total || 0;
+  return total || 0;
 };
