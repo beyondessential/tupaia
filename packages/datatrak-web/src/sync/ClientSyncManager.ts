@@ -128,7 +128,6 @@ export class ClientSyncManager {
       );
 
       // Get the pull volume type to determine how to proces the stream data.
-      // This is
       // 1. If the pull is initial, we wrap the whole pull in a transaction and persist the stream data straight to the actual tables
       //    When leaving a long running transaction open, any user trying to update those same records in Tamanu will be blocked until the sync finishes.
       //    This is not a problem for initial sync because there is no local data, so it is fine to leave a long running transaction open.
@@ -144,25 +143,30 @@ export class ClientSyncManager {
       const runPull = async (models: ModelRegistry) =>
         pullIncomingChanges(models, sessionId, processStreamedDataFunction);
 
-      const { totalObjects } =
-        pullVolumeType === PullVolumeType.Initial
-          ? await this.models.wrapInTransaction(async models => runPull(models))
-          : await runPull(this.models);
+      if (pullVolumeType === PullVolumeType.Initial) {
+        await this.models.wrapInTransaction(async models => {
+          await runPull(models);
 
-      await this.models.wrapInTransaction(async models => {
-        const incomingModels = getModelsForDirection(models, SYNC_DIRECTIONS.PULL_FROM_CENTRAL);
-        if (pullVolumeType === PullVolumeType.IncrementalLow) {
-          saveIncomingInMemoryChanges(models, totalObjects);
-        } else if (pullVolumeType === PullVolumeType.IncrementalHigh) {
-          saveIncomingSnapshotChanges(incomingModels, sessionId);
-        }
+          // update the last successful sync in the same save transaction - if updating the cursor fails,
+          // we want to roll back the rest of the saves so that we don't end up detecting them as
+          // needing a sync up to the central server when we attempt to resync from the same old cursor
+          await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+        });
+      } else {
+        const { totalObjects } = await runPull(this.models);
+        await this.models.wrapInTransaction(async models => {
+          const incomingModels = getModelsForDirection(models, SYNC_DIRECTIONS.PULL_FROM_CENTRAL);
+          if (pullVolumeType === PullVolumeType.IncrementalLow) {
+            saveIncomingInMemoryChanges(models, totalObjects);
+          } else if (pullVolumeType === PullVolumeType.IncrementalHigh) {
+            saveIncomingSnapshotChanges(incomingModels, sessionId);
+          }
 
-        // update the last successful sync in the same save transaction - if updating the cursor fails,
-        // we want to roll back the rest of the saves so that we don't end up detecting them as
-        // needing a sync up to the central server when we attempt to resync from the same old cursor
-        console.log('FacilitySyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
-        await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
-      });
+          // same reason for wrapping in transaction as in initial sync
+          console.log('FacilitySyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+          await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
+        });
+      }
     } catch (error) {
       console.error('ClientSyncManager.pullChanges', {
         sessionId,

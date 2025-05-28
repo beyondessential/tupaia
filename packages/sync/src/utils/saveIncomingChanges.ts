@@ -1,13 +1,15 @@
 import { groupBy } from 'lodash';
-import log from 'winston';
 
-import { BaseDatabase, DatabaseModel, ModelRegistry } from '@tupaia/database';
+import { DatabaseModel, ModelRegistry } from '@tupaia/database';
 
-import { saveCreates, saveDeletes, saveUpdates } from './saveChanges';
+import { saveCreates, saveUpdates } from './saveChanges';
 import { FilteredModelRegistry, ModelSanitizeArgs, RecordType, SyncSnapshotAttributes } from '../types';
 import { findSyncSnapshotRecords } from './findSyncSnapshotRecords';
-import { SYNC_SESSION_DIRECTION } from '../constants';
-import { sleepAsync } from '@tupaia/utils';
+import { sleep } from '@tupaia/utils';
+
+// TODO: Move this to a config model RN-1668
+const PERSISTED_CACHE_BATCH_SIZE = 10000;
+const PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS = 50;
 
 export const saveChangesForModel = async (
   model: DatabaseModel,
@@ -15,11 +17,10 @@ export const saveChangesForModel = async (
 ) => {
   const sanitizeData = (d: ModelSanitizeArgs) => d;
 
-  // split changes into create, update, delete
+  // split changes into create, update
   const incomingRecords = changes.filter(c => c.data.id).map(c => c.data);
   const idsForIncomingRecords = incomingRecords.map(r => r.id);
   // add all records that already exist in the db to the list to be updated
-  // even if they are being deleted or restored, we should also run an update query to keep the data in sync
   const existingRecords = await model.findManyById(idsForIncomingRecords);
 
   const idToExistingRecord: Record<number, (typeof existingRecords)[0]> = Object.fromEntries(
@@ -30,35 +31,16 @@ export const saveChangesForModel = async (
   const idToIncomingRecord: { [key: number]: (typeof changes)[0] } = Object.fromEntries(
     changes.filter(c => c.data.id).map(e => [e.data.id, e]),
   );
-  const idsForUpdate = new Set();
-  const idsForDelete = new Set();
 
-  existingRecords.forEach((existing: any) => {
-    // compares incoming and existing records by id
-    const incoming = idToIncomingRecord[existing.id];
-    idsForUpdate.add(existing.id);
+  const idsForUpdate = new Set(existingRecords.map((existing: any) => existing.id));
 
-    if (!existing.deletedAt && incoming?.isDeleted) {
-      idsForDelete.add(existing.id);
-    }
-    if (existing.deletedAt && incoming?.isDeleted) {
-      // don't do anything related to deletion if incoming record
-      // is deleted and existing record is already deleted
-    }
-  });
   const recordsForCreate = changes
     .filter(c => idToExistingRecord[c.data.id] === undefined)
-    .map(({ data, isDeleted }) => {
-      // pass in 'isDeleted' to be able to create new records even if they are soft deleted.
-      return { ...sanitizeData(data), isDeleted };
-    });
-  const recordsForUpdate = changes
-    .filter(r => idsForUpdate.has(r.data.id))
     .map(({ data }) => {
       return sanitizeData(data);
     });
-  const recordsForDelete = changes
-    .filter(r => idsForDelete.has(r.data.id))
+  const recordsForUpdate = changes
+    .filter(r => idsForUpdate.has(r.data.id))
     .map(({ data }) => {
       return sanitizeData(data);
     });
@@ -78,16 +60,8 @@ export const saveChangesForModel = async (
     await saveUpdates(model, recordsForUpdate);
   }
 
-  console.log('Sync: saveIncomingChanges: Soft deleting old records', {
-    count: recordsForDelete.length,
-  });
-  if (recordsForDelete.length > 0) {
-    await saveDeletes(model, recordsForDelete);
-  }
+  // TODO: Implement deletion
 };
-
-const persistedCacheBatchSize = 10000;
-const pauseBetweenPersistedCacheBatchesInMilliseconds = 50;
 
 const saveChangesForModelInBatches = async (
   model: DatabaseModel,
@@ -101,7 +75,7 @@ const saveChangesForModelInBatches = async (
       model.database,
       sessionId,
       fromId,
-      persistedCacheBatchSize,
+      PERSISTED_CACHE_BATCH_SIZE,
       recordType,
     );
     fromId = batchRecords[batchRecords.length - 1]?.id;
@@ -113,7 +87,7 @@ const saveChangesForModelInBatches = async (
 
       await saveChangesForModel(model, batchRecords);
 
-      await sleepAsync(pauseBetweenPersistedCacheBatchesInMilliseconds);
+      await sleep(PAUSE_BETWEEN_PERSISTED_CACHE_BATCHES_IN_MILLISECONDS);
     } catch (error) {
       console.error('Failed to save changes');
       throw error;
