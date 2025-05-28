@@ -10,7 +10,7 @@
 @authorization  = Basic {{email}}:{{password}}
 
 ### Sign up
-POST {{host}}/signup HTTP/1.1
+POST {{host}}/user HTTP/1.1
 content-type: {{contentType}}
 
 {

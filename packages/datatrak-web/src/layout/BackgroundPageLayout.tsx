@@ -17,7 +17,7 @@ export const Background = styled.div<{
   min-height: ${props => {
     // Need to add 1px offset to account for the negative margin when hiding the header border
     const offset = props.$hideBorder ? `${HEADER_HEIGHT} + 1px` : HEADER_HEIGHT;
-    return `calc(100vh - ${offset})`;
+    return `calc(100dvb - ${offset})`;
   }};
   display: flex;
   margin-top: ${props => (props.$hideBorder ? '-1px' : 0)};
