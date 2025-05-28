@@ -9,10 +9,12 @@ export const completeSyncSession = async (
 ) => {
   // just drop the snapshots, leaving sessions themselves as an artefact that forms a paper trail
   const session = await syncSessionModel.findById(sessionId);
-  session!.completed_at = new Date();
+  session.completed_at = new Date();
+  await session.save();
+
   if (error) {
-    await session?.markErrored(error);
+    await session.markErrored(error);
   }
-  await session?.save();
+  
   await dropSnapshotTable(database, sessionId);
 };

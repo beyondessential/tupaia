@@ -1,4 +1,5 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { SyncServerStartSessionRequest } from '@tupaia/types';
 
@@ -13,11 +14,7 @@ export class SyncStartSessionRoute extends Route<SyncStartSessionRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
 
-    // TODO: Implement sync queue
-    const { sessionId } = await ctx.centralSyncManager.startSession();
-
-    return {
-      sessionId,
-    };
+    // TODO: Implement sync queue RN-1667
+    return ctx.centralSyncManager.startSession();
   }
 }
