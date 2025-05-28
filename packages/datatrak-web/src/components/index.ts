@@ -13,7 +13,7 @@ export { DateTimeDisplay } from './DateTimeDisplay';
 export { ErrorDisplay } from './ErrorDisplay';
 export { HomeLink } from './HomeLink';
 export { InputHelperText } from './InputHelperText';
-export { BottomNavigation } from './BottomNavigation';
+export { BottomNavigation } from './BottomNavigation/BottomNavigation';
 export { PageTitleBar } from './PageTitleBar';
 export { BlockScrollView, InlineScrollView } from './ScrollView';
 export { SmallModal } from './SmallModal';

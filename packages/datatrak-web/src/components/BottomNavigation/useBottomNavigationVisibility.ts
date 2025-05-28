@@ -1,6 +1,6 @@
 import { matchPath, useLocation } from 'react-router';
-import { ROUTES } from '../constants';
-import { useIsMobile } from '.';
+import { ROUTES } from '../../constants';
+import { useIsMobile } from '../../utils';
 
 const bottomNavigationBarBlocklist = [
   `${ROUTES.SURVEY_RESUBMIT}/*`,

@@ -5,15 +5,16 @@ import {
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreHorizRounded';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { Description as DescriptionIcon, Home as HomeIcon } from '@tupaia/ui-components';
 
-import { ROUTES } from '../constants';
-import { TaskIcon } from './Icons';
+import { ROUTES } from '../../constants';
+import { TaskIcon } from '../Icons';
+import { useBottomNavigationActiveTab } from './useBottomNavigationActiveTab';
 
-type TabValue = 'home' | 'surveys' | 'tasks' | 'more';
+export type TabValue = 'home' | 'surveys' | 'tasks' | 'more';
 
 const tabRoutes: Record<TabValue, string> = {
   home: ROUTES.HOME,
@@ -48,14 +49,6 @@ const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
     }
   }
 `;
-
-function useBottomNavigationActiveTab(): TabValue | null {
-  const { pathname } = useLocation();
-  if (pathname.startsWith(ROUTES.SURVEY_SELECT)) return 'surveys';
-  if (pathname.startsWith(ROUTES.TASKS)) return 'tasks';
-  if (pathname.startsWith(ROUTES.HOME)) return 'home';
-  return 'more';
-}
 
 export const BottomNavigation = (props: BottomNavigationProps) => {
   const activeTab = useBottomNavigationActiveTab();
