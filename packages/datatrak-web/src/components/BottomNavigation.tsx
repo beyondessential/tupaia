@@ -49,7 +49,8 @@ const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
   }
 `;
 
-function getTabFromPathname(pathname: Pathname): TabValue | null {
+function useBottomNavigationActiveTab(): TabValue | null {
+  const { pathname } = useLocation();
   if (pathname.startsWith(ROUTES.SURVEY_SELECT)) return 'surveys';
   if (pathname.startsWith(ROUTES.TASKS)) return 'tasks';
   if (pathname.startsWith(ROUTES.HOME)) return 'home';
@@ -57,8 +58,7 @@ function getTabFromPathname(pathname: Pathname): TabValue | null {
 }
 
 export const BottomNavigation = (props: BottomNavigationProps) => {
-  const { pathname } = useLocation();
-  const activeTab = getTabFromPathname(pathname);
+  const activeTab = useBottomNavigationActiveTab();
 
   const navigate = useNavigate();
   const onChange = (_event: unknown, newTab: TabValue) => {
