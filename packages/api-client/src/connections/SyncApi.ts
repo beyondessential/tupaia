@@ -6,15 +6,12 @@ import { PublicInterface } from './types';
 
 export class SyncApi extends BaseApi {
   async startSyncSession(lastSyncedTick: number) {
-    // start a sync session (or refresh our position in the queue)
-    const { sessionId, status } = await this.connection.post('sync', {}, {
+    // start a sync session
+    const { sessionId } = await this.connection.post('sync', {}, {
       lastSyncedTick,
     });
 
-    if (!sessionId) {
-      // we're waiting in a queue
-      return { status };
-    }
+    // TODO: Implement sync queue RN-1667
 
     // then, poll the sync/:sessionId/ready endpoint until we get a valid response
     // this is because POST /sync (especially the tickTockGlobalClock action) might get blocked
