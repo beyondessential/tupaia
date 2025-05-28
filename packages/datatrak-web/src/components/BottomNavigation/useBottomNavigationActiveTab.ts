@@ -1,12 +1,12 @@
-import { useLocation } from 'react-router';
+import { matchPath, useLocation } from 'react-router';
 
 import type { TabValue } from './BottomNavigation';
 import { ROUTES } from '../../constants';
 
 export function useBottomNavigationActiveTab(): TabValue | null {
   const { pathname } = useLocation();
-  if (pathname.startsWith(ROUTES.SURVEY_SELECT)) return 'surveys';
-  if (pathname.startsWith(ROUTES.TASKS)) return 'tasks';
-  if (pathname.startsWith(ROUTES.HOME)) return 'home';
+  if (matchPath(`${ROUTES.SURVEY_SELECT}/*`, pathname)) return 'surveys';
+  if (matchPath(`${ROUTES.TASKS}/*`, pathname)) return 'tasks';
+  if (matchPath(ROUTES.HOME, pathname)) return 'home';
   return 'more';
 }
