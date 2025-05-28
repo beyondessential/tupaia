@@ -27,20 +27,20 @@ export const getSnapshotTableCursorName = (sessionId: string) => {
 export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: string) => {
   const tableName = getSnapshotTableName(sessionId);
   await database.executeSql(`
-      CREATE TABLE ${tableName} (
-        id BIGSERIAL PRIMARY KEY,
-        direction character varying(255) NOT NULL,
-        record_type character varying(255) NOT NULL,
-        record_id character varying(255) NOT NULL,
-        data json NOT NULL,
-        saved_at_sync_tick bigint, -- saved_at_sync_tick is used to check whether record has been updated between incoming and outgoing phase of a single session
-        updated_at_by_field_sum bigint, -- updated_at_by_field_sum is used to check whether record has had changes to field during merge and save component of push phase
-        sync_lookup_id bigint,
-        requires_repull boolean DEFAULT false
-      ) WITH (
-        autovacuum_enabled = off
-      );
-    `);
+    CREATE TABLE ${tableName} (
+      id BIGSERIAL PRIMARY KEY,
+      direction character varying(255) NOT NULL,
+      record_type character varying(255) NOT NULL,
+      record_id character varying(255) NOT NULL,
+      data json NOT NULL,
+      saved_at_sync_tick bigint, -- saved_at_sync_tick is used to check whether record has been updated between incoming and outgoing phase of a single session
+      updated_at_by_field_sum bigint, -- updated_at_by_field_sum is used to check whether record has had changes to field during merge and save component of push phase
+      sync_lookup_id bigint,
+      requires_repull boolean DEFAULT false
+    ) WITH (
+      autovacuum_enabled = off
+    );
+  `);
 
   await database.executeSql(`
     CREATE INDEX ${tableName
@@ -53,14 +53,14 @@ export const createSnapshotTable = async (database: TupaiaDatabase, sessionId: s
 export const createClientSnapshotTable = async (database: TupaiaDatabase, sessionId: string) => {
   const tableName = getSnapshotTableName(sessionId);
   await database.executeSql(`
-      CREATE TABLE ${tableName} (
-        id BIGSERIAL PRIMARY KEY,
-        record_type character varying(255) NOT NULL,
-        data json NOT NULL
-      ) WITH (
-        autovacuum_enabled = off
-      );
-    `);
+    CREATE TABLE ${tableName} (
+      id BIGSERIAL PRIMARY KEY,
+      record_type character varying(255) NOT NULL,
+      data json NOT NULL
+    ) WITH (
+      autovacuum_enabled = off
+    );
+  `);
 };
 
 export const dropSnapshotTable = async (database: TupaiaDatabase, sessionId: string) => {

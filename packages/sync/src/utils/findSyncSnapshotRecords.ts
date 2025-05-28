@@ -12,7 +12,7 @@ export const findSyncSnapshotRecords = async (
   recordType: RecordType,
   direction?: SyncSessionDirectionValues,
   additionalWhere?: string,
-) => {
+): Promise<SyncSnapshotAttributes[]> => {
   const tableName = getSnapshotTableName(sessionId);
 
   const records = (await database.executeSql(
