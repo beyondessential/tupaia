@@ -1,4 +1,5 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { SyncServerSyncMetadataRequest } from '@tupaia/types';
 
@@ -13,7 +14,6 @@ export class SyncMetadataRoute extends Route<SyncMetadataRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
     const { sessionId } = this.req.params;
-    const { startedAtTick } = await ctx.centralSyncManager.fetchSyncMetadata(sessionId);
-    return { startedAtTick };
+    return ctx.centralSyncManager.fetchSyncMetadata(sessionId);
   }
 }

@@ -47,7 +47,7 @@ export class CentralSyncManager {
     this.database = models.database;
     this.models = models;
 
-    // TODO: Move this to a config model
+    // TODO: Move this to a config model RN-1668
     this.config = {
       maxRecordsPerSnapshotChunk: 10000,
       lookupTable: {

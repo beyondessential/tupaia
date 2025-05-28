@@ -1,4 +1,5 @@
 import { Request } from 'express';
+
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSyncStartSessionRequest } from '@tupaia/types';
 
@@ -12,7 +13,6 @@ export type SyncStartSessionRequest = Request<
 export class SyncStartSessionRoute extends Route<SyncStartSessionRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
-    const { lastSyncedTick } = this.req.body;
-    return ctx.services.sync.startSyncSession(lastSyncedTick);
+    return ctx.services.sync.startSyncSession();
   }
 }

@@ -17,10 +17,7 @@ import {
   PullVolumeType,
 } from './processStreamedData';
 import { post, remove } from '../api';
-
-export interface DatatrakWebModelRegistry extends ModelRegistry {
-  readonly localSystemFact: modelClasses.LocalSystemFact;
-}
+import { DatatrakWebModelRegistry } from '../types/model';
 
 export interface SyncResult {
   ran: boolean;
@@ -46,8 +43,7 @@ export class ClientSyncManager {
 
   async triggerSync() {
     if (this.currentSyncPromise) {
-      const result = await this.currentSyncPromise;
-      return { enabled: true, ...result };
+      return this.currentSyncPromise;
     }
 
     // set up a common sync promise to avoid double sync
@@ -55,8 +51,7 @@ export class ClientSyncManager {
 
     // make sure sync promise gets cleared when finished, even if there's an error
     try {
-      const result = await this.currentSyncPromise;
-      return { enabled: true, ...result };
+      return this.currentSyncPromise;
     } finally {
       this.currentSyncPromise = null;
     }
@@ -70,14 +65,14 @@ export class ClientSyncManager {
     }
 
     const startTime = Date.now();
-    const { sessionId, startedAtTick: newSyncClockTime } = await this.startSyncSession();
+    const { sessionId, startedAtTick } = await this.startSyncSession();
 
     // clear previous temp data, in case last session errored out or server was restarted
     await dropAllSnapshotTables(this.database);
 
     console.log('ClientSyncManager.receivedSessionInfo', {
       sessionId,
-      startedAtTick: newSyncClockTime,
+      startedAtTick,
     });
 
     await this.pushChanges();
@@ -98,9 +93,7 @@ export class ClientSyncManager {
   }
 
   async startSyncSession() {
-    return post('sync', {
-      data: { lastSyncedTick: 0 },
-    });
+    return post('sync');
   }
 
   async endSyncSession(sessionId: string) {
