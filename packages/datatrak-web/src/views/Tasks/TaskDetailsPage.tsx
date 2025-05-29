@@ -95,14 +95,11 @@ export const TaskDetailsPage = () => {
   const { data: task, isLoading } = useTask(taskId);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const onBack = () => {
-    navigate(-1);
-  };
 
   return (
     <>
       {isMobile && (
-        <StickyMobileHeader onBack={onBack}>
+        <StickyMobileHeader onBack={() => navigate(ROUTES.TASKS)}>
           <Typography variant="h1">Task details</Typography>
           <Typography color="textSecondary" noWrap variant="body2">
             {task?.survey?.name}

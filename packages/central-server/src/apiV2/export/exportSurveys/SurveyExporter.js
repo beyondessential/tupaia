@@ -1,11 +1,14 @@
 import xlsx from 'xlsx';
-import { DatabaseError } from '@tupaia/utils';
+
 import { getExportPathForUser } from '@tupaia/server-utils';
+import { DatabaseError } from '@tupaia/utils';
+
 import { findQuestionsInSurvey } from '../../../dataAccessors';
-import { RowBuilder } from './RowBuilder';
-import { SurveyMetadataConfigCellBuilder } from './cellBuilders';
-import { assertCanExportSurveys } from './assertCanExportSurveys';
+import winston from '../../../log';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../../permissions';
+import { RowBuilder } from './RowBuilder';
+import { assertCanExportSurveys } from './assertCanExportSurveys';
+import { SurveyMetadataConfigCellBuilder } from './cellBuilders';
 
 const FILE_PREFIX = 'survey_export';
 
@@ -74,8 +77,7 @@ export class SurveyExporter {
         }
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      winston.error(error);
       throw new DatabaseError('exporting survey', error);
     }
 
