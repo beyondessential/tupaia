@@ -1,4 +1,4 @@
-import { sleepAsync } from '@tupaia/utils';
+import { sleep } from '@tupaia/utils';
 import { ExpressResponse } from '@tupaia/server-boilerplate';
 
 import { BaseApi } from './BaseApi';
@@ -35,7 +35,7 @@ export class SyncApi extends BaseApi {
       if (response) {
         return response;
       }
-      await sleepAsync(waitTime);
+      await sleep(waitTime);
     }
     throw new Error(`Did not get a truthy response after ${maxAttempts} attempts for ${endpoint}`);
   }
