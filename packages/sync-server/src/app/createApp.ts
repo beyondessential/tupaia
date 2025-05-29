@@ -29,13 +29,13 @@ export function createApp(database = new TupaiaDatabase(), syncManager: CentralS
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
     .useMiddleware(addCentralSyncManagerToContext(syncManager))
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
-    .get<SyncReadyRequest>('sync/:sessionId/ready', handleWith(SyncReadyRoute))
+    .get<SyncReadyRequest>('sync/:sessionId/status', handleWith(SyncReadyRoute))
     .get<SyncMetadataRequest>('sync/:sessionId/metadata', handleWith(SyncMetadataRoute))
     .post<SyncInitiatePullRequest>(
-      'sync/:sessionId/pull/initiate',
+      'sync/:sessionId/pull',
       handleWith(SyncInitiatePullRoute),
     )
-    .get<SyncPullReadyRequest>('sync/:sessionId/pull/ready', handleWith(SyncPullReadyRoute))
+    .get<SyncPullReadyRequest>('sync/:sessionId/pull/status', handleWith(SyncPullReadyRoute))
     .get<SyncPullMetadataRequest>(
       'sync/:sessionId/pull/metadata',
       handleWith(SyncPullMetadataRoute),
