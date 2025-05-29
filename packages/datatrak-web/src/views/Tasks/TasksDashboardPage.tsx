@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { isFeatureEnabled } from '@tupaia/utils';
 
 import { Button } from '../../components';
+import { ROUTES } from '../../constants';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
 import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
@@ -36,9 +37,7 @@ export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const onBack = () => {
-    navigate(-1);
-  };
+  const onBack = () => navigate(ROUTES.HOME);
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
     <>
