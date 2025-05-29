@@ -101,14 +101,11 @@ export const TaskDetailsPage = () => {
   const { data: task, isLoading } = useTask(taskId);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const onBack = () => {
-    navigate(-1);
-  };
 
   return (
     <>
       {isMobile && (
-        <StickyMobileHeader title="Tasks" onBack={onBack}>
+        <StickyMobileHeader title="Tasks" onBack={() => navigate(ROUTES.TASKS)}>
           Task details
         </StickyMobileHeader>
       )}
