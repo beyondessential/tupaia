@@ -47,7 +47,7 @@ export class SyncApi extends BaseApi {
     await this.connection.post(`sync/${sessionId}/pull`, {}, data);
 
     // then, poll the pull/status endpoint until we get a valid response - it takes a while for
-    // pull/initiate to finish populating the snapshot of changes
+    // pull/status to finish populating the snapshot of changes
     await this.pollStatusUntilReady(`sync/${sessionId}/pull/status`);
 
     // finally, fetch the metadata for the changes we're about to pull
