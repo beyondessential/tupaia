@@ -82,7 +82,7 @@ export class ClientSyncManager {
     await this.endSyncSession(sessionId);
 
     const durationMs = Date.now() - startTime;
-    console.log('FacilitySyncManager.completedSession', {
+    console.log('ClientSyncManager.completedSession', {
       durationMs,
     });
 
@@ -150,6 +150,7 @@ export class ClientSyncManager {
           // update the last successful sync in the same save transaction - if updating the cursor fails,
           // we want to roll back the rest of the saves so that we don't end up detecting them as
           // needing a sync up to the central server when we attempt to resync from the same old cursor
+          console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
           await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
         });
       } else {
@@ -163,7 +164,7 @@ export class ClientSyncManager {
           }
 
           // same reason for wrapping in transaction as in initial sync
-          console.log('FacilitySyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
+          console.log('ClientSyncManager.updatingLastSuccessfulSyncPull', { pullUntil });
           await this.models.localSystemFact.set(FACT_LAST_SUCCESSFUL_SYNC_PULL, pullUntil);
         });
       }
