@@ -9,5 +9,5 @@ export const initiatePull = async (
 ) => {
   console.log('ClientSyncManager.pull.waitingForCentral');
   const body = { since, projectIds, deviceId };
-  return post(`sync/${sessionId}/pull/initiate`, { data: body });
+  return post(`sync/${sessionId}/pull`, { data: body });
 };

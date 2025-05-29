@@ -44,11 +44,11 @@ export class SyncApi extends BaseApi {
     // first, set the pull filter on the central server, 
     // which will kick of a snapshot of changes to pull
     const data = { since, projectIds, deviceId };
-    await this.connection.post(`sync/${sessionId}/pull/initiate`, {}, data);
+    await this.connection.post(`sync/${sessionId}/pull`, {}, data);
 
-    // then, poll the pull/ready endpoint until we get a valid response - it takes a while for
+    // then, poll the pull/status endpoint until we get a valid response - it takes a while for
     // pull/initiate to finish populating the snapshot of changes
-    await this.pollUntilTrue(`sync/${sessionId}/pull/ready`);
+    await this.pollStatusUntilReady(`sync/${sessionId}/pull/status`);
 
     // finally, fetch the metadata for the changes we're about to pull
     return this.connection.get(`sync/${sessionId}/pull/metadata`);
