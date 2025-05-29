@@ -127,7 +127,7 @@ export async function createApp() {
 
     // Sync routes
     .post<SyncStartSessionRequest>('sync', handleWith(SyncStartSessionRoute))
-    .post<SyncInitiatePullRequest>('sync/:sessionId/pull/initiate', handleWith(SyncInitiatePullRoute))
+    .post<SyncInitiatePullRequest>('sync/:sessionId/pull', handleWith(SyncInitiatePullRoute))
     .get<SyncPullRequest>('sync/:sessionId/pull', handleWith(SyncPullRoute))
     .delete<SyncEndSessionRequest>('sync/:sessionId', handleWith(SyncEndSessionRoute))
 

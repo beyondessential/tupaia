@@ -82,7 +82,7 @@ export class ClientSyncManager {
     await this.endSyncSession(sessionId);
 
     const durationMs = Date.now() - startTime;
-    console.log('FacilitySyncManager.completedSession', {
+    console.log('ClientSyncManager.completedSession', {
       durationMs,
     });
 
