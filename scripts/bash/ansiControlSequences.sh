@@ -33,6 +33,8 @@ export CLEAR_LINE="\033[2K${CURSOR_START_OF_LINE}"
 if [[ ! -t 1 || $TERM = dumb || -n $NO_COLOR ]]; then
 	export RESET=''
 	export BOLD=''
+	export DIM=''
+	export ITALIC=''
 	export UNDERLINE=''
 	export BLACK=''
 	export RED=''
@@ -53,6 +55,8 @@ if [[ ! -t 1 || $TERM = dumb || -n $NO_COLOR ]]; then
 else
 	export RESET='\033[m'
 	export BOLD='\033[1m'
+	export DIM='\033[2m'    # Less widely supported
+	export ITALIC='\033[3m' # Less widely supported
 	export UNDERLINE='\033[4m'
 	export BLACK='\033[30m'
 	export RED='\033[31m'
