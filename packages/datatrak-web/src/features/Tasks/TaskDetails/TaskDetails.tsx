@@ -2,10 +2,11 @@ import { Paper, Typography } from '@material-ui/core';
 import { parseISO } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { Frequency } from 'rrule';
 import styled from 'styled-components';
 
-import { Task, TaskStatus } from '@tupaia/types';
-import { LoadingContainer, LoadingScreen } from '@tupaia/ui-components';
+import { DatatrakWebTasksRequest, Task, TaskStatus } from '@tupaia/types';
+import { LoadingContainer, LoadingScreen, VisuallyHidden } from '@tupaia/ui-components';
 
 import { useEditTask, useSurveyResponse } from '../../../api';
 import {
@@ -27,44 +28,49 @@ import { TaskMetadata } from './TaskMetadata';
 const Container = styled(Paper).attrs({
   variant: 'outlined',
 })`
-  column-gap: 1.25rem;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-areas: '--initial-request' '--edit' '--comment';
+  padding-block: 1.2rem;
   padding: 1rem;
-  row-gap: 0;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
+    grid-template-areas: '--edit --comment --initial-request';
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-rows: 1fr;
     padding: 2.5rem;
   }
 `;
 
-const MainColumn = styled.section`
+const Section = styled.section`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-  padding-block: 1.2rem;
+
+  ${props => props.theme.breakpoints.down('sm')} {
+    border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+    padding-block-start: 1.25rem;
+  }
+`;
+
+const CommentSection = styled(Section)`
   ${({ theme }) => theme.breakpoints.up('md')} {
     border-inline: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     margin-block: 0;
     padding-block: 0;
     padding-inline: 1.25rem;
-    width: 50%;
   }
 `;
 
-const SideColumn = styled.section`
-  display: flex;
-  flex-direction: column;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 25%;
-  }
-`;
-
-const InitialRequestColumn = styled(SideColumn)`
+const InitialRequestSection = styled(Section)`
   ${TileRoot} {
     border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
     inline-size: 100%;
+  }
+
+  ${props => props.theme.breakpoints.down('sm')} {
+    border-block-start: unset;
+    padding-block-start: unset;
   }
 `;
 
@@ -106,10 +112,8 @@ const Wrapper = styled.div`
 const SectionHeading = styled(Typography).attrs({
   variant: 'h2',
 })`
-  font-size: 0.875rem;
-  line-height: 1.3;
   font-weight: 500;
-  margin-bottom: 0.25rem;
+  margin-block-end: 0.5rem;
 `;
 
 const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_request_id'] }) => {
@@ -144,6 +148,18 @@ const InitialRequest = ({ initialRequestId }: { initialRequestId: Task['initial_
   );
 };
 
+const InitialRequestEmptyState = styled(Typography).attrs({ children: 'None' })`
+  color: ${props => props.theme.palette.text.secondary};
+  font-style: italic;
+`;
+
+interface UpdateTaskFormFields {
+  /** ISO 8601 format */
+  due_date: string;
+  repeat_frequency: Frequency;
+  assignee: DatatrakWebTasksRequest.TaskAssignee;
+}
+
 const generateDefaultValues = (task: SingleTaskResponse) => ({
   due_date: task.taskDueDate ?? null,
   repeat_frequency: task.repeatSchedule?.freq ?? null,
@@ -153,7 +169,7 @@ const generateDefaultValues = (task: SingleTaskResponse) => ({
 export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
   const [defaultValues, setDefaultValues] = useState(generateDefaultValues(task));
 
-  const formContext = useForm({
+  const formContext = useForm<UpdateTaskFormFields>({
     mode: 'onChange',
     defaultValues,
   });
@@ -186,7 +202,7 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
 
   const dueDate = watch('due_date');
 
-  const onSubmit = data => {
+  const onSubmit = (data: UpdateTaskFormFields) => {
     const updatedFields = Object.keys(dirtyFields).reduce((acc, key) => {
       acc[key] = data[key];
       return acc;
@@ -199,7 +215,8 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
     <Wrapper>
       <LoadingContainer isLoading={isSaving} heading="Saving task" text="">
         <Container>
-          <SideColumn>
+          <Section style={{ gridArea: '--edit' }}>
+            <VisuallyHidden as="h2">Key details</VisuallyHidden>
             <Form formContext={formContext} onSubmit={onSubmit}>
               <TaskMetadata task={task} />
               <Controller
@@ -256,14 +273,19 @@ export const TaskDetails = ({ task }: { task: SingleTaskResponse }) => {
                 </ButtonWrapper>
               )}
             </Form>
-          </SideColumn>
-          <MainColumn>
+          </Section>
+          <CommentSection style={{ gridArea: '--comment' }}>
+            <VisuallyHidden as="h2">Comments</VisuallyHidden>
             <TaskComments comments={task.comments} />
-          </MainColumn>
-          <InitialRequestColumn>
+          </CommentSection>
+          <InitialRequestSection style={{ gridArea: '--initial-request' }}>
             <SectionHeading>Initial request</SectionHeading>
-            {task.initialRequestId && <InitialRequest initialRequestId={task.initialRequestId} />}
-          </InitialRequestColumn>
+            {task.initialRequestId ? (
+              <InitialRequest initialRequestId={task.initialRequestId} />
+            ) : (
+              <InitialRequestEmptyState />
+            )}
+          </InitialRequestSection>
         </Container>
       </LoadingContainer>
     </Wrapper>

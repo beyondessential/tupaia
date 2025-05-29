@@ -17,19 +17,6 @@ const ContentWrapper = styled(TasksContentWrapper)`
   padding-block-end: 2rem;
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex: 1;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    padding-inline: 2.2rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline: 0.2rem 0;
-  }
-`;
-
 const ErrorModal = ({ isOpen, onClose }) => {
   return (
     <Modal
@@ -54,6 +41,12 @@ const ErrorModal = ({ isOpen, onClose }) => {
   );
 };
 
+const StyledButton = styled(Button)`
+  ${props => props.theme.breakpoints.up('md')} {
+    margin-inline-end: auto;
+  }
+`;
+
 const ButtonComponent = ({
   task,
   openErrorModal,
@@ -67,6 +60,8 @@ const ButtonComponent = ({
 
   const { entity, survey, surveyResponseId, taskStatus } = task;
 
+  if (taskStatus === TaskStatus.cancelled) return null;
+
   const surveyUrl = generatePath(ROUTES.SURVEY_SCREEN, {
     countryCode: entity?.countryCode,
     surveyCode: survey?.code,
@@ -74,24 +69,23 @@ const ButtonComponent = ({
   });
   const surveyLink = `${surveyUrl}?${PRIMARY_ENTITY_CODE_PARAM}=${entity?.code}`;
 
-  if (taskStatus === TaskStatus.cancelled) return null;
   if (taskStatus === TaskStatus.completed) {
     if (!surveyResponseId)
       return (
-        <Button onClick={openErrorModal} variant="outlined">
+        <StyledButton onClick={openErrorModal} variant="outlined">
           View completed survey
-        </Button>
+        </StyledButton>
       );
     return (
-      <Button to={`?responseId=${surveyResponseId}`} variant="outlined">
+      <StyledButton to={`?responseId=${surveyResponseId}`} variant="outlined">
         View completed survey
-      </Button>
+      </StyledButton>
     );
   }
   return (
-    <Button to={surveyLink} state={{ from }}>
-      Complete task
-    </Button>
+    <StyledButton to={surveyLink} state={{ from }}>
+      Complete
+    </StyledButton>
   );
 };
 
@@ -105,15 +99,16 @@ export const TaskDetailsPage = () => {
   return (
     <>
       {isMobile && (
-        <StickyMobileHeader title="Tasks" onBack={() => navigate(ROUTES.TASKS)}>
-          Task details
+        <StickyMobileHeader onBack={() => navigate(ROUTES.TASKS)}>
+          <Typography variant="h1">Task details</Typography>
+          <Typography color="textSecondary" noWrap variant="body2">
+            {task?.survey?.name}
+          </Typography>
         </StickyMobileHeader>
       )}
       <TaskPageHeader title="Task details" backTo={ROUTES.TASKS}>
-        <ButtonWrapper>
-          <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
-          {task && <TaskActionsMenu task={task} />}
-        </ButtonWrapper>
+        <ButtonComponent task={task} openErrorModal={() => setErrorModalOpen(true)} />
+        {task && <TaskActionsMenu task={task} />}
       </TaskPageHeader>
       <ContentWrapper>
         {isLoading && <SpinningLoader />}

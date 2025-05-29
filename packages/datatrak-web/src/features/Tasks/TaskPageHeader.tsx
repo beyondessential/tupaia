@@ -26,16 +26,12 @@ const Wrapper = styled(SafeAreaColumn)`
   flex: initial;
   gap: 1rem;
   padding-block: 0.7rem;
-  position: initial;
 `;
 
 const HeadingContainer = styled.div`
   display: flex;
   align-items: center;
   margin-inline-end: 1.2rem;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 const Title = styled(Typography).attrs({
@@ -78,7 +74,7 @@ export const TaskPageHeader = ({ backTo, children, title, ...props }: TaskPageHe
             <ArrowLeftIcon />
           </BackButton>
           <HeadingContainer>
-            <TaskIcon />
+            <TaskIcon aria-hidden />
             <Title>{title}</Title>
           </HeadingContainer>
         </Container>
