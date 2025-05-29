@@ -163,7 +163,7 @@ export class CentralSyncManager {
       await this.connectToSession(sessionId);
 
       // first check if the snapshot is already being processed, to throw a sane error if (for some
-      // reason) the client managed to kick off the pull twice (ran into this in v1.24.0 and v1.24.1)
+      // reason) the client managed to kick off the pull twice
       const isAlreadyProcessing = await this.checkSessionIsProcessing(sessionId);
       if (isAlreadyProcessing) {
         throw new Error(`Snapshot for session ${sessionId} is already being processed`);
