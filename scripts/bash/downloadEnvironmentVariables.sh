@@ -45,7 +45,7 @@ cleanup() {
     # way that’s compatible to both (by not supplying a suffix for the -i flag), but this causes
     # macOS to generate backup files which we don’t need.
     if [[ $(uname) = 'Darwin' ]]; then
-        rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e
+        rm -f "$REPO_ROOT"/env/*.env-e "$REPO_ROOT"/packages/*/.env-e
     fi
 }
 
