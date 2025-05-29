@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Add } from '@material-ui/icons';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
 import { TasksContentWrapper } from '../../layout';
@@ -29,11 +29,6 @@ const CreateButton = styled(Button).attrs({
   padding-inline-start: 0.9rem;
 `;
 
-const AddIcon = styled(Add)`
-  font-size: 1.2rem;
-  margin-inline-end: 0.2rem;
-`;
-
 const ContentWrapper = styled(TasksContentWrapper)`
   overflow: hidden;
 `;
@@ -46,8 +41,8 @@ export const TasksDashboardPage = () => {
       <TaskPageHeader title="Tasks" backTo="/">
         <TaskMetrics />
         <ButtonContainer>
-          <CreateButton onClick={toggleCreateModal}>
-            <AddIcon /> Create task
+          <CreateButton onClick={toggleCreateModal} startIcon={<AddRoundedIcon />}>
+            Create task
           </CreateButton>
         </ButtonContainer>
       </TaskPageHeader>
