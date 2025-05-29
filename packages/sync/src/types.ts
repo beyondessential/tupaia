@@ -1,4 +1,4 @@
-import type { DatabaseModel, ModelRegistry } from '@tupaia/database';
+import type { ModelRegistry } from '@tupaia/database';
 
 import { SYNC_DIRECTIONS, SYNC_SESSION_DIRECTION } from './constants';
 
@@ -8,10 +8,6 @@ export type SyncSessionDirectionValues =
   (typeof SYNC_SESSION_DIRECTION)[keyof typeof SYNC_SESSION_DIRECTION];
 
 export type FilteredModelRegistry = Partial<ModelRegistry>;
-
-export interface SyncModelRegistry extends ModelRegistry {
-  [key: string]: DatabaseModel;
-}
 
 export type ModelSanitizeArgs<T extends Record<string, any> = { [key: string]: any }> = T;
 

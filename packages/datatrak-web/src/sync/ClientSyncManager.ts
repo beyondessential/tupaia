@@ -1,4 +1,4 @@
-import { modelClasses, ModelRegistry } from '@tupaia/database';
+import { ModelRegistry } from '@tupaia/database';
 import {
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
   SYNC_DIRECTIONS,

@@ -22,11 +22,14 @@ export const pullIncomingChanges = async (
   const reader = await stream(`sync/${sessionId}/pull`);
   const decoder = new TextDecoder();
   const totalObjects: any[] = [];
+  let buffer = '';
 
   while (true) {
     const { done, value } = await reader.read();
     const batch = decoder.decode(value, { stream: true });
-    const lines = batch.split('\n').filter(line => line.trim());
+    buffer += batch;
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
 
     const objects: any[] = [];
 
@@ -36,7 +39,7 @@ export const pullIncomingChanges = async (
         // mark updatedAtSyncTick as never updated, so we don't push it back to the central server until the next local update
         objects.push({ ...obj, data: { ...obj.data, updatedAtSyncTick: -1 } });
       } catch (e) {
-        console.error('Failed to parse JSON:', e);
+        console.error('Failed to parse JSON:', e, line);
       }
     }
 
