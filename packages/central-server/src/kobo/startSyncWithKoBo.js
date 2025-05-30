@@ -1,6 +1,8 @@
 import keyBy from 'lodash.keyby';
+
 import { DataBroker } from '@tupaia/data-broker';
 import { generateId } from '@tupaia/database';
+
 import winston from '../log';
 
 const PERIOD_BETWEEN_SYNCS = 10 * 60 * 1000; // 10 minutes between syncs
@@ -151,8 +153,7 @@ export async function syncWithKoBo(models, dataBroker, syncGroupCode) {
 
 export async function startSyncWithKoBo(models) {
   if (process.env.KOBO_SYNC_DISABLE === 'true') {
-    // eslint-disable-next-line no-console
-    console.log('KoBo sync is disabled');
+    winston.info('KoBo sync is disabled');
   } else {
     const dataBroker = new DataBroker();
     const koboDataServiceSyncGroups = await models.dataServiceSyncGroup.find({
