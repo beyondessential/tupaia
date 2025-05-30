@@ -5,7 +5,6 @@ import { Button as BaseButton } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
-import { useFromLocation } from '../../../utils';
 import { SurveySuccess } from '../Components';
 
 const ButtonGroup = styled.div`
@@ -28,18 +27,11 @@ const Button = styled(BaseButton)`
   }
 `;
 
-const ReturnButton = () => {
-  const from = useFromLocation();
-  return from === ROUTES.TASKS ? (
-    <Button to={ROUTES.TASKS} fullWidth>
-      Return to tasks
-    </Button>
-  ) : (
-    <Button to="/" fullWidth>
-      Return to dashboard
-    </Button>
-  );
-};
+const returnButton = (
+  <Button to="/" fullWidth>
+    Return to dashboard
+  </Button>
+);
 
 export const SurveySuccessScreen = () => {
   const params = useParams();
@@ -73,7 +65,7 @@ export const SurveySuccessScreen = () => {
             Repeat survey
           </Button>
         )}
-        <ReturnButton />
+        {returnButton}
       </ButtonGroup>
     </SurveySuccess>
   );
