@@ -1,3 +1,4 @@
+import { getCode as getCountryIsoCode } from 'countrynames';
 import { ImportValidationError } from './errors';
 
 // We sometimes use non-official names for countries. The most obvious example is Demo Land, but
@@ -11,9 +12,8 @@ const UNOFFICIAL_NAME_TO_CODE = {
 };
 
 export const getCountryCode = countryName => {
-  const { getCode: getCountryIsoCode } = require('countrynames');
   const countryCode =
-    UNOFFICIAL_NAME_TO_CODE[countryName.toLowerCase()] || getCountryIsoCode(countryName);
+    UNOFFICIAL_NAME_TO_CODE[countryName.toLowerCase()] ?? getCountryIsoCode(countryName);
   if (!countryCode) throw new ImportValidationError(`${countryName} is not a recognised country`);
   return countryCode;
 };
