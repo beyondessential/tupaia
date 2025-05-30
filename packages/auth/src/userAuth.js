@@ -1,5 +1,7 @@
-import { UnauthenticatedError, requireEnv } from '@tupaia/utils';
 import jwt from 'jsonwebtoken';
+
+import { UnauthenticatedError, requireEnv } from '@tupaia/utils';
+
 import { getJwtToken } from './security';
 
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
