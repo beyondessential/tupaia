@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import throttle from 'lodash.throttle';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { Autocomplete, BaseAutocompleteProps } from './Autocomplete';
 
@@ -59,12 +59,17 @@ export const AsyncAutocomplete = <
   const [query, setQuery] = useState('');
   const [options, loading] = useAutocompleteOptions<T>(props.fetchOptions, query);
 
+  const onInputChange = useCallback(
+    throttle((_event: React.ChangeEvent<{}>, newValue: string) => {
+      setQuery(newValue);
+    }, 200),
+    [],
+  );
+
   return (
     <Autocomplete<T, Multiple, DisableClearable, FreeSolo>
       {...props}
-      onInputChange={throttle((_event, newValue) => {
-        setQuery(newValue);
-      }, 200)}
+      onInputChange={onInputChange}
       options={options}
       loading={loading}
     />
