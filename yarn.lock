@@ -7451,6 +7451,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:7.0.0":
+  version: 7.0.0
+  resolution: "@babel/runtime@npm:7.0.0"
+  dependencies:
+    regenerator-runtime: ^0.12.0
+  checksum: 7dbeb4bfa5762b80b4137f21009d2b754dd1adba0390d909d53397c510c1e708677302774d69386f936a26fb898f055c32a0c668e2d908d78d36f76d0c3d04dd
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.15.4
   resolution: "@babel/runtime@npm:7.15.4"
@@ -7502,6 +7511,15 @@ __metadata:
   dependencies:
     regenerator-runtime: ^0.13.11
   checksum: e585338287c4514a713babf4fdb8fc2a67adcebab3e7723a739fc62c79cfda875b314c90fd25f827afb150d781af97bc16c85bfdbfa2889f06053879a1ddb597
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.2.0":
+  version: 7.26.0
+  resolution: "@babel/runtime@npm:7.26.0"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: c8e2c0504ab271b3467a261a8f119bf2603eb857a0d71e37791f4e3fae00f681365073cc79f141ddaa90c6077c60ba56448004ad5429d07ac73532be9f7cf28a
   languageName: node
   linkType: hard
 
@@ -7980,10 +7998,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@colors/colors@npm:1.5.0":
-  version: 1.5.0
-  resolution: "@colors/colors@npm:1.5.0"
-  checksum: d64d5260bed1d5012ae3fc617d38d1afc0329fec05342f4e6b838f46998855ba56e0a73833f4a80fa8378c84810da254f76a8a19c39d038260dc06dc4e007425
+"@colors/colors@npm:1.6.0, @colors/colors@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@colors/colors@npm:1.6.0"
+  checksum: aa209963e0c3218e80a4a20553ba8c0fbb6fa13140540b4e5f97923790be06801fc90172c1114fc8b7e888b3d012b67298cde6b9e81521361becfaee400c662f
   languageName: node
   linkType: hard
 
@@ -11231,7 +11249,7 @@ __metadata:
     lodash: ^4.17.4
     multer: ^1.4.3
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
     xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
@@ -11308,7 +11326,7 @@ __metadata:
     lodash.groupby: ^4.6.0
     npm-run-all: ^4.1.5
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11412,7 +11430,7 @@ __metadata:
     string-similarity: ^1.2.2
     supertest: ^3.1.0
     urlencode: ^1.1.0
-    winston: ^3.3.3
+    winston: ^3.17.0
     xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
@@ -11466,7 +11484,7 @@ __metadata:
     moment: ^2.24.0
     npm-run-all: ^4.1.5
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11506,7 +11524,7 @@ __metadata:
     express: ^4.19.2
     mockdate: ^3.0.5
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11540,7 +11558,7 @@ __metadata:
     rand-token: ^1.0.1
     react-autobind: 1.0.6
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11567,7 +11585,7 @@ __metadata:
     lodash.keyby: ^4.6.0
     lodash.sortby: ^4.6.0
     rimraf: ^6.0.1
-    winston: ^3.2.1
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11617,8 +11635,10 @@ __metadata:
     react-hook-form: ^6.15.1
     react-is: ^16.13.1
     react-leaflet: ^3.2.1
+    react-qr-reader: ^3.0.0-beta-1
     react-router: 6.3.0
     react-router-dom: 6.3.0
+    react-swipeable-views: ^0.14.0
     react-table: ^7.8.0
     styled-components: ^5.1.0
     vite: ^4.5.3
@@ -11651,7 +11671,7 @@ __metadata:
     rimraf: ^6.0.1
     simple-oauth2: ^1.5.0
     urlencode: ^1.1.0
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11699,7 +11719,7 @@ __metadata:
     express: ^4.19.2
     lodash.keyby: ^4.6.0
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11757,7 +11777,7 @@ __metadata:
     express: ^4.19.2
     lodash.uniqby: ^4.7.0
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11826,7 +11846,7 @@ __metadata:
     moment-timezone: ^0.5.45
     rimraf: ^6.0.1
     semver-compare: ^1.0.0
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -11919,7 +11939,7 @@ __metadata:
     express: ^4.19.2
     lodash.groupby: ^4.6.0
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -12001,7 +12021,7 @@ __metadata:
     mockdate: ^3.0.5
     moment: ^2.24.0
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -12033,7 +12053,7 @@ __metadata:
     morgan: ^1.9.0
     public-ip: 4.0.4
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -12068,7 +12088,7 @@ __metadata:
     https-proxy-agent: ^5.0.1
     node-fetch: ^1.7.3
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -12110,7 +12130,7 @@ __metadata:
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
     rimraf: ^6.0.1
-    winston: ^3.3.3
+    winston: ^3.17.0
   languageName: unknown
   linkType: soft
 
@@ -12310,7 +12330,7 @@ __metadata:
     rrule: ^2.8.1
     sanitize-filename: ^1.6.3
     validator: ^13.11.0
-    winston: ^3.3.3
+    winston: ^3.17.0
     xlsx: ^0.18.5
     yup: ^0.32.9
   languageName: unknown
@@ -12393,7 +12413,7 @@ __metadata:
     request: ^2.81.0
     rimraf: ^6.0.1
     urlencode: ^1.1.0
-    winston: ^3.3.3
+    winston: ^3.17.0
     xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
@@ -26553,6 +26573,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"keycode@npm:^2.1.7":
+  version: 2.2.1
+  resolution: "keycode@npm:2.2.1"
+  checksum: 7a5c775b2410a3b6d9c07a415ecb70639187a965be239d2c11c71079cb1ca2f9dede94b86426f3ece475dc8ae3debf2367531bbcafc0af8c82f157d9a4f7e6cb
+  languageName: node
+  linkType: hard
+
 "keygrip@npm:~1.0.3":
   version: 1.0.3
   resolution: "keygrip@npm:1.0.3"
@@ -27582,17 +27609,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"logform@npm:^2.3.2, logform@npm:^2.4.0":
-  version: 2.5.1
-  resolution: "logform@npm:2.5.1"
+"logform@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "logform@npm:2.7.0"
   dependencies:
-    "@colors/colors": 1.5.0
+    "@colors/colors": 1.6.0
     "@types/triple-beam": ^1.3.2
     fecha: ^4.2.0
     ms: ^2.1.1
     safe-stable-stringify: ^2.3.1
     triple-beam: ^1.3.0
-  checksum: 08fdf03be5bb69af33bac214eb4f6a0c83ad3821a30de498925fccb61e993e5a4a87470aab356ca2110c11e4643685bed5597ca5f46dd1cd11437c44a0e0e3c2
+  checksum: a202d10897254735ead75a640f889998f9b91a0c36be9cac3f5471fa740d36bc2fbbcf9d113dcdadec4ddf09e257393ff800e6aab80019bdc7456363d6ea21f6
   languageName: node
   linkType: hard
 
@@ -31771,7 +31798,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.5.10, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
+"prop-types@npm:*, prop-types@npm:^15.5.10, prop-types@npm:^15.5.4, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -32415,6 +32442,19 @@ __metadata:
   peerDependencies:
     react: ">=16.13.1"
   checksum: f36270a5d775a25c8920f854c0d91649ceea417b15b5bc51e270a959b0476647bb79abb4da3be7dd9a4597b029214e8fe43ea914a7f16fa7543c91f784977f1b
+  languageName: node
+  linkType: hard
+
+"react-event-listener@npm:^0.6.0":
+  version: 0.6.6
+  resolution: "react-event-listener@npm:0.6.6"
+  dependencies:
+    "@babel/runtime": ^7.2.0
+    prop-types: ^15.6.0
+    warning: ^4.0.1
+  peerDependencies:
+    react: ^16.3.0
+  checksum: 0287e0ae8cbf0a4c03889ffc2b745f5494b3edea0f4667357d709f5646dd78c7289ce305b6f473ec6ac5789f8a937c86b7e543d0249f0bf787bccdb1eab7ecd0
   languageName: node
   linkType: hard
 
@@ -33205,6 +33245,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-swipeable-views-core@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "react-swipeable-views-core@npm:0.14.0"
+  dependencies:
+    "@babel/runtime": 7.0.0
+    warning: ^4.0.1
+  checksum: 7683bcb809b57d502603396d8560677105b5af1f4db3ecad6cef03a548ae45462af78156516f8fe2f32d36b1bbd295ed2aab49f0d967ac077b3bd902697bfb07
+  languageName: node
+  linkType: hard
+
+"react-swipeable-views-utils@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "react-swipeable-views-utils@npm:0.14.0"
+  dependencies:
+    "@babel/runtime": 7.0.0
+    keycode: ^2.1.7
+    prop-types: ^15.6.0
+    react-event-listener: ^0.6.0
+    react-swipeable-views-core: ^0.14.0
+    shallow-equal: ^1.2.1
+  checksum: 560f3f1000254adfe7ba2c82c133dbd26404a3cfa05794e15eb090056c13f3494aa61f34e133d5e2c970a2eb797a0f55fd8a9bb3bbd85c78770c11912a26b9bb
+  languageName: node
+  linkType: hard
+
+"react-swipeable-views@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "react-swipeable-views@npm:0.14.0"
+  dependencies:
+    "@babel/runtime": 7.0.0
+    prop-types: ^15.5.4
+    react-swipeable-views-core: ^0.14.0
+    react-swipeable-views-utils: ^0.14.0
+    warning: ^4.0.1
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0 || ^17.0.0
+  checksum: 477bcf2d6b88312cd74c069c23aff48983209ce74b8d10c0d6adabf00795735f55a9c12dc3f23e5d7168308959f18c178d486821abec02e8a562295eada3568b
+  languageName: node
+  linkType: hard
+
 "react-table@npm:^7.7.0":
   version: 7.7.0
   resolution: "react-table@npm:7.7.0"
@@ -33455,7 +33534,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.5.0":
+"readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.2":
   version: 3.6.2
   resolution: "readable-stream@npm:3.6.2"
   dependencies:
@@ -33776,6 +33855,13 @@ __metadata:
   version: 0.11.1
   resolution: "regenerator-runtime@npm:0.11.1"
   checksum: 3c97bd2c7b2b3247e6f8e2147a002eb78c995323732dad5dc70fac8d8d0b758d0295e7015b90d3d444446ae77cbd24b9f9123ec3a77018e81d8999818301b4f4
+  languageName: node
+  linkType: hard
+
+"regenerator-runtime@npm:^0.12.0":
+  version: 0.12.1
+  resolution: "regenerator-runtime@npm:0.12.1"
+  checksum: 348c401336bcebe2be17fd4f24c5b0a1ed75bff3024dc817a69cdc776b48b98c7f6f3b98e1baa4220569440bb9215e1fff3dcb01c8aad3ff2ed3732e30d017bf
   languageName: node
   linkType: hard
 
@@ -35103,6 +35189,13 @@ __metadata:
   dependencies:
     kind-of: ^6.0.2
   checksum: 39b3dd9630a774aba288a680e7d2901f5c0eae7b8387fc5c8ea559918b29b3da144b7bdb990d7ccd9e11be05508ac9e459ce51d01fd65e583282f6ffafcba2e7
+  languageName: node
+  linkType: hard
+
+"shallow-equal@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "shallow-equal@npm:1.2.1"
+  checksum: 4f1645cc516e7754c4438db687e1da439a5f29a7dba2ba90c5f88e5708aeb17bc4355ba45cad805b0e95dc898e37d8bf6d77d854919c7512f89939986cff8cd1
   languageName: node
   linkType: hard
 
@@ -38766,7 +38859,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"warning@npm:^4.0.2, warning@npm:^4.0.3":
+"warning@npm:^4.0.1, warning@npm:^4.0.2, warning@npm:^4.0.3":
   version: 4.0.3
   resolution: "warning@npm:4.0.3"
   dependencies:
@@ -39044,14 +39137,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston-transport@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "winston-transport@npm:4.5.0"
+"winston-transport@npm:^4.9.0":
+  version: 4.9.0
+  resolution: "winston-transport@npm:4.9.0"
   dependencies:
-    logform: ^2.3.2
-    readable-stream: ^3.6.0
+    logform: ^2.7.0
+    readable-stream: ^3.6.2
     triple-beam: ^1.3.0
-  checksum: a56e5678a80b88a73e77ed998fc6e19d0db19c989a356b137ec236782f2bf58ae4511b11c29163f99391fa4dc12102c7bc5738dcb6543f28877fa2819adc3ee9
+  checksum: f5fd06a27def7597229925ba2b8b9ffa61b5b8748f994c8325064744e4e36dfea19868a16c16b3806f9b98bb7da67c25f08ae6fba3bdc6db4a9555673474a972
   languageName: node
   linkType: hard
 
@@ -39070,41 +39163,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"winston@npm:^3.2.1":
-  version: 3.10.0
-  resolution: "winston@npm:3.10.0"
+"winston@npm:^3.17.0":
+  version: 3.17.0
+  resolution: "winston@npm:3.17.0"
   dependencies:
-    "@colors/colors": 1.5.0
+    "@colors/colors": ^1.6.0
     "@dabh/diagnostics": ^2.0.2
     async: ^3.2.3
     is-stream: ^2.0.0
-    logform: ^2.4.0
+    logform: ^2.7.0
     one-time: ^1.0.0
     readable-stream: ^3.4.0
     safe-stable-stringify: ^2.3.1
     stack-trace: 0.0.x
     triple-beam: ^1.3.0
-    winston-transport: ^4.5.0
-  checksum: 47df0361220d12b46d1b3c98a1c380a3718321739d527a182ce7984fc20715e5b0b55db0bcd3fd076d1b1d3261903b890b053851cfd4bc028bda7951fa8ca2e0
-  languageName: node
-  linkType: hard
-
-"winston@npm:^3.3.3":
-  version: 3.9.0
-  resolution: "winston@npm:3.9.0"
-  dependencies:
-    "@colors/colors": 1.5.0
-    "@dabh/diagnostics": ^2.0.2
-    async: ^3.2.3
-    is-stream: ^2.0.0
-    logform: ^2.4.0
-    one-time: ^1.0.0
-    readable-stream: ^3.4.0
-    safe-stable-stringify: ^2.3.1
-    stack-trace: 0.0.x
-    triple-beam: ^1.3.0
-    winston-transport: ^4.5.0
-  checksum: 410f82b7a502106e7d93e62cd21d7e9bcfd37884d0d95921b12526d2fe163e654ec9cd39e18f9884fad5cf6506a45d07bd2519c1dc9c88e82f0f12b2ce9fa510
+    winston-transport: ^4.9.0
+  checksum: ba772c25937007cea6cdeddc931de18a1ea336ae7b3aff2c15de762de5c559b2d310ca2e7a911c209711d325e47d653485e33271ddfb27cd73179e35c7d52267
   languageName: node
   linkType: hard
 
