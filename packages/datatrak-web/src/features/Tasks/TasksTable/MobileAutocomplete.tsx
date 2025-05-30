@@ -51,11 +51,7 @@ interface TaskAutocompleteOption {
 export interface MobileAutocompleteProps {
   isLoading: boolean;
   onChange?: (event: React.ChangeEvent<{}>, value: any) => void;
-  options: {
-    id: string;
-    label: string;
-    value: string;
-  }[];
+  options: TaskAutocompleteOption[];
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   value: any;
