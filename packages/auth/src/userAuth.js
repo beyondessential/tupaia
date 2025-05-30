@@ -1,5 +1,5 @@
+import { UnauthenticatedError, requireEnv } from '@tupaia/utils';
 import jwt from 'jsonwebtoken';
-import { UnauthenticatedError } from '@tupaia/utils';
 import { getJwtToken } from './security';
 
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
@@ -18,7 +18,7 @@ export const constructAccessToken = ({ userId, apiClientUserId }) => {
   }
 
   // Generate JWT
-  return jwt.sign(jwtPayload, process.env.JWT_SECRET, {
+  return jwt.sign(jwtPayload, requireEnv('JWT_SECRET'), {
     expiresIn: ACCESS_TOKEN_EXPIRY_SECONDS,
   });
 };
@@ -47,7 +47,7 @@ export function getTokenClaimsFromBearerAuth(authHeader) {
 export function getTokenClaims(jwtToken) {
   let tokenClaims = {};
   try {
-    tokenClaims = jwt.verify(jwtToken, process.env.JWT_SECRET);
+    tokenClaims = jwt.verify(jwtToken, requireEnv('JWT_SECRET'));
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       throw new UnauthenticatedError('Authorization token has expired, please log in again');
