@@ -11,6 +11,8 @@ const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
+  #apiClientSalt = requireEnv('API_CLIENT_SALT');
+
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
     this.models = models;
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
@@ -43,7 +45,7 @@ export class Authenticator {
    * @param {{ username: string, secretKey: string }} apiClientCredentials
    */
   async authenticateApiClient({ username, secretKey }) {
-    const secretKeyHash = encryptPassword(secretKey, requireEnv('API_CLIENT_SALT'));
+    const secretKeyHash = encryptPassword(secretKey, this.#apiClientSalt);
     const apiClient = await this.models.apiClient.findOne({
       username,
       secret_key_hash: secretKeyHash,
