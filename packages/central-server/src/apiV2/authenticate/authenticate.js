@@ -140,11 +140,15 @@ export async function authenticate(req, res) {
       permissionGroups: permissionGroupsByCountryId,
     });
 
-    // Reset rate limiting on successful authorisation
-    await consecutiveFailsRateLimiter.resetFailedAttempts(req);
-    await bruteForceRateLimiter.resetFailedAttempts(req);
-
     respond(res, authorizationObject, 200);
+
+    // Reset rate limiting on successful authorisation
+    setTimeout(async () => {
+      await Promise.all([
+        consecutiveFailsRateLimiter.resetFailedAttempts(req),
+        bruteForceRateLimiter.resetFailedAttempts(req),
+      ]);
+    }, 0);
   } catch (authError) {
     if (authError.statusCode === 401) {
       // Record failed login attempt to rate limiter
