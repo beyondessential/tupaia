@@ -6,7 +6,7 @@ export const getConnectionConfig = async () => {
   const connectionString = getEnvVarOrDefault('PG_LITE_CONNECTION_STRING', 'idb://datatrak-db');
 
   if (process.env.NODE_ENV === 'production') {
-    const response = await fetch(new URL('pglite.data', import.meta.url));
+    const response = await fetch('pglite.data');
     const fsBundle = await response.blob();
 
     console.log('fsBundle', fsBundle);
