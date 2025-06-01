@@ -37,7 +37,7 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
-        external: ['stream/promises', 'memfs/promises'],
+        external: ['stream/promises', 'fs/promises'],
       },
     },
     plugins: [

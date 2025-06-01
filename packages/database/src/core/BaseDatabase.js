@@ -92,7 +92,7 @@ export class BaseDatabase {
       const connectToDatabase = async () => {
         this.connection = knex({
           client: clientType,
-          connection: getConnectionConfigFn(),
+          connection: await getConnectionConfigFn(),
         });
         return true;
       };
