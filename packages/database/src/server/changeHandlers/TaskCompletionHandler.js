@@ -1,6 +1,6 @@
 import { getUniqueEntries } from '@tupaia/utils';
 import { ChangeHandler } from './ChangeHandler';
-import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { QUERY_CONJUNCTIONS } from '../../core/BaseDatabase';
 
 export class TaskCompletionHandler extends ChangeHandler {
   constructor(models) {

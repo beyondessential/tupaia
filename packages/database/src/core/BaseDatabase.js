@@ -1,13 +1,10 @@
 import knex, { KnexTimeoutError } from 'knex';
-import { types as pgTypes } from 'pg';
 import autobind from 'react-autobind';
 import winston from 'winston';
 
 import { hashStringToInt } from '@tupaia/tsutils';
 import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
 
-import { DatabaseChangeChannel } from './DatabaseChangeChannel';
-import { getConnectionConfig } from './getConnectionConfig';
 import { generateId } from './utilities';
 import {
   MAX_BINDINGS_PER_QUERY,
@@ -69,11 +66,9 @@ const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
 
 const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 
-// no math here, just hand-tuned to be as low as possible while
-// keeping all the tests passing
-const HANDLER_DEBOUNCE_DURATION = 250;
+export class BaseDatabase {
+  static IS_CHANGE_HANDLER_SUPPORTED = false;
 
-export class TupaiaDatabase {
   /**
    * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
    * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
@@ -87,15 +82,14 @@ export class TupaiaDatabase {
    */
   #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
 
-  /**
-   * @param {TupaiaDatabase} [transactingConnection]
-   * @param {DatabaseChangeChannel} [transactingChangeChannel]
-   */
-  constructor(transactingConnection, transactingChangeChannel, useNumericStuff = false) {
+  constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
+    if (this.constructor === BaseDatabase) {
+      throw new Error('Cannot instantiate abstract BaseDatabase class');
+    }
+
     autobind(this);
     this.changeHandlers = {};
     this.transactingChangeChannel = transactingChangeChannel;
-    this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
     this.changeChannelPromise = null;
 
     // If this instance is not for a specific transaction, it is the singleton instance
@@ -107,8 +101,8 @@ export class TupaiaDatabase {
     } else {
       const connectToDatabase = async () => {
         this.connection = knex({
-          client: 'pg',
-          connection: getConnectionConfig(),
+          client: clientType,
+          connection: getConnectionConfigFn(),
         });
         return true;
       };
@@ -116,19 +110,6 @@ export class TupaiaDatabase {
     }
 
     this.handlerLock = new Multilock();
-
-    this.configurePgGlobals(useNumericStuff);
-  }
-
-  configurePgGlobals(useNumericStuff = false) {
-    // turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
-    // string, independent of timezones, rather than being converted to local time
-    pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
-
-    if (useNumericStuff) {
-      pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, parseFloat);
-      pgTypes.setTypeParser(20, parseInt); // bigInt type to Integer
-    }
   }
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
@@ -136,90 +117,11 @@ export class TupaiaDatabase {
   generateId = generateId;
 
   async closeConnections() {
-    if (this.changeChannel) {
-      await this.changeChannel.close();
-    }
     return this.connection.destroy();
-  }
-
-  getOrCreateChangeChannel() {
-    if (!this.changeChannel) {
-      this.changeChannel = this.transactingChangeChannel || new DatabaseChangeChannel();
-      this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
-      this.changeChannelPromise = this.changeChannel.ping(undefined, 0);
-    }
-    return this.changeChannel;
   }
 
   async waitUntilConnected() {
     await this.connectionPromise;
-    if (this.changeChannel) {
-      await this.waitForChangeChannel();
-    }
-  }
-
-  async waitForChangeChannel() {
-    this.getOrCreateChangeChannel();
-    return this.changeChannelPromise;
-  }
-
-  addChangeHandlerForCollection(collectionName, changeHandler, key = this.generateId()) {
-    // if a change handler is being added, this db needs a change channel - make sure it's instantiated
-    this.getOrCreateChangeChannel();
-    this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
-    return () => {
-      delete this.getChangeHandlersForCollection(collectionName)[key];
-    };
-  }
-
-  getHandlersForChange(change) {
-    const { handler_key: specificHandlerKey, record_type: recordType } = change;
-    const handlersForCollection = this.getChangeHandlersForCollection(recordType);
-    if (specificHandlerKey) {
-      return handlersForCollection[specificHandlerKey]
-        ? [handlersForCollection[specificHandlerKey]]
-        : [];
-    }
-    return Object.values(handlersForCollection);
-  }
-
-  async notifyChangeHandlers(change) {
-    const unlock = this.handlerLock.createLock(change.record_id);
-    const handlers = this.getHandlersForChange(change);
-    try {
-      for (let i = 0; i < handlers.length; i++) {
-        try {
-          await handlers[i](change);
-        } catch (e) {
-          winston.error(e);
-        }
-      }
-    } finally {
-      unlock();
-    }
-  }
-
-  async waitForAllChangeHandlers() {
-    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
-  }
-
-  getChangeHandlersForCollection(collectionName) {
-    // Instantiate the array if no change handlers currently exist for the collection
-    if (!this.changeHandlers[collectionName]) {
-      this.changeHandlers[collectionName] = {};
-    }
-    return this.changeHandlers[collectionName];
-  }
-
-  addSchemaChangeHandler(handler) {
-    const changeChannel = this.getOrCreateChangeChannel();
-    return changeChannel.addSchemaChangeHandler(handler);
-  }
-
-  wrapInTransaction(wrappedFunction) {
-    return this.connection.transaction(transaction =>
-      wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
-    );
   }
 
   async fetchSchemaForTable(databaseRecord) {
@@ -483,10 +385,6 @@ export class TupaiaDatabase {
     return this.delete(recordType, { id });
   }
 
-  async markRecordsAsChanged(recordType, records) {
-    await this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
-  }
-
   /**
    * Force a change to be recorded against the records matching the search criteria, and return
    * those records.
@@ -516,11 +414,11 @@ export class TupaiaDatabase {
    * Use only for situations in which Knex is not able to assemble a query.
    *
    * @param {string} sqlString
-   * @param {any[]} [parametersToBind]
+   * @param {any[] | Record<string, any> | undefined} [parametersToBind]
    * @template Result
    * @returns {Promise<Result>} execution result
    */
-  async executeSql(sqlString, parametersToBind) {
+  async executeSql(sqlString, parametersToBind = []) {
     if (!this.connection) {
       await this.waitUntilConnected();
     }
@@ -538,6 +436,10 @@ export class TupaiaDatabase {
       },
       batchSize,
     );
+  }
+
+  wrapInTransaction(wrappedFunction) {
+    throw new Error('wrapInTransaction should be implemented by the child class');
   }
 }
 

@@ -7,7 +7,7 @@ const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelNam
 
 export class ModelRegistry {
   /**
-   * @param {import('./TupaiaDatabase').TupaiaDatabase} database
+   * @param {import('./BaseDatabase').TupaiaDatabase} database
    * @param {import('./DatabaseModel').DatabaseModel[]} [extraModelClasses]
    */
   constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {

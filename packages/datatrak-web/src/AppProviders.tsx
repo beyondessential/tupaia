@@ -7,7 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import { theme } from './theme';
 import { Toast } from './components';
 import { errorToast } from './utils';
-import { CurrentUserContextProvider } from './api';
+import { CurrentUserContextProvider, DatabaseProvider } from './api';
 import { REDIRECT_ERROR_PARAM } from './constants';
 
 const handleError = (error: any, query: any) => {
@@ -65,7 +65,9 @@ export const AppProviders = ({ children, queryClient = defaultQueryClient }: App
               horizontal: 'right',
             }}
           >
-            <CurrentUserContextProvider>{children}</CurrentUserContextProvider>
+            <DatabaseProvider>
+              <CurrentUserContextProvider>{children}</CurrentUserContextProvider>
+            </DatabaseProvider>
           </SnackbarProvider>
         </QueryClientProvider>
       </ThemeProvider>

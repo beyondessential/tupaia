@@ -1,8 +1,8 @@
 import winston from 'winston';
-import { RECORDS } from '../../records';
-import { generateId } from '../../utilities';
+import { generateId } from '../../../core/utilities';
 import { ChangeHandler } from '../ChangeHandler';
 import { EntityHierarchySubtreeRebuilder } from './EntityHierarchySubtreeRebuilder';
+import { RECORDS } from '../../../core/records';
 
 export class EntityHierarchyCacher extends ChangeHandler {
   constructor(models) {

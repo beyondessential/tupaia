@@ -1,22 +1,12 @@
-import os from 'os';
-import crypto from 'crypto';
+import ObjectID from 'bson-objectid';
 
-/**
- * Generate and return a mongo style ID
- * Taken from https://gist.github.com/chrisveness/7975c33ac569c124e4ceb11490576c67
- */
-const LARGEST_6_DIGIT_HEX = 0xffffff;
-let currentCounterValue = 0;
 export const generateId = () => {
-  const seconds = getSecondsStringFromTimestamp(new Date());
-  const machineId = crypto.createHash('md5').update(os.hostname()).digest('hex').slice(0, 6);
-  const processId = process.pid.toString(16).slice(0, 4).padStart(4, '0');
+  // This module allows you to create and parse ObjectIDs
+  // without a reference to the mongodb or bson modules.
+  const seconds = Math.floor(new Date() / 1000);
 
-  // generation of the counter differs from the original gist to reduce the chance of conflicts
-  currentCounterValue = (currentCounterValue + 1) % LARGEST_6_DIGIT_HEX;
-  const counter = currentCounterValue.toString(16).slice(0, 6).padStart(6, '0');
-
-  return seconds + machineId + processId + counter;
+  // Constructs the ID based on the current time so that IDs are ordered by the time they're created
+  return ObjectID(seconds).toString();
 };
 
 export const getHighestPossibleIdForGivenTime = timestamp =>

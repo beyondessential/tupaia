@@ -1,7 +1,7 @@
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { JOIN_TYPES } from '../TupaiaDatabase';
+import { JOIN_TYPES } from '../BaseDatabase';
 
 const ROOT_MAP_OVERLAY_GROUP_CODE = 'Root';
 

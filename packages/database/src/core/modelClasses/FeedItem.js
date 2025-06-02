@@ -5,7 +5,7 @@ import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
 
