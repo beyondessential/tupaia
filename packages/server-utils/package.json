@@ -29,6 +29,7 @@
     "cookie": "^0.5.0",
     "copyfiles": "^2.4.1",
     "dotenv": "^16.4.5",
+    "fs-extra": "^11.3.0",
     "handlebars": "^4.7.8",
     "node-schedule": "^2.1.1",
     "nodemailer": "^6.9.12",
@@ -36,6 +37,7 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/node-schedule": "^2.1.7",
     "@types/nodemailer": "^6.4.15",
     "@types/sha256": "^0.2.2",
