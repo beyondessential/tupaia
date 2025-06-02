@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+
+import { LoadingScreen } from '@tupaia/ui-components';
+
 import { Modal as BaseModal } from '../../../components';
 import { useDashboard } from '../utils';
 import { ExportFormats, ExportSettingsContextProvider } from '..';
@@ -38,7 +41,7 @@ const Container = styled.div`
   button {
     text-transform: none;
   }
-  .loading-screen {
+  ${LoadingScreen} {
     background-color: ${({ theme }) => theme.palette.background.paper};
     border: 0;
     button {
