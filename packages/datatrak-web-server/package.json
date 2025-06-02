@@ -40,7 +40,7 @@
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.6.0",
-    "winston": "^3.2.1"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/lodash.groupby": "^4.6.0",
