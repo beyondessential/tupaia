@@ -6,7 +6,7 @@ import { ImportValidationError } from './errors';
 const UNOFFICIAL_NAME_TO_CODE = {
   'demo land': 'DL',
 
-  'congo, the': 'CG',
+  'congo (the)': 'CG',
   laos: 'LA',
   "côte d'ivoire": 'CI',
   'federated states of micronesia': 'FM',
