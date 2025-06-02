@@ -142,7 +142,7 @@ export class BaseDatabase {
    * (https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)
    * @param {string} lockKey unique identifier key for the lock
    */
-  async acquireAdvisoryLockForTransaction(lockKey) {
+  async acquireAdvisoryLock(lockKey) {
     const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
     return this.executeSql(`SELECT pg_advisory_xact_lock(?)`, [lockKeyInt]);
   }

@@ -29,7 +29,7 @@ const updateLookupTableForModel = async (
   const result: SyncLookupQueryDetails = hasCustomLookupQuery
     ? await (model.buildSyncLookupQueryDetails as Function)()
     : {};
-    
+
   const { select, joins, where } = result;
 
   while (fromId != null) {
@@ -81,7 +81,7 @@ const updateLookupTableForModel = async (
       },
     );
 
-    const chunkCount = count; // count should always be default to '0'
+    const chunkCount = count; // count should always default to '0'
     fromId = maxId;
     totalCount += chunkCount;
   }

@@ -129,7 +129,7 @@ export class ChangeHandler {
           // Acquire a database advisory lock for the transaction
           // Ensures no other server instance can execute its change handler at the same time
           winston.info(`Acquiring lock for ${this.lockKey} change hander`);
-          await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+          await transactingModels.database.acquireAdvisoryLock(this.lockKey);
           const start = Date.now();
           winston.info(`Running ${this.lockKey} change hander with ${currentQueue.length} jobs`);
           await this.handleChanges(transactingModels, currentQueue);

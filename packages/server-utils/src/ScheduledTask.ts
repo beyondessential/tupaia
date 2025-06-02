@@ -17,7 +17,7 @@ export interface DatabaseInterface {
      * Acquires an advisory lock for the current transaction
      * @param lockKey Unique key for the lock
      */
-    acquireAdvisoryLockForTransaction(lockKey: string): Promise<void>;
+    acquireAdvisoryLock(lockKey: string): Promise<void>;
   };
 }
 
@@ -84,7 +84,7 @@ export class ScheduledTask {
       await this.models.wrapInTransaction(async (transactingModels: DatabaseInterface) => {
         // Acquire a database advisory lock for the transaction
         // Ensures no other server instance can execute its change handler at the same time
-        await transactingModels.database.acquireAdvisoryLockForTransaction(this.lockKey);
+        await transactingModels.database.acquireAdvisoryLock(this.lockKey);
         await this.run();
         const durationMs = Date.now() - (this.start as number);
         winston.info(`ScheduledTask: ${this.name}: Succeeded in ${durationMs}`);
