@@ -2,7 +2,7 @@ import log from 'winston';
 
 import {
   SYNC_DIRECTIONS,
-  SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK,
+  SYNC_TICK_FLAGS,
   FilteredModelRegistry,
 } from '@tupaia/sync';
 import { DatabaseModel, TupaiaDatabase, DebugLogRecord } from '@tupaia/database';
@@ -151,6 +151,6 @@ export const updateSyncLookupPendingRecords = async (
       SET updated_at_sync_tick = :currentTick
       WHERE updated_at_sync_tick = :pendingUpdateSyncTick;
     `,
-    { currentTick, pendingUpdateSyncTick: SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK },
+    { currentTick, pendingUpdateSyncTick: SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER },
   );
 };
