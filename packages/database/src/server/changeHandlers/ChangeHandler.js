@@ -85,7 +85,7 @@ export class ChangeHandler {
   }
 
   stopListeningForChanges() {
-    this.changeHandlerCancellers.forEach(c => c());
+    for (const c of this.changeHandlerCancellers) c();
     this.changeHandlerCancellers = [];
   }
 
@@ -128,15 +128,24 @@ export class ChangeHandler {
         await this.models.wrapInTransaction(async transactingModels => {
           // Acquire a database advisory lock for the transaction
           // Ensures no other server instance can execute its change handler at the same time
-          winston.info(`Acquiring lock for ${this.lockKey} change hander`);
+          let profiler = winston.startTimer();
           await transactingModels.database.acquireAdvisoryLock(this.lockKey);
-          const start = Date.now();
-          winston.info(`Running ${this.lockKey} change hander with ${currentQueue.length} jobs`);
-          await this.handleChanges(transactingModels, currentQueue);
-          const end = Date.now();
+          profiler.done({
+            message: `Acquired advisory lock for ${this.lockKey} change handler`,
+          });
+
           winston.info(
-            `Completed ${this.lockKey} change hander. ${currentQueue.length} jobs, took ${end - start}ms`,
+            `Running ${this.lockKey} change handler (${currentQueue.length} ${
+              currentQueue.length === 1 ? 'job' : 'jobs'
+            } in queue)`,
           );
+          profiler = winston.startTimer();
+          await this.handleChanges(transactingModels, currentQueue);
+          profiler.done({
+            message: `Completed ${this.lockKey} change handler (${currentQueue.length} ${
+              currentQueue.length === 1 ? 'job' : 'jobs'
+            } in queue)`,
+          });
         });
       } catch (error) {
         winston.warn(

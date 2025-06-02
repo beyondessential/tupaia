@@ -5,9 +5,7 @@ import styled from 'styled-components';
 import { SurveyScreenComponent } from '../../../types';
 import { SurveyQuestion } from './SurveyQuestion';
 
-const QuestionWrapper = styled.div<{
-  $isInstruction: boolean;
-}>`
+const QuestionWrapper = styled.div`
   display: flex;
   & + & {
     margin-block-start: 2.5rem;
@@ -38,13 +36,10 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
   useEffect(() => {
     if (errors && Object.keys(errors).length > 0) {
       const firstError = Object.values(errors)[0] as {
-        ref: {
-          focus: () => void;
-        };
+        ref: { focus: () => void };
       };
-      if (firstError?.ref) {
-        firstError.ref.focus();
-      }
+
+      firstError.ref?.focus();
     }
   }, [JSON.stringify(errors)]);
   return (
@@ -65,7 +60,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
           updateFormDataOnChange,
         }) => {
           return (
-            <QuestionWrapper key={questionId} $isInstruction={type === 'Instruction'}>
+            <QuestionWrapper key={questionId}>
               <SurveyQuestion
                 detailLabel={detailLabel || detail}
                 id={questionId}

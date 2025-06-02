@@ -20,6 +20,7 @@ import {
   ExportSurveyResponsePage,
   OfflinePage,
 } from '../views';
+import { WelcomeScreens } from '../views/WelcomeScreens';
 import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
@@ -62,6 +63,7 @@ export const Routes = () => {
         {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<LandingPage />} />
+          <Route path={ROUTES.WELCOME} element={<WelcomeScreens />} />
           <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
           <Route element={<TasksLayout />}>
             <Route path={ROUTES.TASKS} element={<TasksDashboardPage />} />

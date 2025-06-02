@@ -41,7 +41,7 @@
     "lodash.keyby": "^4.6.0",
     "lodash.pickby": "^4.6.0",
     "moment": "^2.24.0",
-    "winston": "^3.3.3"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/lodash.flatten": "^4.4.0",
