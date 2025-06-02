@@ -12106,6 +12106,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/sync-server@workspace:packages/sync-server":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/sync-server@workspace:packages/sync-server"
+  languageName: unknown
+  linkType: soft
+
+"@tupaia/sync@workspace:packages/sync":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/sync@workspace:packages/sync"
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/tsutils@workspace:*, @tupaia/tsutils@workspace:packages/tsutils":
   version: 0.0.0-use.local
   resolution: "@tupaia/tsutils@workspace:packages/tsutils"
