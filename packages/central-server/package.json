@@ -65,7 +65,6 @@
     "moment-timezone": "^0.5.45",
     "morgan": "^1.9.0",
     "multer": "^1.4.3",
-    "node-schedule": "^2.1.1",
     "public-ip": "4.0.4",
     "rate-limiter-flexible": "^5.0.3",
     "react-autobind": "^1.0.6",
