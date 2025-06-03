@@ -6,3 +6,5 @@ export { configureDotEnv } from './configureDotEnv';
 export { constructExportEmail } from './constructExportEmail';
 export { getTempDirectory } from './getTempDirectory';
 export { getExportPathForUser } from './getExportPathForUser';
+export { ScheduledTask } from './ScheduledTask';
+export * from './files';

@@ -25,6 +25,7 @@ internal_deps=(
   ui-map-components
   utils
   weather-api
+  sync
 )
 
 if [[ $1 = --as-glob ]]; then

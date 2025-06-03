@@ -1,4 +1,4 @@
-import { removeArrayValue, replaceArrayValue, updateValues } from '../../utilities/migration';
+import { removeArrayValue, replaceArrayValue, updateValues } from '../../core/utilities/migration';
 
 const dbStub = {
   runSql: (query, replacementParams) => ({ query, replacementParams }),
@@ -54,9 +54,10 @@ describe('migrationUtilities', () => {
       ).resolves.toHaveProperty('replacementParams', [0, 1, 2]));
 
     it('updates a column value to a number', async () =>
-      expect(
-        updateValues(dbStub, 'table', { column: 0 }, 'condition'),
-      ).resolves.toHaveProperty('replacementParams', [0]));
+      expect(updateValues(dbStub, 'table', { column: 0 }, 'condition')).resolves.toHaveProperty(
+        'replacementParams',
+        [0],
+      ));
 
     it('updates a column value to a string', async () =>
       expect(
@@ -64,9 +65,10 @@ describe('migrationUtilities', () => {
       ).resolves.toHaveProperty('replacementParams', ['string']));
 
     it('updates a column value to a boolean', async () =>
-      expect(
-        updateValues(dbStub, 'table', { column: false }, 'condition'),
-      ).resolves.toHaveProperty('replacementParams', [false]));
+      expect(updateValues(dbStub, 'table', { column: false }, 'condition')).resolves.toHaveProperty(
+        'replacementParams',
+        [false],
+      ));
 
     it('updates a column value to an object', async () => {
       const object = {
@@ -102,9 +104,10 @@ describe('migrationUtilities', () => {
       ));
 
     it('removes a number value', async () =>
-      expect(
-        removeArrayValue(dbStub, 'table', 'column', 0, 'condition'),
-      ).resolves.toHaveProperty('replacementParams', [0]));
+      expect(removeArrayValue(dbStub, 'table', 'column', 0, 'condition')).resolves.toHaveProperty(
+        'replacementParams',
+        [0],
+      ));
 
     it('removes a string value', async () =>
       expect(
