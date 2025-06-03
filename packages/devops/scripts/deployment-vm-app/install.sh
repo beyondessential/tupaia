@@ -34,13 +34,6 @@ nvm use
 corepack enable yarn
 yarn install --immutable
 
-if ! bw --version; then
-    echo "Bad Bitwarden CLI version installed (probably 2025.5). Replacing with 2025.4..."
-    npm uninstall --global @bitwarden/cli
-    npm install --global @bitwarden/cli@2025.4.0
-    echo "Bitwarden CLI $(bw --version) is installed"
-fi
-
 # Fetch env vars
 BW_CLIENTID=$BW_CLIENTID \
     BW_CLIENTSECRET=$BW_CLIENTSECRET \
