@@ -8,13 +8,14 @@ export const assertCanImportSurveyResponses = async (
 ) => {
   const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
   const surveyCodes = Object.keys(entitiesBySurveyCode);
-  const allEntities = await models.entity.findManyByColumn('code', allEntityCodes);
-  const surveys = await models.survey.findManyByColumn('code', surveyCodes);
+  const [allEntities, surveys] = await Promise.all([
+    models.entity.findManyByColumn('code', allEntityCodes),
+    models.survey.findManyByColumn('code', surveyCodes),
+  ]);
   const codeToSurvey = keyBy(surveys, 'code');
   const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
-  const surveyPermissionGroups = await models.permissionGroup.findManyById(
-    surveyPermissionGroupIds,
-  );
+  const surveyPermissionGroups =
+    await models.permissionGroup.findManyById(surveyPermissionGroupIds);
   const idToPermissionGroupName = reduceToDictionary(surveyPermissionGroups, 'id', 'name');
 
   for (const [surveyCode, entityCodes] of Object.entries(entitiesBySurveyCode)) {
