@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import { FormControlLabel, Switch } from '@material-ui/core';
 import { usePreviewDataContext } from '../context';
 
-const ControlLabel = styled(FormControlLabel)`
+const ControlLabel = styled(FormControlLabel).attrs({
+  control: <Switch color="primary" />,
+  labelPlacement: 'end',
+})`
   :not(.Mui-checked) {
     color: 'grey';
   }
@@ -22,14 +25,7 @@ export const TransformJsonToggle = () => {
     setShowTransformStepAsJson(!showTransformStepAsJson);
   };
 
-  return (
-    <ControlLabel
-      control={<Switch color="primary" />}
-      label="Data transform JSON"
-      onChange={handleClick}
-      labelPlacement="end"
-    />
-  );
+  return <ControlLabel label="Data transform JSON" onChange={handleClick} />;
 };
 
 export const PresentationJsonToggle = () => {
@@ -37,10 +33,8 @@ export const PresentationJsonToggle = () => {
 
   return (
     <ControlLabel
-      control={<Switch color="primary" />}
       label="Chart presentation JSON"
       onChange={() => setShowPresentationAsJson(!showPresentationAsJson)}
-      labelPlacement="end"
     />
   );
 };
