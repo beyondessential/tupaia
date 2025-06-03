@@ -37,11 +37,13 @@
     "@tupaia/utils": "workspace:*",
     "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
+    "lodash.isequal": "^4.5.0",
     "lodash.keyby": "^4.6.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/lodash.groupby": "^4.6.0",
+    "@types/lodash.isequal": "^4.5.0",
     "@types/lodash.keyby": "^4.6.0",
     "rimraf": "^6.0.1"
   }

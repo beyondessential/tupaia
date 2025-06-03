@@ -27,7 +27,6 @@
     "@material-ui/core": "^4.9.11",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "@material-ui/styles": "^4.9.10",
     "@tanstack/react-query": "4.36.1",
     "@tanstack/react-query-devtools": "4.36.1",
     "@tupaia/access-policy": "workspace:*",
@@ -45,7 +44,6 @@
     "lodash.keyby": "^4.6.0",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
-    "query-string": "^5.1.1",
     "react": "^16.14.0",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",
@@ -59,7 +57,6 @@
     "styled-components": "^5.1.0"
   },
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
     "vite": "^4.5.3"
   }
 }

@@ -38,6 +38,7 @@
     "downloadjs": "^1.4.7",
     "js-sql-parser": "^1.4.1",
     "jszip": "^3.10.1",
+    "lodash": "^4.17.4",
     "lodash.throttle": "^4.1.1",
     "markdown-to-jsx": "^6.4.1",
     "moment": "^2.24.0",
@@ -56,10 +57,9 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@material-ui/styles": "^4.9.10",
-    "@mui/types": "^7.2.4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/downloadjs": "^1.4.3",
     "@types/jest": "^29.5.1",
@@ -71,7 +71,6 @@
     "@types/react-table": "^7.7.14",
     "@types/styled-components": "^5.0.0",
     "faker": "^4.1.0",
-    "fast-glob": "^3.2.5",
     "react-password-strength-bar": "^0.4.1",
     "rimraf": "^6.0.1"
   }
