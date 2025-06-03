@@ -102,11 +102,7 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
       entitiesUpserted,
     );
     const surveyCode = surveyCodesById[response.survey_id];
-
-    if (!entitiesBySurveyCode[surveyCode]) {
-      entitiesBySurveyCode[surveyCode] = [];
-    }
-    entitiesBySurveyCode[surveyCode].push(entityCode);
+    (entitiesBySurveyCode[surveyCode] ??= []).push(entityCode);
   }
 
   return assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode);
