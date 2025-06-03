@@ -17,8 +17,7 @@ export const assertCanImportSurveyResponses = async (
   );
   const idToPermissionGroupName = reduceToDictionary(surveyPermissionGroups, 'id', 'name');
 
-  for (const entry of Object.entries(entitiesBySurveyCode)) {
-    const [surveyCode, entityCodes] = entry;
+  for (const [surveyCode, entityCodes] of Object.entries(entitiesBySurveyCode)) {
     const survey = codeToSurvey[surveyCode];
     const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
     const surveyResponseCountryCodes = [...new Set(responseEntities.map(e => e.country_code))];
