@@ -46,6 +46,8 @@ import {
   FetchDataTableBuiltInParamsRoute,
   ExportEntityHierarchiesRequest,
   ExportEntityHierarchiesRoute,
+  PromptMessageRequest,
+  PromptMessageRoute,
 } from '../routes';
 
 const authHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
@@ -147,6 +149,9 @@ export async function createApp() {
       'fetchTransformSchemas',
       handleWith(FetchTransformSchemasRoute),
     )
+
+    // AI Chat
+    .post<PromptMessageRequest>('prompt-message', handleWith(PromptMessageRoute))
     .use('hierarchy', forwardToEntityApi)
     .use('hierarchies', forwardToEntityApi)
     .use('surveyResponses', forwardToCentralApi)
