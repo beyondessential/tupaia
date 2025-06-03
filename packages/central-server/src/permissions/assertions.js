@@ -3,6 +3,7 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   VIZ_BUILDER_PERMISSION_GROUP,
 } from './constants';
+import { InsufficientPermissionsError } from './errors';
 
 /**
  * Returns true all the time. This is for any route handlers that do not need permissions.
@@ -18,12 +19,10 @@ export const allowNoPermissions = () => {
  */
 export const assertAllPermissions = (assertions, errorMessage) => async accessPolicy => {
   try {
-    for (let i = 0; i < assertions.length; i++) {
-      const assertion = assertions[i];
-      await assertion(accessPolicy);
-    }
+    await Promise.all(assertions.map(assertion => assertion(accessPolicy)));
+    return true;
   } catch (e) {
-    throw new Error(errorMessage || e.message);
+    throw new InsufficientPermissionsError(errorMessage || e.message);
   }
 };
 
@@ -44,7 +43,8 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
       // swallow specific errors, in case any assertion returns true
     }
   }
-  throw new Error(errorMessage || combinedErrorMessages);
+
+  throw new InsufficientPermissionsError(errorMessage || combinedErrorMessages);
 };
 
 /**
@@ -61,22 +61,11 @@ export const hasPermissionGroupAccess = (accessPolicy, permissionGroup) =>
 
 // has access to all permission groups inputted
 export const hasPermissionGroupsAccess = (accessPolicy, permissionGroups) => {
-  for (let i = 0; i < permissionGroups.length; i++) {
-    if (!accessPolicy.allowsSome(undefined, permissionGroups[i])) {
-      return false;
-    }
-  }
-  return true;
+  return permissionGroups.every(pg => accessPolicy.allowsSome(undefined, pg));
 };
 
 export const hasSomePermissionGroupsAccess = (accessPolicy, permissionGroups) => {
-  for (let i = 0; i < permissionGroups.length; i++) {
-    if (accessPolicy.allowsSome(undefined, permissionGroups[i])) {
-      return true;
-    }
-  }
-
-  return false;
+  return permissionGroups.some(pg => accessPolicy.allowsSome(undefined, pg));
 };
 
 export const assertBESAdminAccess = accessPolicy => {
@@ -84,7 +73,7 @@ export const assertBESAdminAccess = accessPolicy => {
     return true;
   }
 
-  throw new Error(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
+  throw new InsufficientPermissionsError(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
 };
 
 export const assertVizBuilderAccess = accessPolicy => {
@@ -92,7 +81,7 @@ export const assertVizBuilderAccess = accessPolicy => {
     return true;
   }
 
-  throw new Error(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
+  throw new InsufficientPermissionsError(`Need ${VIZ_BUILDER_PERMISSION_GROUP} access`);
 };
 
 export const hasTupaiaAdminPanelAccess = accessPolicy =>
@@ -110,7 +99,7 @@ export const assertAdminPanelAccessToCountry = async (accessPolicy, models, reco
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
   if (!userHasAdminAccessToCountry) {
-    throw new Error(
+    throw new InsufficientPermissionsError(
       `Need Tupaia Admin Panel access to country '${entity.country_code}' to edit entity`,
     );
   }
@@ -122,7 +111,7 @@ export const assertAdminPanelAccess = accessPolicy => {
     return true;
   }
 
-  throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
+  throw new InsufficientPermissionsError(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
 };
 
 export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {
@@ -130,7 +119,7 @@ export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) =
     return true;
   }
 
-  throw new Error(`Need ${permissionGroupName} access`);
+  throw new InsufficientPermissionsError(`Need ${permissionGroupName} access`);
 };
 
 export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames) => {
@@ -141,5 +130,5 @@ export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames)
     return true;
   }
 
-  throw new Error(`You do not have access to all related permission groups`);
+  throw new InsufficientPermissionsError('You do not have access to all related permission groups');
 };

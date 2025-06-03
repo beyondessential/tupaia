@@ -1,5 +1,7 @@
 import { flattenDeep, groupBy, keyBy } from 'lodash';
 import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
+import winston from '../../../log';
+import { InsufficientPermissionsError } from '../../../permissions';
 
 export const assertCanImportSurveyResponses = async (
   accessPolicy,
@@ -46,7 +48,7 @@ export const assertCanImportSurveyResponses = async (
       // Now check if users have permission group access to the survey response's country
       const permissionGroup = idToPermissionGroupName[survey.permission_group_id];
       if (!accessPolicy.allows(surveyResponseCountry.code, permissionGroup)) {
-        throw new Error(
+        throw new InsufficientPermissionsError(
           `Need ${permissionGroup} access to ${surveyResponseCountry.name} to import the survey response(s)`,
         );
       }
@@ -57,6 +59,7 @@ export const assertCanImportSurveyResponses = async (
 };
 
 const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, entitiesUpserted) => {
+  winston.debug(`getEntityCodeFromSurveyResponseChange:`, surveyResponse);
   // There are three valid ways to refer to the entity in a batch change:
   // entity_code, entity_id, clinic_id
   if (surveyResponse.entity_code) {
@@ -68,13 +71,22 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
     const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
     if (newEntity) {
       const parentEntity = await models.entity.findById(newEntity.parent_id);
+      winston.debug('getEntityCodeFromSurveyResponseChange: parentEntity', parentEntity);
+      winston.debug(
+        'getEntityCodeFromSurveyResponseChange: parentEntity?.code',
+        parentEntity?.code,
+      );
       return parentEntity.code;
     }
     const entity = await models.entity.findById(surveyResponse.entity_id);
+    winston.debug('getEntityCodeFromSurveyResponseChange: entity', entity);
+    winston.debug('getEntityCodeFromSurveyResponseChange: entity?.code', entity?.code);
     return entity.code;
   }
   if (surveyResponse.clinic_id) {
     const clinic = await models.facility.findById(surveyResponse.clinic_id);
+    winston.debug('getEntityCodeFromSurveyResponseChange: clinic', clinic);
+    winston.debug('getEntityCodeFromSurveyResponseChange: clinic?.code', clinic?.code);
     return clinic.code;
   }
 
