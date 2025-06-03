@@ -4,29 +4,43 @@ import { FormControlLabel, Switch } from '@material-ui/core';
 import { usePreviewDataContext } from '../context';
 
 const ControlLabel = styled(FormControlLabel)`
-  color: ${props => (props.$jsonToggleEnabled ? props.theme.palette.primary.main : 'grey')};
-  margin-bottom: -10px;
+  :not(.Mui-checked) {
+    color: 'grey';
+  }
+  .Mui-checked {
+    color: ${props => props.theme.palette.primary.main};
+  }
   .MuiFormControlLabel-label {
-    font-size: 10px;
-    margin-bottom: -10px;
+    font-size: 0.75rem;
   }
 `;
 
-export const JsonToggleButton = () => {
-  const { jsonToggleEnabled, setJsonToggleEnabled } = usePreviewDataContext();
+export const TransformJsonToggle = () => {
+  const { showTransformStepAsJson, setShowTransformStepAsJson } = usePreviewDataContext();
 
   const handleClick = () => {
-    setJsonToggleEnabled(!jsonToggleEnabled);
+    setShowTransformStepAsJson(!showTransformStepAsJson);
   };
 
   return (
     <ControlLabel
-      value="top"
       control={<Switch color="primary" />}
-      label="JSON"
+      label="Data transform JSON"
       onChange={handleClick}
-      labelPlacement="top"
-      $jsonToggleEnabled={jsonToggleEnabled}
+      labelPlacement="end"
+    />
+  );
+};
+
+export const PresentationJsonToggle = () => {
+  const { showPresentationAsJson, setShowPresentationAsJson } = usePreviewDataContext();
+
+  return (
+    <ControlLabel
+      control={<Switch color="primary" />}
+      label="Chart presentation JSON"
+      onChange={() => setShowPresentationAsJson(!showPresentationAsJson)}
+      labelPlacement="end"
     />
   );
 };

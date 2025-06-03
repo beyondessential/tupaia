@@ -5,7 +5,7 @@ import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
 import { DataGrid, FetchLoader, FlexSpaceBetween } from '@tupaia/ui-components';
 import { Chart } from '@tupaia/ui-chart-components';
-import { JsonEditor, JsonTreeEditor } from '../../widgets';
+import { JsonEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import {
@@ -21,6 +21,8 @@ import {
   DASHBOARD_ITEM_VIZ_TYPES,
   MAP_OVERLAY_VIZ_TYPES,
 } from '../constants';
+import { PresentationConfigAssistant } from '../features/PresentationConfigAssistant/PresentationConfigAssistant';
+import { PresentationJsonToggle } from './JsonToggleButton';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -68,12 +70,25 @@ const ChartContainer = styled.div`
   border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
 `;
 
+const ChartPreviewSidebar = styled.article`
+  block-size: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  border-inline-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+`;
+
+const EditorActionBar = styled.header`
+  background-color: white;
+  border-block-end: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  display: flex;
+  justify-content: end;
+`;
+
 const EditorContainer = styled.div`
   min-width: 440px;
   min-height: 500px;
   flex: 1;
-  border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
-  border-left: 1px solid ${({ theme }) => theme.palette.grey['400']};
 
   > div {
     width: 100%;
@@ -104,7 +119,8 @@ export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
 
   const { dashboardItemOrMapOverlay } = useParams();
-  const { fetchEnabled, setFetchEnabled, showData, jsonToggleEnabled } = usePreviewDataContext();
+  const { fetchEnabled, setFetchEnabled, showData, showPresentationAsJson } =
+    usePreviewDataContext();
   const { hasPresentationError, setPresentationError } = useVizConfigErrorContext();
 
   const [
@@ -210,27 +226,25 @@ export const PreviewSection = () => {
               <IdleMessage />
             )}
           </ChartContainer>
-          <EditorContainer>
-            {!jsonToggleEnabled && presentationSchema ? (
-              <JsonTreeEditor
-                name="presentation"
-                value={visualisation.presentation}
-                onChange={setPresentationValue}
-                onInvalidChange={handleInvalidPresentationChange}
-                mainMenuBar={false}
-                schema={presentationSchema}
-              />
-            ) : (
-              <JsonEditor
-                value={visualisation.presentation}
-                onChange={setPresentationValue}
-                onInvalidChange={handleInvalidPresentationChange}
-                mode="code"
-                mainMenuBar={false}
-                schema={presentationSchema}
-              />
-            )}
-          </EditorContainer>
+          <ChartPreviewSidebar>
+            <EditorActionBar>
+              <PresentationJsonToggle />
+            </EditorActionBar>
+            <EditorContainer>
+              {!showPresentationAsJson && presentationSchema ? (
+                <PresentationConfigAssistant />
+              ) : (
+                <JsonEditor
+                  value={visualisation.presentation}
+                  onChange={setPresentationValue}
+                  onInvalidChange={handleInvalidPresentationChange}
+                  mode="code"
+                  mainMenuBar={false}
+                  schema={presentationSchema}
+                />
+              )}
+            </EditorContainer>
+          </ChartPreviewSidebar>
         </Container>
       </TabPanel>
     </>
