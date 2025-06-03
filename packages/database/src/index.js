@@ -18,3 +18,4 @@ export { DatabaseModel } from './core/DatabaseModel';
 export { DatabaseRecord } from './core/DatabaseRecord';
 export * from './server/testUtilities';
 export { SqlQuery } from './core/SqlQuery';
+export * from './browser';

@@ -18,5 +18,11 @@
     "lint:fix": "yarn lint --fix",
     "test": "yarn package:test --passWithNoTests",
     "test:coverage": "yarn test --coverage"
+  },
+  "dependencies": {
+    "@tupaia/database": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }

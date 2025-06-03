@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import dns from 'dns';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import commonjs from 'vite-plugin-commonjs';
 
 // work around to open browser in localhost https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -13,6 +14,11 @@ dns.setDefaultResultOrder('verbatim');
 export default defineConfig(({ command, mode }) => {
   // Load the environment variables, whether or not they are prefixed with REACT_APP_
   const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
+
+  // Work around for process.env not being loaded correctly in knex library for browser builds
+  const clientEnv = Object.fromEntries(
+    Object.entries(env).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
 
   const baseConfig = {
     build: {
@@ -31,15 +37,23 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('xlsx')) return 'xlsx';
           },
         },
+        external: ['stream/promises', 'fs/promises'],
       },
     },
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({ jsxRuntime: 'classic' }),
-      nodePolyfills(),
+      nodePolyfills({
+        protocolImports: true,
+        overrides: {
+          // Since `fs` is not supported in browsers, we can use the `memfs` package to polyfill it.
+          fs: 'memfs',
+        },
+      }),
+      commonjs(),
     ],
-    define: { 'process.env': env, __dirname: JSON.stringify('/') },
+    define: { ...clientEnv, __dirname: JSON.stringify('/') },
     server: {
       open: true,
       headers: {
@@ -57,6 +71,7 @@ export default defineConfig(({ command, mode }) => {
         winston: path.resolve(__dirname, 'moduleMock.js'),
         jsonwebtoken: path.resolve(__dirname, 'moduleMock.js'),
         'node-fetch': path.resolve(__dirname, 'moduleMock.js'),
+        'pg-pubsub': path.resolve(__dirname, 'moduleMock.js'),
       },
     },
     optimizeDeps: {
