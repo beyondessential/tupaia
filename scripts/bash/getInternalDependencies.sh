@@ -7,6 +7,7 @@ internal_deps=(
   aggregator
   api-client
   auth
+  constants
   data-api
   data-broker
   data-lake-api
@@ -18,6 +19,7 @@ internal_deps=(
   server-boilerplate
   server-utils
   superset-api
+  sync
   tsutils
   types
   ui-chart-components
@@ -25,7 +27,6 @@ internal_deps=(
   ui-map-components
   utils
   weather-api
-  sync
 )
 
 if [[ $1 = --as-glob ]]; then

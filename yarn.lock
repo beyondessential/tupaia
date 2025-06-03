@@ -11496,6 +11496,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/constants@workspace:*, @tupaia/constants@workspace:packages/constants":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/constants@workspace:packages/constants"
+  dependencies:
+    rimraf: ^6.0.1
+    ts-node: ^10.9.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/data-api@workspace:*, @tupaia/data-api@workspace:packages/data-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/data-api@workspace:packages/data-api"
@@ -11597,9 +11606,9 @@ __metadata:
     "@babel/node": ^7.10.5
     "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
+    "@tupaia/constants": "workspace:*"
     "@tupaia/expression-parser": "workspace:*"
     "@tupaia/server-utils": "workspace:*"
-    "@tupaia/sync": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     bson-objectid: ^2.0.4
