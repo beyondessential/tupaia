@@ -31,7 +31,27 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
 
-      - run: yarn
+      - name: Set up Yarn
+        run: corepack enable yarn
+
+      - name: Install dependencies
+        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus tupaia @tupaia/meditrak-app
+
+      - name: Build dependencies
+        run: yarn run build:from meditrak-app
+
+      # TODO: Replace with Bitwarden GitHub Actions: https://bitwarden.com/help/github-actions-integration
+      - name: Write .env file
+        run: |
+          echo "BUGSNAG_API_KEY=\"${{ secrets.BUGSNAG_API_KEY }}\"
+          CLIENT_BASIC_AUTH_HEADER=\"${{ secrets.CLIENT_BASIC_AUTH_HEADER }}\"
+          MIXPANEL_ID=\"${{ secrets.MIXPANEL_ID }}\"
+          SECRET_SALT=\"${{ secrets.SECRET_SALT }}\"
+          " >packages/meditrak-app/.env
+
+      - name: Append BETA_BRANCH environment variable (if non-production branch)
+        if: github.head_ref != 'master'
+        run: echo -e "\nBETA_BRANCH=\"${{ github.head_ref }}\"" >>packages/meditrak-app/.env
 
       - name: Build release
         working-directory: packages/meditrak-app/android
