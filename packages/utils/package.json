@@ -44,7 +44,7 @@
     "rrule": "^2.8.1",
     "sanitize-filename": "^1.6.3",
     "validator": "^13.11.0",
-    "winston": "^3.3.3",
+    "winston": "^3.17.0",
     "xlsx": "^0.18.5",
     "yup": "^0.32.9"
   },

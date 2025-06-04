@@ -52,7 +52,7 @@
     "lodash.pick": "^4.4.0",
     "mathjs": "^11.11.0",
     "moment": "^2.24.0",
-    "winston": "^3.3.3"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

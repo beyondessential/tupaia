@@ -38,7 +38,7 @@
     "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
-    "winston": "^3.3.3"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
