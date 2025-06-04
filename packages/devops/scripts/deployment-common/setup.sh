@@ -1,7 +1,13 @@
-#!/bin/bash -le
+#!/usr/bin/env bash
+# This script is is called by setupGoldMaster.sh, which is used by Amazon Image Builder to pre-bake
+# a Tupaia AMI.
+#
+# PITFALL
+#   Note that setupGoldMaster.sh always calls the version of this script from the default branch,
+#   regardless of what branch we will be deploying from. To deploy changes to this script, merge
+#   them into the default branch.
 
-# This script is used by Amazon Image Builder to pre-bake a Tupaia AMI
-# To deploy changes, upload the latest to the S3 bucket "tupaia_devops"
+set -e
 
 HOME_DIR=/home/ubuntu
 TUPAIA_DIR=$HOME_DIR/tupaia
