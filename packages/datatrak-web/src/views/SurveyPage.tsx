@@ -4,7 +4,6 @@ import { Outlet, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useCurrentUserContext, useEditUser, useEntityByCode, useSurvey } from '../api';
-import { CancelConfirmModal } from '../components';
 import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
 import {
   DesktopSurveyHeader,
@@ -12,8 +11,9 @@ import {
   useSurveyForm,
   useValidationResolver,
 } from '../features';
+import { CancelSurveyConfirmationToken } from '../features/Survey/Components';
 import { SurveyParams } from '../types';
-import { successToast, useBeforeUnload, useIsMobile } from '../utils';
+import { successToast, useIsMobile } from '../utils';
 
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
@@ -53,18 +53,8 @@ const SurveyScreenContainer = styled.div<{
 
 const SurveyPageInner = () => {
   const { screenNumber } = useParams<SurveyParams>();
-  const {
-    formData,
-    isSuccessScreen,
-    isResubmitSuccessScreen,
-    isResponseScreen,
-    cancelModalOpen,
-    cancelModalConfirmLink,
-    closeCancelConfirmation,
-    isResubmit,
-    countryCode,
-    surveyCode,
-  } = useSurveyForm();
+  const { countryCode, formData, isResponseScreen, isResubmit, isSuccessScreen, surveyCode } =
+    useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
   const { mutateAsync: editUser } = useEditUser();
@@ -103,8 +93,6 @@ const SurveyPageInner = () => {
     }
   }, [survey?.id]);
 
-  useBeforeUnload(formContext.formState.isDirty && !isSuccessScreen && !isResubmitSuccessScreen);
-
   return (
     <PageWrapper>
       <FormProvider {...formContext}>
@@ -114,12 +102,9 @@ const SurveyPageInner = () => {
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}
           <Outlet key={screenNumber} />
         </SurveyScreenContainer>
+
+        <CancelSurveyConfirmationToken />
       </FormProvider>
-      <CancelConfirmModal
-        isOpen={cancelModalOpen}
-        onClose={closeCancelConfirmation}
-        confirmPath={cancelModalConfirmLink}
-      />
     </PageWrapper>
   );
 };
