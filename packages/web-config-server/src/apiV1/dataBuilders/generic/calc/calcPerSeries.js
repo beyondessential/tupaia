@@ -1,12 +1,7 @@
-/**
- * Tupaia Config Server
- * * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
 import flattenDeep from 'lodash.flattendeep';
 
-import { calculateOperationForAnalytics } from '/apiV1/dataBuilders/helpers';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { calculateOperationForAnalytics } from '/apiV1/dataBuilders/helpers';
 
 /**
  * Config Example:
