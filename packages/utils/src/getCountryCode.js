@@ -13,7 +13,8 @@ const UNOFFICIAL_NAME_TO_CODE = {
 };
 
 export const getCountryCode = countryName => {
-  // Using static import causes underlying `fs.readFileSync` call to throw ReferenceError
+  // CommonJS import because countrynames internally uses `__dirname` (instead of `import.meta.dirname`)
+  // @see https://nodejs.org/api/esm.html#differences-between-es-modules-and-commonjs
   const { getCode: getCountryIsoCode } = require('countrynames');
   const countryCode =
     UNOFFICIAL_NAME_TO_CODE[countryName.toLowerCase()] ?? getCountryIsoCode(countryName);
