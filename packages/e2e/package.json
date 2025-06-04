@@ -26,7 +26,6 @@
     "@testing-library/cypress": "^7.0.6",
     "@testing-library/dom": "^10.4.0",
     "@tupaia/utils": "workspace:*",
-    "case": "^1.6.3",
     "cheerio": "^1.0.0-rc.3",
     "cross-env": "^7.0.2",
     "cypress": "^6.6.0",

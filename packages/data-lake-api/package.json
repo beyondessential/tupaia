@@ -26,7 +26,6 @@
     "@tupaia/database": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "db-migrate": "^0.11.5",
     "knex": "^3.1.0",
     "lodash.groupby": "^4.6.0",
     "moment": "^2.24.0",

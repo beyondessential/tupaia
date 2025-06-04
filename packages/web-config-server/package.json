@@ -33,7 +33,6 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "async": "^2.6.0",
     "body-parser": "^1.18.2",
     "case": "^1.6.3",
     "client-sessions": "^0.8.0",

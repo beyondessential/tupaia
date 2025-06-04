@@ -11282,12 +11282,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/aggregator@workspace:packages/aggregator"
   dependencies:
-    "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     jest: ^29.7.0
+    jest-extended: ^0.11.5
     lodash.groupby: ^4.6.0
+    mockdate: ^3.0.5
     npm-run-all: ^4.1.5
     rimraf: ^6.0.1
   languageName: unknown
@@ -11350,7 +11351,6 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     adm-zip: ^0.5.5
     api-error-handler: ^1.0.0
-    async: ^2.6.2
     body-parser: ^1.18.3
     case: ^1.6.3
     chai: ^4.1.2
@@ -11363,7 +11363,7 @@ __metadata:
     deep-equal-in-any-order: ^1.0.21
     express: ^4.19.2
     format-link-header: ^2.1.0
-    http: ^0.0.0
+    lodash: ^4.17.4
     lodash.chunk: ^4.2.0
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -11402,6 +11402,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     "@types/lodash.groupby": ^4.6.0
+    db-migrate: ^0.11.5
     jest: ^29.7.0
     lodash.groupby: ^4.6.0
     moment: ^2.24.0
@@ -11434,11 +11435,13 @@ __metadata:
     case: ^1.6.3
     date-fns: ^2.30.0
     jest: ^29.7.0
+    jest-extended: ^0.11.5
     lodash.flatten: ^4.4.0
     lodash.groupby: ^4.6.0
     lodash.isequal: ^4.5.0
     lodash.keyby: ^4.6.0
     lodash.pickby: ^4.6.0
+    mockdate: ^3.0.5
     moment: ^2.24.0
     rimraf: ^6.0.1
   languageName: unknown
@@ -11452,7 +11455,6 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
-    db-migrate: ^0.11.5
     jest: ^29.7.0
     knex: ^3.1.0
     lodash.groupby: ^4.6.0
@@ -11632,7 +11634,6 @@ __metadata:
     "@testing-library/cypress": ^7.0.6
     "@testing-library/dom": ^10.4.0
     "@tupaia/utils": "workspace:*"
-    case: ^1.6.3
     cheerio: ^1.0.0-rc.3
     cross-env: ^7.0.2
     cypress: ^6.6.0
@@ -11762,7 +11763,6 @@ __metadata:
     react-leaflet: ^3.2.1
     react-password-strength-bar: ^0.4.1
     react-redux: ^5.0.6
-    react-router: 6.3.0
     react-router-dom: 6.3.0
     redux: ^4.2.1
     styled-components: ^5.1.0
@@ -12326,7 +12326,6 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    async: ^2.6.0
     babel-plugin-module-resolver: ^4.0.0
     body-parser: ^1.18.2
     case: ^1.6.3
@@ -14929,15 +14928,6 @@ __metadata:
     semver: ^5.3.0
     shimmer: ^1.1.0
   checksum: f64cb835ad1a07d4ee800df6c1532f2a4f99e1c2a11da8e83c1bd4452bc01729a85552377bc120f144abc17be6c0bd0f740ebedfdf4b79ebd18844a51e307326
-  languageName: node
-  linkType: hard
-
-"async@npm:^2.6.0, async@npm:^2.6.2":
-  version: 2.6.3
-  resolution: "async@npm:2.6.3"
-  dependencies:
-    lodash: ^4.17.14
-  checksum: 5e5561ff8fca807e88738533d620488ac03a5c43fce6c937451f7e35f943d33ad06c24af3f681a48cca3d2b0002b3118faff0a128dc89438a9bf0226f712c499
   languageName: node
   linkType: hard
 
@@ -23335,13 +23325,6 @@ __metadata:
     jsprim: ^1.2.2
     sshpk: ^1.7.0
   checksum: 3324598712266a9683585bb84a75dec4fd550567d5e0dd4a0fff6ff3f74348793404d3eeac4918fa0902c810eeee1a86419e4a2e92a164132dfe6b26743fb47c
-  languageName: node
-  linkType: hard
-
-"http@npm:^0.0.0":
-  version: 0.0.0
-  resolution: "http@npm:0.0.0"
-  checksum: 2ac726f97fcee616596703790bc12dde1f65f84bc533a5a3543026c2a18b4c03a4074f2b63ba1c7a8fc5b4996b00607bd799c60b19d0669a8387a1996d2ecba5
   languageName: node
   linkType: hard
 
