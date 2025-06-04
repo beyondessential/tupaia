@@ -108,6 +108,8 @@ for PACKAGE in $PACKAGES; do
     fi
 done
 
+echo
+echo -e "${BLUE}==>️${RESET} ${BOLD}Fetching shared environment variables${RESET}"
 for file_name in "$REPO_ROOT"/env/*.env.example; do
     package_name=$(basename "$file_name" '.env.example')
     load_env_file_from_bw "$package_name" "$REPO_ROOT/env" "$package_name"
