@@ -111,7 +111,7 @@ if ! command -v bw &>/dev/null; then
   echo 'Bitwarden CLI not installed. Installing...'
   # Avoid 2025.5.0, which has a known issue. See https://github.com/bitwarden/clients/issues/14995
   npm install --global '@bitwarden/cli@<2025.5.0 || >2025.5.0'
-elif ! bw --version; then
+elif ! bw --version &>/dev/null; then
   echo "Bad Bitwarden CLI version installed (probably 2025.5.0). Replacing with '<2025.5.0 || >2025.5.0'..."
   npm uninstall --global @bitwarden/cli
   npm install --global '@bitwarden/cli@<2025.5.0 || >2025.5.0'
