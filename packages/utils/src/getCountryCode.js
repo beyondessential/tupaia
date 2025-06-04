@@ -4,7 +4,6 @@ import { ImportValidationError } from './errors';
 // also Laos instead of Laos People's Democratic Republic, etc.
 const UNOFFICIAL_NAME_TO_CODE = {
   'demo land': 'DL',
-
   'congo (the)': 'CG',
   laos: 'LA',
   "côte d'ivoire": 'CI',
