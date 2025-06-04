@@ -86,9 +86,10 @@ const EditorActionBar = styled.header`
 `;
 
 const EditorContainer = styled.div`
-  min-width: 440px;
+  width: 320px;
   min-height: 500px;
-  flex: 1;
+  display: flex;
+  flex-direction: column;
 
   > div {
     width: 100%;
@@ -136,26 +137,37 @@ export const PreviewSection = () => {
 
   const [config, setConfig] = useState(null);
 
+  const runReportPreview = previewMode =>
+    useReportPreview({
+      visualisation: visualisationForFetchingData,
+      project: project?.['project.code'],
+      location: location?.code,
+      startDate,
+      endDate,
+      testData,
+      enabled: fetchEnabled,
+      onSettled: () => {
+        setFetchEnabled(false);
+      },
+      dashboardItemOrMapOverlay,
+      previewMode,
+    });
+
   const {
-    data: reportData = { columns: [], rows: [] },
-    isLoading,
-    isFetching,
-    isError,
-    error,
-  } = useReportPreview({
-    visualisation: visualisationForFetchingData,
-    project: project?.['project.code'],
-    location: location?.code,
-    startDate,
-    endDate,
-    testData,
-    enabled: fetchEnabled,
-    onSettled: () => {
-      setFetchEnabled(false);
-    },
-    dashboardItemOrMapOverlay,
-    previewMode: getTab(tab).previewMode,
-  });
+    data: tableData = { columns: [], rows: [] },
+    isLoading: isTableLoading,
+    isFetching: isTableFetching,
+    isError: isTableError,
+    error: tableError,
+  } = runReportPreview('data');
+
+  const {
+    data: visualisationData,
+    isLoading: isVisualisationLoading,
+    isFetching: isVisualisationFetching,
+    isError: isVisualisationError,
+    error: visualisationError,
+  } = runReportPreview('presentation');
 
   const handleChange = (event, newValue) => {
     setTab(newValue);
@@ -171,14 +183,12 @@ export const PreviewSection = () => {
     setPresentationError(null);
   };
 
-  const columns = useMemo(() => (tab === 0 ? getColumns(reportData) : []), [reportData]);
-  const rows = useMemo(() => (tab === 0 ? getRows(reportData) || [] : []), [reportData]);
+  const { columns: transformedColumns = [] } = tableData;
+  const columns = useMemo(() => (tab === 0 ? getColumns(tableData) : []), [tableData]);
+  const rows = useMemo(() => (tab === 0 ? getRows(tableData) || [] : []), [tableData]);
   const report = useMemo(
-    () => ({
-      data: reportData,
-      type: visualisation?.output?.type,
-    }),
-    [reportData],
+    () => ({ data: visualisationData, type: visualisation?.output?.type }),
+    [visualisationData],
   );
 
   // only update Chart Preview when play button is clicked
@@ -202,9 +212,9 @@ export const PreviewSection = () => {
         <TableContainer>
           {showData ? (
             <FetchLoader
-              isLoading={isLoading || isFetching}
-              isError={isError}
-              error={error}
+              isLoading={isTableLoading || isTableFetching}
+              isError={isTableError}
+              error={tableError}
               isNoData={!rows.length}
               noDataMessage="No Data Found"
             >
@@ -219,7 +229,11 @@ export const PreviewSection = () => {
         <Container>
           <ChartContainer>
             {showData ? (
-              <FetchLoader isLoading={isLoading || isFetching} isError={isError} error={error}>
+              <FetchLoader
+                isLoading={isVisualisationLoading || isVisualisationFetching}
+                isError={isVisualisationError}
+                error={visualisationError}
+              >
                 <Chart report={report} config={config} />
               </FetchLoader>
             ) : (
@@ -230,10 +244,13 @@ export const PreviewSection = () => {
             <EditorActionBar>
               <PresentationJsonToggle />
             </EditorActionBar>
-            <EditorContainer>
-              {!showPresentationAsJson && presentationSchema ? (
-                <PresentationConfigAssistant />
-              ) : (
+            {!showPresentationAsJson && presentationSchema ? (
+              <PresentationConfigAssistant
+                dataStructure={{ columns: transformedColumns }}
+                setPresentationValue={setPresentationValue}
+              />
+            ) : (
+              <EditorContainer>
                 <JsonEditor
                   value={visualisation.presentation}
                   onChange={setPresentationValue}
@@ -242,8 +259,8 @@ export const PreviewSection = () => {
                   mainMenuBar={false}
                   schema={presentationSchema}
                 />
-              )}
-            </EditorContainer>
+              </EditorContainer>
+            )}
           </ChartPreviewSidebar>
         </Container>
       </TabPanel>
