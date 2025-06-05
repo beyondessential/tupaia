@@ -1,30 +1,34 @@
 import '@babel/polyfill';
 import http from 'http';
 import nodeSchedule from 'node-schedule';
+
 import {
   AnalyticsRefresher,
   EntityHierarchyCacher,
+  getDbMigrator,
   ModelRegistry,
   SurveyResponseOutdater,
+  TaskAssigneeEmailer,
   TaskCompletionHandler,
   TaskCreationHandler,
-  TupaiaDatabase,
-  getDbMigrator,
-  TaskAssigneeEmailer,
   TaskUpdateHandler,
+  TupaiaDatabase,
 } from '@tupaia/database';
+import { configureWinston } from '@tupaia/server-boilerplate';
 import { isFeatureEnabled } from '@tupaia/utils';
+
+import { configureEnv } from './configureEnv';
+import { createApp } from './createApp';
 import { createPermissionsBasedMeditrakSyncQueue, MeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
-import { startSyncWithMs1 } from './ms1';
 import { startSyncWithKoBo } from './kobo';
-import { startFeedScraper } from './social';
-import { createApp } from './createApp';
-import { TaskOverdueChecker, RepeatingTaskDueDateHandler } from './scheduledTasks';
 import winston from './log';
-import { configureEnv } from './configureEnv';
+import { startSyncWithMs1 } from './ms1';
+import { RepeatingTaskDueDateHandler, TaskOverdueChecker } from './scheduledTasks';
+import { startFeedScraper } from './social';
 
+configureWinston();
 configureEnv();
 
 (async () => {
@@ -87,6 +91,7 @@ configureEnv();
   const port = process.env.PORT || 8090;
   http.createServer(app).listen(port);
   winston.info(`Running on port ${port}`);
+  winston.debug('Logging at DEBUG level');
   const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
   winston.info(`Connected to ${aggregationDescription} aggregation`);
 
