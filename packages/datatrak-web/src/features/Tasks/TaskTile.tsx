@@ -111,7 +111,7 @@ export const TaskTile = ({ task }) => {
         </TileContent>
       </TileLeft>
       <TileRight>
-        <ButtonLink to={surveyLink}>Complete task</ButtonLink>
+        <ButtonLink to={surveyLink}>Complete</ButtonLink>
       </TileRight>
     </TileContainer>
   );
