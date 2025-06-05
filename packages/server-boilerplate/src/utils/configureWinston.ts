@@ -1,3 +1,4 @@
+import { getEnvVarOrDefault } from '@tupaia/utils';
 import winston from 'winston';
 
 // Custom formatter for Errors
@@ -51,6 +52,7 @@ export const configureWinston = () => {
           winston.format.colorize(),
           winston.format.simple(),
         ),
+        level: getEnvVarOrDefault('LOG_LEVEL', 'info'),
       }),
     ],
   });
