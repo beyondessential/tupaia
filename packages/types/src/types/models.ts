@@ -23,7 +23,7 @@ export interface AccessRequest {
   'processed_by'?: string | null;
   'processed_date'?: Date | null;
   'project_id'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id'?: string | null;
 }
 export interface AccessRequestCreate {
@@ -36,7 +36,7 @@ export interface AccessRequestCreate {
   'processed_by'?: string | null;
   'processed_date'?: Date | null;
   'project_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
 }
 export interface AccessRequestUpdate {
@@ -50,34 +50,34 @@ export interface AccessRequestUpdate {
   'processed_by'?: string | null;
   'processed_date'?: Date | null;
   'project_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
 }
 export interface AdminPanelSession {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface AdminPanelSessionCreate {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface AdminPanelSessionUpdate {
   'access_policy'?: {};
   'access_token'?: string;
-  'access_token_expiry'?: string;
+  'access_token_expiry'?: number;
   'email'?: string;
   'id'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Analytics {
   'data_element_code'?: string | null;
@@ -127,14 +127,14 @@ export interface AncestorDescendantRelation {
   'entity_hierarchy_id': string;
   'generational_distance': number;
   'id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface AncestorDescendantRelationCreate {
   'ancestor_id': string;
   'descendant_id': string;
   'entity_hierarchy_id': string;
   'generational_distance': number;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface AncestorDescendantRelationUpdate {
   'ancestor_id'?: string;
@@ -142,7 +142,7 @@ export interface AncestorDescendantRelationUpdate {
   'entity_hierarchy_id'?: string;
   'generational_distance'?: number;
   'id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Answer {
   'id': string;
@@ -150,14 +150,14 @@ export interface Answer {
   'survey_response_id': string;
   'text'?: string | null;
   'type': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface AnswerCreate {
   'question_id': string;
   'survey_response_id': string;
   'text'?: string | null;
   'type': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface AnswerUpdate {
   'id'?: string;
@@ -165,25 +165,25 @@ export interface AnswerUpdate {
   'survey_response_id'?: string;
   'text'?: string | null;
   'type'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface ApiClient {
   'id': string;
   'secret_key_hash': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_account_id'?: string | null;
   'username': string;
 }
 export interface ApiClientCreate {
   'secret_key_hash': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_account_id'?: string | null;
   'username': string;
 }
 export interface ApiClientUpdate {
   'id'?: string;
   'secret_key_hash'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_account_id'?: string | null;
   'username'?: string;
 }
@@ -196,7 +196,7 @@ export interface ApiRequestLog {
   'query'?: {} | null;
   'refresh_token'?: string | null;
   'request_time'?: Date | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id'?: string | null;
   'version': number;
 }
@@ -208,7 +208,7 @@ export interface ApiRequestLogCreate {
   'query'?: {} | null;
   'refresh_token'?: string | null;
   'request_time'?: Date | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
   'version': number;
 }
@@ -221,7 +221,7 @@ export interface ApiRequestLogUpdate {
   'query'?: {} | null;
   'refresh_token'?: string | null;
   'request_time'?: Date | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
   'version'?: number;
 }
@@ -234,7 +234,7 @@ export interface Clinic {
   'name': string;
   'type'?: string | null;
   'type_name'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface ClinicCreate {
   'category_code'?: string | null;
@@ -244,7 +244,7 @@ export interface ClinicCreate {
   'name': string;
   'type'?: string | null;
   'type_name'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface ClinicUpdate {
   'category_code'?: string | null;
@@ -255,21 +255,21 @@ export interface ClinicUpdate {
   'name'?: string;
   'type'?: string | null;
   'type_name'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Comment {
   'created_time': Date;
   'id': string;
   'last_modified_time': Date;
   'text': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id'?: string | null;
 }
 export interface CommentCreate {
   'created_time'?: Date;
   'last_modified_time'?: Date;
   'text': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
 }
 export interface CommentUpdate {
@@ -277,25 +277,25 @@ export interface CommentUpdate {
   'id'?: string;
   'last_modified_time'?: Date;
   'text'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
 }
 export interface Country {
   'code': string;
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface CountryCreate {
   'code': string;
   'name': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface CountryUpdate {
   'code'?: string;
   'id'?: string;
   'name'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Dashboard {
   'code': string;
@@ -303,14 +303,14 @@ export interface Dashboard {
   'name': string;
   'root_entity_code': string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DashboardCreate {
   'code': string;
   'name': string;
   'root_entity_code': string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardUpdate {
   'code'?: string;
@@ -318,7 +318,7 @@ export interface DashboardUpdate {
   'name'?: string;
   'root_entity_code'?: string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardItem {
   'code': string;
@@ -327,7 +327,7 @@ export interface DashboardItem {
   'legacy': boolean;
   'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DashboardItemCreate {
   'code': string;
@@ -335,7 +335,7 @@ export interface DashboardItemCreate {
   'legacy'?: boolean;
   'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardItemUpdate {
   'code'?: string;
@@ -344,7 +344,7 @@ export interface DashboardItemUpdate {
   'legacy'?: boolean;
   'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardMailingList {
   'admin_permission_groups': string[];
@@ -352,14 +352,14 @@ export interface DashboardMailingList {
   'entity_id': string;
   'id': string;
   'project_id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DashboardMailingListCreate {
   'admin_permission_groups'?: string[];
   'dashboard_id': string;
   'entity_id': string;
   'project_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardMailingListUpdate {
   'admin_permission_groups'?: string[];
@@ -367,7 +367,7 @@ export interface DashboardMailingListUpdate {
   'entity_id'?: string;
   'id'?: string;
   'project_id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardMailingListEntry {
   'dashboard_mailing_list_id': string;
@@ -375,14 +375,14 @@ export interface DashboardMailingListEntry {
   'id': string;
   'subscribed': boolean;
   'unsubscribed_time'?: Date | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DashboardMailingListEntryCreate {
   'dashboard_mailing_list_id': string;
   'email': string;
   'subscribed'?: boolean;
   'unsubscribed_time'?: Date | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardMailingListEntryUpdate {
   'dashboard_mailing_list_id'?: string;
@@ -390,7 +390,7 @@ export interface DashboardMailingListEntryUpdate {
   'id'?: string;
   'subscribed'?: boolean;
   'unsubscribed_time'?: Date | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardRelation {
   'attributes_filter': {};
@@ -401,7 +401,7 @@ export interface DashboardRelation {
   'permission_groups': string[];
   'project_codes': string[];
   'sort_order'?: number | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DashboardRelationCreate {
   'attributes_filter'?: {};
@@ -411,7 +411,7 @@ export interface DashboardRelationCreate {
   'permission_groups': string[];
   'project_codes': string[];
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DashboardRelationUpdate {
   'attributes_filter'?: {};
@@ -422,7 +422,7 @@ export interface DashboardRelationUpdate {
   'permission_groups'?: string[];
   'project_codes'?: string[];
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataElement {
   'code': string;
@@ -430,14 +430,14 @@ export interface DataElement {
   'id': string;
   'permission_groups': string[];
   'service_type': ServiceType;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DataElementCreate {
   'code': string;
   'config'?: {};
   'permission_groups'?: string[];
   'service_type': ServiceType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataElementUpdate {
   'code'?: string;
@@ -445,24 +445,24 @@ export interface DataElementUpdate {
   'id'?: string;
   'permission_groups'?: string[];
   'service_type'?: ServiceType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataElementDataGroup {
   'data_element_id': string;
   'data_group_id': string;
   'id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DataElementDataGroupCreate {
   'data_element_id': string;
   'data_group_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataElementDataGroupUpdate {
   'data_element_id'?: string;
   'data_group_id'?: string;
   'id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataElementDataService {
   'country_code': string;
@@ -470,14 +470,14 @@ export interface DataElementDataService {
   'id': string;
   'service_config': {};
   'service_type': ServiceType;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DataElementDataServiceCreate {
   'country_code': string;
   'data_element_code': string;
   'service_config'?: {};
   'service_type': ServiceType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataElementDataServiceUpdate {
   'country_code'?: string;
@@ -485,44 +485,44 @@ export interface DataElementDataServiceUpdate {
   'id'?: string;
   'service_config'?: {};
   'service_type'?: ServiceType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataGroup {
   'code': string;
   'config': {};
   'id': string;
   'service_type': ServiceType;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DataGroupCreate {
   'code': string;
   'config'?: {};
   'service_type': ServiceType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataGroupUpdate {
   'code'?: string;
   'config'?: {};
   'id'?: string;
   'service_type'?: ServiceType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataServiceEntity {
   'config': {};
   'entity_code': string;
   'id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DataServiceEntityCreate {
   'config': {};
   'entity_code': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataServiceEntityUpdate {
   'config'?: {};
   'entity_code'?: string;
   'id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataServiceSyncGroup {
   'code': string;
@@ -532,7 +532,7 @@ export interface DataServiceSyncGroup {
   'service_type': ServiceType;
   'sync_cursor'?: string | null;
   'sync_status'?: SyncGroupSyncStatus | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DataServiceSyncGroupCreate {
   'code': string;
@@ -541,7 +541,7 @@ export interface DataServiceSyncGroupCreate {
   'service_type': ServiceType;
   'sync_cursor'?: string | null;
   'sync_status'?: SyncGroupSyncStatus | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataServiceSyncGroupUpdate {
   'code'?: string;
@@ -551,7 +551,7 @@ export interface DataServiceSyncGroupUpdate {
   'service_type'?: ServiceType;
   'sync_cursor'?: string | null;
   'sync_status'?: SyncGroupSyncStatus | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataTable {
   'code': string;
@@ -560,7 +560,7 @@ export interface DataTable {
   'id': string;
   'permission_groups': string[];
   'type': DataTableType;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DataTableCreate {
   'code': string;
@@ -568,7 +568,7 @@ export interface DataTableCreate {
   'description'?: string | null;
   'permission_groups': string[];
   'type': DataTableType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DataTableUpdate {
   'code'?: string;
@@ -577,53 +577,53 @@ export interface DataTableUpdate {
   'id'?: string;
   'permission_groups'?: string[];
   'type'?: DataTableType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DatatrakSession {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DatatrakSessionCreate {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DatatrakSessionUpdate {
   'access_policy'?: {};
   'access_token'?: string;
-  'access_token_expiry'?: string;
+  'access_token_expiry'?: number;
   'email'?: string;
   'id'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DhisInstance {
   'code': string;
   'config': {};
   'id': string;
   'readonly': boolean;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DhisInstanceCreate {
   'code': string;
   'config': {};
   'readonly': boolean;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DhisInstanceUpdate {
   'code'?: string;
   'config'?: {};
   'id'?: string;
   'readonly'?: boolean;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DhisSyncLog {
   'data'?: string | null;
@@ -636,7 +636,7 @@ export interface DhisSyncLog {
   'record_id': string;
   'record_type': string;
   'updated'?: number | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DhisSyncLogCreate {
   'data'?: string | null;
@@ -648,7 +648,7 @@ export interface DhisSyncLogCreate {
   'record_id': string;
   'record_type': string;
   'updated'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DhisSyncLogUpdate {
   'data'?: string | null;
@@ -661,7 +661,7 @@ export interface DhisSyncLogUpdate {
   'record_id'?: string;
   'record_type'?: string;
   'updated'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DhisSyncQueue {
   'bad_request_count'?: number | null;
@@ -674,7 +674,7 @@ export interface DhisSyncQueue {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface DhisSyncQueueCreate {
   'bad_request_count'?: number | null;
@@ -686,7 +686,7 @@ export interface DhisSyncQueueCreate {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface DhisSyncQueueUpdate {
   'bad_request_count'?: number | null;
@@ -699,7 +699,7 @@ export interface DhisSyncQueueUpdate {
   'record_id'?: string;
   'record_type'?: string;
   'type'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Entity {
   'attributes': EntityAttributes;
@@ -714,7 +714,7 @@ export interface Entity {
   'point'?: string | null;
   'region'?: string | null;
   'type': EntityType;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface EntityCreate {
   'attributes'?: EntityAttributes;
@@ -728,7 +728,7 @@ export interface EntityCreate {
   'point'?: string | null;
   'region'?: string | null;
   'type': EntityType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface EntityUpdate {
   'attributes'?: EntityAttributes;
@@ -743,44 +743,44 @@ export interface EntityUpdate {
   'point'?: string | null;
   'region'?: string | null;
   'type'?: EntityType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface EntityHierarchy {
   'canonical_types'?: string[] | null;
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface EntityHierarchyCreate {
   'canonical_types'?: string[] | null;
   'name': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface EntityHierarchyUpdate {
   'canonical_types'?: string[] | null;
   'id'?: string;
   'name'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface EntityRelation {
   'child_id': string;
   'entity_hierarchy_id': string;
   'id': string;
   'parent_id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface EntityRelationCreate {
   'child_id': string;
   'entity_hierarchy_id': string;
   'parent_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface EntityRelationUpdate {
   'child_id'?: string;
   'entity_hierarchy_id'?: string;
   'id'?: string;
   'parent_id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface ErrorLog {
   'api_request_log_id'?: string | null;
@@ -788,14 +788,14 @@ export interface ErrorLog {
   'id': string;
   'message'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface ErrorLogCreate {
   'api_request_log_id'?: string | null;
   'error_time'?: Date | null;
   'message'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface ErrorLogUpdate {
   'api_request_log_id'?: string | null;
@@ -803,7 +803,7 @@ export interface ErrorLogUpdate {
   'id'?: string;
   'message'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface ExternalDatabaseConnection {
   'code': string;
@@ -811,14 +811,14 @@ export interface ExternalDatabaseConnection {
   'id': string;
   'name': string;
   'permission_groups': string[];
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface ExternalDatabaseConnectionCreate {
   'code': string;
   'description'?: string | null;
   'name': string;
   'permission_groups'?: string[];
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface ExternalDatabaseConnectionUpdate {
   'code'?: string;
@@ -826,7 +826,7 @@ export interface ExternalDatabaseConnectionUpdate {
   'id'?: string;
   'name'?: string;
   'permission_groups'?: string[];
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface FeedItem {
   'country_id'?: string | null;
@@ -837,7 +837,7 @@ export interface FeedItem {
   'record_id'?: string | null;
   'template_variables'?: Object | null;
   'type'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id'?: string | null;
 }
 export interface FeedItemCreate {
@@ -848,7 +848,7 @@ export interface FeedItemCreate {
   'record_id'?: string | null;
   'template_variables'?: Object | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
 }
 export interface FeedItemUpdate {
@@ -860,7 +860,7 @@ export interface FeedItemUpdate {
   'record_id'?: string | null;
   'template_variables'?: Object | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
 }
 export interface GeographicalArea {
@@ -871,7 +871,7 @@ export interface GeographicalArea {
   'level_name': string;
   'name': string;
   'parent_id'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface GeographicalAreaCreate {
   'code'?: string | null;
@@ -880,7 +880,7 @@ export interface GeographicalAreaCreate {
   'level_name': string;
   'name': string;
   'parent_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface GeographicalAreaUpdate {
   'code'?: string | null;
@@ -890,27 +890,27 @@ export interface GeographicalAreaUpdate {
   'level_name'?: string;
   'name'?: string;
   'parent_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Indicator {
   'builder': string;
   'code': string;
   'config': {};
   'id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface IndicatorCreate {
   'builder': string;
   'code': string;
   'config'?: {};
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface IndicatorUpdate {
   'builder'?: string;
   'code'?: string;
   'config'?: {};
   'id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface LandingPage {
   'contact_us'?: string | null;
@@ -926,7 +926,7 @@ export interface LandingPage {
   'primary_hexcode'?: string | null;
   'project_codes'?: string[] | null;
   'secondary_hexcode'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'url_segment': string;
   'website_url'?: string | null;
 }
@@ -943,7 +943,7 @@ export interface LandingPageCreate {
   'primary_hexcode'?: string | null;
   'project_codes'?: string[] | null;
   'secondary_hexcode'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'url_segment': string;
   'website_url'?: string | null;
 }
@@ -961,7 +961,7 @@ export interface LandingPageUpdate {
   'primary_hexcode'?: string | null;
   'project_codes'?: string[] | null;
   'secondary_hexcode'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'url_segment'?: string;
   'website_url'?: string | null;
 }
@@ -971,14 +971,14 @@ export interface LegacyReport {
   'data_builder_config'?: {} | null;
   'data_services'?: {} | null;
   'id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface LegacyReportCreate {
   'code': string;
   'data_builder'?: string | null;
   'data_builder_config'?: {} | null;
   'data_services'?: {} | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface LegacyReportUpdate {
   'code'?: string;
@@ -986,33 +986,33 @@ export interface LegacyReportUpdate {
   'data_builder_config'?: {} | null;
   'data_services'?: {} | null;
   'id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface LesmisSession {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface LesmisSessionCreate {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface LesmisSessionUpdate {
   'access_policy'?: {};
   'access_token'?: string;
-  'access_token_expiry'?: string;
+  'access_token_expiry'?: number;
   'email'?: string;
   'id'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface LocalSystemFact {
   'id': string;
@@ -1029,22 +1029,22 @@ export interface LocalSystemFactUpdate {
   'value'?: string | null;
 }
 export interface LoginAttempts {
-  'expire'?: string | null;
+  'expire'?: number | null;
   'key': string;
   'points': number;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface LoginAttemptsCreate {
-  'expire'?: string | null;
+  'expire'?: number | null;
   'key': string;
   'points'?: number;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface LoginAttemptsUpdate {
-  'expire'?: string | null;
+  'expire'?: number | null;
   'key'?: string;
   'points'?: number;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface MapOverlay {
   'code': string;
@@ -1059,7 +1059,7 @@ export interface MapOverlay {
   'permission_group': string;
   'project_codes'?: string[] | null;
   'report_code'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface MapOverlayCreate {
   'code': string;
@@ -1073,7 +1073,7 @@ export interface MapOverlayCreate {
   'permission_group': string;
   'project_codes'?: string[] | null;
   'report_code'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface MapOverlayUpdate {
   'code'?: string;
@@ -1088,24 +1088,24 @@ export interface MapOverlayUpdate {
   'permission_group'?: string;
   'project_codes'?: string[] | null;
   'report_code'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface MapOverlayGroup {
   'code': string;
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface MapOverlayGroupCreate {
   'code': string;
   'name': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface MapOverlayGroupUpdate {
   'code'?: string;
   'id'?: string;
   'name'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface MapOverlayGroupRelation {
   'child_id': string;
@@ -1113,14 +1113,14 @@ export interface MapOverlayGroupRelation {
   'id': string;
   'map_overlay_group_id': string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface MapOverlayGroupRelationCreate {
   'child_id': string;
   'child_type': string;
   'map_overlay_group_id': string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface MapOverlayGroupRelationUpdate {
   'child_id'?: string;
@@ -1128,7 +1128,7 @@ export interface MapOverlayGroupRelationUpdate {
   'id'?: string;
   'map_overlay_group_id'?: string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface MeditrakDevice {
   'app_version'?: string | null;
@@ -1137,7 +1137,7 @@ export interface MeditrakDevice {
   'install_id': string;
   'last_login'?: Date | null;
   'platform'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id': string;
 }
 export interface MeditrakDeviceCreate {
@@ -1146,7 +1146,7 @@ export interface MeditrakDeviceCreate {
   'install_id': string;
   'last_login'?: Date | null;
   'platform'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id': string;
 }
 export interface MeditrakDeviceUpdate {
@@ -1156,7 +1156,7 @@ export interface MeditrakDeviceUpdate {
   'install_id'?: string;
   'last_login'?: Date | null;
   'platform'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string;
 }
 export interface MeditrakSyncQueue {
@@ -1165,14 +1165,14 @@ export interface MeditrakSyncQueue {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface MeditrakSyncQueueCreate {
   'change_time'?: number | null;
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface MeditrakSyncQueueUpdate {
   'change_time'?: number | null;
@@ -1180,7 +1180,7 @@ export interface MeditrakSyncQueueUpdate {
   'record_id'?: string;
   'record_type'?: string;
   'type'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Ms1SyncLog {
   'count'?: number | null;
@@ -1190,7 +1190,7 @@ export interface Ms1SyncLog {
   'id': string;
   'record_id': string;
   'record_type': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface Ms1SyncLogCreate {
   'count'?: number | null;
@@ -1199,7 +1199,7 @@ export interface Ms1SyncLogCreate {
   'error_list'?: string | null;
   'record_id': string;
   'record_type': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Ms1SyncLogUpdate {
   'count'?: number | null;
@@ -1209,7 +1209,7 @@ export interface Ms1SyncLogUpdate {
   'id'?: string;
   'record_id'?: string;
   'record_type'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Ms1SyncQueue {
   'bad_request_count'?: number | null;
@@ -1222,7 +1222,7 @@ export interface Ms1SyncQueue {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface Ms1SyncQueueCreate {
   'bad_request_count'?: number | null;
@@ -1234,7 +1234,7 @@ export interface Ms1SyncQueueCreate {
   'record_id': string;
   'record_type': string;
   'type': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Ms1SyncQueueUpdate {
   'bad_request_count'?: number | null;
@@ -1247,20 +1247,20 @@ export interface Ms1SyncQueueUpdate {
   'record_id'?: string;
   'record_type'?: string;
   'type'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface OneTimeLogin {
   'creation_date'?: Date | null;
   'id': string;
   'token': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'use_date'?: Date | null;
   'user_id': string;
 }
 export interface OneTimeLoginCreate {
   'creation_date'?: Date | null;
   'token': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'use_date'?: Date | null;
   'user_id': string;
 }
@@ -1268,7 +1268,7 @@ export interface OneTimeLoginUpdate {
   'creation_date'?: Date | null;
   'id'?: string;
   'token'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'use_date'?: Date | null;
   'user_id'?: string;
 }
@@ -1278,7 +1278,7 @@ export interface Option {
   'label'?: string | null;
   'option_set_id': string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'value': string;
 }
 export interface OptionCreate {
@@ -1286,7 +1286,7 @@ export interface OptionCreate {
   'label'?: string | null;
   'option_set_id': string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'value': string;
 }
 export interface OptionUpdate {
@@ -1295,39 +1295,39 @@ export interface OptionUpdate {
   'label'?: string | null;
   'option_set_id'?: string;
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'value'?: string;
 }
 export interface OptionSet {
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface OptionSetCreate {
   'name': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface OptionSetUpdate {
   'id'?: string;
   'name'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface PermissionGroup {
   'id': string;
   'name': string;
   'parent_id'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface PermissionGroupCreate {
   'name': string;
   'parent_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface PermissionGroupUpdate {
   'id'?: string;
   'name'?: string;
   'parent_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface PermissionsBasedMeditrakSyncQueue {
   'change_time'?: number | null;
@@ -1371,7 +1371,7 @@ export interface Project {
   'logo_url'?: string | null;
   'permission_groups': string[];
   'sort_order'?: number | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface ProjectCreate {
   'code': string;
@@ -1385,7 +1385,7 @@ export interface ProjectCreate {
   'logo_url'?: string | null;
   'permission_groups'?: string[];
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface ProjectUpdate {
   'code'?: string;
@@ -1400,33 +1400,33 @@ export interface ProjectUpdate {
   'logo_url'?: string | null;
   'permission_groups'?: string[];
   'sort_order'?: number | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface PsssSession {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface PsssSessionCreate {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface PsssSessionUpdate {
   'access_policy'?: {};
   'access_token'?: string;
-  'access_token_expiry'?: string;
+  'access_token_expiry'?: number;
   'email'?: string;
   'id'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Question {
   'code'?: string | null;
@@ -1439,7 +1439,7 @@ export interface Question {
   'options'?: string[] | null;
   'text': string;
   'type': QuestionType;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface QuestionCreate {
   'code'?: string | null;
@@ -1451,7 +1451,7 @@ export interface QuestionCreate {
   'options'?: string[] | null;
   'text': string;
   'type': QuestionType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface QuestionUpdate {
   'code'?: string | null;
@@ -1464,7 +1464,7 @@ export interface QuestionUpdate {
   'options'?: string[] | null;
   'text'?: string;
   'type'?: QuestionType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface RefreshToken {
   'device'?: string | null;
@@ -1472,7 +1472,7 @@ export interface RefreshToken {
   'id': string;
   'meditrak_device_id'?: string | null;
   'token': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id': string;
 }
 export interface RefreshTokenCreate {
@@ -1480,7 +1480,7 @@ export interface RefreshTokenCreate {
   'expiry'?: number | null;
   'meditrak_device_id'?: string | null;
   'token': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id': string;
 }
 export interface RefreshTokenUpdate {
@@ -1489,7 +1489,7 @@ export interface RefreshTokenUpdate {
   'id'?: string;
   'meditrak_device_id'?: string | null;
   'token'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string;
 }
 export interface Report {
@@ -1498,14 +1498,14 @@ export interface Report {
   'id': string;
   'latest_data_parameters': {};
   'permission_group_id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface ReportCreate {
   'code': string;
   'config': ReportConfig;
   'latest_data_parameters'?: {};
   'permission_group_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface ReportUpdate {
   'code'?: string;
@@ -1513,23 +1513,23 @@ export interface ReportUpdate {
   'id'?: string;
   'latest_data_parameters'?: {};
   'permission_group_id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface Setting {
   'id': string;
   'key': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'value'?: string | null;
 }
 export interface SettingCreate {
   'key': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'value'?: string | null;
 }
 export interface SettingUpdate {
   'id'?: string;
   'key'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'value'?: string | null;
 }
 export interface SupersetInstance {
@@ -1559,7 +1559,7 @@ export interface Survey {
   'project_id': string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface SurveyCreate {
   'can_repeat'?: boolean | null;
@@ -1573,7 +1573,7 @@ export interface SurveyCreate {
   'project_id': string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SurveyUpdate {
   'can_repeat'?: boolean | null;
@@ -1588,21 +1588,21 @@ export interface SurveyUpdate {
   'project_id'?: string;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SurveyGroup {
   'id': string;
   'name': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface SurveyGroupCreate {
   'name': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SurveyGroupUpdate {
   'id'?: string;
   'name'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SurveyResponse {
   'approval_status'?: ApprovalStatus | null;
@@ -1616,7 +1616,7 @@ export interface SurveyResponse {
   'start_time': Date;
   'survey_id': string;
   'timezone'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id': string;
 }
 export interface SurveyResponseCreate {
@@ -1630,7 +1630,7 @@ export interface SurveyResponseCreate {
   'start_time': Date;
   'survey_id': string;
   'timezone'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id': string;
 }
 export interface SurveyResponseUpdate {
@@ -1645,42 +1645,42 @@ export interface SurveyResponseUpdate {
   'start_time'?: Date;
   'survey_id'?: string;
   'timezone'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string;
 }
 export interface SurveyResponseComment {
   'comment_id': string;
   'id': string;
   'survey_response_id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface SurveyResponseCommentCreate {
   'comment_id': string;
   'survey_response_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SurveyResponseCommentUpdate {
   'comment_id'?: string;
   'id'?: string;
   'survey_response_id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SurveyScreen {
   'id': string;
   'screen_number': number;
   'survey_id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface SurveyScreenCreate {
   'screen_number': number;
   'survey_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SurveyScreenUpdate {
   'id'?: string;
   'screen_number'?: number;
   'survey_id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SurveyScreenComponent {
   'answers_enabling_follow_up'?: string[] | null;
@@ -1692,7 +1692,7 @@ export interface SurveyScreenComponent {
   'question_id': string;
   'question_label'?: string | null;
   'screen_id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
@@ -1705,7 +1705,7 @@ export interface SurveyScreenComponentCreate {
   'question_id': string;
   'question_label'?: string | null;
   'screen_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
@@ -1719,7 +1719,7 @@ export interface SurveyScreenComponentUpdate {
   'question_id'?: string;
   'question_label'?: string | null;
   'screen_id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
@@ -1729,14 +1729,14 @@ export interface SyncGroupLog {
   'service_type': ServiceType;
   'sync_group_code': string;
   'timestamp'?: Date | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface SyncGroupLogCreate {
   'log_message': string;
   'service_type': ServiceType;
   'sync_group_code': string;
   'timestamp'?: Date | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SyncGroupLogUpdate {
   'id'?: string;
@@ -1744,7 +1744,7 @@ export interface SyncGroupLogUpdate {
   'service_type'?: ServiceType;
   'sync_group_code'?: string;
   'timestamp'?: Date | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface SyncSession {
   'completed_at'?: Date | null;
@@ -1753,12 +1753,12 @@ export interface SyncSession {
   'info'?: Object | null;
   'last_connection_time'?: Date | null;
   'persist_completed_at'?: Date | null;
-  'pull_since'?: string | null;
-  'pull_until'?: string | null;
+  'pull_since'?: number | null;
+  'pull_until'?: number | null;
   'snapshot_completed_at'?: Date | null;
   'snapshot_started_at'?: Date | null;
   'start_time'?: Date | null;
-  'started_at_tick'?: string | null;
+  'started_at_tick'?: number | null;
 }
 export interface SyncSessionCreate {
   'completed_at'?: Date | null;
@@ -1766,12 +1766,12 @@ export interface SyncSessionCreate {
   'info'?: Object | null;
   'last_connection_time'?: Date | null;
   'persist_completed_at'?: Date | null;
-  'pull_since'?: string | null;
-  'pull_until'?: string | null;
+  'pull_since'?: number | null;
+  'pull_until'?: number | null;
   'snapshot_completed_at'?: Date | null;
   'snapshot_started_at'?: Date | null;
   'start_time'?: Date | null;
-  'started_at_tick'?: string | null;
+  'started_at_tick'?: number | null;
 }
 export interface SyncSessionUpdate {
   'completed_at'?: Date | null;
@@ -1780,12 +1780,12 @@ export interface SyncSessionUpdate {
   'info'?: Object | null;
   'last_connection_time'?: Date | null;
   'persist_completed_at'?: Date | null;
-  'pull_since'?: string | null;
-  'pull_until'?: string | null;
+  'pull_since'?: number | null;
+  'pull_until'?: number | null;
   'snapshot_completed_at'?: Date | null;
   'snapshot_started_at'?: Date | null;
   'start_time'?: Date | null;
-  'started_at_tick'?: string | null;
+  'started_at_tick'?: number | null;
 }
 export interface Task {
   'assignee_id'?: string | null;
@@ -1800,7 +1800,7 @@ export interface Task {
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface TaskCreate {
   'assignee_id'?: string | null;
@@ -1814,7 +1814,7 @@ export interface TaskCreate {
   'status'?: TaskStatus | null;
   'survey_id': string;
   'survey_response_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface TaskUpdate {
   'assignee_id'?: string | null;
@@ -1829,7 +1829,7 @@ export interface TaskUpdate {
   'status'?: TaskStatus | null;
   'survey_id'?: string;
   'survey_response_id'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface TaskComment {
   'created_at': Date;
@@ -1838,7 +1838,7 @@ export interface TaskComment {
   'task_id': string;
   'template_variables': TaskCommentTemplateVariables;
   'type': TaskCommentType;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id'?: string | null;
   'user_name': string;
 }
@@ -1848,7 +1848,7 @@ export interface TaskCommentCreate {
   'task_id': string;
   'template_variables'?: TaskCommentTemplateVariables;
   'type'?: TaskCommentType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
   'user_name': string;
 }
@@ -1859,35 +1859,35 @@ export interface TaskCommentUpdate {
   'task_id'?: string;
   'template_variables'?: TaskCommentTemplateVariables;
   'type'?: TaskCommentType;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string | null;
   'user_name'?: string;
 }
 export interface TupaiaWebSession {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'id': string;
   'refresh_token': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
 }
 export interface TupaiaWebSessionCreate {
   'access_policy': {};
   'access_token': string;
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'email': string;
   'refresh_token': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface TupaiaWebSessionUpdate {
   'access_policy'?: {};
   'access_token'?: string;
-  'access_token_expiry'?: string;
+  'access_token_expiry'?: number;
   'email'?: string;
   'id'?: string;
   'refresh_token'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
 }
 export interface UserAccount {
   'creation_date'?: Date | null;
@@ -1904,7 +1904,7 @@ export interface UserAccount {
   'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountCreate {
@@ -1921,7 +1921,7 @@ export interface UserAccountCreate {
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserAccountUpdate {
@@ -1939,87 +1939,87 @@ export interface UserAccountUpdate {
   'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserCountryAccessAttempt {
   'country_code': string;
   'id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id': string;
 }
 export interface UserCountryAccessAttemptCreate {
   'country_code': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id': string;
 }
 export interface UserCountryAccessAttemptUpdate {
   'country_code'?: string;
   'id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string;
 }
 export interface UserEntityPermission {
   'entity_id': string;
   'id': string;
   'permission_group_id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id': string;
 }
 export interface UserEntityPermissionCreate {
   'entity_id': string;
   'permission_group_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id': string;
 }
 export interface UserEntityPermissionUpdate {
   'entity_id'?: string;
   'id'?: string;
   'permission_group_id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string;
 }
 export interface UserFavouriteDashboardItem {
   'dashboard_item_id': string;
   'id': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'user_id': string;
 }
 export interface UserFavouriteDashboardItemCreate {
   'dashboard_item_id': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id': string;
 }
 export interface UserFavouriteDashboardItemUpdate {
   'dashboard_item_id'?: string;
   'id'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'user_id'?: string;
 }
 export interface UserSession {
-  'access_token_expiry': string;
+  'access_token_expiry': number;
   'accessPolicy'?: {} | null;
   'accessToken'?: string | null;
   'id': string;
   'refreshToken': string;
-  'updated_at_sync_tick': string;
+  'updated_at_sync_tick': number;
   'userName': string;
 }
 export interface UserSessionCreate {
-  'access_token_expiry'?: string;
+  'access_token_expiry'?: number;
   'accessPolicy'?: {} | null;
   'accessToken'?: string | null;
   'refreshToken': string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'userName': string;
 }
 export interface UserSessionUpdate {
-  'access_token_expiry'?: string;
+  'access_token_expiry'?: number;
   'accessPolicy'?: {} | null;
   'accessToken'?: string | null;
   'id'?: string;
   'refreshToken'?: string;
-  'updated_at_sync_tick'?: string;
+  'updated_at_sync_tick'?: number;
   'userName'?: string;
 }
 export enum VerifiedEmail {
