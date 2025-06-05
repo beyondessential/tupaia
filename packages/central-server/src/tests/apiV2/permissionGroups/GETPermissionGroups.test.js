@@ -45,7 +45,7 @@ const createPermissionsGroups = async models => {
   };
 };
 
-describe.only('Get permission groups', async () => {
+describe('Get permission groups', async () => {
   const app = new TestableApp();
   const { models } = app;
 
