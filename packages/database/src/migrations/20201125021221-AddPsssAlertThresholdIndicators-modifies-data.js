@@ -109,12 +109,12 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  const codes = CONDITION_CODES.map(condition => [
+  const codes = CONDITION_CODES.flatMap(condition => [
     psssCode('Alert_Threshold_Level', condition, true),
     psssCode('Alert_Threshold_Level', condition, false),
     psssCode('Alert_Threshold_Crossed', condition, true),
     psssCode('Alert_Threshold_Crossed', condition, false),
-  ]).flat();
+  ]);
 
   await db.runSql(`DELETE FROM indicator WHERE code IN (${arrayToDbString(codes)})`);
   await db.runSql(`DELETE FROM data_source WHERE code IN (${arrayToDbString(codes)})`);
