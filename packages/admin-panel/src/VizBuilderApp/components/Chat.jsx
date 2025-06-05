@@ -53,7 +53,7 @@ const MessageContent = styled.div`
 `;
 
 const MessageBubble = styled.div`
-  background: ${props => (props.isOwn ? 'white' : props.theme.palette.background.default)};
+  ${props => (props.isOwn ? 'background: white;' : '')};
   color: ${props => (props.isOwn ? 'inherit' : 'inherit')};
   padding: 12px 16px;
   ${props => (props.isOwn ? 'border-radius: 8px;' : '')};
@@ -71,14 +71,16 @@ const Textarea = styled(Input).attrs({
   autoComplete: 'none',
   id: 'userMessage',
   margin: 'none',
-  maxRows: 12,
-  minRows: 3,
+  rowsMax: 12,
+  rowsMin: 3,
   multiline: true,
   name: 'userMessage',
   required: true,
   variant: 'outlined',
 })`
   &.MuiInputBase-root {
+    overflow-y: auto;
+    height: 60px;
     background: white;
     padding-block: 0.75rem;
     padding-inline: 1rem;
@@ -98,8 +100,8 @@ const ButtonBar = styled.div`
 const UndoButton = styled(IconButton)``;
 
 const SubmitButton = styled(IconButton).attrs({ type: 'submit' })`
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 35px;
   border: none;
   background: ${props => props.theme.palette.primary.white};
   cursor: pointer;
@@ -107,6 +109,9 @@ const SubmitButton = styled(IconButton).attrs({ type: 'submit' })`
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  border-radius: 3px;
+  border: 1px solid ${props => props.theme.palette.primary.blue};
+  margin: 10px;
 
   &:disabled {
     background: #ccc;
@@ -119,7 +124,7 @@ const SubmitButton = styled(IconButton).attrs({ type: 'submit' })`
 `;
 
 // Main Chat Component
-export const Chat = ({ messages = [], onSendMessage, height = 600, width = 300 }) => {
+export const Chat = ({ messages = [], onSendMessage, height = 600, width = 310 }) => {
   const [input, setInput] = useState('');
 
   const handleSend = () => {
@@ -159,6 +164,12 @@ export const Chat = ({ messages = [], onSendMessage, height = 600, width = 300 }
         placeholder="Type any changes you’d like to make to the chart here…"
         value={input}
         disableUnderline={true}
+        onKeyDown={e => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+          }
+        }}
       />
       <ButtonBar>
         <UndoButton disabled>

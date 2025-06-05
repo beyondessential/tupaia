@@ -7,7 +7,7 @@ import { usePreviewDataContext } from '../../context';
 import { usePresentationConfigAssistantContext } from '../../context/PresentationConfigAssistant';
 
 const Wrapper = styled.article`
-  z-index: 90000;
+  z-index: 99999;
   block-size: 100%;
   background-color: oklch(97% 0 0);
   display: grid;
@@ -20,18 +20,17 @@ export const PresentationConfigAssistant = ({
   dataStructure,
   setPresentationValue,
 }) => {
+  const [currentMessage, setCurrentMessage] = useState(null);
   const { getVisualisationMessages, addVisualisationMessage } =
     usePresentationConfigAssistantContext();
   const { setFetchEnabled, setShowData } = usePreviewDataContext();
 
   const messages = getVisualisationMessages(visualisationCode);
-  const { data: completion } = usePromptMessageQuery(
-    messages[messages.length - 1]?.text,
-    dataStructure,
-  );
+  const { data: completion } = usePromptMessageQuery(currentMessage, dataStructure, {
+    enabled: !!currentMessage,
+  });
 
   useEffect(() => {
-    console.log('completionnn', completion);
     if (completion) {
       if (completion.status_code === 'success') {
         setPresentationValue(completion.presentationConfig);
@@ -43,11 +42,13 @@ export const PresentationConfigAssistant = ({
         text: completion.message,
         isOwn: false,
       });
+      setCurrentMessage(null);
     }
   }, [completion]);
 
   const onSubmit = userMessage => {
     if (userMessage) {
+      setCurrentMessage(userMessage.text);
       addVisualisationMessage(visualisationCode, userMessage);
     }
   };
