@@ -246,6 +246,7 @@ export const PreviewSection = () => {
             </EditorActionBar>
             {!showPresentationAsJson && presentationSchema ? (
               <PresentationConfigAssistant
+                visualisationCode={visualisationForFetchingData.code}
                 dataStructure={{ columns: transformedColumns }}
                 setPresentationValue={setPresentationValue}
               />

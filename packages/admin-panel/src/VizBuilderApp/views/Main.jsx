@@ -15,6 +15,7 @@ import {
   MAP_OVERLAY_VIZ_TYPES,
 } from '../constants';
 import { findVizType } from '../utils';
+import { PresentationConfigAssistantProvider } from '../context/PresentationConfigAssistant';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -92,11 +93,13 @@ export const Main = () => {
       <Toolbar />
       <Container maxWidth="xl">
         <PreviewDataProvider>
-          <Panel />
-          <RightCol>
-            <PreviewOptions />
-            <PreviewSection />
-          </RightCol>
+          <PresentationConfigAssistantProvider>
+            <Panel />
+            <RightCol>
+              <PreviewOptions />
+              <PreviewSection />
+            </RightCol>
+          </PresentationConfigAssistantProvider>
         </PreviewDataProvider>
       </Container>
     </VizConfigErrorProvider>

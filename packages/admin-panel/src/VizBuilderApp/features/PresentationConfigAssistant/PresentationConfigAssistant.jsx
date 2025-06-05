@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import { usePromptMessageQuery } from '../../api';
 import { Chat } from '../../components/Chat';
 import { usePreviewDataContext } from '../../context';
+import { usePresentationConfigAssistantContext } from '../../context/PresentationConfigAssistant';
 
 const Wrapper = styled.article`
+  z-index: 90000;
   block-size: 100%;
   background-color: oklch(97% 0 0);
   display: grid;
@@ -13,10 +15,16 @@ const Wrapper = styled.article`
   padding: 0.625rem;
 `;
 
-export const PresentationConfigAssistant = ({ dataStructure, setPresentationValue }) => {
-  const [messages, setMessages] = useState([]);
+export const PresentationConfigAssistant = ({
+  visualisationCode,
+  dataStructure,
+  setPresentationValue,
+}) => {
+  const { getVisualisationMessages, addVisualisationMessage } =
+    usePresentationConfigAssistantContext();
   const { setFetchEnabled, setShowData } = usePreviewDataContext();
 
+  const messages = getVisualisationMessages(visualisationCode);
   const { data: completion } = usePromptMessageQuery(
     messages[messages.length - 1]?.text,
     dataStructure,
@@ -30,13 +38,17 @@ export const PresentationConfigAssistant = ({ dataStructure, setPresentationValu
         setFetchEnabled(true);
         setShowData(true);
       }
-      setMessages([...messages, { id: Date.now(), text: completion.message, isOwn: false }]);
+      addVisualisationMessage(visualisationCode, {
+        id: Date.now(),
+        text: completion.message,
+        isOwn: false,
+      });
     }
   }, [completion]);
 
   const onSubmit = userMessage => {
     if (userMessage) {
-      setMessages([...messages, userMessage]);
+      addVisualisationMessage(visualisationCode, userMessage);
     }
   };
 
