@@ -86,7 +86,7 @@ const EditorActionBar = styled.header`
 `;
 
 const EditorContainer = styled.div`
-  width: 320px;
+  width: 330px;
   min-height: 500px;
   display: flex;
   flex-direction: column;
