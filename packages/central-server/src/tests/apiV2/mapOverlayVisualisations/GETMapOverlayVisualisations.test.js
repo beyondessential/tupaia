@@ -77,6 +77,7 @@ describe('GET map overlay visualisations', () => {
             dataServices: [{ isDataRegional: true }],
             legacy: false,
             entityAttributesFilter: {},
+            updatedAtSyncTick: modernMapOverlay.updated_at_sync_tick,
           },
           report: {
             code: modernReport.code,

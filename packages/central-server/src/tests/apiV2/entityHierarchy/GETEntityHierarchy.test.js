@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 
 import { findOrCreateDummyCountryEntity, findOrCreateRecords, generateId } from '@tupaia/database';
+import { FACT_CURRENT_SYNC_TICK } from '@tupaia/sync';
+
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -8,6 +10,8 @@ import {
 import { TestableApp, resetTestData } from '../../testUtilities';
 
 describe('GET entity hierarchy', () => {
+  const CURRENT_SYNC_TICK = '1';
+
   const ALT_PERMISSION_GROUP = 'Alternative';
   const PUBLIC_PERMISSION_GROUP = 'Public';
   const BES_ADMIN_POLICY = {
@@ -26,10 +30,12 @@ describe('GET entity hierarchy', () => {
     {
       code: 'test_project_1',
       id: generateId(),
+      updated_at_sync_tick: CURRENT_SYNC_TICK,
     },
     {
       code: 'test_project_2',
       id: generateId(),
+      updated_at_sync_tick: CURRENT_SYNC_TICK,
     },
   ];
 
@@ -37,6 +43,7 @@ describe('GET entity hierarchy', () => {
     id: generateId(),
     name: entity.code,
     canonical_types: '{country}',
+    updated_at_sync_tick: CURRENT_SYNC_TICK,
   }));
 
   const PROJECTS = PROJECT_ENTITY_HIERARCHIES.map((entityHierarchy, i) => ({
@@ -45,6 +52,7 @@ describe('GET entity hierarchy', () => {
     code: PROJECT_ENTITIES[i].code,
     entity_id: PROJECT_ENTITIES[i].id,
     permission_groups: `{${ALT_PERMISSION_GROUP}}`,
+    updated_at_sync_tick: CURRENT_SYNC_TICK,
   }));
 
   before(async () => {
@@ -64,6 +72,8 @@ describe('GET entity hierarchy', () => {
       project: PROJECTS,
       entityRelation: ENTITY_RELATIONS,
     });
+
+    await models.localSystemFact.updateOrCreate({ key: FACT_CURRENT_SYNC_TICK }, { value: CURRENT_SYNC_TICK });
   });
 
   afterEach(() => {
