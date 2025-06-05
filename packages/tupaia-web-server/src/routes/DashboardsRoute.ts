@@ -1,14 +1,16 @@
 import { Request } from 'express';
+import winston from 'winston';
+
 import { Route } from '@tupaia/server-boilerplate';
+import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 import {
-  Entity,
   DashboardItem,
-  TupaiaWebDashboardsRequest,
   DashboardMailingList,
   DashboardMailingListEntry,
+  Entity,
+  TupaiaWebDashboardsRequest,
 } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
-import { camelcaseKeys, ensure } from '@tupaia/tsutils';
 
 interface DashboardMailingListWithEntityCode extends DashboardMailingList {
   'entity.code': string;
@@ -63,6 +65,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
   };
 
   public async buildResponse() {
+    winston.debug('[DashboardsRoute] start');
+    const tic = performance.now();
     const {
       accessPolicy,
       ctx,
@@ -70,6 +74,9 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       params: { projectCode, entityCode },
       session,
     } = this.req;
+    winston.debug(`[DashboardsRoute] params
+projectCode: ${projectCode}
+entityCode: ${entityCode}`);
 
     // We're including the root entity in this request, so we don't need to double up fetching it
     const entities: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
@@ -79,18 +86,29 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       true,
     );
     const rootEntity = ensure(entities.find(e => e.code === entityCode));
+    winston.debug(`[DashboardsRoute] rootEntity: ${rootEntity.code}`);
 
     const rootEntityPermissions = rootEntity.country_code
       ? accessPolicy.getPermissionGroups([rootEntity.country_code])
       : accessPolicy.getPermissionGroups(); // country_code is null for project level
+    winston.debug(
+      `[DashboardsRoute] ${rootEntityPermissions.length} rootEntityPermissions: ${rootEntityPermissions.join(', ')}`,
+    );
 
     const entityCodes = entities.map(e => e.code);
+    winston.debug(`[DashboardsRoute] ${entityCodes.length} entityCodes: ${entityCodes.join(' ')}`);
     const dashboards = await models.dashboard.find(
       { root_entity_code: entityCodes },
       { sort: ['sort_order ASC', 'name ASC'] },
     );
+    winston.debug(
+      `[DashboardsRoute] ${dashboards.length} dashboards ${dashboards.map(d => d.code).join(' ')}`,
+    );
 
     if (dashboards.length === 0) {
+      winston.debug(
+        `[DashboardsRoute] No dashboards. Returning no-data dashboard ${NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE}`,
+      );
       return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
     }
 
@@ -103,6 +121,9 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         rootEntity.code,
         projectCode,
       );
+    winston.debug(
+      `[DashboardsRoute] ${dashboardRelations.length} dashboardRelations: ${dashboardRelations.map(dr => dr.id).join(' ')}`,
+    );
 
     // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems: DashboardItem[] = await ctx.services.central.fetchResources(
@@ -117,6 +138,9 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         // Override the default limit of 100 records
         pageSize: DEFAULT_PAGE_SIZE,
       },
+    );
+    winston.debug(
+      `[DashboardsRoute] ${dashboardItems.length} dashboardItems: ${dashboardItems.map(di => di.code).join(' ')}`,
     );
 
     // Merged and sorted to make mapping easier
@@ -137,6 +161,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         ({ item }) => item.config?.name,
       ],
     );
+    winston.debug(`[DashboardsRoute] ${mergedItemRelations.length} mergedItemRelations`);
 
     const dashboardMailingLists: DashboardMailingListWithEntityCode[] =
       await ctx.services.central.fetchResources('dashboardMailingLists', {
@@ -163,6 +188,9 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           pageSize: DEFAULT_PAGE_SIZE,
         })
       : [];
+    winston.debug(
+      `[DashboardsRoute] dashboardMailingListEntries: ${dashboardMailingListEntries.map(e => e.id).join(' ')}`,
+    );
 
     const mailingLists = dashboardMailingLists.map(list => ({
       dashboardId: list.dashboard_id,
@@ -181,6 +209,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           )
         : false,
     }));
+    winston.debug(`[DashboardsRoute] ${mailingLists.length} mailingLists`);
 
     const dashboardsWithMetadata = dashboards.map(rawDashboard => {
       // but we can't strip it because typescript doesn't know about it
@@ -204,15 +233,24 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     });
 
     const response = dashboardsWithMetadata.filter(dashboard => dashboard.items.length > 0);
+    winston.debug(
+      `[DashboardsRoute] response:
+${response.map(r => `  ${r.code} (${r.items.length} items)`).join('\n')}`,
+    );
 
     if (response.length === 0) {
       const dashboardCode =
         dashboardRelations.length > 0
           ? NO_ACCESS_DASHBOARD_ITEM_CODE
           : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
+      winston.debug(
+        `[DashboardsRoute] Empty response. Returning no-data dashboard ${dashboardCode}`,
+      );
       return this.getNoDataDashboard(rootEntity.code, dashboardCode);
     }
 
+    const toc = performance.now();
+    winston.debug(`[DashboardsRoute] returning response after ${toc - tic} ms`);
     return camelcaseKeys(response, {
       deep: true,
       stopPaths: [
