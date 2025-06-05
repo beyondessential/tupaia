@@ -34,19 +34,18 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
  * @param {string} errorMessage
  */
 export const assertAnyPermissions = (assertions, errorMessage) => async accessPolicy => {
-  const combinedErrorMessages = ['One of the following conditions need to be satisfied:'];
+  let combinedErrorMessages = `One of the following conditions need to be satisfied:\n`;
 
   for (const assertion of assertions) {
     try {
       await assertion(accessPolicy);
       return true;
     } catch (e) {
-      combinedErrorMessages.push(e.message);
+      combinedErrorMessages += `${e.message}\n`;
       // swallow specific errors, in case any assertion returns true
     }
   }
-
-  throw new Error(errorMessage || combinedErrorMessages.join('\n'));
+  throw new Error(errorMessage || combinedErrorMessages);
 };
 
 /**
