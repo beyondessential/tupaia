@@ -14,12 +14,13 @@ interface DashboardMailingListWithEntityCode extends DashboardMailingList {
   'entity.code': string;
 }
 
-export type DashboardsRequest = Request<
-  TupaiaWebDashboardsRequest.Params,
-  TupaiaWebDashboardsRequest.ResBody,
-  TupaiaWebDashboardsRequest.ReqBody,
-  TupaiaWebDashboardsRequest.ReqQuery
->;
+export interface DashboardsRequest
+  extends Request<
+    TupaiaWebDashboardsRequest.Params,
+    TupaiaWebDashboardsRequest.ResBody,
+    TupaiaWebDashboardsRequest.ReqBody,
+    TupaiaWebDashboardsRequest.ReqQuery
+  > {}
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
 const NO_ACCESS_DASHBOARD_ITEM_CODE = 'no_access';
