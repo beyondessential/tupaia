@@ -172,15 +172,14 @@ export const createSurveyResponses = async (models, responsesBySurvey) => {
   const surveyCodeToId = reduceToDictionary(surveys, 'code', 'id');
 
   const responseRecords = Object.entries(responsesBySurvey)
-    .map(([surveyCode, responses]) =>
+    .flatMap(([surveyCode, responses]) =>
       responses.map(({ id, entityCode }) => ({
         id,
         survey_id: surveyCodeToId[surveyCode],
         user_id: user.id,
         entity_id: entityCodeToId[entityCode],
       })),
-    )
-    .flat();
+    );
 
   await findOrCreateRecords(models, { surveyResponse: responseRecords });
 };

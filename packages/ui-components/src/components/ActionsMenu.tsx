@@ -1,19 +1,21 @@
-import React from 'react';
 import {
-  IconButton as MuiIconButton,
   ListItemIcon,
+  IconButton as MuiIconButton,
   Menu as MuiMenu,
   MenuItem as MuiMenuItem,
   Tooltip,
   Typography,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import React from 'react';
 import styled from 'styled-components';
 import { ActionsMenuOptionType } from '../types';
+import { VisuallyHidden } from './VisuallyHidden';
 
 const StyledMenu = styled(MuiMenu)`
   .MuiPaper-root {
-    border: 1px solid ${props => props.theme.palette.divider};
+    border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+    min-inline-size: 8rem;
   }
   .MuiList-root {
     padding: 0.2rem;
@@ -21,9 +23,10 @@ const StyledMenu = styled(MuiMenu)`
 `;
 
 const StyledMenuItem = styled(MuiMenuItem)`
-  padding: 0.3rem 0.3rem;
-  font-size: 0.75rem;
-  min-width: 5rem;
+  ${props => props.theme.breakpoints.up('md')} {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
 `;
 
 const StyledMenuIcon = styled(MoreVertIcon)`
@@ -34,7 +37,7 @@ const StyledMenuIcon = styled(MoreVertIcon)`
   }
 `;
 
-type ActionMenuProps = {
+interface ActionMenuProps {
   options: ActionsMenuOptionType[];
   includesIcons?: boolean;
   anchorOrigin?: {
@@ -46,7 +49,7 @@ type ActionMenuProps = {
     horizontal?: 'left' | 'right';
   };
   IconButton?: typeof MuiIconButton;
-};
+}
 
 export const ActionsMenu = ({
   options,
@@ -58,8 +61,9 @@ export const ActionsMenu = ({
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   return (
     <>
-      <IconButton aria-label="Open menu" onClick={event => setAnchorEl(event.currentTarget)}>
-        <StyledMenuIcon />
+      <IconButton onClick={event => setAnchorEl(event.currentTarget)}>
+        <StyledMenuIcon aria-hidden />
+        <VisuallyHidden>Open menu</VisuallyHidden>
       </IconButton>
       <StyledMenu
         keepMounted

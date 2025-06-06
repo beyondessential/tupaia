@@ -82,7 +82,7 @@ const mergeAnswersInResponseGroup = (responses, answersByResponseId) => {
 };
 
 const selectAnswersForResponseGroups = async (db, responseGroups) => {
-  const responseIds = responseGroups.map(group => group.map(r => r.id)).flat();
+  const responseIds = responseGroups.flatMap(group => group.map(r => r.id));
   const { rows: answers } = await db.runSql(`
     select * from answer where survey_response_id IN (${arrayToDbString(responseIds)});
   `);
@@ -95,8 +95,8 @@ const processResponseGroups = async (db, responseGroupBatch) => {
     mergeAnswersInResponseGroup(responseGroup, answerByResponseId),
   );
 
-  const responseIdsToDelete = mergeData.map(r => r.responseIdsToDelete).flat();
-  const answersToCreate = mergeData.map(d => d.answersToCreate).flat();
+  const responseIdsToDelete = mergeData.flatMap(r => r.responseIdsToDelete);
+  const answersToCreate = mergeData.flatMap(d => d.answersToCreate);
   await deleteResponses(db, responseIdsToDelete);
   await createAnswers(db, answersToCreate);
 };

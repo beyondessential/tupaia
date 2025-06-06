@@ -104,15 +104,14 @@ export class SurveyResponseUpdatePersistor {
             ({ newSurveyResponse }) => newSurveyResponse,
           );
           const newAnswers = batchOfCreates
-            .map(({ answers }) =>
+            .flatMap(({ answers }) =>
               answers.upserts.map(({ surveyResponseId, questionId, type, text }) => ({
                 survey_response_id: surveyResponseId,
                 question_id: questionId,
                 type,
                 text,
               })),
-            )
-            .flat();
+            );
           await transactingModels.surveyResponse.createMany(newSurveyResponses);
           await transactingModels.answer.createMany(newAnswers);
         });

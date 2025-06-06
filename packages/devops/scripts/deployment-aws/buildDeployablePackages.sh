@@ -21,6 +21,13 @@ chmod 755 node_modules/@babel/cli/bin/babel.js
 # packages' dists are not rebuilt. This will be fixed by changing to a single yarn:build command in a future PR.
 yarn build:internal-dependencies
 
+if ! bw --version; then
+    echo "Bad Bitwarden CLI version installed (probably 2025.5). Replacing with 2025.4..."
+    npm uninstall --global @bitwarden/cli
+    npm install --global @bitwarden/cli@2025.4.0
+    echo "Bitwarden CLI $(bw --version) is installed"
+fi
+
 # Inject environment variables from Bitwarden
 BW_CLIENTID="$("$DIR/fetchParameterStoreValue.sh" BW_CLIENTID)"
 BW_CLIENTSECRET="$("$DIR/fetchParameterStoreValue.sh" BW_CLIENTSECRET)"

@@ -2,23 +2,21 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 
-import { LoadingScreen } from '@tupaia/ui-components';
+import { LoadingScreen, SafeAreaColumn } from '@tupaia/ui-components';
 
-import { PageContainer as BasePageContainer } from '../components';
-import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
+import { useIsMobile } from '../utils';
 
-const HeaderLessFullHeightContainer = styled.div`
-  block-size: calc(100dvb - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
+const Container = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
 `;
 
-const PageContainer = styled(BasePageContainer)`
+const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   padding-block-start: 0.75rem;
-  padding-inline: 0.3rem;
   max-height: 100%;
   ${LoadingScreen} {
     border: none;
@@ -26,23 +24,28 @@ const PageContainer = styled(BasePageContainer)`
   }
 `;
 
-export const TasksContentWrapper = styled.div`
-  padding-inline: 2.7rem;
-  flex: 1;
+export const TasksContentWrapper = styled(SafeAreaColumn)`
   display: flex;
   flex-direction: column;
-
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    padding-inline: 0.6rem;
-  }
+  flex: 1;
 `;
 
 export const TasksLayout = () => {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <Container>
+        <Outlet />
+      </Container>
+    );
+  }
+
   return (
-    <HeaderLessFullHeightContainer>
+    <Container>
       <PageContainer>
         <Outlet />
       </PageContainer>
-    </HeaderLessFullHeightContainer>
+    </Container>
   );
 };
