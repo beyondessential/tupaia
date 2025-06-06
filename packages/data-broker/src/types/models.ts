@@ -144,7 +144,7 @@ export type DataSourceTypeInstance = DataSource & {
     | typeof RECORDS.DATA_SERVICE_SYNC_GROUP;
 };
 type DataElementRecord = DatabaseRecord<DataElement, BaseDataElementRecord>;
-export type EntityRecord = DatabaseRecord<Entity, BaseEntityRecord>;
+export interface EntityRecord extends DatabaseRecord<Entity, BaseEntityRecord> {}
 
 export type DataElementModel = DatabaseModel<
   DataElement,

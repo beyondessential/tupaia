@@ -1,3 +1,4 @@
+export { useBottomNavigationVisibility } from '../components/BottomNavigation/useBottomNavigationVisibility';
 export * from './date';
 export * from './detectDevice';
 export { isWebApp } from './displayMode';
@@ -8,14 +9,8 @@ export {
   useIsDesktopSizeClass as useIsDesktop,
   useIsMobileSizeClass as useIsMobile,
 } from './sizeClasses';
-export {
-  getTaskFilterSetting,
-  removeTaskFilterSetting,
-  setTaskFilterSetting,
-} from './taskFilterSettings';
 export { errorToast, infoToast, successToast } from './toast';
 export { isEmptyArray, isNonEmptyArray, isNotNullish, isNullish } from './typeGuards';
 export { useBeforeUnload } from './useBeforeUnload';
-export { useBottomNavigationVisibility } from '../components/BottomNavigation/useBottomNavigationVisibility';
 export { useHasVideoInput } from './useHasVideoInput';
 export { useFromLocation } from './useLocationState';

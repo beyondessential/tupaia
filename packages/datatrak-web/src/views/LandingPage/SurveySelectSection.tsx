@@ -2,6 +2,8 @@ import { Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 
+import { VisuallyHidden } from '@tupaia/ui-components';
+
 import { ButtonLink as BaseButtonLink, ButtonAnchor } from '../../components';
 import { ROUTES } from '../../constants';
 import { useIsMobile } from '../../utils';
@@ -64,20 +66,6 @@ const Text = styled(Typography)`
   font-size: inherit;
   line-height: 1.5;
   max-inline-size: 38rem;
-`;
-
-const VisuallyHidden = styled.span`
-  &:not(:focus):not(:active) {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: auto;
-    margin: 0;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
 `;
 
 /**

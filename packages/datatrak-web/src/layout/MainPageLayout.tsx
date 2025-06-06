@@ -35,6 +35,18 @@ const PageWrapper = styled.div`
   }
 `;
 
+const mobileHeaderlessRoutes = [
+  `${ROUTES.SURVEY}/*`,
+  ROUTES.ACCOUNT_SETTINGS,
+  ROUTES.MOBILE_USER_MENU,
+  ROUTES.SURVEY_SELECT,
+  ROUTES.SYNC,
+  ROUTES.TASK_DETAILS,
+  ROUTES.TASKS,
+  ROUTES.WELCOME,
+];
+const desktopHeaderlessRoutes = [ROUTES.WELCOME];
+
 const Nav = styled(BottomNavigation)`
   inset-block-end: 0;
   inset-inline-end: 0;
@@ -44,20 +56,8 @@ const Nav = styled(BottomNavigation)`
 
 const useHeaderVisibility = () => {
   const { pathname } = useLocation();
-
-  const mobileHeaderlessRoutes = [
-    `${ROUTES.SURVEY}/*`,
-    ROUTES.ACCOUNT_SETTINGS,
-    ROUTES.MOBILE_USER_MENU,
-    ROUTES.SURVEY_SELECT,
-    ROUTES.WELCOME,
-  ];
-  if (useIsMobile()) {
-    return !mobileHeaderlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
-  }
-  const desktopHeaderlessRoutes = [ROUTES.WELCOME];
-
-  return !desktopHeaderlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
+  const headerlessRoutes = useIsMobile() ? mobileHeaderlessRoutes : desktopHeaderlessRoutes;
+  return !headerlessRoutes.some(pathPattern => matchPath(pathPattern, pathname));
 };
 
 export const MainPageLayout = () => {
@@ -68,7 +68,6 @@ export const MainPageLayout = () => {
       {showHeader && <Header />}
       <Outlet />
       {showBottomNavigation && <Nav />}
-
       <SurveyResponseModal />
     </PageWrapper>
   );

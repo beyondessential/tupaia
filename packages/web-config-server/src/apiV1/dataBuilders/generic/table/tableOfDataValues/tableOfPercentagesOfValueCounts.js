@@ -6,8 +6,7 @@ class TableOfPercentagesOfValueCountsBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = this.config.cells
       .flat()
-      .map(cell => cell.numerator.dataValues.concat(cell.denominator.dataValues))
-      .flat();
+      .flatMap(cell => cell.numerator.dataValues.concat(cell.denominator.dataValues));
     return [...new Set(dataElementCodes)];
   }
 

@@ -48,7 +48,6 @@
     "compare-versions": "^6.1.0",
     "cors": "^2.8.5",
     "countries-and-timezones": "^3.6.0",
-    "countrynames": "^0.1.1",
     "date-fns": "^2.29.2",
     "del": "^2.2.2",
     "express": "^4.19.2",
