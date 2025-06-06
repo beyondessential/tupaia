@@ -1,7 +1,7 @@
 import nodeFetch from 'node-fetch';
 import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
-import { CustomError } from '@tupaia/utils';
+import { CustomError, RespondingError } from '@tupaia/utils';
 import { QueryParameters, AuthHandler } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
@@ -108,16 +108,28 @@ export class ApiConnection {
 
     if (!response.ok) {
       console.debug(`[ApiConnection]   not OK`);
-      const responseJson = await response.json();
-      throw new CustomError(
-        {
-          responseText: `API error ${response.status}: ${
-            responseJson.error || responseJson.message
-          }`,
-          responseStatus: response.status,
-        },
-        {},
-      );
+      const contentType = response.headers.get('content-type');
+      if (contentType?.includes('application/json')) {
+        const responseJson = await response.json();
+        throw new CustomError(
+          {
+            responseText: `API error ${response.status}: ${
+              responseJson.error || responseJson.message
+            }`,
+            responseStatus: response.status,
+          },
+          {},
+        );
+      }
+
+      if (contentType?.includes('text/')) {
+        const responseText = await response.text();
+        throw new RespondingError(
+          `Expected application/json response but received ${contentType}`,
+          response.status,
+          { responseText },
+        );
+      }
     }
   }
 
