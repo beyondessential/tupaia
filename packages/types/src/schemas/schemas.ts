@@ -86392,9 +86392,6 @@ export const CamelCaseFeedItemSchema = {
 		"id": {
 			"type": "string"
 		},
-		"updatedAtSyncTick": {
-			"type": "number"
-		},
 		"userId": {
 			"type": "string"
 		},
@@ -86687,8 +86684,7 @@ export const CamelCaseFeedItemSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"id",
-		"updatedAtSyncTick"
+		"id"
 	]
 } 
 
