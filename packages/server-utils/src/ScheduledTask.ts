@@ -7,7 +7,10 @@ export interface DatabaseInterface {
    * @param callback Function to execute within the transaction
    * @returns Promise that resolves when the transaction is complete
    */
-  wrapInTransaction<T>(callback: (transactingModels: DatabaseInterface) => Promise<T>): Promise<T>;
+  wrapInTransaction<T>(
+    callback: (transactingModels: DatabaseInterface) => Promise<T | void>,
+    transactionConfig?: object,
+  ): Promise<T | void>;
 
   /**
    * Database instance with advisory lock functionality

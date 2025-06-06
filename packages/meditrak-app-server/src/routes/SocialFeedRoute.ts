@@ -46,6 +46,7 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
         hasPigs: false, // this can be set to true if the meditrak-app table is fixed
         leaderboard,
       },
+      updated_at_sync_tick: leaderboard.updated_at_sync_tick,
     };
   }
 
