@@ -16,9 +16,8 @@ export type ResBody = {
   pageNumber: number;
   hasMorePages: boolean;
   items: CamelCaseFeedItem[];
-  pinned?: Omit<CamelCaseFeedItem, 'type' | 'templateVariables'> & {
+  pinned?: Omit<CamelCaseFeedItem, 'type' | 'templateVariables' | 'updatedAtSyncTick'> & {
     type: FeedItemTypes.Markdown;
-    templateVariables: MarkdownTemplateVariables;
   };
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
