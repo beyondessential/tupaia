@@ -6,7 +6,7 @@ import {
   MarkdownTemplateVariables,
 } from '../../models-extra';
 
-type FeedItem = Omit<BaseFeedItem, 'template_variables'> & {
+type FeedItem = Omit<BaseFeedItem, 'template_variables' | 'updated_at_sync_tick'> & {
   template_variables?: FeedItemTemplateVariables;
 };
 type CamelCaseFeedItem = KeysToCamelCase<FeedItem>;
@@ -16,9 +16,9 @@ export type ResBody = {
   pageNumber: number;
   hasMorePages: boolean;
   items: CamelCaseFeedItem[];
-  pinned?: Omit<CamelCaseFeedItem, 'type' | 'templateVariables' | 'updatedAtSyncTick'> & {
+  pinned?: Omit<CamelCaseFeedItem, 'type' | 'templateVariables'> & {
     type: FeedItemTypes.Markdown;
-    templateVariables?: MarkdownTemplateVariables;
+    templateVariables: MarkdownTemplateVariables;
   };
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
