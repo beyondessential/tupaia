@@ -5,9 +5,11 @@ import { findOrCreateRecords } from './upsertDummyRecord';
 
 export const setupTest = async (
   models,
-  { dbRecords = {}, currentSyncTickFact = {}, surveys = [], surveyResponses = [] },
+  { dbRecords = {}, surveys = [], surveyResponses = [], currentSyncTickFact },
 ) => {
-  await models.localSystemFact.updateOrCreate({ key: 'currentSyncTick' }, currentSyncTickFact);
+  if (currentSyncTickFact) {
+    await models.localSystemFact.updateOrCreate({ key: 'currentSyncTick' }, currentSyncTickFact);
+  }
   await findOrCreateRecords(models, dbRecords);
   await buildAndInsertSurveys(models, surveys);
   await buildAndInsertSurveyResponses(models, surveyResponses);
