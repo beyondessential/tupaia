@@ -106,30 +106,30 @@ export class ApiConnection {
       response.headers.get('content-type'),
     );
 
-    if (!response.ok) {
-      console.debug(`[ApiConnection]   not OK`);
-      const contentType = response.headers.get('content-type');
-      if (contentType?.includes('application/json')) {
-        const responseJson = await response.json();
-        throw new CustomError(
-          {
-            responseText: `API error ${response.status}: ${
-              responseJson.error || responseJson.message
-            }`,
-            responseStatus: response.status,
-          },
-          {},
-        );
-      }
+    if (response.ok) return;
 
-      if (contentType?.includes('text/')) {
-        const responseText = await response.text();
-        throw new RespondingError(
-          `Expected application/json response but received ${contentType}`,
-          response.status,
-          { responseText },
-        );
-      }
+    console.debug(`[ApiConnection]   not OK`);
+    const contentType = response.headers.get('content-type');
+    if (contentType?.includes('application/json')) {
+      const responseJson = await response.json();
+      throw new CustomError(
+        {
+          responseText: `API error ${response.status}: ${
+            responseJson.error || responseJson.message
+          }`,
+          responseStatus: response.status,
+        },
+        {},
+      );
+    }
+
+    if (contentType?.includes('text/')) {
+      const responseText = await response.text();
+      throw new RespondingError(
+        `Expected application/json response but received ${contentType}`,
+        response.status,
+        { responseText },
+      );
     }
   }
 
