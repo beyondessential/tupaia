@@ -57,6 +57,7 @@ export class ApiConnection {
     queryParameters?: QueryParameters | null,
     body?: RequestBody | null,
   ) {
+    const tic = performance.now();
     const queryUrl = this.stringifyQuery(this.baseUrl, endpoint, queryParameters || {});
     const fetchConfig: FetchConfig = {
       method: requestMethod || 'GET',
@@ -69,13 +70,21 @@ export class ApiConnection {
       fetchConfig.body = JSON.stringify(body);
     }
 
+    console.debug(`\n[ApiConnection#request] fetching with timeout`, decodeURI(queryUrl));
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
+    console.debug(`[ApiConnection#request] fetched`, decodeURI(queryUrl).substring(0, 60));
+
     await this.verifyResponse(response);
+    console.debug(`[ApiConnection#request] response verified`);
     const contentType = response.headers.get('content-type');
     if (contentType?.includes('application/json')) {
+      const toc = performance.now();
+      console.debug(`[ApiConnection#request] responding with JSON after ${toc - tic} ms`);
       return response.json();
     }
+    const toc = performance.now();
     // If the content isn't json we expect the receiving code to parse it
+    console.debug(`[ApiConnection#request] returning response object after ${toc - tic} ms`);
     return response;
   }
 
@@ -88,7 +97,17 @@ export class ApiConnection {
   }
 
   private async verifyResponse(response: Response): Promise<void> {
+    console.debug(`[ApiConnection#verifyResponse] verifying response`);
+    console.debug(`[ApiConnection#verifyResponse]   URL   `, response.url);
+    console.debug(`[ApiConnection#verifyResponse]   status`, response.status, response.statusText);
+    console.debug(`[ApiConnection#verifyResponse]   size  `, response.size);
+    console.debug(
+      `[ApiConnection#verifyResponse]   content-type`,
+      response.headers.get('content-type'),
+    );
+
     if (!response.ok) {
+      console.debug(`[ApiConnection]   not OK`);
       const responseJson = await response.json();
       throw new CustomError(
         {
