@@ -17,7 +17,7 @@ import {
   filterItemFields,
   replaceItemsCountryWithCountryId,
 } from './helper';
-import { COUNTRIES, FEED_ITEMS, GONDOR } from './SocialFeedRoute.fixtures';
+import { COUNTRIES, CURRENT_SYNC_TICK, FEED_ITEMS, GONDOR } from './SocialFeedRoute.fixtures';
 
 describe('socialFeed', () => {
   const CURRENT_DATE_STUB = '2020-12-15T00:00:00.000Z';
@@ -46,6 +46,12 @@ describe('socialFeed', () => {
       COUNTRIES.map(async country => {
         return findOrCreateDummyCountryEntity(models, country);
       }),
+    );
+
+    await findOrCreateDummyRecord(
+      models.localSystemFact,
+      { key: 'currentSyncTick' },
+      { value: CURRENT_SYNC_TICK },
     );
 
     insertedCountries.forEach(({ country }) => {
