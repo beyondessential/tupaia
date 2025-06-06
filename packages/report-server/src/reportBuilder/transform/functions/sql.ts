@@ -15,8 +15,6 @@ export const paramsValidator = yup.object().shape({
 const sqlTransform = (table: TransformTable, params: SqlParams) => {
   const { sql } = params;
 
-  // console.log('alasql', alasql);
-
   // Insert the table
   alasql('DROP TABLE IF EXISTS transform_table');
   alasql('CREATE TABLE transform_table');
