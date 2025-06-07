@@ -42,16 +42,16 @@ describe('socialFeed', () => {
     MockDate.set(CURRENT_DATE_STUB);
     const models = getTestModels() as TestModelRegistry;
 
-    const insertedCountries = await Promise.all(
-      COUNTRIES.map(async country => {
-        return findOrCreateDummyCountryEntity(models, country);
-      }),
-    );
-
     await findOrCreateDummyRecord(
       models.localSystemFact,
       { key: 'currentSyncTick' },
       { value: CURRENT_SYNC_TICK },
+    );
+    
+    const insertedCountries = await Promise.all(
+      COUNTRIES.map(async country => {
+        return findOrCreateDummyCountryEntity(models, country);
+      }),
     );
 
     insertedCountries.forEach(({ country }) => {
