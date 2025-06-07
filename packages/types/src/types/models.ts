@@ -1290,7 +1290,6 @@ export interface PermissionsBasedMeditrakSyncQueue {
   'record_id'?: string | null;
   'record_type'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string | null;
 }
 export interface PermissionsBasedMeditrakSyncQueueCreate {
   'change_time'?: number | null;
@@ -1300,7 +1299,6 @@ export interface PermissionsBasedMeditrakSyncQueueCreate {
   'record_id'?: string | null;
   'record_type'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string | null;
 }
 export interface PermissionsBasedMeditrakSyncQueueUpdate {
   'change_time'?: number | null;
@@ -1310,7 +1308,6 @@ export interface PermissionsBasedMeditrakSyncQueueUpdate {
   'record_id'?: string | null;
   'record_type'?: string | null;
   'type'?: string | null;
-  'updated_at_sync_tick'?: string | null;
 }
 export interface Project {
   'code': string;

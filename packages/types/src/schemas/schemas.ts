@@ -82079,9 +82079,6 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 		},
 		"type": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -82116,9 +82113,6 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 		},
 		"type": {
 			"type": "string"
-		},
-		"updated_at_sync_tick": {
-			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -82152,9 +82146,6 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"type": "string"
-		},
-		"updated_at_sync_tick": {
 			"type": "string"
 		}
 	},
