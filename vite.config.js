@@ -54,7 +54,13 @@ export default defineConfig(({ command, mode }) => {
       commonjs(),
     ],
     define: { ...clientEnv, __dirname: JSON.stringify('/') },
-    server: { open: true },
+    server: {
+      open: true,
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+      },
+    },
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
       conditions: ['browser'],
@@ -94,6 +100,7 @@ export default defineConfig(({ command, mode }) => {
           ),
           '@tupaia/ui-components': path.resolve(__dirname, './packages/ui-components/src/index.ts'),
           '@tupaia/database': path.resolve(__dirname, './packages/database/src/browser/index.js'),
+          '@tupaia/sync': path.resolve(__dirname, './packages/sync/src/index.ts'),
         },
       },
     };

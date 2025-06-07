@@ -1,8 +1,10 @@
+import knex, { Knex, KnexTimeoutError } from 'knex';
 import autobind from 'react-autobind';
-import knex from 'knex';
 import winston from 'winston';
-import { Multilock } from '@tupaia/utils';
+
 import { hashStringToInt } from '@tupaia/tsutils';
+import { Multilock, getEnvVarOrDefault } from '@tupaia/utils';
+
 import { generateId } from './utilities';
 import {
   MAX_BINDINGS_PER_QUERY,
@@ -67,12 +69,20 @@ const RAW_INPUT_PATTERN = /(^CASE)|(^to_timestamp)/;
 export class BaseDatabase {
   static IS_CHANGE_HANDLER_SUPPORTED = false;
 
-  constructor(
-    transactingConnection,
-    transactingChangeChannel,
-    clientType,
-    getConnectionConfigFn,
-  ) {
+  /**
+   * @privateRemarks No special maths for the default value here, just hand-tuned with a remote dev database to
+   * allow the vast majority of queries through. Only COUNT queries on survey_response from accounts
+   * without admin privileges are really expected to time out.
+   */
+  #fastCountTimeoutMs = Number.parseInt(getEnvVarOrDefault('FAST_DB_COUNT_TIMEOUT_MS', '400'));
+
+  /**
+   * If true, always uses `count()` method, even when `countFast()` is called.
+   * @type {boolean}
+   */
+  #forceTrueCount = !!getEnvVarOrDefault('FORCE_TRUE_DB_COUNT', '');
+
+  constructor(transactingConnection, transactingChangeChannel, clientType, getConnectionConfigFn) {
     if (this.constructor === BaseDatabase) {
       throw new Error('Cannot instantiate abstract BaseDatabase class');
     }
@@ -114,6 +124,18 @@ export class BaseDatabase {
     await this.connectionPromise;
   }
 
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.connection.transaction(
+      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+      transactionConfig,
+    );
+  }
+
   async fetchSchemaForTable(databaseRecord, schemaName) {
     await this.waitUntilConnected();
     return this.connection(databaseRecord).withSchema(schemaName).columnInfo();
@@ -132,9 +154,9 @@ export class BaseDatabase {
    * (https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)
    * @param {string} lockKey unique identifier key for the lock
    */
-  async acquireAdvisoryLockForTransaction(lockKey) {
+  async acquireAdvisoryLock(lockKey) {
     const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
-    return this.executeSql(`SELECT pg_advisory_xact_lock(?)`, [lockKeyInt]);
+    return this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
   }
 
   /**
@@ -235,7 +257,29 @@ export class BaseDatabase {
   async count(recordType, where, options) {
     // If just a simple query without options, use the more efficient knex count method
     const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
-    return parseInt(result[0].count, 10);
+    return Number.parseInt(result[0].count, 10);
+  }
+
+  /**
+   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact record
+   * count is merely an enhancement, not critical information in the context. A return value of
+   * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
+   */
+  async countFast(recordType, where, options) {
+    if (this.#forceTrueCount) return await this.count(recordType, where, options);
+
+    let result;
+    try {
+      result = await this.find(recordType, where, options, QUERY_METHODS.COUNT).timeout(
+        this.#fastCountTimeoutMs,
+        { cancel: true },
+      );
+    } catch (error) {
+      if (error instanceof KnexTimeoutError) return Number.POSITIVE_INFINITY;
+      throw error;
+    }
+
+    return Number.parseInt(result[0].count, 10);
   }
 
   async create(recordType, record, where, schemaName) {

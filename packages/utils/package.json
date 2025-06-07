@@ -23,6 +23,7 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
+    "@aws-sdk/abort-controller": "^3.341.0",
     "@aws-sdk/client-s3": "^3.341.0",
     "@aws-sdk/credential-providers": "^3.341.0",
     "@aws-sdk/lib-storage": "^3.348.0",
@@ -43,7 +44,7 @@
     "rrule": "^2.8.1",
     "sanitize-filename": "^1.6.3",
     "validator": "^13.11.0",
-    "winston": "^3.3.3",
+    "winston": "^3.17.0",
     "xlsx": "^0.18.5",
     "yup": "^0.32.9"
   },

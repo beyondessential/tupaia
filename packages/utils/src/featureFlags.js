@@ -1,4 +1,4 @@
-import { requireEnv, getEnvVarOrDefault } from './requireEnv';
+import { getEnvVarOrDefault, requireEnv } from './requireEnv';
 
 export const FEATURE_FLAG_ON = 'on';
 export const FEATURE_FLAG_OFF = 'off';
@@ -8,6 +8,9 @@ const FLAGS = {
     default: FEATURE_FLAG_ON,
   },
   SERVER_CHANGE_ENQUEUER: {
+    default: FEATURE_FLAG_OFF,
+  },
+  DATATRAK_OFFLINE: {
     default: FEATURE_FLAG_OFF,
   },
 };

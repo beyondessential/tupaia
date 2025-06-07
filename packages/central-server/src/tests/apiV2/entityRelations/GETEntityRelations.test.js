@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 
 import { findOrCreateDummyRecord } from '@tupaia/database';
+import { FACT_CURRENT_SYNC_TICK } from '@tupaia/sync';
+
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
@@ -18,6 +20,7 @@ describe('GET entity relations', () => {
   let exploreToFiji;
   let fijiToDistrict;
   let kiribatiToDistrict;
+  let currentSyncTickFact;
 
   const findOrCreateEntitiesAndRelations = async ({ parent, child, entityHierarchyId }) => {
     const parentEntity = await findOrCreateDummyRecord(models.entity, parent);
@@ -36,6 +39,10 @@ describe('GET entity relations', () => {
   };
 
   before(async () => {
+    currentSyncTickFact = await findOrCreateDummyRecord(models.localSystemFact, {
+      key: FACT_CURRENT_SYNC_TICK,
+    });
+
     exploreHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
       name: 'explore',
     });
@@ -66,11 +73,14 @@ describe('GET entity relations', () => {
       await app.grantAccess(FIJI_POLICY);
       const { body: result } = await app.get(`entityRelations/${exploreToFiji.relation.id}`);
 
+      console.log('result', result);
+      console.log('exploreHierarchy', exploreHierarchy);
       const expected = {
         id: exploreToFiji.relation.id,
         parent_id: exploreToFiji.parent.id,
         child_id: exploreToFiji.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
+        updated_at_sync_tick: currentSyncTickFact.value,
       };
       expect(result).to.deep.equal(expected);
     });
@@ -84,6 +94,7 @@ describe('GET entity relations', () => {
         parent_id: fijiToDistrict.parent.id,
         child_id: fijiToDistrict.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
+        updated_at_sync_tick: currentSyncTickFact.value,
       };
       expect(result).to.deep.equal(expected);
     });
@@ -97,6 +108,7 @@ describe('GET entity relations', () => {
         parent_id: fijiToDistrict.parent.id,
         child_id: fijiToDistrict.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
+        updated_at_sync_tick: currentSyncTickFact.value,
       };
       expect(result).to.deep.equal(expected);
     });
@@ -140,12 +152,14 @@ describe('GET entity relations', () => {
           parent_id: fijiToDistrict.parent.id,
           child_id: fijiToDistrict.child.id,
           entity_hierarchy_id: exploreHierarchy.id,
+          updated_at_sync_tick: currentSyncTickFact.value,
         },
         {
           id: exploreToFiji.relation.id,
           parent_id: exploreToFiji.parent.id,
           child_id: exploreToFiji.child.id,
           entity_hierarchy_id: exploreHierarchy.id,
+          updated_at_sync_tick: currentSyncTickFact.value,
         },
       ];
       expect(result).to.deep.equalInAnyOrder(expected);
@@ -177,12 +191,14 @@ describe('GET entity relations', () => {
           parent_id: fijiToDistrict.parent.id,
           child_id: fijiToDistrict.child.id,
           entity_hierarchy_id: exploreHierarchy.id,
+          updated_at_sync_tick: currentSyncTickFact.value,
         },
         {
           id: kiribatiToDistrict.relation.id,
           parent_id: kiribatiToDistrict.parent.id,
           child_id: kiribatiToDistrict.child.id,
           entity_hierarchy_id: exploreHierarchy.id,
+          updated_at_sync_tick: currentSyncTickFact.value,
         },
       ];
       expect(result).to.deep.equalInAnyOrder(expected);

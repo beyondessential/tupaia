@@ -15,7 +15,9 @@ export class GETEntityRelations extends GETHandler {
       assertAnyPermissions([assertBESAdminAccess, entityRelationPermissionChecker]),
     );
 
-    return super.findSingleRecord(entityRelationId, options);
+    const test = await super.findSingleRecord(entityRelationId, options);
+    console.log('testtt', test);
+    return test;
   }
 
   async getPermissionsFilter(criteria, options) {

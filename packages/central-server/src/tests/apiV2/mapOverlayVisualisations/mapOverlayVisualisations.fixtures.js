@@ -1,8 +1,16 @@
 import { generateId } from '@tupaia/database';
+import { FACT_CURRENT_SYNC_TICK } from '@tupaia/sync';
+
 import { VIZ_BUILDER_PERMISSION_GROUP } from '../../../permissions';
 
 const permissionGroupId = generateId();
 const testPermissionGroupId = generateId();
+
+const CURRENT_SYNC_TICK_FACT = {
+  id: generateId(),
+  key: FACT_CURRENT_SYNC_TICK,
+  value: '1',
+};
 
 const MAP_OVERLAYS = [
   {
@@ -17,6 +25,7 @@ const MAP_OVERLAYS = [
     report_code: 'Modern_Report',
     data_services: [{ isDataRegional: true }],
     legacy: false,
+    updated_at_sync_tick: CURRENT_SYNC_TICK_FACT.value,
   },
 ];
 
@@ -24,10 +33,12 @@ const PERMISSION_GROUPS = [
   {
     id: permissionGroupId,
     name: VIZ_BUILDER_PERMISSION_GROUP,
+    updated_at_sync_tick: CURRENT_SYNC_TICK_FACT.value,
   },
   {
     id: testPermissionGroupId,
     name: 'Test Permission Group',
+    updated_at_sync_tick: CURRENT_SYNC_TICK_FACT.value,
   },
 ];
 
@@ -42,6 +53,7 @@ const REPORTS = [
       transform: [{ by: '=$dataElement', transform: 'sortRows' }],
     },
     permission_group_id: permissionGroupId,
+    updated_at_sync_tick: CURRENT_SYNC_TICK_FACT.value,
   },
 ];
 
@@ -53,6 +65,7 @@ const LEGACY_REPORTS = [
       dataElementCodes: ['BCD1'],
     },
     data_services: [{ isDataRegional: true }],
+    updated_at_sync_tick: CURRENT_SYNC_TICK_FACT.value,
   },
 ];
 
@@ -63,6 +76,7 @@ export const TEST_SETUP = {
     report: REPORTS,
     legacyReport: LEGACY_REPORTS,
   },
+  currentSyncTickFact: CURRENT_SYNC_TICK_FACT,
 };
 
 export const findTestRecordByCode = (recordType, code) => {

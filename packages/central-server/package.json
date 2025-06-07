@@ -37,6 +37,7 @@
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
+    "@tupaia/sync": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
@@ -72,10 +73,11 @@
     "s3urls": "^1.5.2",
     "string-similarity": "^1.2.2",
     "urlencode": "^1.1.0",
-    "winston": "^3.3.3",
+    "winston": "^3.17.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.10",
     "@babel/node": "^7.10.5",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
