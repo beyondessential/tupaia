@@ -31,7 +31,6 @@
   },
   "typeMap": {
     "string": ["geography"],
-    "number": ["int8"],
     "{}": ["jsonb"]
   },
   "template": "config/models/template.handlebars",
