@@ -1,8 +1,8 @@
 import { sleep } from '@tupaia/utils';
-import { ExpressResponse } from '@tupaia/server-boilerplate';
 
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
+import { Response as ExpressResponse } from 'express';
 
 export class SyncApi extends BaseApi {
   async startSyncSession() {
@@ -41,7 +41,7 @@ export class SyncApi extends BaseApi {
   }
 
   async initiatePull(sessionId: string, since: number, projectIds: string[], deviceId: string) {
-    // first, set the pull filter on the central server, 
+    // first, set the pull filter on the central server,
     // which will kick of a snapshot of changes to pull
     const data = { since, projectIds, deviceId };
     await this.connection.post(`sync/${sessionId}/pull`, {}, data);
@@ -54,7 +54,7 @@ export class SyncApi extends BaseApi {
     return this.connection.get(`sync/${sessionId}/pull/metadata`);
   }
 
-  async pull(response: ExpressResponse<Request>, sessionId: string) {
+  async pull(response: ExpressResponse, sessionId: string) {
     return this.connection.pipeStream(response, `sync/${sessionId}/pull`);
   }
 }

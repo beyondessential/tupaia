@@ -11401,6 +11401,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/node-fetch": ^2.6.11
+    express: ^4.19.2
     lodash.isequal: ^4.5.0
     lodash.pick: ^4.4.0
     node-fetch: ^1.7.3
