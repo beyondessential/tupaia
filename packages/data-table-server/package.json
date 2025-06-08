@@ -36,7 +36,7 @@
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "express": "^4.19.2",
-    "winston": "^3.3.3"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "mockdate": "^3.0.5",

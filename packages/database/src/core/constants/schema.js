@@ -1,4 +1,4 @@
 export const SCHEMA_NAMES = {
   PUBLIC: 'public',
-  LOG: 'log',
+  LOG: 'logs',
 };
