@@ -1,10 +1,4 @@
-export function buildSyncLookupTraverseJoins(
-  tablesToTraverse: string[],
-  customForeignKeys?: Record<
-    string,
-    { fromTable: string; fromKey: string; toTable: string; toKey: string }
-  >,
-) {
+export function buildSyncLookupTraverseJoins(tablesToTraverse, customForeignKeys) {
   return tablesToTraverse
     .slice(1)
     .map((table, i) => {

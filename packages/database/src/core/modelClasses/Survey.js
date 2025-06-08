@@ -1,12 +1,13 @@
 import { reduceToDictionary } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { buildProjectLinkedLookupQueryDetails, SYNC_DIRECTIONS } from '@tupaia/sync';
+import { SyncDirections } from '@tupaia/constants';
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
+import { buildProjectLinkedLookupQueryDetails } from '../sync';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -122,7 +123,7 @@ export class SurveyRecord extends DatabaseRecord {
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SYNC_DIRECTIONS.BIDIRECTIONAL;
+  syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return SurveyRecord;
