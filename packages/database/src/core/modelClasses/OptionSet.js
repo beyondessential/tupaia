@@ -1,4 +1,4 @@
-import { SYNC_DIRECTIONS } from '@tupaia/sync';
+import { SyncDirections } from '@tupaia/constants';
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
@@ -30,7 +30,7 @@ export class OptionSetRecord extends DatabaseRecord {
 }
 
 export class OptionSetModel extends DatabaseModel {
-  syncDirection = SYNC_DIRECTIONS.BIDIRECTIONAL;
+  syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return OptionSetRecord;

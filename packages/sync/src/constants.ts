@@ -1,10 +1,3 @@
-export const SYNC_DIRECTIONS = {
-  DO_NOT_SYNC: 'do_not_sync', // Important! Non-syncing tables should also be added to @tupaia/sync/constants.js
-  PUSH_TO_CENTRAL: 'push_to_central',
-  PULL_FROM_CENTRAL: 'pull_from_central',
-  BIDIRECTIONAL: 'bidirectional',
-};
-
 export const SYNC_SESSION_DIRECTION = {
   INCOMING: 'incoming',
   OUTGOING: 'outgoing',
