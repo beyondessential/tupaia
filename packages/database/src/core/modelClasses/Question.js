@@ -1,18 +1,16 @@
-import {
-  buildSyncLookupSurveyProjectIdSelect,
-  SYNC_DIRECTIONS,
-} from '@tupaia/sync';
+import { SyncDirections } from '@tupaia/constants';
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { buildSyncLookupSurveyProjectIdSelect } from '../sync';
 
 export class QuestionRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.QUESTION;
 }
 
 export class QuestionModel extends MaterializedViewLogDatabaseModel {
-  syncDirection = SYNC_DIRECTIONS.BIDIRECTIONAL;
+  syncDirection = SyncDirections.BIDIRECTIONAL;
 
   get DatabaseRecordClass() {
     return QuestionRecord;

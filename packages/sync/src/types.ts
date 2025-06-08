@@ -1,8 +1,9 @@
+import { SyncDirections } from '@tupaia/constants';
 import type { ModelRegistry } from '@tupaia/database';
 
-import { SYNC_DIRECTIONS, SYNC_SESSION_DIRECTION } from './constants';
+import { SYNC_SESSION_DIRECTION } from './constants';
 
-export type SyncDirectionValues = (typeof SYNC_DIRECTIONS)[keyof typeof SYNC_DIRECTIONS];
+export type SyncDirectionValues = (typeof SyncDirections)[keyof typeof SyncDirections];
 
 export type SyncSessionDirectionValues =
   (typeof SYNC_SESSION_DIRECTION)[keyof typeof SYNC_SESSION_DIRECTION];

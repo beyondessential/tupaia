@@ -9,11 +9,11 @@ import {
   completeSyncSession,
   FACT_CURRENT_SYNC_TICK,
   FACT_LOOKUP_UP_TO_TICK,
-  SYNC_DIRECTIONS,
   DEBUG_LOG_TYPES,
   SYNC_SESSION_DIRECTION,
 } from '@tupaia/sync';
-import { SyncTickFlags } from '@tupaia/constants';
+
+import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
 import { generateId, SyncSessionRecord, TupaiaDatabase } from '@tupaia/database';
 
 import { updateLookupTable, updateSyncLookupPendingRecords } from './updateLookupTable';
@@ -380,7 +380,7 @@ export class CentralSyncManager {
           : SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER;
 
         void (await updateLookupTable(
-          getModelsForDirection(this.models, SYNC_DIRECTIONS.PULL_FROM_CENTRAL),
+          getModelsForDirection(this.models, SyncDirections.PULL_FROM_CENTRAL),
           previouslyUpToTick,
           this.config,
           syncLookupTick,
