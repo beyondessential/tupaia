@@ -21,7 +21,7 @@ exports.up = function (db) {
       LANGUAGE plpgsql AS
       $func$
       BEGIN
-        IF ((SELECT value FROM local_system_facts WHERE key = 'syncTrigger') = 'disabled') THEN
+        IF ((SELECT value FROM local_system_fact WHERE key = 'syncTrigger') = 'disabled') THEN
             RETURN NEW;
         END IF;
         -- If setting to "-1" representing "not marked as updated on this client", we actually use
@@ -32,12 +32,14 @@ exports.up = function (db) {
         IF NEW.updated_at_sync_tick = -1 THEN
           NEW.updated_at_sync_tick := -999;
         ELSE
-          SELECT value FROM local_system_facts WHERE key = 'currentSyncTick' INTO NEW.updated_at_sync_tick;
-
           -- take an advisory lock on the current sync tick (if one doesn't already exist), to
           -- record that an active transaction is using this sync tick
           -- see waitForPendingEditsUsingSyncTick for more details
           PERFORM pg_try_advisory_xact_lock_shared(NEW.updated_at_sync_tick);
+          
+          -- now that the advisory lock is acquired, we can safely select the current sync tick and
+          -- know that no sync session will skip over this change until the transaction is complete
+          SELECT value FROM local_system_fact WHERE key = 'currentSyncTick' INTO NEW.updated_at_sync_tick;
         END IF;
         RETURN NEW;
       END

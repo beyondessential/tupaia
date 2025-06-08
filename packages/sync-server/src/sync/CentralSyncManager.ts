@@ -6,7 +6,7 @@ import {
   waitForPendingEditsUsingSyncTick,
   FACT_CURRENT_SYNC_TICK,
   FACT_LOOKUP_UP_TO_TICK,
-  SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK,
+  SYNC_TICK_FLAGS,
   SYNC_DIRECTIONS,
   DEBUG_LOG_TYPES,
 } from '@tupaia/sync';
@@ -76,11 +76,13 @@ export class CentralSyncManager {
       await this.database.wrapInTransaction(async (database: TupaiaDatabase) => {
         // When it is initial build of sync lookup table, by setting it to null,
         // it will get the updated_at_sync_tick from the actual tables.
-        // Otherwise, update it to SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK so that
+        // Otherwise, update it to SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER so that
         // it can update the flagged ones post transaction commit to the latest sync tick,
         // avoiding sync sessions missing records while sync lookup is being refreshed
         // See more details in the 'await updateSyncLookupPendingRecords' call
-        const syncLookupTick = isInitialBuildOfLookupTable ? null : SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK;
+        const syncLookupTick = isInitialBuildOfLookupTable
+          ? null
+          : SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER;
 
         void (await updateLookupTable(
           getModelsForDirection(this.models, SYNC_DIRECTIONS.PULL_FROM_CENTRAL),
@@ -109,7 +111,7 @@ export class CentralSyncManager {
       // 7. Sync session B is started, pulling from lastSuccessfulPullTick = 3, missing encounter A with tick = 1
       //
       // Hence, to fix this, we:
-      // 1. When starting updating lookup table, use fixed -1 as the tick and treat them as pending updates (SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK)
+      // 1. When starting updating lookup table, use fixed -1 as the tick and treat them as pending updates (SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER)
       // 2. After updating lookup table is finished, update all the records with tick = -1 to the latest sync tick
       // => That way, sync sessions will never miss any records due to timing issue.
       // Note: We do not need to update pending records when it is the initial build

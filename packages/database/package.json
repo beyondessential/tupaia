@@ -41,9 +41,9 @@
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
+    "@tupaia/constants": "workspace:*",
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
-    "@tupaia/sync": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "bson-objectid": "^2.0.4",
@@ -64,7 +64,7 @@
     "pg-pubsub": "^0.8.1",
     "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
-    "winston": "^3.3.3"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
