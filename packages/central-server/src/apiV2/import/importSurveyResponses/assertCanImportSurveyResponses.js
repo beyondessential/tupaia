@@ -92,8 +92,7 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
 
   const entitiesUpserted = surveyResponses
     .filter(sr => !!sr.entities_upserted)
-    .map(sr => sr.entities_upserted)
-    .flat();
+    .flatMap(sr => sr.entities_upserted);
 
   for (const response of surveyResponses) {
     const entityCode = await getEntityCodeFromSurveyResponseChange(
