@@ -6,11 +6,10 @@ import {
   useCurrentUserContext,
   useProjectEntities,
 } from '../../api';
-import { Entity } from '../../types';
 import { UseProjectEntitiesQueryResult } from '../../api/queries/useProjectEntities';
 
 export type UserCountriesType = Omit<UseProjectEntitiesQueryResult, 'data'> & {
-  countries: Exclude<UseProjectEntitiesQueryResult['data'], undefined>;
+  countries: Country[];
   /**
    * @privateRemarks The internal {@link useState} only ever explicitly stores `Country | null`, but
    * `selectedCountry` may be undefined if the {@link useProjectEntities} query is still loading.
@@ -29,7 +28,7 @@ export const useUserCountries = (
   const entityRequestParams = {
     filter: { type: 'country' },
   };
-  const { data: countries = [], ...projectEntitiesQuery } = useProjectEntities(
+  const { data: countries = [] as Country[], ...projectEntitiesQuery } = useProjectEntities(
     projectCode,
     entityRequestParams,
     useProjectEntitiesQueryOptions,
@@ -56,13 +55,13 @@ export const useUserCountries = (
   const selectedCountry = getSelectedCountry();
 
   return {
-    countries,
+    countries: countries as Country[],
     ...projectEntitiesQuery,
 
-    selectedCountry,
+    selectedCountry: selectedCountry as Country,
     updateSelectedCountry: (e: ChangeEvent<HTMLSelectElement>) => {
       const countryCode = e.target.value;
-      const newCountry = countries?.find((country: Entity) => country.code === countryCode);
+      const newCountry = countries?.find((country) => country.code === countryCode) as Country;
       setSelectedCountry(newCountry ?? null);
     },
   };

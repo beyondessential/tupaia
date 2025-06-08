@@ -20,7 +20,8 @@ exports.up = async function (db) {
     (
         id         VARCHAR(255) PRIMARY KEY,
         key        VARCHAR(255) NOT NULL,
-        value      TEXT
+        value      TEXT,
+        CONSTRAINT local_system_fact_key_unique UNIQUE (key)
     );
   `);
 };

@@ -18,13 +18,16 @@ export type SurveyParams = {
 
 export type SurveyQuestionFieldProps = Omit<
   SurveyScreenComponent,
-  'componentNumber' | 'questionId'
+  'componentNumber' | 'questionId' | 'updatedAtSyncTick'
 > & {
   name: SurveyScreenComponent['code'];
   id: SurveyScreenComponent['questionId'];
 };
 
-export type SurveyQuestionInputProps = Omit<SurveyQuestionFieldProps, 'type' | 'text'> & {
+export type SurveyQuestionInputProps = Omit<
+  SurveyQuestionFieldProps,
+  'type' | 'text' | 'updatedAtSyncTick'
+> & {
   controllerProps: ControllerRenderProps & {
     invalid?: boolean;
   };
