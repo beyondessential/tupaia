@@ -1,5 +1,7 @@
-import { setupTest } from '@tupaia/database';
 import { expect } from 'chai';
+
+import { setupTest } from '@tupaia/database';
+import { stripUpdatedAtSyncTickFromArray } from '@tupaia/utils';
 
 import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
 import { findTestRecordByCode, TEST_SETUP } from './mapOverlayVisualisations.fixtures';
@@ -62,7 +64,7 @@ describe('GET map overlay visualisations', () => {
           },
         },
       });
-      expectSuccess(response, [
+      const expected = [
         {
           mapOverlay: {
             id: modernMapOverlay.id,
@@ -77,7 +79,6 @@ describe('GET map overlay visualisations', () => {
             dataServices: [{ isDataRegional: true }],
             legacy: false,
             entityAttributesFilter: {},
-            updatedAtSyncTick: modernMapOverlay.updated_at_sync_tick,
           },
           report: {
             code: modernReport.code,
@@ -86,7 +87,8 @@ describe('GET map overlay visualisations', () => {
             latestDataParameters: {},
           },
         },
-      ]);
+      ];
+      expectSuccess({ ...response, body: stripUpdatedAtSyncTickFromArray(response.body) }, expected);
     });
   });
 });

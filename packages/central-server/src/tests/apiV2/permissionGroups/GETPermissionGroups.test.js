@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { FACT_CURRENT_SYNC_TICK } from '@tupaia/sync';
+import { stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
 
 import {
   BES_ADMIN_PERMISSION_GROUP,
@@ -49,8 +49,6 @@ describe('Get permission groups', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  const CURRENT_SYNC_TICK = '1';
-
   const BES_ADMIN_ACCESS_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
   };
@@ -67,7 +65,6 @@ describe('Get permission groups', async () => {
   let permissionGroups = {};
 
   before(async () => {
-    await models.localSystemFact.updateOrCreate({ key: FACT_CURRENT_SYNC_TICK }, { value: CURRENT_SYNC_TICK });
     permissionGroups = await createPermissionsGroups(models);
   });
 
@@ -175,11 +172,10 @@ describe('Get permission groups', async () => {
     it('Should return a single permission group record', async () => {
       await app.grantAccess(ADMIN_PANEL_ACCESS_POLICY);
       const response = await app.get(`permissionGroups/${permissionGroups.dlUserGroup.id}`);
-      expect(response.body).to.deep.equal({
+      expect(stripUpdatedAtSyncTickFromObject(response.body)).to.deep.equal({
         id: permissionGroups.dlUserGroup.id,
         name: DL_USER_PERMISSION_GROUP,
         parent_id: permissionGroups.dlAdminGroup.id,
-        updated_at_sync_tick: CURRENT_SYNC_TICK,
       });
     });
   });

@@ -44,7 +44,7 @@ const sortByRecordId = (r1: any, r2: any) => (r1.record.id > r2.record.id ? -1 :
 
 const expectMatchingChangeRecords = (
   actual: ChangeRecord[],
-  expected: Omit<ChangeRecord, 'timestamp' | 'updatedAtSyncTick'>[],
+  expected: Omit<ChangeRecord, 'timestamp'>[],
 ) => {
   // Can't match timestamp, just just assert the field is there and check it's a number
   actual.forEach(changeRecord => expect(typeof changeRecord.timestamp).toBe('number'));
@@ -54,10 +54,6 @@ const expectMatchingChangeRecords = (
         return obj;
       }
 
-      if (fieldName === 'record' && typeof fieldValue === 'object') {
-        const { updated_at_sync_tick, ...newFieldValue } = fieldValue;
-        return { ...obj, [fieldName]: newFieldValue };
-      }
       return { ...obj, [fieldName]: fieldValue };
     }, {}),
   );
@@ -96,7 +92,7 @@ describe('changes (GET)', () => {
     }
 
     const fields = await (record.model as DatabaseModel).fetchFieldNames();
-    const unsupportedFields = [...getUnsupportedModelFields(modelName), 'updated_at_sync_tick'];
+    const unsupportedFields = getUnsupportedModelFields(modelName);
 
     // Supported fields with non-null values
     const cleanedRecordForSync = Object.fromEntries(

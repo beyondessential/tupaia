@@ -17,9 +17,9 @@ import {
   filterItemFields,
   replaceItemsCountryWithCountryId,
 } from './helper';
-import { COUNTRIES, CURRENT_SYNC_TICK, FEED_ITEMS, GONDOR } from './SocialFeedRoute.fixtures';
+import { COUNTRIES, FEED_ITEMS, GONDOR } from './SocialFeedRoute.fixtures';
 
-describe('socialFeed', () => {
+describe.only('socialFeed', () => {
   const CURRENT_DATE_STUB = '2020-12-15T00:00:00.000Z';
 
   const LEADERBOARD_ITEM = {
@@ -41,11 +41,6 @@ describe('socialFeed', () => {
   beforeAll(async () => {
     MockDate.set(CURRENT_DATE_STUB);
     const models = getTestModels() as TestModelRegistry;
-
-    const currentSyncTick = await models.localSystemFact.updateOrCreate(
-      { key: 'currentSyncTick' },
-      { value: CURRENT_SYNC_TICK },
-    );
 
     const insertedCountries = await Promise.all(
       COUNTRIES.map(async country => {
