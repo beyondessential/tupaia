@@ -1,8 +1,9 @@
+import { Response as ExpressResponse } from 'express';
+
 import { sleep } from '@tupaia/utils';
 
 import { BaseApi } from './BaseApi';
 import { PublicInterface } from './types';
-import { Response as ExpressResponse } from 'express';
 
 export class SyncApi extends BaseApi {
   async startSyncSession() {
