@@ -1,5 +1,6 @@
 import { ModelRegistry } from '@tupaia/database';
 import { saveIncomingInMemoryChanges } from '@tupaia/sync';
+
 import { insertSnapshotRecords } from './insertSnapshotRecords';
 
 const PULL_VOLUME_THRESHOLD = 10000;

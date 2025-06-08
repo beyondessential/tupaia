@@ -1,7 +1,7 @@
 import { ModelRegistry } from '@tupaia/database';
+import { SyncDirections } from '@tupaia/constants';
 import {
   FACT_LAST_SUCCESSFUL_SYNC_PULL,
-  SYNC_DIRECTIONS,
   createClientSnapshotTable,
   dropAllSnapshotTables,
   dropSnapshotTable,
@@ -156,7 +156,7 @@ export class ClientSyncManager {
       } else {
         const { totalObjects } = await runPull(this.models);
         await this.models.wrapInTransaction(async models => {
-          const incomingModels = getModelsForDirection(models, SYNC_DIRECTIONS.PULL_FROM_CENTRAL);
+          const incomingModels = getModelsForDirection(models, SyncDirections.PULL_FROM_CENTRAL);
           if (pullVolumeType === PullVolumeType.IncrementalLow) {
             saveIncomingInMemoryChanges(models, totalObjects);
           } else if (pullVolumeType === PullVolumeType.IncrementalHigh) {
