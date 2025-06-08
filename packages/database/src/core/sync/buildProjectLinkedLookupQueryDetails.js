@@ -1,8 +1,6 @@
-import { DatabaseModel } from '@tupaia/database';
-
 import { buildSyncLookupSurveyProjectIdSelect } from './buildSyncLookupUtils';
 
-export async function buildProjectLinkedLookupQueryDetails(model: DatabaseModel) {
+export async function buildProjectLinkedLookupQueryDetails(model) {
   return {
     select: await buildSyncLookupSurveyProjectIdSelect(model),
   };

@@ -1,11 +1,6 @@
-import { DatabaseModel } from '@tupaia/database';
 import { COLUMNS_EXCLUDED_FROM_SYNC } from '../constants';
 
-interface Columns {
-  projectIds?: string;
-}
-
-export async function buildSyncLookupSelect(model: DatabaseModel, columns: Columns = {}) {
+export async function buildSyncLookupSelect(model, columns = {}) {
   const attributes = await model.fetchFieldNames();
   const { projectIds } = columns;
   const table = model.databaseRecord;
