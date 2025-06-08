@@ -80,7 +80,12 @@ export class ModelRegistry {
     return this.database.addChangeHandlerForCollection(...args);
   }
 
-  async wrapInTransaction(wrappedFunction) {
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  async wrapInTransaction(wrappedFunction, transactionConfig = {}) {
     return this.database.wrapInTransaction(async transactingDatabase => {
       const schemata = {};
       await Promise.all(
@@ -96,7 +101,7 @@ export class ModelRegistry {
         schemata,
       );
       return wrappedFunction(transactingModelRegistry);
-    });
+    }, transactionConfig);
   }
 
   getTypesToSyncWithMeditrak() {

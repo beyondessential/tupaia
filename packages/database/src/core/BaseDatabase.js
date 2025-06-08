@@ -1,4 +1,4 @@
-import knex, { KnexTimeoutError } from 'knex';
+import knex, { Knex, KnexTimeoutError } from 'knex';
 import autobind from 'react-autobind';
 import winston from 'winston';
 
@@ -124,6 +124,18 @@ export class BaseDatabase {
     await this.connectionPromise;
   }
 
+  /**
+   * @param {(models: TupaiaDatabase) => Promise<void>} wrappedFunction
+   * @param {Knex.TransactionConfig} [transactionConfig]
+   * @returns {Promise} A promise (return value of `knex.transaction()`).
+   */
+  wrapInTransaction(wrappedFunction, transactionConfig = {}) {
+    return this.connection.transaction(
+      transaction => wrappedFunction(new TupaiaDatabase(transaction, this.changeChannel)),
+      transactionConfig,
+    );
+  }
+
   async fetchSchemaForTable(databaseRecord, schemaName) {
     await this.waitUntilConnected();
     return this.connection(databaseRecord).withSchema(schemaName).columnInfo();
@@ -142,9 +154,9 @@ export class BaseDatabase {
    * (https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS)
    * @param {string} lockKey unique identifier key for the lock
    */
-  async acquireAdvisoryLockForTransaction(lockKey) {
+  async acquireAdvisoryLock(lockKey) {
     const lockKeyInt = hashStringToInt(lockKey); // Locks require bigint key, so must convert key to int
-    return this.executeSql(`SELECT pg_advisory_xact_lock(?)`, [lockKeyInt]);
+    return this.executeSql('SELECT pg_advisory_xact_lock(?)', [lockKeyInt]);
   }
 
   /**
@@ -249,7 +261,7 @@ export class BaseDatabase {
   }
 
   /**
-   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact recores
+   * Same as {@link count}, but aborts after a timeout. Use this when providing the exact record
    * count is merely an enhancement, not critical information in the context. A return value of
    * `Number.POSITIVE_INFINITY` indicates there are too many to count within reasonable time.
    */

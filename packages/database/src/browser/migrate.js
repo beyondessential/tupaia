@@ -1,5 +1,4 @@
-import { initSyncComponents } from '@tupaia/sync';
-
+import { initSyncComponents } from '../core/sync/initSyncComponents';
 import { MigrationManager } from './MigrationManager';
 
 class DatatrakDatabaseAdapter {

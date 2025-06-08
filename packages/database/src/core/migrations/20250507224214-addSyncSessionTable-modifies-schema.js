@@ -23,7 +23,7 @@ exports.up = function (db) {
           start_time            TIMESTAMPTZ,
           last_connection_time  TIMESTAMPTZ,
           snapshot_completed_at TIMESTAMPTZ,
-          debug_info            json,
+          info                  json,
           completed_at          TIMESTAMPTZ,
           persist_completed_at  TIMESTAMPTZ,
           pull_since            BIGINT,

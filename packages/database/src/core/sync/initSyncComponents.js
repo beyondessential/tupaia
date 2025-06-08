@@ -1,11 +1,22 @@
-import { NON_SYNCING_TABLES } from '../constants';
+import { SyncTickFlags } from '@tupaia/constants';
 
-interface Row {
-  [key: string]: string | number | boolean | null;
-}
-interface DatabaseDriver {
-  runSql: (sql: string) => Promise<{ rows: Row[] }>;
-}
+export const NON_SYNCING_TABLES = [
+  'analytics',
+  'superset_instance',
+  'log$_answer',
+  'log$_data_element',
+  'log$_entity',
+  'log$_question',
+  'log$_survey',
+  'log$_survey_response',
+  'spatial_ref_sys',
+  'local_system_fact',
+  'migrations',
+  'sync_session',
+  'sync_lookup',
+  'debug_log',
+  'sync_device_tick',
+];
 
 const TABLES_WITHOUT_COLUMN_QUERY = `
   SELECT
@@ -60,12 +71,11 @@ const TABLES_WITHOUT_TRIGGER_QUERY = `
     t.table_name NOT IN (${NON_SYNCING_TABLES.map(t => `'${t}'`).join(',')});
 `;
 
-// TODO: fix type for driver
-export async function initSyncComponents(driver: DatabaseDriver, isClient: boolean = false) {
-  // add column: holds last update tick, default to -999 (not marked for sync) on client,
+export async function initSyncComponents(driver, isClient = false) {
+  // add column: holds last update tick, default to -999 (not modified locally) on client,
   // and 0 (will be caught in any initial sync) on central server
   // triggers will overwrite the default for future data, but this works for existing data
-  const initialValue = isClient ? -999 : 0; // -999 on client, 0 on central server
+  const initialValue = isClient ? SyncTickFlags.LAST_UPDATED_ELSEWHERE : 0; // -999 on client, 0 on central server
   const { rows: tablesWithoutColumn } = await driver.runSql(TABLES_WITHOUT_COLUMN_QUERY);
   for (const { table } of tablesWithoutColumn) {
     console.log(`Adding updated_at_sync_tick column to ${table}`);
