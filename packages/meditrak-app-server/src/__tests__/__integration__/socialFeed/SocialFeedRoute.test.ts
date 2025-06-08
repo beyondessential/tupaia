@@ -19,7 +19,7 @@ import {
 } from './helper';
 import { COUNTRIES, FEED_ITEMS, GONDOR } from './SocialFeedRoute.fixtures';
 
-describe.only('socialFeed', () => {
+describe('socialFeed', () => {
   const CURRENT_DATE_STUB = '2020-12-15T00:00:00.000Z';
 
   const LEADERBOARD_ITEM = {
