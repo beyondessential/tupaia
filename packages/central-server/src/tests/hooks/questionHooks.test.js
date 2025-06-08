@@ -402,7 +402,6 @@ describe('Question hooks', () => {
           updated_at_sync_tick: afterUpdatedAtSyncTick,
           ...afterData
         } = await entity.getData();
-        console.log('afterData', afterData);
         expect(beforeData).to.deep.equal(afterData);
       });
     });
