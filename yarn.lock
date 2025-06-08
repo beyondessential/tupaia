@@ -11682,8 +11682,10 @@ __metadata:
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
     "@testing-library/user-event": ^13.5.0
+    "@tupaia/constants": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/expression-parser": "workspace:*"
+    "@tupaia/sync": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
