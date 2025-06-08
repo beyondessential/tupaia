@@ -1,5 +1,4 @@
-import { initSyncComponents } from '@tupaia/sync';
-
+import { initSyncComponents } from '../core/sync/initSyncComponents';
 import { arrayToDbString } from '../core/utilities';
 
 const TABLES_REQUIRING_TRIGGER_CREATION = [

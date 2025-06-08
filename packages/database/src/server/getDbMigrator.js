@@ -39,7 +39,7 @@ export const removeNonServerMigrations = () => {
     const targets = migrationModule._meta?.targets || [];
     const isNotLegacyMigration = Boolean(migrationModule._meta?.targets);
 
-    // For legacy migrations with now targets, we accept them
+    // For legacy migrations with no targets, we accept them
     if (isNotLegacyMigration && !targets.includes('server')) {
       fs.unlinkSync(filePath);
       winston.info(`Excluding non-server migration file: ${filePath}`);

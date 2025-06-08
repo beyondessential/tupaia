@@ -29,7 +29,7 @@ const ExpandButton = styled(Button).attrs({
 
 const ExpandIcon = styled(ArrowLeftIcon)`
   font-size: 1rem;
-  transition: transform 350ms var(--ease-in-out-quad);
+  transition: transform 350ms var(--ease-in-out-quart);
 
   transform: rotate(-90deg);
   ${ExpandButton}[aria-expanded="true"] & {
@@ -41,7 +41,7 @@ const Content = styled.div`
   display: contents;
   ${props => props.theme.breakpoints.down('xs')} {
     display: block;
-    transition: 350ms var(--ease-in-out-quad);
+    transition: 350ms var(--ease-in-out-quart);
     transition-property: block-size, display, opacity;
     transition-behavior: allow-discrete;
 
