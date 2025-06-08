@@ -72,12 +72,7 @@
     <!-- End of bes-support Zendesk Widget script -->
     <% } %>
 
-    <!-- Temporarily disable PWA on production environments -->
-    <% if (process.env.REACT_APP_DEPLOYMENT_NAME !== 'master' &&
-    process.env.REACT_APP_DEPLOYMENT_NAME !== 'main' && process.env.REACT_APP_DEPLOYMENT_NAME !==
-    'production') { %>
-      <link rel="manifest" id="manifest" href="/manifest.json"/>
-    <% } %>
+    <link rel="manifest" id="manifest" href="/manifest.json" />
 
     <link rel="icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />

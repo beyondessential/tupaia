@@ -16,11 +16,11 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   await db.runSql(`
-    CREATE SCHEMA log;
+    CREATE SCHEMA logs;
   `);
 
   await db.runSql(`
-    CREATE TABLE log.debug_log
+    CREATE TABLE logs.debug_log
     (
       id    VARCHAR(255) PRIMARY KEY,
       type  VARCHAR(255) NOT NULL,
