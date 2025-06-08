@@ -73,8 +73,6 @@ describe('GET entity relations', () => {
       await app.grantAccess(FIJI_POLICY);
       const { body: result } = await app.get(`entityRelations/${exploreToFiji.relation.id}`);
 
-      console.log('result', result);
-      console.log('exploreHierarchy', exploreHierarchy);
       const expected = {
         id: exploreToFiji.relation.id,
         parent_id: exploreToFiji.parent.id,
