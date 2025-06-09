@@ -1,12 +1,22 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { QrCodeImage, useDownloadQrCodes } from '@tupaia/ui-components';
 
 import { Button, DownloadIcon, ShareIcon } from '../../../components';
 import { useIsMobile } from '../../../utils';
 import { useShare } from '../utils/useShare';
+
+const modalStyles = css`
+  font-size: 0.875rem;
+  text-decoration: none;
+`;
+const panelStyles = css`
+  background-color: transparent;
+  font-size: 1rem;
+  text-decoration: underline;
+`;
 
 const Wrapper = styled.li<{
   $listVariant?: 'panel' | 'modal';
@@ -25,13 +35,8 @@ const Wrapper = styled.li<{
     ~ .MuiButtonBase-root {
       margin-top: 1rem;
     }
-    .MuiButton-label {
-      font-size: ${({ $listVariant }) => ($listVariant === 'modal' ? '0.875rem' : '1rem')};
-    }
-    &:hover {
-      background-color: ${({ $listVariant }) => $listVariant === 'panel' && 'transparent'};
-      text-decoration: ${({ $listVariant }) => ($listVariant === 'modal' ? 'none' : 'underline')};
-    }
+
+    ${props => (props.$listVariant === 'panel' ? panelStyles : modalStyles)}
   }
 `;
 
