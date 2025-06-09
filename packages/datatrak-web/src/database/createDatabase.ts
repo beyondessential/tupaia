@@ -1,14 +1,15 @@
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, migrate } from '@tupaia/database';
 
 import { DatatrakDatabase } from './DatatrakDatabase';
+import { DatatrakWebModelRegistry } from '../types/model';
 
-export const createDatabase = async () => {
+export const createDatabase = async (): Promise<{
+  database: DatatrakDatabase;
+  models: DatatrakWebModelRegistry;
+}> => {
   const database = new DatatrakDatabase();
-  const models = new ModelRegistry(database);
+  const models = new ModelRegistry(database) as DatatrakWebModelRegistry;
 
-  // TODO: Move this to when app is started when service worker is set up
-  //  const migrationManager = new MigrationManager(database);
-  //  await migrationManager.initialize();
-  //  await migrationManager.migrate();
-  return { models };
+  await migrate(database);
+  return { database, models };
 };

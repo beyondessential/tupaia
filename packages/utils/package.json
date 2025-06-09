@@ -40,6 +40,7 @@
     "moment-timezone": "^0.5.45",
     "node-fetch": "^1.7.3",
     "numeral": "^2.0.6",
+    "omit-deep": "^0.3.0",
     "prop-types": "^15.6.2",
     "rrule": "^2.8.1",
     "sanitize-filename": "^1.6.3",

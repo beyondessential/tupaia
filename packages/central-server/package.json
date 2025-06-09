@@ -37,6 +37,7 @@
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
+    "@tupaia/sync": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",

@@ -15,6 +15,7 @@ import {
   WebConfigApiInterface,
 } from './connections';
 import { PRODUCTION_BASE_URLS, ServiceBaseUrlSet } from './constants';
+import { SyncApi, SyncApiInterface } from './connections/SyncApi';
 
 export class TupaiaApiClient {
   public readonly entity: EntityApiInterface;
@@ -23,6 +24,7 @@ export class TupaiaApiClient {
   public readonly auth: AuthApiInterface;
   public readonly report: ReportApiInterface;
   public readonly webConfig: WebConfigApiInterface;
+  public readonly sync: SyncApiInterface;
 
   public constructor(authHandler: AuthHandler, baseUrls: ServiceBaseUrlSet = PRODUCTION_BASE_URLS) {
     this.auth = new AuthApi(new ApiConnection(authHandler, baseUrls.auth));
@@ -31,5 +33,6 @@ export class TupaiaApiClient {
     this.report = new ReportApi(new ApiConnection(authHandler, baseUrls.report));
     this.dataTable = new DataTableApi(new ApiConnection(authHandler, baseUrls.dataTable));
     this.webConfig = new WebConfigApi(new ApiConnection(authHandler, baseUrls.webConfig));
+    this.sync = new SyncApi(new ApiConnection(authHandler, baseUrls.sync));
   }
 }

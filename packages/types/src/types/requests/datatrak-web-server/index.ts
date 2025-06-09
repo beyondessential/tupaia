@@ -17,3 +17,7 @@ export * as DatatrakWebTasksRequest from './TasksRequest';
 export * as DatatrakWebTaskRequest from './TaskRequest';
 export * as DatatrakWebUsersRequest from './UsersRequest';
 export * as DatatrakWebTaskChangeRequest from './TaskChangeRequest';
+export * as DatatrakWebSyncStartSessionRequest from './DatatrakSyncStartSessionRequest';
+export * as DatatrakWebSyncInitiatePullRequest from './DatatrakSyncInitiatePullRequest';
+export * as DatatrakWebSyncPullRequest from './DatatrakSyncPullRequest';
+export * as DatatrakWebSyncEndSessionRequest from './DatatrakSyncEndSessionRequest';

@@ -121,6 +121,11 @@ export class TupaiaDatabase extends BaseDatabase {
     );
   }
 
+  async createTransaction() {
+    const transaction = await this.connection.transaction();
+    return new TupaiaDatabase(transaction, this.changeChannel);
+  }
+
   async markRecordsAsChanged(recordType, records) {
     await this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
   }

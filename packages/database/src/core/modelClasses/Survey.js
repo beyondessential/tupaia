@@ -1,10 +1,13 @@
 import { reduceToDictionary } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
+import { SyncDirections } from '@tupaia/constants';
+
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
+import { buildProjectLinkedLookupQueryDetails } from '../sync';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -120,6 +123,8 @@ export class SurveyRecord extends DatabaseRecord {
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
+  syncDirection = SyncDirections.BIDIRECTIONAL;
+
   get DatabaseRecordClass() {
     return SurveyRecord;
   }
@@ -184,5 +189,9 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     const surveys = await this.find(queryConditions, customQueryOptions);
 
     return surveys;
+  }
+
+  async buildSyncLookupQueryDetails() {
+    return buildProjectLinkedLookupQueryDetails(this);
   }
 }

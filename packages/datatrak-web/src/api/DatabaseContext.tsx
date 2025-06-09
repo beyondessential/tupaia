@@ -1,19 +1,25 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { DatatrakWebUserRequest } from '@tupaia/types';
-import { ModelRegistry } from '@tupaia/database';
-import { createDatabase } from '../database/createDatabase';
 
-export type DatabaseContextType = DatatrakWebUserRequest.ResBody & { models: ModelRegistry | null };
+import { DatatrakWebUserRequest } from '@tupaia/types';
+
+import { createDatabase } from '../database/createDatabase';
+import { DatatrakWebModelRegistry } from '../types/model';
+
+export type DatabaseContextType = DatatrakWebUserRequest.ResBody & {
+  models: DatatrakWebModelRegistry | null;
+};
 
 const DatabaseContext = createContext<DatabaseContextType | null>(null);
 
 export const DatabaseProvider = ({ children }: { children: React.ReactNode }) => {
-  const [models, setModels] = useState<ModelRegistry | null>(null);
+  const [models, setModels] = useState<DatatrakWebModelRegistry | null>(null);
 
   useEffect(() => {
     const init = async () => {
+      // // TODO: Remove this once we have a proper way to test the database for front end in RN-1680
+      console.log('createDatabasee', createDatabase);
       const { models } = await createDatabase();
-      setModels(models);
+      setModels(models as DatatrakWebModelRegistry);
     };
 
     init();
@@ -28,6 +34,6 @@ export const useDatabase = (): DatabaseContextType => {
   if (!context) {
     throw new Error('useDatabase must be used within a DatabaseProvider');
   }
-  
+
   return context;
 };

@@ -20,6 +20,10 @@ export {
   DatatrakWebTaskRequest,
   DatatrakWebUsersRequest,
   DatatrakWebTaskChangeRequest,
+  DatatrakWebSyncStartSessionRequest,
+  DatatrakWebSyncInitiatePullRequest,
+  DatatrakWebSyncPullRequest,
+  DatatrakWebSyncEndSessionRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,
@@ -43,3 +47,13 @@ export {
   TupaiaWebExportSurveyDataRequest,
 } from './tupaia-web-server';
 export { ProjectResponse, WebServerEntityRequest, WebServerProjectRequest } from './web-server';
+export {
+  SyncServerStartSessionRequest,
+  SyncServerSyncReadyRequest,
+  SyncServerSyncMetadataRequest,
+  SyncServerInitiatePullRequest,
+  SyncServerPullReadyRequest,
+  SyncServerPullMetadataRequest,
+  SyncServerPullRequest,
+  SyncServerEndSessionRequest,
+} from './sync-server';

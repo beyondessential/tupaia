@@ -2,11 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { DatatrakWebProjectsRequest } from '@tupaia/types';
 import { get } from '../api';
 
+const useProjectQuery = () =>
+  useQuery(['projects'], (): Promise<DatatrakWebProjectsRequest.ResBody> => get('projects'));
+
 export const useProjects = (sortByAccess = true) => {
-  const { data, ...query } = useQuery(
-    ['projects'],
-    (): Promise<DatatrakWebProjectsRequest.ResBody> => get('projects'),
-  );
+  const { data, ...query } = useProjectQuery();
 
   if (data && sortByAccess) {
     data.sort((a, b) => {
@@ -26,4 +26,13 @@ export const useProjects = (sortByAccess = true) => {
   }
 
   return { ...query, data };
+};
+
+export const useAccessibleProjects = () => {
+  const { data, ...query } = useProjectQuery();
+
+  return {
+    ...query,
+    data: data?.filter(project => project.hasAccess),
+  };
 };
