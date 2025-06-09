@@ -26,7 +26,7 @@ export class MigrationManager {
 
   async loadMigrationFiles() {
     // For loading migration files in the browser
-    const migrationFiles = [];
+    const migrationFiles = import.meta.glob('../core/migrations/*.js', { eager: true });
     const migrations = [];
 
     const sortedMigrationFiles = Object.fromEntries(

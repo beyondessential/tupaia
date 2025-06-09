@@ -1,7 +1,6 @@
 // TODO: Set up database for testing later
 
-jest.mock('./src/database/createDatabase', () => ({
-  createDatabase: jest.fn().mockResolvedValue({
-    models: {},
-  }),
+jest.mock('@tupaia/database', () => ({
+  migrate: jest.fn(),
+  ModelRegistry: jest.fn().mockImplementation(() => ({})),
 }));
