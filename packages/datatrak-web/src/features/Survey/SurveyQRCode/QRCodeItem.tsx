@@ -25,10 +25,10 @@ const Wrapper = styled.li<{
   flex-direction: column;
   inline-size: 100%;
   justify-content: center;
-  margin-block: 1.5rem;
-  &:first-child {
-    margin-top: 0;
+  & + & {
+    margin-block-start: 3rem;
   }
+
   button.MuiButtonBase-root {
     margin-left: 0;
 
