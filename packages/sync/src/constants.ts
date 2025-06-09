@@ -14,8 +14,6 @@ export const FACT_LAST_SUCCESSFUL_SYNC_PUSH = 'lastSuccessfulSyncPush';
 export const FACT_LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate';
 export const FACT_SYNC_TRIGGER_CONTROL = 'syncTrigger';
 
-export const COLUMNS_EXCLUDED_FROM_SYNC = ['updatedAtSyncTick'];
-
 export const SYNC_TICK_FLAGS = {
   INCOMING_FROM_CENTRAL_SERVER: -1,
   LAST_UPDATED_ELSEWHERE: -999,

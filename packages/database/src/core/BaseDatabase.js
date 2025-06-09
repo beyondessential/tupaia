@@ -1,4 +1,4 @@
-import knex, { Knex } from 'knex';
+import knex from 'knex';
 import autobind from 'react-autobind';
 import winston from 'winston';
 

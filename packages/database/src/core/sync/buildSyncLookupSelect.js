@@ -1,4 +1,4 @@
-import { COLUMNS_EXCLUDED_FROM_SYNC } from '../constants';
+import { COLUMNS_EXCLUDED_FROM_SYNC } from '@tupaia/constants';
 
 export async function buildSyncLookupSelect(model, columns = {}) {
   const attributes = await model.fetchFieldNames();
