@@ -11422,6 +11422,7 @@ __metadata:
     "@tupaia/dhis-api": "workspace:*"
     "@tupaia/indicators": "workspace:*"
     "@tupaia/kobo-api": "workspace:*"
+    "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/superset-api": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -36874,6 +36875,7 @@ __metadata:
     "@storybook/builder-vite": ^8.2.9
     "@storybook/react": ^8.2.9
     "@storybook/react-vite": ^8.2.9
+    "@tupaia/utils": "workspace:*"
     "@vitejs/plugin-react": ^4.0.4
     babel-eslint: ^10.1.0
     babel-jest: ^29.7.0

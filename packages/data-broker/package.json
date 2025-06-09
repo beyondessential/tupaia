@@ -43,6 +43,7 @@
     "moment": "^2.24.0"
   },
   "devDependencies": {
+    "@tupaia/server-boilerplate": "workspace:*",
     "@types/jest": "^29.5.14",
     "@types/lodash.flatten": "^4.4.0",
     "@types/lodash.groupby": "^4.6.0",
