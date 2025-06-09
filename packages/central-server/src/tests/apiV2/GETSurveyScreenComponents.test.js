@@ -57,7 +57,7 @@ describe('Permissions checker for GETSurveyScreenComponents', async () => {
     ]);
 
     surveyIds = surveyModels.map(sm => sm.survey.id);
-    const screenComponents = surveyModels.map(sm => sm.surveyScreenComponents).flat(1);
+    const screenComponents = surveyModels.flatMap(sm => sm.surveyScreenComponents);
     screenComponentIds = screenComponents.map(sc => sc.id);
     filterString = `filter={"id":{"comparator":"in","comparisonValue":["${screenComponentIds.join(
       '","',

@@ -1,23 +1,18 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
 import { Add } from '@material-ui/icons';
-import { Button } from '../../components';
-import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
-import { TasksContentWrapper } from '../../layout';
-import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
+import styled from 'styled-components';
 
-const ButtonContainer = styled.div`
-  padding-block-end: 0.5rem;
-  margin-block-start: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    margin-inline-start: auto;
-    margin-block-start: 0;
-    padding-block-end: 0;
-  }
-  ${({ theme }) => theme.breakpoints.down('xs')} {
-    align-self: self-end;
-  }
-`;
+import { isFeatureEnabled } from '@tupaia/utils';
+
+import { Button } from '../../components';
+import { ROUTES } from '../../constants';
+import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
+import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
+import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
+import { useIsMobile } from '../../utils';
+
+const canCreateTaskOnMobile = isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK');
 
 const CreateButton = styled(Button).attrs({
   color: 'primary',
@@ -40,16 +35,23 @@ const ContentWrapper = styled(TasksContentWrapper)`
 
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const onBack = () => navigate(ROUTES.HOME);
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
   return (
     <>
+      {isMobile && <StickyMobileHeader onBack={onBack}>Tasks</StickyMobileHeader>}
       <TaskPageHeader title="Tasks" backTo="/">
-        <TaskMetrics />
-        <ButtonContainer>
-          <CreateButton onClick={toggleCreateModal}>
-            <AddIcon /> Create task
-          </CreateButton>
-        </ButtonContainer>
+        {(!isMobile || canCreateTaskOnMobile) && (
+          <>
+            {!isMobile && <TaskMetrics style={{ marginInlineEnd: 'auto' }} />}
+            <CreateButton onClick={toggleCreateModal}>
+              <AddIcon aria-hidden />
+              Create task
+            </CreateButton>
+          </>
+        )}
       </TaskPageHeader>
       <ContentWrapper>
         <TasksTable />

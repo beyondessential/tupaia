@@ -100,13 +100,12 @@ export class AnalyticArithmeticBuilder extends Builder {
     const analyticsByElement = groupBy(analytics, 'dataElement');
 
     return Object.entries(analyticsByElement)
-      .map(([element, analyticsForElement]) => {
+      .flatMap(([element, analyticsForElement]) => {
         const aggregationList = this.config.aggregation[element];
         return this.api
           .getAggregator()
           .aggregateAnalytics(analyticsForElement, aggregationList, fetchOptions.period);
-      })
-      .flat();
+      });
   };
 
   private buildAnalyticClusters = (analytics: Analytic[]) => {

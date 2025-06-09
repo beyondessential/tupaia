@@ -51,7 +51,7 @@ const fetchData = async (table: TransformTable, params: FetchParams, context: Co
   }
 
   const existingColumns = table.getColumns();
-  const newColumns = Array.from(new Set(newRows.map(Object.keys).flat())).filter(
+  const newColumns = Array.from(new Set(newRows.flatMap(Object.keys))).filter(
     column => !existingColumns.includes(column),
   );
 
