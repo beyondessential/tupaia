@@ -47,7 +47,7 @@ export const ApproveButton = ({ row }) => {
       >
         {isError && (
           <SmallAlert onClose={handleClose} severity="error">
-            Error. Please click refresh and try again.
+            Error. Please refresh and try again.
           </SmallAlert>
         )}
       </MuiSnackbar>
