@@ -72,7 +72,7 @@ export class ApiConnection {
 
     console.debug(`[ApiConnection#request] fetching with timeout`, decodeURI(queryUrl));
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
-    console.debug(`[ApiConnection#request] fetched`, decodeURI(queryUrl).substring(0, 60));
+    console.debug(`[ApiConnection#request] fetched ${decodeURI(queryUrl).substring(0, 60)}...`);
 
     const contentType = response.headers.get('content-type');
     if (contentType?.includes('text/')) {
@@ -109,7 +109,7 @@ export class ApiConnection {
 
   private async verifyResponse(response: Response): Promise<void> {
     console.debug(`[ApiConnection#verifyResponse] verifying response`);
-    console.debug(`[ApiConnection#verifyResponse]   URL   `, response.url);
+    console.debug(`[ApiConnection#verifyResponse]   URL   `, decodeURI(response.url));
     console.debug(`[ApiConnection#verifyResponse]   status`, response.status, response.statusText);
     console.debug(`[ApiConnection#verifyResponse]   size  `, response.size);
     console.debug(
