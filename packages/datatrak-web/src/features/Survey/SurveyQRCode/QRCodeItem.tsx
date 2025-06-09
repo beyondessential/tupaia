@@ -5,15 +5,17 @@ import styled from 'styled-components';
 import { QrCodeImage, useDownloadQrCodes } from '@tupaia/ui-components';
 
 import { Button, DownloadIcon, ShareIcon } from '../../../components';
+import { useIsMobile } from '../../../utils';
 import { useShare } from '../utils/useShare';
 
 const Wrapper = styled.li<{
   $listVariant?: 'panel' | 'modal';
 }>`
-  margin: 1.5rem 0;
   display: flex;
   flex-direction: column;
+  inline-size: 100%;
   justify-content: center;
+  margin-block: 1.5rem;
   &:first-child {
     margin-top: 0;
   }
@@ -34,41 +36,32 @@ const Wrapper = styled.li<{
 `;
 
 const QrCodeContainer = styled.div`
-  canvas {
-    outline: none;
-    width: 100%;
-  }
-  border: 1px solid ${props => props.theme.palette.divider};
-  display: flex;
   align-items: center;
+  border-radius: 0.1875rem;
+  border: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
+  display: grid;
+  grid-template-columns: auto 1fr;
   justify-content: space-between;
   margin-bottom: 1.875rem;
-  .MuiBox-root {
-    width: 50%;
-    margin: 0;
-  }
+  padding-inline-end: 1rem;
 `;
 
 const EntityName = styled(Typography)`
-  padding: 0 !important;
-  text-align: center;
-  flex: 1;
-  font-size: 1.125rem;
+  font-size: 1rem;
+  ${props => props.theme.breakpoints.up('md')} {
+    font-size: 1.125rem;
+  }
+
+  font-variant-numeric: lining-nums slashed-zero tabular-nums;
   font-weight: ${props => props.theme.typography.fontWeightBold};
+  letter-spacing: 0.04em;
+  text-align: center;
 `;
 
 const StyledQRCodeImage = styled(QrCodeImage)`
-  flex: 1;
-`;
-
-const ShareButton = styled(Button).attrs({
-  color: 'primary',
-  startIcon: <ShareIcon />,
-  variant: 'outlined',
-})`
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    display: none;
-  }
+  outline: unset;
+  /* 6rem at 320px viewport width, up to a maximum of 10rem at 600px */
+  width: clamp(6rem, 1.4286rem + 22.8571dvw, 10rem);
 `;
 
 interface QrCodeImageProps {
@@ -87,6 +80,7 @@ export const QRCodeItem = ({ entity, listVariant }: QrCodeImageProps) => {
       value: id,
     },
   ]);
+  const isMobile = useIsMobile();
   const share = useShare();
   return (
     <Wrapper $listVariant={listVariant}>
@@ -103,7 +97,11 @@ export const QRCodeItem = ({ entity, listVariant }: QrCodeImageProps) => {
       >
         Download QR&nbsp;code
       </Button>
-      <ShareButton onClick={share}>Share QR&nbsp;code</ShareButton>
+      {isMobile && (
+        <Button color="primary" onClick={share} startIcon={<ShareIcon />} variant="outlined">
+          Share QR&nbsp;code
+        </Button>
+      )}
     </Wrapper>
   );
 };
