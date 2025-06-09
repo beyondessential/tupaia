@@ -49,7 +49,8 @@ const useCopyUrl = () => {
   const copyPageUrl = async () => {
     try {
       await navigator.clipboard.writeText(link);
-      setDidJustCopy(true);
+
+      if (isMounted()) setDidJustCopy(true);
       setTimeout(() => {
         if (isMounted()) setDidJustCopy(false);
       }, 2000);
