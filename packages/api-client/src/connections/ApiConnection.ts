@@ -1,8 +1,10 @@
+import type { HeadersInit, RequestInit, Response } from 'node-fetch';
 import nodeFetch from 'node-fetch';
-import type { RequestInit, HeadersInit, Response } from 'node-fetch';
 import { stringify } from 'qs';
-import { CustomError, RespondingError } from '@tupaia/utils';
-import { QueryParameters, AuthHandler } from '../types';
+
+import { CustomError } from '@tupaia/utils';
+
+import { AuthHandler, QueryParameters } from '../types';
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
