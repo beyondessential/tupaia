@@ -77,7 +77,6 @@
     "@storybook/builder-vite": "^8.2.9",
     "@storybook/react": "^8.2.9",
     "@storybook/react-vite": "^8.2.9",
-    "@tupaia/utils": "workspace:*",
     "@vitejs/plugin-react": "^4.0.4",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^29.7.0",
