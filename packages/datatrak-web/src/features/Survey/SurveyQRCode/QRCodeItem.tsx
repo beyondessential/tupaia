@@ -1,12 +1,10 @@
+import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+
 import { QrCodeImage, useDownloadQrCodes } from '@tupaia/ui-components';
-import {
-  DownloadIcon as BaseDownloadIcon,
-  Button,
-  ShareIcon as BaseShareIcon,
-} from '../../../components';
+
+import { Button, DownloadIcon, ShareIcon } from '../../../components';
 import { useShare } from '../utils/useShare';
 
 const Wrapper = styled.li<{
@@ -59,24 +57,13 @@ const EntityName = styled(Typography)`
   font-weight: ${props => props.theme.typography.fontWeightBold};
 `;
 
-const DownloadIcon = styled(BaseDownloadIcon)<{
-  $listVariant?: 'panel' | 'modal';
-}>`
-  font-size: 1.1rem;
-  margin-right: 0.5rem;
-`;
-
-const ShareIcon = styled(BaseShareIcon)`
-  font-size: 1.1rem;
-  margin-right: 0.5rem;
-`;
-
 const StyledQRCodeImage = styled(QrCodeImage)`
   flex: 1;
 `;
 
 const ShareButton = styled(Button).attrs({
   color: 'primary',
+  startIcon: <ShareIcon />,
   variant: 'outlined',
 })`
   ${({ theme }) => theme.breakpoints.up('sm')} {
@@ -112,12 +99,11 @@ export const QRCodeItem = ({ entity, listVariant }: QrCodeImageProps) => {
         disabled={isDownloading}
         variant={listVariant === 'modal' ? 'contained' : 'text'}
         color={listVariant === 'modal' ? 'primary' : 'default'}
+        startIcon={<DownloadIcon />}
       >
-        <DownloadIcon $listVariant={listVariant} /> Download QR&nbsp;code
+        Download QR&nbsp;code
       </Button>
-      <ShareButton onClick={share}>
-        <ShareIcon /> Share QR&nbsp;code
-      </ShareButton>
+      <ShareButton onClick={share}>Share QR&nbsp;code</ShareButton>
     </Wrapper>
   );
 };
