@@ -1,12 +1,10 @@
 // TODO: Set up database for testing later
-const { createDatabase } = require('./src/database/createDatabase');
 
-global.importMeta = {
-  glob: jest.fn().mockResolvedValue({}),
-};
+jest.mock('@tupaia/database', () => ({
+  migrate: jest.fn(),
+  ModelRegistry: jest.fn().mockImplementation(() => ({})),
+}));
 
-jest.mock('./src/database/createDatabase', () => ({
-  createDatabase: jest.fn().mockResolvedValue({
-    models: {},
-  }),
+jest.mock('./src/database/DatatrakDatabase', () => ({
+  DatatrakDatabase: jest.fn().mockImplementation(() => ({})),
 }));
