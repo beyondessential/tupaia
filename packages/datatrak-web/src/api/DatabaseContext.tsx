@@ -17,10 +17,9 @@ export const DatabaseProvider = ({ children }: { children: React.ReactNode }) =>
   useEffect(() => {
     const init = async () => {
       // // TODO: Remove this once we have a proper way to test the database for front end in RN-1680
-      if (!process.env.JEST_WORKER_ID) {
-        const { models } = await createDatabase();
-        setModels(models as DatatrakWebModelRegistry);
-      }
+      console.log('createDatabasee', createDatabase);
+      const { models } = await createDatabase();
+      setModels(models as DatatrakWebModelRegistry);
     };
 
     init();
