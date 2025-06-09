@@ -70,13 +70,24 @@ export class ApiConnection {
       fetchConfig.body = JSON.stringify(body);
     }
 
-    console.debug(`\n[ApiConnection#request] fetching with timeout`, decodeURI(queryUrl));
+    console.debug(`[ApiConnection#request] fetching with timeout`, decodeURI(queryUrl));
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
     console.debug(`[ApiConnection#request] fetched`, decodeURI(queryUrl).substring(0, 60));
 
+    const contentType = response.headers.get('content-type');
+    if (contentType?.includes('text/')) {
+      // TODO: Put this inside verifyResponse and throw RespondingError
+      const toc = performance.now();
+      console.debug(
+        `[ApiConnection#request] Expected application/json response but received ${contentType}`,
+        decodeURI(queryUrl),
+      );
+      console.debug(`[ApiConnection#request] responding with ${contentType} after ${toc - tic} ms`);
+      return response;
+    }
+
     await this.verifyResponse(response);
     console.debug(`[ApiConnection#request] response verified`);
-    const contentType = response.headers.get('content-type');
     if (contentType?.includes('application/json')) {
       const toc = performance.now();
       console.debug(`[ApiConnection#request] responding with JSON after ${toc - tic} ms`);
@@ -108,7 +119,7 @@ export class ApiConnection {
 
     if (response.ok) return;
 
-    console.debug(`[ApiConnection]   not OK`);
+    console.debug(`[ApiConnection#verifyResponse]   not OK`);
     const contentType = response.headers.get('content-type');
     if (contentType?.includes('application/json')) {
       const responseJson = await response.json();
@@ -120,15 +131,6 @@ export class ApiConnection {
           responseStatus: response.status,
         },
         {},
-      );
-    }
-
-    if (contentType?.includes('text/')) {
-      const responseText = await response.text();
-      throw new RespondingError(
-        `Expected application/json response but received ${contentType}`,
-        response.status,
-        { responseText },
       );
     }
   }
