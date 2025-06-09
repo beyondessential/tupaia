@@ -20,5 +20,4 @@ export interface TestModelRegistry extends ModelRegistry {
   readonly optionSet: modelClasses.OptionSet;
   readonly surveyGroup: modelClasses.SurveyGroup;
   readonly surveyScreen: modelClasses.SurveyScreen;
-  readonly localSystemFact: modelClasses.LocalSystemFact;
 }

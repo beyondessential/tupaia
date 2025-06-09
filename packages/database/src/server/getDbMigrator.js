@@ -51,7 +51,7 @@ const cliCallback = async (migrator, _internals, originalError, migrationError) 
   resetMigrationFolder();
 
   if (originalError) {
-    exitWithError(new Error(`db-migrate error: ${migrationError.message}`));
+    exitWithError(new Error(`db-migrate error: ${originalError.message}`));
   }
   if (migrationError) {
     exitWithError(new Error(`Migration error: ${migrationError.message}`));

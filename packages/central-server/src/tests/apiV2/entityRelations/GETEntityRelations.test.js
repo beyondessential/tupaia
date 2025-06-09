@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { FACT_CURRENT_SYNC_TICK } from '@tupaia/sync';
 
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
+import { stripUpdatedAtSyncTickFromArray, stripUpdatedAtSyncTickFromObject } from '@tupaia/utils';
 
 describe('GET entity relations', () => {
   const FIJI_POLICY = {
@@ -20,7 +20,6 @@ describe('GET entity relations', () => {
   let exploreToFiji;
   let fijiToDistrict;
   let kiribatiToDistrict;
-  let currentSyncTickFact;
 
   const findOrCreateEntitiesAndRelations = async ({ parent, child, entityHierarchyId }) => {
     const parentEntity = await findOrCreateDummyRecord(models.entity, parent);
@@ -39,10 +38,6 @@ describe('GET entity relations', () => {
   };
 
   before(async () => {
-    currentSyncTickFact = await findOrCreateDummyRecord(models.localSystemFact, {
-      key: FACT_CURRENT_SYNC_TICK,
-    });
-
     exploreHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
       name: 'explore',
     });
@@ -78,9 +73,8 @@ describe('GET entity relations', () => {
         parent_id: exploreToFiji.parent.id,
         child_id: exploreToFiji.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
-        updated_at_sync_tick: currentSyncTickFact.value,
       };
-      expect(result).to.deep.equal(expected);
+      expect(stripUpdatedAtSyncTickFromObject(result)).to.deep.equal(expected);
     });
 
     it('Returns a record if relation id exists and user has permissions: country -> sub-country relation', async () => {
@@ -92,9 +86,8 @@ describe('GET entity relations', () => {
         parent_id: fijiToDistrict.parent.id,
         child_id: fijiToDistrict.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
-        updated_at_sync_tick: currentSyncTickFact.value,
       };
-      expect(result).to.deep.equal(expected);
+      expect(stripUpdatedAtSyncTickFromObject(result)).to.deep.equal(expected);
     });
 
     it('Always returns a record for a BES Admin', async () => {
@@ -106,9 +99,8 @@ describe('GET entity relations', () => {
         parent_id: fijiToDistrict.parent.id,
         child_id: fijiToDistrict.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
-        updated_at_sync_tick: currentSyncTickFact.value,
       };
-      expect(result).to.deep.equal(expected);
+      expect(stripUpdatedAtSyncTickFromObject(result)).to.deep.equal(expected);
     });
 
     it('Returns an error if resource id is invalid', async () => {
@@ -150,17 +142,15 @@ describe('GET entity relations', () => {
           parent_id: fijiToDistrict.parent.id,
           child_id: fijiToDistrict.child.id,
           entity_hierarchy_id: exploreHierarchy.id,
-          updated_at_sync_tick: currentSyncTickFact.value,
         },
         {
           id: exploreToFiji.relation.id,
           parent_id: exploreToFiji.parent.id,
           child_id: exploreToFiji.child.id,
           entity_hierarchy_id: exploreHierarchy.id,
-          updated_at_sync_tick: currentSyncTickFact.value,
         },
       ];
-      expect(result).to.deep.equalInAnyOrder(expected);
+      expect(stripUpdatedAtSyncTickFromArray(result)).to.deep.equalInAnyOrder(expected);
     });
 
     it('Returns an empty list if user has no permissions to the requested relations', async () => {
@@ -189,17 +179,15 @@ describe('GET entity relations', () => {
           parent_id: fijiToDistrict.parent.id,
           child_id: fijiToDistrict.child.id,
           entity_hierarchy_id: exploreHierarchy.id,
-          updated_at_sync_tick: currentSyncTickFact.value,
         },
         {
           id: kiribatiToDistrict.relation.id,
           parent_id: kiribatiToDistrict.parent.id,
           child_id: kiribatiToDistrict.child.id,
           entity_hierarchy_id: exploreHierarchy.id,
-          updated_at_sync_tick: currentSyncTickFact.value,
         },
       ];
-      expect(result).to.deep.equalInAnyOrder(expected);
+      expect(stripUpdatedAtSyncTickFromArray(result)).to.deep.equalInAnyOrder(expected);
     });
   });
 });

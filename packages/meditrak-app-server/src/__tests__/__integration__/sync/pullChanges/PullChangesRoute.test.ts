@@ -44,7 +44,7 @@ const sortByRecordId = (r1: any, r2: any) => (r1.record.id > r2.record.id ? -1 :
 
 const expectMatchingChangeRecords = (
   actual: ChangeRecord[],
-  expected: Omit<ChangeRecord, 'timestamp' | 'updatedAtSyncTick'>[],
+  expected: Omit<ChangeRecord, 'timestamp'>[],
 ) => {
   // Can't match timestamp, just just assert the field is there and check it's a number
   actual.forEach(changeRecord => expect(typeof changeRecord.timestamp).toBe('number'));

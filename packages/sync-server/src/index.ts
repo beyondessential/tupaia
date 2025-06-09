@@ -20,21 +20,13 @@ configureEnv();
 
 const database = new TupaiaDatabase();
 const models = new ModelRegistry(database) as SyncServerModelRegistry;
-const config = {
-  maxRecordsPerSnapshotChunk: 10000,
-  lookupTable: {
-    perModelUpdateTimeoutMs: 1000000,
-    avoidRepull: false,
-  },
-};
 
-const syncManager = new CentralSyncManager(database, models, config);
+const syncManager = new CentralSyncManager(models);
 
 /**
  * Set up app with routes etc.
  */
-const app = createApp(database);
-
+const app = createApp(database, syncManager);
 
 initializeScheduledTasks(models, syncManager);
 

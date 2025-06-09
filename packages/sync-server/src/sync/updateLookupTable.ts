@@ -1,13 +1,14 @@
 import log from 'winston';
 
+import { FilteredModelRegistry } from '@tupaia/sync';
+import { SyncDirections, SyncTickFlags } from '@tupaia/constants';
 import {
-  SYNC_DIRECTIONS,
-  SYNC_TICK_FLAGS,
-  FilteredModelRegistry,
-} from '@tupaia/sync';
-import { DatabaseModel, TupaiaDatabase, DebugLogRecord } from '@tupaia/database';
+  DatabaseModel,
+  TupaiaDatabase,
+  DebugLogRecord,
+  buildSyncLookupSelect,
+} from '@tupaia/database';
 
-import { buildSyncLookupSelect } from './buildSyncLookupSelect';
 import { SyncLookupQueryDetails, SyncServerConfig } from '../types';
 
 const updateLookupTableForModel = async (
@@ -30,7 +31,7 @@ const updateLookupTableForModel = async (
     ? await (model.buildSyncLookupQueryDetails as Function)()
     : {};
 
-  const { select, joins, where } = result;
+  const { select, joins, where } = result || {};
 
   while (fromId != null) {
     const [{ maxId, count }] = await model.database.executeSql(
@@ -104,9 +105,7 @@ export const updateLookupTable = async (
   const invalidModelNames = Object.values(outgoingModels)
     .filter(
       m =>
-        ![SYNC_DIRECTIONS.BIDIRECTIONAL, SYNC_DIRECTIONS.PULL_FROM_CENTRAL].includes(
-          m.syncDirection,
-        ),
+        ![SyncDirections.BIDIRECTIONAL, SyncDirections.PULL_FROM_CENTRAL].includes(m.syncDirection),
     )
     .map(m => m.tableName);
 
@@ -129,9 +128,9 @@ export const updateLookupTable = async (
 
       changesCount += modelChangesCount || 0;
     } catch (e: any) {
-      log.error(`Failed to update ${model.name} for lookup table`);
+      log.error(`Failed to update ${model.databaseRecord} for lookup table`);
       log.debug(e);
-      throw new Error(`Failed to update ${model.name} for lookup table: ${e.message}`);
+      throw new Error(`Failed to update ${model.databaseRecord} for lookup table: ${e.message}`);
     }
   }
 
@@ -151,6 +150,6 @@ export const updateSyncLookupPendingRecords = async (
       SET updated_at_sync_tick = :currentTick
       WHERE updated_at_sync_tick = :pendingUpdateSyncTick;
     `,
-    { currentTick, pendingUpdateSyncTick: SYNC_TICK_FLAGS.SYNC_LOOKUP_PLACEHOLDER },
+    { currentTick, pendingUpdateSyncTick: SyncTickFlags.SYNC_LOOKUP_PLACEHOLDER },
   );
 };

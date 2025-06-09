@@ -6,7 +6,7 @@ import { NullableKeysToOptional, FeedItem } from '@tupaia/types';
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
 type ResponseFeedItem = NullableKeysToOptional<
-  Omit<FeedItem, 'creation_date'> & {
+  Omit<FeedItem, 'creation_date' | 'updated_at_sync_tick'> & {
     creation_date?: string;
   }
 >;
@@ -46,7 +46,6 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
         hasPigs: false, // this can be set to true if the meditrak-app table is fixed
         leaderboard,
       },
-      updated_at_sync_tick: leaderboard.updated_at_sync_tick,
     };
   }
 

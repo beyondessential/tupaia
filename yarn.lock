@@ -11400,6 +11400,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/node-fetch": ^2.6.11
+    express: ^4.19.2
     lodash.isequal: ^4.5.0
     lodash.pick: ^4.4.0
     node-fetch: ^1.7.3
@@ -11681,8 +11682,10 @@ __metadata:
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
     "@testing-library/user-event": ^13.5.0
+    "@tupaia/constants": "workspace:*"
     "@tupaia/database": "workspace:*"
     "@tupaia/expression-parser": "workspace:*"
+    "@tupaia/sync": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
@@ -12430,6 +12433,7 @@ __metadata:
     node-fetch: ^1.7.3
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
+    omit-deep: ^0.3.0
     prop-types: ^15.6.2
     rimraf: ^6.0.1
     rrule: ^2.8.1
@@ -25355,7 +25359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-plain-object@npm:^2.0.3, is-plain-object@npm:^2.0.4":
+"is-plain-object@npm:^2.0.1, is-plain-object@npm:^2.0.3, is-plain-object@npm:^2.0.4":
   version: 2.0.4
   resolution: "is-plain-object@npm:2.0.4"
   dependencies:
@@ -30833,6 +30837,16 @@ __metadata:
     define-properties: ^1.2.0
     es-abstract: ^1.22.1
   checksum: f3e4ae4f21eb1cc7cebb6ce036d4c67b36e1c750428d7b7623c56a0db90edced63d08af8a316d81dfb7c41a3a5fa81b05b7cc9426e98d7da986b1682460f0777
+  languageName: node
+  linkType: hard
+
+"omit-deep@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "omit-deep@npm:0.3.0"
+  dependencies:
+    is-plain-object: ^2.0.1
+    unset-value: ^0.1.1
+  checksum: ca603591af98f717ee4e4ae199778d386304f80072164fc1fb9c27abb011845faa27ffb32e7fa4a240698a4d54822526059af74f12f4f73315ecd7f03825d590
   languageName: node
   linkType: hard
 
@@ -39191,6 +39205,16 @@ __metadata:
   version: 1.1.1
   resolution: "unquote@npm:1.1.1"
   checksum: 71745867d09cba44ba2d26cb71d6dda7045a98b14f7405df4faaf2b0c90d24703ad027a9d90ba9a6e0d096de2c8d56f864fd03f1c0498c0b7a3990f73b4c8f5f
+  languageName: node
+  linkType: hard
+
+"unset-value@npm:^0.1.1":
+  version: 0.1.2
+  resolution: "unset-value@npm:0.1.2"
+  dependencies:
+    has-value: ^0.3.1
+    isobject: ^3.0.0
+  checksum: 56c7de1ee6b726002cc67b82954ec31b795836c2312d4d3d114a500eab5f632e1d3d6f5a164aff1ed90d7ffa94a009c452f6357f1f7d23bc444d489f622aeb9d
   languageName: node
   linkType: hard
 
