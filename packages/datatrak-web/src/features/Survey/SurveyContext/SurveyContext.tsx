@@ -1,6 +1,6 @@
 import React, { createContext, Dispatch, useContext, useReducer, useState, useMemo } from 'react';
 import { To, useMatch, useParams, useSearchParams } from 'react-router-dom';
-import { QuestionType } from '@tupaia/types';
+import { Country, QuestionType, Survey } from '@tupaia/types';
 import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
@@ -42,7 +42,15 @@ const SurveyFormContext = createContext(defaultContext);
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
 
-export const SurveyContext = ({ children, surveyCode, countryCode }) => {
+export const SurveyContext = ({
+  children,
+  surveyCode,
+  countryCode,
+}: {
+  children: React.ReactNode;
+  countryCode: Country['code'] | undefined;
+  surveyCode: Survey['code'] | undefined;
+}) => {
   const [urlSearchParams] = useSearchParams();
   const [prevSurveyCode, setPrevSurveyCode] = useState<string | null>(null);
   const primaryEntityCodeParam = urlSearchParams.get(PRIMARY_ENTITY_CODE_PARAM) || undefined;
