@@ -1,15 +1,11 @@
 import { ModelRegistry, migrate } from '@tupaia/database';
 
 import { DatatrakDatabase } from './DatatrakDatabase';
-import { DatatrakWebModelRegistry } from '../types/model';
 
-export const createDatabase = async (): Promise<{
-  database: DatatrakDatabase;
-  models: DatatrakWebModelRegistry;
-}> => {
+export const createDatabase = async () => {
   const database = new DatatrakDatabase();
-  const models = new ModelRegistry(database) as DatatrakWebModelRegistry;
+  const models = new ModelRegistry(database);
 
   await migrate(database);
-  return { database, models };
+  return { models };
 };
