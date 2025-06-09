@@ -4,22 +4,7 @@ module.exports = async () => ({
   ...baseConfig,
   testMatch: ['<rootDir>/src/__tests__/**/**.test.ts?(x)'],
   transform: {
-    '^.+\\.(ts|tsx)$': [
-      'ts-jest',
-      {
-        diagnostics: {
-          ignoreCodes: [1343],
-        },
-        astTransformers: {
-          before: [
-            {
-              path: 'ts-jest-mock-import-meta', // or, alternatively, 'ts-jest-mock-import-meta' directly, without node_modules.
-              options: { metaObjectReplacement: { url: 'https://www.url.com' } },
-            },
-          ],
-        },
-      },
-    ],
+    '^.+\\.(ts|tsx)$': 'ts-jest',
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
   moduleNameMapper: {
