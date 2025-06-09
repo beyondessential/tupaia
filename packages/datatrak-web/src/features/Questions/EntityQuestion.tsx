@@ -12,8 +12,16 @@ export const EntityQuestion = ({
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
-  const { isReviewScreen, isResponseScreen, formData, countryCode, surveyProjectCode } =
-    useSurveyForm();
+  const {
+    countryCode,
+    formData,
+    isResponseScreen,
+    isResubmitReviewScreen,
+    isReviewScreen,
+    surveyProjectCode,
+  } = useSurveyForm();
+
+  const isReadOnly = isReviewScreen || isResubmitReviewScreen || isResponseScreen;
 
   return (
     <EntitySelector
@@ -27,22 +35,20 @@ export const EntityQuestion = ({
         ref,
         invalid,
       }}
-      showLegend={isReviewScreen || isResponseScreen}
-      disableSearch={(isReviewScreen || isResponseScreen) && !value}
+      showLegend={isReadOnly}
+      disableSearch={isReadOnly && !value}
       projectCode={surveyProjectCode}
       config={config}
       data={formData}
       countryCode={countryCode}
-      showRecentEntities={!isReviewScreen && !isResponseScreen}
-      showSearchInput={!isReviewScreen && !isResponseScreen}
+      showRecentEntities={!isReadOnly}
+      showSearchInput={!isReadOnly}
       legend={label}
       legendProps={{
         component: Typography,
         variant: 'h4',
       }}
-      noResultsMessage={
-        isReviewScreen || isResponseScreen ? 'No entity selected' : 'No entities to display'
-      }
+      noResultsMessage={isReadOnly ? 'No entity selected' : 'No entities to display'}
     />
   );
 };

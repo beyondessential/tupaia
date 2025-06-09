@@ -178,9 +178,10 @@ export const useSurveyForm = () => {
 
   const numberOfScreens = visibleScreens?.length ?? 0;
   const isLast = screenNumber === numberOfScreens;
-  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
   const isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
   const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
+  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
 
   const [urlSearchParams] = useSearchParams();
   const isResponseScreen = !!urlSearchParams.get('responseId');
@@ -218,10 +219,11 @@ export const useSurveyForm = () => {
   return {
     ...surveyFormContext,
     isLast,
-    isSuccessScreen,
-    isResubmitSuccessScreen,
     isResponseScreen,
+    isResubmitReviewScreen,
+    isResubmitSuccessScreen,
     isReviewScreen,
+    isSuccessScreen,
     numberOfScreens,
     toggleSideMenu,
     updateFormData,
