@@ -13,7 +13,7 @@ module.exports = async () => ({
         astTransformers: {
           before: [
             {
-              path: 'node_modules/ts-jest-mock-import-meta', // or, alternatively, 'ts-jest-mock-import-meta' directly, without node_modules.
+              path: 'ts-jest-mock-import-meta', // or, alternatively, 'ts-jest-mock-import-meta' directly, without node_modules.
               options: { metaObjectReplacement: { url: 'https://www.url.com' } },
             },
           ],
