@@ -24,7 +24,7 @@ const Cell = styled(MuiTableCell)<{
   }
 `;
 
-const CellContentWrapper = styled.div`
+export const FilterableTableCellContent = styled.div`
   padding: 0.7rem;
   height: 100%;
   display: flex;
@@ -126,9 +126,9 @@ export const TableCell = ({ children, width, row, maxWidth, column, ...props }: 
   const { to, state } = getRowUrl();
   return (
     <Cell {...props} $maxWidth={maxWidth}>
-      <CellContentWrapper className="cell-content" as={to ? CellLink : 'div'} to={to} state={state}>
+      <FilterableTableCellContent as={to ? CellLink : 'div'} to={to} state={state}>
         <CellContentContainer>{children}</CellContentContainer>
-      </CellContentWrapper>
+      </FilterableTableCellContent>
     </Cell>
   );
 };

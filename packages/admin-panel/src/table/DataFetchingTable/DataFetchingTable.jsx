@@ -4,7 +4,7 @@ import React, { memo, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { Alert, FilterableTable } from '@tupaia/ui-components';
+import { Alert, FilterableTable, FilterableTableCellContent } from '@tupaia/ui-components';
 
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
 import { getEditorState } from '../../editor/selectors';
@@ -57,7 +57,7 @@ const ButtonCell = styled.div`
 
 const SingleButtonWrapper = styled.div`
   width: ${({ $width }) => $width}px;
-  .cell-content:has(&) {
+  ${FilterableTableCellContent}:has(&) {
     padding-block: 0;
     padding-inline-end: 0;
   }
