@@ -1,6 +1,5 @@
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Button } from '../../components';
 import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
@@ -9,7 +8,6 @@ import { TasksContentWrapper } from '../../layout';
 
 import { isFeatureEnabled } from '@tupaia/utils';
 
-import { ROUTES } from '../../constants';
 import { StickyMobileHeader } from '../../layout';
 import { useIsMobile } from '../../utils';
 
@@ -31,13 +29,12 @@ const ContentWrapper = styled(TasksContentWrapper)`
 
 export const TasksDashboardPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const onBack = () => navigate(ROUTES.HOME);
   const toggleCreateModal = () => setCreateModalOpen(!createModalOpen);
+
   return (
     <>
-      {isMobile && <StickyMobileHeader onBack={onBack}>Tasks</StickyMobileHeader>}
+      {isMobile && <StickyMobileHeader>Tasks</StickyMobileHeader>}
       <TaskPageHeader title="Tasks" backTo="/">
         {(!isMobile || canCreateTaskOnMobile) && (
           <>
