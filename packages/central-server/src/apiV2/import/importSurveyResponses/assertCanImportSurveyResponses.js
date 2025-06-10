@@ -8,9 +8,6 @@ export const assertCanImportSurveyResponses = async (
   entitiesBySurveyCode,
 ) => {
   const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyCode));
-  winston.debug(
-    `[assertCanImportSurveyResponses] ${allEntityCodes.length} entitiesBySurveyCode ${allEntityCodes.map(e => e.code).join(' ')} `,
-  );
   const surveyCodes = Object.keys(entitiesBySurveyCode);
 
   await models.wrapInReadOnlyTransaction(async transactingModels => {
@@ -71,7 +68,6 @@ export const assertCanImportSurveyResponses = async (
 };
 
 const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, entitiesUpserted) => {
-  winston.debug(`[getEntityCodeFromSurveyResponseChange] surveyResponse.id: ${surveyResponse.id}`);
   // There are three valid ways to refer to the entity in a batch change:
   // entity_code, entity_id, clinic_id
   if (surveyResponse.entity_code) {
@@ -83,18 +79,13 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
     const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
     if (newEntity) {
       const parentEntity = await models.entity.findById(newEntity.parent_id);
-      winston.debug(
-        `[getEntityCodeFromSurveyResponseChange] parentEntity?.code: ${parentEntity?.code}`,
-      );
       return parentEntity?.code;
     }
     const entity = await models.entity.findById(surveyResponse.entity_id);
-    winston.debug(`[getEntityCodeFromSurveyResponseChange] entity?.code: ${entity?.code}`);
     return entity.code;
   }
   if (surveyResponse.clinic_id) {
     const clinic = await models.facility.findById(surveyResponse.clinic_id);
-    winston.debug(`[getEntityCodeFromSurveyResponseChange] clinic?.code: ${clinic?.code}`);
     return clinic.code;
   }
 
@@ -110,17 +101,11 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
 
   await models.wrapInReadOnlyTransaction(async transactingModels => {
     const surveys = await transactingModels.survey.findManyById(surveyIds);
-    winston.debug(
-      `[assertCanSubmitSurveyResponses] surveyIds: ${surveyIds.map(s => s.code).join(' ')}`,
-    );
     const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
 
     const entitiesUpserted = surveyResponses
       .filter(sr => !!sr.entities_upserted)
       .flatMap(sr => sr.entities_upserted);
-    winston.debug(
-      `[assertCanSubmitSurveyResponses] entitiesUpserted: ${entitiesUpserted.map(e => e.code).join(' ')}`,
-    );
 
     for (const response of surveyResponses) {
       const entityCode = await getEntityCodeFromSurveyResponseChange(
