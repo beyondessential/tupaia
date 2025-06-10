@@ -7,7 +7,6 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
-import { buildProjectLinkedLookupQueryDetails } from '../sync';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
@@ -192,6 +191,10 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   }
 
   async buildSyncLookupQueryDetails() {
-    return buildProjectLinkedLookupQueryDetails(this);
+    return {
+      select: await buildSyncLookupSelect(this, {
+        projectIds: `ARRAY[survey.project_id]`,
+      }),
+    };
   }
 }
