@@ -3,7 +3,7 @@ import { SyncDirections } from '@tupaia/constants';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { buildSyncLookupTraverseJoins } from '../sync';
+import { buildSyncLookupSelect, buildSyncLookupTraverseJoins } from '../sync';
 
 export class SurveyScreenComponentRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_SCREEN_COMPONENT;

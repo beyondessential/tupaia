@@ -7,6 +7,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../BaseDatabase';
 import { RECORDS } from '../records';
 import { SqlQuery } from '../SqlQuery';
+import { buildSyncLookupSelect } from '../sync';
 
 export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
