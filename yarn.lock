@@ -11257,13 +11257,11 @@ __metadata:
     "@tupaia/ui-chart-components": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    "@types/jest": ^29.5.14
     ace-builds: ^1.10.1
     axios: ^1.6.8
     content-disposition-header: ^0.6.0
     date-fns: ^2.29.2
     file-saver: ^1.3.3
-    jest: ^29.7.0
     jsoneditor: ^10.0.1
     lodash.debounce: ^4.0.8
     lodash.groupby: ^4.6.0
@@ -11446,7 +11444,7 @@ __metadata:
     "@types/lodash.flatten": ^4.4.0
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.isequal": ^4.5.0
-    "@types/lodash.keyby": ^4.6.0
+    "@types/lodash.keyby": ^4.6.9
     "@types/lodash.pickby": ^4.6.0
     case: ^1.6.3
     date-fns: ^2.30.0
@@ -11553,7 +11551,6 @@ __metadata:
     "@types/jest": ^29.5.14
     "@types/lodash.sortby": ^4.6.0
     camelcase-keys: ^6.2.2
-    cookie: ^0.6.0
     date-fns: ^2.29.2
     express: ^4.19.2
     jest: ^29.7.0
@@ -11571,6 +11568,7 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
     "@material-ui/pickers": ^3.2.10
+    "@storybook/react": ^8.2.9
     "@tanstack/react-query": 4.36.1
     "@testing-library/dom": ^10.4.0
     "@testing-library/react": 12.1.2
@@ -11583,7 +11581,9 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
     "@types/leaflet": ^1.7.1
+    "@types/lodash.keyby": ^4.6.9
     "@types/react": 16.8.6
+    "@types/react-table": ^7.7.14
     axios: ^1.6.8
     bson-objectid: ^1.2.2
     csstype: ^3.1.3
@@ -11591,8 +11591,8 @@ __metadata:
     downloadjs: 1.4.7
     esbuild: ^0.24.0
     jest: ^29.7.0
-    js-cookie: ^3.0.5
     leaflet: ^1.7.1
+    lodash.keyby: ^4.6.0
     lodash.throttle: ^4.1.1
     markdown-to-jsx: ^6.4.1
     msw: ^1.3.1
@@ -11608,6 +11608,7 @@ __metadata:
     react-router: 6.3.0
     react-router-dom: 6.3.0
     react-swipeable-views: ^0.14.0
+    rrule: ^2.8.1
     styled-components: ^5.1.0
     vite: ^4.5.3
     workbox-cli: ^7.1.0
@@ -11679,7 +11680,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/jest": ^29.5.14
-    "@types/lodash.keyby": ^4.6.6
+    "@types/lodash.keyby": ^4.6.9
     express: ^4.19.2
     jest: ^29.7.0
     jest-extended: ^0.11.5
@@ -12102,7 +12103,7 @@ __metadata:
     "@types/jest": ^29.5.14
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.isequal": ^4.5.0
-    "@types/lodash.keyby": ^4.6.0
+    "@types/lodash.keyby": ^4.6.9
     express: ^4.19.2
     jest: ^29.7.0
     lodash.groupby: ^4.6.0
@@ -12121,6 +12122,7 @@ __metadata:
     "@material-ui/core": ^4.12.0
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
+    "@storybook/react": ^8.2.9
     "@tanstack/react-query": 4.36.1
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-chart-components": "workspace:*"
@@ -12129,13 +12131,16 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/dom-to-image": ^2.6.4
     "@types/downloadjs": ^1.4.3
+    "@types/geojson": ^7946.0.10
     "@types/leaflet": ^1.7.1
     "@types/mapbox__polyline": ^1.0.2
     "@types/react": 16.8.6
     axios: ^1.6.8
+    csstype: ^3.1.3
     dom-to-image: 2.6.0
     downloadjs: 1.4.7
     jquery: ^3.7.1
+    jszip: ^3.10.1
     leaflet: ^1.7.1
     moment: ^2.24.0
     msw: ^2.0.9
@@ -12151,8 +12156,6 @@ __metadata:
     slick-carousel: ^1.8.1
     styled-components: ^5.1.0
     vite: ^4.5.3
-    vite-plugin-ejs: ^1.6.4
-    vite-plugin-env-compatible: ^1.1.1
     vite-plugin-html: ^3.2.0
   languageName: unknown
   linkType: soft
@@ -12726,6 +12729,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/geojson@npm:^7946.0.10":
+  version: 7946.0.16
+  resolution: "@types/geojson@npm:7946.0.16"
+  checksum: d66e5e023f43b3e7121448117af1930af7d06410a32a585a8bc9c6bb5d97e0d656cd93d99e31fa432976c32e98d4b780f82bf1fd1acd20ccf952eb6b8e39edf2
+  languageName: node
+  linkType: hard
+
 "@types/glob@npm:^7.1.3":
   version: 7.2.0
   resolution: "@types/glob@npm:7.2.0"
@@ -12967,21 +12977,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.keyby@npm:^4.6.0":
-  version: 4.6.7
-  resolution: "@types/lodash.keyby@npm:4.6.7"
-  dependencies:
-    "@types/lodash": "*"
-  checksum: 599ecefd8d4a1eb06c277b5f3f14e82ef9e58a1b7d8fc75490f0d5ee5e43069bae08f0408cb54675e7c1005c9f280ee57a537eafe69a22da5271cd6b815e4e1f
-  languageName: node
-  linkType: hard
-
 "@types/lodash.keyby@npm:^4.6.6":
   version: 4.6.6
   resolution: "@types/lodash.keyby@npm:4.6.6"
   dependencies:
     "@types/lodash": "*"
   checksum: c76d4aab6c3e2820bd1b59c179f8076f27b297711a9c5e5953ed77e2fc9d2b343b5954e4f1519cfcb70fe99c55c5e40d8550a58f28fce9dc2a9a051ac7d0c23b
+  languageName: node
+  linkType: hard
+
+"@types/lodash.keyby@npm:^4.6.9":
+  version: 4.6.9
+  resolution: "@types/lodash.keyby@npm:4.6.9"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 66beacb9b9c03abd3124d42943c1b04a8b4a4e3c2519565f75644e811867505b7bca66fd148a4b162d656e90ecda425b6578631738f5c971c25438d379ff6ce2
   languageName: node
   linkType: hard
 
@@ -17481,7 +17491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:0.6.0, cookie@npm:^0.6.0":
+"cookie@npm:0.6.0":
   version: 0.6.0
   resolution: "cookie@npm:0.6.0"
   checksum: f56a7d32a07db5458e79c726b77e3c2eff655c36792f2b6c58d351fb5f61531e5b1ab7f46987150136e366c65213cbe31729e02a3eaed630c3bf7334635fb410
@@ -25451,13 +25461,6 @@ __metadata:
     html-beautify: js/bin/html-beautify.js
     js-beautify: js/bin/js-beautify.js
   checksum: edda6f1f32d6a3870503f1ae7b7fb1279ba99ef533872ec3d2d7f9b685671425cc8e5c20bbaaba9440495dfc120797b13e68f867566d59bb23dc435de76dfe7a
-  languageName: node
-  linkType: hard
-
-"js-cookie@npm:^3.0.5":
-  version: 3.0.5
-  resolution: "js-cookie@npm:3.0.5"
-  checksum: 2dbd2809c6180fbcf060c6957cb82dbb47edae0ead6bd71cbeedf448aa6b6923115003b995f7d3e3077bfe2cb76295ea6b584eb7196cca8ba0a09f389f64967a
   languageName: node
   linkType: hard
 
@@ -37976,13 +37979,6 @@ __metadata:
   dependencies:
     ejs: ^3.1.8
   checksum: e256d408a2e9d5bfe703bbe679c9eb962ca7c819e0ac1fa8bd79bccf7b7eec322eeb812acdd9dcff1121a7d58948245bbef5ac65134b86e2400b92c2d536fe4f
-  languageName: node
-  linkType: hard
-
-"vite-plugin-env-compatible@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "vite-plugin-env-compatible@npm:1.1.1"
-  checksum: 5e7737844250c9184e9f94696ad59d46eb93178e5333d257e7d6e5d868efbbdb482c84830bf07fda3f26bc1455e7eec7c6a35a46d9e29c71f101a351e974cc10
   languageName: node
   linkType: hard
 
