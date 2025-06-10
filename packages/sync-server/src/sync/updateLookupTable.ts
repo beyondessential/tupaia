@@ -31,7 +31,7 @@ const updateLookupTableForModel = async (
     ? await (model.buildSyncLookupQueryDetails as Function)()
     : {};
 
-  const { select, joins, where } = result;
+  const { select, joins, where, groupBy } = result || {};
 
   while (fromId != null) {
     const [{ maxId, count }] = await model.database.executeSql(
@@ -59,6 +59,7 @@ const updateLookupTableForModel = async (
           WHERE
           (${where || `${table}.updated_at_sync_tick > :since`})
           ${fromId ? `AND ${table}.id > :fromId` : ''}
+          ${groupBy ? `GROUP BY sync_device_ticks.device_id, ${groupBy.join(', ')}` : ''}
           ORDER BY ${table}.id
           LIMIT :limit
           ON CONFLICT (record_id, record_type)
