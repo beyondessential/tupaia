@@ -142,13 +142,9 @@ export async function authenticate(req, res) {
 
     respond(res, authorizationObject, 200);
 
-    // Reset rate limiting on successful authorisation
-    setTimeout(async () => {
-      await Promise.all([
-        consecutiveFailsRateLimiter.resetFailedAttempts(req),
-        bruteForceRateLimiter.resetFailedAttempts(req),
-      ]);
-    }, 0);
+    // Reset rate limiting on successful authorisation, no need to block response by awaiting though 
+    consecutiveFailsRateLimiter.resetFailedAttempts(req);
+    bruteForceRateLimiter.resetFailedAttempts(req);
   } catch (authError) {
     if (authError.statusCode === 401) {
       // Record failed login attempt to rate limiter
