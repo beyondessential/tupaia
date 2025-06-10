@@ -29,4 +29,5 @@ export interface SyncLookupQueryDetails {
   select?: string[];
   joins?: string[];
   where?: any;
+  groupBy?: string[];
 }
