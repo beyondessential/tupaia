@@ -3,7 +3,7 @@ import { SyncDirections } from '@tupaia/constants';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
-import { buildSyncLookupSurveyProjectIdSelect, buildSyncLookupTraverseJoins } from '../sync';
+import { buildSyncLookupSelect, buildSyncLookupTraverseJoins } from '../sync';
 
 export class SurveyScreenComponentRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_SCREEN_COMPONENT;
@@ -35,7 +35,9 @@ export class SurveyScreenComponentModel extends DatabaseModel {
 
   async buildSyncLookupQueryDetails() {
     return {
-      select: await buildSyncLookupSurveyProjectIdSelect(this),
+      select: await buildSyncLookupSelect(this, {
+        projectIds: `ARRAY[survey.project_id]`,
+      }),
       joins: buildSyncLookupTraverseJoins([this.databaseRecord, 'survey_screen', 'survey'], {
         survey_screen_component_survey_screen: {
           fromTable: 'survey_screen_component',
