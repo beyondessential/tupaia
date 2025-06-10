@@ -41,6 +41,7 @@
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
+    "@tupaia/constants": "workspace:*",
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",

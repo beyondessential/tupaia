@@ -1,5 +1,5 @@
 export const SYNC_DIRECTIONS = {
-  DO_NOT_SYNC: 'do_not_sync',
+  DO_NOT_SYNC: 'do_not_sync', // Important! Non-syncing tables should also be added to @tupaia/sync/constants.js
   PUSH_TO_CENTRAL: 'push_to_central',
   PULL_FROM_CENTRAL: 'pull_from_central',
   BIDIRECTIONAL: 'bidirectional',
@@ -9,8 +9,6 @@ export const SYNC_SESSION_DIRECTION = {
   INCOMING: 'incoming',
   OUTGOING: 'outgoing',
 };
-
-export const SYNC_LOOKUP_PLACEHOLDER_SYNC_TICK = -1;
 
 export const DEBUG_LOG_TYPES = {
   SYNC_LOOKUP_UPDATE: 'syncLookupUpdate',
@@ -24,3 +22,27 @@ export const FACT_LOOKUP_UP_TO_TICK = 'lastSuccessfulLookupTableUpdate';
 export const FACT_SYNC_TRIGGER_CONTROL = 'syncTrigger';
 
 export const COLUMNS_EXCLUDED_FROM_SYNC = ['updatedAtSyncTick'];
+
+export const SYNC_TICK_FLAGS = {
+  INCOMING_FROM_CENTRAL_SERVER: -1,
+  LAST_UPDATED_ELSEWHERE: -999,
+  SYNC_LOOKUP_PLACEHOLDER: -1,
+};
+
+export const NON_SYNCING_TABLES = [
+  'analytics',
+  'superset_instance',
+  'log$_answer',
+  'log$_data_element',
+  'log$_entity',
+  'log$_question',
+  'log$_survey',
+  'log$_survey_response',
+  'spatial_ref_sys',
+  'local_system_fact',
+  'migrations',
+  'sync_session',
+  'sync_lookup',
+  'debug_log',
+  'sync_device_tick',
+];
