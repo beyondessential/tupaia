@@ -12,9 +12,9 @@
   "main": "./lib/library.js",
   "scripts": {
     "build": "run-s -c \"build:* {@}\" --",
-    "build:src": "npm run --prefix ../../ package:build:vite",
+    "build:src": "yarn run package:build:vite",
     "preview": "vite preview",
-    "build:library": "rimraf lib && npm run --prefix ../../ package:build:lib",
+    "build:library": "rimraf lib && yarn run package:build:lib",
     "build-dev": "yarn run build:library",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
