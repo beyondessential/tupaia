@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { SafeAreaColumn } from '@tupaia/ui-components';
 
+import { useCurrentUserContext } from '../../api';
 import { ROUTES } from '../../constants';
 import { useBottomNavigationVisibility } from '../../utils';
 import { MenuList } from './MenuList';
@@ -17,8 +18,13 @@ export const MobileUserMenuRoot = styled(SafeAreaColumn).attrs({ as: 'article' }
 export const MobileUserMenu = (
   props: React.ComponentPropsWithoutRef<typeof MobileUserMenuRoot>,
 ) => {
+  const { isLoggedIn } = useCurrentUserContext();
   const isBottomNavVisible = useBottomNavigationVisibility();
   const { pathname } = useLocation();
+
+  if (!isLoggedIn) {
+    return <Navigate to={ROUTES.LOGIN} replace state={{ from: pathname }} />;
+  }
 
   // Wait until hydration so we don’t prematurely redirect
   if (isBottomNavVisible === false) {
