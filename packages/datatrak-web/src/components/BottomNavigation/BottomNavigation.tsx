@@ -10,7 +10,7 @@ import styled from 'styled-components';
 
 import { Description as DescriptionIcon, Home as HomeIcon } from '@tupaia/ui-components';
 
-import { ROUTES } from '../../constants';
+import { BOTTOM_NAVIGATION_HEIGHT_SMALL, ROUTES } from '../../constants';
 import { TaskIcon } from '../Icons';
 import { useBottomNavigationActiveTab } from './useBottomNavigationActiveTab';
 
@@ -28,6 +28,7 @@ const BottomNavigationRoot = styled(MuiBottomNavigation).attrs({
 })`
   border-block-start: max(0.0625rem, 1px) solid ${props => props.theme.palette.divider};
   height: unset; // MUI hard-codes to 55px and ignores safe area insets
+  min-height: ${BOTTOM_NAVIGATION_HEIGHT_SMALL};
 
   .MuiBottomNavigationAction-root {
     padding-bottom: max(env(safe-area-inset-bottom, 0), 0.5rem);
