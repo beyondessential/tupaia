@@ -53,7 +53,7 @@
     "package:storybook:build": "cd \"$INIT_CWD\" && storybook build -c .storybook"
   },
   "resolutions": {
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@babel/types": "7.25.6",
     "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0"
   },
@@ -83,7 +83,7 @@
     "babel-jest": "^29.7.0",
     "babel-preset-react-app": "^10.0.0",
     "dotenv": "16.4.5",
-    "eslint": "^7.9.0",
+    "eslint": "^7.32.0",
     "eslint-import-resolver-babel-module": "^5.3.1",
     "eslint-plugin-cypress": "^2.11.1",
     "eslint-plugin-module-resolver": "^1.5.0",
