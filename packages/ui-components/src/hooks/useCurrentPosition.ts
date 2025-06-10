@@ -14,7 +14,10 @@ export function useCurrentPosition({
   enableHighAccuracy = true,
   timeout,
   maximumAge,
-}: PositionOptions) {
+}: PositionOptions = {}): [
+  GeolocationPosition | null,
+  GeolocationPositionError | typeof noSupportError | null,
+] {
   const [position, setPosition] = useState<GeolocationPosition | null>(null);
   const [error, setError] = useState<GeolocationPositionError | typeof noSupportError | null>(null);
 
