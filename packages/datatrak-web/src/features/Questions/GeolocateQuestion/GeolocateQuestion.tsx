@@ -4,6 +4,8 @@ import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { useCurrentPosition } from '@tupaia/ui-components';
+
 import { useSurveyForm } from '../..';
 import { Button, InputHelperText } from '../../../components';
 // Implicit import from components/ causes ReferenceError (probably circular import)
@@ -58,6 +60,16 @@ export const GeolocateQuestion = ({
     setMapModalOpen(!mapModalOpen);
   };
 
+  const [position, error] = useCurrentPosition();
+
+  const getCurrentPosition = () => {
+    if (error) {
+      console.error(error);
+      return;
+    }
+    console.log(position?.coords);
+  };
+
   const displayMapModalButton = !isReviewScreen && !isResponseScreen;
   return (
     <fieldset>
@@ -76,7 +88,7 @@ export const GeolocateQuestion = ({
           <>
             <OrDivider />
             <StyledButton
-              onClick={toggleMapModal}
+              onClick={isOnline ? toggleMapModal : getCurrentPosition}
               fullWidth={isMobile}
               variant={isMobile ? 'contained' : 'text'}
               startIcon={isOnline ? <MapIcon /> : <LocationSearchingIcon />}
@@ -85,12 +97,14 @@ export const GeolocateQuestion = ({
             </StyledButton>
           </>
         )}
-        <MapModal
-          geolocation={value}
-          setGeolocation={onChange}
-          closeModal={toggleMapModal}
-          mapModalOpen={mapModalOpen}
-        />
+        {isOnline && (
+          <MapModal
+            geolocation={value}
+            setGeolocation={onChange}
+            closeModal={toggleMapModal}
+            mapModalOpen={mapModalOpen}
+          />
+        )}
       </Container>
     </fieldset>
   );
