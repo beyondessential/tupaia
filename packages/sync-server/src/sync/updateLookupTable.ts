@@ -48,7 +48,7 @@ const updateLookupTableForModel = async (
             avoidRepull
               ? `LEFT JOIN sync_device_tick
                   ON persisted_at_sync_tick = ${table}.updated_at_sync_tick`
-              : 'LEFT JOIN (select NULL as device_id) AS sync_device_ticks ON 1 = 1'
+              : 'LEFT JOIN (select NULL as device_id) AS sync_device_tick ON 1 = 1'
           }
           ${joins || ''}
           WHERE

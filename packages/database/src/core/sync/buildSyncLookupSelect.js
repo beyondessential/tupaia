@@ -10,7 +10,7 @@ export async function buildSyncLookupSelect(model, columns = {}) {
       ${table}.id,
       '${table}',
       COALESCE(:updatedAtSyncTick, ${table}.updated_at_sync_tick),
-      sync_device_ticks.device_id,
+      sync_device_tick.device_id,
       json_build_object(
         ${attributes
           .filter(a => !COLUMNS_EXCLUDED_FROM_SYNC.includes(a))
