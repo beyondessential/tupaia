@@ -10,3 +10,5 @@ export enum SyncDirections {
   PULL_FROM_CENTRAL = 'pull_from_central',
   BIDIRECTIONAL = 'bidirectional',
 }
+
+export const COLUMNS_EXCLUDED_FROM_SYNC = ['updatedAtSyncTick'];
