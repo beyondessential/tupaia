@@ -20,7 +20,7 @@ import { post, remove } from '../api';
 import { DatatrakWebModelRegistry } from '../types/model';
 
 export interface SyncResult {
-  ran: boolean;
+  hasRun: boolean;
 }
 
 export class ClientSyncManager {
@@ -64,7 +64,7 @@ export class ClientSyncManager {
       );
     }
 
-    const startTime = Date.now();
+    const startTime = performance.now();
     const { sessionId, startedAtTick } = await this.startSyncSession();
 
     // clear previous temp data, in case last session errored out or server was restarted
@@ -89,7 +89,7 @@ export class ClientSyncManager {
     // clear temp data stored for persist
     await dropSnapshotTable(this.database, sessionId);
 
-    return { ran: true };
+    return { hasRun: true };
   }
 
   async startSyncSession() {

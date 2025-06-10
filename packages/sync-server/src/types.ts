@@ -80,16 +80,3 @@ export interface SyncSnapshotData {
   id: number;
   [key: string]: any;
 }
-
-export interface SyncSnapshotAttributes {
-  id: number;
-  direction: string;
-  recordType: string;
-  recordId: string;
-  isDeleted: boolean;
-  data: SyncSnapshotData;
-  savedAtSyncTick: number;
-  updatedAtByFieldSum?: number; // only for merged records
-  syncLookupId?: number; // no syncLookupId if it is an incoming record
-  requiresRepull?: boolean;
-}

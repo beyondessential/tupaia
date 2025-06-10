@@ -34,7 +34,7 @@ import { objectIdToTimestamp } from '@tupaia/server-utils';
 import { snapshotOutgoingChanges } from './snapshotOutgoingChanges';
 
 const errorMessageFromSession = (session: SyncSessionRecord) =>
-  `Sync session '${session.id}' encountered an error: ${session.errors[session.errors.length - 1]}`;
+  `Sync session '${session.id}' encountered an error: ${session.errors.at(-1)}`;
 
 export class CentralSyncManager {
   database: TupaiaDatabase;
@@ -105,7 +105,7 @@ export class CentralSyncManager {
       !session.errors &&
       session.updatedAt - session.createdAt > syncSessionTimeoutMs
     ) {
-      await session.markErrored(`Sync session ${sessionId} timed out`);
+      await session.markErrored(`Sync session ${sessionId} timed out after ${syncSessionTimeoutMs} ms`);
     }
 
     if (session.errors) {
