@@ -77,6 +77,7 @@ export const MenuButton = styled(Button).attrs({
     .MuiButton-endIcon {
       display: flex;
       margin-inline-start: auto;
+      margin-inline-end: unset;
     }
   }
 `;
