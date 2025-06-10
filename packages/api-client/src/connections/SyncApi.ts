@@ -1,0 +1,44 @@
+import { sleep } from '@tupaia/utils';
+import { ExpressResponse } from '@tupaia/server-boilerplate';
+
+import { BaseApi } from './BaseApi';
+import { PublicInterface } from './types';
+
+export class SyncApi extends BaseApi {
+  async startSyncSession() {
+    // start a sync session
+    const { sessionId } = await this.connection.post('sync');
+
+    // TODO: Implement sync queue RN-1667
+
+    // then, poll the sync/:sessionId/status endpoint until we get a valid response
+    // this is because POST /sync (especially the tickTockGlobalClock action) might get blocked
+    // and take a while if the central server is concurrently persist records from another client
+    await this.pollStatusUntilReady(`sync/${sessionId}/status`);
+
+    // finally, fetch the new tick from starting the session
+    const { startedAtTick } = await this.connection.get(`sync/${sessionId}/metadata`, {});
+
+    return { sessionId, startedAtTick };
+  }
+
+  async endSyncSession(sessionId: string) {
+    return this.connection.delete(`sync/${sessionId}`);
+  }
+
+  async pollStatusUntilReady(endpoint: string): Promise<void> {
+    // poll the provided endpoint until we get a valid response
+    const waitTime = 1000; // retry once per second
+    const maxAttempts = 60 * 60 * 12; // for a maximum of 12 hours
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const response = await this.connection.get(endpoint, {});
+      if (response.status === 'ready') {
+        return response;
+      }
+      await sleep(waitTime);
+    }
+    throw new Error(`Did not get a truthy response after ${maxAttempts} attempts for ${endpoint}`);
+  }
+}
+
+export interface SyncApiInterface extends PublicInterface<SyncApi> {}
