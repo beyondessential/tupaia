@@ -147,9 +147,10 @@ export const SurveyLayout = () => {
   };
 
   const onSubmit = data => {
-    const submitAction =
-      isResubmit && isReviewScreen ? resubmitSurveyResponse : submitSurveyResponse;
-    if (isReviewScreen) return submitAction({ ...formData, ...data });
+    if (isReviewScreen) {
+      return (isResubmit ? resubmitSurveyResponse : submitSurveyResponse)({ ...formData, ...data });
+    }
+
     return navigateNext(data);
   };
 
