@@ -1698,6 +1698,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/eslint-parser@npm:^7.27.5":
+  version: 7.27.5
+  resolution: "@babel/eslint-parser@npm:7.27.5"
+  dependencies:
+    "@nicolo-ribaudo/eslint-scope-5-internals": 5.1.1-v1
+    eslint-visitor-keys: ^2.1.0
+    semver: ^6.3.1
+  peerDependencies:
+    "@babel/core": ^7.11.0
+    eslint: ^7.5.0 || ^8.0.0 || ^9.0.0
+  checksum: 133191a3ea312dea92abb0f2cae87bc8d36b4a02ce7dce9367473940d91a1102d0dbb53418ba4b1e955d430741c1a1ed622ad3e5973e727e0a6d8d094a65aa5c
+  languageName: node
+  linkType: hard
+
 "@babel/generator@npm:^7.15.4, @babel/generator@npm:^7.7.2":
   version: 7.15.4
   resolution: "@babel/generator@npm:7.15.4"
@@ -3124,7 +3138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.15.4, @babel/parser@npm:^7.15.5, @babel/parser@npm:^7.7.0":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.15.4, @babel/parser@npm:^7.15.5":
   version: 7.15.7
   resolution: "@babel/parser@npm:7.15.7"
   bin:
@@ -7611,7 +7625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.13.0, @babel/traverse@npm:^7.15.4, @babel/traverse@npm:^7.4.5, @babel/traverse@npm:^7.7.0":
+"@babel/traverse@npm:^7.13.0, @babel/traverse@npm:^7.15.4, @babel/traverse@npm:^7.4.5":
   version: 7.15.4
   resolution: "@babel/traverse@npm:7.15.4"
   dependencies:
@@ -11201,7 +11215,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/access-policy@workspace:packages/access-policy"
   dependencies:
-    babel-eslint: ^10.1.0
     eslint: ^7.32.0
     npm-run-all: ^4.1.5
     rimraf: ^6.0.1
@@ -11812,6 +11825,7 @@ __metadata:
   resolution: "@tupaia/meditrak-app@workspace:packages/meditrak-app"
   dependencies:
     "@babel/core": ^7.20.0
+    "@babel/eslint-parser": ^7.27.5
     "@babel/preset-env": ^7.20.0
     "@babel/runtime": ^7.20.0
     "@bugsnag/react-native": ^7.21.0
@@ -15094,22 +15108,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 2a1cb879019dffb08d17bec36e13c3a6d74c94773f41c1fd8b14de13f149cc34b705b0a1e07b42fcf35917b49d78db6ff0c5c3b00b202a5235013d517b5c6bbb
-  languageName: node
-  linkType: hard
-
-"babel-eslint@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "babel-eslint@npm:10.1.0"
-  dependencies:
-    "@babel/code-frame": ^7.0.0
-    "@babel/parser": ^7.7.0
-    "@babel/traverse": ^7.7.0
-    "@babel/types": ^7.7.0
-    eslint-visitor-keys: ^1.0.0
-    resolve: ^1.12.0
-  peerDependencies:
-    eslint: ">= 4.12.1"
-  checksum: bdc1f62b6b0f9c4d5108c96d835dad0c0066bc45b7c020fcb2d6a08107cf69c9217a99d3438dbd701b2816896190c4283ba04270ed9a8349ee07bd8dafcdc050
   languageName: node
   linkType: hard
 
@@ -20660,7 +20658,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-visitor-keys@npm:^1.0.0, eslint-visitor-keys@npm:^1.1.0, eslint-visitor-keys@npm:^1.3.0":
+"eslint-visitor-keys@npm:^1.1.0, eslint-visitor-keys@npm:^1.3.0":
   version: 1.3.0
   resolution: "eslint-visitor-keys@npm:1.3.0"
   checksum: 37a19b712f42f4c9027e8ba98c2b06031c17e0c0a4c696cd429bd9ee04eb43889c446f2cd545e1ff51bef9593fcec94ecd2c2ef89129fcbbf3adadbef520376a
@@ -33635,7 +33633,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.6, resolve@npm:^1.10.0, resolve@npm:^1.12.0, resolve@npm:^1.13.1":
+"resolve@npm:^1.1.6, resolve@npm:^1.10.0, resolve@npm:^1.13.1":
   version: 1.14.1
   resolution: "resolve@npm:1.14.1"
   dependencies:
@@ -33699,7 +33697,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#~builtin<compat/resolve>":
   version: 1.14.1
   resolution: "resolve@patch:resolve@npm%3A1.14.1#~builtin<compat/resolve>::version=1.14.1&hash=07638b"
   dependencies:
@@ -36873,6 +36871,7 @@ __metadata:
   dependencies:
     "@babel/cli": ^7.25.6
     "@babel/core": ^7.25.2
+    "@babel/eslint-parser": ^7.27.5
     "@babel/node": ^7.25.0
     "@babel/plugin-proposal-class-properties": ^7.18.6
     "@babel/plugin-proposal-export-default-from": ^7.24.7
@@ -36891,7 +36890,6 @@ __metadata:
     "@storybook/react-vite": ^8.2.9
     "@types/node": ^20.11.1
     "@vitejs/plugin-react": ^4.0.4
-    babel-eslint: ^10.1.0
     babel-jest: ^29.7.0
     babel-preset-react-app: ^10.0.0
     dotenv: 16.4.5
