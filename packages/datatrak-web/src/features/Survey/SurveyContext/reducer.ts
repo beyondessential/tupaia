@@ -24,8 +24,6 @@ export interface SurveyFormContextType {
   cancelModalConfirmLink: string;
   countryCode: string | undefined;
   primaryEntityQuestion?: SurveyScreenComponent | null;
-  isResubmitScreen: boolean;
-  isResubmitReviewScreen: boolean;
   isResubmit: boolean;
 }
 

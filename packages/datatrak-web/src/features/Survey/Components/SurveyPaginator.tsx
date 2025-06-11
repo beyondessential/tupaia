@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useOutletContext } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { useSurveyForm } from '../SurveyContext';
+import React from 'react';
+import { useOutletContext } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { Button } from '../../../components';
-import { useIsMobile } from '../../../utils';
+import { useSurveyForm } from '../SurveyContext';
 
 const FormActions = styled.div<{
   $hasBackButton: boolean;
@@ -54,20 +54,14 @@ type SurveyLayoutContextT = {
 };
 
 export const SurveyPaginator = () => {
-  const { isLast, isReviewScreen, openCancelConfirmation, isResubmitReviewScreen } =
-    useSurveyForm();
-  const isMobile = useIsMobile();
+  const { isLast, isResubmit, isReviewScreen, openCancelConfirmation } = useSurveyForm();
   const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
 
   const getNextButtonText = () => {
-    if (isReviewScreen) return 'Submit';
-    if (isResubmitReviewScreen) return 'Resubmit';
-    if (isLast) {
-      return isMobile ? 'Review' : 'Review and submit';
-    }
+    if (isReviewScreen) return isResubmit ? 'Resubmit' : 'Submit';
+    if (isLast) 'Review & submit';
     return 'Next';
   };
-
 
   return (
     <FormActions $hasBackButton={hasBackButton}>
