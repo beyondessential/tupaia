@@ -11436,7 +11436,6 @@ __metadata:
     "@tupaia/dhis-api": "workspace:*"
     "@tupaia/indicators": "workspace:*"
     "@tupaia/kobo-api": "workspace:*"
-    "@tupaia/server-boilerplate": "workspace:*"
     "@tupaia/superset-api": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
