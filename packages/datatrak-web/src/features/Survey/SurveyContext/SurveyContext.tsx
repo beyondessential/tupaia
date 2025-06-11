@@ -62,11 +62,13 @@ export const SurveyContext = ({
   const { data: survey } = useSurvey(surveyCode);
 
   const _isInitialSubmitReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const _isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
-  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
   const isReviewScreen = _isInitialSubmitReviewScreen || _isResubmitReviewScreen;
+
+  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
   const isSuccessScreen = _isInitialSubmitSuccessScreen || _isResubmitSuccessScreen;
+
   const isResubmit = !!useMatch(`${ROUTES.SURVEY_RESUBMIT}/*`);
   const isResponseScreen = !!urlSearchParams.get('responseId');
 
@@ -183,10 +185,11 @@ export const useSurveyForm = () => {
   const isLast = screenNumber === numberOfScreens;
 
   const _isInitialSubmitReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const _isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
-  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
   const isReviewScreen = _isInitialSubmitReviewScreen || _isResubmitReviewScreen;
+
+  const _isInitialSubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const _isResubmitSuccessScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SUCCESS);
   const isSuccessScreen = _isInitialSubmitSuccessScreen || _isResubmitSuccessScreen;
 
   const isResubmit = !!useMatch(`${ROUTES.SURVEY_RESUBMIT}/*`);
