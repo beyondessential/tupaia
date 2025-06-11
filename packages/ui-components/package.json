@@ -13,7 +13,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && yarn package:build:ts",
+    "build": "yarn run clean:build && yarn package:build:ts",
     "build-dev": "yarn run build",
     "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",

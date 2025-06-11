@@ -13,7 +13,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "copy-templates": "copyfiles -u 1 src/email/templates/**/**/* ./dist",
-    "build": "rimraf dist && npm run --prefix ../../ package:build:ts && yarn run copy-templates",
+    "build": "yarn run clean:build && npm run --prefix ../../ package:build:ts && yarn run copy-templates",
     "build-dev": "yarn run build",
     "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",

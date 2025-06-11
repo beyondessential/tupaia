@@ -12,11 +12,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && run-p \"build:* {@}\" --",
+    "build": "yarn run clean:build && run-p \"build:* {@}\" --",
     "build:src": "npm run --prefix ../../ package:build:js",
     "build:types": "npm run --prefix ../../ package:build:types",
     "build-dev": "yarn run build",
-    "build-watch": "rimraf dist && yarn run build:types && npm run --prefix ../../ package:build:js-watch",
+    "build-watch": "yarn run clean:build && yarn run build:types && npm run --prefix ../../ package:build:js-watch",
     "clean:build": "rimraf -- dist",
     "dump-database": "./scripts/dumpDatabase.sh",
     "lint": "yarn package:lint",

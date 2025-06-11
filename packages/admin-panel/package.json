@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "./lib/library.js",
   "scripts": {
-    "build": "run-s -c \"build:* {@}\" --",
+    "build": "yarn run clean:build && run-s -c \"build:* {@}\" --",
     "build:src": "npm run --prefix ../../ package:build:vite",
     "preview": "vite preview",
     "build:library": "rimraf lib && npm run --prefix ../../ package:build:lib",
