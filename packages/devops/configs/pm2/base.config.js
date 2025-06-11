@@ -6,6 +6,7 @@ const baseConfig = {
 
 /**
  * Convenience fn
+ * @param {string} packageNames
  */
 const startDevConfig = (packageName) => ({
   "name"        : packageName,
@@ -15,6 +16,7 @@ const startDevConfig = (packageName) => ({
 
 /**
  * Convenience fn
+ * @param {string[]} packageNames
  */
 const startDevConfigs = (packageNames) =>
   packageNames.map(packageName => startDevConfig(packageName));
