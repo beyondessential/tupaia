@@ -47,7 +47,7 @@
     "package:build:vite": "cd \"$INIT_CWD\" && vite build --config \"../../vite.config.js\"",
     "package:build:lib": "cd \"$INIT_CWD\" && babel src --out-dir lib --source-maps --config-file \"../../babel.config.json\" --copy-files --no-copy-ignored --ignore \"**/__tests__\",\"**/__mocks__\"",
     "package:clean": "cd \"$INIT_CWD\" && yarn run clean:build && yarn run package:clean:deps",
-    "package:clean:deps": "cd \"$INIT_CWD\" && rimraf -v -- node_modules",
+    "package:clean:deps": "cd \"$INIT_CWD\" && rimraf -- node_modules",
     "package:lint": "cd \"$INIT_CWD\" && eslint .",
     "package:test": "cd \"$INIT_CWD\" && jest --maxWorkers=50%",
     "package:test:withdb": "cd \"$INIT_CWD\" && yarn workspace @tupaia/database check-test-database-exists && jest --runInBand",
