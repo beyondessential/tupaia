@@ -6,7 +6,6 @@ DIR=$(dirname "$0")
 source "$DIR/ansiControlSequences.sh"
 
 # One flag and one “real” argument expected (except in the case of --help)
-ARG_COUNT=${#@}
 FLAG=$1
 GLOB=$2
 
@@ -70,7 +69,7 @@ assert_expected_arguments() {
 		exit 1
 	fi
 
-	if (($ARG_COUNT > 2)); then
+	if (($# > 2)); then
 		echo -en "${BOLD}${YELLOW}Too many arguments:${RESET} ${BLUE}$@${RESET}. "
 		echo 'Did you forget to escape (or quote) your glob? Example usage:'
 		echo

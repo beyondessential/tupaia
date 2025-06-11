@@ -1,9 +1,12 @@
 import React from 'react';
-import { TaskStatus } from '@tupaia/types';
 import { generatePath, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from '@tupaia/ui-components';
+
+import { TaskStatus } from '@tupaia/types';
+import { FilterableTableCellContent } from '@tupaia/ui-components';
+
+import { Button } from '../../../components';
 import { PRIMARY_ENTITY_CODE_PARAM, ROUTES } from '../../../constants';
 import { SingleTaskResponse } from '../../../types';
 import { AssignTaskModal } from './AssignTaskModal';
@@ -19,7 +22,7 @@ const ActionButtonComponent = styled(Button).attrs({
     font-size: 0.75rem;
     line-height: normal;
   }
-  .cell-content:has(&) {
+  ${FilterableTableCellContent}:has(&) {
     padding-block: 0.2rem;
     padding-inline-start: 1.5rem;
   }

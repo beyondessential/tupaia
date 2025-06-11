@@ -85,7 +85,7 @@ export class MatrixBuilder {
       ? getRemainingFieldsFromRows(includeFields, excludeFields)
       : [];
 
-    const allFields = includeFields.map(field => (field === '*' ? remainingFields : field)).flat();
+    const allFields = includeFields.flatMap(field => (field === '*' ? remainingFields : field));
 
     assignColumnSetToMatrixData(allFields);
   }

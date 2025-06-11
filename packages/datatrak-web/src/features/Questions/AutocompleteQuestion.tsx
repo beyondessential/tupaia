@@ -1,14 +1,23 @@
+import { createFilterOptions } from '@material-ui/lab';
+import throttle from 'lodash.throttle';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import throttle from 'lodash.throttle';
-import { createFilterOptions } from '@material-ui/lab';
-import { Option } from '@tupaia/types';
-import { SurveyQuestionInputProps } from '../../types';
-import { useAutocompleteOptions } from '../../api';
-import { DESKTOP_BREAKPOINT } from '../../constants';
-import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
 
-const Autocomplete = styled(BaseAutocomplete)`
+import { Option } from '@tupaia/types';
+
+import { useAutocompleteOptions } from '../../api';
+import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
+import { DESKTOP_BREAKPOINT } from '../../constants';
+import { SurveyQuestionInputProps } from '../../types';
+
+/**
+ * Other properties from the {@link Option} model may be present in Option objects returned by
+ * {@link useAutocompleteOptions}, but new options created in this component will only have these
+ * two, which are compulsory for this component’s functionality.
+ */
+type AutocompleteQuestionOption = Pick<Option, 'label' | 'value'>;
+
+const Autocomplete = styled(BaseAutocomplete<AutocompleteQuestionOption>)`
   width: calc(100% - 3.5rem);
   max-width: 25rem;
 
@@ -63,7 +72,9 @@ export const AutocompleteQuestion = ({
   config = {},
   controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
-  const [searchValue, setSearchValue] = useState(selectedValue?.value || selectedValue || '');
+  const [searchValue, setSearchValue] = useState<string>(
+    selectedValue?.value || selectedValue || '',
+  );
   const { autocomplete = {} } = config!;
   const { attributes, createNew } = autocomplete;
   const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(
@@ -83,12 +94,10 @@ export const AutocompleteQuestion = ({
 
   const canCreateNew = !!createNew;
 
-  const getOptionSelected = (option: Option, selectedOption?: string | null) => {
-    const value = typeof option === 'string' ? option : option?.value;
-    return value === selectedOption;
-  };
+  const getOptionSelected = (option: AutocompleteQuestionOption, selectedOption?: string | null) =>
+    option?.value === selectedOption;
 
-  const getOptions = () => {
+  const getOptions = (): AutocompleteQuestionOption[] => {
     const options = data || [];
     // If we can't create a new option, or there is no input value, or the input value is already in the options, or the value is already added, return the options as they are
     if (!canCreateNew || !searchValue || options.find(option => option.value === searchValue))
@@ -96,7 +105,7 @@ export const AutocompleteQuestion = ({
     // if we have selected a newly created option, add it to the list of options
     if (selectedValue?.value === searchValue)
       return [
-        ...options,
+        ...(options as AutocompleteQuestionOption[]),
         {
           label: searchValue,
           value: searchValue,
@@ -111,7 +120,7 @@ export const AutocompleteQuestion = ({
     return aLabel.localeCompare(bLabel);
   });
 
-  const handleSelectOption = (option: Option) => {
+  const handleSelectOption = (option: AutocompleteQuestionOption | null) => {
     if (!option) return onChange(null);
     const { value } = option;
     // if the option is not in the list of options, it is a new option
@@ -134,15 +143,17 @@ export const AutocompleteQuestion = ({
         name={name!}
         value={selectedValue?.value || selectedValue || null}
         required={required}
-        onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
-        onInputChange={throttle((e, newValue) => {
-          if (newValue === searchValue || !e || !e.target) return;
+        onChange={(_e, newSelectedOption: AutocompleteQuestionOption | null) =>
+          handleSelectOption(newSelectedOption)
+        }
+        onInputChange={throttle((e, newValue: string) => {
+          if (newValue === searchValue || !e?.target) return;
           setSearchValue(newValue);
         }, 200)}
         inputValue={searchValue}
         inputRef={ref}
         options={options}
-        getOptionLabel={option =>
+        getOptionLabel={(option: AutocompleteQuestionOption) =>
           typeof option === 'string' ? option : option.label || option.value
         }
         getOptionSelected={getOptionSelected}
@@ -154,10 +165,10 @@ export const AutocompleteQuestion = ({
             component: InputHelperText,
           },
         }}
-        placeholder="Search..."
         muiProps={{
           freeSolo: !!createNew,
-          getOptionDisabled: option => getOptionSelected(option, selectedValue?.value),
+          getOptionDisabled: (option: AutocompleteQuestionOption) =>
+            getOptionSelected(option, selectedValue?.value),
           filterOptions: (availableOptions, params) => {
             const filtered = filter(availableOptions, params);
 
@@ -165,7 +176,7 @@ export const AutocompleteQuestion = ({
             if (params.inputValue !== '' && createNew) {
               filtered.push({
                 value: params.inputValue,
-                label: `Add "${params.inputValue}"`,
+                label: `Add “${params.inputValue}”`,
               });
             }
 

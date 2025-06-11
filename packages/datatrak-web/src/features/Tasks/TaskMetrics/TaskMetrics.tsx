@@ -4,20 +4,18 @@ import { TaskMetric } from './TaskMetric.tsx';
 import { useCurrentUserContext, useTaskMetrics } from '../../../api';
 
 const TaskMetricsContainer = styled.div`
-  flex: 1;
   display: flex;
+  flex: 1;
+  gap: inherit;
   justify-content: space-between;
-  max-width: 60rem;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
+  max-inline-size: 60rem;
 `;
 
-export const TaskMetrics = () => {
+export const TaskMetrics = (props: React.ComponentPropsWithoutRef<typeof TaskMetricsContainer>) => {
   const { projectId } = useCurrentUserContext();
   const { data: metrics, isLoading } = useTaskMetrics(projectId);
   return (
-    <TaskMetricsContainer>
+    <TaskMetricsContainer {...props}>
       <TaskMetric text="Unassigned tasks" number={metrics?.unassignedTasks} isLoading={isLoading} />
       <TaskMetric text="Overdue tasks" number={metrics?.overdueTasks} isLoading={isLoading} />
       <TaskMetric

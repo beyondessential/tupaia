@@ -243,7 +243,7 @@ export async function exportResponsesToFile(
     );
 
     // Add any questions that are in survey responses but no longer in the survey
-    const allQuestionIds = getUniqueEntries(answers.map(a => a['question.id']).flat());
+    const allQuestionIds = getUniqueEntries(answers.flatMap(a => a['question.id']));
     const validQuestionIds = questions.map(q => q.id);
     const outdatedQuestionIds = allQuestionIds.filter(id => !validQuestionIds.includes(id));
     const outdatedQuestions = await models.question.find({ id: outdatedQuestionIds });
