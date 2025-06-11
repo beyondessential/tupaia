@@ -1,4 +1,6 @@
-import { startDevConfigs } from './base.config';
-import serverStacks from '../server-stacks.json';
+const { startDevConfigs } = require('./base.config');
+const packages = require('../server-stacks.json').datatrak;
 
-export const apps = startDevConfigs(serverStacks['datatrak']);
+module.exports = {
+  apps: startDevConfigs(packages),
+};

@@ -1,4 +1,6 @@
-import { startDevConfigs } from './base.config';
-import serverStacks from '../server-stacks.json';
+const { startDevConfigs } = require('./base.config');
+const packages = require('../server-stacks.json').psss;
 
-export const apps = startDevConfigs(serverStacks['psss']);
+module.exports = {
+  apps: startDevConfigs(packages),
+};
