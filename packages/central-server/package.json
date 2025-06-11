@@ -14,7 +14,7 @@
   "scripts": {
     "build": "yarn run clean:build && run-p -c \"build:* {@}\" --",
     "build:src": "yarn package:build:js",
-    "build:types": "npm run --prefix ../../ package:build:types",
+    "build:types": "yarn run package:build:types",
     "build-dev": "yarn run build",
     "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
