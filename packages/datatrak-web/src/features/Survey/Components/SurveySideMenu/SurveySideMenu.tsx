@@ -133,15 +133,10 @@ export const SurveySideMenu = () => {
     visibleScreens,
     screenNumber,
     updateFormData,
-    isReviewScreen,
     numberOfScreens,
   } = useSurveyForm();
 
   const { getScreenPath } = useSurveyRouting(numberOfScreens);
-
-  if (isReviewScreen && !isMobile) {
-    return null;
-  }
 
   const onChangeScreen = () => {
     updateFormData(getValues());
