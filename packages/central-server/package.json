@@ -12,10 +12,11 @@
   "main": "handler.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && run-p -c \"build:* {@}\" --",
+    "build": "yarn run clean:build && run-p -c \"build:* {@}\" --",
     "build:src": "yarn package:build:js",
-    "build:types": "npm run --prefix ../../ package:build:types",
+    "build:types": "yarn run package:build:types",
     "build-dev": "yarn run build",
+    "clean:build": "rimraf -- dist",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "scheduled-task": "babel-node ./scripts/scheduledTask.js --config-file '../../babel.config.json'",
