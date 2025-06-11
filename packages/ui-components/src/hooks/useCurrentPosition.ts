@@ -6,7 +6,11 @@
 import { useEffect, useState } from 'react';
 
 const noSupportError = {
-  code: GeolocationPositionError.POSITION_UNAVAILABLE,
+  /**
+   * {@link GeolocationPositionError.POSITION_UNAVAILABLE}, but `GeolocationPositionError` isn’t
+   * available in our test environment.
+   */
+  code: 2,
   message: 'Your device or browser doesn’t support location services',
 } as const;
 
