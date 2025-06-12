@@ -10,8 +10,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
-import CheckIcon from '@material-ui/icons/CheckRounded';
-import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import { ChevronRight, Check } from 'lucide-react';
 import React, {
   ChangeEventHandler,
   ComponentPropsWithoutRef,
@@ -31,7 +30,7 @@ import { innerText } from '../utils';
 const StyledButton = styled(Button).attrs({
   disableElevation: true,
   fullWidth: true,
-  endIcon: <ArrowForwardIosRoundedIcon />,
+  endIcon: <ChevronRight />,
   size: 'large',
 })`
   display: grid;
@@ -129,7 +128,7 @@ const SelectItem = ({ label, value, ...listItemProps }: SelectItemProps) => (
   <StyledListItem {...listItemProps}>
     <StyledListItemText primary={label} />
     {listItemProps.selected && (
-      <CheckIcon htmlColor={useTheme().palette.primary.main} width={24} height={24} />
+      <Check color={useTheme().palette.primary.main} width={24} height={24} />
     )}
   </StyledListItem>
 );

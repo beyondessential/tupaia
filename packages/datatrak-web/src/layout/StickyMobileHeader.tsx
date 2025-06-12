@@ -1,6 +1,6 @@
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import ArrowBackIosNewRounded from '@mui/icons-material/ArrowBackIosNewRounded';
+import { ChevronLeft } from 'lucide-react';
 import React, { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
@@ -70,7 +70,7 @@ export const StickyMobileHeader = ({
     >
       {onBack && (
         <LeadingIconButton onClick={onBack}>
-          <ArrowBackIosNewRounded />
+          <ChevronLeft />
         </LeadingIconButton>
       )}
       <Title>{children}</Title>

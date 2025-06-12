@@ -1,16 +1,15 @@
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import { Plus } from 'lucide-react';
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { Button } from '../../components';
-import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
-import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
-import { TasksContentWrapper } from '../../layout';
 
 import { isFeatureEnabled } from '@tupaia/utils';
 
-import { StickyMobileHeader } from '../../layout';
-import { useBottomNavigationVisibility, useIsMobile } from '../../utils';
+import { Button } from '../../components';
 import { BOTTOM_NAVIGATION_HEIGHT_DYNAMIC } from '../../constants';
+import { CreateTaskModal, TaskPageHeader, TasksTable } from '../../features';
+import { TaskMetrics } from '../../features/Tasks/TaskMetrics';
+import { StickyMobileHeader, TasksContentWrapper } from '../../layout';
+import { useBottomNavigationVisibility, useIsMobile } from '../../utils';
 
 const canCreateTaskOnMobile = isFeatureEnabled('DATATRAK_MOBILE_CREATE_TASK');
 
@@ -46,7 +45,7 @@ export const TasksDashboardPage = () => {
         {(!isMobile || canCreateTaskOnMobile) && (
           <>
             {!isMobile && <TaskMetrics style={{ marginInlineEnd: 'auto' }} />}
-            <CreateButton onClick={toggleCreateModal} startIcon={<AddRoundedIcon />}>
+            <CreateButton onClick={toggleCreateModal} startIcon={<Plus />}>
               Create task
             </CreateButton>
           </>

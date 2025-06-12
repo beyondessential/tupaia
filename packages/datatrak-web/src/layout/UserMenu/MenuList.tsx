@@ -1,7 +1,5 @@
 import { Link, ListItem } from '@material-ui/core';
-import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import LaunchIcon from '@mui/icons-material/Launch';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { ChevronRight, LogOut, SquareArrowOutUpRight } from 'lucide-react';
 import React, { ComponentType, ReactNode, useState } from 'react';
 import { useMatch } from 'react-router';
 import styled from 'styled-components';
@@ -82,9 +80,9 @@ export const MenuButton = styled(Button).attrs({
   }
 `;
 
-const chevronRight = <ArrowForwardIosRoundedIcon />;
-const externalIcon = <LaunchIcon />;
-const logoutIcon = <LogoutIcon />;
+const chevronRight = <ChevronRight />;
+const externalIcon = <SquareArrowOutUpRight />;
+const logoutIcon = <LogOut />;
 
 /**
  * The menu list that appears in both the drawer and popover menus. It shows different options depending on whether the

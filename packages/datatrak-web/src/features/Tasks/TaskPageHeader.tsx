@@ -1,5 +1,5 @@
 import { Typography, useTheme } from '@material-ui/core';
-import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
+import { ChevronLeft } from 'lucide-react';
 import React from 'react';
 import styled from 'styled-components';
 import { Button, TaskIcon } from '../../components';
@@ -74,7 +74,7 @@ export const TaskPageHeader = ({ backTo, children, title, ...props }: TaskPageHe
       {!isMobile && (
         <Container>
           <BackButton to={from || backTo}>
-            <ArrowBackIosNewRoundedIcon />
+            <ChevronLeft />
           </BackButton>
           <HeadingContainer>
             <TaskIcon aria-hidden htmlColor={primaryColor} />
