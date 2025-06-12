@@ -15,6 +15,15 @@ import { useIsMobile } from '../../../utils';
 import { LatLongFields } from './LatLongFields';
 import { MapModal } from './MapModal';
 
+const geolocationPositionErrorMessages = {
+  [GeolocationPositionError.PERMISSION_DENIED]:
+    'To detect your location, please grant Tupaia DataTrak location access',
+  [GeolocationPositionError.POSITION_UNAVAILABLE]:
+    'Couldn’t detect your location. Try again when you have stronger GPS, cellular or Wi-Fi reception.',
+  [GeolocationPositionError.TIMEOUT]:
+    'Couldn’t determine your location within a reasonable time. Try again when you have stronger GPS, cellular or Wi-Fi reception.',
+} as const;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column-reverse;
@@ -52,6 +61,9 @@ export const GeolocateQuestion = ({
 }: SurveyQuestionInputProps) => {
   const { isReviewScreen, isResponseScreen } = useSurveyForm();
   const [mapModalOpen, setMapModalOpen] = useState(false);
+  // LatLngFields is composed of two narrow inputs, but is semantically one field, so we manually
+  // emulate normal helper text behaviour
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   const isMobile = useIsMobile();
   const isOnline = window.navigator.onLine;
@@ -62,12 +74,20 @@ export const GeolocateQuestion = ({
 
   const [position, error] = useCurrentPosition();
 
-  const getCurrentPosition = () => {
-    if (error) {
-      console.error(error);
+  const populateFromCurrentPosition = () => {
+    if (error !== null) {
+      setFeedback(geolocationPositionErrorMessages[error.code]);
       return;
     }
-    console.log(position?.coords);
+
+    if (position === null) {
+      setFeedback(geolocationPositionErrorMessages[GeolocationPositionError.POSITION_UNAVAILABLE]);
+      return;
+    }
+
+    setFeedback(null);
+    const { latitude, longitude, accuracy } = position.coords;
+    onChange({ latitude, longitude, accuracy });
   };
 
   const displayMapModalButton = !isReviewScreen && !isResponseScreen;
@@ -80,6 +100,7 @@ export const GeolocateQuestion = ({
           geolocation={value}
           setGeolocation={onChange}
           name={name}
+          helperText={feedback}
           invalid={invalid}
           required={required}
         />
@@ -88,7 +109,7 @@ export const GeolocateQuestion = ({
           <>
             <OrDivider />
             <StyledButton
-              onClick={isOnline ? toggleMapModal : getCurrentPosition}
+              onClick={isOnline ? toggleMapModal : populateFromCurrentPosition}
               fullWidth={isMobile}
               variant={isMobile ? 'contained' : 'text'}
               startIcon={isOnline ? <MapIcon /> : <LocationSearchingIcon />}
