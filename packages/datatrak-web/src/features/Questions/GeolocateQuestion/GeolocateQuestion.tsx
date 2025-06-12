@@ -1,10 +1,10 @@
-import { Typography } from '@material-ui/core';
+import { FormHelperText, Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { useCurrentPosition } from '@tupaia/ui-components';
+import { GEOLOCATION_UNSUPPORTED_ERROR, useCurrentPosition } from '@tupaia/ui-components';
 
 import { useSurveyForm } from '../..';
 import { Button, InputHelperText } from '../../../components';
@@ -16,8 +16,9 @@ import { LatLongFields } from './LatLongFields';
 import { MapModal } from './MapModal';
 
 const geolocationPositionErrorMessages = {
+  [GEOLOCATION_UNSUPPORTED_ERROR.code]: GEOLOCATION_UNSUPPORTED_ERROR.message,
   [GeolocationPositionError.PERMISSION_DENIED]:
-    'To detect your location, please grant Tupaia DataTrak location access',
+    'Please allow Tupaia DataTrak to access your location. You may need to check your browser or system settings.',
   [GeolocationPositionError.POSITION_UNAVAILABLE]:
     'Couldn’t detect your location. Try again when you have stronger GPS, cellular or Wi-Fi reception.',
   [GeolocationPositionError.TIMEOUT]:
@@ -27,16 +28,16 @@ const geolocationPositionErrorMessages = {
 const Container = styled.div`
   display: flex;
   flex-direction: column-reverse;
-  margin-top: 1.4rem;
+  margin-block-start: 1.4rem;
 
   ${props => props.theme.breakpoints.up('md')} {
     column-gap: 1.125rem;
     flex-direction: row;
-    margin-inline-start: 1.125rem;
 
     ${OrDivider} {
       display: unset;
       inline-size: unset;
+      margin-inline-start: 1.2rem;
       &::before,
       &::after {
         content: unset;
@@ -61,31 +62,33 @@ export const GeolocateQuestion = ({
 }: SurveyQuestionInputProps) => {
   const { isReviewScreen, isResponseScreen } = useSurveyForm();
   const [mapModalOpen, setMapModalOpen] = useState(false);
-  // LatLngFields is composed of two narrow inputs, but is semantically one field, so we manually
-  // emulate normal helper text behaviour
-  const [feedback, setFeedback] = useState<string | null>(null);
+  // GeolocateQuestion is semantically one field; manually emulate normal helper text behaviour
+  const [errorFeedback, setErrorFeedback] = useState<string | null>(null);
 
   const isMobile = useIsMobile();
-  const isOnline = window.navigator.onLine;
+  const shouldUseDetectPosition = !window.navigator.onLine && 'geolocation' in navigator;
+
+  const [position, error] = useCurrentPosition({ enabled: shouldUseDetectPosition });
 
   const toggleMapModal = () => {
     setMapModalOpen(!mapModalOpen);
   };
 
-  const [position, error] = useCurrentPosition();
-
   const populateFromCurrentPosition = () => {
     if (error !== null) {
-      setFeedback(geolocationPositionErrorMessages[error.code]);
+      setErrorFeedback(geolocationPositionErrorMessages[error.code]);
       return;
     }
 
     if (position === null) {
-      setFeedback(geolocationPositionErrorMessages[GeolocationPositionError.POSITION_UNAVAILABLE]);
+      // `position` and `error` shouldn’t both be null, so this will probably never happen
+      setErrorFeedback(
+        geolocationPositionErrorMessages[GeolocationPositionError.POSITION_UNAVAILABLE],
+      );
       return;
     }
 
-    setFeedback(null);
+    setErrorFeedback(null);
     const { latitude, longitude, accuracy } = position.coords;
     onChange({ latitude, longitude, accuracy });
   };
@@ -100,7 +103,6 @@ export const GeolocateQuestion = ({
           geolocation={value}
           setGeolocation={onChange}
           name={name}
-          helperText={feedback}
           invalid={invalid}
           required={required}
         />
@@ -109,16 +111,17 @@ export const GeolocateQuestion = ({
           <>
             <OrDivider />
             <StyledButton
-              onClick={isOnline ? toggleMapModal : populateFromCurrentPosition}
+              onClick={shouldUseDetectPosition ? populateFromCurrentPosition : toggleMapModal}
               fullWidth={isMobile}
               variant={isMobile ? 'contained' : 'text'}
-              startIcon={isOnline ? <MapIcon /> : <LocationSearchingIcon />}
+              startIcon={shouldUseDetectPosition ? <LocationSearchingIcon /> : <MapIcon />}
             >
-              {isOnline ? 'Drop pin on map' : 'Detect current location'}
+              {shouldUseDetectPosition ? 'Detect current location' : 'Drop pin on map'}
             </StyledButton>
           </>
         )}
-        {isOnline && (
+
+        {!shouldUseDetectPosition && (
           <MapModal
             geolocation={value}
             setGeolocation={onChange}
@@ -127,6 +130,7 @@ export const GeolocateQuestion = ({
           />
         )}
       </Container>
+      {errorFeedback && <FormHelperText error>{errorFeedback}</FormHelperText>}
     </fieldset>
   );
 };

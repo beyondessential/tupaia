@@ -1,9 +1,10 @@
+import { Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { LatLngLiteral } from 'leaflet';
-import { Typography } from '@material-ui/core';
+
 import { OutlinedButton } from '@tupaia/ui-components';
-import { getAutoTileSet, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
+import { DEFAULT_TILESETS, getAutoTileSet } from '@tupaia/ui-map-components';
+
 import { Button, Modal } from '../../../../components';
 import { Map } from './Map';
 
